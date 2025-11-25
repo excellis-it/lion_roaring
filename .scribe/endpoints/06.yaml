@@ -574,14 +574,14 @@ endpoints:
         name: id
         description: 'The ID of the update.'
         required: true
-        example: aut
+        example: fuga
         type: string
         enumValues: []
         exampleWasSpecified: false
         nullable: false
         custom: []
     cleanUrlParameters:
-      id: aut
+      id: fuga
     queryParameters: []
     cleanQueryParameters: []
     bodyParameters:
@@ -589,7 +589,7 @@ endpoints:
         name: role
         description: "'role' => 'required',."
         required: true
-        example: ratione
+        example: voluptatum
         type: string
         enumValues: []
         exampleWasSpecified: false
@@ -746,7 +746,7 @@ endpoints:
         nullable: false
         custom: []
     cleanBodyParameters:
-      role: ratione
+      role: voluptatum
       first_name: John
       last_name: Doe
       middle_name: Smith
@@ -814,14 +814,14 @@ endpoints:
         name: id
         description: 'The ID of the partner to delete.'
         required: true
-        example: 11
+        example: 14
         type: integer
         enumValues: []
         exampleWasSpecified: false
         nullable: false
         custom: []
     cleanUrlParameters:
-      id: 11
+      id: 14
     queryParameters: []
     cleanQueryParameters: []
     bodyParameters: []

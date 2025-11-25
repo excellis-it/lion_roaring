@@ -23,6 +23,7 @@
         /* starts out as display none and is replaced with js later  */
                     body .content .bash-example code { display: none; }
                     body .content .javascript-example code { display: none; }
+                    body .content .jsonToDart-example code { display: none; }
             </style>
 
     <script>
@@ -36,7 +37,7 @@
 
 </head>
 
-<body data-languages="[&quot;bash&quot;,&quot;javascript&quot;]">
+<body data-languages="[&quot;bash&quot;,&quot;javascript&quot;,&quot;jsonToDart&quot;]">
 
 <a href="#" id="nav-button">
     <span>
@@ -49,6 +50,7 @@
             <div class="lang-selector">
                                             <button type="button" class="lang-button" data-language-name="bash">bash</button>
                                             <button type="button" class="lang-button" data-language-name="javascript">javascript</button>
+                                            <button type="button" class="lang-button" data-language-name="jsonToDart">jsonToDart</button>
                     </div>
     
     <div class="search">
@@ -967,6 +969,46 @@ fetch(url, {
     body: JSON.stringify(body),
 }).then(response =&gt; response.json());</code></pre></div>
 
+
+<div class="jsonToDart-example">
+    <pre><code class="language-dart">
+class Id {
+  final Country? country;
+
+  Id({this.country, });
+
+  factory Id.fromJson(Map&lt;String, dynamic&gt; json) =&gt; Id(
+    country: json['country'] != null ? Country.fromJson(json['country'] as Map&lt;String, dynamic&gt;) : null,
+  );
+
+  Map&lt;String, dynamic&gt; toJson() =&gt; {
+    'country': country?.toJson(),
+  };
+}
+
+class Country {
+  final int? id;
+  final String? name;
+  final String? created_at;
+  final String? updated_at;
+
+  Country({this.id, this.name, this.created_at, this.updated_at, });
+
+  factory Country.fromJson(Map&lt;String, dynamic&gt; json) =&gt; Country(
+    id: json['id'],
+    name: json['name'],
+    created_at: json['created_at'],
+    updated_at: json['updated_at'],
+  );
+
+  Map&lt;String, dynamic&gt; toJson() =&gt; {
+    'id': id,
+    'name': name,
+    'created_at': created_at,
+    'updated_at': updated_at,
+  };
+}</code></pre></div>
+
 </span>
 
 <span id="example-responses-POSTapi-v3-country-by-id">
@@ -1109,6 +1151,49 @@ fetch(url, {
     method: "POST",
     headers,
 }).then(response =&gt; response.json());</code></pre></div>
+
+
+<div class="jsonToDart-example">
+    <pre><code class="language-dart">
+class List {
+  final List&lt;EclessiasItem&gt;? eclessias;
+
+  List({this.eclessias, });
+
+  factory List.fromJson(Map&lt;String, dynamic&gt; json) =&gt; List(
+    eclessias: (json['eclessias'] as List&lt;dynamic&gt;?)?.map((e) =&gt; EclessiasItem.fromJson(e as Map&lt;String, dynamic&gt;)).toList(),
+  );
+
+  Map&lt;String, dynamic&gt; toJson() =&gt; {
+    'eclessias': eclessias?.map((e) =&gt; e.toJson()).toList(),
+  };
+}
+
+class EclessiasItem {
+  final int? id;
+  final String? name;
+  final String? country;
+  final String? created_at;
+  final String? updated_at;
+
+  EclessiasItem({this.id, this.name, this.country, this.created_at, this.updated_at, });
+
+  factory EclessiasItem.fromJson(Map&lt;String, dynamic&gt; json) =&gt; EclessiasItem(
+    id: json['id'],
+    name: json['name'],
+    country: json['country'],
+    created_at: json['created_at'],
+    updated_at: json['updated_at'],
+  );
+
+  Map&lt;String, dynamic&gt; toJson() =&gt; {
+    'id': id,
+    'name': name,
+    'country': country,
+    'created_at': created_at,
+    'updated_at': updated_at,
+  };
+}</code></pre></div>
 
 </span>
 
@@ -1265,6 +1350,23 @@ fetch(url, {
     headers,
 }).then(response =&gt; response.json());</code></pre></div>
 
+
+<div class="jsonToDart-example">
+    <pre><code class="language-dart">
+class List {
+  final String? message;
+
+  List({this.message, });
+
+  factory List.fromJson(Map&lt;String, dynamic&gt; json) =&gt; List(
+    message: json['message'],
+  );
+
+  Map&lt;String, dynamic&gt; toJson() =&gt; {
+    'message': message,
+  };
+}</code></pre></div>
+
 </span>
 
 <span id="example-responses-POSTapi-v3-register-country-list">
@@ -1414,6 +1516,23 @@ fetch(url, {
     body: JSON.stringify(body),
 }).then(response =&gt; response.json());</code></pre></div>
 
+
+<div class="jsonToDart-example">
+    <pre><code class="language-dart">
+class List {
+  final String? message;
+
+  List({this.message, });
+
+  factory List.fromJson(Map&lt;String, dynamic&gt; json) =&gt; List(
+    message: json['message'],
+  );
+
+  Map&lt;String, dynamic&gt; toJson() =&gt; {
+    'message': message,
+  };
+}</code></pre></div>
+
 </span>
 
 <span id="example-responses-POSTapi-v3-register-states-list">
@@ -1556,7 +1675,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
     --data "{
     \"user_name\": \"johndoe\",
     \"email\": \"johndoe@example.com\",
-    \"ecclesia_id\": 3,
+    \"ecclesia_id\": 20,
     \"first_name\": \"John\",
     \"last_name\": \"Doe\",
     \"middle_name\": \"A.\",
@@ -1566,8 +1685,8 @@ You can check the Dev Tools console for debugging information.</code></pre>
     \"address\": \"123 Main St\",
     \"phone\": \"1234567890\",
     \"city\": \"Springfield\",
-    \"country\": 2,
-    \"state\": 19,
+    \"country\": 14,
+    \"state\": 2,
     \"address2\": \"Apt 4B\",
     \"zip\": \"62704\"
 }"
@@ -1587,7 +1706,7 @@ const headers = {
 let body = {
     "user_name": "johndoe",
     "email": "johndoe@example.com",
-    "ecclesia_id": 3,
+    "ecclesia_id": 20,
     "first_name": "John",
     "last_name": "Doe",
     "middle_name": "A.",
@@ -1597,8 +1716,8 @@ let body = {
     "address": "123 Main St",
     "phone": "1234567890",
     "city": "Springfield",
-    "country": 2,
-    "state": 19,
+    "country": 14,
+    "state": 2,
     "address2": "Apt 4B",
     "zip": "62704"
 };
@@ -1608,6 +1727,58 @@ fetch(url, {
     headers,
     body: JSON.stringify(body),
 }).then(response =&gt; response.json());</code></pre></div>
+
+
+<div class="jsonToDart-example">
+    <pre><code class="language-dart">
+class Register {
+  final String? message;
+  final User? user;
+
+  Register({this.message, this.user, });
+
+  factory Register.fromJson(Map&lt;String, dynamic&gt; json) =&gt; Register(
+    message: json['message'],
+    user: json['user'] != null ? User.fromJson(json['user'] as Map&lt;String, dynamic&gt;) : null,
+  );
+
+  Map&lt;String, dynamic&gt; toJson() =&gt; {
+    'message': message,
+    'user': user?.toJson(),
+  };
+}
+
+class User {
+  final int? id;
+  final String? user_name;
+  final String? email;
+  final String? first_name;
+  final String? last_name;
+  final String? created_at;
+  final String? updated_at;
+
+  User({this.id, this.user_name, this.email, this.first_name, this.last_name, this.created_at, this.updated_at, });
+
+  factory User.fromJson(Map&lt;String, dynamic&gt; json) =&gt; User(
+    id: json['id'],
+    user_name: json['user_name'],
+    email: json['email'],
+    first_name: json['first_name'],
+    last_name: json['last_name'],
+    created_at: json['created_at'],
+    updated_at: json['updated_at'],
+  );
+
+  Map&lt;String, dynamic&gt; toJson() =&gt; {
+    'id': id,
+    'user_name': user_name,
+    'email': email,
+    'first_name': first_name,
+    'last_name': last_name,
+    'created_at': created_at,
+    'updated_at': updated_at,
+  };
+}</code></pre></div>
 
 </span>
 
@@ -1751,10 +1922,10 @@ You can check the Dev Tools console for debugging information.</code></pre>
 <i>optional</i> &nbsp;
                 <input type="number" style="display: none"
                step="any"               name="ecclesia_id"                data-endpoint="POSTapi-v3-register"
-               value="3"
+               value="20"
                data-component="body">
     <br>
-<p>nullable Ecclesia ID if applicable. Example: <code>3</code></p>
+<p>nullable Ecclesia ID if applicable. Example: <code>20</code></p>
         </div>
                 <div style=" padding-left: 28px;  clear: unset;">
             <b style="line-height: 2;"><code>first_name</code></b>&nbsp;&nbsp;
@@ -1861,10 +2032,10 @@ You can check the Dev Tools console for debugging information.</code></pre>
  &nbsp;
                 <input type="number" style="display: none"
                step="any"               name="country"                data-endpoint="POSTapi-v3-register"
-               value="2"
+               value="14"
                data-component="body">
     <br>
-<p>Country of residence. Example: <code>2</code></p>
+<p>Country of residence. Example: <code>14</code></p>
         </div>
                 <div style=" padding-left: 28px;  clear: unset;">
             <b style="line-height: 2;"><code>state</code></b>&nbsp;&nbsp;
@@ -1872,10 +2043,10 @@ You can check the Dev Tools console for debugging information.</code></pre>
  &nbsp;
                 <input type="number" style="display: none"
                step="any"               name="state"                data-endpoint="POSTapi-v3-register"
-               value="19"
+               value="2"
                data-component="body">
     <br>
-<p>State of residence. Example: <code>19</code></p>
+<p>State of residence. Example: <code>2</code></p>
         </div>
                 <div style=" padding-left: 28px;  clear: unset;">
             <b style="line-height: 2;"><code>address2</code></b>&nbsp;&nbsp;
@@ -1944,6 +2115,26 @@ fetch(url, {
     headers,
     body: JSON.stringify(body),
 }).then(response =&gt; response.json());</code></pre></div>
+
+
+<div class="jsonToDart-example">
+    <pre><code class="language-dart">
+class Login {
+  final dynamic? user_name;
+  final dynamic? password;
+
+  Login({this.user_name, this.password, });
+
+  factory Login.fromJson(Map&lt;String, dynamic&gt; json) =&gt; Login(
+    user_name: json['user_name'],
+    password: json['password'],
+  );
+
+  Map&lt;String, dynamic&gt; toJson() =&gt; {
+    'user_name': user_name,
+    'password': password,
+  };
+}</code></pre></div>
 
 </span>
 
@@ -2098,6 +2289,26 @@ fetch(url, {
     body: JSON.stringify(body),
 }).then(response =&gt; response.json());</code></pre></div>
 
+
+<div class="jsonToDart-example">
+    <pre><code class="language-dart">
+class Otp {
+  final dynamic? otp;
+  final dynamic? id;
+
+  Otp({this.otp, this.id, });
+
+  factory Otp.fromJson(Map&lt;String, dynamic&gt; json) =&gt; Otp(
+    otp: json['otp'],
+    id: json['id'],
+  );
+
+  Map&lt;String, dynamic&gt; toJson() =&gt; {
+    'otp': otp,
+    'id': id,
+  };
+}</code></pre></div>
+
 </span>
 
 <span id="example-responses-POSTapi-v3-verify-otp">
@@ -2239,6 +2450,20 @@ fetch(url, {
     headers,
 }).then(response =&gt; response.json());</code></pre></div>
 
+
+<div class="jsonToDart-example">
+    <pre><code class="language-dart">
+class Agreement {
+
+  Agreement({});
+
+  factory Agreement.fromJson(Map&lt;String, dynamic&gt; json) =&gt; Agreement(
+  );
+
+  Map&lt;String, dynamic&gt; toJson() =&gt; {
+  };
+}</code></pre></div>
+
 </span>
 
 <span id="example-responses-POSTapi-v3-register-agreement">
@@ -2362,6 +2587,23 @@ fetch(url, {
     method: "POST",
     headers,
 }).then(response =&gt; response.json());</code></pre></div>
+
+
+<div class="jsonToDart-example">
+    <pre><code class="language-dart">
+class Logout {
+  final String? message;
+
+  Logout({this.message, });
+
+  factory Logout.fromJson(Map&lt;String, dynamic&gt; json) =&gt; Logout(
+    message: json['message'],
+  );
+
+  Map&lt;String, dynamic&gt; toJson() =&gt; {
+    'message': message,
+  };
+}</code></pre></div>
 
 </span>
 
@@ -2492,6 +2734,52 @@ fetch(url, {
     method: "GET",
     headers,
 }).then(response =&gt; response.json());</code></pre></div>
+
+
+<div class="jsonToDart-example">
+    <pre><code class="language-dart">
+class Load {
+  final List&lt;DataItem&gt;? data;
+
+  Load({this.data, });
+
+  factory Load.fromJson(Map&lt;String, dynamic&gt; json) =&gt; Load(
+    data: (json['data'] as List&lt;dynamic&gt;?)?.map((e) =&gt; DataItem.fromJson(e as Map&lt;String, dynamic&gt;)).toList(),
+  );
+
+  Map&lt;String, dynamic&gt; toJson() =&gt; {
+    'data': data?.map((e) =&gt; e.toJson()).toList(),
+  };
+}
+
+class DataItem {
+  final int? id;
+  final int? user_id;
+  final String? title;
+  final String? description;
+  final String? created_at;
+  final String? updated_at;
+
+  DataItem({this.id, this.user_id, this.title, this.description, this.created_at, this.updated_at, });
+
+  factory DataItem.fromJson(Map&lt;String, dynamic&gt; json) =&gt; DataItem(
+    id: json['id'],
+    user_id: json['user_id'],
+    title: json['title'],
+    description: json['description'],
+    created_at: json['created_at'],
+    updated_at: json['updated_at'],
+  );
+
+  Map&lt;String, dynamic&gt; toJson() =&gt; {
+    'id': id,
+    'user_id': user_id,
+    'title': title,
+    'description': description,
+    'created_at': created_at,
+    'updated_at': updated_at,
+  };
+}</code></pre></div>
 
 </span>
 
@@ -2644,6 +2932,52 @@ fetch(url, {
     method: "GET",
     headers,
 }).then(response =&gt; response.json());</code></pre></div>
+
+
+<div class="jsonToDart-example">
+    <pre><code class="language-dart">
+class 1 {
+  final Data? data;
+
+  1({this.data, });
+
+  factory 1.fromJson(Map&lt;String, dynamic&gt; json) =&gt; 1(
+    data: json['data'] != null ? Data.fromJson(json['data'] as Map&lt;String, dynamic&gt;) : null,
+  );
+
+  Map&lt;String, dynamic&gt; toJson() =&gt; {
+    'data': data?.toJson(),
+  };
+}
+
+class Data {
+  final int? id;
+  final int? user_id;
+  final String? title;
+  final String? description;
+  final String? created_at;
+  final String? updated_at;
+
+  Data({this.id, this.user_id, this.title, this.description, this.created_at, this.updated_at, });
+
+  factory Data.fromJson(Map&lt;String, dynamic&gt; json) =&gt; Data(
+    id: json['id'],
+    user_id: json['user_id'],
+    title: json['title'],
+    description: json['description'],
+    created_at: json['created_at'],
+    updated_at: json['updated_at'],
+  );
+
+  Map&lt;String, dynamic&gt; toJson() =&gt; {
+    'id': id,
+    'user_id': user_id,
+    'title': title,
+    'description': description,
+    'created_at': created_at,
+    'updated_at': updated_at,
+  };
+}</code></pre></div>
 
 </span>
 
@@ -2809,6 +3143,126 @@ fetch(url, {
     method: "GET",
     headers,
 }).then(response =&gt; response.json());</code></pre></div>
+
+
+<div class="jsonToDart-example">
+    <pre><code class="language-dart">
+class Board {
+  final List&lt;DataItem&gt;? data;
+
+  Board({this.data, });
+
+  factory Board.fromJson(Map&lt;String, dynamic&gt; json) =&gt; Board(
+    data: (json['data'] as List&lt;dynamic&gt;?)?.map((e) =&gt; DataItem.fromJson(e as Map&lt;String, dynamic&gt;)).toList(),
+  );
+
+  Map&lt;String, dynamic&gt; toJson() =&gt; {
+    'data': data?.map((e) =&gt; e.toJson()).toList(),
+  };
+}
+
+class DataItem {
+  final int? id;
+  final int? user_id;
+  final String? title;
+  final String? description;
+  final String? created_at;
+  final String? updated_at;
+  final User? user;
+
+  DataItem({this.id, this.user_id, this.title, this.description, this.created_at, this.updated_at, this.user, });
+
+  factory DataItem.fromJson(Map&lt;String, dynamic&gt; json) =&gt; DataItem(
+    id: json['id'],
+    user_id: json['user_id'],
+    title: json['title'],
+    description: json['description'],
+    created_at: json['created_at'],
+    updated_at: json['updated_at'],
+    user: json['user'] != null ? User.fromJson(json['user'] as Map&lt;String, dynamic&gt;) : null,
+  );
+
+  Map&lt;String, dynamic&gt; toJson() =&gt; {
+    'id': id,
+    'user_id': user_id,
+    'title': title,
+    'description': description,
+    'created_at': created_at,
+    'updated_at': updated_at,
+    'user': user?.toJson(),
+  };
+}
+
+class User {
+  final int? id;
+  final int? ecclesia_id;
+  final String? created_id;
+  final String? user_name;
+  final String? first_name;
+  final dynamic? middle_name;
+  final String? last_name;
+  final String? email;
+  final String? phone;
+  final dynamic? email_verified_at;
+  final String? profile_picture;
+  final String? address;
+  final String? city;
+  final String? state;
+  final dynamic? address2;
+  final String? country;
+  final String? zip;
+  final int? status;
+  final String? created_at;
+  final String? updated_at;
+
+  User({this.id, this.ecclesia_id, this.created_id, this.user_name, this.first_name, this.middle_name, this.last_name, this.email, this.phone, this.email_verified_at, this.profile_picture, this.address, this.city, this.state, this.address2, this.country, this.zip, this.status, this.created_at, this.updated_at, });
+
+  factory User.fromJson(Map&lt;String, dynamic&gt; json) =&gt; User(
+    id: json['id'],
+    ecclesia_id: json['ecclesia_id'],
+    created_id: json['created_id'],
+    user_name: json['user_name'],
+    first_name: json['first_name'],
+    middle_name: json['middle_name'],
+    last_name: json['last_name'],
+    email: json['email'],
+    phone: json['phone'],
+    email_verified_at: json['email_verified_at'],
+    profile_picture: json['profile_picture'],
+    address: json['address'],
+    city: json['city'],
+    state: json['state'],
+    address2: json['address2'],
+    country: json['country'],
+    zip: json['zip'],
+    status: json['status'],
+    created_at: json['created_at'],
+    updated_at: json['updated_at'],
+  );
+
+  Map&lt;String, dynamic&gt; toJson() =&gt; {
+    'id': id,
+    'ecclesia_id': ecclesia_id,
+    'created_id': created_id,
+    'user_name': user_name,
+    'first_name': first_name,
+    'middle_name': middle_name,
+    'last_name': last_name,
+    'email': email,
+    'phone': phone,
+    'email_verified_at': email_verified_at,
+    'profile_picture': profile_picture,
+    'address': address,
+    'city': city,
+    'state': state,
+    'address2': address2,
+    'country': country,
+    'zip': zip,
+    'status': status,
+    'created_at': created_at,
+    'updated_at': updated_at,
+  };
+}</code></pre></div>
 
 </span>
 
@@ -3034,6 +3488,55 @@ fetch(url, {
     body: JSON.stringify(body),
 }).then(response =&gt; response.json());</code></pre></div>
 
+
+<div class="jsonToDart-example">
+    <pre><code class="language-dart">
+class Store {
+  final String? message;
+  final Data? data;
+
+  Store({this.message, this.data, });
+
+  factory Store.fromJson(Map&lt;String, dynamic&gt; json) =&gt; Store(
+    message: json['message'],
+    data: json['data'] != null ? Data.fromJson(json['data'] as Map&lt;String, dynamic&gt;) : null,
+  );
+
+  Map&lt;String, dynamic&gt; toJson() =&gt; {
+    'message': message,
+    'data': data?.toJson(),
+  };
+}
+
+class Data {
+  final int? id;
+  final int? user_id;
+  final String? title;
+  final String? description;
+  final String? created_at;
+  final String? updated_at;
+
+  Data({this.id, this.user_id, this.title, this.description, this.created_at, this.updated_at, });
+
+  factory Data.fromJson(Map&lt;String, dynamic&gt; json) =&gt; Data(
+    id: json['id'],
+    user_id: json['user_id'],
+    title: json['title'],
+    description: json['description'],
+    created_at: json['created_at'],
+    updated_at: json['updated_at'],
+  );
+
+  Map&lt;String, dynamic&gt; toJson() =&gt; {
+    'id': id,
+    'user_id': user_id,
+    'title': title,
+    'description': description,
+    'created_at': created_at,
+    'updated_at': updated_at,
+  };
+}</code></pre></div>
+
 </span>
 
 <span id="example-responses-POSTapi-v3-user-bulletins-store">
@@ -3215,6 +3718,55 @@ fetch(url, {
     headers,
     body: JSON.stringify(body),
 }).then(response =&gt; response.json());</code></pre></div>
+
+
+<div class="jsonToDart-example">
+    <pre><code class="language-dart">
+class 1 {
+  final String? message;
+  final Data? data;
+
+  1({this.message, this.data, });
+
+  factory 1.fromJson(Map&lt;String, dynamic&gt; json) =&gt; 1(
+    message: json['message'],
+    data: json['data'] != null ? Data.fromJson(json['data'] as Map&lt;String, dynamic&gt;) : null,
+  );
+
+  Map&lt;String, dynamic&gt; toJson() =&gt; {
+    'message': message,
+    'data': data?.toJson(),
+  };
+}
+
+class Data {
+  final int? id;
+  final int? user_id;
+  final String? title;
+  final String? description;
+  final String? created_at;
+  final String? updated_at;
+
+  Data({this.id, this.user_id, this.title, this.description, this.created_at, this.updated_at, });
+
+  factory Data.fromJson(Map&lt;String, dynamic&gt; json) =&gt; Data(
+    id: json['id'],
+    user_id: json['user_id'],
+    title: json['title'],
+    description: json['description'],
+    created_at: json['created_at'],
+    updated_at: json['updated_at'],
+  );
+
+  Map&lt;String, dynamic&gt; toJson() =&gt; {
+    'id': id,
+    'user_id': user_id,
+    'title': title,
+    'description': description,
+    'created_at': created_at,
+    'updated_at': updated_at,
+  };
+}</code></pre></div>
 
 </span>
 
@@ -3399,6 +3951,23 @@ fetch(url, {
     headers,
 }).then(response =&gt; response.json());</code></pre></div>
 
+
+<div class="jsonToDart-example">
+    <pre><code class="language-dart">
+class 1 {
+  final String? message;
+
+  1({this.message, });
+
+  factory 1.fromJson(Map&lt;String, dynamic&gt; json) =&gt; 1(
+    message: json['message'],
+  );
+
+  Map&lt;String, dynamic&gt; toJson() =&gt; {
+    'message': message,
+  };
+}</code></pre></div>
+
 </span>
 
 <span id="example-responses-POSTapi-v3-user-bulletins-delete--id-">
@@ -3551,6 +4120,20 @@ fetch(url, {
     method: "POST",
     headers,
 }).then(response =&gt; response.json());</code></pre></div>
+
+
+<div class="jsonToDart-example">
+    <pre><code class="language-dart">
+class Home {
+
+  Home({});
+
+  factory Home.fromJson(Map&lt;String, dynamic&gt; json) =&gt; Home(
+  );
+
+  Map&lt;String, dynamic&gt; toJson() =&gt; {
+  };
+}</code></pre></div>
 
 </span>
 
@@ -3732,6 +4315,26 @@ fetch(url, {
     headers,
 }).then(response =&gt; response.json());</code></pre></div>
 
+
+<div class="jsonToDart-example">
+    <pre><code class="language-dart">
+class Gallery {
+  final String? message;
+  final bool? status;
+
+  Gallery({this.message, this.status, });
+
+  factory Gallery.fromJson(Map&lt;String, dynamic&gt; json) =&gt; Gallery(
+    message: json['message'],
+    status: json['status'],
+  );
+
+  Map&lt;String, dynamic&gt; toJson() =&gt; {
+    'message': message,
+    'status': status,
+  };
+}</code></pre></div>
+
 </span>
 
 <span id="example-responses-POSTapi-v3-cms-gallery">
@@ -3864,6 +4467,46 @@ fetch(url, {
     method: "POST",
     headers,
 }).then(response =&gt; response.json());</code></pre></div>
+
+
+<div class="jsonToDart-example">
+    <pre><code class="language-dart">
+class Page {
+  final String? message;
+  final bool? status;
+  final AboutUs? about_us;
+
+  Page({this.message, this.status, this.about_us, });
+
+  factory Page.fromJson(Map&lt;String, dynamic&gt; json) =&gt; Page(
+    message: json['message'],
+    status: json['status'],
+    about_us: json['about_us'] != null ? AboutUs.fromJson(json['about_us'] as Map&lt;String, dynamic&gt;) : null,
+  );
+
+  Map&lt;String, dynamic&gt; toJson() =&gt; {
+    'message': message,
+    'status': status,
+    'about_us': about_us?.toJson(),
+  };
+}
+
+class AboutUs {
+  final String? title;
+  final String? description;
+
+  AboutUs({this.title, this.description, });
+
+  factory AboutUs.fromJson(Map&lt;String, dynamic&gt; json) =&gt; AboutUs(
+    title: json['title'],
+    description: json['description'],
+  );
+
+  Map&lt;String, dynamic&gt; toJson() =&gt; {
+    'title': title,
+    'description': description,
+  };
+}</code></pre></div>
 
 </span>
 
@@ -4006,6 +4649,46 @@ fetch(url, {
     method: "POST",
     headers,
 }).then(response =&gt; response.json());</code></pre></div>
+
+
+<div class="jsonToDart-example">
+    <pre><code class="language-dart">
+class Page {
+  final String? message;
+  final bool? status;
+  final List&lt;DetailsItem&gt;? details;
+
+  Page({this.message, this.status, this.details, });
+
+  factory Page.fromJson(Map&lt;String, dynamic&gt; json) =&gt; Page(
+    message: json['message'],
+    status: json['status'],
+    details: (json['details'] as List&lt;dynamic&gt;?)?.map((e) =&gt; DetailsItem.fromJson(e as Map&lt;String, dynamic&gt;)).toList(),
+  );
+
+  Map&lt;String, dynamic&gt; toJson() =&gt; {
+    'message': message,
+    'status': status,
+    'details': details?.map((e) =&gt; e.toJson()).toList(),
+  };
+}
+
+class DetailsItem {
+  final String? title;
+  final String? description;
+
+  DetailsItem({this.title, this.description, });
+
+  factory DetailsItem.fromJson(Map&lt;String, dynamic&gt; json) =&gt; DetailsItem(
+    title: json['title'],
+    description: json['description'],
+  );
+
+  Map&lt;String, dynamic&gt; toJson() =&gt; {
+    'title': title,
+    'description': description,
+  };
+}</code></pre></div>
 
 </span>
 
@@ -4151,6 +4834,26 @@ fetch(url, {
     headers,
 }).then(response =&gt; response.json());</code></pre></div>
 
+
+<div class="jsonToDart-example">
+    <pre><code class="language-dart">
+class Faq {
+  final String? message;
+  final bool? status;
+
+  Faq({this.message, this.status, });
+
+  factory Faq.fromJson(Map&lt;String, dynamic&gt; json) =&gt; Faq(
+    message: json['message'],
+    status: json['status'],
+  );
+
+  Map&lt;String, dynamic&gt; toJson() =&gt; {
+    'message': message,
+    'status': status,
+  };
+}</code></pre></div>
+
 </span>
 
 <span id="example-responses-POSTapi-v3-cms-faq">
@@ -4284,6 +4987,26 @@ fetch(url, {
     method: "POST",
     headers,
 }).then(response =&gt; response.json());</code></pre></div>
+
+
+<div class="jsonToDart-example">
+    <pre><code class="language-dart">
+class Business {
+  final String? message;
+  final bool? status;
+
+  Business({this.message, this.status, });
+
+  factory Business.fromJson(Map&lt;String, dynamic&gt; json) =&gt; Business(
+    message: json['message'],
+    status: json['status'],
+  );
+
+  Map&lt;String, dynamic&gt; toJson() =&gt; {
+    'message': message,
+    'status': status,
+  };
+}</code></pre></div>
 
 </span>
 
@@ -4420,6 +5143,26 @@ fetch(url, {
     headers,
 }).then(response =&gt; response.json());</code></pre></div>
 
+
+<div class="jsonToDart-example">
+    <pre><code class="language-dart">
+class Associations {
+  final String? message;
+  final bool? status;
+
+  Associations({this.message, this.status, });
+
+  factory Associations.fromJson(Map&lt;String, dynamic&gt; json) =&gt; Associations(
+    message: json['message'],
+    status: json['status'],
+  );
+
+  Map&lt;String, dynamic&gt; toJson() =&gt; {
+    'message': message,
+    'status': status,
+  };
+}</code></pre></div>
+
 </span>
 
 <span id="example-responses-POSTapi-v3-cms-ecclesia-associations">
@@ -4553,6 +5296,29 @@ fetch(url, {
     method: "POST",
     headers,
 }).then(response =&gt; response.json());</code></pre></div>
+
+
+<div class="jsonToDart-example">
+    <pre><code class="language-dart">
+class Organization {
+  final String? message;
+  final bool? status;
+  final Organization? organization;
+
+  Organization({this.message, this.status, this.organization, });
+
+  factory Organization.fromJson(Map&lt;String, dynamic&gt; json) =&gt; Organization(
+    message: json['message'],
+    status: json['status'],
+    organization: json['organization'] != null ? Organization.fromJson(json['organization'] as Map&lt;String, dynamic&gt;) : null,
+  );
+
+  Map&lt;String, dynamic&gt; toJson() =&gt; {
+    'message': message,
+    'status': status,
+    'organization': organization?.toJson(),
+  };
+}</code></pre></div>
 
 </span>
 
@@ -4730,6 +5496,90 @@ fetch(url, {
     headers,
 }).then(response =&gt; response.json());</code></pre></div>
 
+
+<div class="jsonToDart-example">
+    <pre><code class="language-dart">
+class Common {
+  final String? message;
+  final bool? status;
+  final Footer? footer;
+
+  Common({this.message, this.status, this.footer, });
+
+  factory Common.fromJson(Map&lt;String, dynamic&gt; json) =&gt; Common(
+    message: json['message'],
+    status: json['status'],
+    footer: json['footer'] != null ? Footer.fromJson(json['footer'] as Map&lt;String, dynamic&gt;) : null,
+  );
+
+  Map&lt;String, dynamic&gt; toJson() =&gt; {
+    'message': message,
+    'status': status,
+    'footer': footer?.toJson(),
+  };
+}
+
+class Footer {
+  final String? Footer_logo;
+  final String? Footer_description;
+  final FooterSocialSection? Footer_social_section;
+  final String? Footer_address;
+  final String? Footer_address_details;
+  final String? Footer_phoneno;
+  final String? Footer_Emailid;
+  final String? Footer_form_title;
+  final String? Footer_copywrite_text;
+
+  Footer({this.Footer_logo, this.Footer_description, this.Footer_social_section, this.Footer_address, this.Footer_address_details, this.Footer_phoneno, this.Footer_Emailid, this.Footer_form_title, this.Footer_copywrite_text, });
+
+  factory Footer.fromJson(Map&lt;String, dynamic&gt; json) =&gt; Footer(
+    Footer_logo: json['Footer_logo'],
+    Footer_description: json['Footer_description'],
+    Footer_social_section: json['Footer_social_section'] != null ? FooterSocialSection.fromJson(json['Footer_social_section'] as Map&lt;String, dynamic&gt;) : null,
+    Footer_address: json['Footer_address'],
+    Footer_address_details: json['Footer_address_details'],
+    Footer_phoneno: json['Footer_phoneno'],
+    Footer_Emailid: json['Footer_Emailid'],
+    Footer_form_title: json['Footer_form_title'],
+    Footer_copywrite_text: json['Footer_copywrite_text'],
+  );
+
+  Map&lt;String, dynamic&gt; toJson() =&gt; {
+    'Footer_logo': Footer_logo,
+    'Footer_description': Footer_description,
+    'Footer_social_section': Footer_social_section?.toJson(),
+    'Footer_address': Footer_address,
+    'Footer_address_details': Footer_address_details,
+    'Footer_phoneno': Footer_phoneno,
+    'Footer_Emailid': Footer_Emailid,
+    'Footer_form_title': Footer_form_title,
+    'Footer_copywrite_text': Footer_copywrite_text,
+  };
+}
+
+class FooterSocialSection {
+  final String? fa-brands fa-facebook-f;
+  final String? fa-brands fa-instagram;
+  final String? fa-brands fa-twitter;
+  final String? fa-solid fa-envelope;
+
+  FooterSocialSection({this.fa-brands fa-facebook-f, this.fa-brands fa-instagram, this.fa-brands fa-twitter, this.fa-solid fa-envelope, });
+
+  factory FooterSocialSection.fromJson(Map&lt;String, dynamic&gt; json) =&gt; FooterSocialSection(
+    fa-brands fa-facebook-f: json['fa-brands fa-facebook-f'],
+    fa-brands fa-instagram: json['fa-brands fa-instagram'],
+    fa-brands fa-twitter: json['fa-brands fa-twitter'],
+    fa-solid fa-envelope: json['fa-solid fa-envelope'],
+  );
+
+  Map&lt;String, dynamic&gt; toJson() =&gt; {
+    'fa-brands fa-facebook-f': fa-brands fa-facebook-f,
+    'fa-brands fa-instagram': fa-brands fa-instagram,
+    'fa-brands fa-twitter': fa-brands fa-twitter,
+    'fa-solid fa-envelope': fa-solid fa-envelope,
+  };
+}</code></pre></div>
+
 </span>
 
 <span id="example-responses-POSTapi-v3-cms-common">
@@ -4883,6 +5733,29 @@ fetch(url, {
     body: JSON.stringify(body),
 }).then(response =&gt; response.json());</code></pre></div>
 
+
+<div class="jsonToDart-example">
+    <pre><code class="language-dart">
+class Governance {
+  final String? message;
+  final bool? status;
+  final Governance? governance;
+
+  Governance({this.message, this.status, this.governance, });
+
+  factory Governance.fromJson(Map&lt;String, dynamic&gt; json) =&gt; Governance(
+    message: json['message'],
+    status: json['status'],
+    governance: json['governance'] != null ? Governance.fromJson(json['governance'] as Map&lt;String, dynamic&gt;) : null,
+  );
+
+  Map&lt;String, dynamic&gt; toJson() =&gt; {
+    'message': message,
+    'status': status,
+    'governance': governance?.toJson(),
+  };
+}</code></pre></div>
+
 </span>
 
 <span id="example-responses-POSTapi-v3-cms-our-governance">
@@ -5028,6 +5901,23 @@ fetch(url, {
     headers,
     body: JSON.stringify(body),
 }).then(response =&gt; response.json());</code></pre></div>
+
+
+<div class="jsonToDart-example">
+    <pre><code class="language-dart">
+class Center {
+  final dynamic? slug;
+
+  Center({this.slug, });
+
+  factory Center.fromJson(Map&lt;String, dynamic&gt; json) =&gt; Center(
+    slug: json['slug'],
+  );
+
+  Map&lt;String, dynamic&gt; toJson() =&gt; {
+    'slug': slug,
+  };
+}</code></pre></div>
 
 </span>
 
@@ -5183,6 +6073,29 @@ fetch(url, {
     body: JSON.stringify(body),
 }).then(response =&gt; response.json());</code></pre></div>
 
+
+<div class="jsonToDart-example">
+    <pre><code class="language-dart">
+class Details {
+  final String? message;
+  final bool? status;
+  final Details? details;
+
+  Details({this.message, this.status, this.details, });
+
+  factory Details.fromJson(Map&lt;String, dynamic&gt; json) =&gt; Details(
+    message: json['message'],
+    status: json['status'],
+    details: json['details'] != null ? Details.fromJson(json['details'] as Map&lt;String, dynamic&gt;) : null,
+  );
+
+  Map&lt;String, dynamic&gt; toJson() =&gt; {
+    'message': message,
+    'status': status,
+    'details': details?.toJson(),
+  };
+}</code></pre></div>
+
 </span>
 
 <span id="example-responses-POSTapi-v3-cms-organization-center-details">
@@ -5320,6 +6233,52 @@ fetch(url, {
     headers,
 }).then(response =&gt; response.json());</code></pre></div>
 
+
+<div class="jsonToDart-example">
+    <pre><code class="language-dart">
+class Policy {
+  final String? message;
+  final bool? status;
+  final PrivacyPolicy? privacy_policy;
+
+  Policy({this.message, this.status, this.privacy_policy, });
+
+  factory Policy.fromJson(Map&lt;String, dynamic&gt; json) =&gt; Policy(
+    message: json['message'],
+    status: json['status'],
+    privacy_policy: json['privacy_policy'] != null ? PrivacyPolicy.fromJson(json['privacy_policy'] as Map&lt;String, dynamic&gt;) : null,
+  );
+
+  Map&lt;String, dynamic&gt; toJson() =&gt; {
+    'message': message,
+    'status': status,
+    'privacy_policy': privacy_policy?.toJson(),
+  };
+}
+
+class PrivacyPolicy {
+  final int? id;
+  final String? description;
+  final String? created_at;
+  final String? updated_at;
+
+  PrivacyPolicy({this.id, this.description, this.created_at, this.updated_at, });
+
+  factory PrivacyPolicy.fromJson(Map&lt;String, dynamic&gt; json) =&gt; PrivacyPolicy(
+    id: json['id'],
+    description: json['description'],
+    created_at: json['created_at'],
+    updated_at: json['updated_at'],
+  );
+
+  Map&lt;String, dynamic&gt; toJson() =&gt; {
+    'id': id,
+    'description': description,
+    'created_at': created_at,
+    'updated_at': updated_at,
+  };
+}</code></pre></div>
+
 </span>
 
 <span id="example-responses-POSTapi-v3-cms-members-privacy-policy">
@@ -5454,6 +6413,46 @@ fetch(url, {
     method: "POST",
     headers,
 }).then(response =&gt; response.json());</code></pre></div>
+
+
+<div class="jsonToDart-example">
+    <pre><code class="language-dart">
+class Policy {
+  final String? message;
+  final bool? status;
+  final Term? term;
+
+  Policy({this.message, this.status, this.term, });
+
+  factory Policy.fromJson(Map&lt;String, dynamic&gt; json) =&gt; Policy(
+    message: json['message'],
+    status: json['status'],
+    term: json['term'] != null ? Term.fromJson(json['term'] as Map&lt;String, dynamic&gt;) : null,
+  );
+
+  Map&lt;String, dynamic&gt; toJson() =&gt; {
+    'message': message,
+    'status': status,
+    'term': term?.toJson(),
+  };
+}
+
+class Term {
+  final String? title;
+  final String? description;
+
+  Term({this.title, this.description, });
+
+  factory Term.fromJson(Map&lt;String, dynamic&gt; json) =&gt; Term(
+    title: json['title'],
+    description: json['description'],
+  );
+
+  Map&lt;String, dynamic&gt; toJson() =&gt; {
+    'title': title,
+    'description': description,
+  };
+}</code></pre></div>
 
 </span>
 
@@ -5597,6 +6596,46 @@ fetch(url, {
     headers,
 }).then(response =&gt; response.json());</code></pre></div>
 
+
+<div class="jsonToDart-example">
+    <pre><code class="language-dart">
+class Policy {
+  final String? message;
+  final bool? status;
+  final PrivacyPolicy? privacy_policy;
+
+  Policy({this.message, this.status, this.privacy_policy, });
+
+  factory Policy.fromJson(Map&lt;String, dynamic&gt; json) =&gt; Policy(
+    message: json['message'],
+    status: json['status'],
+    privacy_policy: json['privacy_policy'] != null ? PrivacyPolicy.fromJson(json['privacy_policy'] as Map&lt;String, dynamic&gt;) : null,
+  );
+
+  Map&lt;String, dynamic&gt; toJson() =&gt; {
+    'message': message,
+    'status': status,
+    'privacy_policy': privacy_policy?.toJson(),
+  };
+}
+
+class PrivacyPolicy {
+  final String? title;
+  final String? description;
+
+  PrivacyPolicy({this.title, this.description, });
+
+  factory PrivacyPolicy.fromJson(Map&lt;String, dynamic&gt; json) =&gt; PrivacyPolicy(
+    title: json['title'],
+    description: json['description'],
+  );
+
+  Map&lt;String, dynamic&gt; toJson() =&gt; {
+    'title': title,
+    'description': description,
+  };
+}</code></pre></div>
+
 </span>
 
 <span id="example-responses-POSTapi-v3-cms-privacy-policy">
@@ -5739,6 +6778,46 @@ fetch(url, {
     headers,
 }).then(response =&gt; response.json());</code></pre></div>
 
+
+<div class="jsonToDart-example">
+    <pre><code class="language-dart">
+class Conditions {
+  final String? message;
+  final bool? status;
+  final Term? term;
+
+  Conditions({this.message, this.status, this.term, });
+
+  factory Conditions.fromJson(Map&lt;String, dynamic&gt; json) =&gt; Conditions(
+    message: json['message'],
+    status: json['status'],
+    term: json['term'] != null ? Term.fromJson(json['term'] as Map&lt;String, dynamic&gt;) : null,
+  );
+
+  Map&lt;String, dynamic&gt; toJson() =&gt; {
+    'message': message,
+    'status': status,
+    'term': term?.toJson(),
+  };
+}
+
+class Term {
+  final String? title;
+  final String? description;
+
+  Term({this.title, this.description, });
+
+  factory Term.fromJson(Map&lt;String, dynamic&gt; json) =&gt; Term(
+    title: json['title'],
+    description: json['description'],
+  );
+
+  Map&lt;String, dynamic&gt; toJson() =&gt; {
+    'title': title,
+    'description': description,
+  };
+}</code></pre></div>
+
 </span>
 
 <span id="example-responses-POSTapi-v3-cms-terms-and-conditions">
@@ -5880,6 +6959,29 @@ fetch(url, {
     method: "POST",
     headers,
 }).then(response =&gt; response.json());</code></pre></div>
+
+
+<div class="jsonToDart-example">
+    <pre><code class="language-dart">
+class Association {
+  final String? message;
+  final bool? status;
+  final String? url;
+
+  Association({this.message, this.status, this.url, });
+
+  factory Association.fromJson(Map&lt;String, dynamic&gt; json) =&gt; Association(
+    message: json['message'],
+    status: json['status'],
+    url: json['url'],
+  );
+
+  Map&lt;String, dynamic&gt; toJson() =&gt; {
+    'message': message,
+    'status': status,
+    'url': url,
+  };
+}</code></pre></div>
 
 </span>
 
@@ -6032,6 +7134,26 @@ fetch(url, {
     headers,
     body: JSON.stringify(body),
 }).then(response =&gt; response.json());</code></pre></div>
+
+
+<div class="jsonToDart-example">
+    <pre><code class="language-dart">
+class Newsletter {
+  final String? message;
+  final bool? status;
+
+  Newsletter({this.message, this.status, });
+
+  factory Newsletter.fromJson(Map&lt;String, dynamic&gt; json) =&gt; Newsletter(
+    message: json['message'],
+    status: json['status'],
+  );
+
+  Map&lt;String, dynamic&gt; toJson() =&gt; {
+    'message': message,
+    'status': status,
+  };
+}</code></pre></div>
 
 </span>
 
@@ -6195,6 +7317,29 @@ fetch(url, {
     headers,
 }).then(response =&gt; response.json());</code></pre></div>
 
+
+<div class="jsonToDart-example">
+    <pre><code class="language-dart">
+class Settings {
+  final String? message;
+  final bool? status;
+  final Settings? settings;
+
+  Settings({this.message, this.status, this.settings, });
+
+  factory Settings.fromJson(Map&lt;String, dynamic&gt; json) =&gt; Settings(
+    message: json['message'],
+    status: json['status'],
+    settings: json['settings'] != null ? Settings.fromJson(json['settings'] as Map&lt;String, dynamic&gt;) : null,
+  );
+
+  Map&lt;String, dynamic&gt; toJson() =&gt; {
+    'message': message,
+    'status': status,
+    'settings': settings?.toJson(),
+  };
+}</code></pre></div>
+
 </span>
 
 <span id="example-responses-GETapi-v3-cms-site-settings">
@@ -6339,6 +7484,131 @@ fetch(url, {
     method: "POST",
     headers,
 }).then(response =&gt; response.json());</code></pre></div>
+
+
+<div class="jsonToDart-example">
+    <pre><code class="language-dart">
+/* Root is a List&lt;ListItem&gt; */
+class ListItem {
+  final int? id;
+  final int? ecclesia_id;
+  final String? created_id;
+  final String? user_name;
+  final String? first_name;
+  final dynamic? middle_name;
+  final String? last_name;
+  final String? email;
+  final String? phone;
+  final dynamic? email_verified_at;
+  final String? profile_picture;
+  final String? address;
+  final String? city;
+  final String? state;
+  final dynamic? address2;
+  final String? country;
+  final String? zip;
+  final int? status;
+  final String? created_at;
+  final String? updated_at;
+  final LastMessage? last_message;
+
+  ListItem({this.id, this.ecclesia_id, this.created_id, this.user_name, this.first_name, this.middle_name, this.last_name, this.email, this.phone, this.email_verified_at, this.profile_picture, this.address, this.city, this.state, this.address2, this.country, this.zip, this.status, this.created_at, this.updated_at, this.last_message, });
+
+  factory ListItem.fromJson(Map&lt;String, dynamic&gt; json) =&gt; ListItem(
+    id: json['id'],
+    ecclesia_id: json['ecclesia_id'],
+    created_id: json['created_id'],
+    user_name: json['user_name'],
+    first_name: json['first_name'],
+    middle_name: json['middle_name'],
+    last_name: json['last_name'],
+    email: json['email'],
+    phone: json['phone'],
+    email_verified_at: json['email_verified_at'],
+    profile_picture: json['profile_picture'],
+    address: json['address'],
+    city: json['city'],
+    state: json['state'],
+    address2: json['address2'],
+    country: json['country'],
+    zip: json['zip'],
+    status: json['status'],
+    created_at: json['created_at'],
+    updated_at: json['updated_at'],
+    last_message: json['last_message'] != null ? LastMessage.fromJson(json['last_message'] as Map&lt;String, dynamic&gt;) : null,
+  );
+
+  Map&lt;String, dynamic&gt; toJson() =&gt; {
+    'id': id,
+    'ecclesia_id': ecclesia_id,
+    'created_id': created_id,
+    'user_name': user_name,
+    'first_name': first_name,
+    'middle_name': middle_name,
+    'last_name': last_name,
+    'email': email,
+    'phone': phone,
+    'email_verified_at': email_verified_at,
+    'profile_picture': profile_picture,
+    'address': address,
+    'city': city,
+    'state': state,
+    'address2': address2,
+    'country': country,
+    'zip': zip,
+    'status': status,
+    'created_at': created_at,
+    'updated_at': updated_at,
+    'last_message': last_message?.toJson(),
+  };
+}
+
+class LastMessage {
+  final int? id;
+  final int? sender_id;
+  final int? reciver_id;
+  final String? message;
+  final int? deleted_for_sender;
+  final int? deleted_for_reciver;
+  final dynamic? attachment;
+  final int? seen;
+  final String? created_at;
+  final String? updated_at;
+  final int? delete_from_sender_id;
+  final int? delete_from_receiver_id;
+
+  LastMessage({this.id, this.sender_id, this.reciver_id, this.message, this.deleted_for_sender, this.deleted_for_reciver, this.attachment, this.seen, this.created_at, this.updated_at, this.delete_from_sender_id, this.delete_from_receiver_id, });
+
+  factory LastMessage.fromJson(Map&lt;String, dynamic&gt; json) =&gt; LastMessage(
+    id: json['id'],
+    sender_id: json['sender_id'],
+    reciver_id: json['reciver_id'],
+    message: json['message'],
+    deleted_for_sender: json['deleted_for_sender'],
+    deleted_for_reciver: json['deleted_for_reciver'],
+    attachment: json['attachment'],
+    seen: json['seen'],
+    created_at: json['created_at'],
+    updated_at: json['updated_at'],
+    delete_from_sender_id: json['delete_from_sender_id'],
+    delete_from_receiver_id: json['delete_from_receiver_id'],
+  );
+
+  Map&lt;String, dynamic&gt; toJson() =&gt; {
+    'id': id,
+    'sender_id': sender_id,
+    'reciver_id': reciver_id,
+    'message': message,
+    'deleted_for_sender': deleted_for_sender,
+    'deleted_for_reciver': deleted_for_reciver,
+    'attachment': attachment,
+    'seen': seen,
+    'created_at': created_at,
+    'updated_at': updated_at,
+    'delete_from_sender_id': delete_from_sender_id,
+    'delete_from_receiver_id': delete_from_receiver_id,
+  };
+}</code></pre></div>
 
 </span>
 
@@ -6574,6 +7844,129 @@ fetch(url, {
     body: JSON.stringify(body),
 }).then(response =&gt; response.json());</code></pre></div>
 
+
+<div class="jsonToDart-example">
+    <pre><code class="language-dart">
+class Load {
+  final String? message;
+  final bool? status;
+  final int? chat_count;
+  final List&lt;UnseenChatItem&gt;? unseen_chat;
+  final List&lt;ChatsItem&gt;? chats;
+
+  Load({this.message, this.status, this.chat_count, this.unseen_chat, this.chats, });
+
+  factory Load.fromJson(Map&lt;String, dynamic&gt; json) =&gt; Load(
+    message: json['message'],
+    status: json['status'],
+    chat_count: json['chat_count'],
+    unseen_chat: (json['unseen_chat'] as List&lt;dynamic&gt;?)?.map((e) =&gt; UnseenChatItem.fromJson(e as Map&lt;String, dynamic&gt;)).toList(),
+    chats: (json['chats'] as List&lt;dynamic&gt;?)?.map((e) =&gt; ChatsItem.fromJson(e as Map&lt;String, dynamic&gt;)).toList(),
+  );
+
+  Map&lt;String, dynamic&gt; toJson() =&gt; {
+    'message': message,
+    'status': status,
+    'chat_count': chat_count,
+    'unseen_chat': unseen_chat?.map((e) =&gt; e.toJson()).toList(),
+    'chats': chats?.map((e) =&gt; e.toJson()).toList(),
+  };
+}
+
+class ChatsItem {
+  final int? id;
+  final int? sender_id;
+  final int? reciver_id;
+  final String? message;
+  final int? deleted_for_sender;
+  final int? deleted_for_reciver;
+  final dynamic? attachment;
+  final int? seen;
+  final String? created_at;
+  final String? updated_at;
+  final int? delete_from_sender_id;
+  final int? delete_from_receiver_id;
+
+  ChatsItem({this.id, this.sender_id, this.reciver_id, this.message, this.deleted_for_sender, this.deleted_for_reciver, this.attachment, this.seen, this.created_at, this.updated_at, this.delete_from_sender_id, this.delete_from_receiver_id, });
+
+  factory ChatsItem.fromJson(Map&lt;String, dynamic&gt; json) =&gt; ChatsItem(
+    id: json['id'],
+    sender_id: json['sender_id'],
+    reciver_id: json['reciver_id'],
+    message: json['message'],
+    deleted_for_sender: json['deleted_for_sender'],
+    deleted_for_reciver: json['deleted_for_reciver'],
+    attachment: json['attachment'],
+    seen: json['seen'],
+    created_at: json['created_at'],
+    updated_at: json['updated_at'],
+    delete_from_sender_id: json['delete_from_sender_id'],
+    delete_from_receiver_id: json['delete_from_receiver_id'],
+  );
+
+  Map&lt;String, dynamic&gt; toJson() =&gt; {
+    'id': id,
+    'sender_id': sender_id,
+    'reciver_id': reciver_id,
+    'message': message,
+    'deleted_for_sender': deleted_for_sender,
+    'deleted_for_reciver': deleted_for_reciver,
+    'attachment': attachment,
+    'seen': seen,
+    'created_at': created_at,
+    'updated_at': updated_at,
+    'delete_from_sender_id': delete_from_sender_id,
+    'delete_from_receiver_id': delete_from_receiver_id,
+  };
+}
+
+class UnseenChatItem {
+  final int? id;
+  final dynamic? sender_id;
+  final dynamic? reciver_id;
+  final dynamic? message;
+  final int? deleted_for_sender;
+  final int? deleted_for_reciver;
+  final String? attachment;
+  final int? seen;
+  final String? created_at;
+  final String? updated_at;
+  final int? delete_from_sender_id;
+  final int? delete_from_receiver_id;
+
+  UnseenChatItem({this.id, this.sender_id, this.reciver_id, this.message, this.deleted_for_sender, this.deleted_for_reciver, this.attachment, this.seen, this.created_at, this.updated_at, this.delete_from_sender_id, this.delete_from_receiver_id, });
+
+  factory UnseenChatItem.fromJson(Map&lt;String, dynamic&gt; json) =&gt; UnseenChatItem(
+    id: json['id'],
+    sender_id: json['sender_id'],
+    reciver_id: json['reciver_id'],
+    message: json['message'],
+    deleted_for_sender: json['deleted_for_sender'],
+    deleted_for_reciver: json['deleted_for_reciver'],
+    attachment: json['attachment'],
+    seen: json['seen'],
+    created_at: json['created_at'],
+    updated_at: json['updated_at'],
+    delete_from_sender_id: json['delete_from_sender_id'],
+    delete_from_receiver_id: json['delete_from_receiver_id'],
+  );
+
+  Map&lt;String, dynamic&gt; toJson() =&gt; {
+    'id': id,
+    'sender_id': sender_id,
+    'reciver_id': reciver_id,
+    'message': message,
+    'deleted_for_sender': deleted_for_sender,
+    'deleted_for_reciver': deleted_for_reciver,
+    'attachment': attachment,
+    'seen': seen,
+    'created_at': created_at,
+    'updated_at': updated_at,
+    'delete_from_sender_id': delete_from_sender_id,
+    'delete_from_receiver_id': delete_from_receiver_id,
+  };
+}</code></pre></div>
+
 </span>
 
 <span id="example-responses-POSTapi-v3-user-chats-load">
@@ -6773,7 +8166,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
     --header "Accept: application/json" \
     --form "reciver_id=2"\
     --form "message=Hello there!"\
-    --form "file=@/private/var/folders/wy/1yz2w5p91q13336262xr4yzw0000gn/T/phpMfbpyH" </code></pre></div>
+    --form "file=@/private/var/folders/wy/1yz2w5p91q13336262xr4yzw0000gn/T/phpijV1lv" </code></pre></div>
 
 
 <div class="javascript-example">
@@ -6797,6 +8190,230 @@ fetch(url, {
     headers,
     body,
 }).then(response =&gt; response.json());</code></pre></div>
+
+
+<div class="jsonToDart-example">
+    <pre><code class="language-dart">
+class Send {
+  final String? msg;
+  final Chat? chat;
+  final int? chat_count;
+  final bool? success;
+
+  Send({this.msg, this.chat, this.chat_count, this.success, });
+
+  factory Send.fromJson(Map&lt;String, dynamic&gt; json) =&gt; Send(
+    msg: json['msg'],
+    chat: json['chat'] != null ? Chat.fromJson(json['chat'] as Map&lt;String, dynamic&gt;) : null,
+    chat_count: json['chat_count'],
+    success: json['success'],
+  );
+
+  Map&lt;String, dynamic&gt; toJson() =&gt; {
+    'msg': msg,
+    'chat': chat?.toJson(),
+    'chat_count': chat_count,
+    'success': success,
+  };
+}
+
+class Chat {
+  final int? id;
+  final int? sender_id;
+  final int? reciver_id;
+  final String? message;
+  final int? deleted_for_sender;
+  final int? deleted_for_reciver;
+  final String? attachment;
+  final int? seen;
+  final String? created_at;
+  final String? updated_at;
+  final int? delete_from_sender_id;
+  final int? delete_from_receiver_id;
+  final String? created_at_formatted;
+  final Sender? sender;
+  final Reciver? reciver;
+
+  Chat({this.id, this.sender_id, this.reciver_id, this.message, this.deleted_for_sender, this.deleted_for_reciver, this.attachment, this.seen, this.created_at, this.updated_at, this.delete_from_sender_id, this.delete_from_receiver_id, this.created_at_formatted, this.sender, this.reciver, });
+
+  factory Chat.fromJson(Map&lt;String, dynamic&gt; json) =&gt; Chat(
+    id: json['id'],
+    sender_id: json['sender_id'],
+    reciver_id: json['reciver_id'],
+    message: json['message'],
+    deleted_for_sender: json['deleted_for_sender'],
+    deleted_for_reciver: json['deleted_for_reciver'],
+    attachment: json['attachment'],
+    seen: json['seen'],
+    created_at: json['created_at'],
+    updated_at: json['updated_at'],
+    delete_from_sender_id: json['delete_from_sender_id'],
+    delete_from_receiver_id: json['delete_from_receiver_id'],
+    created_at_formatted: json['created_at_formatted'],
+    sender: json['sender'] != null ? Sender.fromJson(json['sender'] as Map&lt;String, dynamic&gt;) : null,
+    reciver: json['reciver'] != null ? Reciver.fromJson(json['reciver'] as Map&lt;String, dynamic&gt;) : null,
+  );
+
+  Map&lt;String, dynamic&gt; toJson() =&gt; {
+    'id': id,
+    'sender_id': sender_id,
+    'reciver_id': reciver_id,
+    'message': message,
+    'deleted_for_sender': deleted_for_sender,
+    'deleted_for_reciver': deleted_for_reciver,
+    'attachment': attachment,
+    'seen': seen,
+    'created_at': created_at,
+    'updated_at': updated_at,
+    'delete_from_sender_id': delete_from_sender_id,
+    'delete_from_receiver_id': delete_from_receiver_id,
+    'created_at_formatted': created_at_formatted,
+    'sender': sender?.toJson(),
+    'reciver': reciver?.toJson(),
+  };
+}
+
+class Reciver {
+  final int? id;
+  final int? ecclesia_id;
+  final String? created_id;
+  final String? user_name;
+  final String? first_name;
+  final dynamic? middle_name;
+  final String? last_name;
+  final String? email;
+  final String? phone;
+  final dynamic? email_verified_at;
+  final String? profile_picture;
+  final String? address;
+  final String? city;
+  final String? state;
+  final dynamic? address2;
+  final String? country;
+  final String? zip;
+  final int? status;
+  final String? created_at;
+  final String? updated_at;
+
+  Reciver({this.id, this.ecclesia_id, this.created_id, this.user_name, this.first_name, this.middle_name, this.last_name, this.email, this.phone, this.email_verified_at, this.profile_picture, this.address, this.city, this.state, this.address2, this.country, this.zip, this.status, this.created_at, this.updated_at, });
+
+  factory Reciver.fromJson(Map&lt;String, dynamic&gt; json) =&gt; Reciver(
+    id: json['id'],
+    ecclesia_id: json['ecclesia_id'],
+    created_id: json['created_id'],
+    user_name: json['user_name'],
+    first_name: json['first_name'],
+    middle_name: json['middle_name'],
+    last_name: json['last_name'],
+    email: json['email'],
+    phone: json['phone'],
+    email_verified_at: json['email_verified_at'],
+    profile_picture: json['profile_picture'],
+    address: json['address'],
+    city: json['city'],
+    state: json['state'],
+    address2: json['address2'],
+    country: json['country'],
+    zip: json['zip'],
+    status: json['status'],
+    created_at: json['created_at'],
+    updated_at: json['updated_at'],
+  );
+
+  Map&lt;String, dynamic&gt; toJson() =&gt; {
+    'id': id,
+    'ecclesia_id': ecclesia_id,
+    'created_id': created_id,
+    'user_name': user_name,
+    'first_name': first_name,
+    'middle_name': middle_name,
+    'last_name': last_name,
+    'email': email,
+    'phone': phone,
+    'email_verified_at': email_verified_at,
+    'profile_picture': profile_picture,
+    'address': address,
+    'city': city,
+    'state': state,
+    'address2': address2,
+    'country': country,
+    'zip': zip,
+    'status': status,
+    'created_at': created_at,
+    'updated_at': updated_at,
+  };
+}
+
+class Sender {
+  final int? id;
+  final int? ecclesia_id;
+  final dynamic? created_id;
+  final String? user_name;
+  final String? first_name;
+  final dynamic? middle_name;
+  final String? last_name;
+  final String? email;
+  final String? phone;
+  final String? email_verified_at;
+  final String? profile_picture;
+  final String? address;
+  final String? city;
+  final String? state;
+  final String? address2;
+  final String? country;
+  final String? zip;
+  final int? status;
+  final String? created_at;
+  final String? updated_at;
+
+  Sender({this.id, this.ecclesia_id, this.created_id, this.user_name, this.first_name, this.middle_name, this.last_name, this.email, this.phone, this.email_verified_at, this.profile_picture, this.address, this.city, this.state, this.address2, this.country, this.zip, this.status, this.created_at, this.updated_at, });
+
+  factory Sender.fromJson(Map&lt;String, dynamic&gt; json) =&gt; Sender(
+    id: json['id'],
+    ecclesia_id: json['ecclesia_id'],
+    created_id: json['created_id'],
+    user_name: json['user_name'],
+    first_name: json['first_name'],
+    middle_name: json['middle_name'],
+    last_name: json['last_name'],
+    email: json['email'],
+    phone: json['phone'],
+    email_verified_at: json['email_verified_at'],
+    profile_picture: json['profile_picture'],
+    address: json['address'],
+    city: json['city'],
+    state: json['state'],
+    address2: json['address2'],
+    country: json['country'],
+    zip: json['zip'],
+    status: json['status'],
+    created_at: json['created_at'],
+    updated_at: json['updated_at'],
+  );
+
+  Map&lt;String, dynamic&gt; toJson() =&gt; {
+    'id': id,
+    'ecclesia_id': ecclesia_id,
+    'created_id': created_id,
+    'user_name': user_name,
+    'first_name': first_name,
+    'middle_name': middle_name,
+    'last_name': last_name,
+    'email': email,
+    'phone': phone,
+    'email_verified_at': email_verified_at,
+    'profile_picture': profile_picture,
+    'address': address,
+    'city': city,
+    'state': state,
+    'address2': address2,
+    'country': country,
+    'zip': zip,
+    'status': status,
+    'created_at': created_at,
+    'updated_at': updated_at,
+  };
+}</code></pre></div>
 
 </span>
 
@@ -6994,7 +8611,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
                value=""
                data-component="body">
     <br>
-<p>Optional file attachment for the chat message. Example: <code>/private/var/folders/wy/1yz2w5p91q13336262xr4yzw0000gn/T/phpMfbpyH</code></p>
+<p>Optional file attachment for the chat message. Example: <code>/private/var/folders/wy/1yz2w5p91q13336262xr4yzw0000gn/T/phpijV1lv</code></p>
         </div>
         </form>
 
@@ -7042,6 +8659,26 @@ fetch(url, {
     headers,
     body: JSON.stringify(body),
 }).then(response =&gt; response.json());</code></pre></div>
+
+
+<div class="jsonToDart-example">
+    <pre><code class="language-dart">
+class Clear {
+  final String? msg;
+  final bool? success;
+
+  Clear({this.msg, this.success, });
+
+  factory Clear.fromJson(Map&lt;String, dynamic&gt; json) =&gt; Clear(
+    msg: json['msg'],
+    success: json['success'],
+  );
+
+  Map&lt;String, dynamic&gt; toJson() =&gt; {
+    'msg': msg,
+    'success': success,
+  };
+}</code></pre></div>
 
 </span>
 
@@ -7197,6 +8834,61 @@ fetch(url, {
     headers,
     body: JSON.stringify(body),
 }).then(response =&gt; response.json());</code></pre></div>
+
+
+<div class="jsonToDart-example">
+    <pre><code class="language-dart">
+class Seen {
+  final String? msg;
+  final bool? status;
+  final LastChat? last_chat;
+
+  Seen({this.msg, this.status, this.last_chat, });
+
+  factory Seen.fromJson(Map&lt;String, dynamic&gt; json) =&gt; Seen(
+    msg: json['msg'],
+    status: json['status'],
+    last_chat: json['last_chat'] != null ? LastChat.fromJson(json['last_chat'] as Map&lt;String, dynamic&gt;) : null,
+  );
+
+  Map&lt;String, dynamic&gt; toJson() =&gt; {
+    'msg': msg,
+    'status': status,
+    'last_chat': last_chat?.toJson(),
+  };
+}
+
+class LastChat {
+  final int? id;
+  final int? sender_id;
+  final int? reciver_id;
+  final String? message;
+  final int? seen;
+  final String? created_at;
+  final String? updated_at;
+
+  LastChat({this.id, this.sender_id, this.reciver_id, this.message, this.seen, this.created_at, this.updated_at, });
+
+  factory LastChat.fromJson(Map&lt;String, dynamic&gt; json) =&gt; LastChat(
+    id: json['id'],
+    sender_id: json['sender_id'],
+    reciver_id: json['reciver_id'],
+    message: json['message'],
+    seen: json['seen'],
+    created_at: json['created_at'],
+    updated_at: json['updated_at'],
+  );
+
+  Map&lt;String, dynamic&gt; toJson() =&gt; {
+    'id': id,
+    'sender_id': sender_id,
+    'reciver_id': reciver_id,
+    'message': message,
+    'seen': seen,
+    'created_at': created_at,
+    'updated_at': updated_at,
+  };
+}</code></pre></div>
 
 </span>
 
@@ -7373,6 +9065,58 @@ fetch(url, {
     body: JSON.stringify(body),
 }).then(response =&gt; response.json());</code></pre></div>
 
+
+<div class="jsonToDart-example">
+    <pre><code class="language-dart">
+class Remove {
+  final String? msg;
+  final bool? status;
+  final Chat? chat;
+
+  Remove({this.msg, this.status, this.chat, });
+
+  factory Remove.fromJson(Map&lt;String, dynamic&gt; json) =&gt; Remove(
+    msg: json['msg'],
+    status: json['status'],
+    chat: json['chat'] != null ? Chat.fromJson(json['chat'] as Map&lt;String, dynamic&gt;) : null,
+  );
+
+  Map&lt;String, dynamic&gt; toJson() =&gt; {
+    'msg': msg,
+    'status': status,
+    'chat': chat?.toJson(),
+  };
+}
+
+class Chat {
+  final int? id;
+  final int? sender_id;
+  final int? reciver_id;
+  final String? message;
+  final String? created_at;
+  final String? updated_at;
+
+  Chat({this.id, this.sender_id, this.reciver_id, this.message, this.created_at, this.updated_at, });
+
+  factory Chat.fromJson(Map&lt;String, dynamic&gt; json) =&gt; Chat(
+    id: json['id'],
+    sender_id: json['sender_id'],
+    reciver_id: json['reciver_id'],
+    message: json['message'],
+    created_at: json['created_at'],
+    updated_at: json['updated_at'],
+  );
+
+  Map&lt;String, dynamic&gt; toJson() =&gt; {
+    'id': id,
+    'sender_id': sender_id,
+    'reciver_id': reciver_id,
+    'message': message,
+    'created_at': created_at,
+    'updated_at': updated_at,
+  };
+}</code></pre></div>
+
 </span>
 
 <span id="example-responses-POSTapi-v3-user-chats-remove">
@@ -7548,6 +9292,26 @@ fetch(url, {
     headers,
     body: JSON.stringify(body),
 }).then(response =&gt; response.json());</code></pre></div>
+
+
+<div class="jsonToDart-example">
+    <pre><code class="language-dart">
+class Notification {
+  final String? msg;
+  final bool? status;
+
+  Notification({this.msg, this.status, });
+
+  factory Notification.fromJson(Map&lt;String, dynamic&gt; json) =&gt; Notification(
+    msg: json['msg'],
+    status: json['status'],
+  );
+
+  Map&lt;String, dynamic&gt; toJson() =&gt; {
+    'msg': msg,
+    'status': status,
+  };
+}</code></pre></div>
 
 </span>
 
@@ -7764,6 +9528,49 @@ fetch(url, {
     body: JSON.stringify(body),
 }).then(response =&gt; response.json());</code></pre></div>
 
+
+<div class="jsonToDart-example">
+    <pre><code class="language-dart">
+class Search {
+  final List&lt;UsersItem&gt;? users;
+
+  Search({this.users, });
+
+  factory Search.fromJson(Map&lt;String, dynamic&gt; json) =&gt; Search(
+    users: (json['users'] as List&lt;dynamic&gt;?)?.map((e) =&gt; UsersItem.fromJson(e as Map&lt;String, dynamic&gt;)).toList(),
+  );
+
+  Map&lt;String, dynamic&gt; toJson() =&gt; {
+    'users': users?.map((e) =&gt; e.toJson()).toList(),
+  };
+}
+
+class UsersItem {
+  final int? id;
+  final String? user_name;
+  final String? first_name;
+  final String? last_name;
+  final String? email;
+
+  UsersItem({this.id, this.user_name, this.first_name, this.last_name, this.email, });
+
+  factory UsersItem.fromJson(Map&lt;String, dynamic&gt; json) =&gt; UsersItem(
+    id: json['id'],
+    user_name: json['user_name'],
+    first_name: json['first_name'],
+    last_name: json['last_name'],
+    email: json['email'],
+  );
+
+  Map&lt;String, dynamic&gt; toJson() =&gt; {
+    'id': id,
+    'user_name': user_name,
+    'first_name': first_name,
+    'last_name': last_name,
+    'email': email,
+  };
+}</code></pre></div>
+
 </span>
 
 <span id="example-responses-POSTapi-v3-user-chats-search">
@@ -7902,7 +9709,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
     --data "{
     \"first_name\": \"John\",
     \"last_name\": \"Doe\",
-    \"email\": \"erick.ebert@example.com\",
+    \"email\": \"irwin.medhurst@example.com\",
     \"phone\": \"1234567890\",
     \"message\": \"Hello\"
 }"
@@ -7922,7 +9729,7 @@ const headers = {
 let body = {
     "first_name": "John",
     "last_name": "Doe",
-    "email": "erick.ebert@example.com",
+    "email": "irwin.medhurst@example.com",
     "phone": "1234567890",
     "message": "Hello"
 };
@@ -7932,6 +9739,26 @@ fetch(url, {
     headers,
     body: JSON.stringify(body),
 }).then(response =&gt; response.json());</code></pre></div>
+
+
+<div class="jsonToDart-example">
+    <pre><code class="language-dart">
+class Us {
+  final String? message;
+  final bool? status;
+
+  Us({this.message, this.status, });
+
+  factory Us.fromJson(Map&lt;String, dynamic&gt; json) =&gt; Us(
+    message: json['message'],
+    status: json['status'],
+  );
+
+  Map&lt;String, dynamic&gt; toJson() =&gt; {
+    'message': message,
+    'status': status,
+  };
+}</code></pre></div>
 
 </span>
 
@@ -8045,10 +9872,10 @@ You can check the Dev Tools console for debugging information.</code></pre>
  &nbsp;
                 <input type="text" style="display: none"
                               name="email"                data-endpoint="POSTapi-v3-contact-us"
-               value="erick.ebert@example.com"
+               value="irwin.medhurst@example.com"
                data-component="body">
     <br>
-<p>Email of the user. Example: Example: <code>erick.ebert@example.com</code></p>
+<p>Email of the user. Example: Example: <code>irwin.medhurst@example.com</code></p>
         </div>
                 <div style=" padding-left: 28px;  clear: unset;">
             <b style="line-height: 2;"><code>phone</code></b>&nbsp;&nbsp;
@@ -8106,6 +9933,52 @@ fetch(url, {
     method: "GET",
     headers,
 }).then(response =&gt; response.json());</code></pre></div>
+
+
+<div class="jsonToDart-example">
+    <pre><code class="language-dart">
+class Page {
+  final Data? data;
+
+  Page({this.data, });
+
+  factory Page.fromJson(Map&lt;String, dynamic&gt; json) =&gt; Page(
+    data: json['data'] != null ? Data.fromJson(json['data'] as Map&lt;String, dynamic&gt;) : null,
+  );
+
+  Map&lt;String, dynamic&gt; toJson() =&gt; {
+    'data': data?.toJson(),
+  };
+}
+
+class Data {
+  final int? id;
+  final String? address;
+  final String? phone;
+  final String? email;
+  final String? created_at;
+  final String? updated_at;
+
+  Data({this.id, this.address, this.phone, this.email, this.created_at, this.updated_at, });
+
+  factory Data.fromJson(Map&lt;String, dynamic&gt; json) =&gt; Data(
+    id: json['id'],
+    address: json['address'],
+    phone: json['phone'],
+    email: json['email'],
+    created_at: json['created_at'],
+    updated_at: json['updated_at'],
+  );
+
+  Map&lt;String, dynamic&gt; toJson() =&gt; {
+    'id': id,
+    'address': address,
+    'phone': phone,
+    'email': email,
+    'created_at': created_at,
+    'updated_at': updated_at,
+  };
+}</code></pre></div>
 
 </span>
 
@@ -8238,7 +10111,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
     \"postcode\": \"ZP74857\",
     \"amount\": 150,
     \"country_id\": 2,
-    \"stripeToken\": \"consequatur\"
+    \"stripeToken\": \"labore\"
 }"
 </code></pre></div>
 
@@ -8263,7 +10136,7 @@ let body = {
     "postcode": "ZP74857",
     "amount": 150,
     "country_id": 2,
-    "stripeToken": "consequatur"
+    "stripeToken": "labore"
 };
 
 fetch(url, {
@@ -8271,6 +10144,50 @@ fetch(url, {
     headers,
     body: JSON.stringify(body),
 }).then(response =&gt; response.json());</code></pre></div>
+
+
+<div class="jsonToDart-example">
+    <pre><code class="language-dart">
+class Donation {
+  final dynamic? first_name;
+  final dynamic? last_name;
+  final dynamic? email;
+  final dynamic? address;
+  final dynamic? city;
+  final dynamic? state;
+  final dynamic? postcode;
+  final dynamic? amount;
+  final dynamic? country_id;
+  final dynamic? stripeToken;
+
+  Donation({this.first_name, this.last_name, this.email, this.address, this.city, this.state, this.postcode, this.amount, this.country_id, this.stripeToken, });
+
+  factory Donation.fromJson(Map&lt;String, dynamic&gt; json) =&gt; Donation(
+    first_name: json['first_name'],
+    last_name: json['last_name'],
+    email: json['email'],
+    address: json['address'],
+    city: json['city'],
+    state: json['state'],
+    postcode: json['postcode'],
+    amount: json['amount'],
+    country_id: json['country_id'],
+    stripeToken: json['stripeToken'],
+  );
+
+  Map&lt;String, dynamic&gt; toJson() =&gt; {
+    'first_name': first_name,
+    'last_name': last_name,
+    'email': email,
+    'address': address,
+    'city': city,
+    'state': state,
+    'postcode': postcode,
+    'amount': amount,
+    'country_id': country_id,
+    'stripeToken': stripeToken,
+  };
+}</code></pre></div>
 
 </span>
 
@@ -8451,10 +10368,10 @@ You can check the Dev Tools console for debugging information.</code></pre>
 <i>optional</i> &nbsp;
                 <input type="text" style="display: none"
                               name="stripeToken"                data-endpoint="POSTapi-v3-donation"
-               value="consequatur"
+               value="labore"
                data-component="body">
     <br>
-<p>required. Example: <code>consequatur</code></p>
+<p>required. Example: <code>labore</code></p>
         </div>
         </form>
 
@@ -8490,6 +10407,55 @@ fetch(url, {
     method: "POST",
     headers,
 }).then(response =&gt; response.json());</code></pre></div>
+
+
+<div class="jsonToDart-example">
+    <pre><code class="language-dart">
+class List {
+  final String? message;
+  final bool? status;
+  final List&lt;DataItem&gt;? data;
+
+  List({this.message, this.status, this.data, });
+
+  factory List.fromJson(Map&lt;String, dynamic&gt; json) =&gt; List(
+    message: json['message'],
+    status: json['status'],
+    data: (json['data'] as List&lt;dynamic&gt;?)?.map((e) =&gt; DataItem.fromJson(e as Map&lt;String, dynamic&gt;)).toList(),
+  );
+
+  Map&lt;String, dynamic&gt; toJson() =&gt; {
+    'message': message,
+    'status': status,
+    'data': data?.map((e) =&gt; e.toJson()).toList(),
+  };
+}
+
+class DataItem {
+  final int? id;
+  final String? code;
+  final String? name;
+  final dynamic? created_at;
+  final dynamic? updated_at;
+
+  DataItem({this.id, this.code, this.name, this.created_at, this.updated_at, });
+
+  factory DataItem.fromJson(Map&lt;String, dynamic&gt; json) =&gt; DataItem(
+    id: json['id'],
+    code: json['code'],
+    name: json['name'],
+    created_at: json['created_at'],
+    updated_at: json['updated_at'],
+  );
+
+  Map&lt;String, dynamic&gt; toJson() =&gt; {
+    'id': id,
+    'code': code,
+    'name': name,
+    'created_at': created_at,
+    'updated_at': updated_at,
+  };
+}</code></pre></div>
 
 </span>
 
@@ -8642,6 +10608,20 @@ fetch(url, {
     headers,
 }).then(response =&gt; response.json());</code></pre></div>
 
+
+<div class="jsonToDart-example">
+    <pre><code class="language-dart">
+class Home {
+
+  Home({});
+
+  factory Home.fromJson(Map&lt;String, dynamic&gt; json) =&gt; Home(
+  );
+
+  Map&lt;String, dynamic&gt; toJson() =&gt; {
+  };
+}</code></pre></div>
+
 </span>
 
 <span id="example-responses-GETapi-v3-e-store-store-home">
@@ -8775,6 +10755,23 @@ fetch(url, {
     method: "GET",
     headers,
 }).then(response =&gt; response.json());</code></pre></div>
+
+
+<div class="jsonToDart-example">
+    <pre><code class="language-dart">
+class Electronics {
+  final String? message;
+
+  Electronics({this.message, });
+
+  factory Electronics.fromJson(Map&lt;String, dynamic&gt; json) =&gt; Electronics(
+    message: json['message'],
+  );
+
+  Map&lt;String, dynamic&gt; toJson() =&gt; {
+    'message': message,
+  };
+}</code></pre></div>
 
 </span>
 
@@ -8913,7 +10910,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 <div class="bash-example">
     <pre><code class="language-bash">curl --request GET \
-    --get "http://127.0.0.1:8000/api/v3/e-store/product/repellendus" \
+    --get "http://127.0.0.1:8000/api/v3/e-store/product/vel" \
     --header "Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJhdWQiOiIxIiwianRpIjoiNTJkNDhkYzhjNTc4ODIwZWVmODFmY2NhOWJiMmJiODFlZGE1MTUwMTVkYmU5YzdkNzFkODAyYTRmZWNhMWQ5ZGJhYWEzMTc2YjI1OTJmMTgiLCJpYXQiOjE3NjQwNjAzNDQuMDUyOTc0LCJuYmYiOjE3NjQwNjAzNDQuMDUyOTc1LCJleHAiOjE3OTU1OTYzNDQuMDQzNjUyLCJzdWIiOiIxNjgiLCJzY29wZXMiOltdfQ.X9tS38uM-UlrpFlYZihD_kmuCcSX_hdGsRBJcNGfrWXAClMiqeTxNTC45Ftxw-ddmDQ59t5xJLlnWp2Rx57itO-IHclNmwnVJDPAh1l9D8CZBGxBSoN0FvmbWeYDNQnA7ud77YLekrcSAuKMdBX3J1UKq6ytvWwi6ChnuRFqcQ-fpzK-jgkMhGm-WFHw0H3a34afdBdSUUFutESlwMvTqmXILYVcIwaJpEAjamf3rn6wIOEoD8mbxXJ6Gb6QrRO72Kt3z62vJp7yOeMsnXUkfioVSyJVwbkbchCs2Y4YZY3FEREbKysKNdHJhhqmn6AXvx66arAK3HeZoyf5eusfk26alhbEdJqsJgFP5VROV5l57q8VKhH8hAxg-oeidCGGJXPjLGeb-5iGPjdGhQ1Ng1i9kt7VDV4icb8B2AbNC2Ie9xP6b0R11PX4jUd8D3Jogf2f0ZhAs5Is8WHcrxsCyk3lWvgOyzWxpRx2lSpmBRmSwksPrKJk_7JuzDZ1Tdpz6mubjV6DzlmqDJJjf32hBIMnaYOhOUz5k1FzZ8mybsSbnM9UjzHYr5xIf4rkmVAfuPnU2FGu8NtCQaOtt9G-TziBFgT3ZjxBCL9QaaC39BRulGE6tyCAT8NM9svTD_AbNyINUzO2M0R61OXYQfzXEeiui-sO6eYIc3x_z-YdFFQ" \
     --header "Content-Type: application/json" \
     --header "Accept: application/json"</code></pre></div>
@@ -8921,7 +10918,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 <div class="javascript-example">
     <pre><code class="language-javascript">const url = new URL(
-    "http://127.0.0.1:8000/api/v3/e-store/product/repellendus"
+    "http://127.0.0.1:8000/api/v3/e-store/product/vel"
 );
 
 const headers = {
@@ -8934,6 +10931,20 @@ fetch(url, {
     method: "GET",
     headers,
 }).then(response =&gt; response.json());</code></pre></div>
+
+
+<div class="jsonToDart-example">
+    <pre><code class="language-dart">
+class Vel {
+
+  Vel({});
+
+  factory Vel.fromJson(Map&lt;String, dynamic&gt; json) =&gt; Vel(
+  );
+
+  Map&lt;String, dynamic&gt; toJson() =&gt; {
+  };
+}</code></pre></div>
 
 </span>
 
@@ -9037,10 +11048,10 @@ You can check the Dev Tools console for debugging information.</code></pre>
  &nbsp;
                 <input type="text" style="display: none"
                               name="slug"                data-endpoint="GETapi-v3-e-store-product--slug-"
-               value="repellendus"
+               value="vel"
                data-component="url">
     <br>
-<p>The slug of the product. Example: <code>repellendus</code></p>
+<p>The slug of the product. Example: <code>vel</code></p>
             </div>
                     </form>
 
@@ -9058,7 +11069,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 <div class="bash-example">
     <pre><code class="language-bash">curl --request GET \
-    --get "http://127.0.0.1:8000/api/v3/e-store/products-filter?category_id%5B%5D[]=alias&amp;latestFilter=qui&amp;search=voluptatem&amp;page=17" \
+    --get "http://127.0.0.1:8000/api/v3/e-store/products-filter?category_id%5B%5D[]=consequatur&amp;latestFilter=quo&amp;search=quam&amp;page=11" \
     --header "Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJhdWQiOiIxIiwianRpIjoiNTJkNDhkYzhjNTc4ODIwZWVmODFmY2NhOWJiMmJiODFlZGE1MTUwMTVkYmU5YzdkNzFkODAyYTRmZWNhMWQ5ZGJhYWEzMTc2YjI1OTJmMTgiLCJpYXQiOjE3NjQwNjAzNDQuMDUyOTc0LCJuYmYiOjE3NjQwNjAzNDQuMDUyOTc1LCJleHAiOjE3OTU1OTYzNDQuMDQzNjUyLCJzdWIiOiIxNjgiLCJzY29wZXMiOltdfQ.X9tS38uM-UlrpFlYZihD_kmuCcSX_hdGsRBJcNGfrWXAClMiqeTxNTC45Ftxw-ddmDQ59t5xJLlnWp2Rx57itO-IHclNmwnVJDPAh1l9D8CZBGxBSoN0FvmbWeYDNQnA7ud77YLekrcSAuKMdBX3J1UKq6ytvWwi6ChnuRFqcQ-fpzK-jgkMhGm-WFHw0H3a34afdBdSUUFutESlwMvTqmXILYVcIwaJpEAjamf3rn6wIOEoD8mbxXJ6Gb6QrRO72Kt3z62vJp7yOeMsnXUkfioVSyJVwbkbchCs2Y4YZY3FEREbKysKNdHJhhqmn6AXvx66arAK3HeZoyf5eusfk26alhbEdJqsJgFP5VROV5l57q8VKhH8hAxg-oeidCGGJXPjLGeb-5iGPjdGhQ1Ng1i9kt7VDV4icb8B2AbNC2Ie9xP6b0R11PX4jUd8D3Jogf2f0ZhAs5Is8WHcrxsCyk3lWvgOyzWxpRx2lSpmBRmSwksPrKJk_7JuzDZ1Tdpz6mubjV6DzlmqDJJjf32hBIMnaYOhOUz5k1FzZ8mybsSbnM9UjzHYr5xIf4rkmVAfuPnU2FGu8NtCQaOtt9G-TziBFgT3ZjxBCL9QaaC39BRulGE6tyCAT8NM9svTD_AbNyINUzO2M0R61OXYQfzXEeiui-sO6eYIc3x_z-YdFFQ" \
     --header "Content-Type: application/json" \
     --header "Accept: application/json"</code></pre></div>
@@ -9070,10 +11081,10 @@ You can check the Dev Tools console for debugging information.</code></pre>
 );
 
 const params = {
-    "category_id[][0]": "alias",
-    "latestFilter": "qui",
-    "search": "voluptatem",
-    "page": "17",
+    "category_id[][0]": "consequatur",
+    "latestFilter": "quo",
+    "search": "quam",
+    "page": "11",
 };
 Object.keys(params)
     .forEach(key =&gt; url.searchParams.append(key, params[key]));
@@ -9088,6 +11099,20 @@ fetch(url, {
     method: "GET",
     headers,
 }).then(response =&gt; response.json());</code></pre></div>
+
+
+<div class="jsonToDart-example">
+    <pre><code class="language-dart">
+class Filter {
+
+  Filter({});
+
+  factory Filter.fromJson(Map&lt;String, dynamic&gt; json) =&gt; Filter(
+  );
+
+  Map&lt;String, dynamic&gt; toJson() =&gt; {
+  };
+}</code></pre></div>
 
 </span>
 
@@ -9203,10 +11228,10 @@ You can check the Dev Tools console for debugging information.</code></pre>
 <i>optional</i> &nbsp;
                 <input type="text" style="display: none"
                               name="latestFilter"                data-endpoint="GETapi-v3-e-store-products-filter"
-               value="qui"
+               value="quo"
                data-component="query">
     <br>
-<p>Optional. Filter by latest, A-Z, Z-A. Example: <code>qui</code></p>
+<p>Optional. Filter by latest, A-Z, Z-A. Example: <code>quo</code></p>
             </div>
                                     <div style="padding-left: 28px; clear: unset;">
                 <b style="line-height: 2;"><code>search</code></b>&nbsp;&nbsp;
@@ -9214,10 +11239,10 @@ You can check the Dev Tools console for debugging information.</code></pre>
 <i>optional</i> &nbsp;
                 <input type="text" style="display: none"
                               name="search"                data-endpoint="GETapi-v3-e-store-products-filter"
-               value="voluptatem"
+               value="quam"
                data-component="query">
     <br>
-<p>Optional. Search by product name. Example: <code>voluptatem</code></p>
+<p>Optional. Search by product name. Example: <code>quam</code></p>
             </div>
                                     <div style="padding-left: 28px; clear: unset;">
                 <b style="line-height: 2;"><code>page</code></b>&nbsp;&nbsp;
@@ -9225,10 +11250,10 @@ You can check the Dev Tools console for debugging information.</code></pre>
 <i>optional</i> &nbsp;
                 <input type="number" style="display: none"
                step="any"               name="page"                data-endpoint="GETapi-v3-e-store-products-filter"
-               value="17"
+               value="11"
                data-component="query">
     <br>
-<p>Optional. Page number. Example: <code>17</code></p>
+<p>Optional. Page number. Example: <code>11</code></p>
             </div>
                 </form>
 
@@ -9280,6 +11305,142 @@ fetch(url, {
     method: "GET",
     headers,
 }).then(response =&gt; response.json());</code></pre></div>
+
+
+<div class="jsonToDart-example">
+    <pre><code class="language-dart">
+class Manage {
+  final Ecclesias? ecclesias;
+
+  Manage({this.ecclesias, });
+
+  factory Manage.fromJson(Map&lt;String, dynamic&gt; json) =&gt; Manage(
+    ecclesias: json['ecclesias'] != null ? Ecclesias.fromJson(json['ecclesias'] as Map&lt;String, dynamic&gt;) : null,
+  );
+
+  Map&lt;String, dynamic&gt; toJson() =&gt; {
+    'ecclesias': ecclesias?.toJson(),
+  };
+}
+
+class Ecclesias {
+  final int? current_page;
+  final List&lt;DataItem&gt;? data;
+  final String? first_page_url;
+  final int? from;
+  final int? last_page;
+  final String? last_page_url;
+  final List&lt;LinksItem&gt;? links;
+  final dynamic? next_page_url;
+  final String? path;
+  final int? per_page;
+  final dynamic? prev_page_url;
+  final int? to;
+  final int? total;
+
+  Ecclesias({this.current_page, this.data, this.first_page_url, this.from, this.last_page, this.last_page_url, this.links, this.next_page_url, this.path, this.per_page, this.prev_page_url, this.to, this.total, });
+
+  factory Ecclesias.fromJson(Map&lt;String, dynamic&gt; json) =&gt; Ecclesias(
+    current_page: json['current_page'],
+    data: (json['data'] as List&lt;dynamic&gt;?)?.map((e) =&gt; DataItem.fromJson(e as Map&lt;String, dynamic&gt;)).toList(),
+    first_page_url: json['first_page_url'],
+    from: json['from'],
+    last_page: json['last_page'],
+    last_page_url: json['last_page_url'],
+    links: (json['links'] as List&lt;dynamic&gt;?)?.map((e) =&gt; LinksItem.fromJson(e as Map&lt;String, dynamic&gt;)).toList(),
+    next_page_url: json['next_page_url'],
+    path: json['path'],
+    per_page: json['per_page'],
+    prev_page_url: json['prev_page_url'],
+    to: json['to'],
+    total: json['total'],
+  );
+
+  Map&lt;String, dynamic&gt; toJson() =&gt; {
+    'current_page': current_page,
+    'data': data?.map((e) =&gt; e.toJson()).toList(),
+    'first_page_url': first_page_url,
+    'from': from,
+    'last_page': last_page,
+    'last_page_url': last_page_url,
+    'links': links?.map((e) =&gt; e.toJson()).toList(),
+    'next_page_url': next_page_url,
+    'path': path,
+    'per_page': per_page,
+    'prev_page_url': prev_page_url,
+    'to': to,
+    'total': total,
+  };
+}
+
+class LinksItem {
+  final dynamic? url;
+  final String? label;
+  final bool? active;
+
+  LinksItem({this.url, this.label, this.active, });
+
+  factory LinksItem.fromJson(Map&lt;String, dynamic&gt; json) =&gt; LinksItem(
+    url: json['url'],
+    label: json['label'],
+    active: json['active'],
+  );
+
+  Map&lt;String, dynamic&gt; toJson() =&gt; {
+    'url': url,
+    'label': label,
+    'active': active,
+  };
+}
+
+class DataItem {
+  final int? id;
+  final String? name;
+  final String? country;
+  final String? created_at;
+  final String? updated_at;
+  final CountryName? country_name;
+
+  DataItem({this.id, this.name, this.country, this.created_at, this.updated_at, this.country_name, });
+
+  factory DataItem.fromJson(Map&lt;String, dynamic&gt; json) =&gt; DataItem(
+    id: json['id'],
+    name: json['name'],
+    country: json['country'],
+    created_at: json['created_at'],
+    updated_at: json['updated_at'],
+    country_name: json['country_name'] != null ? CountryName.fromJson(json['country_name'] as Map&lt;String, dynamic&gt;) : null,
+  );
+
+  Map&lt;String, dynamic&gt; toJson() =&gt; {
+    'id': id,
+    'name': name,
+    'country': country,
+    'created_at': created_at,
+    'updated_at': updated_at,
+    'country_name': country_name?.toJson(),
+  };
+}
+
+class CountryName {
+  final int? id;
+  final String? name;
+  final String? code;
+
+  CountryName({this.id, this.name, this.code, });
+
+  factory CountryName.fromJson(Map&lt;String, dynamic&gt; json) =&gt; CountryName(
+    id: json['id'],
+    name: json['name'],
+    code: json['code'],
+  );
+
+  Map&lt;String, dynamic&gt; toJson() =&gt; {
+    'id': id,
+    'name': name,
+    'code': code,
+  };
+}</code></pre></div>
 
 </span>
 
@@ -9530,6 +11691,43 @@ fetch(url, {
     headers,
 }).then(response =&gt; response.json());</code></pre></div>
 
+
+<div class="jsonToDart-example">
+    <pre><code class="language-dart">
+class Create {
+  final List&lt;CountriesItem&gt;? countries;
+
+  Create({this.countries, });
+
+  factory Create.fromJson(Map&lt;String, dynamic&gt; json) =&gt; Create(
+    countries: (json['countries'] as List&lt;dynamic&gt;?)?.map((e) =&gt; CountriesItem.fromJson(e as Map&lt;String, dynamic&gt;)).toList(),
+  );
+
+  Map&lt;String, dynamic&gt; toJson() =&gt; {
+    'countries': countries?.map((e) =&gt; e.toJson()).toList(),
+  };
+}
+
+class CountriesItem {
+  final int? id;
+  final String? name;
+  final String? code;
+
+  CountriesItem({this.id, this.name, this.code, });
+
+  factory CountriesItem.fromJson(Map&lt;String, dynamic&gt; json) =&gt; CountriesItem(
+    id: json['id'],
+    name: json['name'],
+    code: json['code'],
+  );
+
+  Map&lt;String, dynamic&gt; toJson() =&gt; {
+    'id': id,
+    'name': name,
+    'code': code,
+  };
+}</code></pre></div>
+
 </span>
 
 <span id="example-responses-GETapi-v3-user-ecclesias-manage-create">
@@ -9691,6 +11889,52 @@ fetch(url, {
     headers,
     body: JSON.stringify(body),
 }).then(response =&gt; response.json());</code></pre></div>
+
+
+<div class="jsonToDart-example">
+    <pre><code class="language-dart">
+class Manage {
+  final String? message;
+  final Ecclesia? ecclesia;
+
+  Manage({this.message, this.ecclesia, });
+
+  factory Manage.fromJson(Map&lt;String, dynamic&gt; json) =&gt; Manage(
+    message: json['message'],
+    ecclesia: json['ecclesia'] != null ? Ecclesia.fromJson(json['ecclesia'] as Map&lt;String, dynamic&gt;) : null,
+  );
+
+  Map&lt;String, dynamic&gt; toJson() =&gt; {
+    'message': message,
+    'ecclesia': ecclesia?.toJson(),
+  };
+}
+
+class Ecclesia {
+  final String? name;
+  final String? country;
+  final String? updated_at;
+  final String? created_at;
+  final int? id;
+
+  Ecclesia({this.name, this.country, this.updated_at, this.created_at, this.id, });
+
+  factory Ecclesia.fromJson(Map&lt;String, dynamic&gt; json) =&gt; Ecclesia(
+    name: json['name'],
+    country: json['country'],
+    updated_at: json['updated_at'],
+    created_at: json['created_at'],
+    id: json['id'],
+  );
+
+  Map&lt;String, dynamic&gt; toJson() =&gt; {
+    'name': name,
+    'country': country,
+    'updated_at': updated_at,
+    'created_at': created_at,
+    'id': id,
+  };
+}</code></pre></div>
 
 </span>
 
@@ -9870,6 +12114,95 @@ fetch(url, {
     method: "GET",
     headers,
 }).then(response =&gt; response.json());</code></pre></div>
+
+
+<div class="jsonToDart-example">
+    <pre><code class="language-dart">
+class 1 {
+  final Ecclesia? ecclesia;
+  final List&lt;CountriesItem&gt;? countries;
+
+  1({this.ecclesia, this.countries, });
+
+  factory 1.fromJson(Map&lt;String, dynamic&gt; json) =&gt; 1(
+    ecclesia: json['ecclesia'] != null ? Ecclesia.fromJson(json['ecclesia'] as Map&lt;String, dynamic&gt;) : null,
+    countries: (json['countries'] as List&lt;dynamic&gt;?)?.map((e) =&gt; CountriesItem.fromJson(e as Map&lt;String, dynamic&gt;)).toList(),
+  );
+
+  Map&lt;String, dynamic&gt; toJson() =&gt; {
+    'ecclesia': ecclesia?.toJson(),
+    'countries': countries?.map((e) =&gt; e.toJson()).toList(),
+  };
+}
+
+class CountriesItem {
+  final int? id;
+  final String? name;
+  final String? code;
+
+  CountriesItem({this.id, this.name, this.code, });
+
+  factory CountriesItem.fromJson(Map&lt;String, dynamic&gt; json) =&gt; CountriesItem(
+    id: json['id'],
+    name: json['name'],
+    code: json['code'],
+  );
+
+  Map&lt;String, dynamic&gt; toJson() =&gt; {
+    'id': id,
+    'name': name,
+    'code': code,
+  };
+}
+
+class Ecclesia {
+  final int? id;
+  final String? name;
+  final String? country;
+  final String? created_at;
+  final String? updated_at;
+  final CountryName? country_name;
+
+  Ecclesia({this.id, this.name, this.country, this.created_at, this.updated_at, this.country_name, });
+
+  factory Ecclesia.fromJson(Map&lt;String, dynamic&gt; json) =&gt; Ecclesia(
+    id: json['id'],
+    name: json['name'],
+    country: json['country'],
+    created_at: json['created_at'],
+    updated_at: json['updated_at'],
+    country_name: json['country_name'] != null ? CountryName.fromJson(json['country_name'] as Map&lt;String, dynamic&gt;) : null,
+  );
+
+  Map&lt;String, dynamic&gt; toJson() =&gt; {
+    'id': id,
+    'name': name,
+    'country': country,
+    'created_at': created_at,
+    'updated_at': updated_at,
+    'country_name': country_name?.toJson(),
+  };
+}
+
+class CountryName {
+  final int? id;
+  final String? name;
+  final String? code;
+
+  CountryName({this.id, this.name, this.code, });
+
+  factory CountryName.fromJson(Map&lt;String, dynamic&gt; json) =&gt; CountryName(
+    id: json['id'],
+    name: json['name'],
+    code: json['code'],
+  );
+
+  Map&lt;String, dynamic&gt; toJson() =&gt; {
+    'id': id,
+    'name': name,
+    'code': code,
+  };
+}</code></pre></div>
 
 </span>
 
@@ -10065,6 +12398,52 @@ fetch(url, {
     headers,
     body: JSON.stringify(body),
 }).then(response =&gt; response.json());</code></pre></div>
+
+
+<div class="jsonToDart-example">
+    <pre><code class="language-dart">
+class 1 {
+  final String? message;
+  final Ecclesia? ecclesia;
+
+  1({this.message, this.ecclesia, });
+
+  factory 1.fromJson(Map&lt;String, dynamic&gt; json) =&gt; 1(
+    message: json['message'],
+    ecclesia: json['ecclesia'] != null ? Ecclesia.fromJson(json['ecclesia'] as Map&lt;String, dynamic&gt;) : null,
+  );
+
+  Map&lt;String, dynamic&gt; toJson() =&gt; {
+    'message': message,
+    'ecclesia': ecclesia?.toJson(),
+  };
+}
+
+class Ecclesia {
+  final int? id;
+  final String? name;
+  final String? country;
+  final String? created_at;
+  final String? updated_at;
+
+  Ecclesia({this.id, this.name, this.country, this.created_at, this.updated_at, });
+
+  factory Ecclesia.fromJson(Map&lt;String, dynamic&gt; json) =&gt; Ecclesia(
+    id: json['id'],
+    name: json['name'],
+    country: json['country'],
+    created_at: json['created_at'],
+    updated_at: json['updated_at'],
+  );
+
+  Map&lt;String, dynamic&gt; toJson() =&gt; {
+    'id': id,
+    'name': name,
+    'country': country,
+    'created_at': created_at,
+    'updated_at': updated_at,
+  };
+}</code></pre></div>
 
 </span>
 
@@ -10266,6 +12645,23 @@ fetch(url, {
     headers,
 }).then(response =&gt; response.json());</code></pre></div>
 
+
+<div class="jsonToDart-example">
+    <pre><code class="language-dart">
+class 1 {
+  final String? message;
+
+  1({this.message, });
+
+  factory 1.fromJson(Map&lt;String, dynamic&gt; json) =&gt; 1(
+    message: json['message'],
+  );
+
+  Map&lt;String, dynamic&gt; toJson() =&gt; {
+    'message': message,
+  };
+}</code></pre></div>
+
 </span>
 
 <span id="example-responses-DELETEapi-v3-user-ecclesias-manage--id-">
@@ -10434,6 +12830,20 @@ fetch(url, {
     method: "GET",
     headers,
 }).then(response =&gt; response.json());</code></pre></div>
+
+
+<div class="jsonToDart-example">
+    <pre><code class="language-dart">
+class Topics {
+
+  Topics({});
+
+  factory Topics.fromJson(Map&lt;String, dynamic&gt; json) =&gt; Topics(
+  );
+
+  Map&lt;String, dynamic&gt; toJson() =&gt; {
+  };
+}</code></pre></div>
 
 </span>
 
@@ -10623,6 +13033,26 @@ fetch(url, {
     body: JSON.stringify(body),
 }).then(response =&gt; response.json());</code></pre></div>
 
+
+<div class="jsonToDart-example">
+    <pre><code class="language-dart">
+class Topics {
+  final String? message;
+  final bool? status;
+
+  Topics({this.message, this.status, });
+
+  factory Topics.fromJson(Map&lt;String, dynamic&gt; json) =&gt; Topics(
+    message: json['message'],
+    status: json['status'],
+  );
+
+  Map&lt;String, dynamic&gt; toJson() =&gt; {
+    'message': message,
+    'status': status,
+  };
+}</code></pre></div>
+
 </span>
 
 <span id="example-responses-POSTapi-v3-user-topics">
@@ -10766,7 +13196,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 <div class="bash-example">
     <pre><code class="language-bash">curl --request GET \
-    --get "http://127.0.0.1:8000/api/v3/user/topics/omnis/edit" \
+    --get "http://127.0.0.1:8000/api/v3/user/topics/sequi/edit" \
     --header "Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJhdWQiOiIxIiwianRpIjoiNTJkNDhkYzhjNTc4ODIwZWVmODFmY2NhOWJiMmJiODFlZGE1MTUwMTVkYmU5YzdkNzFkODAyYTRmZWNhMWQ5ZGJhYWEzMTc2YjI1OTJmMTgiLCJpYXQiOjE3NjQwNjAzNDQuMDUyOTc0LCJuYmYiOjE3NjQwNjAzNDQuMDUyOTc1LCJleHAiOjE3OTU1OTYzNDQuMDQzNjUyLCJzdWIiOiIxNjgiLCJzY29wZXMiOltdfQ.X9tS38uM-UlrpFlYZihD_kmuCcSX_hdGsRBJcNGfrWXAClMiqeTxNTC45Ftxw-ddmDQ59t5xJLlnWp2Rx57itO-IHclNmwnVJDPAh1l9D8CZBGxBSoN0FvmbWeYDNQnA7ud77YLekrcSAuKMdBX3J1UKq6ytvWwi6ChnuRFqcQ-fpzK-jgkMhGm-WFHw0H3a34afdBdSUUFutESlwMvTqmXILYVcIwaJpEAjamf3rn6wIOEoD8mbxXJ6Gb6QrRO72Kt3z62vJp7yOeMsnXUkfioVSyJVwbkbchCs2Y4YZY3FEREbKysKNdHJhhqmn6AXvx66arAK3HeZoyf5eusfk26alhbEdJqsJgFP5VROV5l57q8VKhH8hAxg-oeidCGGJXPjLGeb-5iGPjdGhQ1Ng1i9kt7VDV4icb8B2AbNC2Ie9xP6b0R11PX4jUd8D3Jogf2f0ZhAs5Is8WHcrxsCyk3lWvgOyzWxpRx2lSpmBRmSwksPrKJk_7JuzDZ1Tdpz6mubjV6DzlmqDJJjf32hBIMnaYOhOUz5k1FzZ8mybsSbnM9UjzHYr5xIf4rkmVAfuPnU2FGu8NtCQaOtt9G-TziBFgT3ZjxBCL9QaaC39BRulGE6tyCAT8NM9svTD_AbNyINUzO2M0R61OXYQfzXEeiui-sO6eYIc3x_z-YdFFQ" \
     --header "Content-Type: application/json" \
     --header "Accept: application/json"</code></pre></div>
@@ -10774,7 +13204,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 <div class="javascript-example">
     <pre><code class="language-javascript">const url = new URL(
-    "http://127.0.0.1:8000/api/v3/user/topics/omnis/edit"
+    "http://127.0.0.1:8000/api/v3/user/topics/sequi/edit"
 );
 
 const headers = {
@@ -10787,6 +13217,46 @@ fetch(url, {
     method: "GET",
     headers,
 }).then(response =&gt; response.json());</code></pre></div>
+
+
+<div class="jsonToDart-example">
+    <pre><code class="language-dart">
+class Edit {
+  final Data? data;
+  final bool? status;
+
+  Edit({this.data, this.status, });
+
+  factory Edit.fromJson(Map&lt;String, dynamic&gt; json) =&gt; Edit(
+    data: json['data'] != null ? Data.fromJson(json['data'] as Map&lt;String, dynamic&gt;) : null,
+    status: json['status'],
+  );
+
+  Map&lt;String, dynamic&gt; toJson() =&gt; {
+    'data': data?.toJson(),
+    'status': status,
+  };
+}
+
+class Data {
+  final int? id;
+  final String? topic_name;
+  final String? education_type;
+
+  Data({this.id, this.topic_name, this.education_type, });
+
+  factory Data.fromJson(Map&lt;String, dynamic&gt; json) =&gt; Data(
+    id: json['id'],
+    topic_name: json['topic_name'],
+    education_type: json['education_type'],
+  );
+
+  Map&lt;String, dynamic&gt; toJson() =&gt; {
+    'id': id,
+    'topic_name': topic_name,
+    'education_type': education_type,
+  };
+}</code></pre></div>
 
 </span>
 
@@ -10893,10 +13363,10 @@ You can check the Dev Tools console for debugging information.</code></pre>
  &nbsp;
                 <input type="text" style="display: none"
                               name="topic"                data-endpoint="GETapi-v3-user-topics--topic--edit"
-               value="omnis"
+               value="sequi"
                data-component="url">
     <br>
-<p>The topic. Example: <code>omnis</code></p>
+<p>The topic. Example: <code>sequi</code></p>
             </div>
                     <div style="padding-left: 28px; clear: unset;">
                 <b style="line-height: 2;"><code>id</code></b>&nbsp;&nbsp;
@@ -10957,6 +13427,26 @@ fetch(url, {
     headers,
     body: JSON.stringify(body),
 }).then(response =&gt; response.json());</code></pre></div>
+
+
+<div class="jsonToDart-example">
+    <pre><code class="language-dart">
+class 1 {
+  final String? message;
+  final bool? status;
+
+  1({this.message, this.status, });
+
+  factory 1.fromJson(Map&lt;String, dynamic&gt; json) =&gt; 1(
+    message: json['message'],
+    status: json['status'],
+  );
+
+  Map&lt;String, dynamic&gt; toJson() =&gt; {
+    'message': message,
+    'status': status,
+  };
+}</code></pre></div>
 
 </span>
 
@@ -11139,6 +13629,26 @@ fetch(url, {
     headers,
 }).then(response =&gt; response.json());</code></pre></div>
 
+
+<div class="jsonToDart-example">
+    <pre><code class="language-dart">
+class 1 {
+  final String? message;
+  final bool? status;
+
+  1({this.message, this.status, });
+
+  factory 1.fromJson(Map&lt;String, dynamic&gt; json) =&gt; 1(
+    message: json['message'],
+    status: json['status'],
+  );
+
+  Map&lt;String, dynamic&gt; toJson() =&gt; {
+    'message': message,
+    'status': status,
+  };
+}</code></pre></div>
+
 </span>
 
 <span id="example-responses-GETapi-v3-user-topics-delete--id-">
@@ -11292,6 +13802,20 @@ fetch(url, {
     method: "GET",
     headers,
 }).then(response =&gt; response.json());</code></pre></div>
+
+
+<div class="jsonToDart-example">
+    <pre><code class="language-dart">
+class Sovereign {
+
+  Sovereign({});
+
+  factory Sovereign.fromJson(Map&lt;String, dynamic&gt; json) =&gt; Sovereign(
+  );
+
+  Map&lt;String, dynamic&gt; toJson() =&gt; {
+  };
+}</code></pre></div>
 
 </span>
 
@@ -11497,7 +14021,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 <div class="bash-example">
     <pre><code class="language-bash">curl --request GET \
-    --get "http://127.0.0.1:8000/api/v3/user/becoming-sovereign/list-by-topics?sortby=dolor&amp;sorttype=omnis&amp;query=natus&amp;topic_id=11" \
+    --get "http://127.0.0.1:8000/api/v3/user/becoming-sovereign/list-by-topics?sortby=omnis&amp;sorttype=sed&amp;query=saepe&amp;topic_id=7" \
     --header "Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJhdWQiOiIxIiwianRpIjoiNTJkNDhkYzhjNTc4ODIwZWVmODFmY2NhOWJiMmJiODFlZGE1MTUwMTVkYmU5YzdkNzFkODAyYTRmZWNhMWQ5ZGJhYWEzMTc2YjI1OTJmMTgiLCJpYXQiOjE3NjQwNjAzNDQuMDUyOTc0LCJuYmYiOjE3NjQwNjAzNDQuMDUyOTc1LCJleHAiOjE3OTU1OTYzNDQuMDQzNjUyLCJzdWIiOiIxNjgiLCJzY29wZXMiOltdfQ.X9tS38uM-UlrpFlYZihD_kmuCcSX_hdGsRBJcNGfrWXAClMiqeTxNTC45Ftxw-ddmDQ59t5xJLlnWp2Rx57itO-IHclNmwnVJDPAh1l9D8CZBGxBSoN0FvmbWeYDNQnA7ud77YLekrcSAuKMdBX3J1UKq6ytvWwi6ChnuRFqcQ-fpzK-jgkMhGm-WFHw0H3a34afdBdSUUFutESlwMvTqmXILYVcIwaJpEAjamf3rn6wIOEoD8mbxXJ6Gb6QrRO72Kt3z62vJp7yOeMsnXUkfioVSyJVwbkbchCs2Y4YZY3FEREbKysKNdHJhhqmn6AXvx66arAK3HeZoyf5eusfk26alhbEdJqsJgFP5VROV5l57q8VKhH8hAxg-oeidCGGJXPjLGeb-5iGPjdGhQ1Ng1i9kt7VDV4icb8B2AbNC2Ie9xP6b0R11PX4jUd8D3Jogf2f0ZhAs5Is8WHcrxsCyk3lWvgOyzWxpRx2lSpmBRmSwksPrKJk_7JuzDZ1Tdpz6mubjV6DzlmqDJJjf32hBIMnaYOhOUz5k1FzZ8mybsSbnM9UjzHYr5xIf4rkmVAfuPnU2FGu8NtCQaOtt9G-TziBFgT3ZjxBCL9QaaC39BRulGE6tyCAT8NM9svTD_AbNyINUzO2M0R61OXYQfzXEeiui-sO6eYIc3x_z-YdFFQ" \
     --header "Content-Type: application/json" \
     --header "Accept: application/json"</code></pre></div>
@@ -11509,10 +14033,10 @@ You can check the Dev Tools console for debugging information.</code></pre>
 );
 
 const params = {
-    "sortby": "dolor",
-    "sorttype": "omnis",
-    "query": "natus",
-    "topic_id": "11",
+    "sortby": "omnis",
+    "sorttype": "sed",
+    "query": "saepe",
+    "topic_id": "7",
 };
 Object.keys(params)
     .forEach(key =&gt; url.searchParams.append(key, params[key]));
@@ -11527,6 +14051,93 @@ fetch(url, {
     method: "GET",
     headers,
 }).then(response =&gt; response.json());</code></pre></div>
+
+
+<div class="jsonToDart-example">
+    <pre><code class="language-dart">
+class Topics {
+  final String? message;
+  final List&lt;DataItem&gt;? data;
+  final Pagination? pagination;
+  final bool? status;
+
+  Topics({this.message, this.data, this.pagination, this.status, });
+
+  factory Topics.fromJson(Map&lt;String, dynamic&gt; json) =&gt; Topics(
+    message: json['message'],
+    data: (json['data'] as List&lt;dynamic&gt;?)?.map((e) =&gt; DataItem.fromJson(e as Map&lt;String, dynamic&gt;)).toList(),
+    pagination: json['pagination'] != null ? Pagination.fromJson(json['pagination'] as Map&lt;String, dynamic&gt;) : null,
+    status: json['status'],
+  );
+
+  Map&lt;String, dynamic&gt; toJson() =&gt; {
+    'message': message,
+    'data': data?.map((e) =&gt; e.toJson()).toList(),
+    'pagination': pagination?.toJson(),
+    'status': status,
+  };
+}
+
+class Pagination {
+  final int? total;
+  final int? per_page;
+  final int? current_page;
+  final int? last_page;
+
+  Pagination({this.total, this.per_page, this.current_page, this.last_page, });
+
+  factory Pagination.fromJson(Map&lt;String, dynamic&gt; json) =&gt; Pagination(
+    total: json['total'],
+    per_page: json['per_page'],
+    current_page: json['current_page'],
+    last_page: json['last_page'],
+  );
+
+  Map&lt;String, dynamic&gt; toJson() =&gt; {
+    'total': total,
+    'per_page': per_page,
+    'current_page': current_page,
+    'last_page': last_page,
+  };
+}
+
+class DataItem {
+  final int? id;
+  final int? user_id;
+  final String? file_name;
+  final String? file_extension;
+  final int? topic_id;
+  final String? type;
+  final String? file;
+  final String? created_at;
+  final String? updated_at;
+
+  DataItem({this.id, this.user_id, this.file_name, this.file_extension, this.topic_id, this.type, this.file, this.created_at, this.updated_at, });
+
+  factory DataItem.fromJson(Map&lt;String, dynamic&gt; json) =&gt; DataItem(
+    id: json['id'],
+    user_id: json['user_id'],
+    file_name: json['file_name'],
+    file_extension: json['file_extension'],
+    topic_id: json['topic_id'],
+    type: json['type'],
+    file: json['file'],
+    created_at: json['created_at'],
+    updated_at: json['updated_at'],
+  );
+
+  Map&lt;String, dynamic&gt; toJson() =&gt; {
+    'id': id,
+    'user_id': user_id,
+    'file_name': file_name,
+    'file_extension': file_extension,
+    'topic_id': topic_id,
+    'type': type,
+    'file': file,
+    'created_at': created_at,
+    'updated_at': updated_at,
+  };
+}</code></pre></div>
 
 </span>
 
@@ -11648,10 +14259,10 @@ You can check the Dev Tools console for debugging information.</code></pre>
 <i>optional</i> &nbsp;
                 <input type="text" style="display: none"
                               name="sortby"                data-endpoint="GETapi-v3-user-becoming-sovereign-list-by-topics"
-               value="dolor"
+               value="omnis"
                data-component="query">
     <br>
-<p>The column to sort by (optional, default: id). Example: <code>dolor</code></p>
+<p>The column to sort by (optional, default: id). Example: <code>omnis</code></p>
             </div>
                                     <div style="padding-left: 28px; clear: unset;">
                 <b style="line-height: 2;"><code>sorttype</code></b>&nbsp;&nbsp;
@@ -11659,10 +14270,10 @@ You can check the Dev Tools console for debugging information.</code></pre>
 <i>optional</i> &nbsp;
                 <input type="text" style="display: none"
                               name="sorttype"                data-endpoint="GETapi-v3-user-becoming-sovereign-list-by-topics"
-               value="omnis"
+               value="sed"
                data-component="query">
     <br>
-<p>The sort direction, either 'asc' or 'desc' (optional, default: 'asc'). Example: <code>omnis</code></p>
+<p>The sort direction, either 'asc' or 'desc' (optional, default: 'asc'). Example: <code>sed</code></p>
             </div>
                                     <div style="padding-left: 28px; clear: unset;">
                 <b style="line-height: 2;"><code>query</code></b>&nbsp;&nbsp;
@@ -11670,10 +14281,10 @@ You can check the Dev Tools console for debugging information.</code></pre>
 <i>optional</i> &nbsp;
                 <input type="text" style="display: none"
                               name="query"                data-endpoint="GETapi-v3-user-becoming-sovereign-list-by-topics"
-               value="natus"
+               value="saepe"
                data-component="query">
     <br>
-<p>The search query to filter files by ID, file name, or file extension (optional). Example: <code>natus</code></p>
+<p>The search query to filter files by ID, file name, or file extension (optional). Example: <code>saepe</code></p>
             </div>
                                     <div style="padding-left: 28px; clear: unset;">
                 <b style="line-height: 2;"><code>topic_id</code></b>&nbsp;&nbsp;
@@ -11681,10 +14292,10 @@ You can check the Dev Tools console for debugging information.</code></pre>
 <i>optional</i> &nbsp;
                 <input type="number" style="display: none"
                step="any"               name="topic_id"                data-endpoint="GETapi-v3-user-becoming-sovereign-list-by-topics"
-               value="11"
+               value="7"
                data-component="query">
     <br>
-<p>The ID of the topic to filter files by (optional). Example: <code>11</code></p>
+<p>The ID of the topic to filter files by (optional). Example: <code>7</code></p>
             </div>
                 </form>
 
@@ -11723,6 +14334,52 @@ fetch(url, {
     method: "GET",
     headers,
 }).then(response =&gt; response.json());</code></pre></div>
+
+
+<div class="jsonToDart-example">
+    <pre><code class="language-dart">
+class Topics {
+  final List&lt;DataItem&gt;? data;
+  final bool? status;
+
+  Topics({this.data, this.status, });
+
+  factory Topics.fromJson(Map&lt;String, dynamic&gt; json) =&gt; Topics(
+    data: (json['data'] as List&lt;dynamic&gt;?)?.map((e) =&gt; DataItem.fromJson(e as Map&lt;String, dynamic&gt;)).toList(),
+    status: json['status'],
+  );
+
+  Map&lt;String, dynamic&gt; toJson() =&gt; {
+    'data': data?.map((e) =&gt; e.toJson()).toList(),
+    'status': status,
+  };
+}
+
+class DataItem {
+  final int? id;
+  final String? topic_name;
+  final String? education_type;
+  final String? created_at;
+  final String? updated_at;
+
+  DataItem({this.id, this.topic_name, this.education_type, this.created_at, this.updated_at, });
+
+  factory DataItem.fromJson(Map&lt;String, dynamic&gt; json) =&gt; DataItem(
+    id: json['id'],
+    topic_name: json['topic_name'],
+    education_type: json['education_type'],
+    created_at: json['created_at'],
+    updated_at: json['updated_at'],
+  );
+
+  Map&lt;String, dynamic&gt; toJson() =&gt; {
+    'id': id,
+    'topic_name': topic_name,
+    'education_type': education_type,
+    'created_at': created_at,
+    'updated_at': updated_at,
+  };
+}</code></pre></div>
 
 </span>
 
@@ -11857,7 +14514,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
     --header "Content-Type: multipart/form-data" \
     --header "Accept: application/json" \
     --form "topic_id=0"\
-    --form "file=@/private/var/folders/wy/1yz2w5p91q13336262xr4yzw0000gn/T/php5TPaUk" </code></pre></div>
+    --form "file=@/private/var/folders/wy/1yz2w5p91q13336262xr4yzw0000gn/T/phphZ68vD" </code></pre></div>
 
 
 <div class="javascript-example">
@@ -11880,6 +14537,67 @@ fetch(url, {
     headers,
     body,
 }).then(response =&gt; response.json());</code></pre></div>
+
+
+<div class="jsonToDart-example">
+    <pre><code class="language-dart">
+class Store {
+  final String? message;
+  final Data? data;
+  final bool? status;
+
+  Store({this.message, this.data, this.status, });
+
+  factory Store.fromJson(Map&lt;String, dynamic&gt; json) =&gt; Store(
+    message: json['message'],
+    data: json['data'] != null ? Data.fromJson(json['data'] as Map&lt;String, dynamic&gt;) : null,
+    status: json['status'],
+  );
+
+  Map&lt;String, dynamic&gt; toJson() =&gt; {
+    'message': message,
+    'data': data?.toJson(),
+    'status': status,
+  };
+}
+
+class Data {
+  final int? user_id;
+  final String? file_name;
+  final String? file_extension;
+  final String? topic_id;
+  final String? type;
+  final String? file;
+  final String? updated_at;
+  final String? created_at;
+  final int? id;
+
+  Data({this.user_id, this.file_name, this.file_extension, this.topic_id, this.type, this.file, this.updated_at, this.created_at, this.id, });
+
+  factory Data.fromJson(Map&lt;String, dynamic&gt; json) =&gt; Data(
+    user_id: json['user_id'],
+    file_name: json['file_name'],
+    file_extension: json['file_extension'],
+    topic_id: json['topic_id'],
+    type: json['type'],
+    file: json['file'],
+    updated_at: json['updated_at'],
+    created_at: json['created_at'],
+    id: json['id'],
+  );
+
+  Map&lt;String, dynamic&gt; toJson() =&gt; {
+    'user_id': user_id,
+    'file_name': file_name,
+    'file_extension': file_extension,
+    'topic_id': topic_id,
+    'type': type,
+    'file': file,
+    'updated_at': updated_at,
+    'created_at': created_at,
+    'id': id,
+  };
+}</code></pre></div>
 
 </span>
 
@@ -12024,7 +14742,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
                value=""
                data-component="body">
     <br>
-<p>The file to upload. Example: <code>/private/var/folders/wy/1yz2w5p91q13336262xr4yzw0000gn/T/php5TPaUk</code></p>
+<p>The file to upload. Example: <code>/private/var/folders/wy/1yz2w5p91q13336262xr4yzw0000gn/T/phphZ68vD</code></p>
         </div>
                 <div style=" padding-left: 28px;  clear: unset;">
             <b style="line-height: 2;"><code>topic_id</code></b>&nbsp;&nbsp;
@@ -12053,7 +14771,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 <div class="bash-example">
     <pre><code class="language-bash">curl --request GET \
-    --get "http://127.0.0.1:8000/api/v3/user/becoming-sovereign/view/1?topic=18" \
+    --get "http://127.0.0.1:8000/api/v3/user/becoming-sovereign/view/1?topic=16" \
     --header "Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJhdWQiOiIxIiwianRpIjoiNTJkNDhkYzhjNTc4ODIwZWVmODFmY2NhOWJiMmJiODFlZGE1MTUwMTVkYmU5YzdkNzFkODAyYTRmZWNhMWQ5ZGJhYWEzMTc2YjI1OTJmMTgiLCJpYXQiOjE3NjQwNjAzNDQuMDUyOTc0LCJuYmYiOjE3NjQwNjAzNDQuMDUyOTc1LCJleHAiOjE3OTU1OTYzNDQuMDQzNjUyLCJzdWIiOiIxNjgiLCJzY29wZXMiOltdfQ.X9tS38uM-UlrpFlYZihD_kmuCcSX_hdGsRBJcNGfrWXAClMiqeTxNTC45Ftxw-ddmDQ59t5xJLlnWp2Rx57itO-IHclNmwnVJDPAh1l9D8CZBGxBSoN0FvmbWeYDNQnA7ud77YLekrcSAuKMdBX3J1UKq6ytvWwi6ChnuRFqcQ-fpzK-jgkMhGm-WFHw0H3a34afdBdSUUFutESlwMvTqmXILYVcIwaJpEAjamf3rn6wIOEoD8mbxXJ6Gb6QrRO72Kt3z62vJp7yOeMsnXUkfioVSyJVwbkbchCs2Y4YZY3FEREbKysKNdHJhhqmn6AXvx66arAK3HeZoyf5eusfk26alhbEdJqsJgFP5VROV5l57q8VKhH8hAxg-oeidCGGJXPjLGeb-5iGPjdGhQ1Ng1i9kt7VDV4icb8B2AbNC2Ie9xP6b0R11PX4jUd8D3Jogf2f0ZhAs5Is8WHcrxsCyk3lWvgOyzWxpRx2lSpmBRmSwksPrKJk_7JuzDZ1Tdpz6mubjV6DzlmqDJJjf32hBIMnaYOhOUz5k1FzZ8mybsSbnM9UjzHYr5xIf4rkmVAfuPnU2FGu8NtCQaOtt9G-TziBFgT3ZjxBCL9QaaC39BRulGE6tyCAT8NM9svTD_AbNyINUzO2M0R61OXYQfzXEeiui-sO6eYIc3x_z-YdFFQ" \
     --header "Content-Type: application/json" \
     --header "Accept: application/json"</code></pre></div>
@@ -12065,7 +14783,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 );
 
 const params = {
-    "topic": "18",
+    "topic": "16",
 };
 Object.keys(params)
     .forEach(key =&gt; url.searchParams.append(key, params[key]));
@@ -12080,6 +14798,70 @@ fetch(url, {
     method: "GET",
     headers,
 }).then(response =&gt; response.json());</code></pre></div>
+
+
+<div class="jsonToDart-example">
+    <pre><code class="language-dart">
+class 1 {
+  final String? message;
+  final Data? data;
+  final String? new_topic;
+  final bool? status;
+
+  1({this.message, this.data, this.new_topic, this.status, });
+
+  factory 1.fromJson(Map&lt;String, dynamic&gt; json) =&gt; 1(
+    message: json['message'],
+    data: json['data'] != null ? Data.fromJson(json['data'] as Map&lt;String, dynamic&gt;) : null,
+    new_topic: json['new_topic'],
+    status: json['status'],
+  );
+
+  Map&lt;String, dynamic&gt; toJson() =&gt; {
+    'message': message,
+    'data': data?.toJson(),
+    'new_topic': new_topic,
+    'status': status,
+  };
+}
+
+class Data {
+  final int? id;
+  final int? user_id;
+  final String? file_name;
+  final String? file_extension;
+  final int? topic_id;
+  final String? type;
+  final String? file;
+  final String? created_at;
+  final String? updated_at;
+
+  Data({this.id, this.user_id, this.file_name, this.file_extension, this.topic_id, this.type, this.file, this.created_at, this.updated_at, });
+
+  factory Data.fromJson(Map&lt;String, dynamic&gt; json) =&gt; Data(
+    id: json['id'],
+    user_id: json['user_id'],
+    file_name: json['file_name'],
+    file_extension: json['file_extension'],
+    topic_id: json['topic_id'],
+    type: json['type'],
+    file: json['file'],
+    created_at: json['created_at'],
+    updated_at: json['updated_at'],
+  );
+
+  Map&lt;String, dynamic&gt; toJson() =&gt; {
+    'id': id,
+    'user_id': user_id,
+    'file_name': file_name,
+    'file_extension': file_extension,
+    'topic_id': topic_id,
+    'type': type,
+    'file': file,
+    'created_at': created_at,
+    'updated_at': updated_at,
+  };
+}</code></pre></div>
 
 </span>
 
@@ -12216,10 +14998,10 @@ You can check the Dev Tools console for debugging information.</code></pre>
 <i>optional</i> &nbsp;
                 <input type="number" style="display: none"
                step="any"               name="topic"                data-endpoint="GETapi-v3-user-becoming-sovereign-view--id-"
-               value="18"
+               value="16"
                data-component="query">
     <br>
-<p>The ID of the topic to filter by (optional). Example: <code>18</code></p>
+<p>The ID of the topic to filter by (optional). Example: <code>16</code></p>
             </div>
                 </form>
 
@@ -12237,17 +15019,17 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 <div class="bash-example">
     <pre><code class="language-bash">curl --request POST \
-    "http://127.0.0.1:8000/api/v3/user/becoming-sovereign/update/consectetur" \
+    "http://127.0.0.1:8000/api/v3/user/becoming-sovereign/update/rerum" \
     --header "Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJhdWQiOiIxIiwianRpIjoiNTJkNDhkYzhjNTc4ODIwZWVmODFmY2NhOWJiMmJiODFlZGE1MTUwMTVkYmU5YzdkNzFkODAyYTRmZWNhMWQ5ZGJhYWEzMTc2YjI1OTJmMTgiLCJpYXQiOjE3NjQwNjAzNDQuMDUyOTc0LCJuYmYiOjE3NjQwNjAzNDQuMDUyOTc1LCJleHAiOjE3OTU1OTYzNDQuMDQzNjUyLCJzdWIiOiIxNjgiLCJzY29wZXMiOltdfQ.X9tS38uM-UlrpFlYZihD_kmuCcSX_hdGsRBJcNGfrWXAClMiqeTxNTC45Ftxw-ddmDQ59t5xJLlnWp2Rx57itO-IHclNmwnVJDPAh1l9D8CZBGxBSoN0FvmbWeYDNQnA7ud77YLekrcSAuKMdBX3J1UKq6ytvWwi6ChnuRFqcQ-fpzK-jgkMhGm-WFHw0H3a34afdBdSUUFutESlwMvTqmXILYVcIwaJpEAjamf3rn6wIOEoD8mbxXJ6Gb6QrRO72Kt3z62vJp7yOeMsnXUkfioVSyJVwbkbchCs2Y4YZY3FEREbKysKNdHJhhqmn6AXvx66arAK3HeZoyf5eusfk26alhbEdJqsJgFP5VROV5l57q8VKhH8hAxg-oeidCGGJXPjLGeb-5iGPjdGhQ1Ng1i9kt7VDV4icb8B2AbNC2Ie9xP6b0R11PX4jUd8D3Jogf2f0ZhAs5Is8WHcrxsCyk3lWvgOyzWxpRx2lSpmBRmSwksPrKJk_7JuzDZ1Tdpz6mubjV6DzlmqDJJjf32hBIMnaYOhOUz5k1FzZ8mybsSbnM9UjzHYr5xIf4rkmVAfuPnU2FGu8NtCQaOtt9G-TziBFgT3ZjxBCL9QaaC39BRulGE6tyCAT8NM9svTD_AbNyINUzO2M0R61OXYQfzXEeiui-sO6eYIc3x_z-YdFFQ" \
     --header "Content-Type: multipart/form-data" \
     --header "Accept: application/json" \
     --form "topic_id=1"\
-    --form "file=@/private/var/folders/wy/1yz2w5p91q13336262xr4yzw0000gn/T/phpOSmSed" </code></pre></div>
+    --form "file=@/private/var/folders/wy/1yz2w5p91q13336262xr4yzw0000gn/T/phpUr9yu0" </code></pre></div>
 
 
 <div class="javascript-example">
     <pre><code class="language-javascript">const url = new URL(
-    "http://127.0.0.1:8000/api/v3/user/becoming-sovereign/update/consectetur"
+    "http://127.0.0.1:8000/api/v3/user/becoming-sovereign/update/rerum"
 );
 
 const headers = {
@@ -12265,6 +15047,58 @@ fetch(url, {
     headers,
     body,
 }).then(response =&gt; response.json());</code></pre></div>
+
+
+<div class="jsonToDart-example">
+    <pre><code class="language-dart">
+class Rerum {
+  final String? message;
+  final Data? data;
+  final bool? status;
+
+  Rerum({this.message, this.data, this.status, });
+
+  factory Rerum.fromJson(Map&lt;String, dynamic&gt; json) =&gt; Rerum(
+    message: json['message'],
+    data: json['data'] != null ? Data.fromJson(json['data'] as Map&lt;String, dynamic&gt;) : null,
+    status: json['status'],
+  );
+
+  Map&lt;String, dynamic&gt; toJson() =&gt; {
+    'message': message,
+    'data': data?.toJson(),
+    'status': status,
+  };
+}
+
+class Data {
+  final int? id;
+  final String? file_name;
+  final String? file_extension;
+  final int? topic_id;
+  final int? user_id;
+  final String? file;
+
+  Data({this.id, this.file_name, this.file_extension, this.topic_id, this.user_id, this.file, });
+
+  factory Data.fromJson(Map&lt;String, dynamic&gt; json) =&gt; Data(
+    id: json['id'],
+    file_name: json['file_name'],
+    file_extension: json['file_extension'],
+    topic_id: json['topic_id'],
+    user_id: json['user_id'],
+    file: json['file'],
+  );
+
+  Map&lt;String, dynamic&gt; toJson() =&gt; {
+    'id': id,
+    'file_name': file_name,
+    'file_extension': file_extension,
+    'topic_id': topic_id,
+    'user_id': user_id,
+    'file': file,
+  };
+}</code></pre></div>
 
 </span>
 
@@ -12410,10 +15244,10 @@ You can check the Dev Tools console for debugging information.</code></pre>
  &nbsp;
                 <input type="text" style="display: none"
                               name="id"                data-endpoint="POSTapi-v3-user-becoming-sovereign-update--id-"
-               value="consectetur"
+               value="rerum"
                data-component="url">
     <br>
-<p>The ID of the update. Example: <code>consectetur</code></p>
+<p>The ID of the update. Example: <code>rerum</code></p>
             </div>
                             <h4 class="fancy-heading-panel"><b>Body Parameters</b></h4>
         <div style=" padding-left: 28px;  clear: unset;">
@@ -12425,7 +15259,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
                value=""
                data-component="body">
     <br>
-<p>The new file to replace the existing one (optional). Example: <code>/private/var/folders/wy/1yz2w5p91q13336262xr4yzw0000gn/T/phpOSmSed</code></p>
+<p>The new file to replace the existing one (optional). Example: <code>/private/var/folders/wy/1yz2w5p91q13336262xr4yzw0000gn/T/phpUr9yu0</code></p>
         </div>
                 <div style=" padding-left: 28px;  clear: unset;">
             <b style="line-height: 2;"><code>topic_id</code></b>&nbsp;&nbsp;
@@ -12475,6 +15309,26 @@ fetch(url, {
     method: "GET",
     headers,
 }).then(response =&gt; response.json());</code></pre></div>
+
+
+<div class="jsonToDart-example">
+    <pre><code class="language-dart">
+class 1 {
+  final String? message;
+  final bool? status;
+
+  1({this.message, this.status, });
+
+  factory 1.fromJson(Map&lt;String, dynamic&gt; json) =&gt; 1(
+    message: json['message'],
+    status: json['status'],
+  );
+
+  Map&lt;String, dynamic&gt; toJson() =&gt; {
+    'message': message,
+    'status': status,
+  };
+}</code></pre></div>
 
 </span>
 
@@ -12618,7 +15472,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 <div class="bash-example">
     <pre><code class="language-bash">curl --request GET \
-    --get "http://127.0.0.1:8000/api/v3/user/becoming-sovereign/download/iusto" \
+    --get "http://127.0.0.1:8000/api/v3/user/becoming-sovereign/download/ut" \
     --header "Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJhdWQiOiIxIiwianRpIjoiNTJkNDhkYzhjNTc4ODIwZWVmODFmY2NhOWJiMmJiODFlZGE1MTUwMTVkYmU5YzdkNzFkODAyYTRmZWNhMWQ5ZGJhYWEzMTc2YjI1OTJmMTgiLCJpYXQiOjE3NjQwNjAzNDQuMDUyOTc0LCJuYmYiOjE3NjQwNjAzNDQuMDUyOTc1LCJleHAiOjE3OTU1OTYzNDQuMDQzNjUyLCJzdWIiOiIxNjgiLCJzY29wZXMiOltdfQ.X9tS38uM-UlrpFlYZihD_kmuCcSX_hdGsRBJcNGfrWXAClMiqeTxNTC45Ftxw-ddmDQ59t5xJLlnWp2Rx57itO-IHclNmwnVJDPAh1l9D8CZBGxBSoN0FvmbWeYDNQnA7ud77YLekrcSAuKMdBX3J1UKq6ytvWwi6ChnuRFqcQ-fpzK-jgkMhGm-WFHw0H3a34afdBdSUUFutESlwMvTqmXILYVcIwaJpEAjamf3rn6wIOEoD8mbxXJ6Gb6QrRO72Kt3z62vJp7yOeMsnXUkfioVSyJVwbkbchCs2Y4YZY3FEREbKysKNdHJhhqmn6AXvx66arAK3HeZoyf5eusfk26alhbEdJqsJgFP5VROV5l57q8VKhH8hAxg-oeidCGGJXPjLGeb-5iGPjdGhQ1Ng1i9kt7VDV4icb8B2AbNC2Ie9xP6b0R11PX4jUd8D3Jogf2f0ZhAs5Is8WHcrxsCyk3lWvgOyzWxpRx2lSpmBRmSwksPrKJk_7JuzDZ1Tdpz6mubjV6DzlmqDJJjf32hBIMnaYOhOUz5k1FzZ8mybsSbnM9UjzHYr5xIf4rkmVAfuPnU2FGu8NtCQaOtt9G-TziBFgT3ZjxBCL9QaaC39BRulGE6tyCAT8NM9svTD_AbNyINUzO2M0R61OXYQfzXEeiui-sO6eYIc3x_z-YdFFQ" \
     --header "Content-Type: application/json" \
     --header "Accept: application/json"</code></pre></div>
@@ -12626,7 +15480,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 <div class="javascript-example">
     <pre><code class="language-javascript">const url = new URL(
-    "http://127.0.0.1:8000/api/v3/user/becoming-sovereign/download/iusto"
+    "http://127.0.0.1:8000/api/v3/user/becoming-sovereign/download/ut"
 );
 
 const headers = {
@@ -12639,6 +15493,26 @@ fetch(url, {
     method: "GET",
     headers,
 }).then(response =&gt; response.json());</code></pre></div>
+
+
+<div class="jsonToDart-example">
+    <pre><code class="language-dart">
+class Ut {
+  final String? message;
+  final bool? status;
+
+  Ut({this.message, this.status, });
+
+  factory Ut.fromJson(Map&lt;String, dynamic&gt; json) =&gt; Ut(
+    message: json['message'],
+    status: json['status'],
+  );
+
+  Map&lt;String, dynamic&gt; toJson() =&gt; {
+    'message': message,
+    'status': status,
+  };
+}</code></pre></div>
 
 </span>
 
@@ -12758,10 +15632,10 @@ You can check the Dev Tools console for debugging information.</code></pre>
  &nbsp;
                 <input type="text" style="display: none"
                               name="file"                data-endpoint="GETapi-v3-user-becoming-sovereign-download--file-"
-               value="iusto"
+               value="ut"
                data-component="url">
     <br>
-<p>Example: <code>iusto</code></p>
+<p>Example: <code>ut</code></p>
             </div>
                     </form>
 
@@ -12810,6 +15684,20 @@ fetch(url, {
     method: "GET",
     headers,
 }).then(response =&gt; response.json());</code></pre></div>
+
+
+<div class="jsonToDart-example">
+    <pre><code class="language-dart">
+class Like {
+
+  Like({});
+
+  factory Like.fromJson(Map&lt;String, dynamic&gt; json) =&gt; Like(
+  );
+
+  Map&lt;String, dynamic&gt; toJson() =&gt; {
+  };
+}</code></pre></div>
 
 </span>
 
@@ -13015,7 +15903,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 <div class="bash-example">
     <pre><code class="language-bash">curl --request GET \
-    --get "http://127.0.0.1:8000/api/v3/user/becoming-christ-like/list-by-topics?sortby=est&amp;sorttype=omnis&amp;query=mollitia&amp;topic_id=6" \
+    --get "http://127.0.0.1:8000/api/v3/user/becoming-christ-like/list-by-topics?sortby=placeat&amp;sorttype=nesciunt&amp;query=itaque&amp;topic_id=19" \
     --header "Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJhdWQiOiIxIiwianRpIjoiNTJkNDhkYzhjNTc4ODIwZWVmODFmY2NhOWJiMmJiODFlZGE1MTUwMTVkYmU5YzdkNzFkODAyYTRmZWNhMWQ5ZGJhYWEzMTc2YjI1OTJmMTgiLCJpYXQiOjE3NjQwNjAzNDQuMDUyOTc0LCJuYmYiOjE3NjQwNjAzNDQuMDUyOTc1LCJleHAiOjE3OTU1OTYzNDQuMDQzNjUyLCJzdWIiOiIxNjgiLCJzY29wZXMiOltdfQ.X9tS38uM-UlrpFlYZihD_kmuCcSX_hdGsRBJcNGfrWXAClMiqeTxNTC45Ftxw-ddmDQ59t5xJLlnWp2Rx57itO-IHclNmwnVJDPAh1l9D8CZBGxBSoN0FvmbWeYDNQnA7ud77YLekrcSAuKMdBX3J1UKq6ytvWwi6ChnuRFqcQ-fpzK-jgkMhGm-WFHw0H3a34afdBdSUUFutESlwMvTqmXILYVcIwaJpEAjamf3rn6wIOEoD8mbxXJ6Gb6QrRO72Kt3z62vJp7yOeMsnXUkfioVSyJVwbkbchCs2Y4YZY3FEREbKysKNdHJhhqmn6AXvx66arAK3HeZoyf5eusfk26alhbEdJqsJgFP5VROV5l57q8VKhH8hAxg-oeidCGGJXPjLGeb-5iGPjdGhQ1Ng1i9kt7VDV4icb8B2AbNC2Ie9xP6b0R11PX4jUd8D3Jogf2f0ZhAs5Is8WHcrxsCyk3lWvgOyzWxpRx2lSpmBRmSwksPrKJk_7JuzDZ1Tdpz6mubjV6DzlmqDJJjf32hBIMnaYOhOUz5k1FzZ8mybsSbnM9UjzHYr5xIf4rkmVAfuPnU2FGu8NtCQaOtt9G-TziBFgT3ZjxBCL9QaaC39BRulGE6tyCAT8NM9svTD_AbNyINUzO2M0R61OXYQfzXEeiui-sO6eYIc3x_z-YdFFQ" \
     --header "Content-Type: application/json" \
     --header "Accept: application/json"</code></pre></div>
@@ -13027,10 +15915,10 @@ You can check the Dev Tools console for debugging information.</code></pre>
 );
 
 const params = {
-    "sortby": "est",
-    "sorttype": "omnis",
-    "query": "mollitia",
-    "topic_id": "6",
+    "sortby": "placeat",
+    "sorttype": "nesciunt",
+    "query": "itaque",
+    "topic_id": "19",
 };
 Object.keys(params)
     .forEach(key =&gt; url.searchParams.append(key, params[key]));
@@ -13045,6 +15933,93 @@ fetch(url, {
     method: "GET",
     headers,
 }).then(response =&gt; response.json());</code></pre></div>
+
+
+<div class="jsonToDart-example">
+    <pre><code class="language-dart">
+class Topics {
+  final String? message;
+  final List&lt;DataItem&gt;? data;
+  final Pagination? pagination;
+  final bool? status;
+
+  Topics({this.message, this.data, this.pagination, this.status, });
+
+  factory Topics.fromJson(Map&lt;String, dynamic&gt; json) =&gt; Topics(
+    message: json['message'],
+    data: (json['data'] as List&lt;dynamic&gt;?)?.map((e) =&gt; DataItem.fromJson(e as Map&lt;String, dynamic&gt;)).toList(),
+    pagination: json['pagination'] != null ? Pagination.fromJson(json['pagination'] as Map&lt;String, dynamic&gt;) : null,
+    status: json['status'],
+  );
+
+  Map&lt;String, dynamic&gt; toJson() =&gt; {
+    'message': message,
+    'data': data?.map((e) =&gt; e.toJson()).toList(),
+    'pagination': pagination?.toJson(),
+    'status': status,
+  };
+}
+
+class Pagination {
+  final int? total;
+  final int? per_page;
+  final int? current_page;
+  final int? last_page;
+
+  Pagination({this.total, this.per_page, this.current_page, this.last_page, });
+
+  factory Pagination.fromJson(Map&lt;String, dynamic&gt; json) =&gt; Pagination(
+    total: json['total'],
+    per_page: json['per_page'],
+    current_page: json['current_page'],
+    last_page: json['last_page'],
+  );
+
+  Map&lt;String, dynamic&gt; toJson() =&gt; {
+    'total': total,
+    'per_page': per_page,
+    'current_page': current_page,
+    'last_page': last_page,
+  };
+}
+
+class DataItem {
+  final int? id;
+  final int? user_id;
+  final String? file_name;
+  final String? file_extension;
+  final int? topic_id;
+  final String? type;
+  final String? file;
+  final String? created_at;
+  final String? updated_at;
+
+  DataItem({this.id, this.user_id, this.file_name, this.file_extension, this.topic_id, this.type, this.file, this.created_at, this.updated_at, });
+
+  factory DataItem.fromJson(Map&lt;String, dynamic&gt; json) =&gt; DataItem(
+    id: json['id'],
+    user_id: json['user_id'],
+    file_name: json['file_name'],
+    file_extension: json['file_extension'],
+    topic_id: json['topic_id'],
+    type: json['type'],
+    file: json['file'],
+    created_at: json['created_at'],
+    updated_at: json['updated_at'],
+  );
+
+  Map&lt;String, dynamic&gt; toJson() =&gt; {
+    'id': id,
+    'user_id': user_id,
+    'file_name': file_name,
+    'file_extension': file_extension,
+    'topic_id': topic_id,
+    'type': type,
+    'file': file,
+    'created_at': created_at,
+    'updated_at': updated_at,
+  };
+}</code></pre></div>
 
 </span>
 
@@ -13166,10 +16141,10 @@ You can check the Dev Tools console for debugging information.</code></pre>
 <i>optional</i> &nbsp;
                 <input type="text" style="display: none"
                               name="sortby"                data-endpoint="GETapi-v3-user-becoming-christ-like-list-by-topics"
-               value="est"
+               value="placeat"
                data-component="query">
     <br>
-<p>The column to sort by (optional, default: id). Example: <code>est</code></p>
+<p>The column to sort by (optional, default: id). Example: <code>placeat</code></p>
             </div>
                                     <div style="padding-left: 28px; clear: unset;">
                 <b style="line-height: 2;"><code>sorttype</code></b>&nbsp;&nbsp;
@@ -13177,10 +16152,10 @@ You can check the Dev Tools console for debugging information.</code></pre>
 <i>optional</i> &nbsp;
                 <input type="text" style="display: none"
                               name="sorttype"                data-endpoint="GETapi-v3-user-becoming-christ-like-list-by-topics"
-               value="omnis"
+               value="nesciunt"
                data-component="query">
     <br>
-<p>The sort direction, either 'asc' or 'desc' (optional, default: 'asc'). Example: <code>omnis</code></p>
+<p>The sort direction, either 'asc' or 'desc' (optional, default: 'asc'). Example: <code>nesciunt</code></p>
             </div>
                                     <div style="padding-left: 28px; clear: unset;">
                 <b style="line-height: 2;"><code>query</code></b>&nbsp;&nbsp;
@@ -13188,10 +16163,10 @@ You can check the Dev Tools console for debugging information.</code></pre>
 <i>optional</i> &nbsp;
                 <input type="text" style="display: none"
                               name="query"                data-endpoint="GETapi-v3-user-becoming-christ-like-list-by-topics"
-               value="mollitia"
+               value="itaque"
                data-component="query">
     <br>
-<p>The search query to filter files by ID, file name, or file extension (optional). Example: <code>mollitia</code></p>
+<p>The search query to filter files by ID, file name, or file extension (optional). Example: <code>itaque</code></p>
             </div>
                                     <div style="padding-left: 28px; clear: unset;">
                 <b style="line-height: 2;"><code>topic_id</code></b>&nbsp;&nbsp;
@@ -13199,10 +16174,10 @@ You can check the Dev Tools console for debugging information.</code></pre>
 <i>optional</i> &nbsp;
                 <input type="number" style="display: none"
                step="any"               name="topic_id"                data-endpoint="GETapi-v3-user-becoming-christ-like-list-by-topics"
-               value="6"
+               value="19"
                data-component="query">
     <br>
-<p>The ID of the topic to filter files by (optional). Example: <code>6</code></p>
+<p>The ID of the topic to filter files by (optional). Example: <code>19</code></p>
             </div>
                 </form>
 
@@ -13241,6 +16216,52 @@ fetch(url, {
     method: "GET",
     headers,
 }).then(response =&gt; response.json());</code></pre></div>
+
+
+<div class="jsonToDart-example">
+    <pre><code class="language-dart">
+class Topics {
+  final List&lt;DataItem&gt;? data;
+  final bool? status;
+
+  Topics({this.data, this.status, });
+
+  factory Topics.fromJson(Map&lt;String, dynamic&gt; json) =&gt; Topics(
+    data: (json['data'] as List&lt;dynamic&gt;?)?.map((e) =&gt; DataItem.fromJson(e as Map&lt;String, dynamic&gt;)).toList(),
+    status: json['status'],
+  );
+
+  Map&lt;String, dynamic&gt; toJson() =&gt; {
+    'data': data?.map((e) =&gt; e.toJson()).toList(),
+    'status': status,
+  };
+}
+
+class DataItem {
+  final int? id;
+  final String? topic_name;
+  final String? education_type;
+  final String? created_at;
+  final String? updated_at;
+
+  DataItem({this.id, this.topic_name, this.education_type, this.created_at, this.updated_at, });
+
+  factory DataItem.fromJson(Map&lt;String, dynamic&gt; json) =&gt; DataItem(
+    id: json['id'],
+    topic_name: json['topic_name'],
+    education_type: json['education_type'],
+    created_at: json['created_at'],
+    updated_at: json['updated_at'],
+  );
+
+  Map&lt;String, dynamic&gt; toJson() =&gt; {
+    'id': id,
+    'topic_name': topic_name,
+    'education_type': education_type,
+    'created_at': created_at,
+    'updated_at': updated_at,
+  };
+}</code></pre></div>
 
 </span>
 
@@ -13375,7 +16396,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
     --header "Content-Type: multipart/form-data" \
     --header "Accept: application/json" \
     --form "topic_id=0"\
-    --form "file=@/private/var/folders/wy/1yz2w5p91q13336262xr4yzw0000gn/T/phpRqJrB3" </code></pre></div>
+    --form "file=@/private/var/folders/wy/1yz2w5p91q13336262xr4yzw0000gn/T/php8zyZiC" </code></pre></div>
 
 
 <div class="javascript-example">
@@ -13398,6 +16419,67 @@ fetch(url, {
     headers,
     body,
 }).then(response =&gt; response.json());</code></pre></div>
+
+
+<div class="jsonToDart-example">
+    <pre><code class="language-dart">
+class Store {
+  final String? message;
+  final Data? data;
+  final bool? status;
+
+  Store({this.message, this.data, this.status, });
+
+  factory Store.fromJson(Map&lt;String, dynamic&gt; json) =&gt; Store(
+    message: json['message'],
+    data: json['data'] != null ? Data.fromJson(json['data'] as Map&lt;String, dynamic&gt;) : null,
+    status: json['status'],
+  );
+
+  Map&lt;String, dynamic&gt; toJson() =&gt; {
+    'message': message,
+    'data': data?.toJson(),
+    'status': status,
+  };
+}
+
+class Data {
+  final int? user_id;
+  final String? file_name;
+  final String? file_extension;
+  final String? topic_id;
+  final String? type;
+  final String? file;
+  final String? updated_at;
+  final String? created_at;
+  final int? id;
+
+  Data({this.user_id, this.file_name, this.file_extension, this.topic_id, this.type, this.file, this.updated_at, this.created_at, this.id, });
+
+  factory Data.fromJson(Map&lt;String, dynamic&gt; json) =&gt; Data(
+    user_id: json['user_id'],
+    file_name: json['file_name'],
+    file_extension: json['file_extension'],
+    topic_id: json['topic_id'],
+    type: json['type'],
+    file: json['file'],
+    updated_at: json['updated_at'],
+    created_at: json['created_at'],
+    id: json['id'],
+  );
+
+  Map&lt;String, dynamic&gt; toJson() =&gt; {
+    'user_id': user_id,
+    'file_name': file_name,
+    'file_extension': file_extension,
+    'topic_id': topic_id,
+    'type': type,
+    'file': file,
+    'updated_at': updated_at,
+    'created_at': created_at,
+    'id': id,
+  };
+}</code></pre></div>
 
 </span>
 
@@ -13542,7 +16624,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
                value=""
                data-component="body">
     <br>
-<p>The file to upload. Example: <code>/private/var/folders/wy/1yz2w5p91q13336262xr4yzw0000gn/T/phpRqJrB3</code></p>
+<p>The file to upload. Example: <code>/private/var/folders/wy/1yz2w5p91q13336262xr4yzw0000gn/T/php8zyZiC</code></p>
         </div>
                 <div style=" padding-left: 28px;  clear: unset;">
             <b style="line-height: 2;"><code>topic_id</code></b>&nbsp;&nbsp;
@@ -13571,7 +16653,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 <div class="bash-example">
     <pre><code class="language-bash">curl --request GET \
-    --get "http://127.0.0.1:8000/api/v3/user/becoming-christ-like/view/1?topic=15" \
+    --get "http://127.0.0.1:8000/api/v3/user/becoming-christ-like/view/1?topic=20" \
     --header "Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJhdWQiOiIxIiwianRpIjoiNTJkNDhkYzhjNTc4ODIwZWVmODFmY2NhOWJiMmJiODFlZGE1MTUwMTVkYmU5YzdkNzFkODAyYTRmZWNhMWQ5ZGJhYWEzMTc2YjI1OTJmMTgiLCJpYXQiOjE3NjQwNjAzNDQuMDUyOTc0LCJuYmYiOjE3NjQwNjAzNDQuMDUyOTc1LCJleHAiOjE3OTU1OTYzNDQuMDQzNjUyLCJzdWIiOiIxNjgiLCJzY29wZXMiOltdfQ.X9tS38uM-UlrpFlYZihD_kmuCcSX_hdGsRBJcNGfrWXAClMiqeTxNTC45Ftxw-ddmDQ59t5xJLlnWp2Rx57itO-IHclNmwnVJDPAh1l9D8CZBGxBSoN0FvmbWeYDNQnA7ud77YLekrcSAuKMdBX3J1UKq6ytvWwi6ChnuRFqcQ-fpzK-jgkMhGm-WFHw0H3a34afdBdSUUFutESlwMvTqmXILYVcIwaJpEAjamf3rn6wIOEoD8mbxXJ6Gb6QrRO72Kt3z62vJp7yOeMsnXUkfioVSyJVwbkbchCs2Y4YZY3FEREbKysKNdHJhhqmn6AXvx66arAK3HeZoyf5eusfk26alhbEdJqsJgFP5VROV5l57q8VKhH8hAxg-oeidCGGJXPjLGeb-5iGPjdGhQ1Ng1i9kt7VDV4icb8B2AbNC2Ie9xP6b0R11PX4jUd8D3Jogf2f0ZhAs5Is8WHcrxsCyk3lWvgOyzWxpRx2lSpmBRmSwksPrKJk_7JuzDZ1Tdpz6mubjV6DzlmqDJJjf32hBIMnaYOhOUz5k1FzZ8mybsSbnM9UjzHYr5xIf4rkmVAfuPnU2FGu8NtCQaOtt9G-TziBFgT3ZjxBCL9QaaC39BRulGE6tyCAT8NM9svTD_AbNyINUzO2M0R61OXYQfzXEeiui-sO6eYIc3x_z-YdFFQ" \
     --header "Content-Type: application/json" \
     --header "Accept: application/json"</code></pre></div>
@@ -13583,7 +16665,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 );
 
 const params = {
-    "topic": "15",
+    "topic": "20",
 };
 Object.keys(params)
     .forEach(key =&gt; url.searchParams.append(key, params[key]));
@@ -13598,6 +16680,70 @@ fetch(url, {
     method: "GET",
     headers,
 }).then(response =&gt; response.json());</code></pre></div>
+
+
+<div class="jsonToDart-example">
+    <pre><code class="language-dart">
+class 1 {
+  final String? message;
+  final Data? data;
+  final String? new_topic;
+  final bool? status;
+
+  1({this.message, this.data, this.new_topic, this.status, });
+
+  factory 1.fromJson(Map&lt;String, dynamic&gt; json) =&gt; 1(
+    message: json['message'],
+    data: json['data'] != null ? Data.fromJson(json['data'] as Map&lt;String, dynamic&gt;) : null,
+    new_topic: json['new_topic'],
+    status: json['status'],
+  );
+
+  Map&lt;String, dynamic&gt; toJson() =&gt; {
+    'message': message,
+    'data': data?.toJson(),
+    'new_topic': new_topic,
+    'status': status,
+  };
+}
+
+class Data {
+  final int? id;
+  final int? user_id;
+  final String? file_name;
+  final String? file_extension;
+  final int? topic_id;
+  final String? type;
+  final String? file;
+  final String? created_at;
+  final String? updated_at;
+
+  Data({this.id, this.user_id, this.file_name, this.file_extension, this.topic_id, this.type, this.file, this.created_at, this.updated_at, });
+
+  factory Data.fromJson(Map&lt;String, dynamic&gt; json) =&gt; Data(
+    id: json['id'],
+    user_id: json['user_id'],
+    file_name: json['file_name'],
+    file_extension: json['file_extension'],
+    topic_id: json['topic_id'],
+    type: json['type'],
+    file: json['file'],
+    created_at: json['created_at'],
+    updated_at: json['updated_at'],
+  );
+
+  Map&lt;String, dynamic&gt; toJson() =&gt; {
+    'id': id,
+    'user_id': user_id,
+    'file_name': file_name,
+    'file_extension': file_extension,
+    'topic_id': topic_id,
+    'type': type,
+    'file': file,
+    'created_at': created_at,
+    'updated_at': updated_at,
+  };
+}</code></pre></div>
 
 </span>
 
@@ -13734,10 +16880,10 @@ You can check the Dev Tools console for debugging information.</code></pre>
 <i>optional</i> &nbsp;
                 <input type="number" style="display: none"
                step="any"               name="topic"                data-endpoint="GETapi-v3-user-becoming-christ-like-view--id-"
-               value="15"
+               value="20"
                data-component="query">
     <br>
-<p>The ID of the topic to filter by (optional). Example: <code>15</code></p>
+<p>The ID of the topic to filter by (optional). Example: <code>20</code></p>
             </div>
                 </form>
 
@@ -13755,17 +16901,17 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 <div class="bash-example">
     <pre><code class="language-bash">curl --request POST \
-    "http://127.0.0.1:8000/api/v3/user/becoming-christ-like/update/nesciunt" \
+    "http://127.0.0.1:8000/api/v3/user/becoming-christ-like/update/assumenda" \
     --header "Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJhdWQiOiIxIiwianRpIjoiNTJkNDhkYzhjNTc4ODIwZWVmODFmY2NhOWJiMmJiODFlZGE1MTUwMTVkYmU5YzdkNzFkODAyYTRmZWNhMWQ5ZGJhYWEzMTc2YjI1OTJmMTgiLCJpYXQiOjE3NjQwNjAzNDQuMDUyOTc0LCJuYmYiOjE3NjQwNjAzNDQuMDUyOTc1LCJleHAiOjE3OTU1OTYzNDQuMDQzNjUyLCJzdWIiOiIxNjgiLCJzY29wZXMiOltdfQ.X9tS38uM-UlrpFlYZihD_kmuCcSX_hdGsRBJcNGfrWXAClMiqeTxNTC45Ftxw-ddmDQ59t5xJLlnWp2Rx57itO-IHclNmwnVJDPAh1l9D8CZBGxBSoN0FvmbWeYDNQnA7ud77YLekrcSAuKMdBX3J1UKq6ytvWwi6ChnuRFqcQ-fpzK-jgkMhGm-WFHw0H3a34afdBdSUUFutESlwMvTqmXILYVcIwaJpEAjamf3rn6wIOEoD8mbxXJ6Gb6QrRO72Kt3z62vJp7yOeMsnXUkfioVSyJVwbkbchCs2Y4YZY3FEREbKysKNdHJhhqmn6AXvx66arAK3HeZoyf5eusfk26alhbEdJqsJgFP5VROV5l57q8VKhH8hAxg-oeidCGGJXPjLGeb-5iGPjdGhQ1Ng1i9kt7VDV4icb8B2AbNC2Ie9xP6b0R11PX4jUd8D3Jogf2f0ZhAs5Is8WHcrxsCyk3lWvgOyzWxpRx2lSpmBRmSwksPrKJk_7JuzDZ1Tdpz6mubjV6DzlmqDJJjf32hBIMnaYOhOUz5k1FzZ8mybsSbnM9UjzHYr5xIf4rkmVAfuPnU2FGu8NtCQaOtt9G-TziBFgT3ZjxBCL9QaaC39BRulGE6tyCAT8NM9svTD_AbNyINUzO2M0R61OXYQfzXEeiui-sO6eYIc3x_z-YdFFQ" \
     --header "Content-Type: multipart/form-data" \
     --header "Accept: application/json" \
     --form "topic_id=1"\
-    --form "file=@/private/var/folders/wy/1yz2w5p91q13336262xr4yzw0000gn/T/php9Jh79U" </code></pre></div>
+    --form "file=@/private/var/folders/wy/1yz2w5p91q13336262xr4yzw0000gn/T/phpiqTOSM" </code></pre></div>
 
 
 <div class="javascript-example">
     <pre><code class="language-javascript">const url = new URL(
-    "http://127.0.0.1:8000/api/v3/user/becoming-christ-like/update/nesciunt"
+    "http://127.0.0.1:8000/api/v3/user/becoming-christ-like/update/assumenda"
 );
 
 const headers = {
@@ -13783,6 +16929,58 @@ fetch(url, {
     headers,
     body,
 }).then(response =&gt; response.json());</code></pre></div>
+
+
+<div class="jsonToDart-example">
+    <pre><code class="language-dart">
+class Assumenda {
+  final String? message;
+  final Data? data;
+  final bool? status;
+
+  Assumenda({this.message, this.data, this.status, });
+
+  factory Assumenda.fromJson(Map&lt;String, dynamic&gt; json) =&gt; Assumenda(
+    message: json['message'],
+    data: json['data'] != null ? Data.fromJson(json['data'] as Map&lt;String, dynamic&gt;) : null,
+    status: json['status'],
+  );
+
+  Map&lt;String, dynamic&gt; toJson() =&gt; {
+    'message': message,
+    'data': data?.toJson(),
+    'status': status,
+  };
+}
+
+class Data {
+  final int? id;
+  final String? file_name;
+  final String? file_extension;
+  final int? topic_id;
+  final int? user_id;
+  final String? file;
+
+  Data({this.id, this.file_name, this.file_extension, this.topic_id, this.user_id, this.file, });
+
+  factory Data.fromJson(Map&lt;String, dynamic&gt; json) =&gt; Data(
+    id: json['id'],
+    file_name: json['file_name'],
+    file_extension: json['file_extension'],
+    topic_id: json['topic_id'],
+    user_id: json['user_id'],
+    file: json['file'],
+  );
+
+  Map&lt;String, dynamic&gt; toJson() =&gt; {
+    'id': id,
+    'file_name': file_name,
+    'file_extension': file_extension,
+    'topic_id': topic_id,
+    'user_id': user_id,
+    'file': file,
+  };
+}</code></pre></div>
 
 </span>
 
@@ -13928,10 +17126,10 @@ You can check the Dev Tools console for debugging information.</code></pre>
  &nbsp;
                 <input type="text" style="display: none"
                               name="id"                data-endpoint="POSTapi-v3-user-becoming-christ-like-update--id-"
-               value="nesciunt"
+               value="assumenda"
                data-component="url">
     <br>
-<p>The ID of the update. Example: <code>nesciunt</code></p>
+<p>The ID of the update. Example: <code>assumenda</code></p>
             </div>
                             <h4 class="fancy-heading-panel"><b>Body Parameters</b></h4>
         <div style=" padding-left: 28px;  clear: unset;">
@@ -13943,7 +17141,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
                value=""
                data-component="body">
     <br>
-<p>The new file to replace the existing one (optional). Example: <code>/private/var/folders/wy/1yz2w5p91q13336262xr4yzw0000gn/T/php9Jh79U</code></p>
+<p>The new file to replace the existing one (optional). Example: <code>/private/var/folders/wy/1yz2w5p91q13336262xr4yzw0000gn/T/phpiqTOSM</code></p>
         </div>
                 <div style=" padding-left: 28px;  clear: unset;">
             <b style="line-height: 2;"><code>topic_id</code></b>&nbsp;&nbsp;
@@ -13993,6 +17191,26 @@ fetch(url, {
     method: "GET",
     headers,
 }).then(response =&gt; response.json());</code></pre></div>
+
+
+<div class="jsonToDart-example">
+    <pre><code class="language-dart">
+class 1 {
+  final String? message;
+  final bool? status;
+
+  1({this.message, this.status, });
+
+  factory 1.fromJson(Map&lt;String, dynamic&gt; json) =&gt; 1(
+    message: json['message'],
+    status: json['status'],
+  );
+
+  Map&lt;String, dynamic&gt; toJson() =&gt; {
+    'message': message,
+    'status': status,
+  };
+}</code></pre></div>
 
 </span>
 
@@ -14136,7 +17354,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 <div class="bash-example">
     <pre><code class="language-bash">curl --request GET \
-    --get "http://127.0.0.1:8000/api/v3/user/becoming-christ-like/download/et" \
+    --get "http://127.0.0.1:8000/api/v3/user/becoming-christ-like/download/provident" \
     --header "Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJhdWQiOiIxIiwianRpIjoiNTJkNDhkYzhjNTc4ODIwZWVmODFmY2NhOWJiMmJiODFlZGE1MTUwMTVkYmU5YzdkNzFkODAyYTRmZWNhMWQ5ZGJhYWEzMTc2YjI1OTJmMTgiLCJpYXQiOjE3NjQwNjAzNDQuMDUyOTc0LCJuYmYiOjE3NjQwNjAzNDQuMDUyOTc1LCJleHAiOjE3OTU1OTYzNDQuMDQzNjUyLCJzdWIiOiIxNjgiLCJzY29wZXMiOltdfQ.X9tS38uM-UlrpFlYZihD_kmuCcSX_hdGsRBJcNGfrWXAClMiqeTxNTC45Ftxw-ddmDQ59t5xJLlnWp2Rx57itO-IHclNmwnVJDPAh1l9D8CZBGxBSoN0FvmbWeYDNQnA7ud77YLekrcSAuKMdBX3J1UKq6ytvWwi6ChnuRFqcQ-fpzK-jgkMhGm-WFHw0H3a34afdBdSUUFutESlwMvTqmXILYVcIwaJpEAjamf3rn6wIOEoD8mbxXJ6Gb6QrRO72Kt3z62vJp7yOeMsnXUkfioVSyJVwbkbchCs2Y4YZY3FEREbKysKNdHJhhqmn6AXvx66arAK3HeZoyf5eusfk26alhbEdJqsJgFP5VROV5l57q8VKhH8hAxg-oeidCGGJXPjLGeb-5iGPjdGhQ1Ng1i9kt7VDV4icb8B2AbNC2Ie9xP6b0R11PX4jUd8D3Jogf2f0ZhAs5Is8WHcrxsCyk3lWvgOyzWxpRx2lSpmBRmSwksPrKJk_7JuzDZ1Tdpz6mubjV6DzlmqDJJjf32hBIMnaYOhOUz5k1FzZ8mybsSbnM9UjzHYr5xIf4rkmVAfuPnU2FGu8NtCQaOtt9G-TziBFgT3ZjxBCL9QaaC39BRulGE6tyCAT8NM9svTD_AbNyINUzO2M0R61OXYQfzXEeiui-sO6eYIc3x_z-YdFFQ" \
     --header "Content-Type: application/json" \
     --header "Accept: application/json"</code></pre></div>
@@ -14144,7 +17362,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 <div class="javascript-example">
     <pre><code class="language-javascript">const url = new URL(
-    "http://127.0.0.1:8000/api/v3/user/becoming-christ-like/download/et"
+    "http://127.0.0.1:8000/api/v3/user/becoming-christ-like/download/provident"
 );
 
 const headers = {
@@ -14157,6 +17375,26 @@ fetch(url, {
     method: "GET",
     headers,
 }).then(response =&gt; response.json());</code></pre></div>
+
+
+<div class="jsonToDart-example">
+    <pre><code class="language-dart">
+class Provident {
+  final String? message;
+  final bool? status;
+
+  Provident({this.message, this.status, });
+
+  factory Provident.fromJson(Map&lt;String, dynamic&gt; json) =&gt; Provident(
+    message: json['message'],
+    status: json['status'],
+  );
+
+  Map&lt;String, dynamic&gt; toJson() =&gt; {
+    'message': message,
+    'status': status,
+  };
+}</code></pre></div>
 
 </span>
 
@@ -14276,10 +17514,10 @@ You can check the Dev Tools console for debugging information.</code></pre>
  &nbsp;
                 <input type="text" style="display: none"
                               name="file"                data-endpoint="GETapi-v3-user-becoming-christ-like-download--file-"
-               value="et"
+               value="provident"
                data-component="url">
     <br>
-<p>Example: <code>et</code></p>
+<p>Example: <code>provident</code></p>
             </div>
                     </form>
 
@@ -14328,6 +17566,20 @@ fetch(url, {
     method: "GET",
     headers,
 }).then(response =&gt; response.json());</code></pre></div>
+
+
+<div class="jsonToDart-example">
+    <pre><code class="language-dart">
+class Development {
+
+  Development({});
+
+  factory Development.fromJson(Map&lt;String, dynamic&gt; json) =&gt; Development(
+  );
+
+  Map&lt;String, dynamic&gt; toJson() =&gt; {
+  };
+}</code></pre></div>
 
 </span>
 
@@ -14533,7 +17785,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 <div class="bash-example">
     <pre><code class="language-bash">curl --request GET \
-    --get "http://127.0.0.1:8000/api/v3/user/leadership-development/list-by-topics?sortby=autem&amp;sorttype=ab&amp;query=praesentium&amp;topic_id=13" \
+    --get "http://127.0.0.1:8000/api/v3/user/leadership-development/list-by-topics?sortby=et&amp;sorttype=possimus&amp;query=earum&amp;topic_id=8" \
     --header "Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJhdWQiOiIxIiwianRpIjoiNTJkNDhkYzhjNTc4ODIwZWVmODFmY2NhOWJiMmJiODFlZGE1MTUwMTVkYmU5YzdkNzFkODAyYTRmZWNhMWQ5ZGJhYWEzMTc2YjI1OTJmMTgiLCJpYXQiOjE3NjQwNjAzNDQuMDUyOTc0LCJuYmYiOjE3NjQwNjAzNDQuMDUyOTc1LCJleHAiOjE3OTU1OTYzNDQuMDQzNjUyLCJzdWIiOiIxNjgiLCJzY29wZXMiOltdfQ.X9tS38uM-UlrpFlYZihD_kmuCcSX_hdGsRBJcNGfrWXAClMiqeTxNTC45Ftxw-ddmDQ59t5xJLlnWp2Rx57itO-IHclNmwnVJDPAh1l9D8CZBGxBSoN0FvmbWeYDNQnA7ud77YLekrcSAuKMdBX3J1UKq6ytvWwi6ChnuRFqcQ-fpzK-jgkMhGm-WFHw0H3a34afdBdSUUFutESlwMvTqmXILYVcIwaJpEAjamf3rn6wIOEoD8mbxXJ6Gb6QrRO72Kt3z62vJp7yOeMsnXUkfioVSyJVwbkbchCs2Y4YZY3FEREbKysKNdHJhhqmn6AXvx66arAK3HeZoyf5eusfk26alhbEdJqsJgFP5VROV5l57q8VKhH8hAxg-oeidCGGJXPjLGeb-5iGPjdGhQ1Ng1i9kt7VDV4icb8B2AbNC2Ie9xP6b0R11PX4jUd8D3Jogf2f0ZhAs5Is8WHcrxsCyk3lWvgOyzWxpRx2lSpmBRmSwksPrKJk_7JuzDZ1Tdpz6mubjV6DzlmqDJJjf32hBIMnaYOhOUz5k1FzZ8mybsSbnM9UjzHYr5xIf4rkmVAfuPnU2FGu8NtCQaOtt9G-TziBFgT3ZjxBCL9QaaC39BRulGE6tyCAT8NM9svTD_AbNyINUzO2M0R61OXYQfzXEeiui-sO6eYIc3x_z-YdFFQ" \
     --header "Content-Type: application/json" \
     --header "Accept: application/json"</code></pre></div>
@@ -14545,10 +17797,10 @@ You can check the Dev Tools console for debugging information.</code></pre>
 );
 
 const params = {
-    "sortby": "autem",
-    "sorttype": "ab",
-    "query": "praesentium",
-    "topic_id": "13",
+    "sortby": "et",
+    "sorttype": "possimus",
+    "query": "earum",
+    "topic_id": "8",
 };
 Object.keys(params)
     .forEach(key =&gt; url.searchParams.append(key, params[key]));
@@ -14563,6 +17815,93 @@ fetch(url, {
     method: "GET",
     headers,
 }).then(response =&gt; response.json());</code></pre></div>
+
+
+<div class="jsonToDart-example">
+    <pre><code class="language-dart">
+class Topics {
+  final String? message;
+  final List&lt;DataItem&gt;? data;
+  final Pagination? pagination;
+  final bool? status;
+
+  Topics({this.message, this.data, this.pagination, this.status, });
+
+  factory Topics.fromJson(Map&lt;String, dynamic&gt; json) =&gt; Topics(
+    message: json['message'],
+    data: (json['data'] as List&lt;dynamic&gt;?)?.map((e) =&gt; DataItem.fromJson(e as Map&lt;String, dynamic&gt;)).toList(),
+    pagination: json['pagination'] != null ? Pagination.fromJson(json['pagination'] as Map&lt;String, dynamic&gt;) : null,
+    status: json['status'],
+  );
+
+  Map&lt;String, dynamic&gt; toJson() =&gt; {
+    'message': message,
+    'data': data?.map((e) =&gt; e.toJson()).toList(),
+    'pagination': pagination?.toJson(),
+    'status': status,
+  };
+}
+
+class Pagination {
+  final int? total;
+  final int? per_page;
+  final int? current_page;
+  final int? last_page;
+
+  Pagination({this.total, this.per_page, this.current_page, this.last_page, });
+
+  factory Pagination.fromJson(Map&lt;String, dynamic&gt; json) =&gt; Pagination(
+    total: json['total'],
+    per_page: json['per_page'],
+    current_page: json['current_page'],
+    last_page: json['last_page'],
+  );
+
+  Map&lt;String, dynamic&gt; toJson() =&gt; {
+    'total': total,
+    'per_page': per_page,
+    'current_page': current_page,
+    'last_page': last_page,
+  };
+}
+
+class DataItem {
+  final int? id;
+  final int? user_id;
+  final String? file_name;
+  final String? file_extension;
+  final int? topic_id;
+  final String? type;
+  final String? file;
+  final String? created_at;
+  final String? updated_at;
+
+  DataItem({this.id, this.user_id, this.file_name, this.file_extension, this.topic_id, this.type, this.file, this.created_at, this.updated_at, });
+
+  factory DataItem.fromJson(Map&lt;String, dynamic&gt; json) =&gt; DataItem(
+    id: json['id'],
+    user_id: json['user_id'],
+    file_name: json['file_name'],
+    file_extension: json['file_extension'],
+    topic_id: json['topic_id'],
+    type: json['type'],
+    file: json['file'],
+    created_at: json['created_at'],
+    updated_at: json['updated_at'],
+  );
+
+  Map&lt;String, dynamic&gt; toJson() =&gt; {
+    'id': id,
+    'user_id': user_id,
+    'file_name': file_name,
+    'file_extension': file_extension,
+    'topic_id': topic_id,
+    'type': type,
+    'file': file,
+    'created_at': created_at,
+    'updated_at': updated_at,
+  };
+}</code></pre></div>
 
 </span>
 
@@ -14684,10 +18023,10 @@ You can check the Dev Tools console for debugging information.</code></pre>
 <i>optional</i> &nbsp;
                 <input type="text" style="display: none"
                               name="sortby"                data-endpoint="GETapi-v3-user-leadership-development-list-by-topics"
-               value="autem"
+               value="et"
                data-component="query">
     <br>
-<p>The column to sort by (optional, default: id). Example: <code>autem</code></p>
+<p>The column to sort by (optional, default: id). Example: <code>et</code></p>
             </div>
                                     <div style="padding-left: 28px; clear: unset;">
                 <b style="line-height: 2;"><code>sorttype</code></b>&nbsp;&nbsp;
@@ -14695,10 +18034,10 @@ You can check the Dev Tools console for debugging information.</code></pre>
 <i>optional</i> &nbsp;
                 <input type="text" style="display: none"
                               name="sorttype"                data-endpoint="GETapi-v3-user-leadership-development-list-by-topics"
-               value="ab"
+               value="possimus"
                data-component="query">
     <br>
-<p>The sort direction, either 'asc' or 'desc' (optional, default: 'asc'). Example: <code>ab</code></p>
+<p>The sort direction, either 'asc' or 'desc' (optional, default: 'asc'). Example: <code>possimus</code></p>
             </div>
                                     <div style="padding-left: 28px; clear: unset;">
                 <b style="line-height: 2;"><code>query</code></b>&nbsp;&nbsp;
@@ -14706,10 +18045,10 @@ You can check the Dev Tools console for debugging information.</code></pre>
 <i>optional</i> &nbsp;
                 <input type="text" style="display: none"
                               name="query"                data-endpoint="GETapi-v3-user-leadership-development-list-by-topics"
-               value="praesentium"
+               value="earum"
                data-component="query">
     <br>
-<p>The search query to filter files by ID, file name, or file extension (optional). Example: <code>praesentium</code></p>
+<p>The search query to filter files by ID, file name, or file extension (optional). Example: <code>earum</code></p>
             </div>
                                     <div style="padding-left: 28px; clear: unset;">
                 <b style="line-height: 2;"><code>topic_id</code></b>&nbsp;&nbsp;
@@ -14717,10 +18056,10 @@ You can check the Dev Tools console for debugging information.</code></pre>
 <i>optional</i> &nbsp;
                 <input type="number" style="display: none"
                step="any"               name="topic_id"                data-endpoint="GETapi-v3-user-leadership-development-list-by-topics"
-               value="13"
+               value="8"
                data-component="query">
     <br>
-<p>The ID of the topic to filter files by (optional). Example: <code>13</code></p>
+<p>The ID of the topic to filter files by (optional). Example: <code>8</code></p>
             </div>
                 </form>
 
@@ -14759,6 +18098,52 @@ fetch(url, {
     method: "GET",
     headers,
 }).then(response =&gt; response.json());</code></pre></div>
+
+
+<div class="jsonToDart-example">
+    <pre><code class="language-dart">
+class Topics {
+  final List&lt;DataItem&gt;? data;
+  final bool? status;
+
+  Topics({this.data, this.status, });
+
+  factory Topics.fromJson(Map&lt;String, dynamic&gt; json) =&gt; Topics(
+    data: (json['data'] as List&lt;dynamic&gt;?)?.map((e) =&gt; DataItem.fromJson(e as Map&lt;String, dynamic&gt;)).toList(),
+    status: json['status'],
+  );
+
+  Map&lt;String, dynamic&gt; toJson() =&gt; {
+    'data': data?.map((e) =&gt; e.toJson()).toList(),
+    'status': status,
+  };
+}
+
+class DataItem {
+  final int? id;
+  final String? topic_name;
+  final String? education_type;
+  final String? created_at;
+  final String? updated_at;
+
+  DataItem({this.id, this.topic_name, this.education_type, this.created_at, this.updated_at, });
+
+  factory DataItem.fromJson(Map&lt;String, dynamic&gt; json) =&gt; DataItem(
+    id: json['id'],
+    topic_name: json['topic_name'],
+    education_type: json['education_type'],
+    created_at: json['created_at'],
+    updated_at: json['updated_at'],
+  );
+
+  Map&lt;String, dynamic&gt; toJson() =&gt; {
+    'id': id,
+    'topic_name': topic_name,
+    'education_type': education_type,
+    'created_at': created_at,
+    'updated_at': updated_at,
+  };
+}</code></pre></div>
 
 </span>
 
@@ -14893,7 +18278,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
     --header "Content-Type: multipart/form-data" \
     --header "Accept: application/json" \
     --form "topic_id=0"\
-    --form "file=@/private/var/folders/wy/1yz2w5p91q13336262xr4yzw0000gn/T/phpufTZQX" </code></pre></div>
+    --form "file=@/private/var/folders/wy/1yz2w5p91q13336262xr4yzw0000gn/T/phpg0Sf1K" </code></pre></div>
 
 
 <div class="javascript-example">
@@ -14916,6 +18301,67 @@ fetch(url, {
     headers,
     body,
 }).then(response =&gt; response.json());</code></pre></div>
+
+
+<div class="jsonToDart-example">
+    <pre><code class="language-dart">
+class Store {
+  final String? message;
+  final Data? data;
+  final bool? status;
+
+  Store({this.message, this.data, this.status, });
+
+  factory Store.fromJson(Map&lt;String, dynamic&gt; json) =&gt; Store(
+    message: json['message'],
+    data: json['data'] != null ? Data.fromJson(json['data'] as Map&lt;String, dynamic&gt;) : null,
+    status: json['status'],
+  );
+
+  Map&lt;String, dynamic&gt; toJson() =&gt; {
+    'message': message,
+    'data': data?.toJson(),
+    'status': status,
+  };
+}
+
+class Data {
+  final int? user_id;
+  final String? file_name;
+  final String? file_extension;
+  final String? topic_id;
+  final String? type;
+  final String? file;
+  final String? updated_at;
+  final String? created_at;
+  final int? id;
+
+  Data({this.user_id, this.file_name, this.file_extension, this.topic_id, this.type, this.file, this.updated_at, this.created_at, this.id, });
+
+  factory Data.fromJson(Map&lt;String, dynamic&gt; json) =&gt; Data(
+    user_id: json['user_id'],
+    file_name: json['file_name'],
+    file_extension: json['file_extension'],
+    topic_id: json['topic_id'],
+    type: json['type'],
+    file: json['file'],
+    updated_at: json['updated_at'],
+    created_at: json['created_at'],
+    id: json['id'],
+  );
+
+  Map&lt;String, dynamic&gt; toJson() =&gt; {
+    'user_id': user_id,
+    'file_name': file_name,
+    'file_extension': file_extension,
+    'topic_id': topic_id,
+    'type': type,
+    'file': file,
+    'updated_at': updated_at,
+    'created_at': created_at,
+    'id': id,
+  };
+}</code></pre></div>
 
 </span>
 
@@ -15060,7 +18506,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
                value=""
                data-component="body">
     <br>
-<p>The file to upload. Example: <code>/private/var/folders/wy/1yz2w5p91q13336262xr4yzw0000gn/T/phpufTZQX</code></p>
+<p>The file to upload. Example: <code>/private/var/folders/wy/1yz2w5p91q13336262xr4yzw0000gn/T/phpg0Sf1K</code></p>
         </div>
                 <div style=" padding-left: 28px;  clear: unset;">
             <b style="line-height: 2;"><code>topic_id</code></b>&nbsp;&nbsp;
@@ -15089,7 +18535,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 <div class="bash-example">
     <pre><code class="language-bash">curl --request GET \
-    --get "http://127.0.0.1:8000/api/v3/user/leadership-development/view/1?topic=11" \
+    --get "http://127.0.0.1:8000/api/v3/user/leadership-development/view/1?topic=10" \
     --header "Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJhdWQiOiIxIiwianRpIjoiNTJkNDhkYzhjNTc4ODIwZWVmODFmY2NhOWJiMmJiODFlZGE1MTUwMTVkYmU5YzdkNzFkODAyYTRmZWNhMWQ5ZGJhYWEzMTc2YjI1OTJmMTgiLCJpYXQiOjE3NjQwNjAzNDQuMDUyOTc0LCJuYmYiOjE3NjQwNjAzNDQuMDUyOTc1LCJleHAiOjE3OTU1OTYzNDQuMDQzNjUyLCJzdWIiOiIxNjgiLCJzY29wZXMiOltdfQ.X9tS38uM-UlrpFlYZihD_kmuCcSX_hdGsRBJcNGfrWXAClMiqeTxNTC45Ftxw-ddmDQ59t5xJLlnWp2Rx57itO-IHclNmwnVJDPAh1l9D8CZBGxBSoN0FvmbWeYDNQnA7ud77YLekrcSAuKMdBX3J1UKq6ytvWwi6ChnuRFqcQ-fpzK-jgkMhGm-WFHw0H3a34afdBdSUUFutESlwMvTqmXILYVcIwaJpEAjamf3rn6wIOEoD8mbxXJ6Gb6QrRO72Kt3z62vJp7yOeMsnXUkfioVSyJVwbkbchCs2Y4YZY3FEREbKysKNdHJhhqmn6AXvx66arAK3HeZoyf5eusfk26alhbEdJqsJgFP5VROV5l57q8VKhH8hAxg-oeidCGGJXPjLGeb-5iGPjdGhQ1Ng1i9kt7VDV4icb8B2AbNC2Ie9xP6b0R11PX4jUd8D3Jogf2f0ZhAs5Is8WHcrxsCyk3lWvgOyzWxpRx2lSpmBRmSwksPrKJk_7JuzDZ1Tdpz6mubjV6DzlmqDJJjf32hBIMnaYOhOUz5k1FzZ8mybsSbnM9UjzHYr5xIf4rkmVAfuPnU2FGu8NtCQaOtt9G-TziBFgT3ZjxBCL9QaaC39BRulGE6tyCAT8NM9svTD_AbNyINUzO2M0R61OXYQfzXEeiui-sO6eYIc3x_z-YdFFQ" \
     --header "Content-Type: application/json" \
     --header "Accept: application/json"</code></pre></div>
@@ -15101,7 +18547,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 );
 
 const params = {
-    "topic": "11",
+    "topic": "10",
 };
 Object.keys(params)
     .forEach(key =&gt; url.searchParams.append(key, params[key]));
@@ -15116,6 +18562,70 @@ fetch(url, {
     method: "GET",
     headers,
 }).then(response =&gt; response.json());</code></pre></div>
+
+
+<div class="jsonToDart-example">
+    <pre><code class="language-dart">
+class 1 {
+  final String? message;
+  final Data? data;
+  final String? new_topic;
+  final bool? status;
+
+  1({this.message, this.data, this.new_topic, this.status, });
+
+  factory 1.fromJson(Map&lt;String, dynamic&gt; json) =&gt; 1(
+    message: json['message'],
+    data: json['data'] != null ? Data.fromJson(json['data'] as Map&lt;String, dynamic&gt;) : null,
+    new_topic: json['new_topic'],
+    status: json['status'],
+  );
+
+  Map&lt;String, dynamic&gt; toJson() =&gt; {
+    'message': message,
+    'data': data?.toJson(),
+    'new_topic': new_topic,
+    'status': status,
+  };
+}
+
+class Data {
+  final int? id;
+  final int? user_id;
+  final String? file_name;
+  final String? file_extension;
+  final int? topic_id;
+  final String? type;
+  final String? file;
+  final String? created_at;
+  final String? updated_at;
+
+  Data({this.id, this.user_id, this.file_name, this.file_extension, this.topic_id, this.type, this.file, this.created_at, this.updated_at, });
+
+  factory Data.fromJson(Map&lt;String, dynamic&gt; json) =&gt; Data(
+    id: json['id'],
+    user_id: json['user_id'],
+    file_name: json['file_name'],
+    file_extension: json['file_extension'],
+    topic_id: json['topic_id'],
+    type: json['type'],
+    file: json['file'],
+    created_at: json['created_at'],
+    updated_at: json['updated_at'],
+  );
+
+  Map&lt;String, dynamic&gt; toJson() =&gt; {
+    'id': id,
+    'user_id': user_id,
+    'file_name': file_name,
+    'file_extension': file_extension,
+    'topic_id': topic_id,
+    'type': type,
+    'file': file,
+    'created_at': created_at,
+    'updated_at': updated_at,
+  };
+}</code></pre></div>
 
 </span>
 
@@ -15252,10 +18762,10 @@ You can check the Dev Tools console for debugging information.</code></pre>
 <i>optional</i> &nbsp;
                 <input type="number" style="display: none"
                step="any"               name="topic"                data-endpoint="GETapi-v3-user-leadership-development-view--id-"
-               value="11"
+               value="10"
                data-component="query">
     <br>
-<p>The ID of the topic to filter by (optional). Example: <code>11</code></p>
+<p>The ID of the topic to filter by (optional). Example: <code>10</code></p>
             </div>
                 </form>
 
@@ -15273,17 +18783,17 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 <div class="bash-example">
     <pre><code class="language-bash">curl --request POST \
-    "http://127.0.0.1:8000/api/v3/user/leadership-development/update/cum" \
+    "http://127.0.0.1:8000/api/v3/user/leadership-development/update/quia" \
     --header "Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJhdWQiOiIxIiwianRpIjoiNTJkNDhkYzhjNTc4ODIwZWVmODFmY2NhOWJiMmJiODFlZGE1MTUwMTVkYmU5YzdkNzFkODAyYTRmZWNhMWQ5ZGJhYWEzMTc2YjI1OTJmMTgiLCJpYXQiOjE3NjQwNjAzNDQuMDUyOTc0LCJuYmYiOjE3NjQwNjAzNDQuMDUyOTc1LCJleHAiOjE3OTU1OTYzNDQuMDQzNjUyLCJzdWIiOiIxNjgiLCJzY29wZXMiOltdfQ.X9tS38uM-UlrpFlYZihD_kmuCcSX_hdGsRBJcNGfrWXAClMiqeTxNTC45Ftxw-ddmDQ59t5xJLlnWp2Rx57itO-IHclNmwnVJDPAh1l9D8CZBGxBSoN0FvmbWeYDNQnA7ud77YLekrcSAuKMdBX3J1UKq6ytvWwi6ChnuRFqcQ-fpzK-jgkMhGm-WFHw0H3a34afdBdSUUFutESlwMvTqmXILYVcIwaJpEAjamf3rn6wIOEoD8mbxXJ6Gb6QrRO72Kt3z62vJp7yOeMsnXUkfioVSyJVwbkbchCs2Y4YZY3FEREbKysKNdHJhhqmn6AXvx66arAK3HeZoyf5eusfk26alhbEdJqsJgFP5VROV5l57q8VKhH8hAxg-oeidCGGJXPjLGeb-5iGPjdGhQ1Ng1i9kt7VDV4icb8B2AbNC2Ie9xP6b0R11PX4jUd8D3Jogf2f0ZhAs5Is8WHcrxsCyk3lWvgOyzWxpRx2lSpmBRmSwksPrKJk_7JuzDZ1Tdpz6mubjV6DzlmqDJJjf32hBIMnaYOhOUz5k1FzZ8mybsSbnM9UjzHYr5xIf4rkmVAfuPnU2FGu8NtCQaOtt9G-TziBFgT3ZjxBCL9QaaC39BRulGE6tyCAT8NM9svTD_AbNyINUzO2M0R61OXYQfzXEeiui-sO6eYIc3x_z-YdFFQ" \
     --header "Content-Type: multipart/form-data" \
     --header "Accept: application/json" \
     --form "topic_id=1"\
-    --form "file=@/private/var/folders/wy/1yz2w5p91q13336262xr4yzw0000gn/T/phpzYi8v3" </code></pre></div>
+    --form "file=@/private/var/folders/wy/1yz2w5p91q13336262xr4yzw0000gn/T/phptlAHP1" </code></pre></div>
 
 
 <div class="javascript-example">
     <pre><code class="language-javascript">const url = new URL(
-    "http://127.0.0.1:8000/api/v3/user/leadership-development/update/cum"
+    "http://127.0.0.1:8000/api/v3/user/leadership-development/update/quia"
 );
 
 const headers = {
@@ -15301,6 +18811,58 @@ fetch(url, {
     headers,
     body,
 }).then(response =&gt; response.json());</code></pre></div>
+
+
+<div class="jsonToDart-example">
+    <pre><code class="language-dart">
+class Quia {
+  final String? message;
+  final Data? data;
+  final bool? status;
+
+  Quia({this.message, this.data, this.status, });
+
+  factory Quia.fromJson(Map&lt;String, dynamic&gt; json) =&gt; Quia(
+    message: json['message'],
+    data: json['data'] != null ? Data.fromJson(json['data'] as Map&lt;String, dynamic&gt;) : null,
+    status: json['status'],
+  );
+
+  Map&lt;String, dynamic&gt; toJson() =&gt; {
+    'message': message,
+    'data': data?.toJson(),
+    'status': status,
+  };
+}
+
+class Data {
+  final int? id;
+  final String? file_name;
+  final String? file_extension;
+  final int? topic_id;
+  final int? user_id;
+  final String? file;
+
+  Data({this.id, this.file_name, this.file_extension, this.topic_id, this.user_id, this.file, });
+
+  factory Data.fromJson(Map&lt;String, dynamic&gt; json) =&gt; Data(
+    id: json['id'],
+    file_name: json['file_name'],
+    file_extension: json['file_extension'],
+    topic_id: json['topic_id'],
+    user_id: json['user_id'],
+    file: json['file'],
+  );
+
+  Map&lt;String, dynamic&gt; toJson() =&gt; {
+    'id': id,
+    'file_name': file_name,
+    'file_extension': file_extension,
+    'topic_id': topic_id,
+    'user_id': user_id,
+    'file': file,
+  };
+}</code></pre></div>
 
 </span>
 
@@ -15446,10 +19008,10 @@ You can check the Dev Tools console for debugging information.</code></pre>
  &nbsp;
                 <input type="text" style="display: none"
                               name="id"                data-endpoint="POSTapi-v3-user-leadership-development-update--id-"
-               value="cum"
+               value="quia"
                data-component="url">
     <br>
-<p>The ID of the update. Example: <code>cum</code></p>
+<p>The ID of the update. Example: <code>quia</code></p>
             </div>
                             <h4 class="fancy-heading-panel"><b>Body Parameters</b></h4>
         <div style=" padding-left: 28px;  clear: unset;">
@@ -15461,7 +19023,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
                value=""
                data-component="body">
     <br>
-<p>The new file to replace the existing one (optional). Example: <code>/private/var/folders/wy/1yz2w5p91q13336262xr4yzw0000gn/T/phpzYi8v3</code></p>
+<p>The new file to replace the existing one (optional). Example: <code>/private/var/folders/wy/1yz2w5p91q13336262xr4yzw0000gn/T/phptlAHP1</code></p>
         </div>
                 <div style=" padding-left: 28px;  clear: unset;">
             <b style="line-height: 2;"><code>topic_id</code></b>&nbsp;&nbsp;
@@ -15511,6 +19073,26 @@ fetch(url, {
     method: "GET",
     headers,
 }).then(response =&gt; response.json());</code></pre></div>
+
+
+<div class="jsonToDart-example">
+    <pre><code class="language-dart">
+class 1 {
+  final String? message;
+  final bool? status;
+
+  1({this.message, this.status, });
+
+  factory 1.fromJson(Map&lt;String, dynamic&gt; json) =&gt; 1(
+    message: json['message'],
+    status: json['status'],
+  );
+
+  Map&lt;String, dynamic&gt; toJson() =&gt; {
+    'message': message,
+    'status': status,
+  };
+}</code></pre></div>
 
 </span>
 
@@ -15654,7 +19236,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 <div class="bash-example">
     <pre><code class="language-bash">curl --request GET \
-    --get "http://127.0.0.1:8000/api/v3/user/leadership-development/download/tenetur" \
+    --get "http://127.0.0.1:8000/api/v3/user/leadership-development/download/nisi" \
     --header "Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJhdWQiOiIxIiwianRpIjoiNTJkNDhkYzhjNTc4ODIwZWVmODFmY2NhOWJiMmJiODFlZGE1MTUwMTVkYmU5YzdkNzFkODAyYTRmZWNhMWQ5ZGJhYWEzMTc2YjI1OTJmMTgiLCJpYXQiOjE3NjQwNjAzNDQuMDUyOTc0LCJuYmYiOjE3NjQwNjAzNDQuMDUyOTc1LCJleHAiOjE3OTU1OTYzNDQuMDQzNjUyLCJzdWIiOiIxNjgiLCJzY29wZXMiOltdfQ.X9tS38uM-UlrpFlYZihD_kmuCcSX_hdGsRBJcNGfrWXAClMiqeTxNTC45Ftxw-ddmDQ59t5xJLlnWp2Rx57itO-IHclNmwnVJDPAh1l9D8CZBGxBSoN0FvmbWeYDNQnA7ud77YLekrcSAuKMdBX3J1UKq6ytvWwi6ChnuRFqcQ-fpzK-jgkMhGm-WFHw0H3a34afdBdSUUFutESlwMvTqmXILYVcIwaJpEAjamf3rn6wIOEoD8mbxXJ6Gb6QrRO72Kt3z62vJp7yOeMsnXUkfioVSyJVwbkbchCs2Y4YZY3FEREbKysKNdHJhhqmn6AXvx66arAK3HeZoyf5eusfk26alhbEdJqsJgFP5VROV5l57q8VKhH8hAxg-oeidCGGJXPjLGeb-5iGPjdGhQ1Ng1i9kt7VDV4icb8B2AbNC2Ie9xP6b0R11PX4jUd8D3Jogf2f0ZhAs5Is8WHcrxsCyk3lWvgOyzWxpRx2lSpmBRmSwksPrKJk_7JuzDZ1Tdpz6mubjV6DzlmqDJJjf32hBIMnaYOhOUz5k1FzZ8mybsSbnM9UjzHYr5xIf4rkmVAfuPnU2FGu8NtCQaOtt9G-TziBFgT3ZjxBCL9QaaC39BRulGE6tyCAT8NM9svTD_AbNyINUzO2M0R61OXYQfzXEeiui-sO6eYIc3x_z-YdFFQ" \
     --header "Content-Type: application/json" \
     --header "Accept: application/json"</code></pre></div>
@@ -15662,7 +19244,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 <div class="javascript-example">
     <pre><code class="language-javascript">const url = new URL(
-    "http://127.0.0.1:8000/api/v3/user/leadership-development/download/tenetur"
+    "http://127.0.0.1:8000/api/v3/user/leadership-development/download/nisi"
 );
 
 const headers = {
@@ -15675,6 +19257,26 @@ fetch(url, {
     method: "GET",
     headers,
 }).then(response =&gt; response.json());</code></pre></div>
+
+
+<div class="jsonToDart-example">
+    <pre><code class="language-dart">
+class Nisi {
+  final String? message;
+  final bool? status;
+
+  Nisi({this.message, this.status, });
+
+  factory Nisi.fromJson(Map&lt;String, dynamic&gt; json) =&gt; Nisi(
+    message: json['message'],
+    status: json['status'],
+  );
+
+  Map&lt;String, dynamic&gt; toJson() =&gt; {
+    'message': message,
+    'status': status,
+  };
+}</code></pre></div>
 
 </span>
 
@@ -15794,10 +19396,10 @@ You can check the Dev Tools console for debugging information.</code></pre>
  &nbsp;
                 <input type="text" style="display: none"
                               name="file"                data-endpoint="GETapi-v3-user-leadership-development-download--file-"
-               value="tenetur"
+               value="nisi"
                data-component="url">
     <br>
-<p>Example: <code>tenetur</code></p>
+<p>Example: <code>nisi</code></p>
             </div>
                     </form>
 
@@ -15846,6 +19448,20 @@ fetch(url, {
     method: "GET",
     headers,
 }).then(response =&gt; response.json());</code></pre></div>
+
+
+<div class="jsonToDart-example">
+    <pre><code class="language-dart">
+class Files {
+
+  Files({});
+
+  factory Files.fromJson(Map&lt;String, dynamic&gt; json) =&gt; Files(
+  );
+
+  Map&lt;String, dynamic&gt; toJson() =&gt; {
+  };
+}</code></pre></div>
 
 </span>
 
@@ -16051,7 +19667,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 <div class="bash-example">
     <pre><code class="language-bash">curl --request GET \
-    --get "http://127.0.0.1:8000/api/v3/user/files/list-by-topics?sortby=rerum&amp;sorttype=modi&amp;query=ad&amp;topic_id=3" \
+    --get "http://127.0.0.1:8000/api/v3/user/files/list-by-topics?sortby=nihil&amp;sorttype=assumenda&amp;query=ut&amp;topic_id=8" \
     --header "Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJhdWQiOiIxIiwianRpIjoiNTJkNDhkYzhjNTc4ODIwZWVmODFmY2NhOWJiMmJiODFlZGE1MTUwMTVkYmU5YzdkNzFkODAyYTRmZWNhMWQ5ZGJhYWEzMTc2YjI1OTJmMTgiLCJpYXQiOjE3NjQwNjAzNDQuMDUyOTc0LCJuYmYiOjE3NjQwNjAzNDQuMDUyOTc1LCJleHAiOjE3OTU1OTYzNDQuMDQzNjUyLCJzdWIiOiIxNjgiLCJzY29wZXMiOltdfQ.X9tS38uM-UlrpFlYZihD_kmuCcSX_hdGsRBJcNGfrWXAClMiqeTxNTC45Ftxw-ddmDQ59t5xJLlnWp2Rx57itO-IHclNmwnVJDPAh1l9D8CZBGxBSoN0FvmbWeYDNQnA7ud77YLekrcSAuKMdBX3J1UKq6ytvWwi6ChnuRFqcQ-fpzK-jgkMhGm-WFHw0H3a34afdBdSUUFutESlwMvTqmXILYVcIwaJpEAjamf3rn6wIOEoD8mbxXJ6Gb6QrRO72Kt3z62vJp7yOeMsnXUkfioVSyJVwbkbchCs2Y4YZY3FEREbKysKNdHJhhqmn6AXvx66arAK3HeZoyf5eusfk26alhbEdJqsJgFP5VROV5l57q8VKhH8hAxg-oeidCGGJXPjLGeb-5iGPjdGhQ1Ng1i9kt7VDV4icb8B2AbNC2Ie9xP6b0R11PX4jUd8D3Jogf2f0ZhAs5Is8WHcrxsCyk3lWvgOyzWxpRx2lSpmBRmSwksPrKJk_7JuzDZ1Tdpz6mubjV6DzlmqDJJjf32hBIMnaYOhOUz5k1FzZ8mybsSbnM9UjzHYr5xIf4rkmVAfuPnU2FGu8NtCQaOtt9G-TziBFgT3ZjxBCL9QaaC39BRulGE6tyCAT8NM9svTD_AbNyINUzO2M0R61OXYQfzXEeiui-sO6eYIc3x_z-YdFFQ" \
     --header "Content-Type: application/json" \
     --header "Accept: application/json"</code></pre></div>
@@ -16063,10 +19679,10 @@ You can check the Dev Tools console for debugging information.</code></pre>
 );
 
 const params = {
-    "sortby": "rerum",
-    "sorttype": "modi",
-    "query": "ad",
-    "topic_id": "3",
+    "sortby": "nihil",
+    "sorttype": "assumenda",
+    "query": "ut",
+    "topic_id": "8",
 };
 Object.keys(params)
     .forEach(key =&gt; url.searchParams.append(key, params[key]));
@@ -16081,6 +19697,93 @@ fetch(url, {
     method: "GET",
     headers,
 }).then(response =&gt; response.json());</code></pre></div>
+
+
+<div class="jsonToDart-example">
+    <pre><code class="language-dart">
+class Topics {
+  final String? message;
+  final List&lt;DataItem&gt;? data;
+  final Pagination? pagination;
+  final bool? status;
+
+  Topics({this.message, this.data, this.pagination, this.status, });
+
+  factory Topics.fromJson(Map&lt;String, dynamic&gt; json) =&gt; Topics(
+    message: json['message'],
+    data: (json['data'] as List&lt;dynamic&gt;?)?.map((e) =&gt; DataItem.fromJson(e as Map&lt;String, dynamic&gt;)).toList(),
+    pagination: json['pagination'] != null ? Pagination.fromJson(json['pagination'] as Map&lt;String, dynamic&gt;) : null,
+    status: json['status'],
+  );
+
+  Map&lt;String, dynamic&gt; toJson() =&gt; {
+    'message': message,
+    'data': data?.map((e) =&gt; e.toJson()).toList(),
+    'pagination': pagination?.toJson(),
+    'status': status,
+  };
+}
+
+class Pagination {
+  final int? total;
+  final int? per_page;
+  final int? current_page;
+  final int? last_page;
+
+  Pagination({this.total, this.per_page, this.current_page, this.last_page, });
+
+  factory Pagination.fromJson(Map&lt;String, dynamic&gt; json) =&gt; Pagination(
+    total: json['total'],
+    per_page: json['per_page'],
+    current_page: json['current_page'],
+    last_page: json['last_page'],
+  );
+
+  Map&lt;String, dynamic&gt; toJson() =&gt; {
+    'total': total,
+    'per_page': per_page,
+    'current_page': current_page,
+    'last_page': last_page,
+  };
+}
+
+class DataItem {
+  final int? id;
+  final int? user_id;
+  final String? file_name;
+  final String? file_extension;
+  final int? topic_id;
+  final String? type;
+  final String? file;
+  final String? created_at;
+  final String? updated_at;
+
+  DataItem({this.id, this.user_id, this.file_name, this.file_extension, this.topic_id, this.type, this.file, this.created_at, this.updated_at, });
+
+  factory DataItem.fromJson(Map&lt;String, dynamic&gt; json) =&gt; DataItem(
+    id: json['id'],
+    user_id: json['user_id'],
+    file_name: json['file_name'],
+    file_extension: json['file_extension'],
+    topic_id: json['topic_id'],
+    type: json['type'],
+    file: json['file'],
+    created_at: json['created_at'],
+    updated_at: json['updated_at'],
+  );
+
+  Map&lt;String, dynamic&gt; toJson() =&gt; {
+    'id': id,
+    'user_id': user_id,
+    'file_name': file_name,
+    'file_extension': file_extension,
+    'topic_id': topic_id,
+    'type': type,
+    'file': file,
+    'created_at': created_at,
+    'updated_at': updated_at,
+  };
+}</code></pre></div>
 
 </span>
 
@@ -16202,10 +19905,10 @@ You can check the Dev Tools console for debugging information.</code></pre>
 <i>optional</i> &nbsp;
                 <input type="text" style="display: none"
                               name="sortby"                data-endpoint="GETapi-v3-user-files-list-by-topics"
-               value="rerum"
+               value="nihil"
                data-component="query">
     <br>
-<p>The column to sort by (optional, default: id). Example: <code>rerum</code></p>
+<p>The column to sort by (optional, default: id). Example: <code>nihil</code></p>
             </div>
                                     <div style="padding-left: 28px; clear: unset;">
                 <b style="line-height: 2;"><code>sorttype</code></b>&nbsp;&nbsp;
@@ -16213,10 +19916,10 @@ You can check the Dev Tools console for debugging information.</code></pre>
 <i>optional</i> &nbsp;
                 <input type="text" style="display: none"
                               name="sorttype"                data-endpoint="GETapi-v3-user-files-list-by-topics"
-               value="modi"
+               value="assumenda"
                data-component="query">
     <br>
-<p>The sort direction, either 'asc' or 'desc' (optional, default: 'asc'). Example: <code>modi</code></p>
+<p>The sort direction, either 'asc' or 'desc' (optional, default: 'asc'). Example: <code>assumenda</code></p>
             </div>
                                     <div style="padding-left: 28px; clear: unset;">
                 <b style="line-height: 2;"><code>query</code></b>&nbsp;&nbsp;
@@ -16224,10 +19927,10 @@ You can check the Dev Tools console for debugging information.</code></pre>
 <i>optional</i> &nbsp;
                 <input type="text" style="display: none"
                               name="query"                data-endpoint="GETapi-v3-user-files-list-by-topics"
-               value="ad"
+               value="ut"
                data-component="query">
     <br>
-<p>The search query to filter files by ID, file name, or file extension (optional). Example: <code>ad</code></p>
+<p>The search query to filter files by ID, file name, or file extension (optional). Example: <code>ut</code></p>
             </div>
                                     <div style="padding-left: 28px; clear: unset;">
                 <b style="line-height: 2;"><code>topic_id</code></b>&nbsp;&nbsp;
@@ -16235,10 +19938,10 @@ You can check the Dev Tools console for debugging information.</code></pre>
 <i>optional</i> &nbsp;
                 <input type="number" style="display: none"
                step="any"               name="topic_id"                data-endpoint="GETapi-v3-user-files-list-by-topics"
-               value="3"
+               value="8"
                data-component="query">
     <br>
-<p>The ID of the topic to filter files by (optional). Example: <code>3</code></p>
+<p>The ID of the topic to filter files by (optional). Example: <code>8</code></p>
             </div>
                 </form>
 
@@ -16277,6 +19980,52 @@ fetch(url, {
     method: "GET",
     headers,
 }).then(response =&gt; response.json());</code></pre></div>
+
+
+<div class="jsonToDart-example">
+    <pre><code class="language-dart">
+class Topics {
+  final List&lt;DataItem&gt;? data;
+  final bool? status;
+
+  Topics({this.data, this.status, });
+
+  factory Topics.fromJson(Map&lt;String, dynamic&gt; json) =&gt; Topics(
+    data: (json['data'] as List&lt;dynamic&gt;?)?.map((e) =&gt; DataItem.fromJson(e as Map&lt;String, dynamic&gt;)).toList(),
+    status: json['status'],
+  );
+
+  Map&lt;String, dynamic&gt; toJson() =&gt; {
+    'data': data?.map((e) =&gt; e.toJson()).toList(),
+    'status': status,
+  };
+}
+
+class DataItem {
+  final int? id;
+  final String? topic_name;
+  final String? education_type;
+  final String? created_at;
+  final String? updated_at;
+
+  DataItem({this.id, this.topic_name, this.education_type, this.created_at, this.updated_at, });
+
+  factory DataItem.fromJson(Map&lt;String, dynamic&gt; json) =&gt; DataItem(
+    id: json['id'],
+    topic_name: json['topic_name'],
+    education_type: json['education_type'],
+    created_at: json['created_at'],
+    updated_at: json['updated_at'],
+  );
+
+  Map&lt;String, dynamic&gt; toJson() =&gt; {
+    'id': id,
+    'topic_name': topic_name,
+    'education_type': education_type,
+    'created_at': created_at,
+    'updated_at': updated_at,
+  };
+}</code></pre></div>
 
 </span>
 
@@ -16411,7 +20160,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
     --header "Content-Type: multipart/form-data" \
     --header "Accept: application/json" \
     --form "topic_id=0"\
-    --form "file=@/private/var/folders/wy/1yz2w5p91q13336262xr4yzw0000gn/T/php8MMDc7" </code></pre></div>
+    --form "file=@/private/var/folders/wy/1yz2w5p91q13336262xr4yzw0000gn/T/phpt8aFEt" </code></pre></div>
 
 
 <div class="javascript-example">
@@ -16434,6 +20183,67 @@ fetch(url, {
     headers,
     body,
 }).then(response =&gt; response.json());</code></pre></div>
+
+
+<div class="jsonToDart-example">
+    <pre><code class="language-dart">
+class Store {
+  final String? message;
+  final Data? data;
+  final bool? status;
+
+  Store({this.message, this.data, this.status, });
+
+  factory Store.fromJson(Map&lt;String, dynamic&gt; json) =&gt; Store(
+    message: json['message'],
+    data: json['data'] != null ? Data.fromJson(json['data'] as Map&lt;String, dynamic&gt;) : null,
+    status: json['status'],
+  );
+
+  Map&lt;String, dynamic&gt; toJson() =&gt; {
+    'message': message,
+    'data': data?.toJson(),
+    'status': status,
+  };
+}
+
+class Data {
+  final int? user_id;
+  final String? file_name;
+  final String? file_extension;
+  final String? topic_id;
+  final String? type;
+  final String? file;
+  final String? updated_at;
+  final String? created_at;
+  final int? id;
+
+  Data({this.user_id, this.file_name, this.file_extension, this.topic_id, this.type, this.file, this.updated_at, this.created_at, this.id, });
+
+  factory Data.fromJson(Map&lt;String, dynamic&gt; json) =&gt; Data(
+    user_id: json['user_id'],
+    file_name: json['file_name'],
+    file_extension: json['file_extension'],
+    topic_id: json['topic_id'],
+    type: json['type'],
+    file: json['file'],
+    updated_at: json['updated_at'],
+    created_at: json['created_at'],
+    id: json['id'],
+  );
+
+  Map&lt;String, dynamic&gt; toJson() =&gt; {
+    'user_id': user_id,
+    'file_name': file_name,
+    'file_extension': file_extension,
+    'topic_id': topic_id,
+    'type': type,
+    'file': file,
+    'updated_at': updated_at,
+    'created_at': created_at,
+    'id': id,
+  };
+}</code></pre></div>
 
 </span>
 
@@ -16578,7 +20388,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
                value=""
                data-component="body">
     <br>
-<p>The file to upload. Example: <code>/private/var/folders/wy/1yz2w5p91q13336262xr4yzw0000gn/T/php8MMDc7</code></p>
+<p>The file to upload. Example: <code>/private/var/folders/wy/1yz2w5p91q13336262xr4yzw0000gn/T/phpt8aFEt</code></p>
         </div>
                 <div style=" padding-left: 28px;  clear: unset;">
             <b style="line-height: 2;"><code>topic_id</code></b>&nbsp;&nbsp;
@@ -16607,7 +20417,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 <div class="bash-example">
     <pre><code class="language-bash">curl --request GET \
-    --get "http://127.0.0.1:8000/api/v3/user/files/view/1?topic=1" \
+    --get "http://127.0.0.1:8000/api/v3/user/files/view/1?topic=12" \
     --header "Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJhdWQiOiIxIiwianRpIjoiNTJkNDhkYzhjNTc4ODIwZWVmODFmY2NhOWJiMmJiODFlZGE1MTUwMTVkYmU5YzdkNzFkODAyYTRmZWNhMWQ5ZGJhYWEzMTc2YjI1OTJmMTgiLCJpYXQiOjE3NjQwNjAzNDQuMDUyOTc0LCJuYmYiOjE3NjQwNjAzNDQuMDUyOTc1LCJleHAiOjE3OTU1OTYzNDQuMDQzNjUyLCJzdWIiOiIxNjgiLCJzY29wZXMiOltdfQ.X9tS38uM-UlrpFlYZihD_kmuCcSX_hdGsRBJcNGfrWXAClMiqeTxNTC45Ftxw-ddmDQ59t5xJLlnWp2Rx57itO-IHclNmwnVJDPAh1l9D8CZBGxBSoN0FvmbWeYDNQnA7ud77YLekrcSAuKMdBX3J1UKq6ytvWwi6ChnuRFqcQ-fpzK-jgkMhGm-WFHw0H3a34afdBdSUUFutESlwMvTqmXILYVcIwaJpEAjamf3rn6wIOEoD8mbxXJ6Gb6QrRO72Kt3z62vJp7yOeMsnXUkfioVSyJVwbkbchCs2Y4YZY3FEREbKysKNdHJhhqmn6AXvx66arAK3HeZoyf5eusfk26alhbEdJqsJgFP5VROV5l57q8VKhH8hAxg-oeidCGGJXPjLGeb-5iGPjdGhQ1Ng1i9kt7VDV4icb8B2AbNC2Ie9xP6b0R11PX4jUd8D3Jogf2f0ZhAs5Is8WHcrxsCyk3lWvgOyzWxpRx2lSpmBRmSwksPrKJk_7JuzDZ1Tdpz6mubjV6DzlmqDJJjf32hBIMnaYOhOUz5k1FzZ8mybsSbnM9UjzHYr5xIf4rkmVAfuPnU2FGu8NtCQaOtt9G-TziBFgT3ZjxBCL9QaaC39BRulGE6tyCAT8NM9svTD_AbNyINUzO2M0R61OXYQfzXEeiui-sO6eYIc3x_z-YdFFQ" \
     --header "Content-Type: application/json" \
     --header "Accept: application/json"</code></pre></div>
@@ -16619,7 +20429,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 );
 
 const params = {
-    "topic": "1",
+    "topic": "12",
 };
 Object.keys(params)
     .forEach(key =&gt; url.searchParams.append(key, params[key]));
@@ -16634,6 +20444,70 @@ fetch(url, {
     method: "GET",
     headers,
 }).then(response =&gt; response.json());</code></pre></div>
+
+
+<div class="jsonToDart-example">
+    <pre><code class="language-dart">
+class 1 {
+  final String? message;
+  final Data? data;
+  final String? new_topic;
+  final bool? status;
+
+  1({this.message, this.data, this.new_topic, this.status, });
+
+  factory 1.fromJson(Map&lt;String, dynamic&gt; json) =&gt; 1(
+    message: json['message'],
+    data: json['data'] != null ? Data.fromJson(json['data'] as Map&lt;String, dynamic&gt;) : null,
+    new_topic: json['new_topic'],
+    status: json['status'],
+  );
+
+  Map&lt;String, dynamic&gt; toJson() =&gt; {
+    'message': message,
+    'data': data?.toJson(),
+    'new_topic': new_topic,
+    'status': status,
+  };
+}
+
+class Data {
+  final int? id;
+  final int? user_id;
+  final String? file_name;
+  final String? file_extension;
+  final int? topic_id;
+  final String? type;
+  final String? file;
+  final String? created_at;
+  final String? updated_at;
+
+  Data({this.id, this.user_id, this.file_name, this.file_extension, this.topic_id, this.type, this.file, this.created_at, this.updated_at, });
+
+  factory Data.fromJson(Map&lt;String, dynamic&gt; json) =&gt; Data(
+    id: json['id'],
+    user_id: json['user_id'],
+    file_name: json['file_name'],
+    file_extension: json['file_extension'],
+    topic_id: json['topic_id'],
+    type: json['type'],
+    file: json['file'],
+    created_at: json['created_at'],
+    updated_at: json['updated_at'],
+  );
+
+  Map&lt;String, dynamic&gt; toJson() =&gt; {
+    'id': id,
+    'user_id': user_id,
+    'file_name': file_name,
+    'file_extension': file_extension,
+    'topic_id': topic_id,
+    'type': type,
+    'file': file,
+    'created_at': created_at,
+    'updated_at': updated_at,
+  };
+}</code></pre></div>
 
 </span>
 
@@ -16770,10 +20644,10 @@ You can check the Dev Tools console for debugging information.</code></pre>
 <i>optional</i> &nbsp;
                 <input type="number" style="display: none"
                step="any"               name="topic"                data-endpoint="GETapi-v3-user-files-view--id-"
-               value="1"
+               value="12"
                data-component="query">
     <br>
-<p>The ID of the topic to filter by (optional). Example: <code>1</code></p>
+<p>The ID of the topic to filter by (optional). Example: <code>12</code></p>
             </div>
                 </form>
 
@@ -16791,17 +20665,17 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 <div class="bash-example">
     <pre><code class="language-bash">curl --request POST \
-    "http://127.0.0.1:8000/api/v3/user/files/update/aut" \
+    "http://127.0.0.1:8000/api/v3/user/files/update/vitae" \
     --header "Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJhdWQiOiIxIiwianRpIjoiNTJkNDhkYzhjNTc4ODIwZWVmODFmY2NhOWJiMmJiODFlZGE1MTUwMTVkYmU5YzdkNzFkODAyYTRmZWNhMWQ5ZGJhYWEzMTc2YjI1OTJmMTgiLCJpYXQiOjE3NjQwNjAzNDQuMDUyOTc0LCJuYmYiOjE3NjQwNjAzNDQuMDUyOTc1LCJleHAiOjE3OTU1OTYzNDQuMDQzNjUyLCJzdWIiOiIxNjgiLCJzY29wZXMiOltdfQ.X9tS38uM-UlrpFlYZihD_kmuCcSX_hdGsRBJcNGfrWXAClMiqeTxNTC45Ftxw-ddmDQ59t5xJLlnWp2Rx57itO-IHclNmwnVJDPAh1l9D8CZBGxBSoN0FvmbWeYDNQnA7ud77YLekrcSAuKMdBX3J1UKq6ytvWwi6ChnuRFqcQ-fpzK-jgkMhGm-WFHw0H3a34afdBdSUUFutESlwMvTqmXILYVcIwaJpEAjamf3rn6wIOEoD8mbxXJ6Gb6QrRO72Kt3z62vJp7yOeMsnXUkfioVSyJVwbkbchCs2Y4YZY3FEREbKysKNdHJhhqmn6AXvx66arAK3HeZoyf5eusfk26alhbEdJqsJgFP5VROV5l57q8VKhH8hAxg-oeidCGGJXPjLGeb-5iGPjdGhQ1Ng1i9kt7VDV4icb8B2AbNC2Ie9xP6b0R11PX4jUd8D3Jogf2f0ZhAs5Is8WHcrxsCyk3lWvgOyzWxpRx2lSpmBRmSwksPrKJk_7JuzDZ1Tdpz6mubjV6DzlmqDJJjf32hBIMnaYOhOUz5k1FzZ8mybsSbnM9UjzHYr5xIf4rkmVAfuPnU2FGu8NtCQaOtt9G-TziBFgT3ZjxBCL9QaaC39BRulGE6tyCAT8NM9svTD_AbNyINUzO2M0R61OXYQfzXEeiui-sO6eYIc3x_z-YdFFQ" \
     --header "Content-Type: multipart/form-data" \
     --header "Accept: application/json" \
     --form "topic_id=1"\
-    --form "file=@/private/var/folders/wy/1yz2w5p91q13336262xr4yzw0000gn/T/phpvcgfj4" </code></pre></div>
+    --form "file=@/private/var/folders/wy/1yz2w5p91q13336262xr4yzw0000gn/T/phpck8NYq" </code></pre></div>
 
 
 <div class="javascript-example">
     <pre><code class="language-javascript">const url = new URL(
-    "http://127.0.0.1:8000/api/v3/user/files/update/aut"
+    "http://127.0.0.1:8000/api/v3/user/files/update/vitae"
 );
 
 const headers = {
@@ -16819,6 +20693,58 @@ fetch(url, {
     headers,
     body,
 }).then(response =&gt; response.json());</code></pre></div>
+
+
+<div class="jsonToDart-example">
+    <pre><code class="language-dart">
+class Vitae {
+  final String? message;
+  final Data? data;
+  final bool? status;
+
+  Vitae({this.message, this.data, this.status, });
+
+  factory Vitae.fromJson(Map&lt;String, dynamic&gt; json) =&gt; Vitae(
+    message: json['message'],
+    data: json['data'] != null ? Data.fromJson(json['data'] as Map&lt;String, dynamic&gt;) : null,
+    status: json['status'],
+  );
+
+  Map&lt;String, dynamic&gt; toJson() =&gt; {
+    'message': message,
+    'data': data?.toJson(),
+    'status': status,
+  };
+}
+
+class Data {
+  final int? id;
+  final String? file_name;
+  final String? file_extension;
+  final int? topic_id;
+  final int? user_id;
+  final String? file;
+
+  Data({this.id, this.file_name, this.file_extension, this.topic_id, this.user_id, this.file, });
+
+  factory Data.fromJson(Map&lt;String, dynamic&gt; json) =&gt; Data(
+    id: json['id'],
+    file_name: json['file_name'],
+    file_extension: json['file_extension'],
+    topic_id: json['topic_id'],
+    user_id: json['user_id'],
+    file: json['file'],
+  );
+
+  Map&lt;String, dynamic&gt; toJson() =&gt; {
+    'id': id,
+    'file_name': file_name,
+    'file_extension': file_extension,
+    'topic_id': topic_id,
+    'user_id': user_id,
+    'file': file,
+  };
+}</code></pre></div>
 
 </span>
 
@@ -16964,10 +20890,10 @@ You can check the Dev Tools console for debugging information.</code></pre>
  &nbsp;
                 <input type="text" style="display: none"
                               name="id"                data-endpoint="POSTapi-v3-user-files-update--id-"
-               value="aut"
+               value="vitae"
                data-component="url">
     <br>
-<p>The ID of the update. Example: <code>aut</code></p>
+<p>The ID of the update. Example: <code>vitae</code></p>
             </div>
                             <h4 class="fancy-heading-panel"><b>Body Parameters</b></h4>
         <div style=" padding-left: 28px;  clear: unset;">
@@ -16979,7 +20905,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
                value=""
                data-component="body">
     <br>
-<p>The new file to replace the existing one (optional). Example: <code>/private/var/folders/wy/1yz2w5p91q13336262xr4yzw0000gn/T/phpvcgfj4</code></p>
+<p>The new file to replace the existing one (optional). Example: <code>/private/var/folders/wy/1yz2w5p91q13336262xr4yzw0000gn/T/phpck8NYq</code></p>
         </div>
                 <div style=" padding-left: 28px;  clear: unset;">
             <b style="line-height: 2;"><code>topic_id</code></b>&nbsp;&nbsp;
@@ -17029,6 +20955,26 @@ fetch(url, {
     method: "GET",
     headers,
 }).then(response =&gt; response.json());</code></pre></div>
+
+
+<div class="jsonToDart-example">
+    <pre><code class="language-dart">
+class 1 {
+  final String? message;
+  final bool? status;
+
+  1({this.message, this.status, });
+
+  factory 1.fromJson(Map&lt;String, dynamic&gt; json) =&gt; 1(
+    message: json['message'],
+    status: json['status'],
+  );
+
+  Map&lt;String, dynamic&gt; toJson() =&gt; {
+    'message': message,
+    'status': status,
+  };
+}</code></pre></div>
 
 </span>
 
@@ -17172,7 +21118,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 <div class="bash-example">
     <pre><code class="language-bash">curl --request GET \
-    --get "http://127.0.0.1:8000/api/v3/user/files/download/consequatur" \
+    --get "http://127.0.0.1:8000/api/v3/user/files/download/ut" \
     --header "Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJhdWQiOiIxIiwianRpIjoiNTJkNDhkYzhjNTc4ODIwZWVmODFmY2NhOWJiMmJiODFlZGE1MTUwMTVkYmU5YzdkNzFkODAyYTRmZWNhMWQ5ZGJhYWEzMTc2YjI1OTJmMTgiLCJpYXQiOjE3NjQwNjAzNDQuMDUyOTc0LCJuYmYiOjE3NjQwNjAzNDQuMDUyOTc1LCJleHAiOjE3OTU1OTYzNDQuMDQzNjUyLCJzdWIiOiIxNjgiLCJzY29wZXMiOltdfQ.X9tS38uM-UlrpFlYZihD_kmuCcSX_hdGsRBJcNGfrWXAClMiqeTxNTC45Ftxw-ddmDQ59t5xJLlnWp2Rx57itO-IHclNmwnVJDPAh1l9D8CZBGxBSoN0FvmbWeYDNQnA7ud77YLekrcSAuKMdBX3J1UKq6ytvWwi6ChnuRFqcQ-fpzK-jgkMhGm-WFHw0H3a34afdBdSUUFutESlwMvTqmXILYVcIwaJpEAjamf3rn6wIOEoD8mbxXJ6Gb6QrRO72Kt3z62vJp7yOeMsnXUkfioVSyJVwbkbchCs2Y4YZY3FEREbKysKNdHJhhqmn6AXvx66arAK3HeZoyf5eusfk26alhbEdJqsJgFP5VROV5l57q8VKhH8hAxg-oeidCGGJXPjLGeb-5iGPjdGhQ1Ng1i9kt7VDV4icb8B2AbNC2Ie9xP6b0R11PX4jUd8D3Jogf2f0ZhAs5Is8WHcrxsCyk3lWvgOyzWxpRx2lSpmBRmSwksPrKJk_7JuzDZ1Tdpz6mubjV6DzlmqDJJjf32hBIMnaYOhOUz5k1FzZ8mybsSbnM9UjzHYr5xIf4rkmVAfuPnU2FGu8NtCQaOtt9G-TziBFgT3ZjxBCL9QaaC39BRulGE6tyCAT8NM9svTD_AbNyINUzO2M0R61OXYQfzXEeiui-sO6eYIc3x_z-YdFFQ" \
     --header "Content-Type: application/json" \
     --header "Accept: application/json"</code></pre></div>
@@ -17180,7 +21126,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 <div class="javascript-example">
     <pre><code class="language-javascript">const url = new URL(
-    "http://127.0.0.1:8000/api/v3/user/files/download/consequatur"
+    "http://127.0.0.1:8000/api/v3/user/files/download/ut"
 );
 
 const headers = {
@@ -17193,6 +21139,26 @@ fetch(url, {
     method: "GET",
     headers,
 }).then(response =&gt; response.json());</code></pre></div>
+
+
+<div class="jsonToDart-example">
+    <pre><code class="language-dart">
+class Ut {
+  final String? message;
+  final bool? status;
+
+  Ut({this.message, this.status, });
+
+  factory Ut.fromJson(Map&lt;String, dynamic&gt; json) =&gt; Ut(
+    message: json['message'],
+    status: json['status'],
+  );
+
+  Map&lt;String, dynamic&gt; toJson() =&gt; {
+    'message': message,
+    'status': status,
+  };
+}</code></pre></div>
 
 </span>
 
@@ -17312,10 +21278,10 @@ You can check the Dev Tools console for debugging information.</code></pre>
  &nbsp;
                 <input type="text" style="display: none"
                               name="file"                data-endpoint="GETapi-v3-user-files-download--file-"
-               value="consequatur"
+               value="ut"
                data-component="url">
     <br>
-<p>Example: <code>consequatur</code></p>
+<p>Example: <code>ut</code></p>
             </div>
                     </form>
 
@@ -17365,6 +21331,84 @@ fetch(url, {
     method: "POST",
     headers,
 }).then(response =&gt; response.json());</code></pre></div>
+
+
+<div class="jsonToDart-example">
+    <pre><code class="language-dart">
+class List {
+  final List&lt;DataItem&gt;? data;
+  final int? total;
+  final int? perPage;
+  final int? currentPage;
+  final int? lastPage;
+
+  List({this.data, this.total, this.perPage, this.currentPage, this.lastPage, });
+
+  factory List.fromJson(Map&lt;String, dynamic&gt; json) =&gt; List(
+    data: (json['data'] as List&lt;dynamic&gt;?)?.map((e) =&gt; DataItem.fromJson(e as Map&lt;String, dynamic&gt;)).toList(),
+    total: json['total'],
+    perPage: json['perPage'],
+    currentPage: json['currentPage'],
+    lastPage: json['lastPage'],
+  );
+
+  Map&lt;String, dynamic&gt; toJson() =&gt; {
+    'data': data?.map((e) =&gt; e.toJson()).toList(),
+    'total': total,
+    'perPage': perPage,
+    'currentPage': currentPage,
+    'lastPage': lastPage,
+  };
+}
+
+class DataItem {
+  final int? id;
+  final String? subject;
+  final String? message;
+  final String? userToNames;
+  final String? lastReplyMessage;
+  final String? lastReplyDate;
+  final OwnUserMailInfo? ownUserMailInfo;
+
+  DataItem({this.id, this.subject, this.message, this.userToNames, this.lastReplyMessage, this.lastReplyDate, this.ownUserMailInfo, });
+
+  factory DataItem.fromJson(Map&lt;String, dynamic&gt; json) =&gt; DataItem(
+    id: json['id'],
+    subject: json['subject'],
+    message: json['message'],
+    userToNames: json['userToNames'],
+    lastReplyMessage: json['lastReplyMessage'],
+    lastReplyDate: json['lastReplyDate'],
+    ownUserMailInfo: json['ownUserMailInfo'] != null ? OwnUserMailInfo.fromJson(json['ownUserMailInfo'] as Map&lt;String, dynamic&gt;) : null,
+  );
+
+  Map&lt;String, dynamic&gt; toJson() =&gt; {
+    'id': id,
+    'subject': subject,
+    'message': message,
+    'userToNames': userToNames,
+    'lastReplyMessage': lastReplyMessage,
+    'lastReplyDate': lastReplyDate,
+    'ownUserMailInfo': ownUserMailInfo?.toJson(),
+  };
+}
+
+class OwnUserMailInfo {
+  final bool? is_read;
+  final bool? is_delete;
+
+  OwnUserMailInfo({this.is_read, this.is_delete, });
+
+  factory OwnUserMailInfo.fromJson(Map&lt;String, dynamic&gt; json) =&gt; OwnUserMailInfo(
+    is_read: json['is_read'],
+    is_delete: json['is_delete'],
+  );
+
+  Map&lt;String, dynamic&gt; toJson() =&gt; {
+    'is_read': is_read,
+    'is_delete': is_delete,
+  };
+}</code></pre></div>
 
 </span>
 
@@ -17554,6 +21598,84 @@ fetch(url, {
     headers,
 }).then(response =&gt; response.json());</code></pre></div>
 
+
+<div class="jsonToDart-example">
+    <pre><code class="language-dart">
+class List {
+  final List&lt;DataItem&gt;? data;
+  final int? total;
+  final int? perPage;
+  final int? currentPage;
+  final int? lastPage;
+
+  List({this.data, this.total, this.perPage, this.currentPage, this.lastPage, });
+
+  factory List.fromJson(Map&lt;String, dynamic&gt; json) =&gt; List(
+    data: (json['data'] as List&lt;dynamic&gt;?)?.map((e) =&gt; DataItem.fromJson(e as Map&lt;String, dynamic&gt;)).toList(),
+    total: json['total'],
+    perPage: json['perPage'],
+    currentPage: json['currentPage'],
+    lastPage: json['lastPage'],
+  );
+
+  Map&lt;String, dynamic&gt; toJson() =&gt; {
+    'data': data?.map((e) =&gt; e.toJson()).toList(),
+    'total': total,
+    'perPage': perPage,
+    'currentPage': currentPage,
+    'lastPage': lastPage,
+  };
+}
+
+class DataItem {
+  final int? id;
+  final String? subject;
+  final String? message;
+  final String? userToNames;
+  final String? lastReplyMessage;
+  final String? lastReplyDate;
+  final OwnUserMailInfo? ownUserMailInfo;
+
+  DataItem({this.id, this.subject, this.message, this.userToNames, this.lastReplyMessage, this.lastReplyDate, this.ownUserMailInfo, });
+
+  factory DataItem.fromJson(Map&lt;String, dynamic&gt; json) =&gt; DataItem(
+    id: json['id'],
+    subject: json['subject'],
+    message: json['message'],
+    userToNames: json['userToNames'],
+    lastReplyMessage: json['lastReplyMessage'],
+    lastReplyDate: json['lastReplyDate'],
+    ownUserMailInfo: json['ownUserMailInfo'] != null ? OwnUserMailInfo.fromJson(json['ownUserMailInfo'] as Map&lt;String, dynamic&gt;) : null,
+  );
+
+  Map&lt;String, dynamic&gt; toJson() =&gt; {
+    'id': id,
+    'subject': subject,
+    'message': message,
+    'userToNames': userToNames,
+    'lastReplyMessage': lastReplyMessage,
+    'lastReplyDate': lastReplyDate,
+    'ownUserMailInfo': ownUserMailInfo?.toJson(),
+  };
+}
+
+class OwnUserMailInfo {
+  final bool? is_read;
+  final bool? is_delete;
+
+  OwnUserMailInfo({this.is_read, this.is_delete, });
+
+  factory OwnUserMailInfo.fromJson(Map&lt;String, dynamic&gt; json) =&gt; OwnUserMailInfo(
+    is_read: json['is_read'],
+    is_delete: json['is_delete'],
+  );
+
+  Map&lt;String, dynamic&gt; toJson() =&gt; {
+    'is_read': is_read,
+    'is_delete': is_delete,
+  };
+}</code></pre></div>
+
 </span>
 
 <span id="example-responses-POSTapi-v3-user-mail-sent-email-list">
@@ -17742,6 +21864,84 @@ fetch(url, {
     headers,
 }).then(response =&gt; response.json());</code></pre></div>
 
+
+<div class="jsonToDart-example">
+    <pre><code class="language-dart">
+class List {
+  final List&lt;DataItem&gt;? data;
+  final int? total;
+  final int? perPage;
+  final int? currentPage;
+  final int? lastPage;
+
+  List({this.data, this.total, this.perPage, this.currentPage, this.lastPage, });
+
+  factory List.fromJson(Map&lt;String, dynamic&gt; json) =&gt; List(
+    data: (json['data'] as List&lt;dynamic&gt;?)?.map((e) =&gt; DataItem.fromJson(e as Map&lt;String, dynamic&gt;)).toList(),
+    total: json['total'],
+    perPage: json['perPage'],
+    currentPage: json['currentPage'],
+    lastPage: json['lastPage'],
+  );
+
+  Map&lt;String, dynamic&gt; toJson() =&gt; {
+    'data': data?.map((e) =&gt; e.toJson()).toList(),
+    'total': total,
+    'perPage': perPage,
+    'currentPage': currentPage,
+    'lastPage': lastPage,
+  };
+}
+
+class DataItem {
+  final int? id;
+  final String? subject;
+  final String? message;
+  final String? userToNames;
+  final String? lastReplyMessage;
+  final String? lastReplyDate;
+  final OwnUserMailInfo? ownUserMailInfo;
+
+  DataItem({this.id, this.subject, this.message, this.userToNames, this.lastReplyMessage, this.lastReplyDate, this.ownUserMailInfo, });
+
+  factory DataItem.fromJson(Map&lt;String, dynamic&gt; json) =&gt; DataItem(
+    id: json['id'],
+    subject: json['subject'],
+    message: json['message'],
+    userToNames: json['userToNames'],
+    lastReplyMessage: json['lastReplyMessage'],
+    lastReplyDate: json['lastReplyDate'],
+    ownUserMailInfo: json['ownUserMailInfo'] != null ? OwnUserMailInfo.fromJson(json['ownUserMailInfo'] as Map&lt;String, dynamic&gt;) : null,
+  );
+
+  Map&lt;String, dynamic&gt; toJson() =&gt; {
+    'id': id,
+    'subject': subject,
+    'message': message,
+    'userToNames': userToNames,
+    'lastReplyMessage': lastReplyMessage,
+    'lastReplyDate': lastReplyDate,
+    'ownUserMailInfo': ownUserMailInfo?.toJson(),
+  };
+}
+
+class OwnUserMailInfo {
+  final bool? is_read;
+  final bool? is_delete;
+
+  OwnUserMailInfo({this.is_read, this.is_delete, });
+
+  factory OwnUserMailInfo.fromJson(Map&lt;String, dynamic&gt; json) =&gt; OwnUserMailInfo(
+    is_read: json['is_read'],
+    is_delete: json['is_delete'],
+  );
+
+  Map&lt;String, dynamic&gt; toJson() =&gt; {
+    'is_read': is_read,
+    'is_delete': is_delete,
+  };
+}</code></pre></div>
+
 </span>
 
 <span id="example-responses-POSTapi-v3-user-mail-star-email-list">
@@ -17929,6 +22129,84 @@ fetch(url, {
     method: "POST",
     headers,
 }).then(response =&gt; response.json());</code></pre></div>
+
+
+<div class="jsonToDart-example">
+    <pre><code class="language-dart">
+class List {
+  final List&lt;DataItem&gt;? data;
+  final int? total;
+  final int? perPage;
+  final int? currentPage;
+  final int? lastPage;
+
+  List({this.data, this.total, this.perPage, this.currentPage, this.lastPage, });
+
+  factory List.fromJson(Map&lt;String, dynamic&gt; json) =&gt; List(
+    data: (json['data'] as List&lt;dynamic&gt;?)?.map((e) =&gt; DataItem.fromJson(e as Map&lt;String, dynamic&gt;)).toList(),
+    total: json['total'],
+    perPage: json['perPage'],
+    currentPage: json['currentPage'],
+    lastPage: json['lastPage'],
+  );
+
+  Map&lt;String, dynamic&gt; toJson() =&gt; {
+    'data': data?.map((e) =&gt; e.toJson()).toList(),
+    'total': total,
+    'perPage': perPage,
+    'currentPage': currentPage,
+    'lastPage': lastPage,
+  };
+}
+
+class DataItem {
+  final int? id;
+  final String? subject;
+  final String? message;
+  final String? userToNames;
+  final String? lastReplyMessage;
+  final String? lastReplyDate;
+  final OwnUserMailInfo? ownUserMailInfo;
+
+  DataItem({this.id, this.subject, this.message, this.userToNames, this.lastReplyMessage, this.lastReplyDate, this.ownUserMailInfo, });
+
+  factory DataItem.fromJson(Map&lt;String, dynamic&gt; json) =&gt; DataItem(
+    id: json['id'],
+    subject: json['subject'],
+    message: json['message'],
+    userToNames: json['userToNames'],
+    lastReplyMessage: json['lastReplyMessage'],
+    lastReplyDate: json['lastReplyDate'],
+    ownUserMailInfo: json['ownUserMailInfo'] != null ? OwnUserMailInfo.fromJson(json['ownUserMailInfo'] as Map&lt;String, dynamic&gt;) : null,
+  );
+
+  Map&lt;String, dynamic&gt; toJson() =&gt; {
+    'id': id,
+    'subject': subject,
+    'message': message,
+    'userToNames': userToNames,
+    'lastReplyMessage': lastReplyMessage,
+    'lastReplyDate': lastReplyDate,
+    'ownUserMailInfo': ownUserMailInfo?.toJson(),
+  };
+}
+
+class OwnUserMailInfo {
+  final bool? is_read;
+  final bool? is_delete;
+
+  OwnUserMailInfo({this.is_read, this.is_delete, });
+
+  factory OwnUserMailInfo.fromJson(Map&lt;String, dynamic&gt; json) =&gt; OwnUserMailInfo(
+    is_read: json['is_read'],
+    is_delete: json['is_delete'],
+  );
+
+  Map&lt;String, dynamic&gt; toJson() =&gt; {
+    'is_read': is_read,
+    'is_delete': is_delete,
+  };
+}</code></pre></div>
 
 </span>
 
@@ -18119,6 +22397,272 @@ fetch(url, {
     headers,
     body: JSON.stringify(body),
 }).then(response =&gt; response.json());</code></pre></div>
+
+
+<div class="jsonToDart-example">
+    <pre><code class="language-dart">
+class View {
+  final String? message;
+  final bool? status;
+  final Data? data;
+
+  View({this.message, this.status, this.data, });
+
+  factory View.fromJson(Map&lt;String, dynamic&gt; json) =&gt; View(
+    message: json['message'],
+    status: json['status'],
+    data: json['data'] != null ? Data.fromJson(json['data'] as Map&lt;String, dynamic&gt;) : null,
+  );
+
+  Map&lt;String, dynamic&gt; toJson() =&gt; {
+    'message': message,
+    'status': status,
+    'data': data?.toJson(),
+  };
+}
+
+class Data {
+  final MailDetails? mail_details;
+  final OwnUserMailInfo? ownUserMailInfo;
+  final List&lt;ReplyMailsItem&gt;? reply_mails;
+  final List&lt;AllMailIdsItem&gt;? allMailIds;
+  final List&lt;String&gt;? replyMailIds;
+
+  Data({this.mail_details, this.ownUserMailInfo, this.reply_mails, this.allMailIds, this.replyMailIds, });
+
+  factory Data.fromJson(Map&lt;String, dynamic&gt; json) =&gt; Data(
+    mail_details: json['mail_details'] != null ? MailDetails.fromJson(json['mail_details'] as Map&lt;String, dynamic&gt;) : null,
+    ownUserMailInfo: json['ownUserMailInfo'] != null ? OwnUserMailInfo.fromJson(json['ownUserMailInfo'] as Map&lt;String, dynamic&gt;) : null,
+    reply_mails: (json['reply_mails'] as List&lt;dynamic&gt;?)?.map((e) =&gt; ReplyMailsItem.fromJson(e as Map&lt;String, dynamic&gt;)).toList(),
+    allMailIds: (json['allMailIds'] as List&lt;dynamic&gt;?)?.map((e) =&gt; AllMailIdsItem.fromJson(e as Map&lt;String, dynamic&gt;)).toList(),
+    replyMailIds: List&lt;String&gt;.from(json['replyMailIds'] ?? []),
+  );
+
+  Map&lt;String, dynamic&gt; toJson() =&gt; {
+    'mail_details': mail_details?.toJson(),
+    'ownUserMailInfo': ownUserMailInfo?.toJson(),
+    'reply_mails': reply_mails?.map((e) =&gt; e.toJson()).toList(),
+    'allMailIds': allMailIds?.map((e) =&gt; e.toJson()).toList(),
+    'replyMailIds': replyMailIds,
+  };
+}
+
+class AllMailIdsItem {
+  final int? id;
+  final String? email;
+
+  AllMailIdsItem({this.id, this.email, });
+
+  factory AllMailIdsItem.fromJson(Map&lt;String, dynamic&gt; json) =&gt; AllMailIdsItem(
+    id: json['id'],
+    email: json['email'],
+  );
+
+  Map&lt;String, dynamic&gt; toJson() =&gt; {
+    'id': id,
+    'email': email,
+  };
+}
+
+class ReplyMailsItem {
+  final int? id;
+  final int? reply_of;
+  final int? form_id;
+  final String? to;
+  final dynamic? cc;
+  final String? subject;
+  final String? message;
+  final String? attachment;
+  final int? is_draft;
+  final int? is_delete;
+  final dynamic? deleted_at;
+  final String? created_at;
+  final String? updated_at;
+  final OwnUserMailInfo? ownUserMailInfo;
+  final User? user;
+
+  ReplyMailsItem({this.id, this.reply_of, this.form_id, this.to, this.cc, this.subject, this.message, this.attachment, this.is_draft, this.is_delete, this.deleted_at, this.created_at, this.updated_at, this.ownUserMailInfo, this.user, });
+
+  factory ReplyMailsItem.fromJson(Map&lt;String, dynamic&gt; json) =&gt; ReplyMailsItem(
+    id: json['id'],
+    reply_of: json['reply_of'],
+    form_id: json['form_id'],
+    to: json['to'],
+    cc: json['cc'],
+    subject: json['subject'],
+    message: json['message'],
+    attachment: json['attachment'],
+    is_draft: json['is_draft'],
+    is_delete: json['is_delete'],
+    deleted_at: json['deleted_at'],
+    created_at: json['created_at'],
+    updated_at: json['updated_at'],
+    ownUserMailInfo: json['ownUserMailInfo'] != null ? OwnUserMailInfo.fromJson(json['ownUserMailInfo'] as Map&lt;String, dynamic&gt;) : null,
+    user: json['user'] != null ? User.fromJson(json['user'] as Map&lt;String, dynamic&gt;) : null,
+  );
+
+  Map&lt;String, dynamic&gt; toJson() =&gt; {
+    'id': id,
+    'reply_of': reply_of,
+    'form_id': form_id,
+    'to': to,
+    'cc': cc,
+    'subject': subject,
+    'message': message,
+    'attachment': attachment,
+    'is_draft': is_draft,
+    'is_delete': is_delete,
+    'deleted_at': deleted_at,
+    'created_at': created_at,
+    'updated_at': updated_at,
+    'ownUserMailInfo': ownUserMailInfo?.toJson(),
+    'user': user?.toJson(),
+  };
+}
+
+class OwnUserMailInfo {
+  final int? is_read;
+  final int? is_starred;
+  final int? is_delete;
+
+  OwnUserMailInfo({this.is_read, this.is_starred, this.is_delete, });
+
+  factory OwnUserMailInfo.fromJson(Map&lt;String, dynamic&gt; json) =&gt; OwnUserMailInfo(
+    is_read: json['is_read'],
+    is_starred: json['is_starred'],
+    is_delete: json['is_delete'],
+  );
+
+  Map&lt;String, dynamic&gt; toJson() =&gt; {
+    'is_read': is_read,
+    'is_starred': is_starred,
+    'is_delete': is_delete,
+  };
+}
+
+class MailDetails {
+  final int? id;
+  final dynamic? reply_of;
+  final int? form_id;
+  final String? to;
+  final dynamic? cc;
+  final String? subject;
+  final String? message;
+  final String? attachment;
+  final int? is_draft;
+  final int? is_delete;
+  final dynamic? deleted_at;
+  final String? created_at;
+  final String? updated_at;
+  final User? user;
+
+  MailDetails({this.id, this.reply_of, this.form_id, this.to, this.cc, this.subject, this.message, this.attachment, this.is_draft, this.is_delete, this.deleted_at, this.created_at, this.updated_at, this.user, });
+
+  factory MailDetails.fromJson(Map&lt;String, dynamic&gt; json) =&gt; MailDetails(
+    id: json['id'],
+    reply_of: json['reply_of'],
+    form_id: json['form_id'],
+    to: json['to'],
+    cc: json['cc'],
+    subject: json['subject'],
+    message: json['message'],
+    attachment: json['attachment'],
+    is_draft: json['is_draft'],
+    is_delete: json['is_delete'],
+    deleted_at: json['deleted_at'],
+    created_at: json['created_at'],
+    updated_at: json['updated_at'],
+    user: json['user'] != null ? User.fromJson(json['user'] as Map&lt;String, dynamic&gt;) : null,
+  );
+
+  Map&lt;String, dynamic&gt; toJson() =&gt; {
+    'id': id,
+    'reply_of': reply_of,
+    'form_id': form_id,
+    'to': to,
+    'cc': cc,
+    'subject': subject,
+    'message': message,
+    'attachment': attachment,
+    'is_draft': is_draft,
+    'is_delete': is_delete,
+    'deleted_at': deleted_at,
+    'created_at': created_at,
+    'updated_at': updated_at,
+    'user': user?.toJson(),
+  };
+}
+
+class User {
+  final int? id;
+  final int? ecclesia_id;
+  final dynamic? created_id;
+  final String? user_name;
+  final String? first_name;
+  final dynamic? middle_name;
+  final String? last_name;
+  final String? email;
+  final String? phone;
+  final String? email_verified_at;
+  final String? profile_picture;
+  final String? address;
+  final String? city;
+  final String? state;
+  final String? address2;
+  final String? country;
+  final String? zip;
+  final int? status;
+  final String? created_at;
+  final String? updated_at;
+
+  User({this.id, this.ecclesia_id, this.created_id, this.user_name, this.first_name, this.middle_name, this.last_name, this.email, this.phone, this.email_verified_at, this.profile_picture, this.address, this.city, this.state, this.address2, this.country, this.zip, this.status, this.created_at, this.updated_at, });
+
+  factory User.fromJson(Map&lt;String, dynamic&gt; json) =&gt; User(
+    id: json['id'],
+    ecclesia_id: json['ecclesia_id'],
+    created_id: json['created_id'],
+    user_name: json['user_name'],
+    first_name: json['first_name'],
+    middle_name: json['middle_name'],
+    last_name: json['last_name'],
+    email: json['email'],
+    phone: json['phone'],
+    email_verified_at: json['email_verified_at'],
+    profile_picture: json['profile_picture'],
+    address: json['address'],
+    city: json['city'],
+    state: json['state'],
+    address2: json['address2'],
+    country: json['country'],
+    zip: json['zip'],
+    status: json['status'],
+    created_at: json['created_at'],
+    updated_at: json['updated_at'],
+  );
+
+  Map&lt;String, dynamic&gt; toJson() =&gt; {
+    'id': id,
+    'ecclesia_id': ecclesia_id,
+    'created_id': created_id,
+    'user_name': user_name,
+    'first_name': first_name,
+    'middle_name': middle_name,
+    'last_name': last_name,
+    'email': email,
+    'phone': phone,
+    'email_verified_at': email_verified_at,
+    'profile_picture': profile_picture,
+    'address': address,
+    'city': city,
+    'state': state,
+    'address2': address2,
+    'country': country,
+    'zip': zip,
+    'status': status,
+    'created_at': created_at,
+    'updated_at': updated_at,
+  };
+}</code></pre></div>
 
 </span>
 
@@ -18369,6 +22913,46 @@ fetch(url, {
     headers,
 }).then(response =&gt; response.json());</code></pre></div>
 
+
+<div class="jsonToDart-example">
+    <pre><code class="language-dart">
+class Users {
+  final String? message;
+  final bool? status;
+  final List&lt;UsersItem&gt;? users;
+
+  Users({this.message, this.status, this.users, });
+
+  factory Users.fromJson(Map&lt;String, dynamic&gt; json) =&gt; Users(
+    message: json['message'],
+    status: json['status'],
+    users: (json['users'] as List&lt;dynamic&gt;?)?.map((e) =&gt; UsersItem.fromJson(e as Map&lt;String, dynamic&gt;)).toList(),
+  );
+
+  Map&lt;String, dynamic&gt; toJson() =&gt; {
+    'message': message,
+    'status': status,
+    'users': users?.map((e) =&gt; e.toJson()).toList(),
+  };
+}
+
+class UsersItem {
+  final int? id;
+  final String? email;
+
+  UsersItem({this.id, this.email, });
+
+  factory UsersItem.fromJson(Map&lt;String, dynamic&gt; json) =&gt; UsersItem(
+    id: json['id'],
+    email: json['email'],
+  );
+
+  Map&lt;String, dynamic&gt; toJson() =&gt; {
+    'id': id,
+    'email': email,
+  };
+}</code></pre></div>
+
 </span>
 
 <span id="example-responses-POSTapi-v3-user-mail-compose-mail-users">
@@ -18515,11 +23099,11 @@ with the option to include CC recipients and attachments. Notifications are sent
     --header "Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJhdWQiOiIxIiwianRpIjoiNTJkNDhkYzhjNTc4ODIwZWVmODFmY2NhOWJiMmJiODFlZGE1MTUwMTVkYmU5YzdkNzFkODAyYTRmZWNhMWQ5ZGJhYWEzMTc2YjI1OTJmMTgiLCJpYXQiOjE3NjQwNjAzNDQuMDUyOTc0LCJuYmYiOjE3NjQwNjAzNDQuMDUyOTc1LCJleHAiOjE3OTU1OTYzNDQuMDQzNjUyLCJzdWIiOiIxNjgiLCJzY29wZXMiOltdfQ.X9tS38uM-UlrpFlYZihD_kmuCcSX_hdGsRBJcNGfrWXAClMiqeTxNTC45Ftxw-ddmDQ59t5xJLlnWp2Rx57itO-IHclNmwnVJDPAh1l9D8CZBGxBSoN0FvmbWeYDNQnA7ud77YLekrcSAuKMdBX3J1UKq6ytvWwi6ChnuRFqcQ-fpzK-jgkMhGm-WFHw0H3a34afdBdSUUFutESlwMvTqmXILYVcIwaJpEAjamf3rn6wIOEoD8mbxXJ6Gb6QrRO72Kt3z62vJp7yOeMsnXUkfioVSyJVwbkbchCs2Y4YZY3FEREbKysKNdHJhhqmn6AXvx66arAK3HeZoyf5eusfk26alhbEdJqsJgFP5VROV5l57q8VKhH8hAxg-oeidCGGJXPjLGeb-5iGPjdGhQ1Ng1i9kt7VDV4icb8B2AbNC2Ie9xP6b0R11PX4jUd8D3Jogf2f0ZhAs5Is8WHcrxsCyk3lWvgOyzWxpRx2lSpmBRmSwksPrKJk_7JuzDZ1Tdpz6mubjV6DzlmqDJJjf32hBIMnaYOhOUz5k1FzZ8mybsSbnM9UjzHYr5xIf4rkmVAfuPnU2FGu8NtCQaOtt9G-TziBFgT3ZjxBCL9QaaC39BRulGE6tyCAT8NM9svTD_AbNyINUzO2M0R61OXYQfzXEeiui-sO6eYIc3x_z-YdFFQ" \
     --header "Content-Type: multipart/form-data" \
     --header "Accept: application/json" \
-    --form "to=ducimus"\
-    --form "cc=facere"\
-    --form "subject=consequuntur"\
-    --form "message=est"\
-    --form "attachments[]=@/private/var/folders/wy/1yz2w5p91q13336262xr4yzw0000gn/T/phplCZx6f" </code></pre></div>
+    --form "to=at"\
+    --form "cc=itaque"\
+    --form "subject=expedita"\
+    --form "message=officiis"\
+    --form "attachments[]=@/private/var/folders/wy/1yz2w5p91q13336262xr4yzw0000gn/T/phpgjnSCa" </code></pre></div>
 
 
 <div class="javascript-example">
@@ -18534,10 +23118,10 @@ const headers = {
 };
 
 const body = new FormData();
-body.append('to', 'ducimus');
-body.append('cc', 'facere');
-body.append('subject', 'consequuntur');
-body.append('message', 'est');
+body.append('to', 'at');
+body.append('cc', 'itaque');
+body.append('subject', 'expedita');
+body.append('message', 'officiis');
 body.append('attachments[]', document.querySelector('input[name="attachments[]"]').files[0]);
 
 fetch(url, {
@@ -18545,6 +23129,32 @@ fetch(url, {
     headers,
     body,
 }).then(response =&gt; response.json());</code></pre></div>
+
+
+<div class="jsonToDart-example">
+    <pre><code class="language-dart">
+class Send {
+  final String? message;
+  final bool? status;
+  final List&lt;int&gt;? send_to_ids;
+  final String? notification_message;
+
+  Send({this.message, this.status, this.send_to_ids, this.notification_message, });
+
+  factory Send.fromJson(Map&lt;String, dynamic&gt; json) =&gt; Send(
+    message: json['message'],
+    status: json['status'],
+    send_to_ids: List&lt;int&gt;.from(json['send_to_ids'] ?? []),
+    notification_message: json['notification_message'],
+  );
+
+  Map&lt;String, dynamic&gt; toJson() =&gt; {
+    'message': message,
+    'status': status,
+    'send_to_ids': send_to_ids,
+    'notification_message': notification_message,
+  };
+}</code></pre></div>
 
 </span>
 
@@ -18684,10 +23294,10 @@ You can check the Dev Tools console for debugging information.</code></pre>
  &nbsp;
                 <input type="text" style="display: none"
                               name="to"                data-endpoint="POSTapi-v3-user-mail-send"
-               value="ducimus"
+               value="at"
                data-component="body">
     <br>
-<p>JSON-encoded array of recipient emails in the format [{&quot;value&quot;: &quot;masum2@excellisit.net&quot;}, {&quot;value&quot;: &quot;user2@example.com&quot;}]. Example: <code>ducimus</code></p>
+<p>JSON-encoded array of recipient emails in the format [{&quot;value&quot;: &quot;masum2@excellisit.net&quot;}, {&quot;value&quot;: &quot;user2@example.com&quot;}]. Example: <code>at</code></p>
         </div>
                 <div style=" padding-left: 28px;  clear: unset;">
             <b style="line-height: 2;"><code>cc</code></b>&nbsp;&nbsp;
@@ -18695,10 +23305,10 @@ You can check the Dev Tools console for debugging information.</code></pre>
 <i>optional</i> &nbsp;
                 <input type="text" style="display: none"
                               name="cc"                data-endpoint="POSTapi-v3-user-mail-send"
-               value="facere"
+               value="itaque"
                data-component="body">
     <br>
-<p>JSON-encoded array of CC recipient emails in the same format as the &quot;to&quot; field. Optional. Example: <code>facere</code></p>
+<p>JSON-encoded array of CC recipient emails in the same format as the &quot;to&quot; field. Optional. Example: <code>itaque</code></p>
         </div>
                 <div style=" padding-left: 28px;  clear: unset;">
             <b style="line-height: 2;"><code>subject</code></b>&nbsp;&nbsp;
@@ -18706,10 +23316,10 @@ You can check the Dev Tools console for debugging information.</code></pre>
  &nbsp;
                 <input type="text" style="display: none"
                               name="subject"                data-endpoint="POSTapi-v3-user-mail-send"
-               value="consequuntur"
+               value="expedita"
                data-component="body">
     <br>
-<p>The subject of the email. Example: <code>consequuntur</code></p>
+<p>The subject of the email. Example: <code>expedita</code></p>
         </div>
                 <div style=" padding-left: 28px;  clear: unset;">
             <b style="line-height: 2;"><code>message</code></b>&nbsp;&nbsp;
@@ -18717,10 +23327,10 @@ You can check the Dev Tools console for debugging information.</code></pre>
  &nbsp;
                 <input type="text" style="display: none"
                               name="message"                data-endpoint="POSTapi-v3-user-mail-send"
-               value="est"
+               value="officiis"
                data-component="body">
     <br>
-<p>The body content of the email. Example: <code>est</code></p>
+<p>The body content of the email. Example: <code>officiis</code></p>
         </div>
                 <div style=" padding-left: 28px;  clear: unset;">
             <b style="line-height: 2;"><code>attachments</code></b>&nbsp;&nbsp;
@@ -18756,12 +23366,12 @@ including attachments and notifications to recipients.</p>
     --header "Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJhdWQiOiIxIiwianRpIjoiNTJkNDhkYzhjNTc4ODIwZWVmODFmY2NhOWJiMmJiODFlZGE1MTUwMTVkYmU5YzdkNzFkODAyYTRmZWNhMWQ5ZGJhYWEzMTc2YjI1OTJmMTgiLCJpYXQiOjE3NjQwNjAzNDQuMDUyOTc0LCJuYmYiOjE3NjQwNjAzNDQuMDUyOTc1LCJleHAiOjE3OTU1OTYzNDQuMDQzNjUyLCJzdWIiOiIxNjgiLCJzY29wZXMiOltdfQ.X9tS38uM-UlrpFlYZihD_kmuCcSX_hdGsRBJcNGfrWXAClMiqeTxNTC45Ftxw-ddmDQ59t5xJLlnWp2Rx57itO-IHclNmwnVJDPAh1l9D8CZBGxBSoN0FvmbWeYDNQnA7ud77YLekrcSAuKMdBX3J1UKq6ytvWwi6ChnuRFqcQ-fpzK-jgkMhGm-WFHw0H3a34afdBdSUUFutESlwMvTqmXILYVcIwaJpEAjamf3rn6wIOEoD8mbxXJ6Gb6QrRO72Kt3z62vJp7yOeMsnXUkfioVSyJVwbkbchCs2Y4YZY3FEREbKysKNdHJhhqmn6AXvx66arAK3HeZoyf5eusfk26alhbEdJqsJgFP5VROV5l57q8VKhH8hAxg-oeidCGGJXPjLGeb-5iGPjdGhQ1Ng1i9kt7VDV4icb8B2AbNC2Ie9xP6b0R11PX4jUd8D3Jogf2f0ZhAs5Is8WHcrxsCyk3lWvgOyzWxpRx2lSpmBRmSwksPrKJk_7JuzDZ1Tdpz6mubjV6DzlmqDJJjf32hBIMnaYOhOUz5k1FzZ8mybsSbnM9UjzHYr5xIf4rkmVAfuPnU2FGu8NtCQaOtt9G-TziBFgT3ZjxBCL9QaaC39BRulGE6tyCAT8NM9svTD_AbNyINUzO2M0R61OXYQfzXEeiui-sO6eYIc3x_z-YdFFQ" \
     --header "Content-Type: multipart/form-data" \
     --header "Accept: application/json" \
-    --form "to=repudiandae"\
-    --form "cc=quo"\
-    --form "subject=cum"\
-    --form "message=accusantium"\
-    --form "main_mail_id=1"\
-    --form "attachments[]=@/private/var/folders/wy/1yz2w5p91q13336262xr4yzw0000gn/T/phpStAxI3" </code></pre></div>
+    --form "to=eius"\
+    --form "cc=nesciunt"\
+    --form "subject=similique"\
+    --form "message=magni"\
+    --form "main_mail_id=6"\
+    --form "attachments[]=@/private/var/folders/wy/1yz2w5p91q13336262xr4yzw0000gn/T/phpYkkmaU" </code></pre></div>
 
 
 <div class="javascript-example">
@@ -18776,11 +23386,11 @@ const headers = {
 };
 
 const body = new FormData();
-body.append('to', 'repudiandae');
-body.append('cc', 'quo');
-body.append('subject', 'cum');
-body.append('message', 'accusantium');
-body.append('main_mail_id', '1');
+body.append('to', 'eius');
+body.append('cc', 'nesciunt');
+body.append('subject', 'similique');
+body.append('message', 'magni');
+body.append('main_mail_id', '6');
 body.append('attachments[]', document.querySelector('input[name="attachments[]"]').files[0]);
 
 fetch(url, {
@@ -18788,6 +23398,32 @@ fetch(url, {
     headers,
     body,
 }).then(response =&gt; response.json());</code></pre></div>
+
+
+<div class="jsonToDart-example">
+    <pre><code class="language-dart">
+class SendReply {
+  final String? message;
+  final bool? status;
+  final List&lt;int&gt;? send_to_ids;
+  final String? notification_message;
+
+  SendReply({this.message, this.status, this.send_to_ids, this.notification_message, });
+
+  factory SendReply.fromJson(Map&lt;String, dynamic&gt; json) =&gt; SendReply(
+    message: json['message'],
+    status: json['status'],
+    send_to_ids: List&lt;int&gt;.from(json['send_to_ids'] ?? []),
+    notification_message: json['notification_message'],
+  );
+
+  Map&lt;String, dynamic&gt; toJson() =&gt; {
+    'message': message,
+    'status': status,
+    'send_to_ids': send_to_ids,
+    'notification_message': notification_message,
+  };
+}</code></pre></div>
 
 </span>
 
@@ -18930,10 +23566,10 @@ You can check the Dev Tools console for debugging information.</code></pre>
  &nbsp;
                 <input type="text" style="display: none"
                               name="to"                data-endpoint="POSTapi-v3-user-mail-sendReply"
-               value="repudiandae"
+               value="eius"
                data-component="body">
     <br>
-<p>JSON-encoded array of recipient emails in the format [{&quot;value&quot;: &quot;user1@example.com&quot;}, {&quot;value&quot;: &quot;user2@example.com&quot;}]. Example: <code>repudiandae</code></p>
+<p>JSON-encoded array of recipient emails in the format [{&quot;value&quot;: &quot;user1@example.com&quot;}, {&quot;value&quot;: &quot;user2@example.com&quot;}]. Example: <code>eius</code></p>
         </div>
                 <div style=" padding-left: 28px;  clear: unset;">
             <b style="line-height: 2;"><code>cc</code></b>&nbsp;&nbsp;
@@ -18941,10 +23577,10 @@ You can check the Dev Tools console for debugging information.</code></pre>
 <i>optional</i> &nbsp;
                 <input type="text" style="display: none"
                               name="cc"                data-endpoint="POSTapi-v3-user-mail-sendReply"
-               value="quo"
+               value="nesciunt"
                data-component="body">
     <br>
-<p>JSON-encoded array of CC recipient emails in the same format as the &quot;to&quot; field. Optional. Example: <code>quo</code></p>
+<p>JSON-encoded array of CC recipient emails in the same format as the &quot;to&quot; field. Optional. Example: <code>nesciunt</code></p>
         </div>
                 <div style=" padding-left: 28px;  clear: unset;">
             <b style="line-height: 2;"><code>subject</code></b>&nbsp;&nbsp;
@@ -18952,10 +23588,10 @@ You can check the Dev Tools console for debugging information.</code></pre>
  &nbsp;
                 <input type="text" style="display: none"
                               name="subject"                data-endpoint="POSTapi-v3-user-mail-sendReply"
-               value="cum"
+               value="similique"
                data-component="body">
     <br>
-<p>The subject of the reply email. Example: <code>cum</code></p>
+<p>The subject of the reply email. Example: <code>similique</code></p>
         </div>
                 <div style=" padding-left: 28px;  clear: unset;">
             <b style="line-height: 2;"><code>message</code></b>&nbsp;&nbsp;
@@ -18963,10 +23599,10 @@ You can check the Dev Tools console for debugging information.</code></pre>
  &nbsp;
                 <input type="text" style="display: none"
                               name="message"                data-endpoint="POSTapi-v3-user-mail-sendReply"
-               value="accusantium"
+               value="magni"
                data-component="body">
     <br>
-<p>The body content of the reply email. Example: <code>accusantium</code></p>
+<p>The body content of the reply email. Example: <code>magni</code></p>
         </div>
                 <div style=" padding-left: 28px;  clear: unset;">
             <b style="line-height: 2;"><code>attachments</code></b>&nbsp;&nbsp;
@@ -18987,10 +23623,10 @@ You can check the Dev Tools console for debugging information.</code></pre>
  &nbsp;
                 <input type="number" style="display: none"
                step="any"               name="main_mail_id"                data-endpoint="POSTapi-v3-user-mail-sendReply"
-               value="1"
+               value="6"
                data-component="body">
     <br>
-<p>The ID of the main email thread being replied to. Example: <code>1</code></p>
+<p>The ID of the main email thread being replied to. Example: <code>6</code></p>
         </div>
         </form>
 
@@ -19013,11 +23649,11 @@ including optional CC recipients and attachments.</p>
     --header "Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJhdWQiOiIxIiwianRpIjoiNTJkNDhkYzhjNTc4ODIwZWVmODFmY2NhOWJiMmJiODFlZGE1MTUwMTVkYmU5YzdkNzFkODAyYTRmZWNhMWQ5ZGJhYWEzMTc2YjI1OTJmMTgiLCJpYXQiOjE3NjQwNjAzNDQuMDUyOTc0LCJuYmYiOjE3NjQwNjAzNDQuMDUyOTc1LCJleHAiOjE3OTU1OTYzNDQuMDQzNjUyLCJzdWIiOiIxNjgiLCJzY29wZXMiOltdfQ.X9tS38uM-UlrpFlYZihD_kmuCcSX_hdGsRBJcNGfrWXAClMiqeTxNTC45Ftxw-ddmDQ59t5xJLlnWp2Rx57itO-IHclNmwnVJDPAh1l9D8CZBGxBSoN0FvmbWeYDNQnA7ud77YLekrcSAuKMdBX3J1UKq6ytvWwi6ChnuRFqcQ-fpzK-jgkMhGm-WFHw0H3a34afdBdSUUFutESlwMvTqmXILYVcIwaJpEAjamf3rn6wIOEoD8mbxXJ6Gb6QrRO72Kt3z62vJp7yOeMsnXUkfioVSyJVwbkbchCs2Y4YZY3FEREbKysKNdHJhhqmn6AXvx66arAK3HeZoyf5eusfk26alhbEdJqsJgFP5VROV5l57q8VKhH8hAxg-oeidCGGJXPjLGeb-5iGPjdGhQ1Ng1i9kt7VDV4icb8B2AbNC2Ie9xP6b0R11PX4jUd8D3Jogf2f0ZhAs5Is8WHcrxsCyk3lWvgOyzWxpRx2lSpmBRmSwksPrKJk_7JuzDZ1Tdpz6mubjV6DzlmqDJJjf32hBIMnaYOhOUz5k1FzZ8mybsSbnM9UjzHYr5xIf4rkmVAfuPnU2FGu8NtCQaOtt9G-TziBFgT3ZjxBCL9QaaC39BRulGE6tyCAT8NM9svTD_AbNyINUzO2M0R61OXYQfzXEeiui-sO6eYIc3x_z-YdFFQ" \
     --header "Content-Type: multipart/form-data" \
     --header "Accept: application/json" \
-    --form "to=magni"\
-    --form "cc=qui"\
-    --form "subject=voluptates"\
-    --form "message=ex"\
-    --form "attachments[]=@/private/var/folders/wy/1yz2w5p91q13336262xr4yzw0000gn/T/phpJ78tjN" </code></pre></div>
+    --form "to=doloremque"\
+    --form "cc=numquam"\
+    --form "subject=deserunt"\
+    --form "message=hic"\
+    --form "attachments[]=@/private/var/folders/wy/1yz2w5p91q13336262xr4yzw0000gn/T/phpMB5Vhn" </code></pre></div>
 
 
 <div class="javascript-example">
@@ -19032,10 +23668,10 @@ const headers = {
 };
 
 const body = new FormData();
-body.append('to', 'magni');
-body.append('cc', 'qui');
-body.append('subject', 'voluptates');
-body.append('message', 'ex');
+body.append('to', 'doloremque');
+body.append('cc', 'numquam');
+body.append('subject', 'deserunt');
+body.append('message', 'hic');
 body.append('attachments[]', document.querySelector('input[name="attachments[]"]').files[0]);
 
 fetch(url, {
@@ -19043,6 +23679,32 @@ fetch(url, {
     headers,
     body,
 }).then(response =&gt; response.json());</code></pre></div>
+
+
+<div class="jsonToDart-example">
+    <pre><code class="language-dart">
+class SendForward {
+  final String? message;
+  final bool? status;
+  final List&lt;int&gt;? send_to_ids;
+  final String? notification_message;
+
+  SendForward({this.message, this.status, this.send_to_ids, this.notification_message, });
+
+  factory SendForward.fromJson(Map&lt;String, dynamic&gt; json) =&gt; SendForward(
+    message: json['message'],
+    status: json['status'],
+    send_to_ids: List&lt;int&gt;.from(json['send_to_ids'] ?? []),
+    notification_message: json['notification_message'],
+  );
+
+  Map&lt;String, dynamic&gt; toJson() =&gt; {
+    'message': message,
+    'status': status,
+    'send_to_ids': send_to_ids,
+    'notification_message': notification_message,
+  };
+}</code></pre></div>
 
 </span>
 
@@ -19182,10 +23844,10 @@ You can check the Dev Tools console for debugging information.</code></pre>
  &nbsp;
                 <input type="text" style="display: none"
                               name="to"                data-endpoint="POSTapi-v3-user-mail-sendForward"
-               value="magni"
+               value="doloremque"
                data-component="body">
     <br>
-<p>JSON-encoded array of recipient emails in the format [{&quot;value&quot;: &quot;user1@example.com&quot;}, {&quot;value&quot;: &quot;user2@example.com&quot;}]. Example: <code>magni</code></p>
+<p>JSON-encoded array of recipient emails in the format [{&quot;value&quot;: &quot;user1@example.com&quot;}, {&quot;value&quot;: &quot;user2@example.com&quot;}]. Example: <code>doloremque</code></p>
         </div>
                 <div style=" padding-left: 28px;  clear: unset;">
             <b style="line-height: 2;"><code>cc</code></b>&nbsp;&nbsp;
@@ -19193,10 +23855,10 @@ You can check the Dev Tools console for debugging information.</code></pre>
 <i>optional</i> &nbsp;
                 <input type="text" style="display: none"
                               name="cc"                data-endpoint="POSTapi-v3-user-mail-sendForward"
-               value="qui"
+               value="numquam"
                data-component="body">
     <br>
-<p>JSON-encoded array of CC recipient emails in the same format as the &quot;to&quot; field. Optional. Example: <code>qui</code></p>
+<p>JSON-encoded array of CC recipient emails in the same format as the &quot;to&quot; field. Optional. Example: <code>numquam</code></p>
         </div>
                 <div style=" padding-left: 28px;  clear: unset;">
             <b style="line-height: 2;"><code>subject</code></b>&nbsp;&nbsp;
@@ -19204,10 +23866,10 @@ You can check the Dev Tools console for debugging information.</code></pre>
  &nbsp;
                 <input type="text" style="display: none"
                               name="subject"                data-endpoint="POSTapi-v3-user-mail-sendForward"
-               value="voluptates"
+               value="deserunt"
                data-component="body">
     <br>
-<p>The subject of the forwarded email. Example: <code>voluptates</code></p>
+<p>The subject of the forwarded email. Example: <code>deserunt</code></p>
         </div>
                 <div style=" padding-left: 28px;  clear: unset;">
             <b style="line-height: 2;"><code>message</code></b>&nbsp;&nbsp;
@@ -19215,10 +23877,10 @@ You can check the Dev Tools console for debugging information.</code></pre>
  &nbsp;
                 <input type="text" style="display: none"
                               name="message"                data-endpoint="POSTapi-v3-user-mail-sendForward"
-               value="ex"
+               value="hic"
                data-component="body">
     <br>
-<p>The body content of the forwarded email. Example: <code>ex</code></p>
+<p>The body content of the forwarded email. Example: <code>hic</code></p>
         </div>
                 <div style=" padding-left: 28px;  clear: unset;">
             <b style="line-height: 2;"><code>attachments</code></b>&nbsp;&nbsp;
@@ -19288,6 +23950,26 @@ fetch(url, {
     headers,
     body: JSON.stringify(body),
 }).then(response =&gt; response.json());</code></pre></div>
+
+
+<div class="jsonToDart-example">
+    <pre><code class="language-dart">
+class Delete {
+  final String? message;
+  final bool? status;
+
+  Delete({this.message, this.status, });
+
+  factory Delete.fromJson(Map&lt;String, dynamic&gt; json) =&gt; Delete(
+    message: json['message'],
+    status: json['status'],
+  );
+
+  Map&lt;String, dynamic&gt; toJson() =&gt; {
+    'message': message,
+    'status': status,
+  };
+}</code></pre></div>
 
 </span>
 
@@ -19477,6 +24159,26 @@ fetch(url, {
     body: JSON.stringify(body),
 }).then(response =&gt; response.json());</code></pre></div>
 
+
+<div class="jsonToDart-example">
+    <pre><code class="language-dart">
+class Sent {
+  final String? message;
+  final bool? status;
+
+  Sent({this.message, this.status, });
+
+  factory Sent.fromJson(Map&lt;String, dynamic&gt; json) =&gt; Sent(
+    message: json['message'],
+    status: json['status'],
+  );
+
+  Map&lt;String, dynamic&gt; toJson() =&gt; {
+    'message': message,
+    'status': status,
+  };
+}</code></pre></div>
+
 </span>
 
 <span id="example-responses-POSTapi-v3-user-mail-mail-delete-sent">
@@ -19664,6 +24366,26 @@ fetch(url, {
     body: JSON.stringify(body),
 }).then(response =&gt; response.json());</code></pre></div>
 
+
+<div class="jsonToDart-example">
+    <pre><code class="language-dart">
+class Restore {
+  final String? message;
+  final bool? status;
+
+  Restore({this.message, this.status, });
+
+  factory Restore.fromJson(Map&lt;String, dynamic&gt; json) =&gt; Restore(
+    message: json['message'],
+    status: json['status'],
+  );
+
+  Map&lt;String, dynamic&gt; toJson() =&gt; {
+    'message': message,
+    'status': status,
+  };
+}</code></pre></div>
+
 </span>
 
 <span id="example-responses-POSTapi-v3-user-mail-mail-restore">
@@ -19830,6 +24552,26 @@ fetch(url, {
     headers,
     body: JSON.stringify(body),
 }).then(response =&gt; response.json());</code></pre></div>
+
+
+<div class="jsonToDart-example">
+    <pre><code class="language-dart">
+class Star {
+  final String? message;
+  final bool? status;
+
+  Star({this.message, this.status, });
+
+  factory Star.fromJson(Map&lt;String, dynamic&gt; json) =&gt; Star(
+    message: json['message'],
+    status: json['status'],
+  );
+
+  Map&lt;String, dynamic&gt; toJson() =&gt; {
+    'message': message,
+    'status': status,
+  };
+}</code></pre></div>
 
 </span>
 
@@ -20015,6 +24757,26 @@ fetch(url, {
     body: JSON.stringify(body),
 }).then(response =&gt; response.json());</code></pre></div>
 
+
+<div class="jsonToDart-example">
+    <pre><code class="language-dart">
+class Single {
+  final String? message;
+  final bool? status;
+
+  Single({this.message, this.status, });
+
+  factory Single.fromJson(Map&lt;String, dynamic&gt; json) =&gt; Single(
+    message: json['message'],
+    status: json['status'],
+  );
+
+  Map&lt;String, dynamic&gt; toJson() =&gt; {
+    'message': message,
+    'status': status,
+  };
+}</code></pre></div>
+
 </span>
 
 <span id="example-responses-POSTapi-v3-user-mail-mail-delete-single">
@@ -20177,6 +24939,26 @@ fetch(url, {
     headers,
     body: JSON.stringify(body),
 }).then(response =&gt; response.json());</code></pre></div>
+
+
+<div class="jsonToDart-example">
+    <pre><code class="language-dart">
+class Trash {
+  final String? message;
+  final bool? status;
+
+  Trash({this.message, this.status, });
+
+  factory Trash.fromJson(Map&lt;String, dynamic&gt; json) =&gt; Trash(
+    message: json['message'],
+    status: json['status'],
+  );
+
+  Map&lt;String, dynamic&gt; toJson() =&gt; {
+    'message': message,
+    'status': status,
+  };
+}</code></pre></div>
 
 </span>
 
@@ -20341,6 +25123,26 @@ fetch(url, {
     body: JSON.stringify(body),
 }).then(response =&gt; response.json());</code></pre></div>
 
+
+<div class="jsonToDart-example">
+    <pre><code class="language-dart">
+class Single {
+  final String? message;
+  final bool? status;
+
+  Single({this.message, this.status, });
+
+  factory Single.fromJson(Map&lt;String, dynamic&gt; json) =&gt; Single(
+    message: json['message'],
+    status: json['status'],
+  );
+
+  Map&lt;String, dynamic&gt; toJson() =&gt; {
+    'message': message,
+    'status': status,
+  };
+}</code></pre></div>
+
 </span>
 
 <span id="example-responses-POSTapi-v3-user-mail-mail-restore-single">
@@ -20495,6 +25297,26 @@ fetch(url, {
     headers,
 }).then(response =&gt; response.json());</code></pre></div>
 
+
+<div class="jsonToDart-example">
+    <pre><code class="language-dart">
+class Empty {
+  final String? message;
+  final bool? status;
+
+  Empty({this.message, this.status, });
+
+  factory Empty.fromJson(Map&lt;String, dynamic&gt; json) =&gt; Empty(
+    message: json['message'],
+    status: json['status'],
+  );
+
+  Map&lt;String, dynamic&gt; toJson() =&gt; {
+    'message': message,
+    'status': status,
+  };
+}</code></pre></div>
+
 </span>
 
 <span id="example-responses-POSTapi-v3-user-mail-mail-trash-empty">
@@ -20637,6 +25459,26 @@ fetch(url, {
     method: "GET",
     headers,
 }).then(response =&gt; response.json());</code></pre></div>
+
+
+<div class="jsonToDart-example">
+    <pre><code class="language-dart">
+class 1 {
+  final String? message;
+  final bool? status;
+
+  1({this.message, this.status, });
+
+  factory 1.fromJson(Map&lt;String, dynamic&gt; json) =&gt; 1(
+    message: json['message'],
+    status: json['status'],
+  );
+
+  Map&lt;String, dynamic&gt; toJson() =&gt; {
+    'message': message,
+    'status': status,
+  };
+}</code></pre></div>
 
 </span>
 
@@ -20796,6 +25638,43 @@ fetch(url, {
     headers,
 }).then(response =&gt; response.json());</code></pre></div>
 
+
+<div class="jsonToDart-example">
+    <pre><code class="language-dart">
+class Dashboard {
+  final Data? data;
+  final bool? status;
+
+  Dashboard({this.data, this.status, });
+
+  factory Dashboard.fromJson(Map&lt;String, dynamic&gt; json) =&gt; Dashboard(
+    data: json['data'] != null ? Data.fromJson(json['data'] as Map&lt;String, dynamic&gt;) : null,
+    status: json['status'],
+  );
+
+  Map&lt;String, dynamic&gt; toJson() =&gt; {
+    'data': data?.toJson(),
+    'status': status,
+  };
+}
+
+class Data {
+  final int? pages;
+  final int? newsletter;
+
+  Data({this.pages, this.newsletter, });
+
+  factory Data.fromJson(Map&lt;String, dynamic&gt; json) =&gt; Data(
+    pages: json['pages'],
+    newsletter: json['newsletter'],
+  );
+
+  Map&lt;String, dynamic&gt; toJson() =&gt; {
+    'pages': pages,
+    'newsletter': newsletter,
+  };
+}</code></pre></div>
+
 </span>
 
 <span id="example-responses-POSTapi-v3-user-estore-cms-dashboard">
@@ -20941,6 +25820,20 @@ fetch(url, {
     headers,
 }).then(response =&gt; response.json());</code></pre></div>
 
+
+<div class="jsonToDart-example">
+    <pre><code class="language-dart">
+class List {
+
+  List({});
+
+  factory List.fromJson(Map&lt;String, dynamic&gt; json) =&gt; List(
+  );
+
+  Map&lt;String, dynamic&gt; toJson() =&gt; {
+  };
+}</code></pre></div>
+
 </span>
 
 <span id="example-responses-POSTapi-v3-user-estore-cms-list">
@@ -21049,7 +25942,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
     --form "page_title="About Us""\
     --form "page_content="This is the about us content...""\
     --form "slug="about-us""\
-    --form "page_banner_image=@/private/var/folders/wy/1yz2w5p91q13336262xr4yzw0000gn/T/phpQpp54b" </code></pre></div>
+    --form "page_banner_image=@/private/var/folders/wy/1yz2w5p91q13336262xr4yzw0000gn/T/phpNSlwOu" </code></pre></div>
 
 
 <div class="javascript-example">
@@ -21075,6 +25968,64 @@ fetch(url, {
     headers,
     body,
 }).then(response =&gt; response.json());</code></pre></div>
+
+
+<div class="jsonToDart-example">
+    <pre><code class="language-dart">
+class Store {
+  final Data? data;
+  final String? message;
+  final bool? status;
+
+  Store({this.data, this.message, this.status, });
+
+  factory Store.fromJson(Map&lt;String, dynamic&gt; json) =&gt; Store(
+    data: json['data'] != null ? Data.fromJson(json['data'] as Map&lt;String, dynamic&gt;) : null,
+    message: json['message'],
+    status: json['status'],
+  );
+
+  Map&lt;String, dynamic&gt; toJson() =&gt; {
+    'data': data?.toJson(),
+    'message': message,
+    'status': status,
+  };
+}
+
+class Data {
+  final int? id;
+  final String? page_name;
+  final String? page_title;
+  final String? page_content;
+  final String? page_banner_image;
+  final String? slug;
+  final String? created_at;
+  final String? updated_at;
+
+  Data({this.id, this.page_name, this.page_title, this.page_content, this.page_banner_image, this.slug, this.created_at, this.updated_at, });
+
+  factory Data.fromJson(Map&lt;String, dynamic&gt; json) =&gt; Data(
+    id: json['id'],
+    page_name: json['page_name'],
+    page_title: json['page_title'],
+    page_content: json['page_content'],
+    page_banner_image: json['page_banner_image'],
+    slug: json['slug'],
+    created_at: json['created_at'],
+    updated_at: json['updated_at'],
+  );
+
+  Map&lt;String, dynamic&gt; toJson() =&gt; {
+    'id': id,
+    'page_name': page_name,
+    'page_title': page_title,
+    'page_content': page_content,
+    'page_banner_image': page_banner_image,
+    'slug': slug,
+    'created_at': created_at,
+    'updated_at': updated_at,
+  };
+}</code></pre></div>
 
 </span>
 
@@ -21251,7 +26202,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
                value=""
                data-component="body">
     <br>
-<p>Banner image file (jpeg, png, jpg, gif, svg). Example: <code>/private/var/folders/wy/1yz2w5p91q13336262xr4yzw0000gn/T/phpQpp54b</code></p>
+<p>Banner image file (jpeg, png, jpg, gif, svg). Example: <code>/private/var/folders/wy/1yz2w5p91q13336262xr4yzw0000gn/T/phpNSlwOu</code></p>
         </div>
                 <div style=" padding-left: 28px;  clear: unset;">
             <b style="line-height: 2;"><code>slug</code></b>&nbsp;&nbsp;
@@ -21288,7 +26239,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
     --form "page_title="About Our Company""\
     --form "page_content="&lt;p&gt;Welcome...&lt;/p&gt;""\
     --form "slug="about-us""\
-    --form "page_banner_image=@/private/var/folders/wy/1yz2w5p91q13336262xr4yzw0000gn/T/phpXAgfqi" </code></pre></div>
+    --form "page_banner_image=@/private/var/folders/wy/1yz2w5p91q13336262xr4yzw0000gn/T/phpxXM191" </code></pre></div>
 
 
 <div class="javascript-example">
@@ -21314,6 +26265,61 @@ fetch(url, {
     headers,
     body,
 }).then(response =&gt; response.json());</code></pre></div>
+
+
+<div class="jsonToDart-example">
+    <pre><code class="language-dart">
+class 5 {
+  final Data? data;
+  final String? message;
+  final bool? status;
+
+  5({this.data, this.message, this.status, });
+
+  factory 5.fromJson(Map&lt;String, dynamic&gt; json) =&gt; 5(
+    data: json['data'] != null ? Data.fromJson(json['data'] as Map&lt;String, dynamic&gt;) : null,
+    message: json['message'],
+    status: json['status'],
+  );
+
+  Map&lt;String, dynamic&gt; toJson() =&gt; {
+    'data': data?.toJson(),
+    'message': message,
+    'status': status,
+  };
+}
+
+class Data {
+  final int? id;
+  final String? page_name;
+  final String? page_title;
+  final String? page_content;
+  final String? slug;
+  final String? page_banner_image;
+  final String? updated_at;
+
+  Data({this.id, this.page_name, this.page_title, this.page_content, this.slug, this.page_banner_image, this.updated_at, });
+
+  factory Data.fromJson(Map&lt;String, dynamic&gt; json) =&gt; Data(
+    id: json['id'],
+    page_name: json['page_name'],
+    page_title: json['page_title'],
+    page_content: json['page_content'],
+    slug: json['slug'],
+    page_banner_image: json['page_banner_image'],
+    updated_at: json['updated_at'],
+  );
+
+  Map&lt;String, dynamic&gt; toJson() =&gt; {
+    'id': id,
+    'page_name': page_name,
+    'page_title': page_title,
+    'page_content': page_content,
+    'slug': slug,
+    'page_banner_image': page_banner_image,
+    'updated_at': updated_at,
+  };
+}</code></pre></div>
 
 </span>
 
@@ -21522,7 +26528,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
                value=""
                data-component="body">
     <br>
-<p>optional The banner image for the page. Example: <code>/private/var/folders/wy/1yz2w5p91q13336262xr4yzw0000gn/T/phpXAgfqi</code></p>
+<p>optional The banner image for the page. Example: <code>/private/var/folders/wy/1yz2w5p91q13336262xr4yzw0000gn/T/phpxXM191</code></p>
         </div>
         </form>
 
@@ -21570,6 +26576,26 @@ fetch(url, {
     headers,
     body: JSON.stringify(body),
 }).then(response =&gt; response.json());</code></pre></div>
+
+
+<div class="jsonToDart-example">
+    <pre><code class="language-dart">
+class Delete {
+  final String? message;
+  final bool? status;
+
+  Delete({this.message, this.status, });
+
+  factory Delete.fromJson(Map&lt;String, dynamic&gt; json) =&gt; Delete(
+    message: json['message'],
+    status: json['status'],
+  );
+
+  Map&lt;String, dynamic&gt; toJson() =&gt; {
+    'message': message,
+    'status': status,
+  };
+}</code></pre></div>
 
 </span>
 
@@ -21744,6 +26770,55 @@ fetch(url, {
     body: JSON.stringify(body),
 }).then(response =&gt; response.json());</code></pre></div>
 
+
+<div class="jsonToDart-example">
+    <pre><code class="language-dart">
+class Page {
+  final Data? data;
+  final bool? status;
+
+  Page({this.data, this.status, });
+
+  factory Page.fromJson(Map&lt;String, dynamic&gt; json) =&gt; Page(
+    data: json['data'] != null ? Data.fromJson(json['data'] as Map&lt;String, dynamic&gt;) : null,
+    status: json['status'],
+  );
+
+  Map&lt;String, dynamic&gt; toJson() =&gt; {
+    'data': data?.toJson(),
+    'status': status,
+  };
+}
+
+class Data {
+  final int? id;
+  final String? title;
+  final String? content;
+  final String? slug;
+  final String? created_at;
+  final String? updated_at;
+
+  Data({this.id, this.title, this.content, this.slug, this.created_at, this.updated_at, });
+
+  factory Data.fromJson(Map&lt;String, dynamic&gt; json) =&gt; Data(
+    id: json['id'],
+    title: json['title'],
+    content: json['content'],
+    slug: json['slug'],
+    created_at: json['created_at'],
+    updated_at: json['updated_at'],
+  );
+
+  Map&lt;String, dynamic&gt; toJson() =&gt; {
+    'id': id,
+    'title': title,
+    'content': content,
+    'slug': slug,
+    'created_at': created_at,
+    'updated_at': updated_at,
+  };
+}</code></pre></div>
+
 </span>
 
 <span id="example-responses-POSTapi-v3-user-estore-cms-store-cms-page">
@@ -21908,37 +26983,37 @@ You can check the Dev Tools console for debugging information.</code></pre>
     --header "Content-Type: multipart/form-data" \
     --header "Accept: application/json" \
     --form "id=1"\
-    --form "banner_title=eos"\
-    --form "banner_subtitle=maiores"\
-    --form "product_category_title=est"\
-    --form "product_category_subtitle=atque"\
-    --form "featured_product_title=nobis"\
-    --form "featured_product_subtitle=sed"\
-    --form "new_arrival_title=provident"\
-    --form "new_arrival_subtitle=ex"\
-    --form "new_product_title=laborum"\
-    --form "new_product_subtitle=mollitia"\
-    --form "shop_now_title=molestiae"\
-    --form "shop_now_description=veritatis"\
-    --form "shop_now_button_text=saepe"\
-    --form "shop_now_button_link=aut"\
-    --form "about_section_title=cumque"\
-    --form "about_section_text_one_title=similique"\
-    --form "about_section_text_one_content=quis"\
-    --form "about_section_text_two_title=quia"\
-    --form "about_section_text_two_content=et"\
-    --form "about_section_text_three_title=voluptas"\
-    --form "about_section_text_three_content=animi"\
-    --form "slider_data_second_title=itaque"\
-    --form "header_logo=@/private/var/folders/wy/1yz2w5p91q13336262xr4yzw0000gn/T/phpJcOSOH" \
-    --form "banner_image=@/private/var/folders/wy/1yz2w5p91q13336262xr4yzw0000gn/T/php8FOIXf" \
-    --form "banner_image_small=@/private/var/folders/wy/1yz2w5p91q13336262xr4yzw0000gn/T/php8kFXpH" \
-    --form "product_category_image=@/private/var/folders/wy/1yz2w5p91q13336262xr4yzw0000gn/T/phpmpjTyj" \
-    --form "featured_product_image=@/private/var/folders/wy/1yz2w5p91q13336262xr4yzw0000gn/T/phpUt5rfL" \
-    --form "new_product_image=@/private/var/folders/wy/1yz2w5p91q13336262xr4yzw0000gn/T/phpDCI4ts" \
-    --form "new_arrival_image=@/private/var/folders/wy/1yz2w5p91q13336262xr4yzw0000gn/T/phpjAjzzH" \
-    --form "shop_now_image=@/private/var/folders/wy/1yz2w5p91q13336262xr4yzw0000gn/T/phpMCqFpU" \
-    --form "about_section_image=@/private/var/folders/wy/1yz2w5p91q13336262xr4yzw0000gn/T/php26aFl8" </code></pre></div>
+    --form "banner_title=ad"\
+    --form "banner_subtitle=unde"\
+    --form "product_category_title=omnis"\
+    --form "product_category_subtitle=perferendis"\
+    --form "featured_product_title=voluptatem"\
+    --form "featured_product_subtitle=dolores"\
+    --form "new_arrival_title=dolorem"\
+    --form "new_arrival_subtitle=dolore"\
+    --form "new_product_title=iste"\
+    --form "new_product_subtitle=molestiae"\
+    --form "shop_now_title=voluptas"\
+    --form "shop_now_description=omnis"\
+    --form "shop_now_button_text=quam"\
+    --form "shop_now_button_link=repudiandae"\
+    --form "about_section_title=asperiores"\
+    --form "about_section_text_one_title=quis"\
+    --form "about_section_text_one_content=consectetur"\
+    --form "about_section_text_two_title=ea"\
+    --form "about_section_text_two_content=corporis"\
+    --form "about_section_text_three_title=exercitationem"\
+    --form "about_section_text_three_content=ratione"\
+    --form "slider_data_second_title=est"\
+    --form "header_logo=@/private/var/folders/wy/1yz2w5p91q13336262xr4yzw0000gn/T/php3IVy5q" \
+    --form "banner_image=@/private/var/folders/wy/1yz2w5p91q13336262xr4yzw0000gn/T/phpJMcIck" \
+    --form "banner_image_small=@/private/var/folders/wy/1yz2w5p91q13336262xr4yzw0000gn/T/phpptQmyM" \
+    --form "product_category_image=@/private/var/folders/wy/1yz2w5p91q13336262xr4yzw0000gn/T/phpRoDfd8" \
+    --form "featured_product_image=@/private/var/folders/wy/1yz2w5p91q13336262xr4yzw0000gn/T/php1ECFFT" \
+    --form "new_product_image=@/private/var/folders/wy/1yz2w5p91q13336262xr4yzw0000gn/T/php50kAT4" \
+    --form "new_arrival_image=@/private/var/folders/wy/1yz2w5p91q13336262xr4yzw0000gn/T/phpAswrYP" \
+    --form "shop_now_image=@/private/var/folders/wy/1yz2w5p91q13336262xr4yzw0000gn/T/php1AyCJa" \
+    --form "about_section_image=@/private/var/folders/wy/1yz2w5p91q13336262xr4yzw0000gn/T/phpXtyaWp" </code></pre></div>
 
 
 <div class="javascript-example">
@@ -21954,28 +27029,28 @@ const headers = {
 
 const body = new FormData();
 body.append('id', '1');
-body.append('banner_title', 'eos');
-body.append('banner_subtitle', 'maiores');
-body.append('product_category_title', 'est');
-body.append('product_category_subtitle', 'atque');
-body.append('featured_product_title', 'nobis');
-body.append('featured_product_subtitle', 'sed');
-body.append('new_arrival_title', 'provident');
-body.append('new_arrival_subtitle', 'ex');
-body.append('new_product_title', 'laborum');
-body.append('new_product_subtitle', 'mollitia');
-body.append('shop_now_title', 'molestiae');
-body.append('shop_now_description', 'veritatis');
-body.append('shop_now_button_text', 'saepe');
-body.append('shop_now_button_link', 'aut');
-body.append('about_section_title', 'cumque');
-body.append('about_section_text_one_title', 'similique');
-body.append('about_section_text_one_content', 'quis');
-body.append('about_section_text_two_title', 'quia');
-body.append('about_section_text_two_content', 'et');
-body.append('about_section_text_three_title', 'voluptas');
-body.append('about_section_text_three_content', 'animi');
-body.append('slider_data_second_title', 'itaque');
+body.append('banner_title', 'ad');
+body.append('banner_subtitle', 'unde');
+body.append('product_category_title', 'omnis');
+body.append('product_category_subtitle', 'perferendis');
+body.append('featured_product_title', 'voluptatem');
+body.append('featured_product_subtitle', 'dolores');
+body.append('new_arrival_title', 'dolorem');
+body.append('new_arrival_subtitle', 'dolore');
+body.append('new_product_title', 'iste');
+body.append('new_product_subtitle', 'molestiae');
+body.append('shop_now_title', 'voluptas');
+body.append('shop_now_description', 'omnis');
+body.append('shop_now_button_text', 'quam');
+body.append('shop_now_button_link', 'repudiandae');
+body.append('about_section_title', 'asperiores');
+body.append('about_section_text_one_title', 'quis');
+body.append('about_section_text_one_content', 'consectetur');
+body.append('about_section_text_two_title', 'ea');
+body.append('about_section_text_two_content', 'corporis');
+body.append('about_section_text_three_title', 'exercitationem');
+body.append('about_section_text_three_content', 'ratione');
+body.append('slider_data_second_title', 'est');
 body.append('header_logo', document.querySelector('input[name="header_logo"]').files[0]);
 body.append('banner_image', document.querySelector('input[name="banner_image"]').files[0]);
 body.append('banner_image_small', document.querySelector('input[name="banner_image_small"]').files[0]);
@@ -21991,6 +27066,26 @@ fetch(url, {
     headers,
     body,
 }).then(response =&gt; response.json());</code></pre></div>
+
+
+<div class="jsonToDart-example">
+    <pre><code class="language-dart">
+class Update {
+  final String? message;
+  final bool? status;
+
+  Update({this.message, this.status, });
+
+  factory Update.fromJson(Map&lt;String, dynamic&gt; json) =&gt; Update(
+    message: json['message'],
+    status: json['status'],
+  );
+
+  Map&lt;String, dynamic&gt; toJson() =&gt; {
+    'message': message,
+    'status': status,
+  };
+}</code></pre></div>
 
 </span>
 
@@ -22154,7 +27249,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
                value=""
                data-component="body">
     <br>
-<p>nullable Header logo image (multipart/form-data) Example: <code>/private/var/folders/wy/1yz2w5p91q13336262xr4yzw0000gn/T/phpJcOSOH</code></p>
+<p>nullable Header logo image (multipart/form-data) Example: <code>/private/var/folders/wy/1yz2w5p91q13336262xr4yzw0000gn/T/php3IVy5q</code></p>
         </div>
                 <div style=" padding-left: 28px;  clear: unset;">
             <b style="line-height: 2;"><code>banner_image</code></b>&nbsp;&nbsp;
@@ -22165,7 +27260,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
                value=""
                data-component="body">
     <br>
-<p>nullable Banner image Example: <code>/private/var/folders/wy/1yz2w5p91q13336262xr4yzw0000gn/T/php8FOIXf</code></p>
+<p>nullable Banner image Example: <code>/private/var/folders/wy/1yz2w5p91q13336262xr4yzw0000gn/T/phpJMcIck</code></p>
         </div>
                 <div style=" padding-left: 28px;  clear: unset;">
             <b style="line-height: 2;"><code>banner_image_small</code></b>&nbsp;&nbsp;
@@ -22176,7 +27271,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
                value=""
                data-component="body">
     <br>
-<p>nullable Banner small image Example: <code>/private/var/folders/wy/1yz2w5p91q13336262xr4yzw0000gn/T/php8kFXpH</code></p>
+<p>nullable Banner small image Example: <code>/private/var/folders/wy/1yz2w5p91q13336262xr4yzw0000gn/T/phpptQmyM</code></p>
         </div>
                 <div style=" padding-left: 28px;  clear: unset;">
             <b style="line-height: 2;"><code>product_category_image</code></b>&nbsp;&nbsp;
@@ -22187,7 +27282,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
                value=""
                data-component="body">
     <br>
-<p>nullable Product category image Example: <code>/private/var/folders/wy/1yz2w5p91q13336262xr4yzw0000gn/T/phpmpjTyj</code></p>
+<p>nullable Product category image Example: <code>/private/var/folders/wy/1yz2w5p91q13336262xr4yzw0000gn/T/phpRoDfd8</code></p>
         </div>
                 <div style=" padding-left: 28px;  clear: unset;">
             <b style="line-height: 2;"><code>featured_product_image</code></b>&nbsp;&nbsp;
@@ -22198,7 +27293,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
                value=""
                data-component="body">
     <br>
-<p>nullable Featured product image Example: <code>/private/var/folders/wy/1yz2w5p91q13336262xr4yzw0000gn/T/phpUt5rfL</code></p>
+<p>nullable Featured product image Example: <code>/private/var/folders/wy/1yz2w5p91q13336262xr4yzw0000gn/T/php1ECFFT</code></p>
         </div>
                 <div style=" padding-left: 28px;  clear: unset;">
             <b style="line-height: 2;"><code>new_product_image</code></b>&nbsp;&nbsp;
@@ -22209,7 +27304,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
                value=""
                data-component="body">
     <br>
-<p>nullable New product image Example: <code>/private/var/folders/wy/1yz2w5p91q13336262xr4yzw0000gn/T/phpDCI4ts</code></p>
+<p>nullable New product image Example: <code>/private/var/folders/wy/1yz2w5p91q13336262xr4yzw0000gn/T/php50kAT4</code></p>
         </div>
                 <div style=" padding-left: 28px;  clear: unset;">
             <b style="line-height: 2;"><code>new_arrival_image</code></b>&nbsp;&nbsp;
@@ -22220,7 +27315,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
                value=""
                data-component="body">
     <br>
-<p>nullable New arrival image Example: <code>/private/var/folders/wy/1yz2w5p91q13336262xr4yzw0000gn/T/phpjAjzzH</code></p>
+<p>nullable New arrival image Example: <code>/private/var/folders/wy/1yz2w5p91q13336262xr4yzw0000gn/T/phpAswrYP</code></p>
         </div>
                 <div style=" padding-left: 28px;  clear: unset;">
             <b style="line-height: 2;"><code>shop_now_image</code></b>&nbsp;&nbsp;
@@ -22231,7 +27326,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
                value=""
                data-component="body">
     <br>
-<p>nullable Shop Now section image Example: <code>/private/var/folders/wy/1yz2w5p91q13336262xr4yzw0000gn/T/phpMCqFpU</code></p>
+<p>nullable Shop Now section image Example: <code>/private/var/folders/wy/1yz2w5p91q13336262xr4yzw0000gn/T/php1AyCJa</code></p>
         </div>
                 <div style=" padding-left: 28px;  clear: unset;">
             <b style="line-height: 2;"><code>about_section_image</code></b>&nbsp;&nbsp;
@@ -22242,7 +27337,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
                value=""
                data-component="body">
     <br>
-<p>nullable About section image Example: <code>/private/var/folders/wy/1yz2w5p91q13336262xr4yzw0000gn/T/php26aFl8</code></p>
+<p>nullable About section image Example: <code>/private/var/folders/wy/1yz2w5p91q13336262xr4yzw0000gn/T/phpXtyaWp</code></p>
         </div>
                 <div style=" padding-left: 28px;  clear: unset;">
             <b style="line-height: 2;"><code>banner_title</code></b>&nbsp;&nbsp;
@@ -22250,10 +27345,10 @@ You can check the Dev Tools console for debugging information.</code></pre>
 <i>optional</i> &nbsp;
                 <input type="text" style="display: none"
                               name="banner_title"                data-endpoint="POSTapi-v3-user-estore-cms-home-update"
-               value="eos"
+               value="ad"
                data-component="body">
     <br>
-<p>nullable Banner title Example: <code>eos</code></p>
+<p>nullable Banner title Example: <code>ad</code></p>
         </div>
                 <div style=" padding-left: 28px;  clear: unset;">
             <b style="line-height: 2;"><code>banner_subtitle</code></b>&nbsp;&nbsp;
@@ -22261,10 +27356,10 @@ You can check the Dev Tools console for debugging information.</code></pre>
 <i>optional</i> &nbsp;
                 <input type="text" style="display: none"
                               name="banner_subtitle"                data-endpoint="POSTapi-v3-user-estore-cms-home-update"
-               value="maiores"
+               value="unde"
                data-component="body">
     <br>
-<p>nullable Banner subtitle Example: <code>maiores</code></p>
+<p>nullable Banner subtitle Example: <code>unde</code></p>
         </div>
                 <div style=" padding-left: 28px;  clear: unset;">
             <b style="line-height: 2;"><code>product_category_title</code></b>&nbsp;&nbsp;
@@ -22272,10 +27367,10 @@ You can check the Dev Tools console for debugging information.</code></pre>
  &nbsp;
                 <input type="text" style="display: none"
                               name="product_category_title"                data-endpoint="POSTapi-v3-user-estore-cms-home-update"
-               value="est"
+               value="omnis"
                data-component="body">
     <br>
-<p>Product category title Example: <code>est</code></p>
+<p>Product category title Example: <code>omnis</code></p>
         </div>
                 <div style=" padding-left: 28px;  clear: unset;">
             <b style="line-height: 2;"><code>product_category_subtitle</code></b>&nbsp;&nbsp;
@@ -22283,10 +27378,10 @@ You can check the Dev Tools console for debugging information.</code></pre>
  &nbsp;
                 <input type="text" style="display: none"
                               name="product_category_subtitle"                data-endpoint="POSTapi-v3-user-estore-cms-home-update"
-               value="atque"
+               value="perferendis"
                data-component="body">
     <br>
-<p>Product category subtitle Example: <code>atque</code></p>
+<p>Product category subtitle Example: <code>perferendis</code></p>
         </div>
                 <div style=" padding-left: 28px;  clear: unset;">
             <b style="line-height: 2;"><code>featured_product_title</code></b>&nbsp;&nbsp;
@@ -22294,10 +27389,10 @@ You can check the Dev Tools console for debugging information.</code></pre>
  &nbsp;
                 <input type="text" style="display: none"
                               name="featured_product_title"                data-endpoint="POSTapi-v3-user-estore-cms-home-update"
-               value="nobis"
+               value="voluptatem"
                data-component="body">
     <br>
-<p>Featured product title Example: <code>nobis</code></p>
+<p>Featured product title Example: <code>voluptatem</code></p>
         </div>
                 <div style=" padding-left: 28px;  clear: unset;">
             <b style="line-height: 2;"><code>featured_product_subtitle</code></b>&nbsp;&nbsp;
@@ -22305,10 +27400,10 @@ You can check the Dev Tools console for debugging information.</code></pre>
  &nbsp;
                 <input type="text" style="display: none"
                               name="featured_product_subtitle"                data-endpoint="POSTapi-v3-user-estore-cms-home-update"
-               value="sed"
+               value="dolores"
                data-component="body">
     <br>
-<p>Featured product subtitle Example: <code>sed</code></p>
+<p>Featured product subtitle Example: <code>dolores</code></p>
         </div>
                 <div style=" padding-left: 28px;  clear: unset;">
             <b style="line-height: 2;"><code>new_arrival_title</code></b>&nbsp;&nbsp;
@@ -22316,10 +27411,10 @@ You can check the Dev Tools console for debugging information.</code></pre>
  &nbsp;
                 <input type="text" style="display: none"
                               name="new_arrival_title"                data-endpoint="POSTapi-v3-user-estore-cms-home-update"
-               value="provident"
+               value="dolorem"
                data-component="body">
     <br>
-<p>New arrival title Example: <code>provident</code></p>
+<p>New arrival title Example: <code>dolorem</code></p>
         </div>
                 <div style=" padding-left: 28px;  clear: unset;">
             <b style="line-height: 2;"><code>new_arrival_subtitle</code></b>&nbsp;&nbsp;
@@ -22327,10 +27422,10 @@ You can check the Dev Tools console for debugging information.</code></pre>
  &nbsp;
                 <input type="text" style="display: none"
                               name="new_arrival_subtitle"                data-endpoint="POSTapi-v3-user-estore-cms-home-update"
-               value="ex"
+               value="dolore"
                data-component="body">
     <br>
-<p>New arrival subtitle Example: <code>ex</code></p>
+<p>New arrival subtitle Example: <code>dolore</code></p>
         </div>
                 <div style=" padding-left: 28px;  clear: unset;">
             <b style="line-height: 2;"><code>new_product_title</code></b>&nbsp;&nbsp;
@@ -22338,10 +27433,10 @@ You can check the Dev Tools console for debugging information.</code></pre>
  &nbsp;
                 <input type="text" style="display: none"
                               name="new_product_title"                data-endpoint="POSTapi-v3-user-estore-cms-home-update"
-               value="laborum"
+               value="iste"
                data-component="body">
     <br>
-<p>New product title Example: <code>laborum</code></p>
+<p>New product title Example: <code>iste</code></p>
         </div>
                 <div style=" padding-left: 28px;  clear: unset;">
             <b style="line-height: 2;"><code>new_product_subtitle</code></b>&nbsp;&nbsp;
@@ -22349,10 +27444,10 @@ You can check the Dev Tools console for debugging information.</code></pre>
  &nbsp;
                 <input type="text" style="display: none"
                               name="new_product_subtitle"                data-endpoint="POSTapi-v3-user-estore-cms-home-update"
-               value="mollitia"
+               value="molestiae"
                data-component="body">
     <br>
-<p>New product subtitle Example: <code>mollitia</code></p>
+<p>New product subtitle Example: <code>molestiae</code></p>
         </div>
                 <div style=" padding-left: 28px;  clear: unset;">
             <b style="line-height: 2;"><code>shop_now_title</code></b>&nbsp;&nbsp;
@@ -22360,10 +27455,10 @@ You can check the Dev Tools console for debugging information.</code></pre>
 <i>optional</i> &nbsp;
                 <input type="text" style="display: none"
                               name="shop_now_title"                data-endpoint="POSTapi-v3-user-estore-cms-home-update"
-               value="molestiae"
+               value="voluptas"
                data-component="body">
     <br>
-<p>nullable Shop Now title Example: <code>molestiae</code></p>
+<p>nullable Shop Now title Example: <code>voluptas</code></p>
         </div>
                 <div style=" padding-left: 28px;  clear: unset;">
             <b style="line-height: 2;"><code>shop_now_description</code></b>&nbsp;&nbsp;
@@ -22371,10 +27466,10 @@ You can check the Dev Tools console for debugging information.</code></pre>
 <i>optional</i> &nbsp;
                 <input type="text" style="display: none"
                               name="shop_now_description"                data-endpoint="POSTapi-v3-user-estore-cms-home-update"
-               value="veritatis"
+               value="omnis"
                data-component="body">
     <br>
-<p>nullable Shop Now description Example: <code>veritatis</code></p>
+<p>nullable Shop Now description Example: <code>omnis</code></p>
         </div>
                 <div style=" padding-left: 28px;  clear: unset;">
             <b style="line-height: 2;"><code>shop_now_button_text</code></b>&nbsp;&nbsp;
@@ -22382,10 +27477,10 @@ You can check the Dev Tools console for debugging information.</code></pre>
 <i>optional</i> &nbsp;
                 <input type="text" style="display: none"
                               name="shop_now_button_text"                data-endpoint="POSTapi-v3-user-estore-cms-home-update"
-               value="saepe"
+               value="quam"
                data-component="body">
     <br>
-<p>nullable Shop Now button text Example: <code>saepe</code></p>
+<p>nullable Shop Now button text Example: <code>quam</code></p>
         </div>
                 <div style=" padding-left: 28px;  clear: unset;">
             <b style="line-height: 2;"><code>shop_now_button_link</code></b>&nbsp;&nbsp;
@@ -22393,10 +27488,10 @@ You can check the Dev Tools console for debugging information.</code></pre>
 <i>optional</i> &nbsp;
                 <input type="text" style="display: none"
                               name="shop_now_button_link"                data-endpoint="POSTapi-v3-user-estore-cms-home-update"
-               value="aut"
+               value="repudiandae"
                data-component="body">
     <br>
-<p>nullable Shop Now button link Example: <code>aut</code></p>
+<p>nullable Shop Now button link Example: <code>repudiandae</code></p>
         </div>
                 <div style=" padding-left: 28px;  clear: unset;">
             <b style="line-height: 2;"><code>about_section_title</code></b>&nbsp;&nbsp;
@@ -22404,10 +27499,10 @@ You can check the Dev Tools console for debugging information.</code></pre>
 <i>optional</i> &nbsp;
                 <input type="text" style="display: none"
                               name="about_section_title"                data-endpoint="POSTapi-v3-user-estore-cms-home-update"
-               value="cumque"
+               value="asperiores"
                data-component="body">
     <br>
-<p>nullable About section main title Example: <code>cumque</code></p>
+<p>nullable About section main title Example: <code>asperiores</code></p>
         </div>
                 <div style=" padding-left: 28px;  clear: unset;">
             <b style="line-height: 2;"><code>about_section_text_one_title</code></b>&nbsp;&nbsp;
@@ -22415,10 +27510,10 @@ You can check the Dev Tools console for debugging information.</code></pre>
 <i>optional</i> &nbsp;
                 <input type="text" style="display: none"
                               name="about_section_text_one_title"                data-endpoint="POSTapi-v3-user-estore-cms-home-update"
-               value="similique"
+               value="quis"
                data-component="body">
     <br>
-<p>nullable About section text one title Example: <code>similique</code></p>
+<p>nullable About section text one title Example: <code>quis</code></p>
         </div>
                 <div style=" padding-left: 28px;  clear: unset;">
             <b style="line-height: 2;"><code>about_section_text_one_content</code></b>&nbsp;&nbsp;
@@ -22426,10 +27521,10 @@ You can check the Dev Tools console for debugging information.</code></pre>
 <i>optional</i> &nbsp;
                 <input type="text" style="display: none"
                               name="about_section_text_one_content"                data-endpoint="POSTapi-v3-user-estore-cms-home-update"
-               value="quis"
+               value="consectetur"
                data-component="body">
     <br>
-<p>nullable About section text one content Example: <code>quis</code></p>
+<p>nullable About section text one content Example: <code>consectetur</code></p>
         </div>
                 <div style=" padding-left: 28px;  clear: unset;">
             <b style="line-height: 2;"><code>about_section_text_two_title</code></b>&nbsp;&nbsp;
@@ -22437,10 +27532,10 @@ You can check the Dev Tools console for debugging information.</code></pre>
 <i>optional</i> &nbsp;
                 <input type="text" style="display: none"
                               name="about_section_text_two_title"                data-endpoint="POSTapi-v3-user-estore-cms-home-update"
-               value="quia"
+               value="ea"
                data-component="body">
     <br>
-<p>nullable About section text two title Example: <code>quia</code></p>
+<p>nullable About section text two title Example: <code>ea</code></p>
         </div>
                 <div style=" padding-left: 28px;  clear: unset;">
             <b style="line-height: 2;"><code>about_section_text_two_content</code></b>&nbsp;&nbsp;
@@ -22448,10 +27543,10 @@ You can check the Dev Tools console for debugging information.</code></pre>
 <i>optional</i> &nbsp;
                 <input type="text" style="display: none"
                               name="about_section_text_two_content"                data-endpoint="POSTapi-v3-user-estore-cms-home-update"
-               value="et"
+               value="corporis"
                data-component="body">
     <br>
-<p>nullable About section text two content Example: <code>et</code></p>
+<p>nullable About section text two content Example: <code>corporis</code></p>
         </div>
                 <div style=" padding-left: 28px;  clear: unset;">
             <b style="line-height: 2;"><code>about_section_text_three_title</code></b>&nbsp;&nbsp;
@@ -22459,10 +27554,10 @@ You can check the Dev Tools console for debugging information.</code></pre>
 <i>optional</i> &nbsp;
                 <input type="text" style="display: none"
                               name="about_section_text_three_title"                data-endpoint="POSTapi-v3-user-estore-cms-home-update"
-               value="voluptas"
+               value="exercitationem"
                data-component="body">
     <br>
-<p>nullable About section text three title Example: <code>voluptas</code></p>
+<p>nullable About section text three title Example: <code>exercitationem</code></p>
         </div>
                 <div style=" padding-left: 28px;  clear: unset;">
             <b style="line-height: 2;"><code>about_section_text_three_content</code></b>&nbsp;&nbsp;
@@ -22470,10 +27565,10 @@ You can check the Dev Tools console for debugging information.</code></pre>
 <i>optional</i> &nbsp;
                 <input type="text" style="display: none"
                               name="about_section_text_three_content"                data-endpoint="POSTapi-v3-user-estore-cms-home-update"
-               value="animi"
+               value="ratione"
                data-component="body">
     <br>
-<p>nullable About section text three content Example: <code>animi</code></p>
+<p>nullable About section text three content Example: <code>ratione</code></p>
         </div>
                 <div style=" padding-left: 28px;  clear: unset;">
             <b style="line-height: 2;"><code>slider_data_second_title</code></b>&nbsp;&nbsp;
@@ -22481,10 +27576,10 @@ You can check the Dev Tools console for debugging information.</code></pre>
 <i>optional</i> &nbsp;
                 <input type="text" style="display: none"
                               name="slider_data_second_title"                data-endpoint="POSTapi-v3-user-estore-cms-home-update"
-               value="itaque"
+               value="est"
                data-component="body">
     <br>
-<p>nullable Second slider section title Example: <code>itaque</code></p>
+<p>nullable Second slider section title Example: <code>est</code></p>
         </div>
                 <div style=" padding-left: 28px;  clear: unset;">
         <details>
@@ -22501,10 +27596,10 @@ You can check the Dev Tools console for debugging information.</code></pre>
 <i>optional</i> &nbsp;
                 <input type="text" style="display: none"
                               name="slider_titles.*"                data-endpoint="POSTapi-v3-user-estore-cms-home-update"
-               value="ullam"
+               value="ipsum"
                data-component="body">
     <br>
-<p>nullable Array of titles for first slider Example: <code>ullam</code></p>
+<p>nullable Array of titles for first slider Example: <code>ipsum</code></p>
                     </div>
                                     </details>
         </div>
@@ -22523,10 +27618,10 @@ You can check the Dev Tools console for debugging information.</code></pre>
 <i>optional</i> &nbsp;
                 <input type="text" style="display: none"
                               name="slider_subtitles.*"                data-endpoint="POSTapi-v3-user-estore-cms-home-update"
-               value="ullam"
+               value="aut"
                data-component="body">
     <br>
-<p>nullable Array of subtitles for first slider Example: <code>ullam</code></p>
+<p>nullable Array of subtitles for first slider Example: <code>aut</code></p>
                     </div>
                                     </details>
         </div>
@@ -22545,10 +27640,10 @@ You can check the Dev Tools console for debugging information.</code></pre>
 <i>optional</i> &nbsp;
                 <input type="text" style="display: none"
                               name="slider_links.*"                data-endpoint="POSTapi-v3-user-estore-cms-home-update"
-               value="maxime"
+               value="laudantium"
                data-component="body">
     <br>
-<p>nullable Array of links for first slider Example: <code>maxime</code></p>
+<p>nullable Array of links for first slider Example: <code>laudantium</code></p>
                     </div>
                                     </details>
         </div>
@@ -22567,10 +27662,10 @@ You can check the Dev Tools console for debugging information.</code></pre>
 <i>optional</i> &nbsp;
                 <input type="text" style="display: none"
                               name="slider_buttons.*"                data-endpoint="POSTapi-v3-user-estore-cms-home-update"
-               value="aliquam"
+               value="ut"
                data-component="body">
     <br>
-<p>nullable Array of button texts for first slider Example: <code>aliquam</code></p>
+<p>nullable Array of button texts for first slider Example: <code>ut</code></p>
                     </div>
                                     </details>
         </div>
@@ -22592,7 +27687,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
                value=""
                data-component="body">
     <br>
-<p>nullable Array of images for first slider (multipart/form-data) Example: <code>/private/var/folders/wy/1yz2w5p91q13336262xr4yzw0000gn/T/phpl185hR</code></p>
+<p>nullable Array of images for first slider (multipart/form-data) Example: <code>/private/var/folders/wy/1yz2w5p91q13336262xr4yzw0000gn/T/phpuzcFqD</code></p>
                     </div>
                                     </details>
         </div>
@@ -22611,10 +27706,10 @@ You can check the Dev Tools console for debugging information.</code></pre>
 <i>optional</i> &nbsp;
                 <input type="text" style="display: none"
                               name="slider_titles_second.*"                data-endpoint="POSTapi-v3-user-estore-cms-home-update"
-               value="aspernatur"
+               value="ullam"
                data-component="body">
     <br>
-<p>nullable Array of titles for second slider Example: <code>aspernatur</code></p>
+<p>nullable Array of titles for second slider Example: <code>ullam</code></p>
                     </div>
                                     </details>
         </div>
@@ -22633,10 +27728,10 @@ You can check the Dev Tools console for debugging information.</code></pre>
 <i>optional</i> &nbsp;
                 <input type="text" style="display: none"
                               name="slider_subtitles_second.*"                data-endpoint="POSTapi-v3-user-estore-cms-home-update"
-               value="sed"
+               value="et"
                data-component="body">
     <br>
-<p>nullable Array of subtitles for second slider Example: <code>sed</code></p>
+<p>nullable Array of subtitles for second slider Example: <code>et</code></p>
                     </div>
                                     </details>
         </div>
@@ -22655,10 +27750,10 @@ You can check the Dev Tools console for debugging information.</code></pre>
 <i>optional</i> &nbsp;
                 <input type="text" style="display: none"
                               name="slider_links_second.*"                data-endpoint="POSTapi-v3-user-estore-cms-home-update"
-               value="eos"
+               value="nulla"
                data-component="body">
     <br>
-<p>nullable Array of links for second slider Example: <code>eos</code></p>
+<p>nullable Array of links for second slider Example: <code>nulla</code></p>
                     </div>
                                     </details>
         </div>
@@ -22677,10 +27772,10 @@ You can check the Dev Tools console for debugging information.</code></pre>
 <i>optional</i> &nbsp;
                 <input type="text" style="display: none"
                               name="slider_buttons_second.*"                data-endpoint="POSTapi-v3-user-estore-cms-home-update"
-               value="tenetur"
+               value="quisquam"
                data-component="body">
     <br>
-<p>nullable Array of button texts for second slider Example: <code>tenetur</code></p>
+<p>nullable Array of button texts for second slider Example: <code>quisquam</code></p>
                     </div>
                                     </details>
         </div>
@@ -22702,7 +27797,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
                value=""
                data-component="body">
     <br>
-<p>nullable Array of images for second slider (multipart/form-data) Example: <code>/private/var/folders/wy/1yz2w5p91q13336262xr4yzw0000gn/T/phpGpx2Lo</code></p>
+<p>nullable Array of images for second slider (multipart/form-data) Example: <code>/private/var/folders/wy/1yz2w5p91q13336262xr4yzw0000gn/T/phpIJpDfr</code></p>
                     </div>
                                     </details>
         </div>
@@ -22738,7 +27833,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
     --form "footer_instagram_link="https://instagram.com/mystore""\
     --form "footer_youtube_link="https://youtube.com/mystore""\
     --form "id=1"\
-    --form "footer_logo=@/private/var/folders/wy/1yz2w5p91q13336262xr4yzw0000gn/T/phpQXZznG" </code></pre></div>
+    --form "footer_logo=@/private/var/folders/wy/1yz2w5p91q13336262xr4yzw0000gn/T/phpqsSzU5" </code></pre></div>
 
 
 <div class="javascript-example">
@@ -22772,6 +27867,49 @@ fetch(url, {
     headers,
     body,
 }).then(response =&gt; response.json());</code></pre></div>
+
+
+<div class="jsonToDart-example">
+    <pre><code class="language-dart">
+class Update {
+  final Data? data;
+  final String? message;
+  final bool? status;
+
+  Update({this.data, this.message, this.status, });
+
+  factory Update.fromJson(Map&lt;String, dynamic&gt; json) =&gt; Update(
+    data: json['data'] != null ? Data.fromJson(json['data'] as Map&lt;String, dynamic&gt;) : null,
+    message: json['message'],
+    status: json['status'],
+  );
+
+  Map&lt;String, dynamic&gt; toJson() =&gt; {
+    'data': data?.toJson(),
+    'message': message,
+    'status': status,
+  };
+}
+
+class Data {
+  final int? id;
+  final String? footer_title;
+  final String? footer_logo;
+
+  Data({this.id, this.footer_title, this.footer_logo, });
+
+  factory Data.fromJson(Map&lt;String, dynamic&gt; json) =&gt; Data(
+    id: json['id'],
+    footer_title: json['footer_title'],
+    footer_logo: json['footer_logo'],
+  );
+
+  Map&lt;String, dynamic&gt; toJson() =&gt; {
+    'id': id,
+    'footer_title': footer_title,
+    'footer_logo': footer_logo,
+  };
+}</code></pre></div>
 
 </span>
 
@@ -22917,7 +28055,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
                value=""
                data-component="body">
     <br>
-<p>nullable The footer logo image (jpeg, png, jpg, gif, svg). Example: <code>/private/var/folders/wy/1yz2w5p91q13336262xr4yzw0000gn/T/phpQXZznG</code></p>
+<p>nullable The footer logo image (jpeg, png, jpg, gif, svg). Example: <code>/private/var/folders/wy/1yz2w5p91q13336262xr4yzw0000gn/T/phpqsSzU5</code></p>
         </div>
                 <div style=" padding-left: 28px;  clear: unset;">
             <b style="line-height: 2;"><code>footer_title</code></b>&nbsp;&nbsp;
@@ -23089,6 +28227,88 @@ fetch(url, {
     headers,
 }).then(response =&gt; response.json());</code></pre></div>
 
+
+<div class="jsonToDart-example">
+    <pre><code class="language-dart">
+class Contact {
+  final Data? data;
+  final bool? status;
+
+  Contact({this.data, this.status, });
+
+  factory Contact.fromJson(Map&lt;String, dynamic&gt; json) =&gt; Contact(
+    data: json['data'] != null ? Data.fromJson(json['data'] as Map&lt;String, dynamic&gt;) : null,
+    status: json['status'],
+  );
+
+  Map&lt;String, dynamic&gt; toJson() =&gt; {
+    'data': data?.toJson(),
+    'status': status,
+  };
+}
+
+class Data {
+  final int? id;
+  final String? banner_title;
+  final String? card_one_title;
+  final String? card_one_content;
+  final String? card_two_title;
+  final String? card_two_content;
+  final String? card_three_title;
+  final String? card_three_content;
+  final String? form_title;
+  final String? form_subtitle;
+  final String? call_section_title;
+  final String? call_section_content;
+  final String? follow_us_title;
+  final String? map_iframe_src;
+  final String? banner_image;
+  final String? created_at;
+  final String? updated_at;
+
+  Data({this.id, this.banner_title, this.card_one_title, this.card_one_content, this.card_two_title, this.card_two_content, this.card_three_title, this.card_three_content, this.form_title, this.form_subtitle, this.call_section_title, this.call_section_content, this.follow_us_title, this.map_iframe_src, this.banner_image, this.created_at, this.updated_at, });
+
+  factory Data.fromJson(Map&lt;String, dynamic&gt; json) =&gt; Data(
+    id: json['id'],
+    banner_title: json['banner_title'],
+    card_one_title: json['card_one_title'],
+    card_one_content: json['card_one_content'],
+    card_two_title: json['card_two_title'],
+    card_two_content: json['card_two_content'],
+    card_three_title: json['card_three_title'],
+    card_three_content: json['card_three_content'],
+    form_title: json['form_title'],
+    form_subtitle: json['form_subtitle'],
+    call_section_title: json['call_section_title'],
+    call_section_content: json['call_section_content'],
+    follow_us_title: json['follow_us_title'],
+    map_iframe_src: json['map_iframe_src'],
+    banner_image: json['banner_image'],
+    created_at: json['created_at'],
+    updated_at: json['updated_at'],
+  );
+
+  Map&lt;String, dynamic&gt; toJson() =&gt; {
+    'id': id,
+    'banner_title': banner_title,
+    'card_one_title': card_one_title,
+    'card_one_content': card_one_content,
+    'card_two_title': card_two_title,
+    'card_two_content': card_two_content,
+    'card_three_title': card_three_title,
+    'card_three_content': card_three_content,
+    'form_title': form_title,
+    'form_subtitle': form_subtitle,
+    'call_section_title': call_section_title,
+    'call_section_content': call_section_content,
+    'follow_us_title': follow_us_title,
+    'map_iframe_src': map_iframe_src,
+    'banner_image': banner_image,
+    'created_at': created_at,
+    'updated_at': updated_at,
+  };
+}</code></pre></div>
+
 </span>
 
 <span id="example-responses-GETapi-v3-user-estore-cms-contact">
@@ -23243,19 +28463,19 @@ You can check the Dev Tools console for debugging information.</code></pre>
     --header "Accept: application/json" \
     --form "banner_title="Contact Us""\
     --form "card_one_title="Support""\
-    --form "card_one_content=harum"\
-    --form "card_two_title=cum"\
-    --form "card_two_content=unde"\
-    --form "card_three_title=non"\
-    --form "card_three_content=asperiores"\
-    --form "form_title=at"\
-    --form "form_subtitle=voluptates"\
-    --form "call_section_title=maxime"\
-    --form "call_section_content=iusto"\
-    --form "follow_us_title=eos"\
-    --form "map_iframe_src=saepe"\
+    --form "card_one_content=libero"\
+    --form "card_two_title=illum"\
+    --form "card_two_content=ea"\
+    --form "card_three_title=eligendi"\
+    --form "card_three_content=laborum"\
+    --form "form_title=consequatur"\
+    --form "form_subtitle=quidem"\
+    --form "call_section_title=omnis"\
+    --form "call_section_content=provident"\
+    --form "follow_us_title=ut"\
+    --form "map_iframe_src=sunt"\
     --form "id=1"\
-    --form "banner_image=@/private/var/folders/wy/1yz2w5p91q13336262xr4yzw0000gn/T/phpwPEmA8" </code></pre></div>
+    --form "banner_image=@/private/var/folders/wy/1yz2w5p91q13336262xr4yzw0000gn/T/phphUqNz7" </code></pre></div>
 
 
 <div class="javascript-example">
@@ -23272,17 +28492,17 @@ const headers = {
 const body = new FormData();
 body.append('banner_title', '"Contact Us"');
 body.append('card_one_title', '"Support"');
-body.append('card_one_content', 'harum');
-body.append('card_two_title', 'cum');
-body.append('card_two_content', 'unde');
-body.append('card_three_title', 'non');
-body.append('card_three_content', 'asperiores');
-body.append('form_title', 'at');
-body.append('form_subtitle', 'voluptates');
-body.append('call_section_title', 'maxime');
-body.append('call_section_content', 'iusto');
-body.append('follow_us_title', 'eos');
-body.append('map_iframe_src', 'saepe');
+body.append('card_one_content', 'libero');
+body.append('card_two_title', 'illum');
+body.append('card_two_content', 'ea');
+body.append('card_three_title', 'eligendi');
+body.append('card_three_content', 'laborum');
+body.append('form_title', 'consequatur');
+body.append('form_subtitle', 'quidem');
+body.append('call_section_title', 'omnis');
+body.append('call_section_content', 'provident');
+body.append('follow_us_title', 'ut');
+body.append('map_iframe_src', 'sunt');
 body.append('id', '1');
 body.append('banner_image', document.querySelector('input[name="banner_image"]').files[0]);
 
@@ -23291,6 +28511,58 @@ fetch(url, {
     headers,
     body,
 }).then(response =&gt; response.json());</code></pre></div>
+
+
+<div class="jsonToDart-example">
+    <pre><code class="language-dart">
+class Update {
+  final Data? data;
+  final String? message;
+  final bool? status;
+
+  Update({this.data, this.message, this.status, });
+
+  factory Update.fromJson(Map&lt;String, dynamic&gt; json) =&gt; Update(
+    data: json['data'] != null ? Data.fromJson(json['data'] as Map&lt;String, dynamic&gt;) : null,
+    message: json['message'],
+    status: json['status'],
+  );
+
+  Map&lt;String, dynamic&gt; toJson() =&gt; {
+    'data': data?.toJson(),
+    'message': message,
+    'status': status,
+  };
+}
+
+class Data {
+  final int? id;
+  final String? banner_title;
+  final String? card_one_title;
+  final String? card_one_content;
+  final String? banner_image;
+  final String? ...;
+
+  Data({this.id, this.banner_title, this.card_one_title, this.card_one_content, this.banner_image, this...., });
+
+  factory Data.fromJson(Map&lt;String, dynamic&gt; json) =&gt; Data(
+    id: json['id'],
+    banner_title: json['banner_title'],
+    card_one_title: json['card_one_title'],
+    card_one_content: json['card_one_content'],
+    banner_image: json['banner_image'],
+    ...: json['...'],
+  );
+
+  Map&lt;String, dynamic&gt; toJson() =&gt; {
+    'id': id,
+    'banner_title': banner_title,
+    'card_one_title': card_one_title,
+    'card_one_content': card_one_content,
+    'banner_image': banner_image,
+    '...': ...,
+  };
+}</code></pre></div>
 
 </span>
 
@@ -23432,7 +28704,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
                value=""
                data-component="body">
     <br>
-<p>optional Banner image (jpeg, png, jpg, gif, svg) Example: <code>/private/var/folders/wy/1yz2w5p91q13336262xr4yzw0000gn/T/phpwPEmA8</code></p>
+<p>optional Banner image (jpeg, png, jpg, gif, svg) Example: <code>/private/var/folders/wy/1yz2w5p91q13336262xr4yzw0000gn/T/phphUqNz7</code></p>
         </div>
                 <div style=" padding-left: 28px;  clear: unset;">
             <b style="line-height: 2;"><code>banner_title</code></b>&nbsp;&nbsp;
@@ -23462,10 +28734,10 @@ You can check the Dev Tools console for debugging information.</code></pre>
 <i>optional</i> &nbsp;
                 <input type="text" style="display: none"
                               name="card_one_content"                data-endpoint="POSTapi-v3-user-estore-cms-contact-update"
-               value="harum"
+               value="libero"
                data-component="body">
     <br>
-<p>optional Card 1 content. Example: <code>harum</code></p>
+<p>optional Card 1 content. Example: <code>libero</code></p>
         </div>
                 <div style=" padding-left: 28px;  clear: unset;">
             <b style="line-height: 2;"><code>card_two_title</code></b>&nbsp;&nbsp;
@@ -23473,10 +28745,10 @@ You can check the Dev Tools console for debugging information.</code></pre>
 <i>optional</i> &nbsp;
                 <input type="text" style="display: none"
                               name="card_two_title"                data-endpoint="POSTapi-v3-user-estore-cms-contact-update"
-               value="cum"
+               value="illum"
                data-component="body">
     <br>
-<p>optional Card 2 title. Example: <code>cum</code></p>
+<p>optional Card 2 title. Example: <code>illum</code></p>
         </div>
                 <div style=" padding-left: 28px;  clear: unset;">
             <b style="line-height: 2;"><code>card_two_content</code></b>&nbsp;&nbsp;
@@ -23484,10 +28756,10 @@ You can check the Dev Tools console for debugging information.</code></pre>
 <i>optional</i> &nbsp;
                 <input type="text" style="display: none"
                               name="card_two_content"                data-endpoint="POSTapi-v3-user-estore-cms-contact-update"
-               value="unde"
+               value="ea"
                data-component="body">
     <br>
-<p>optional Card 2 content. Example: <code>unde</code></p>
+<p>optional Card 2 content. Example: <code>ea</code></p>
         </div>
                 <div style=" padding-left: 28px;  clear: unset;">
             <b style="line-height: 2;"><code>card_three_title</code></b>&nbsp;&nbsp;
@@ -23495,10 +28767,10 @@ You can check the Dev Tools console for debugging information.</code></pre>
 <i>optional</i> &nbsp;
                 <input type="text" style="display: none"
                               name="card_three_title"                data-endpoint="POSTapi-v3-user-estore-cms-contact-update"
-               value="non"
+               value="eligendi"
                data-component="body">
     <br>
-<p>optional Card 3 title. Example: <code>non</code></p>
+<p>optional Card 3 title. Example: <code>eligendi</code></p>
         </div>
                 <div style=" padding-left: 28px;  clear: unset;">
             <b style="line-height: 2;"><code>card_three_content</code></b>&nbsp;&nbsp;
@@ -23506,10 +28778,10 @@ You can check the Dev Tools console for debugging information.</code></pre>
 <i>optional</i> &nbsp;
                 <input type="text" style="display: none"
                               name="card_three_content"                data-endpoint="POSTapi-v3-user-estore-cms-contact-update"
-               value="asperiores"
+               value="laborum"
                data-component="body">
     <br>
-<p>optional Card 3 content. Example: <code>asperiores</code></p>
+<p>optional Card 3 content. Example: <code>laborum</code></p>
         </div>
                 <div style=" padding-left: 28px;  clear: unset;">
             <b style="line-height: 2;"><code>form_title</code></b>&nbsp;&nbsp;
@@ -23517,10 +28789,10 @@ You can check the Dev Tools console for debugging information.</code></pre>
 <i>optional</i> &nbsp;
                 <input type="text" style="display: none"
                               name="form_title"                data-endpoint="POSTapi-v3-user-estore-cms-contact-update"
-               value="at"
+               value="consequatur"
                data-component="body">
     <br>
-<p>optional Form title. Example: <code>at</code></p>
+<p>optional Form title. Example: <code>consequatur</code></p>
         </div>
                 <div style=" padding-left: 28px;  clear: unset;">
             <b style="line-height: 2;"><code>form_subtitle</code></b>&nbsp;&nbsp;
@@ -23528,10 +28800,10 @@ You can check the Dev Tools console for debugging information.</code></pre>
 <i>optional</i> &nbsp;
                 <input type="text" style="display: none"
                               name="form_subtitle"                data-endpoint="POSTapi-v3-user-estore-cms-contact-update"
-               value="voluptates"
+               value="quidem"
                data-component="body">
     <br>
-<p>optional Form subtitle. Example: <code>voluptates</code></p>
+<p>optional Form subtitle. Example: <code>quidem</code></p>
         </div>
                 <div style=" padding-left: 28px;  clear: unset;">
             <b style="line-height: 2;"><code>call_section_title</code></b>&nbsp;&nbsp;
@@ -23539,10 +28811,10 @@ You can check the Dev Tools console for debugging information.</code></pre>
 <i>optional</i> &nbsp;
                 <input type="text" style="display: none"
                               name="call_section_title"                data-endpoint="POSTapi-v3-user-estore-cms-contact-update"
-               value="maxime"
+               value="omnis"
                data-component="body">
     <br>
-<p>optional Call section title. Example: <code>maxime</code></p>
+<p>optional Call section title. Example: <code>omnis</code></p>
         </div>
                 <div style=" padding-left: 28px;  clear: unset;">
             <b style="line-height: 2;"><code>call_section_content</code></b>&nbsp;&nbsp;
@@ -23550,10 +28822,10 @@ You can check the Dev Tools console for debugging information.</code></pre>
 <i>optional</i> &nbsp;
                 <input type="text" style="display: none"
                               name="call_section_content"                data-endpoint="POSTapi-v3-user-estore-cms-contact-update"
-               value="iusto"
+               value="provident"
                data-component="body">
     <br>
-<p>optional Call section content. Example: <code>iusto</code></p>
+<p>optional Call section content. Example: <code>provident</code></p>
         </div>
                 <div style=" padding-left: 28px;  clear: unset;">
             <b style="line-height: 2;"><code>follow_us_title</code></b>&nbsp;&nbsp;
@@ -23561,10 +28833,10 @@ You can check the Dev Tools console for debugging information.</code></pre>
 <i>optional</i> &nbsp;
                 <input type="text" style="display: none"
                               name="follow_us_title"                data-endpoint="POSTapi-v3-user-estore-cms-contact-update"
-               value="eos"
+               value="ut"
                data-component="body">
     <br>
-<p>optional Follow us title. Example: <code>eos</code></p>
+<p>optional Follow us title. Example: <code>ut</code></p>
         </div>
                 <div style=" padding-left: 28px;  clear: unset;">
             <b style="line-height: 2;"><code>map_iframe_src</code></b>&nbsp;&nbsp;
@@ -23572,10 +28844,10 @@ You can check the Dev Tools console for debugging information.</code></pre>
 <i>optional</i> &nbsp;
                 <input type="text" style="display: none"
                               name="map_iframe_src"                data-endpoint="POSTapi-v3-user-estore-cms-contact-update"
-               value="saepe"
+               value="sunt"
                data-component="body">
     <br>
-<p>optional Map iframe src. Example: <code>saepe</code></p>
+<p>optional Map iframe src. Example: <code>sunt</code></p>
         </div>
                 <div style=" padding-left: 28px;  clear: unset;">
             <b style="line-height: 2;"><code>id</code></b>&nbsp;&nbsp;
@@ -23636,6 +28908,125 @@ fetch(url, {
     method: "GET",
     headers,
 }).then(response =&gt; response.json());</code></pre></div>
+
+
+<div class="jsonToDart-example">
+    <pre><code class="language-dart">
+class Colors {
+  final Data? data;
+  final bool? status;
+
+  Colors({this.data, this.status, });
+
+  factory Colors.fromJson(Map&lt;String, dynamic&gt; json) =&gt; Colors(
+    data: json['data'] != null ? Data.fromJson(json['data'] as Map&lt;String, dynamic&gt;) : null,
+    status: json['status'],
+  );
+
+  Map&lt;String, dynamic&gt; toJson() =&gt; {
+    'data': data?.toJson(),
+    'status': status,
+  };
+}
+
+class Data {
+  final int? current_page;
+  final List&lt;DataItem&gt;? data;
+  final String? first_page_url;
+  final int? from;
+  final int? last_page;
+  final String? last_page_url;
+  final List&lt;LinksItem&gt;? links;
+  final dynamic? next_page_url;
+  final String? path;
+  final int? per_page;
+  final dynamic? prev_page_url;
+  final int? to;
+  final int? total;
+
+  Data({this.current_page, this.data, this.first_page_url, this.from, this.last_page, this.last_page_url, this.links, this.next_page_url, this.path, this.per_page, this.prev_page_url, this.to, this.total, });
+
+  factory Data.fromJson(Map&lt;String, dynamic&gt; json) =&gt; Data(
+    current_page: json['current_page'],
+    data: (json['data'] as List&lt;dynamic&gt;?)?.map((e) =&gt; DataItem.fromJson(e as Map&lt;String, dynamic&gt;)).toList(),
+    first_page_url: json['first_page_url'],
+    from: json['from'],
+    last_page: json['last_page'],
+    last_page_url: json['last_page_url'],
+    links: (json['links'] as List&lt;dynamic&gt;?)?.map((e) =&gt; LinksItem.fromJson(e as Map&lt;String, dynamic&gt;)).toList(),
+    next_page_url: json['next_page_url'],
+    path: json['path'],
+    per_page: json['per_page'],
+    prev_page_url: json['prev_page_url'],
+    to: json['to'],
+    total: json['total'],
+  );
+
+  Map&lt;String, dynamic&gt; toJson() =&gt; {
+    'current_page': current_page,
+    'data': data?.map((e) =&gt; e.toJson()).toList(),
+    'first_page_url': first_page_url,
+    'from': from,
+    'last_page': last_page,
+    'last_page_url': last_page_url,
+    'links': links?.map((e) =&gt; e.toJson()).toList(),
+    'next_page_url': next_page_url,
+    'path': path,
+    'per_page': per_page,
+    'prev_page_url': prev_page_url,
+    'to': to,
+    'total': total,
+  };
+}
+
+class LinksItem {
+  final dynamic? url;
+  final String? label;
+  final bool? active;
+
+  LinksItem({this.url, this.label, this.active, });
+
+  factory LinksItem.fromJson(Map&lt;String, dynamic&gt; json) =&gt; LinksItem(
+    url: json['url'],
+    label: json['label'],
+    active: json['active'],
+  );
+
+  Map&lt;String, dynamic&gt; toJson() =&gt; {
+    'url': url,
+    'label': label,
+    'active': active,
+  };
+}
+
+class DataItem {
+  final int? id;
+  final String? color_name;
+  final String? color;
+  final int? status;
+  final String? created_at;
+  final String? updated_at;
+
+  DataItem({this.id, this.color_name, this.color, this.status, this.created_at, this.updated_at, });
+
+  factory DataItem.fromJson(Map&lt;String, dynamic&gt; json) =&gt; DataItem(
+    id: json['id'],
+    color_name: json['color_name'],
+    color: json['color'],
+    status: json['status'],
+    created_at: json['created_at'],
+    updated_at: json['updated_at'],
+  );
+
+  Map&lt;String, dynamic&gt; toJson() =&gt; {
+    'id': id,
+    'color_name': color_name,
+    'color': color,
+    'status': status,
+    'created_at': created_at,
+    'updated_at': updated_at,
+  };
+}</code></pre></div>
 
 </span>
 
@@ -23894,6 +29285,58 @@ fetch(url, {
     body: JSON.stringify(body),
 }).then(response =&gt; response.json());</code></pre></div>
 
+
+<div class="jsonToDart-example">
+    <pre><code class="language-dart">
+class Store {
+  final Data? data;
+  final String? message;
+  final bool? status;
+
+  Store({this.data, this.message, this.status, });
+
+  factory Store.fromJson(Map&lt;String, dynamic&gt; json) =&gt; Store(
+    data: json['data'] != null ? Data.fromJson(json['data'] as Map&lt;String, dynamic&gt;) : null,
+    message: json['message'],
+    status: json['status'],
+  );
+
+  Map&lt;String, dynamic&gt; toJson() =&gt; {
+    'data': data?.toJson(),
+    'message': message,
+    'status': status,
+  };
+}
+
+class Data {
+  final int? id;
+  final String? color_name;
+  final String? color;
+  final int? status;
+  final String? created_at;
+  final String? updated_at;
+
+  Data({this.id, this.color_name, this.color, this.status, this.created_at, this.updated_at, });
+
+  factory Data.fromJson(Map&lt;String, dynamic&gt; json) =&gt; Data(
+    id: json['id'],
+    color_name: json['color_name'],
+    color: json['color'],
+    status: json['status'],
+    created_at: json['created_at'],
+    updated_at: json['updated_at'],
+  );
+
+  Map&lt;String, dynamic&gt; toJson() =&gt; {
+    'id': id,
+    'color_name': color_name,
+    'color': color,
+    'status': status,
+    'created_at': created_at,
+    'updated_at': updated_at,
+  };
+}</code></pre></div>
+
 </span>
 
 <span id="example-responses-POSTapi-v3-user-colors-store">
@@ -24089,7 +29532,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
     --header "Content-Type: application/json" \
     --header "Accept: application/json" \
     --data "{
-    \"id\": \"numquam\",
+    \"id\": \"deserunt\",
     \"color\": \"\\\"Medium\\\"\",
     \"color_name\": \"\\\"Medium\\\"\",
     \"status\": true
@@ -24109,7 +29552,7 @@ const headers = {
 };
 
 let body = {
-    "id": "numquam",
+    "id": "deserunt",
     "color": "\"Medium\"",
     "color_name": "\"Medium\"",
     "status": true
@@ -24120,6 +29563,58 @@ fetch(url, {
     headers,
     body: JSON.stringify(body),
 }).then(response =&gt; response.json());</code></pre></div>
+
+
+<div class="jsonToDart-example">
+    <pre><code class="language-dart">
+class Update {
+  final Data? data;
+  final String? message;
+  final bool? status;
+
+  Update({this.data, this.message, this.status, });
+
+  factory Update.fromJson(Map&lt;String, dynamic&gt; json) =&gt; Update(
+    data: json['data'] != null ? Data.fromJson(json['data'] as Map&lt;String, dynamic&gt;) : null,
+    message: json['message'],
+    status: json['status'],
+  );
+
+  Map&lt;String, dynamic&gt; toJson() =&gt; {
+    'data': data?.toJson(),
+    'message': message,
+    'status': status,
+  };
+}
+
+class Data {
+  final int? id;
+  final String? color_name;
+  final String? color;
+  final int? status;
+  final String? created_at;
+  final String? updated_at;
+
+  Data({this.id, this.color_name, this.color, this.status, this.created_at, this.updated_at, });
+
+  factory Data.fromJson(Map&lt;String, dynamic&gt; json) =&gt; Data(
+    id: json['id'],
+    color_name: json['color_name'],
+    color: json['color'],
+    status: json['status'],
+    created_at: json['created_at'],
+    updated_at: json['updated_at'],
+  );
+
+  Map&lt;String, dynamic&gt; toJson() =&gt; {
+    'id': id,
+    'color_name': color_name,
+    'color': color,
+    'status': status,
+    'created_at': created_at,
+    'updated_at': updated_at,
+  };
+}</code></pre></div>
 
 </span>
 
@@ -24280,10 +29775,10 @@ You can check the Dev Tools console for debugging information.</code></pre>
  &nbsp;
                 <input type="text" style="display: none"
                               name="id"                data-endpoint="POSTapi-v3-user-colors-update"
-               value="numquam"
+               value="deserunt"
                data-component="body">
     <br>
-<p>The <code>id</code> of an existing record in the colors table. Example: <code>numquam</code></p>
+<p>The <code>id</code> of an existing record in the colors table. Example: <code>deserunt</code></p>
         </div>
                 <div style=" padding-left: 28px;  clear: unset;">
             <b style="line-height: 2;"><code>color</code></b>&nbsp;&nbsp;
@@ -24349,7 +29844,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
     --header "Content-Type: application/json" \
     --header "Accept: application/json" \
     --data "{
-    \"id\": \"dolor\"
+    \"id\": \"magni\"
 }"
 </code></pre></div>
 
@@ -24366,7 +29861,7 @@ const headers = {
 };
 
 let body = {
-    "id": "dolor"
+    "id": "magni"
 };
 
 fetch(url, {
@@ -24374,6 +29869,26 @@ fetch(url, {
     headers,
     body: JSON.stringify(body),
 }).then(response =&gt; response.json());</code></pre></div>
+
+
+<div class="jsonToDart-example">
+    <pre><code class="language-dart">
+class Delete {
+  final String? message;
+  final bool? status;
+
+  Delete({this.message, this.status, });
+
+  factory Delete.fromJson(Map&lt;String, dynamic&gt; json) =&gt; Delete(
+    message: json['message'],
+    status: json['status'],
+  );
+
+  Map&lt;String, dynamic&gt; toJson() =&gt; {
+    'message': message,
+    'status': status,
+  };
+}</code></pre></div>
 
 </span>
 
@@ -24508,10 +30023,10 @@ You can check the Dev Tools console for debugging information.</code></pre>
  &nbsp;
                 <input type="text" style="display: none"
                               name="id"                data-endpoint="POSTapi-v3-user-colors-delete"
-               value="dolor"
+               value="magni"
                data-component="body">
     <br>
-<p>The <code>id</code> of an existing record in the colors table. Example: <code>dolor</code></p>
+<p>The <code>id</code> of an existing record in the colors table. Example: <code>magni</code></p>
         </div>
         </form>
 
@@ -24561,6 +30076,26 @@ fetch(url, {
     method: "GET",
     headers,
 }).then(response =&gt; response.json());</code></pre></div>
+
+
+<div class="jsonToDart-example">
+    <pre><code class="language-dart">
+class Sizes {
+  final String? message;
+  final bool? status;
+
+  Sizes({this.message, this.status, });
+
+  factory Sizes.fromJson(Map&lt;String, dynamic&gt; json) =&gt; Sizes(
+    message: json['message'],
+    status: json['status'],
+  );
+
+  Map&lt;String, dynamic&gt; toJson() =&gt; {
+    'message': message,
+    'status': status,
+  };
+}</code></pre></div>
 
 </span>
 
@@ -24783,6 +30318,55 @@ fetch(url, {
     body: JSON.stringify(body),
 }).then(response =&gt; response.json());</code></pre></div>
 
+
+<div class="jsonToDart-example">
+    <pre><code class="language-dart">
+class Store {
+  final Data? data;
+  final String? message;
+  final bool? status;
+
+  Store({this.data, this.message, this.status, });
+
+  factory Store.fromJson(Map&lt;String, dynamic&gt; json) =&gt; Store(
+    data: json['data'] != null ? Data.fromJson(json['data'] as Map&lt;String, dynamic&gt;) : null,
+    message: json['message'],
+    status: json['status'],
+  );
+
+  Map&lt;String, dynamic&gt; toJson() =&gt; {
+    'data': data?.toJson(),
+    'message': message,
+    'status': status,
+  };
+}
+
+class Data {
+  final int? id;
+  final String? size;
+  final int? status;
+  final String? created_at;
+  final String? updated_at;
+
+  Data({this.id, this.size, this.status, this.created_at, this.updated_at, });
+
+  factory Data.fromJson(Map&lt;String, dynamic&gt; json) =&gt; Data(
+    id: json['id'],
+    size: json['size'],
+    status: json['status'],
+    created_at: json['created_at'],
+    updated_at: json['updated_at'],
+  );
+
+  Map&lt;String, dynamic&gt; toJson() =&gt; {
+    'id': id,
+    'size': size,
+    'status': status,
+    'created_at': created_at,
+    'updated_at': updated_at,
+  };
+}</code></pre></div>
+
 </span>
 
 <span id="example-responses-POSTapi-v3-user-sizes-store">
@@ -24992,6 +30576,52 @@ fetch(url, {
     body: JSON.stringify(body),
 }).then(response =&gt; response.json());</code></pre></div>
 
+
+<div class="jsonToDart-example">
+    <pre><code class="language-dart">
+class Edit {
+  final Data? data;
+  final bool? status;
+
+  Edit({this.data, this.status, });
+
+  factory Edit.fromJson(Map&lt;String, dynamic&gt; json) =&gt; Edit(
+    data: json['data'] != null ? Data.fromJson(json['data'] as Map&lt;String, dynamic&gt;) : null,
+    status: json['status'],
+  );
+
+  Map&lt;String, dynamic&gt; toJson() =&gt; {
+    'data': data?.toJson(),
+    'status': status,
+  };
+}
+
+class Data {
+  final int? id;
+  final String? size;
+  final int? status;
+  final String? created_at;
+  final String? updated_at;
+
+  Data({this.id, this.size, this.status, this.created_at, this.updated_at, });
+
+  factory Data.fromJson(Map&lt;String, dynamic&gt; json) =&gt; Data(
+    id: json['id'],
+    size: json['size'],
+    status: json['status'],
+    created_at: json['created_at'],
+    updated_at: json['updated_at'],
+  );
+
+  Map&lt;String, dynamic&gt; toJson() =&gt; {
+    'id': id,
+    'size': size,
+    'status': status,
+    'created_at': created_at,
+    'updated_at': updated_at,
+  };
+}</code></pre></div>
+
 </span>
 
 <span id="example-responses-POSTapi-v3-user-sizes-edit">
@@ -25135,7 +30765,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
     --header "Content-Type: application/json" \
     --header "Accept: application/json" \
     --data "{
-    \"id\": \"quo\",
+    \"id\": \"consequuntur\",
     \"name\": \"\\\"Large\\\"\",
     \"status\": true
 }"
@@ -25154,7 +30784,7 @@ const headers = {
 };
 
 let body = {
-    "id": "quo",
+    "id": "consequuntur",
     "name": "\"Large\"",
     "status": true
 };
@@ -25164,6 +30794,55 @@ fetch(url, {
     headers,
     body: JSON.stringify(body),
 }).then(response =&gt; response.json());</code></pre></div>
+
+
+<div class="jsonToDart-example">
+    <pre><code class="language-dart">
+class Update {
+  final Data? data;
+  final String? message;
+  final bool? status;
+
+  Update({this.data, this.message, this.status, });
+
+  factory Update.fromJson(Map&lt;String, dynamic&gt; json) =&gt; Update(
+    data: json['data'] != null ? Data.fromJson(json['data'] as Map&lt;String, dynamic&gt;) : null,
+    message: json['message'],
+    status: json['status'],
+  );
+
+  Map&lt;String, dynamic&gt; toJson() =&gt; {
+    'data': data?.toJson(),
+    'message': message,
+    'status': status,
+  };
+}
+
+class Data {
+  final int? id;
+  final String? size;
+  final int? status;
+  final String? created_at;
+  final String? updated_at;
+
+  Data({this.id, this.size, this.status, this.created_at, this.updated_at, });
+
+  factory Data.fromJson(Map&lt;String, dynamic&gt; json) =&gt; Data(
+    id: json['id'],
+    size: json['size'],
+    status: json['status'],
+    created_at: json['created_at'],
+    updated_at: json['updated_at'],
+  );
+
+  Map&lt;String, dynamic&gt; toJson() =&gt; {
+    'id': id,
+    'size': size,
+    'status': status,
+    'created_at': created_at,
+    'updated_at': updated_at,
+  };
+}</code></pre></div>
 
 </span>
 
@@ -25323,10 +31002,10 @@ You can check the Dev Tools console for debugging information.</code></pre>
  &nbsp;
                 <input type="text" style="display: none"
                               name="id"                data-endpoint="POSTapi-v3-user-sizes-update"
-               value="quo"
+               value="consequuntur"
                data-component="body">
     <br>
-<p>The <code>id</code> of an existing record in the sizes table. Example: <code>quo</code></p>
+<p>The <code>id</code> of an existing record in the sizes table. Example: <code>consequuntur</code></p>
         </div>
                 <div style=" padding-left: 28px;  clear: unset;">
             <b style="line-height: 2;"><code>name</code></b>&nbsp;&nbsp;
@@ -25381,7 +31060,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
     --header "Content-Type: application/json" \
     --header "Accept: application/json" \
     --data "{
-    \"id\": \"repellat\"
+    \"id\": \"similique\"
 }"
 </code></pre></div>
 
@@ -25398,7 +31077,7 @@ const headers = {
 };
 
 let body = {
-    "id": "repellat"
+    "id": "similique"
 };
 
 fetch(url, {
@@ -25406,6 +31085,26 @@ fetch(url, {
     headers,
     body: JSON.stringify(body),
 }).then(response =&gt; response.json());</code></pre></div>
+
+
+<div class="jsonToDart-example">
+    <pre><code class="language-dart">
+class Delete {
+  final String? message;
+  final bool? status;
+
+  Delete({this.message, this.status, });
+
+  factory Delete.fromJson(Map&lt;String, dynamic&gt; json) =&gt; Delete(
+    message: json['message'],
+    status: json['status'],
+  );
+
+  Map&lt;String, dynamic&gt; toJson() =&gt; {
+    'message': message,
+    'status': status,
+  };
+}</code></pre></div>
 
 </span>
 
@@ -25540,10 +31239,10 @@ You can check the Dev Tools console for debugging information.</code></pre>
  &nbsp;
                 <input type="text" style="display: none"
                               name="id"                data-endpoint="POSTapi-v3-user-sizes-delete"
-               value="repellat"
+               value="similique"
                data-component="body">
     <br>
-<p>The <code>id</code> of an existing record in the sizes table. Example: <code>repellat</code></p>
+<p>The <code>id</code> of an existing record in the sizes table. Example: <code>similique</code></p>
         </div>
         </form>
 
@@ -25591,6 +31290,52 @@ fetch(url, {
     headers,
     body: JSON.stringify(body),
 }).then(response =&gt; response.json());</code></pre></div>
+
+
+<div class="jsonToDart-example">
+    <pre><code class="language-dart">
+class Edit {
+  final Data? data;
+  final bool? status;
+
+  Edit({this.data, this.status, });
+
+  factory Edit.fromJson(Map&lt;String, dynamic&gt; json) =&gt; Edit(
+    data: json['data'] != null ? Data.fromJson(json['data'] as Map&lt;String, dynamic&gt;) : null,
+    status: json['status'],
+  );
+
+  Map&lt;String, dynamic&gt; toJson() =&gt; {
+    'data': data?.toJson(),
+    'status': status,
+  };
+}
+
+class Data {
+  final int? id;
+  final String? size;
+  final int? status;
+  final String? created_at;
+  final String? updated_at;
+
+  Data({this.id, this.size, this.status, this.created_at, this.updated_at, });
+
+  factory Data.fromJson(Map&lt;String, dynamic&gt; json) =&gt; Data(
+    id: json['id'],
+    size: json['size'],
+    status: json['status'],
+    created_at: json['created_at'],
+    updated_at: json['updated_at'],
+  );
+
+  Map&lt;String, dynamic&gt; toJson() =&gt; {
+    'id': id,
+    'size': size,
+    'status': status,
+    'created_at': created_at,
+    'updated_at': updated_at,
+  };
+}</code></pre></div>
 
 </span>
 
@@ -25761,6 +31506,81 @@ fetch(url, {
     method: "GET",
     headers,
 }).then(response =&gt; response.json());</code></pre></div>
+
+
+<div class="jsonToDart-example">
+    <pre><code class="language-dart">
+class Load {
+  final List&lt;DataItem&gt;? data;
+
+  Load({this.data, });
+
+  factory Load.fromJson(Map&lt;String, dynamic&gt; json) =&gt; Load(
+    data: (json['data'] as List&lt;dynamic&gt;?)?.map((e) =&gt; DataItem.fromJson(e as Map&lt;String, dynamic&gt;)).toList(),
+  );
+
+  Map&lt;String, dynamic&gt; toJson() =&gt; {
+    'data': data?.map((e) =&gt; e.toJson()).toList(),
+  };
+}
+
+class DataItem {
+  final int? id;
+  final int? user_id;
+  final String? title;
+  final String? description;
+  final String? start;
+  final String? end;
+  final String? created_at;
+  final String? updated_at;
+  final User? user;
+
+  DataItem({this.id, this.user_id, this.title, this.description, this.start, this.end, this.created_at, this.updated_at, this.user, });
+
+  factory DataItem.fromJson(Map&lt;String, dynamic&gt; json) =&gt; DataItem(
+    id: json['id'],
+    user_id: json['user_id'],
+    title: json['title'],
+    description: json['description'],
+    start: json['start'],
+    end: json['end'],
+    created_at: json['created_at'],
+    updated_at: json['updated_at'],
+    user: json['user'] != null ? User.fromJson(json['user'] as Map&lt;String, dynamic&gt;) : null,
+  );
+
+  Map&lt;String, dynamic&gt; toJson() =&gt; {
+    'id': id,
+    'user_id': user_id,
+    'title': title,
+    'description': description,
+    'start': start,
+    'end': end,
+    'created_at': created_at,
+    'updated_at': updated_at,
+    'user': user?.toJson(),
+  };
+}
+
+class User {
+  final int? id;
+  final String? name;
+  final String? email;
+
+  User({this.id, this.name, this.email, });
+
+  factory User.fromJson(Map&lt;String, dynamic&gt; json) =&gt; User(
+    id: json['id'],
+    name: json['name'],
+    email: json['email'],
+  );
+
+  Map&lt;String, dynamic&gt; toJson() =&gt; {
+    'id': id,
+    'name': name,
+    'email': email,
+  };
+}</code></pre></div>
 
 </span>
 
@@ -25944,6 +31764,61 @@ fetch(url, {
     headers,
     body: JSON.stringify(body),
 }).then(response =&gt; response.json());</code></pre></div>
+
+
+<div class="jsonToDart-example">
+    <pre><code class="language-dart">
+class Store {
+  final String? message;
+  final Data? data;
+
+  Store({this.message, this.data, });
+
+  factory Store.fromJson(Map&lt;String, dynamic&gt; json) =&gt; Store(
+    message: json['message'],
+    data: json['data'] != null ? Data.fromJson(json['data'] as Map&lt;String, dynamic&gt;) : null,
+  );
+
+  Map&lt;String, dynamic&gt; toJson() =&gt; {
+    'message': message,
+    'data': data?.toJson(),
+  };
+}
+
+class Data {
+  final int? id;
+  final int? user_id;
+  final String? title;
+  final String? description;
+  final String? start;
+  final String? end;
+  final String? created_at;
+  final String? updated_at;
+
+  Data({this.id, this.user_id, this.title, this.description, this.start, this.end, this.created_at, this.updated_at, });
+
+  factory Data.fromJson(Map&lt;String, dynamic&gt; json) =&gt; Data(
+    id: json['id'],
+    user_id: json['user_id'],
+    title: json['title'],
+    description: json['description'],
+    start: json['start'],
+    end: json['end'],
+    created_at: json['created_at'],
+    updated_at: json['updated_at'],
+  );
+
+  Map&lt;String, dynamic&gt; toJson() =&gt; {
+    'id': id,
+    'user_id': user_id,
+    'title': title,
+    'description': description,
+    'start': start,
+    'end': end,
+    'created_at': created_at,
+    'updated_at': updated_at,
+  };
+}</code></pre></div>
 
 </span>
 
@@ -26139,6 +32014,132 @@ fetch(url, {
     method: "GET",
     headers,
 }).then(response =&gt; response.json());</code></pre></div>
+
+
+<div class="jsonToDart-example">
+    <pre><code class="language-dart">
+class 1 {
+  final Data? data;
+
+  1({this.data, });
+
+  factory 1.fromJson(Map&lt;String, dynamic&gt; json) =&gt; 1(
+    data: json['data'] != null ? Data.fromJson(json['data'] as Map&lt;String, dynamic&gt;) : null,
+  );
+
+  Map&lt;String, dynamic&gt; toJson() =&gt; {
+    'data': data?.toJson(),
+  };
+}
+
+class Data {
+  final int? id;
+  final int? user_id;
+  final String? title;
+  final String? description;
+  final String? start;
+  final String? end;
+  final String? created_at;
+  final String? updated_at;
+  final User? user;
+
+  Data({this.id, this.user_id, this.title, this.description, this.start, this.end, this.created_at, this.updated_at, this.user, });
+
+  factory Data.fromJson(Map&lt;String, dynamic&gt; json) =&gt; Data(
+    id: json['id'],
+    user_id: json['user_id'],
+    title: json['title'],
+    description: json['description'],
+    start: json['start'],
+    end: json['end'],
+    created_at: json['created_at'],
+    updated_at: json['updated_at'],
+    user: json['user'] != null ? User.fromJson(json['user'] as Map&lt;String, dynamic&gt;) : null,
+  );
+
+  Map&lt;String, dynamic&gt; toJson() =&gt; {
+    'id': id,
+    'user_id': user_id,
+    'title': title,
+    'description': description,
+    'start': start,
+    'end': end,
+    'created_at': created_at,
+    'updated_at': updated_at,
+    'user': user?.toJson(),
+  };
+}
+
+class User {
+  final int? id;
+  final int? ecclesia_id;
+  final String? created_id;
+  final String? user_name;
+  final String? first_name;
+  final dynamic? middle_name;
+  final String? last_name;
+  final String? email;
+  final String? phone;
+  final dynamic? email_verified_at;
+  final String? profile_picture;
+  final String? address;
+  final String? city;
+  final String? state;
+  final dynamic? address2;
+  final String? country;
+  final String? zip;
+  final int? status;
+  final String? created_at;
+  final String? updated_at;
+
+  User({this.id, this.ecclesia_id, this.created_id, this.user_name, this.first_name, this.middle_name, this.last_name, this.email, this.phone, this.email_verified_at, this.profile_picture, this.address, this.city, this.state, this.address2, this.country, this.zip, this.status, this.created_at, this.updated_at, });
+
+  factory User.fromJson(Map&lt;String, dynamic&gt; json) =&gt; User(
+    id: json['id'],
+    ecclesia_id: json['ecclesia_id'],
+    created_id: json['created_id'],
+    user_name: json['user_name'],
+    first_name: json['first_name'],
+    middle_name: json['middle_name'],
+    last_name: json['last_name'],
+    email: json['email'],
+    phone: json['phone'],
+    email_verified_at: json['email_verified_at'],
+    profile_picture: json['profile_picture'],
+    address: json['address'],
+    city: json['city'],
+    state: json['state'],
+    address2: json['address2'],
+    country: json['country'],
+    zip: json['zip'],
+    status: json['status'],
+    created_at: json['created_at'],
+    updated_at: json['updated_at'],
+  );
+
+  Map&lt;String, dynamic&gt; toJson() =&gt; {
+    'id': id,
+    'ecclesia_id': ecclesia_id,
+    'created_id': created_id,
+    'user_name': user_name,
+    'first_name': first_name,
+    'middle_name': middle_name,
+    'last_name': last_name,
+    'email': email,
+    'phone': phone,
+    'email_verified_at': email_verified_at,
+    'profile_picture': profile_picture,
+    'address': address,
+    'city': city,
+    'state': state,
+    'address2': address2,
+    'country': country,
+    'zip': zip,
+    'status': status,
+    'created_at': created_at,
+    'updated_at': updated_at,
+  };
+}</code></pre></div>
 
 </span>
 
@@ -26338,6 +32339,26 @@ fetch(url, {
     body: JSON.stringify(body),
 }).then(response =&gt; response.json());</code></pre></div>
 
+
+<div class="jsonToDart-example">
+    <pre><code class="language-dart">
+class 1 {
+  final String? message;
+  final bool? status;
+
+  1({this.message, this.status, });
+
+  factory 1.fromJson(Map&lt;String, dynamic&gt; json) =&gt; 1(
+    message: json['message'],
+    status: json['status'],
+  );
+
+  Map&lt;String, dynamic&gt; toJson() =&gt; {
+    'message': message,
+    'status': status,
+  };
+}</code></pre></div>
+
 </span>
 
 <span id="example-responses-POSTapi-v3-user-events-edit--id-">
@@ -26527,6 +32548,26 @@ fetch(url, {
     headers,
 }).then(response =&gt; response.json());</code></pre></div>
 
+
+<div class="jsonToDart-example">
+    <pre><code class="language-dart">
+class 1 {
+  final String? message;
+  final bool? status;
+
+  1({this.message, this.status, });
+
+  factory 1.fromJson(Map&lt;String, dynamic&gt; json) =&gt; 1(
+    message: json['message'],
+    status: json['status'],
+  );
+
+  Map&lt;String, dynamic&gt; toJson() =&gt; {
+    'message': message,
+    'status': status,
+  };
+}</code></pre></div>
+
 </span>
 
 <span id="example-responses-POSTapi-v3-user-events-delete--id-">
@@ -26670,6 +32711,20 @@ fetch(url, {
     method: "GET",
     headers,
 }).then(response =&gt; response.json());</code></pre></div>
+
+
+<div class="jsonToDart-example">
+    <pre><code class="language-dart">
+class Data {
+
+  Data({});
+
+  factory Data.fromJson(Map&lt;String, dynamic&gt; json) =&gt; Data(
+  );
+
+  Map&lt;String, dynamic&gt; toJson() =&gt; {
+  };
+}</code></pre></div>
 
 </span>
 
@@ -26854,6 +32909,26 @@ fetch(url, {
     body: JSON.stringify(body),
 }).then(response =&gt; response.json());</code></pre></div>
 
+
+<div class="jsonToDart-example">
+    <pre><code class="language-dart">
+class Token {
+  final String? message;
+  final bool? status;
+
+  Token({this.message, this.status, });
+
+  factory Token.fromJson(Map&lt;String, dynamic&gt; json) =&gt; Token(
+    message: json['message'],
+    status: json['status'],
+  );
+
+  Map&lt;String, dynamic&gt; toJson() =&gt; {
+    'message': message,
+    'status': status,
+  };
+}</code></pre></div>
+
 </span>
 
 <span id="example-responses-POSTapi-v3-user-fcm-update-token">
@@ -27012,6 +33087,26 @@ fetch(url, {
     headers,
 }).then(response =&gt; response.json());</code></pre></div>
 
+
+<div class="jsonToDart-example">
+    <pre><code class="language-dart">
+class Token {
+  final String? message;
+  final bool? status;
+
+  Token({this.message, this.status, });
+
+  factory Token.fromJson(Map&lt;String, dynamic&gt; json) =&gt; Token(
+    message: json['message'],
+    status: json['status'],
+  );
+
+  Map&lt;String, dynamic&gt; toJson() =&gt; {
+    'message': message,
+    'status': status,
+  };
+}</code></pre></div>
+
 </span>
 
 <span id="example-responses-POSTapi-v3-user-fcm-remove-token">
@@ -27154,6 +33249,26 @@ fetch(url, {
     headers,
     body: JSON.stringify(body),
 }).then(response =&gt; response.json());</code></pre></div>
+
+
+<div class="jsonToDart-example">
+    <pre><code class="language-dart">
+class Notification {
+  final String? message;
+  final bool? status;
+
+  Notification({this.message, this.status, });
+
+  factory Notification.fromJson(Map&lt;String, dynamic&gt; json) =&gt; Notification(
+    message: json['message'],
+    status: json['status'],
+  );
+
+  Map&lt;String, dynamic&gt; toJson() =&gt; {
+    'message': message,
+    'status': status,
+  };
+}</code></pre></div>
 
 </span>
 
@@ -27305,7 +33420,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
     --header "Content-Type: application/json" \
     --header "Accept: application/json" \
     --data "{
-    \"email\": \"mayert.carmela@example.net\"
+    \"email\": \"wisozk.linnea@example.net\"
 }"
 </code></pre></div>
 
@@ -27321,7 +33436,7 @@ const headers = {
 };
 
 let body = {
-    "email": "mayert.carmela@example.net"
+    "email": "wisozk.linnea@example.net"
 };
 
 fetch(url, {
@@ -27329,6 +33444,26 @@ fetch(url, {
     headers,
     body: JSON.stringify(body),
 }).then(response =&gt; response.json());</code></pre></div>
+
+
+<div class="jsonToDart-example">
+    <pre><code class="language-dart">
+class Password {
+  final bool? status;
+  final String? message;
+
+  Password({this.status, this.message, });
+
+  factory Password.fromJson(Map&lt;String, dynamic&gt; json) =&gt; Password(
+    status: json['status'],
+    message: json['message'],
+  );
+
+  Map&lt;String, dynamic&gt; toJson() =&gt; {
+    'status': status,
+    'message': message,
+  };
+}</code></pre></div>
 
 </span>
 
@@ -27420,10 +33555,10 @@ You can check the Dev Tools console for debugging information.</code></pre>
  &nbsp;
                 <input type="text" style="display: none"
                               name="email"                data-endpoint="POSTapi-v3-forget-password"
-               value="mayert.carmela@example.net"
+               value="wisozk.linnea@example.net"
                data-component="body">
     <br>
-<p>The email of the user. Example: Example: <code>mayert.carmela@example.net</code></p>
+<p>The email of the user. Example: Example: <code>wisozk.linnea@example.net</code></p>
         </div>
         </form>
 
@@ -27466,6 +33601,20 @@ fetch(url, {
     method: "POST",
     headers,
 }).then(response =&gt; response.json());</code></pre></div>
+
+
+<div class="jsonToDart-example">
+    <pre><code class="language-dart">
+class List {
+
+  List({});
+
+  factory List.fromJson(Map&lt;String, dynamic&gt; json) =&gt; List(
+  );
+
+  Map&lt;String, dynamic&gt; toJson() =&gt; {
+  };
+}</code></pre></div>
 
 </span>
 
@@ -27765,7 +33914,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
     --form "name="Project Z Team""\
     --form "description="Team for Project Z collaboration""\
     --form "members="\
-    --form "group_image=@/private/var/folders/wy/1yz2w5p91q13336262xr4yzw0000gn/T/phpiCzPRe" </code></pre></div>
+    --form "group_image=@/private/var/folders/wy/1yz2w5p91q13336262xr4yzw0000gn/T/phptLXx6Y" </code></pre></div>
 
 
 <div class="javascript-example">
@@ -27790,6 +33939,29 @@ fetch(url, {
     headers,
     body,
 }).then(response =&gt; response.json());</code></pre></div>
+
+
+<div class="jsonToDart-example">
+    <pre><code class="language-dart">
+class Create {
+  final dynamic? name;
+  final dynamic? description;
+  final dynamic? members;
+
+  Create({this.name, this.description, this.members, });
+
+  factory Create.fromJson(Map&lt;String, dynamic&gt; json) =&gt; Create(
+    name: json['name'],
+    description: json['description'],
+    members: json['members'],
+  );
+
+  Map&lt;String, dynamic&gt; toJson() =&gt; {
+    'name': name,
+    'description': description,
+    'members': members,
+  };
+}</code></pre></div>
 
 </span>
 
@@ -27955,7 +34127,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
                value=""
                data-component="body">
     <br>
-<p>An image file for the team group. Supported formats: jpeg, png, jpg, gif, svg. Maximum size: 2MB. Example: <code>/private/var/folders/wy/1yz2w5p91q13336262xr4yzw0000gn/T/phpiCzPRe</code></p>
+<p>An image file for the team group. Supported formats: jpeg, png, jpg, gif, svg. Maximum size: 2MB. Example: <code>/private/var/folders/wy/1yz2w5p91q13336262xr4yzw0000gn/T/phptLXx6Y</code></p>
         </div>
         </form>
 
@@ -28003,6 +34175,214 @@ fetch(url, {
     headers,
     body: JSON.stringify(body),
 }).then(response =&gt; response.json());</code></pre></div>
+
+
+<div class="jsonToDart-example">
+    <pre><code class="language-dart">
+class Load {
+  final Team? team;
+  final List&lt;TeamChatsItem&gt;? team_chats;
+  final String? team_member_names;
+
+  Load({this.team, this.team_chats, this.team_member_names, });
+
+  factory Load.fromJson(Map&lt;String, dynamic&gt; json) =&gt; Load(
+    team: json['team'] != null ? Team.fromJson(json['team'] as Map&lt;String, dynamic&gt;) : null,
+    team_chats: (json['team_chats'] as List&lt;dynamic&gt;?)?.map((e) =&gt; TeamChatsItem.fromJson(e as Map&lt;String, dynamic&gt;)).toList(),
+    team_member_names: json['team_member_names'],
+  );
+
+  Map&lt;String, dynamic&gt; toJson() =&gt; {
+    'team': team?.toJson(),
+    'team_chats': team_chats?.map((e) =&gt; e.toJson()).toList(),
+    'team_member_names': team_member_names,
+  };
+}
+
+class TeamChatsItem {
+  final int? id;
+  final int? team_id;
+  final int? user_id;
+  final String? message;
+  final dynamic? attachment;
+  final int? is_seen;
+  final dynamic? deleted_at;
+  final String? created_at;
+  final String? updated_at;
+  final User? user;
+
+  TeamChatsItem({this.id, this.team_id, this.user_id, this.message, this.attachment, this.is_seen, this.deleted_at, this.created_at, this.updated_at, this.user, });
+
+  factory TeamChatsItem.fromJson(Map&lt;String, dynamic&gt; json) =&gt; TeamChatsItem(
+    id: json['id'],
+    team_id: json['team_id'],
+    user_id: json['user_id'],
+    message: json['message'],
+    attachment: json['attachment'],
+    is_seen: json['is_seen'],
+    deleted_at: json['deleted_at'],
+    created_at: json['created_at'],
+    updated_at: json['updated_at'],
+    user: json['user'] != null ? User.fromJson(json['user'] as Map&lt;String, dynamic&gt;) : null,
+  );
+
+  Map&lt;String, dynamic&gt; toJson() =&gt; {
+    'id': id,
+    'team_id': team_id,
+    'user_id': user_id,
+    'message': message,
+    'attachment': attachment,
+    'is_seen': is_seen,
+    'deleted_at': deleted_at,
+    'created_at': created_at,
+    'updated_at': updated_at,
+    'user': user?.toJson(),
+  };
+}
+
+class Team {
+  final int? id;
+  final dynamic? created_by;
+  final String? name;
+  final String? group_image;
+  final String? description;
+  final String? created_at;
+  final String? updated_at;
+  final List&lt;MembersItem&gt;? members;
+
+  Team({this.id, this.created_by, this.name, this.group_image, this.description, this.created_at, this.updated_at, this.members, });
+
+  factory Team.fromJson(Map&lt;String, dynamic&gt; json) =&gt; Team(
+    id: json['id'],
+    created_by: json['created_by'],
+    name: json['name'],
+    group_image: json['group_image'],
+    description: json['description'],
+    created_at: json['created_at'],
+    updated_at: json['updated_at'],
+    members: (json['members'] as List&lt;dynamic&gt;?)?.map((e) =&gt; MembersItem.fromJson(e as Map&lt;String, dynamic&gt;)).toList(),
+  );
+
+  Map&lt;String, dynamic&gt; toJson() =&gt; {
+    'id': id,
+    'created_by': created_by,
+    'name': name,
+    'group_image': group_image,
+    'description': description,
+    'created_at': created_at,
+    'updated_at': updated_at,
+    'members': members?.map((e) =&gt; e.toJson()).toList(),
+  };
+}
+
+class MembersItem {
+  final int? id;
+  final int? team_id;
+  final int? user_id;
+  final int? is_removed;
+  final int? is_admin;
+  final dynamic? is_removed_at;
+  final String? created_at;
+  final String? updated_at;
+  final User? user;
+
+  MembersItem({this.id, this.team_id, this.user_id, this.is_removed, this.is_admin, this.is_removed_at, this.created_at, this.updated_at, this.user, });
+
+  factory MembersItem.fromJson(Map&lt;String, dynamic&gt; json) =&gt; MembersItem(
+    id: json['id'],
+    team_id: json['team_id'],
+    user_id: json['user_id'],
+    is_removed: json['is_removed'],
+    is_admin: json['is_admin'],
+    is_removed_at: json['is_removed_at'],
+    created_at: json['created_at'],
+    updated_at: json['updated_at'],
+    user: json['user'] != null ? User.fromJson(json['user'] as Map&lt;String, dynamic&gt;) : null,
+  );
+
+  Map&lt;String, dynamic&gt; toJson() =&gt; {
+    'id': id,
+    'team_id': team_id,
+    'user_id': user_id,
+    'is_removed': is_removed,
+    'is_admin': is_admin,
+    'is_removed_at': is_removed_at,
+    'created_at': created_at,
+    'updated_at': updated_at,
+    'user': user?.toJson(),
+  };
+}
+
+class User {
+  final int? id;
+  final int? ecclesia_id;
+  final dynamic? created_id;
+  final String? user_name;
+  final String? first_name;
+  final dynamic? middle_name;
+  final String? last_name;
+  final String? email;
+  final String? phone;
+  final String? email_verified_at;
+  final String? profile_picture;
+  final String? address;
+  final String? city;
+  final String? state;
+  final String? address2;
+  final String? country;
+  final String? zip;
+  final int? status;
+  final String? created_at;
+  final String? updated_at;
+
+  User({this.id, this.ecclesia_id, this.created_id, this.user_name, this.first_name, this.middle_name, this.last_name, this.email, this.phone, this.email_verified_at, this.profile_picture, this.address, this.city, this.state, this.address2, this.country, this.zip, this.status, this.created_at, this.updated_at, });
+
+  factory User.fromJson(Map&lt;String, dynamic&gt; json) =&gt; User(
+    id: json['id'],
+    ecclesia_id: json['ecclesia_id'],
+    created_id: json['created_id'],
+    user_name: json['user_name'],
+    first_name: json['first_name'],
+    middle_name: json['middle_name'],
+    last_name: json['last_name'],
+    email: json['email'],
+    phone: json['phone'],
+    email_verified_at: json['email_verified_at'],
+    profile_picture: json['profile_picture'],
+    address: json['address'],
+    city: json['city'],
+    state: json['state'],
+    address2: json['address2'],
+    country: json['country'],
+    zip: json['zip'],
+    status: json['status'],
+    created_at: json['created_at'],
+    updated_at: json['updated_at'],
+  );
+
+  Map&lt;String, dynamic&gt; toJson() =&gt; {
+    'id': id,
+    'ecclesia_id': ecclesia_id,
+    'created_id': created_id,
+    'user_name': user_name,
+    'first_name': first_name,
+    'middle_name': middle_name,
+    'last_name': last_name,
+    'email': email,
+    'phone': phone,
+    'email_verified_at': email_verified_at,
+    'profile_picture': profile_picture,
+    'address': address,
+    'city': city,
+    'state': state,
+    'address2': address2,
+    'country': country,
+    'zip': zip,
+    'status': status,
+    'created_at': created_at,
+    'updated_at': updated_at,
+  };
+}</code></pre></div>
 
 </span>
 
@@ -28316,7 +34696,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
     --header "Accept: application/json" \
     --form "team_id=5"\
     --form "message="Hello team!""\
-    --form "file=@/private/var/folders/wy/1yz2w5p91q13336262xr4yzw0000gn/T/phpUwKdXz" </code></pre></div>
+    --form "file=@/private/var/folders/wy/1yz2w5p91q13336262xr4yzw0000gn/T/phpZ7fAgU" </code></pre></div>
 
 
 <div class="javascript-example">
@@ -28340,6 +34720,176 @@ fetch(url, {
     headers,
     body,
 }).then(response =&gt; response.json());</code></pre></div>
+
+
+<div class="jsonToDart-example">
+    <pre><code class="language-dart">
+class Send {
+  final String? message;
+  final bool? status;
+  final Chat? chat;
+  final List&lt;int&gt;? chat_member_id;
+
+  Send({this.message, this.status, this.chat, this.chat_member_id, });
+
+  factory Send.fromJson(Map&lt;String, dynamic&gt; json) =&gt; Send(
+    message: json['message'],
+    status: json['status'],
+    chat: json['chat'] != null ? Chat.fromJson(json['chat'] as Map&lt;String, dynamic&gt;) : null,
+    chat_member_id: List&lt;int&gt;.from(json['chat_member_id'] ?? []),
+  );
+
+  Map&lt;String, dynamic&gt; toJson() =&gt; {
+    'message': message,
+    'status': status,
+    'chat': chat?.toJson(),
+    'chat_member_id': chat_member_id,
+  };
+}
+
+class Chat {
+  final int? id;
+  final int? team_id;
+  final int? user_id;
+  final String? message;
+  final dynamic? attachment;
+  final int? is_seen;
+  final dynamic? deleted_at;
+  final String? created_at;
+  final String? updated_at;
+  final User? user;
+  final List&lt;ChatMembersItem&gt;? chat_members;
+
+  Chat({this.id, this.team_id, this.user_id, this.message, this.attachment, this.is_seen, this.deleted_at, this.created_at, this.updated_at, this.user, this.chat_members, });
+
+  factory Chat.fromJson(Map&lt;String, dynamic&gt; json) =&gt; Chat(
+    id: json['id'],
+    team_id: json['team_id'],
+    user_id: json['user_id'],
+    message: json['message'],
+    attachment: json['attachment'],
+    is_seen: json['is_seen'],
+    deleted_at: json['deleted_at'],
+    created_at: json['created_at'],
+    updated_at: json['updated_at'],
+    user: json['user'] != null ? User.fromJson(json['user'] as Map&lt;String, dynamic&gt;) : null,
+    chat_members: (json['chat_members'] as List&lt;dynamic&gt;?)?.map((e) =&gt; ChatMembersItem.fromJson(e as Map&lt;String, dynamic&gt;)).toList(),
+  );
+
+  Map&lt;String, dynamic&gt; toJson() =&gt; {
+    'id': id,
+    'team_id': team_id,
+    'user_id': user_id,
+    'message': message,
+    'attachment': attachment,
+    'is_seen': is_seen,
+    'deleted_at': deleted_at,
+    'created_at': created_at,
+    'updated_at': updated_at,
+    'user': user?.toJson(),
+    'chat_members': chat_members?.map((e) =&gt; e.toJson()).toList(),
+  };
+}
+
+class ChatMembersItem {
+  final int? id;
+  final int? chat_id;
+  final int? user_id;
+  final int? is_seen;
+  final String? created_at;
+  final String? updated_at;
+
+  ChatMembersItem({this.id, this.chat_id, this.user_id, this.is_seen, this.created_at, this.updated_at, });
+
+  factory ChatMembersItem.fromJson(Map&lt;String, dynamic&gt; json) =&gt; ChatMembersItem(
+    id: json['id'],
+    chat_id: json['chat_id'],
+    user_id: json['user_id'],
+    is_seen: json['is_seen'],
+    created_at: json['created_at'],
+    updated_at: json['updated_at'],
+  );
+
+  Map&lt;String, dynamic&gt; toJson() =&gt; {
+    'id': id,
+    'chat_id': chat_id,
+    'user_id': user_id,
+    'is_seen': is_seen,
+    'created_at': created_at,
+    'updated_at': updated_at,
+  };
+}
+
+class User {
+  final int? id;
+  final int? ecclesia_id;
+  final dynamic? created_id;
+  final String? user_name;
+  final String? first_name;
+  final dynamic? middle_name;
+  final String? last_name;
+  final String? email;
+  final String? phone;
+  final String? email_verified_at;
+  final String? profile_picture;
+  final String? address;
+  final String? city;
+  final String? state;
+  final String? address2;
+  final String? country;
+  final String? zip;
+  final int? status;
+  final String? created_at;
+  final String? updated_at;
+
+  User({this.id, this.ecclesia_id, this.created_id, this.user_name, this.first_name, this.middle_name, this.last_name, this.email, this.phone, this.email_verified_at, this.profile_picture, this.address, this.city, this.state, this.address2, this.country, this.zip, this.status, this.created_at, this.updated_at, });
+
+  factory User.fromJson(Map&lt;String, dynamic&gt; json) =&gt; User(
+    id: json['id'],
+    ecclesia_id: json['ecclesia_id'],
+    created_id: json['created_id'],
+    user_name: json['user_name'],
+    first_name: json['first_name'],
+    middle_name: json['middle_name'],
+    last_name: json['last_name'],
+    email: json['email'],
+    phone: json['phone'],
+    email_verified_at: json['email_verified_at'],
+    profile_picture: json['profile_picture'],
+    address: json['address'],
+    city: json['city'],
+    state: json['state'],
+    address2: json['address2'],
+    country: json['country'],
+    zip: json['zip'],
+    status: json['status'],
+    created_at: json['created_at'],
+    updated_at: json['updated_at'],
+  );
+
+  Map&lt;String, dynamic&gt; toJson() =&gt; {
+    'id': id,
+    'ecclesia_id': ecclesia_id,
+    'created_id': created_id,
+    'user_name': user_name,
+    'first_name': first_name,
+    'middle_name': middle_name,
+    'last_name': last_name,
+    'email': email,
+    'phone': phone,
+    'email_verified_at': email_verified_at,
+    'profile_picture': profile_picture,
+    'address': address,
+    'city': city,
+    'state': state,
+    'address2': address2,
+    'country': country,
+    'zip': zip,
+    'status': status,
+    'created_at': created_at,
+    'updated_at': updated_at,
+  };
+}</code></pre></div>
 
 </span>
 
@@ -28531,7 +35081,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
                value=""
                data-component="body">
     <br>
-<p>The attachment file to send, if applicable (optional if a message is provided). Example: <code>/private/var/folders/wy/1yz2w5p91q13336262xr4yzw0000gn/T/phpUwKdXz</code></p>
+<p>The attachment file to send, if applicable (optional if a message is provided). Example: <code>/private/var/folders/wy/1yz2w5p91q13336262xr4yzw0000gn/T/phpZ7fAgU</code></p>
         </div>
         </form>
 
@@ -28579,6 +35129,98 @@ fetch(url, {
     headers,
     body: JSON.stringify(body),
 }).then(response =&gt; response.json());</code></pre></div>
+
+
+<div class="jsonToDart-example">
+    <pre><code class="language-dart">
+class Info {
+  final String? message;
+  final bool? status;
+  final Team? team;
+  final List&lt;AvailableMembersItem&gt;? available_members;
+
+  Info({this.message, this.status, this.team, this.available_members, });
+
+  factory Info.fromJson(Map&lt;String, dynamic&gt; json) =&gt; Info(
+    message: json['message'],
+    status: json['status'],
+    team: json['team'] != null ? Team.fromJson(json['team'] as Map&lt;String, dynamic&gt;) : null,
+    available_members: (json['available_members'] as List&lt;dynamic&gt;?)?.map((e) =&gt; AvailableMembersItem.fromJson(e as Map&lt;String, dynamic&gt;)).toList(),
+  );
+
+  Map&lt;String, dynamic&gt; toJson() =&gt; {
+    'message': message,
+    'status': status,
+    'team': team?.toJson(),
+    'available_members': available_members?.map((e) =&gt; e.toJson()).toList(),
+  };
+}
+
+class AvailableMembersItem {
+  final int? id;
+  final String? first_name;
+  final String? last_name;
+
+  AvailableMembersItem({this.id, this.first_name, this.last_name, });
+
+  factory AvailableMembersItem.fromJson(Map&lt;String, dynamic&gt; json) =&gt; AvailableMembersItem(
+    id: json['id'],
+    first_name: json['first_name'],
+    last_name: json['last_name'],
+  );
+
+  Map&lt;String, dynamic&gt; toJson() =&gt; {
+    'id': id,
+    'first_name': first_name,
+    'last_name': last_name,
+  };
+}
+
+class Team {
+  final int? id;
+  final String? name;
+  final String? description;
+  final List&lt;MembersItem&gt;? members;
+
+  Team({this.id, this.name, this.description, this.members, });
+
+  factory Team.fromJson(Map&lt;String, dynamic&gt; json) =&gt; Team(
+    id: json['id'],
+    name: json['name'],
+    description: json['description'],
+    members: (json['members'] as List&lt;dynamic&gt;?)?.map((e) =&gt; MembersItem.fromJson(e as Map&lt;String, dynamic&gt;)).toList(),
+  );
+
+  Map&lt;String, dynamic&gt; toJson() =&gt; {
+    'id': id,
+    'name': name,
+    'description': description,
+    'members': members?.map((e) =&gt; e.toJson()).toList(),
+  };
+}
+
+class MembersItem {
+  final int? user_id;
+  final String? first_name;
+  final String? last_name;
+  final String? email;
+
+  MembersItem({this.user_id, this.first_name, this.last_name, this.email, });
+
+  factory MembersItem.fromJson(Map&lt;String, dynamic&gt; json) =&gt; MembersItem(
+    user_id: json['user_id'],
+    first_name: json['first_name'],
+    last_name: json['last_name'],
+    email: json['email'],
+  );
+
+  Map&lt;String, dynamic&gt; toJson() =&gt; {
+    'user_id': user_id,
+    'first_name': first_name,
+    'last_name': last_name,
+    'email': email,
+  };
+}</code></pre></div>
 
 </span>
 
@@ -28738,7 +35380,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
     --header "Content-Type: multipart/form-data" \
     --header "Accept: application/json" \
     --form "team_id=5"\
-    --form "group_image=@/private/var/folders/wy/1yz2w5p91q13336262xr4yzw0000gn/T/phpF6JFHk" </code></pre></div>
+    --form "group_image=@/private/var/folders/wy/1yz2w5p91q13336262xr4yzw0000gn/T/php7muo3G" </code></pre></div>
 
 
 <div class="javascript-example">
@@ -28761,6 +35403,29 @@ fetch(url, {
     headers,
     body,
 }).then(response =&gt; response.json());</code></pre></div>
+
+
+<div class="jsonToDart-example">
+    <pre><code class="language-dart">
+class Image {
+  final String? message;
+  final bool? status;
+  final String? group_image;
+
+  Image({this.message, this.status, this.group_image, });
+
+  factory Image.fromJson(Map&lt;String, dynamic&gt; json) =&gt; Image(
+    message: json['message'],
+    status: json['status'],
+    group_image: json['group_image'],
+  );
+
+  Map&lt;String, dynamic&gt; toJson() =&gt; {
+    'message': message,
+    'status': status,
+    'group_image': group_image,
+  };
+}</code></pre></div>
 
 </span>
 
@@ -28888,7 +35553,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
                value=""
                data-component="body">
     <br>
-<p>The new group image file (JPEG, PNG, JPG, GIF, SVG formats, max size: 2048KB). Example: <code>/private/var/folders/wy/1yz2w5p91q13336262xr4yzw0000gn/T/phpF6JFHk</code></p>
+<p>The new group image file (JPEG, PNG, JPG, GIF, SVG formats, max size: 2048KB). Example: <code>/private/var/folders/wy/1yz2w5p91q13336262xr4yzw0000gn/T/php7muo3G</code></p>
         </div>
         </form>
 
@@ -28940,6 +35605,35 @@ fetch(url, {
     headers,
     body: JSON.stringify(body),
 }).then(response =&gt; response.json());</code></pre></div>
+
+
+<div class="jsonToDart-example">
+    <pre><code class="language-dart">
+class Update {
+  final String? message;
+  final bool? status;
+  final String? name;
+  final String? description;
+  final int? team_id;
+
+  Update({this.message, this.status, this.name, this.description, this.team_id, });
+
+  factory Update.fromJson(Map&lt;String, dynamic&gt; json) =&gt; Update(
+    message: json['message'],
+    status: json['status'],
+    name: json['name'],
+    description: json['description'],
+    team_id: json['team_id'],
+  );
+
+  Map&lt;String, dynamic&gt; toJson() =&gt; {
+    'message': message,
+    'status': status,
+    'name': name,
+    'description': description,
+    'team_id': team_id,
+  };
+}</code></pre></div>
 
 </span>
 
@@ -29130,6 +35824,96 @@ fetch(url, {
     headers,
     body: JSON.stringify(body),
 }).then(response =&gt; response.json());</code></pre></div>
+
+
+<div class="jsonToDart-example">
+    <pre><code class="language-dart">
+class Member {
+  final String? message;
+  final bool? status;
+  final int? team_id;
+  final int? user_id;
+  final Chat? chat;
+  final List&lt;int&gt;? chat_member_id;
+  final Notification? notification;
+
+  Member({this.message, this.status, this.team_id, this.user_id, this.chat, this.chat_member_id, this.notification, });
+
+  factory Member.fromJson(Map&lt;String, dynamic&gt; json) =&gt; Member(
+    message: json['message'],
+    status: json['status'],
+    team_id: json['team_id'],
+    user_id: json['user_id'],
+    chat: json['chat'] != null ? Chat.fromJson(json['chat'] as Map&lt;String, dynamic&gt;) : null,
+    chat_member_id: List&lt;int&gt;.from(json['chat_member_id'] ?? []),
+    notification: json['notification'] != null ? Notification.fromJson(json['notification'] as Map&lt;String, dynamic&gt;) : null,
+  );
+
+  Map&lt;String, dynamic&gt; toJson() =&gt; {
+    'message': message,
+    'status': status,
+    'team_id': team_id,
+    'user_id': user_id,
+    'chat': chat?.toJson(),
+    'chat_member_id': chat_member_id,
+    'notification': notification?.toJson(),
+  };
+}
+
+class Notification {
+  final int? id;
+  final int? user_id;
+  final String? message;
+  final String? type;
+  final String? created_at;
+
+  Notification({this.id, this.user_id, this.message, this.type, this.created_at, });
+
+  factory Notification.fromJson(Map&lt;String, dynamic&gt; json) =&gt; Notification(
+    id: json['id'],
+    user_id: json['user_id'],
+    message: json['message'],
+    type: json['type'],
+    created_at: json['created_at'],
+  );
+
+  Map&lt;String, dynamic&gt; toJson() =&gt; {
+    'id': id,
+    'user_id': user_id,
+    'message': message,
+    'type': type,
+    'created_at': created_at,
+  };
+}
+
+class Chat {
+  final int? id;
+  final int? user_id;
+  final int? team_id;
+  final String? message;
+  final String? created_at;
+  final String? updated_at;
+
+  Chat({this.id, this.user_id, this.team_id, this.message, this.created_at, this.updated_at, });
+
+  factory Chat.fromJson(Map&lt;String, dynamic&gt; json) =&gt; Chat(
+    id: json['id'],
+    user_id: json['user_id'],
+    team_id: json['team_id'],
+    message: json['message'],
+    created_at: json['created_at'],
+    updated_at: json['updated_at'],
+  );
+
+  Map&lt;String, dynamic&gt; toJson() =&gt; {
+    'id': id,
+    'user_id': user_id,
+    'team_id': team_id,
+    'message': message,
+    'created_at': created_at,
+    'updated_at': updated_at,
+  };
+}</code></pre></div>
 
 </span>
 
@@ -29329,6 +36113,73 @@ fetch(url, {
     body: JSON.stringify(body),
 }).then(response =&gt; response.json());</code></pre></div>
 
+
+<div class="jsonToDart-example">
+    <pre><code class="language-dart">
+class Team {
+  final String? message;
+  final bool? status;
+  final int? team_id;
+  final String? team_member_name;
+  final Chat? chat;
+  final List&lt;int&gt;? chat_member_id;
+  final List&lt;int&gt;? already_member_arr;
+  final List&lt;int&gt;? only_added_members;
+
+  Team({this.message, this.status, this.team_id, this.team_member_name, this.chat, this.chat_member_id, this.already_member_arr, this.only_added_members, });
+
+  factory Team.fromJson(Map&lt;String, dynamic&gt; json) =&gt; Team(
+    message: json['message'],
+    status: json['status'],
+    team_id: json['team_id'],
+    team_member_name: json['team_member_name'],
+    chat: json['chat'] != null ? Chat.fromJson(json['chat'] as Map&lt;String, dynamic&gt;) : null,
+    chat_member_id: List&lt;int&gt;.from(json['chat_member_id'] ?? []),
+    already_member_arr: List&lt;int&gt;.from(json['already_member_arr'] ?? []),
+    only_added_members: List&lt;int&gt;.from(json['only_added_members'] ?? []),
+  );
+
+  Map&lt;String, dynamic&gt; toJson() =&gt; {
+    'message': message,
+    'status': status,
+    'team_id': team_id,
+    'team_member_name': team_member_name,
+    'chat': chat?.toJson(),
+    'chat_member_id': chat_member_id,
+    'already_member_arr': already_member_arr,
+    'only_added_members': only_added_members,
+  };
+}
+
+class Chat {
+  final int? id;
+  final int? user_id;
+  final int? team_id;
+  final String? message;
+  final String? created_at;
+  final String? updated_at;
+
+  Chat({this.id, this.user_id, this.team_id, this.message, this.created_at, this.updated_at, });
+
+  factory Chat.fromJson(Map&lt;String, dynamic&gt; json) =&gt; Chat(
+    id: json['id'],
+    user_id: json['user_id'],
+    team_id: json['team_id'],
+    message: json['message'],
+    created_at: json['created_at'],
+    updated_at: json['updated_at'],
+  );
+
+  Map&lt;String, dynamic&gt; toJson() =&gt; {
+    'id': id,
+    'user_id': user_id,
+    'team_id': team_id,
+    'message': message,
+    'created_at': created_at,
+    'updated_at': updated_at,
+  };
+}</code></pre></div>
+
 </span>
 
 <span id="example-responses-POSTapi-v3-user-team-chats-add-member-team">
@@ -29527,6 +36378,41 @@ fetch(url, {
     body: JSON.stringify(body),
 }).then(response =&gt; response.json());</code></pre></div>
 
+
+<div class="jsonToDart-example">
+    <pre><code class="language-dart">
+class Group {
+  final String? message;
+  final bool? status;
+  final int? team_id;
+  final int? user_id;
+  final String? team_member_name;
+  final bool? team_delete;
+  final List&lt;int&gt;? team_member_id;
+
+  Group({this.message, this.status, this.team_id, this.user_id, this.team_member_name, this.team_delete, this.team_member_id, });
+
+  factory Group.fromJson(Map&lt;String, dynamic&gt; json) =&gt; Group(
+    message: json['message'],
+    status: json['status'],
+    team_id: json['team_id'],
+    user_id: json['user_id'],
+    team_member_name: json['team_member_name'],
+    team_delete: json['team_delete'],
+    team_member_id: List&lt;int&gt;.from(json['team_member_id'] ?? []),
+  );
+
+  Map&lt;String, dynamic&gt; toJson() =&gt; {
+    'message': message,
+    'status': status,
+    'team_id': team_id,
+    'user_id': user_id,
+    'team_member_name': team_member_name,
+    'team_delete': team_delete,
+    'team_member_id': team_member_id,
+  };
+}</code></pre></div>
+
 </span>
 
 <span id="example-responses-POSTapi-v3-user-team-chats-exit-from-group">
@@ -29699,6 +36585,32 @@ fetch(url, {
     headers,
     body: JSON.stringify(body),
 }).then(response =&gt; response.json());</code></pre></div>
+
+
+<div class="jsonToDart-example">
+    <pre><code class="language-dart">
+class Group {
+  final String? message;
+  final bool? status;
+  final int? team_id;
+  final List&lt;int&gt;? team_member_id;
+
+  Group({this.message, this.status, this.team_id, this.team_member_id, });
+
+  factory Group.fromJson(Map&lt;String, dynamic&gt; json) =&gt; Group(
+    message: json['message'],
+    status: json['status'],
+    team_id: json['team_id'],
+    team_member_id: List&lt;int&gt;.from(json['team_member_id'] ?? []),
+  );
+
+  Map&lt;String, dynamic&gt; toJson() =&gt; {
+    'message': message,
+    'status': status,
+    'team_id': team_id,
+    'team_member_id': team_member_id,
+  };
+}</code></pre></div>
 
 </span>
 
@@ -29881,6 +36793,58 @@ fetch(url, {
     headers,
     body: JSON.stringify(body),
 }).then(response =&gt; response.json());</code></pre></div>
+
+
+<div class="jsonToDart-example">
+    <pre><code class="language-dart">
+class Admin {
+  final String? message;
+  final bool? status;
+  final int? team_id;
+  final int? user_id;
+  final Notification? notification;
+
+  Admin({this.message, this.status, this.team_id, this.user_id, this.notification, });
+
+  factory Admin.fromJson(Map&lt;String, dynamic&gt; json) =&gt; Admin(
+    message: json['message'],
+    status: json['status'],
+    team_id: json['team_id'],
+    user_id: json['user_id'],
+    notification: json['notification'] != null ? Notification.fromJson(json['notification'] as Map&lt;String, dynamic&gt;) : null,
+  );
+
+  Map&lt;String, dynamic&gt; toJson() =&gt; {
+    'message': message,
+    'status': status,
+    'team_id': team_id,
+    'user_id': user_id,
+    'notification': notification?.toJson(),
+  };
+}
+
+class Notification {
+  final int? user_id;
+  final String? message;
+  final String? type;
+  final int? id;
+
+  Notification({this.user_id, this.message, this.type, this.id, });
+
+  factory Notification.fromJson(Map&lt;String, dynamic&gt; json) =&gt; Notification(
+    user_id: json['user_id'],
+    message: json['message'],
+    type: json['type'],
+    id: json['id'],
+  );
+
+  Map&lt;String, dynamic&gt; toJson() =&gt; {
+    'user_id': user_id,
+    'message': message,
+    'type': type,
+    'id': id,
+  };
+}</code></pre></div>
 
 </span>
 
@@ -30075,6 +37039,26 @@ fetch(url, {
     body: JSON.stringify(body),
 }).then(response =&gt; response.json());</code></pre></div>
 
+
+<div class="jsonToDart-example">
+    <pre><code class="language-dart">
+class Seen {
+  final String? message;
+  final bool? status;
+
+  Seen({this.message, this.status, });
+
+  factory Seen.fromJson(Map&lt;String, dynamic&gt; json) =&gt; Seen(
+    message: json['message'],
+    status: json['status'],
+  );
+
+  Map&lt;String, dynamic&gt; toJson() =&gt; {
+    'message': message,
+    'status': status,
+  };
+}</code></pre></div>
+
 </span>
 
 <span id="example-responses-POSTapi-v3-user-team-chats-seen">
@@ -30252,6 +37236,32 @@ fetch(url, {
     headers,
     body: JSON.stringify(body),
 }).then(response =&gt; response.json());</code></pre></div>
+
+
+<div class="jsonToDart-example">
+    <pre><code class="language-dart">
+class Chat {
+  final String? message;
+  final bool? status;
+  final int? chat_id;
+  final bool? last_message;
+
+  Chat({this.message, this.status, this.chat_id, this.last_message, });
+
+  factory Chat.fromJson(Map&lt;String, dynamic&gt; json) =&gt; Chat(
+    message: json['message'],
+    status: json['status'],
+    chat_id: json['chat_id'],
+    last_message: json['last_message'],
+  );
+
+  Map&lt;String, dynamic&gt; toJson() =&gt; {
+    'message': message,
+    'status': status,
+    'chat_id': chat_id,
+    'last_message': last_message,
+  };
+}</code></pre></div>
 
 </span>
 
@@ -30461,6 +37471,26 @@ fetch(url, {
     body: JSON.stringify(body),
 }).then(response =&gt; response.json());</code></pre></div>
 
+
+<div class="jsonToDart-example">
+    <pre><code class="language-dart">
+class Conversation {
+  final String? message;
+  final bool? status;
+
+  Conversation({this.message, this.status, });
+
+  factory Conversation.fromJson(Map&lt;String, dynamic&gt; json) =&gt; Conversation(
+    message: json['message'],
+    status: json['status'],
+  );
+
+  Map&lt;String, dynamic&gt; toJson() =&gt; {
+    'message': message,
+    'status': status,
+  };
+}</code></pre></div>
+
 </span>
 
 <span id="example-responses-POSTapi-v3-user-team-chats-clear-all-conversation">
@@ -30612,7 +37642,7 @@ otherwise, it marks the notification as read.</p>
     --data "{
     \"team_id\": 10,
     \"chat_id\": 25,
-    \"is_delete\": 5
+    \"is_delete\": 10
 }"
 </code></pre></div>
 
@@ -30631,7 +37661,7 @@ const headers = {
 let body = {
     "team_id": 10,
     "chat_id": 25,
-    "is_delete": 5
+    "is_delete": 10
 };
 
 fetch(url, {
@@ -30639,6 +37669,26 @@ fetch(url, {
     headers,
     body: JSON.stringify(body),
 }).then(response =&gt; response.json());</code></pre></div>
+
+
+<div class="jsonToDart-example">
+    <pre><code class="language-dart">
+class Notification {
+  final String? message;
+  final bool? status;
+
+  Notification({this.message, this.status, });
+
+  factory Notification.fromJson(Map&lt;String, dynamic&gt; json) =&gt; Notification(
+    message: json['message'],
+    status: json['status'],
+  );
+
+  Map&lt;String, dynamic&gt; toJson() =&gt; {
+    'message': message,
+    'status': status,
+  };
+}</code></pre></div>
 
 </span>
 
@@ -30801,10 +37851,10 @@ You can check the Dev Tools console for debugging information.</code></pre>
 <i>optional</i> &nbsp;
                 <input type="number" style="display: none"
                step="any"               name="is_delete"                data-endpoint="POSTapi-v3-user-team-chats-notification"
-               value="5"
+               value="10"
                data-component="body">
     <br>
-<p>optional Indicates if the notification should be marked as read and deleted. Example: <code>5</code></p>
+<p>optional Indicates if the notification should be marked as read and deleted. Example: <code>10</code></p>
         </div>
         </form>
 
@@ -30853,6 +37903,96 @@ fetch(url, {
     method: "GET",
     headers,
 }).then(response =&gt; response.json());</code></pre></div>
+
+
+<div class="jsonToDart-example">
+    <pre><code class="language-dart">
+class Load {
+  final List&lt;DataItem&gt;? data;
+
+  Load({this.data, });
+
+  factory Load.fromJson(Map&lt;String, dynamic&gt; json) =&gt; Load(
+    data: (json['data'] as List&lt;dynamic&gt;?)?.map((e) =&gt; DataItem.fromJson(e as Map&lt;String, dynamic&gt;)).toList(),
+  );
+
+  Map&lt;String, dynamic&gt; toJson() =&gt; {
+    'data': data?.map((e) =&gt; e.toJson()).toList(),
+  };
+}
+
+class DataItem {
+  final int? id;
+  final int? created_by;
+  final String? job_title;
+  final String? job_description;
+  final String? job_type;
+  final String? job_location;
+  final String? job_salary;
+  final String? job_experience;
+  final String? contact_person;
+  final String? contact_email;
+  final String? list_of_values;
+  final String? created_at;
+  final String? updated_at;
+  final User? user;
+
+  DataItem({this.id, this.created_by, this.job_title, this.job_description, this.job_type, this.job_location, this.job_salary, this.job_experience, this.contact_person, this.contact_email, this.list_of_values, this.created_at, this.updated_at, this.user, });
+
+  factory DataItem.fromJson(Map&lt;String, dynamic&gt; json) =&gt; DataItem(
+    id: json['id'],
+    created_by: json['created_by'],
+    job_title: json['job_title'],
+    job_description: json['job_description'],
+    job_type: json['job_type'],
+    job_location: json['job_location'],
+    job_salary: json['job_salary'],
+    job_experience: json['job_experience'],
+    contact_person: json['contact_person'],
+    contact_email: json['contact_email'],
+    list_of_values: json['list_of_values'],
+    created_at: json['created_at'],
+    updated_at: json['updated_at'],
+    user: json['user'] != null ? User.fromJson(json['user'] as Map&lt;String, dynamic&gt;) : null,
+  );
+
+  Map&lt;String, dynamic&gt; toJson() =&gt; {
+    'id': id,
+    'created_by': created_by,
+    'job_title': job_title,
+    'job_description': job_description,
+    'job_type': job_type,
+    'job_location': job_location,
+    'job_salary': job_salary,
+    'job_experience': job_experience,
+    'contact_person': contact_person,
+    'contact_email': contact_email,
+    'list_of_values': list_of_values,
+    'created_at': created_at,
+    'updated_at': updated_at,
+    'user': user?.toJson(),
+  };
+}
+
+class User {
+  final int? id;
+  final String? name;
+  final String? email;
+
+  User({this.id, this.name, this.email, });
+
+  factory User.fromJson(Map&lt;String, dynamic&gt; json) =&gt; User(
+    id: json['id'],
+    name: json['name'],
+    email: json['email'],
+  );
+
+  Map&lt;String, dynamic&gt; toJson() =&gt; {
+    'id': id,
+    'name': name,
+    'email': email,
+  };
+}</code></pre></div>
 
 </span>
 
@@ -31046,6 +38186,96 @@ fetch(url, {
     method: "GET",
     headers,
 }).then(response =&gt; response.json());</code></pre></div>
+
+
+<div class="jsonToDart-example">
+    <pre><code class="language-dart">
+class 1 {
+  final Data? data;
+
+  1({this.data, });
+
+  factory 1.fromJson(Map&lt;String, dynamic&gt; json) =&gt; 1(
+    data: json['data'] != null ? Data.fromJson(json['data'] as Map&lt;String, dynamic&gt;) : null,
+  );
+
+  Map&lt;String, dynamic&gt; toJson() =&gt; {
+    'data': data?.toJson(),
+  };
+}
+
+class Data {
+  final int? id;
+  final int? created_by;
+  final String? job_title;
+  final String? job_description;
+  final String? job_type;
+  final String? job_location;
+  final String? job_salary;
+  final String? job_experience;
+  final String? contact_person;
+  final String? contact_email;
+  final String? list_of_values;
+  final String? created_at;
+  final String? updated_at;
+  final User? user;
+
+  Data({this.id, this.created_by, this.job_title, this.job_description, this.job_type, this.job_location, this.job_salary, this.job_experience, this.contact_person, this.contact_email, this.list_of_values, this.created_at, this.updated_at, this.user, });
+
+  factory Data.fromJson(Map&lt;String, dynamic&gt; json) =&gt; Data(
+    id: json['id'],
+    created_by: json['created_by'],
+    job_title: json['job_title'],
+    job_description: json['job_description'],
+    job_type: json['job_type'],
+    job_location: json['job_location'],
+    job_salary: json['job_salary'],
+    job_experience: json['job_experience'],
+    contact_person: json['contact_person'],
+    contact_email: json['contact_email'],
+    list_of_values: json['list_of_values'],
+    created_at: json['created_at'],
+    updated_at: json['updated_at'],
+    user: json['user'] != null ? User.fromJson(json['user'] as Map&lt;String, dynamic&gt;) : null,
+  );
+
+  Map&lt;String, dynamic&gt; toJson() =&gt; {
+    'id': id,
+    'created_by': created_by,
+    'job_title': job_title,
+    'job_description': job_description,
+    'job_type': job_type,
+    'job_location': job_location,
+    'job_salary': job_salary,
+    'job_experience': job_experience,
+    'contact_person': contact_person,
+    'contact_email': contact_email,
+    'list_of_values': list_of_values,
+    'created_at': created_at,
+    'updated_at': updated_at,
+    'user': user?.toJson(),
+  };
+}
+
+class User {
+  final int? id;
+  final String? name;
+  final String? email;
+
+  User({this.id, this.name, this.email, });
+
+  factory User.fromJson(Map&lt;String, dynamic&gt; json) =&gt; User(
+    id: json['id'],
+    name: json['name'],
+    email: json['email'],
+  );
+
+  Map&lt;String, dynamic&gt; toJson() =&gt; {
+    'id': id,
+    'name': name,
+    'email': email,
+  };
+}</code></pre></div>
 
 </span>
 
@@ -31244,6 +38474,79 @@ fetch(url, {
     headers,
     body: JSON.stringify(body),
 }).then(response =&gt; response.json());</code></pre></div>
+
+
+<div class="jsonToDart-example">
+    <pre><code class="language-dart">
+class Store {
+  final String? message;
+  final Job? job;
+
+  Store({this.message, this.job, });
+
+  factory Store.fromJson(Map&lt;String, dynamic&gt; json) =&gt; Store(
+    message: json['message'],
+    job: json['job'] != null ? Job.fromJson(json['job'] as Map&lt;String, dynamic&gt;) : null,
+  );
+
+  Map&lt;String, dynamic&gt; toJson() =&gt; {
+    'message': message,
+    'job': job?.toJson(),
+  };
+}
+
+class Job {
+  final int? id;
+  final String? job_title;
+  final String? job_description;
+  final String? job_type;
+  final String? job_location;
+  final int? job_salary;
+  final String? currency;
+  final int? job_experience;
+  final String? contact_person;
+  final String? contact_email;
+  final String? list_of_values;
+  final int? created_by;
+  final String? created_at;
+  final String? updated_at;
+
+  Job({this.id, this.job_title, this.job_description, this.job_type, this.job_location, this.job_salary, this.currency, this.job_experience, this.contact_person, this.contact_email, this.list_of_values, this.created_by, this.created_at, this.updated_at, });
+
+  factory Job.fromJson(Map&lt;String, dynamic&gt; json) =&gt; Job(
+    id: json['id'],
+    job_title: json['job_title'],
+    job_description: json['job_description'],
+    job_type: json['job_type'],
+    job_location: json['job_location'],
+    job_salary: json['job_salary'],
+    currency: json['currency'],
+    job_experience: json['job_experience'],
+    contact_person: json['contact_person'],
+    contact_email: json['contact_email'],
+    list_of_values: json['list_of_values'],
+    created_by: json['created_by'],
+    created_at: json['created_at'],
+    updated_at: json['updated_at'],
+  );
+
+  Map&lt;String, dynamic&gt; toJson() =&gt; {
+    'id': id,
+    'job_title': job_title,
+    'job_description': job_description,
+    'job_type': job_type,
+    'job_location': job_location,
+    'job_salary': job_salary,
+    'currency': currency,
+    'job_experience': job_experience,
+    'contact_person': contact_person,
+    'contact_email': contact_email,
+    'list_of_values': list_of_values,
+    'created_by': created_by,
+    'created_at': created_at,
+    'updated_at': updated_at,
+  };
+}</code></pre></div>
 
 </span>
 
@@ -31498,7 +38801,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 <div class="bash-example">
     <pre><code class="language-bash">curl --request POST \
-    "http://127.0.0.1:8000/api/v3/user/jobs/edit/facilis" \
+    "http://127.0.0.1:8000/api/v3/user/jobs/edit/recusandae" \
     --header "Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJhdWQiOiIxIiwianRpIjoiNTJkNDhkYzhjNTc4ODIwZWVmODFmY2NhOWJiMmJiODFlZGE1MTUwMTVkYmU5YzdkNzFkODAyYTRmZWNhMWQ5ZGJhYWEzMTc2YjI1OTJmMTgiLCJpYXQiOjE3NjQwNjAzNDQuMDUyOTc0LCJuYmYiOjE3NjQwNjAzNDQuMDUyOTc1LCJleHAiOjE3OTU1OTYzNDQuMDQzNjUyLCJzdWIiOiIxNjgiLCJzY29wZXMiOltdfQ.X9tS38uM-UlrpFlYZihD_kmuCcSX_hdGsRBJcNGfrWXAClMiqeTxNTC45Ftxw-ddmDQ59t5xJLlnWp2Rx57itO-IHclNmwnVJDPAh1l9D8CZBGxBSoN0FvmbWeYDNQnA7ud77YLekrcSAuKMdBX3J1UKq6ytvWwi6ChnuRFqcQ-fpzK-jgkMhGm-WFHw0H3a34afdBdSUUFutESlwMvTqmXILYVcIwaJpEAjamf3rn6wIOEoD8mbxXJ6Gb6QrRO72Kt3z62vJp7yOeMsnXUkfioVSyJVwbkbchCs2Y4YZY3FEREbKysKNdHJhhqmn6AXvx66arAK3HeZoyf5eusfk26alhbEdJqsJgFP5VROV5l57q8VKhH8hAxg-oeidCGGJXPjLGeb-5iGPjdGhQ1Ng1i9kt7VDV4icb8B2AbNC2Ie9xP6b0R11PX4jUd8D3Jogf2f0ZhAs5Is8WHcrxsCyk3lWvgOyzWxpRx2lSpmBRmSwksPrKJk_7JuzDZ1Tdpz6mubjV6DzlmqDJJjf32hBIMnaYOhOUz5k1FzZ8mybsSbnM9UjzHYr5xIf4rkmVAfuPnU2FGu8NtCQaOtt9G-TziBFgT3ZjxBCL9QaaC39BRulGE6tyCAT8NM9svTD_AbNyINUzO2M0R61OXYQfzXEeiui-sO6eYIc3x_z-YdFFQ" \
     --header "Content-Type: application/json" \
     --header "Accept: application/json" \
@@ -31519,7 +38822,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 <div class="javascript-example">
     <pre><code class="language-javascript">const url = new URL(
-    "http://127.0.0.1:8000/api/v3/user/jobs/edit/facilis"
+    "http://127.0.0.1:8000/api/v3/user/jobs/edit/recusandae"
 );
 
 const headers = {
@@ -31546,6 +38849,43 @@ fetch(url, {
     headers,
     body: JSON.stringify(body),
 }).then(response =&gt; response.json());</code></pre></div>
+
+
+<div class="jsonToDart-example">
+    <pre><code class="language-dart">
+class Recusandae {
+  final String? message;
+  final Errors? errors;
+
+  Recusandae({this.message, this.errors, });
+
+  factory Recusandae.fromJson(Map&lt;String, dynamic&gt; json) =&gt; Recusandae(
+    message: json['message'],
+    errors: json['errors'] != null ? Errors.fromJson(json['errors'] as Map&lt;String, dynamic&gt;) : null,
+  );
+
+  Map&lt;String, dynamic&gt; toJson() =&gt; {
+    'message': message,
+    'errors': errors?.toJson(),
+  };
+}
+
+class Errors {
+  final List&lt;String&gt;? job_title;
+  final List&lt;String&gt;? job_description;
+
+  Errors({this.job_title, this.job_description, });
+
+  factory Errors.fromJson(Map&lt;String, dynamic&gt; json) =&gt; Errors(
+    job_title: List&lt;String&gt;.from(json['job_title'] ?? []),
+    job_description: List&lt;String&gt;.from(json['job_description'] ?? []),
+  );
+
+  Map&lt;String, dynamic&gt; toJson() =&gt; {
+    'job_title': job_title,
+    'job_description': job_description,
+  };
+}</code></pre></div>
 
 </span>
 
@@ -31680,10 +39020,10 @@ You can check the Dev Tools console for debugging information.</code></pre>
  &nbsp;
                 <input type="text" style="display: none"
                               name="id"                data-endpoint="POSTapi-v3-user-jobs-edit--id-"
-               value="facilis"
+               value="recusandae"
                data-component="url">
     <br>
-<p>The ID of the edit. Example: <code>facilis</code></p>
+<p>The ID of the edit. Example: <code>recusandae</code></p>
             </div>
                             <h4 class="fancy-heading-panel"><b>Body Parameters</b></h4>
         <div style=" padding-left: 28px;  clear: unset;">
@@ -31812,7 +39152,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 <div class="bash-example">
     <pre><code class="language-bash">curl --request POST \
-    "http://127.0.0.1:8000/api/v3/user/jobs/delete/qui" \
+    "http://127.0.0.1:8000/api/v3/user/jobs/delete/asperiores" \
     --header "Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJhdWQiOiIxIiwianRpIjoiNTJkNDhkYzhjNTc4ODIwZWVmODFmY2NhOWJiMmJiODFlZGE1MTUwMTVkYmU5YzdkNzFkODAyYTRmZWNhMWQ5ZGJhYWEzMTc2YjI1OTJmMTgiLCJpYXQiOjE3NjQwNjAzNDQuMDUyOTc0LCJuYmYiOjE3NjQwNjAzNDQuMDUyOTc1LCJleHAiOjE3OTU1OTYzNDQuMDQzNjUyLCJzdWIiOiIxNjgiLCJzY29wZXMiOltdfQ.X9tS38uM-UlrpFlYZihD_kmuCcSX_hdGsRBJcNGfrWXAClMiqeTxNTC45Ftxw-ddmDQ59t5xJLlnWp2Rx57itO-IHclNmwnVJDPAh1l9D8CZBGxBSoN0FvmbWeYDNQnA7ud77YLekrcSAuKMdBX3J1UKq6ytvWwi6ChnuRFqcQ-fpzK-jgkMhGm-WFHw0H3a34afdBdSUUFutESlwMvTqmXILYVcIwaJpEAjamf3rn6wIOEoD8mbxXJ6Gb6QrRO72Kt3z62vJp7yOeMsnXUkfioVSyJVwbkbchCs2Y4YZY3FEREbKysKNdHJhhqmn6AXvx66arAK3HeZoyf5eusfk26alhbEdJqsJgFP5VROV5l57q8VKhH8hAxg-oeidCGGJXPjLGeb-5iGPjdGhQ1Ng1i9kt7VDV4icb8B2AbNC2Ie9xP6b0R11PX4jUd8D3Jogf2f0ZhAs5Is8WHcrxsCyk3lWvgOyzWxpRx2lSpmBRmSwksPrKJk_7JuzDZ1Tdpz6mubjV6DzlmqDJJjf32hBIMnaYOhOUz5k1FzZ8mybsSbnM9UjzHYr5xIf4rkmVAfuPnU2FGu8NtCQaOtt9G-TziBFgT3ZjxBCL9QaaC39BRulGE6tyCAT8NM9svTD_AbNyINUzO2M0R61OXYQfzXEeiui-sO6eYIc3x_z-YdFFQ" \
     --header "Content-Type: application/json" \
     --header "Accept: application/json"</code></pre></div>
@@ -31820,7 +39160,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 <div class="javascript-example">
     <pre><code class="language-javascript">const url = new URL(
-    "http://127.0.0.1:8000/api/v3/user/jobs/delete/qui"
+    "http://127.0.0.1:8000/api/v3/user/jobs/delete/asperiores"
 );
 
 const headers = {
@@ -31833,6 +39173,23 @@ fetch(url, {
     method: "POST",
     headers,
 }).then(response =&gt; response.json());</code></pre></div>
+
+
+<div class="jsonToDart-example">
+    <pre><code class="language-dart">
+class Asperiores {
+  final String? message;
+
+  Asperiores({this.message, });
+
+  factory Asperiores.fromJson(Map&lt;String, dynamic&gt; json) =&gt; Asperiores(
+    message: json['message'],
+  );
+
+  Map&lt;String, dynamic&gt; toJson() =&gt; {
+    'message': message,
+  };
+}</code></pre></div>
 
 </span>
 
@@ -31943,10 +39300,10 @@ You can check the Dev Tools console for debugging information.</code></pre>
  &nbsp;
                 <input type="text" style="display: none"
                               name="id"                data-endpoint="POSTapi-v3-user-jobs-delete--id-"
-               value="qui"
+               value="asperiores"
                data-component="url">
     <br>
-<p>The ID of the delete. Example: <code>qui</code></p>
+<p>The ID of the delete. Example: <code>asperiores</code></p>
             </div>
                     </form>
 
@@ -31994,6 +39351,23 @@ fetch(url, {
     headers,
     body: JSON.stringify(body),
 }).then(response =&gt; response.json());</code></pre></div>
+
+
+<div class="jsonToDart-example">
+    <pre><code class="language-dart">
+class Search {
+  final String? message;
+
+  Search({this.message, });
+
+  factory Search.fromJson(Map&lt;String, dynamic&gt; json) =&gt; Search(
+    message: json['message'],
+  );
+
+  Map&lt;String, dynamic&gt; toJson() =&gt; {
+    'message': message,
+  };
+}</code></pre></div>
 
 </span>
 
@@ -32170,6 +39544,84 @@ fetch(url, {
     method: "GET",
     headers,
 }).then(response =&gt; response.json());</code></pre></div>
+
+
+<div class="jsonToDart-example">
+    <pre><code class="language-dart">
+class Load {
+  final List&lt;DataItem&gt;? data;
+
+  Load({this.data, });
+
+  factory Load.fromJson(Map&lt;String, dynamic&gt; json) =&gt; Load(
+    data: (json['data'] as List&lt;dynamic&gt;?)?.map((e) =&gt; DataItem.fromJson(e as Map&lt;String, dynamic&gt;)).toList(),
+  );
+
+  Map&lt;String, dynamic&gt; toJson() =&gt; {
+    'data': data?.map((e) =&gt; e.toJson()).toList(),
+  };
+}
+
+class DataItem {
+  final int? id;
+  final int? user_id;
+  final String? title;
+  final String? description;
+  final String? start_time;
+  final String? end_time;
+  final String? meeting_link;
+  final String? created_at;
+  final String? updated_at;
+  final User? user;
+
+  DataItem({this.id, this.user_id, this.title, this.description, this.start_time, this.end_time, this.meeting_link, this.created_at, this.updated_at, this.user, });
+
+  factory DataItem.fromJson(Map&lt;String, dynamic&gt; json) =&gt; DataItem(
+    id: json['id'],
+    user_id: json['user_id'],
+    title: json['title'],
+    description: json['description'],
+    start_time: json['start_time'],
+    end_time: json['end_time'],
+    meeting_link: json['meeting_link'],
+    created_at: json['created_at'],
+    updated_at: json['updated_at'],
+    user: json['user'] != null ? User.fromJson(json['user'] as Map&lt;String, dynamic&gt;) : null,
+  );
+
+  Map&lt;String, dynamic&gt; toJson() =&gt; {
+    'id': id,
+    'user_id': user_id,
+    'title': title,
+    'description': description,
+    'start_time': start_time,
+    'end_time': end_time,
+    'meeting_link': meeting_link,
+    'created_at': created_at,
+    'updated_at': updated_at,
+    'user': user?.toJson(),
+  };
+}
+
+class User {
+  final int? id;
+  final String? name;
+  final String? email;
+
+  User({this.id, this.name, this.email, });
+
+  factory User.fromJson(Map&lt;String, dynamic&gt; json) =&gt; User(
+    id: json['id'],
+    name: json['name'],
+    email: json['email'],
+  );
+
+  Map&lt;String, dynamic&gt; toJson() =&gt; {
+    'id': id,
+    'name': name,
+    'email': email,
+  };
+}</code></pre></div>
 
 </span>
 
@@ -32358,6 +39810,64 @@ fetch(url, {
     headers,
     body: JSON.stringify(body),
 }).then(response =&gt; response.json());</code></pre></div>
+
+
+<div class="jsonToDart-example">
+    <pre><code class="language-dart">
+class Store {
+  final String? message;
+  final Data? data;
+
+  Store({this.message, this.data, });
+
+  factory Store.fromJson(Map&lt;String, dynamic&gt; json) =&gt; Store(
+    message: json['message'],
+    data: json['data'] != null ? Data.fromJson(json['data'] as Map&lt;String, dynamic&gt;) : null,
+  );
+
+  Map&lt;String, dynamic&gt; toJson() =&gt; {
+    'message': message,
+    'data': data?.toJson(),
+  };
+}
+
+class Data {
+  final int? id;
+  final int? user_id;
+  final String? title;
+  final String? description;
+  final String? start_time;
+  final String? end_time;
+  final String? meeting_link;
+  final String? created_at;
+  final String? updated_at;
+
+  Data({this.id, this.user_id, this.title, this.description, this.start_time, this.end_time, this.meeting_link, this.created_at, this.updated_at, });
+
+  factory Data.fromJson(Map&lt;String, dynamic&gt; json) =&gt; Data(
+    id: json['id'],
+    user_id: json['user_id'],
+    title: json['title'],
+    description: json['description'],
+    start_time: json['start_time'],
+    end_time: json['end_time'],
+    meeting_link: json['meeting_link'],
+    created_at: json['created_at'],
+    updated_at: json['updated_at'],
+  );
+
+  Map&lt;String, dynamic&gt; toJson() =&gt; {
+    'id': id,
+    'user_id': user_id,
+    'title': title,
+    'description': description,
+    'start_time': start_time,
+    'end_time': end_time,
+    'meeting_link': meeting_link,
+    'created_at': created_at,
+    'updated_at': updated_at,
+  };
+}</code></pre></div>
 
 </span>
 
@@ -32587,6 +40097,135 @@ fetch(url, {
     headers,
 }).then(response =&gt; response.json());</code></pre></div>
 
+
+<div class="jsonToDart-example">
+    <pre><code class="language-dart">
+class 1 {
+  final Data? data;
+
+  1({this.data, });
+
+  factory 1.fromJson(Map&lt;String, dynamic&gt; json) =&gt; 1(
+    data: json['data'] != null ? Data.fromJson(json['data'] as Map&lt;String, dynamic&gt;) : null,
+  );
+
+  Map&lt;String, dynamic&gt; toJson() =&gt; {
+    'data': data?.toJson(),
+  };
+}
+
+class Data {
+  final int? id;
+  final int? user_id;
+  final String? title;
+  final String? description;
+  final String? start_time;
+  final String? end_time;
+  final String? meeting_link;
+  final String? created_at;
+  final String? updated_at;
+  final User? user;
+
+  Data({this.id, this.user_id, this.title, this.description, this.start_time, this.end_time, this.meeting_link, this.created_at, this.updated_at, this.user, });
+
+  factory Data.fromJson(Map&lt;String, dynamic&gt; json) =&gt; Data(
+    id: json['id'],
+    user_id: json['user_id'],
+    title: json['title'],
+    description: json['description'],
+    start_time: json['start_time'],
+    end_time: json['end_time'],
+    meeting_link: json['meeting_link'],
+    created_at: json['created_at'],
+    updated_at: json['updated_at'],
+    user: json['user'] != null ? User.fromJson(json['user'] as Map&lt;String, dynamic&gt;) : null,
+  );
+
+  Map&lt;String, dynamic&gt; toJson() =&gt; {
+    'id': id,
+    'user_id': user_id,
+    'title': title,
+    'description': description,
+    'start_time': start_time,
+    'end_time': end_time,
+    'meeting_link': meeting_link,
+    'created_at': created_at,
+    'updated_at': updated_at,
+    'user': user?.toJson(),
+  };
+}
+
+class User {
+  final int? id;
+  final int? ecclesia_id;
+  final String? created_id;
+  final String? user_name;
+  final String? first_name;
+  final dynamic? middle_name;
+  final String? last_name;
+  final String? email;
+  final String? phone;
+  final dynamic? email_verified_at;
+  final String? profile_picture;
+  final String? address;
+  final String? city;
+  final String? state;
+  final dynamic? address2;
+  final String? country;
+  final String? zip;
+  final int? status;
+  final String? created_at;
+  final String? updated_at;
+
+  User({this.id, this.ecclesia_id, this.created_id, this.user_name, this.first_name, this.middle_name, this.last_name, this.email, this.phone, this.email_verified_at, this.profile_picture, this.address, this.city, this.state, this.address2, this.country, this.zip, this.status, this.created_at, this.updated_at, });
+
+  factory User.fromJson(Map&lt;String, dynamic&gt; json) =&gt; User(
+    id: json['id'],
+    ecclesia_id: json['ecclesia_id'],
+    created_id: json['created_id'],
+    user_name: json['user_name'],
+    first_name: json['first_name'],
+    middle_name: json['middle_name'],
+    last_name: json['last_name'],
+    email: json['email'],
+    phone: json['phone'],
+    email_verified_at: json['email_verified_at'],
+    profile_picture: json['profile_picture'],
+    address: json['address'],
+    city: json['city'],
+    state: json['state'],
+    address2: json['address2'],
+    country: json['country'],
+    zip: json['zip'],
+    status: json['status'],
+    created_at: json['created_at'],
+    updated_at: json['updated_at'],
+  );
+
+  Map&lt;String, dynamic&gt; toJson() =&gt; {
+    'id': id,
+    'ecclesia_id': ecclesia_id,
+    'created_id': created_id,
+    'user_name': user_name,
+    'first_name': first_name,
+    'middle_name': middle_name,
+    'last_name': last_name,
+    'email': email,
+    'phone': phone,
+    'email_verified_at': email_verified_at,
+    'profile_picture': profile_picture,
+    'address': address,
+    'city': city,
+    'state': state,
+    'address2': address2,
+    'country': country,
+    'zip': zip,
+    'status': status,
+    'created_at': created_at,
+    'updated_at': updated_at,
+  };
+}</code></pre></div>
+
 </span>
 
 <span id="example-responses-GETapi-v3-user-meetings-view--id-">
@@ -32789,6 +40428,26 @@ fetch(url, {
     headers,
     body: JSON.stringify(body),
 }).then(response =&gt; response.json());</code></pre></div>
+
+
+<div class="jsonToDart-example">
+    <pre><code class="language-dart">
+class 1 {
+  final String? message;
+  final bool? status;
+
+  1({this.message, this.status, });
+
+  factory 1.fromJson(Map&lt;String, dynamic&gt; json) =&gt; 1(
+    message: json['message'],
+    status: json['status'],
+  );
+
+  Map&lt;String, dynamic&gt; toJson() =&gt; {
+    'message': message,
+    'status': status,
+  };
+}</code></pre></div>
 
 </span>
 
@@ -33011,6 +40670,26 @@ fetch(url, {
     headers,
 }).then(response =&gt; response.json());</code></pre></div>
 
+
+<div class="jsonToDart-example">
+    <pre><code class="language-dart">
+class 1 {
+  final String? message;
+  final bool? status;
+
+  1({this.message, this.status, });
+
+  factory 1.fromJson(Map&lt;String, dynamic&gt; json) =&gt; 1(
+    message: json['message'],
+    status: json['status'],
+  );
+
+  Map&lt;String, dynamic&gt; toJson() =&gt; {
+    'message': message,
+    'status': status,
+  };
+}</code></pre></div>
+
 </span>
 
 <span id="example-responses-POSTapi-v3-user-meetings-delete--id-">
@@ -33163,6 +40842,47 @@ fetch(url, {
     headers,
     body: JSON.stringify(body),
 }).then(response =&gt; response.json());</code></pre></div>
+
+
+<div class="jsonToDart-example">
+    <pre><code class="language-dart">
+class Signature {
+  final bool? status;
+  final String? signature;
+  final String? sdkKey;
+  final String? meetingNumber;
+  final dynamic? password;
+  final String? topic;
+  final int? role;
+  final String? userName;
+  final String? userEmail;
+
+  Signature({this.status, this.signature, this.sdkKey, this.meetingNumber, this.password, this.topic, this.role, this.userName, this.userEmail, });
+
+  factory Signature.fromJson(Map&lt;String, dynamic&gt; json) =&gt; Signature(
+    status: json['status'],
+    signature: json['signature'],
+    sdkKey: json['sdkKey'],
+    meetingNumber: json['meetingNumber'],
+    password: json['password'],
+    topic: json['topic'],
+    role: json['role'],
+    userName: json['userName'],
+    userEmail: json['userEmail'],
+  );
+
+  Map&lt;String, dynamic&gt; toJson() =&gt; {
+    'status': status,
+    'signature': signature,
+    'sdkKey': sdkKey,
+    'meetingNumber': meetingNumber,
+    'password': password,
+    'topic': topic,
+    'role': role,
+    'userName': userName,
+    'userEmail': userEmail,
+  };
+}</code></pre></div>
 
 </span>
 
@@ -33324,6 +41044,55 @@ fetch(url, {
     method: "GET",
     headers,
 }).then(response =&gt; response.json());</code></pre></div>
+
+
+<div class="jsonToDart-example">
+    <pre><code class="language-dart">
+class Data {
+  final String? message;
+  final List&lt;DataItem&gt;? data;
+
+  Data({this.message, this.data, });
+
+  factory Data.fromJson(Map&lt;String, dynamic&gt; json) =&gt; Data(
+    message: json['message'],
+    data: (json['data'] as List&lt;dynamic&gt;?)?.map((e) =&gt; DataItem.fromJson(e as Map&lt;String, dynamic&gt;)).toList(),
+  );
+
+  Map&lt;String, dynamic&gt; toJson() =&gt; {
+    'message': message,
+    'data': data?.map((e) =&gt; e.toJson()).toList(),
+  };
+}
+
+class DataItem {
+  final int? id;
+  final String? title;
+  final String? description;
+  final String? start;
+  final String? end;
+  final String? meeting_link;
+
+  DataItem({this.id, this.title, this.description, this.start, this.end, this.meeting_link, });
+
+  factory DataItem.fromJson(Map&lt;String, dynamic&gt; json) =&gt; DataItem(
+    id: json['id'],
+    title: json['title'],
+    description: json['description'],
+    start: json['start'],
+    end: json['end'],
+    meeting_link: json['meeting_link'],
+  );
+
+  Map&lt;String, dynamic&gt; toJson() =&gt; {
+    'id': id,
+    'title': title,
+    'description': description,
+    'start': start,
+    'end': end,
+    'meeting_link': meeting_link,
+  };
+}</code></pre></div>
 
 </span>
 
@@ -33541,6 +41310,23 @@ fetch(url, {
     headers,
     body: JSON.stringify(body),
 }).then(response =&gt; response.json());</code></pre></div>
+
+
+<div class="jsonToDart-example">
+    <pre><code class="language-dart">
+class Partner {
+  final String? message;
+
+  Partner({this.message, });
+
+  factory Partner.fromJson(Map&lt;String, dynamic&gt; json) =&gt; Partner(
+    message: json['message'],
+  );
+
+  Map&lt;String, dynamic&gt; toJson() =&gt; {
+    'message': message,
+  };
+}</code></pre></div>
 
 </span>
 
@@ -33866,6 +41652,164 @@ fetch(url, {
     headers,
 }).then(response =&gt; response.json());</code></pre></div>
 
+
+<div class="jsonToDart-example">
+    <pre><code class="language-dart">
+class List {
+  final Data? data;
+
+  List({this.data, });
+
+  factory List.fromJson(Map&lt;String, dynamic&gt; json) =&gt; List(
+    data: json['data'] != null ? Data.fromJson(json['data'] as Map&lt;String, dynamic&gt;) : null,
+  );
+
+  Map&lt;String, dynamic&gt; toJson() =&gt; {
+    'data': data?.toJson(),
+  };
+}
+
+class Data {
+  final int? current_page;
+  final List&lt;DataItem&gt;? data;
+  final String? first_page_url;
+  final int? from;
+  final int? last_page;
+  final String? last_page_url;
+  final List&lt;LinksItem&gt;? links;
+  final String? next_page_url;
+  final String? path;
+  final int? per_page;
+  final dynamic? prev_page_url;
+  final int? to;
+  final int? total;
+
+  Data({this.current_page, this.data, this.first_page_url, this.from, this.last_page, this.last_page_url, this.links, this.next_page_url, this.path, this.per_page, this.prev_page_url, this.to, this.total, });
+
+  factory Data.fromJson(Map&lt;String, dynamic&gt; json) =&gt; Data(
+    current_page: json['current_page'],
+    data: (json['data'] as List&lt;dynamic&gt;?)?.map((e) =&gt; DataItem.fromJson(e as Map&lt;String, dynamic&gt;)).toList(),
+    first_page_url: json['first_page_url'],
+    from: json['from'],
+    last_page: json['last_page'],
+    last_page_url: json['last_page_url'],
+    links: (json['links'] as List&lt;dynamic&gt;?)?.map((e) =&gt; LinksItem.fromJson(e as Map&lt;String, dynamic&gt;)).toList(),
+    next_page_url: json['next_page_url'],
+    path: json['path'],
+    per_page: json['per_page'],
+    prev_page_url: json['prev_page_url'],
+    to: json['to'],
+    total: json['total'],
+  );
+
+  Map&lt;String, dynamic&gt; toJson() =&gt; {
+    'current_page': current_page,
+    'data': data?.map((e) =&gt; e.toJson()).toList(),
+    'first_page_url': first_page_url,
+    'from': from,
+    'last_page': last_page,
+    'last_page_url': last_page_url,
+    'links': links?.map((e) =&gt; e.toJson()).toList(),
+    'next_page_url': next_page_url,
+    'path': path,
+    'per_page': per_page,
+    'prev_page_url': prev_page_url,
+    'to': to,
+    'total': total,
+  };
+}
+
+class LinksItem {
+  final dynamic? url;
+  final String? label;
+  final bool? active;
+
+  LinksItem({this.url, this.label, this.active, });
+
+  factory LinksItem.fromJson(Map&lt;String, dynamic&gt; json) =&gt; LinksItem(
+    url: json['url'],
+    label: json['label'],
+    active: json['active'],
+  );
+
+  Map&lt;String, dynamic&gt; toJson() =&gt; {
+    'url': url,
+    'label': label,
+    'active': active,
+  };
+}
+
+class DataItem {
+  final int? id;
+  final int? ecclesia_id;
+  final dynamic? created_id;
+  final String? user_name;
+  final String? first_name;
+  final String? middle_name;
+  final String? last_name;
+  final String? email;
+  final String? phone;
+  final String? email_verified_at;
+  final dynamic? profile_picture;
+  final String? address;
+  final String? city;
+  final String? state;
+  final String? address2;
+  final String? country;
+  final String? zip;
+  final int? status;
+  final String? created_at;
+  final String? updated_at;
+
+  DataItem({this.id, this.ecclesia_id, this.created_id, this.user_name, this.first_name, this.middle_name, this.last_name, this.email, this.phone, this.email_verified_at, this.profile_picture, this.address, this.city, this.state, this.address2, this.country, this.zip, this.status, this.created_at, this.updated_at, });
+
+  factory DataItem.fromJson(Map&lt;String, dynamic&gt; json) =&gt; DataItem(
+    id: json['id'],
+    ecclesia_id: json['ecclesia_id'],
+    created_id: json['created_id'],
+    user_name: json['user_name'],
+    first_name: json['first_name'],
+    middle_name: json['middle_name'],
+    last_name: json['last_name'],
+    email: json['email'],
+    phone: json['phone'],
+    email_verified_at: json['email_verified_at'],
+    profile_picture: json['profile_picture'],
+    address: json['address'],
+    city: json['city'],
+    state: json['state'],
+    address2: json['address2'],
+    country: json['country'],
+    zip: json['zip'],
+    status: json['status'],
+    created_at: json['created_at'],
+    updated_at: json['updated_at'],
+  );
+
+  Map&lt;String, dynamic&gt; toJson() =&gt; {
+    'id': id,
+    'ecclesia_id': ecclesia_id,
+    'created_id': created_id,
+    'user_name': user_name,
+    'first_name': first_name,
+    'middle_name': middle_name,
+    'last_name': last_name,
+    'email': email,
+    'phone': phone,
+    'email_verified_at': email_verified_at,
+    'profile_picture': profile_picture,
+    'address': address,
+    'city': city,
+    'state': state,
+    'address2': address2,
+    'country': country,
+    'zip': zip,
+    'status': status,
+    'created_at': created_at,
+    'updated_at': updated_at,
+  };
+}</code></pre></div>
+
 </span>
 
 <span id="example-responses-GETapi-v3-user-partners-list">
@@ -34120,6 +42064,80 @@ fetch(url, {
     headers,
 }).then(response =&gt; response.json());</code></pre></div>
 
+
+<div class="jsonToDart-example">
+    <pre><code class="language-dart">
+class Data {
+  final List&lt;RolesItem&gt;? roles;
+  final List&lt;EcclesiasItem&gt;? ecclesias;
+  final List&lt;CountriesItem&gt;? countries;
+
+  Data({this.roles, this.ecclesias, this.countries, });
+
+  factory Data.fromJson(Map&lt;String, dynamic&gt; json) =&gt; Data(
+    roles: (json['roles'] as List&lt;dynamic&gt;?)?.map((e) =&gt; RolesItem.fromJson(e as Map&lt;String, dynamic&gt;)).toList(),
+    ecclesias: (json['ecclesias'] as List&lt;dynamic&gt;?)?.map((e) =&gt; EcclesiasItem.fromJson(e as Map&lt;String, dynamic&gt;)).toList(),
+    countries: (json['countries'] as List&lt;dynamic&gt;?)?.map((e) =&gt; CountriesItem.fromJson(e as Map&lt;String, dynamic&gt;)).toList(),
+  );
+
+  Map&lt;String, dynamic&gt; toJson() =&gt; {
+    'roles': roles?.map((e) =&gt; e.toJson()).toList(),
+    'ecclesias': ecclesias?.map((e) =&gt; e.toJson()).toList(),
+    'countries': countries?.map((e) =&gt; e.toJson()).toList(),
+  };
+}
+
+class CountriesItem {
+  final int? id;
+  final String? name;
+
+  CountriesItem({this.id, this.name, });
+
+  factory CountriesItem.fromJson(Map&lt;String, dynamic&gt; json) =&gt; CountriesItem(
+    id: json['id'],
+    name: json['name'],
+  );
+
+  Map&lt;String, dynamic&gt; toJson() =&gt; {
+    'id': id,
+    'name': name,
+  };
+}
+
+class EcclesiasItem {
+  final int? id;
+  final String? name;
+
+  EcclesiasItem({this.id, this.name, });
+
+  factory EcclesiasItem.fromJson(Map&lt;String, dynamic&gt; json) =&gt; EcclesiasItem(
+    id: json['id'],
+    name: json['name'],
+  );
+
+  Map&lt;String, dynamic&gt; toJson() =&gt; {
+    'id': id,
+    'name': name,
+  };
+}
+
+class RolesItem {
+  final int? id;
+  final String? name;
+
+  RolesItem({this.id, this.name, });
+
+  factory RolesItem.fromJson(Map&lt;String, dynamic&gt; json) =&gt; RolesItem(
+    id: json['id'],
+    name: json['name'],
+  );
+
+  Map&lt;String, dynamic&gt; toJson() =&gt; {
+    'id': id,
+    'name': name,
+  };
+}</code></pre></div>
+
 </span>
 
 <span id="example-responses-GETapi-v3-user-partners-create-form-data">
@@ -34279,6 +42297,149 @@ fetch(url, {
     method: "GET",
     headers,
 }).then(response =&gt; response.json());</code></pre></div>
+
+
+<div class="jsonToDart-example">
+    <pre><code class="language-dart">
+class 5 {
+  final List&lt;RolesItem&gt;? roles;
+  final List&lt;EclessiasItem&gt;? eclessias;
+  final List&lt;CountriesItem&gt;? countries;
+  final Partner? partner;
+
+  5({this.roles, this.eclessias, this.countries, this.partner, });
+
+  factory 5.fromJson(Map&lt;String, dynamic&gt; json) =&gt; 5(
+    roles: (json['roles'] as List&lt;dynamic&gt;?)?.map((e) =&gt; RolesItem.fromJson(e as Map&lt;String, dynamic&gt;)).toList(),
+    eclessias: (json['eclessias'] as List&lt;dynamic&gt;?)?.map((e) =&gt; EclessiasItem.fromJson(e as Map&lt;String, dynamic&gt;)).toList(),
+    countries: (json['countries'] as List&lt;dynamic&gt;?)?.map((e) =&gt; CountriesItem.fromJson(e as Map&lt;String, dynamic&gt;)).toList(),
+    partner: json['partner'] != null ? Partner.fromJson(json['partner'] as Map&lt;String, dynamic&gt;) : null,
+  );
+
+  Map&lt;String, dynamic&gt; toJson() =&gt; {
+    'roles': roles?.map((e) =&gt; e.toJson()).toList(),
+    'eclessias': eclessias?.map((e) =&gt; e.toJson()).toList(),
+    'countries': countries?.map((e) =&gt; e.toJson()).toList(),
+    'partner': partner?.toJson(),
+  };
+}
+
+class Partner {
+  final int? id;
+  final String? first_name;
+  final String? last_name;
+  final String? email;
+  final Ecclesia? ecclesia;
+  final List&lt;RolesItem&gt;? roles;
+
+  Partner({this.id, this.first_name, this.last_name, this.email, this.ecclesia, this.roles, });
+
+  factory Partner.fromJson(Map&lt;String, dynamic&gt; json) =&gt; Partner(
+    id: json['id'],
+    first_name: json['first_name'],
+    last_name: json['last_name'],
+    email: json['email'],
+    ecclesia: json['ecclesia'] != null ? Ecclesia.fromJson(json['ecclesia'] as Map&lt;String, dynamic&gt;) : null,
+    roles: (json['roles'] as List&lt;dynamic&gt;?)?.map((e) =&gt; RolesItem.fromJson(e as Map&lt;String, dynamic&gt;)).toList(),
+  );
+
+  Map&lt;String, dynamic&gt; toJson() =&gt; {
+    'id': id,
+    'first_name': first_name,
+    'last_name': last_name,
+    'email': email,
+    'ecclesia': ecclesia?.toJson(),
+    'roles': roles?.map((e) =&gt; e.toJson()).toList(),
+  };
+}
+
+class Ecclesia {
+  final int? id;
+  final String? name;
+
+  Ecclesia({this.id, this.name, });
+
+  factory Ecclesia.fromJson(Map&lt;String, dynamic&gt; json) =&gt; Ecclesia(
+    id: json['id'],
+    name: json['name'],
+  );
+
+  Map&lt;String, dynamic&gt; toJson() =&gt; {
+    'id': id,
+    'name': name,
+  };
+}
+
+class CountriesItem {
+  final int? id;
+  final String? name;
+
+  CountriesItem({this.id, this.name, });
+
+  factory CountriesItem.fromJson(Map&lt;String, dynamic&gt; json) =&gt; CountriesItem(
+    id: json['id'],
+    name: json['name'],
+  );
+
+  Map&lt;String, dynamic&gt; toJson() =&gt; {
+    'id': id,
+    'name': name,
+  };
+}
+
+class EclessiasItem {
+  final int? id;
+  final String? name;
+
+  EclessiasItem({this.id, this.name, });
+
+  factory EclessiasItem.fromJson(Map&lt;String, dynamic&gt; json) =&gt; EclessiasItem(
+    id: json['id'],
+    name: json['name'],
+  );
+
+  Map&lt;String, dynamic&gt; toJson() =&gt; {
+    'id': id,
+    'name': name,
+  };
+}
+
+class RolesItem {
+  final int? id;
+  final String? name;
+  final List&lt;PermissionsItem&gt;? permissions;
+
+  RolesItem({this.id, this.name, this.permissions, });
+
+  factory RolesItem.fromJson(Map&lt;String, dynamic&gt; json) =&gt; RolesItem(
+    id: json['id'],
+    name: json['name'],
+    permissions: (json['permissions'] as List&lt;dynamic&gt;?)?.map((e) =&gt; PermissionsItem.fromJson(e as Map&lt;String, dynamic&gt;)).toList(),
+  );
+
+  Map&lt;String, dynamic&gt; toJson() =&gt; {
+    'id': id,
+    'name': name,
+    'permissions': permissions?.map((e) =&gt; e.toJson()).toList(),
+  };
+}
+
+class PermissionsItem {
+  final int? id;
+  final String? name;
+
+  PermissionsItem({this.id, this.name, });
+
+  factory PermissionsItem.fromJson(Map&lt;String, dynamic&gt; json) =&gt; PermissionsItem(
+    id: json['id'],
+    name: json['name'],
+  );
+
+  Map&lt;String, dynamic&gt; toJson() =&gt; {
+    'id': id,
+    'name': name,
+  };
+}</code></pre></div>
 
 </span>
 
@@ -34450,12 +42611,12 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 <div class="bash-example">
     <pre><code class="language-bash">curl --request POST \
-    "http://127.0.0.1:8000/api/v3/user/partners/update/aut" \
+    "http://127.0.0.1:8000/api/v3/user/partners/update/fuga" \
     --header "Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJhdWQiOiIxIiwianRpIjoiNTJkNDhkYzhjNTc4ODIwZWVmODFmY2NhOWJiMmJiODFlZGE1MTUwMTVkYmU5YzdkNzFkODAyYTRmZWNhMWQ5ZGJhYWEzMTc2YjI1OTJmMTgiLCJpYXQiOjE3NjQwNjAzNDQuMDUyOTc0LCJuYmYiOjE3NjQwNjAzNDQuMDUyOTc1LCJleHAiOjE3OTU1OTYzNDQuMDQzNjUyLCJzdWIiOiIxNjgiLCJzY29wZXMiOltdfQ.X9tS38uM-UlrpFlYZihD_kmuCcSX_hdGsRBJcNGfrWXAClMiqeTxNTC45Ftxw-ddmDQ59t5xJLlnWp2Rx57itO-IHclNmwnVJDPAh1l9D8CZBGxBSoN0FvmbWeYDNQnA7ud77YLekrcSAuKMdBX3J1UKq6ytvWwi6ChnuRFqcQ-fpzK-jgkMhGm-WFHw0H3a34afdBdSUUFutESlwMvTqmXILYVcIwaJpEAjamf3rn6wIOEoD8mbxXJ6Gb6QrRO72Kt3z62vJp7yOeMsnXUkfioVSyJVwbkbchCs2Y4YZY3FEREbKysKNdHJhhqmn6AXvx66arAK3HeZoyf5eusfk26alhbEdJqsJgFP5VROV5l57q8VKhH8hAxg-oeidCGGJXPjLGeb-5iGPjdGhQ1Ng1i9kt7VDV4icb8B2AbNC2Ie9xP6b0R11PX4jUd8D3Jogf2f0ZhAs5Is8WHcrxsCyk3lWvgOyzWxpRx2lSpmBRmSwksPrKJk_7JuzDZ1Tdpz6mubjV6DzlmqDJJjf32hBIMnaYOhOUz5k1FzZ8mybsSbnM9UjzHYr5xIf4rkmVAfuPnU2FGu8NtCQaOtt9G-TziBFgT3ZjxBCL9QaaC39BRulGE6tyCAT8NM9svTD_AbNyINUzO2M0R61OXYQfzXEeiui-sO6eYIc3x_z-YdFFQ" \
     --header "Content-Type: application/json" \
     --header "Accept: application/json" \
     --data "{
-    \"role\": \"ratione\",
+    \"role\": \"voluptatum\",
     \"first_name\": \"John\",
     \"last_name\": \"Doe\",
     \"middle_name\": \"Smith\",
@@ -34477,7 +42638,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 <div class="javascript-example">
     <pre><code class="language-javascript">const url = new URL(
-    "http://127.0.0.1:8000/api/v3/user/partners/update/aut"
+    "http://127.0.0.1:8000/api/v3/user/partners/update/fuga"
 );
 
 const headers = {
@@ -34487,7 +42648,7 @@ const headers = {
 };
 
 let body = {
-    "role": "ratione",
+    "role": "voluptatum",
     "first_name": "John",
     "last_name": "Doe",
     "middle_name": "Smith",
@@ -34510,6 +42671,23 @@ fetch(url, {
     headers,
     body: JSON.stringify(body),
 }).then(response =&gt; response.json());</code></pre></div>
+
+
+<div class="jsonToDart-example">
+    <pre><code class="language-dart">
+class Fuga {
+  final String? message;
+
+  Fuga({this.message, });
+
+  factory Fuga.fromJson(Map&lt;String, dynamic&gt; json) =&gt; Fuga(
+    message: json['message'],
+  );
+
+  Map&lt;String, dynamic&gt; toJson() =&gt; {
+    'message': message,
+  };
+}</code></pre></div>
 
 </span>
 
@@ -34621,10 +42799,10 @@ You can check the Dev Tools console for debugging information.</code></pre>
  &nbsp;
                 <input type="text" style="display: none"
                               name="id"                data-endpoint="POSTapi-v3-user-partners-update--id-"
-               value="aut"
+               value="fuga"
                data-component="url">
     <br>
-<p>The ID of the update. Example: <code>aut</code></p>
+<p>The ID of the update. Example: <code>fuga</code></p>
             </div>
                             <h4 class="fancy-heading-panel"><b>Body Parameters</b></h4>
         <div style=" padding-left: 28px;  clear: unset;">
@@ -34633,10 +42811,10 @@ You can check the Dev Tools console for debugging information.</code></pre>
  &nbsp;
                 <input type="text" style="display: none"
                               name="role"                data-endpoint="POSTapi-v3-user-partners-update--id-"
-               value="ratione"
+               value="voluptatum"
                data-component="body">
     <br>
-<p>'role' =&gt; 'required',. Example: <code>ratione</code></p>
+<p>'role' =&gt; 'required',. Example: <code>voluptatum</code></p>
         </div>
                 <div style=" padding-left: 28px;  clear: unset;">
             <b style="line-height: 2;"><code>first_name</code></b>&nbsp;&nbsp;
@@ -34819,7 +42997,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 <div class="bash-example">
     <pre><code class="language-bash">curl --request POST \
-    "http://127.0.0.1:8000/api/v3/user/partners/delete/11" \
+    "http://127.0.0.1:8000/api/v3/user/partners/delete/14" \
     --header "Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJhdWQiOiIxIiwianRpIjoiNTJkNDhkYzhjNTc4ODIwZWVmODFmY2NhOWJiMmJiODFlZGE1MTUwMTVkYmU5YzdkNzFkODAyYTRmZWNhMWQ5ZGJhYWEzMTc2YjI1OTJmMTgiLCJpYXQiOjE3NjQwNjAzNDQuMDUyOTc0LCJuYmYiOjE3NjQwNjAzNDQuMDUyOTc1LCJleHAiOjE3OTU1OTYzNDQuMDQzNjUyLCJzdWIiOiIxNjgiLCJzY29wZXMiOltdfQ.X9tS38uM-UlrpFlYZihD_kmuCcSX_hdGsRBJcNGfrWXAClMiqeTxNTC45Ftxw-ddmDQ59t5xJLlnWp2Rx57itO-IHclNmwnVJDPAh1l9D8CZBGxBSoN0FvmbWeYDNQnA7ud77YLekrcSAuKMdBX3J1UKq6ytvWwi6ChnuRFqcQ-fpzK-jgkMhGm-WFHw0H3a34afdBdSUUFutESlwMvTqmXILYVcIwaJpEAjamf3rn6wIOEoD8mbxXJ6Gb6QrRO72Kt3z62vJp7yOeMsnXUkfioVSyJVwbkbchCs2Y4YZY3FEREbKysKNdHJhhqmn6AXvx66arAK3HeZoyf5eusfk26alhbEdJqsJgFP5VROV5l57q8VKhH8hAxg-oeidCGGJXPjLGeb-5iGPjdGhQ1Ng1i9kt7VDV4icb8B2AbNC2Ie9xP6b0R11PX4jUd8D3Jogf2f0ZhAs5Is8WHcrxsCyk3lWvgOyzWxpRx2lSpmBRmSwksPrKJk_7JuzDZ1Tdpz6mubjV6DzlmqDJJjf32hBIMnaYOhOUz5k1FzZ8mybsSbnM9UjzHYr5xIf4rkmVAfuPnU2FGu8NtCQaOtt9G-TziBFgT3ZjxBCL9QaaC39BRulGE6tyCAT8NM9svTD_AbNyINUzO2M0R61OXYQfzXEeiui-sO6eYIc3x_z-YdFFQ" \
     --header "Content-Type: application/json" \
     --header "Accept: application/json"</code></pre></div>
@@ -34827,7 +43005,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 <div class="javascript-example">
     <pre><code class="language-javascript">const url = new URL(
-    "http://127.0.0.1:8000/api/v3/user/partners/delete/11"
+    "http://127.0.0.1:8000/api/v3/user/partners/delete/14"
 );
 
 const headers = {
@@ -34840,6 +43018,23 @@ fetch(url, {
     method: "POST",
     headers,
 }).then(response =&gt; response.json());</code></pre></div>
+
+
+<div class="jsonToDart-example">
+    <pre><code class="language-dart">
+class 14 {
+  final String? message;
+
+  14({this.message, });
+
+  factory 14.fromJson(Map&lt;String, dynamic&gt; json) =&gt; 14(
+    message: json['message'],
+  );
+
+  Map&lt;String, dynamic&gt; toJson() =&gt; {
+    'message': message,
+  };
+}</code></pre></div>
 
 </span>
 
@@ -34951,10 +43146,10 @@ You can check the Dev Tools console for debugging information.</code></pre>
  &nbsp;
                 <input type="number" style="display: none"
                step="any"               name="id"                data-endpoint="POSTapi-v3-user-partners-delete--id-"
-               value="11"
+               value="14"
                data-component="url">
     <br>
-<p>The ID of the partner to delete. Example: <code>11</code></p>
+<p>The ID of the partner to delete. Example: <code>14</code></p>
             </div>
                     </form>
 
@@ -35006,6 +43201,23 @@ fetch(url, {
     headers,
     body: JSON.stringify(body),
 }).then(response =&gt; response.json());</code></pre></div>
+
+
+<div class="jsonToDart-example">
+    <pre><code class="language-dart">
+class Status {
+  final String? message;
+
+  Status({this.message, });
+
+  factory Status.fromJson(Map&lt;String, dynamic&gt; json) =&gt; Status(
+    message: json['message'],
+  );
+
+  Map&lt;String, dynamic&gt; toJson() =&gt; {
+    'message': message,
+  };
+}</code></pre></div>
 
 </span>
 
@@ -35188,6 +43400,125 @@ fetch(url, {
     method: "GET",
     headers,
 }).then(response =&gt; response.json());</code></pre></div>
+
+
+<div class="jsonToDart-example">
+    <pre><code class="language-dart">
+class Load {
+  final Data? data;
+
+  Load({this.data, });
+
+  factory Load.fromJson(Map&lt;String, dynamic&gt; json) =&gt; Load(
+    data: json['data'] != null ? Data.fromJson(json['data'] as Map&lt;String, dynamic&gt;) : null,
+  );
+
+  Map&lt;String, dynamic&gt; toJson() =&gt; {
+    'data': data?.toJson(),
+  };
+}
+
+class Data {
+  final int? current_page;
+  final List&lt;DataItem&gt;? data;
+  final String? first_page_url;
+  final int? from;
+  final int? last_page;
+  final String? last_page_url;
+  final List&lt;LinksItem&gt;? links;
+  final dynamic? next_page_url;
+  final String? path;
+  final int? per_page;
+  final dynamic? prev_page_url;
+  final int? to;
+  final int? total;
+
+  Data({this.current_page, this.data, this.first_page_url, this.from, this.last_page, this.last_page_url, this.links, this.next_page_url, this.path, this.per_page, this.prev_page_url, this.to, this.total, });
+
+  factory Data.fromJson(Map&lt;String, dynamic&gt; json) =&gt; Data(
+    current_page: json['current_page'],
+    data: (json['data'] as List&lt;dynamic&gt;?)?.map((e) =&gt; DataItem.fromJson(e as Map&lt;String, dynamic&gt;)).toList(),
+    first_page_url: json['first_page_url'],
+    from: json['from'],
+    last_page: json['last_page'],
+    last_page_url: json['last_page_url'],
+    links: (json['links'] as List&lt;dynamic&gt;?)?.map((e) =&gt; LinksItem.fromJson(e as Map&lt;String, dynamic&gt;)).toList(),
+    next_page_url: json['next_page_url'],
+    path: json['path'],
+    per_page: json['per_page'],
+    prev_page_url: json['prev_page_url'],
+    to: json['to'],
+    total: json['total'],
+  );
+
+  Map&lt;String, dynamic&gt; toJson() =&gt; {
+    'current_page': current_page,
+    'data': data?.map((e) =&gt; e.toJson()).toList(),
+    'first_page_url': first_page_url,
+    'from': from,
+    'last_page': last_page,
+    'last_page_url': last_page_url,
+    'links': links?.map((e) =&gt; e.toJson()).toList(),
+    'next_page_url': next_page_url,
+    'path': path,
+    'per_page': per_page,
+    'prev_page_url': prev_page_url,
+    'to': to,
+    'total': total,
+  };
+}
+
+class LinksItem {
+  final dynamic? url;
+  final String? label;
+  final bool? active;
+
+  LinksItem({this.url, this.label, this.active, });
+
+  factory LinksItem.fromJson(Map&lt;String, dynamic&gt; json) =&gt; LinksItem(
+    url: json['url'],
+    label: json['label'],
+    active: json['active'],
+  );
+
+  Map&lt;String, dynamic&gt; toJson() =&gt; {
+    'url': url,
+    'label': label,
+    'active': active,
+  };
+}
+
+class DataItem {
+  final int? id;
+  final int? user_id;
+  final String? file_name;
+  final String? file_extension;
+  final String? file;
+  final String? created_at;
+  final String? updated_at;
+
+  DataItem({this.id, this.user_id, this.file_name, this.file_extension, this.file, this.created_at, this.updated_at, });
+
+  factory DataItem.fromJson(Map&lt;String, dynamic&gt; json) =&gt; DataItem(
+    id: json['id'],
+    user_id: json['user_id'],
+    file_name: json['file_name'],
+    file_extension: json['file_extension'],
+    file: json['file'],
+    created_at: json['created_at'],
+    updated_at: json['updated_at'],
+  );
+
+  Map&lt;String, dynamic&gt; toJson() =&gt; {
+    'id': id,
+    'user_id': user_id,
+    'file_name': file_name,
+    'file_extension': file_extension,
+    'file': file,
+    'created_at': created_at,
+    'updated_at': updated_at,
+  };
+}</code></pre></div>
 
 </span>
 
@@ -35381,7 +43712,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
     --header "Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJhdWQiOiIxIiwianRpIjoiNTJkNDhkYzhjNTc4ODIwZWVmODFmY2NhOWJiMmJiODFlZGE1MTUwMTVkYmU5YzdkNzFkODAyYTRmZWNhMWQ5ZGJhYWEzMTc2YjI1OTJmMTgiLCJpYXQiOjE3NjQwNjAzNDQuMDUyOTc0LCJuYmYiOjE3NjQwNjAzNDQuMDUyOTc1LCJleHAiOjE3OTU1OTYzNDQuMDQzNjUyLCJzdWIiOiIxNjgiLCJzY29wZXMiOltdfQ.X9tS38uM-UlrpFlYZihD_kmuCcSX_hdGsRBJcNGfrWXAClMiqeTxNTC45Ftxw-ddmDQ59t5xJLlnWp2Rx57itO-IHclNmwnVJDPAh1l9D8CZBGxBSoN0FvmbWeYDNQnA7ud77YLekrcSAuKMdBX3J1UKq6ytvWwi6ChnuRFqcQ-fpzK-jgkMhGm-WFHw0H3a34afdBdSUUFutESlwMvTqmXILYVcIwaJpEAjamf3rn6wIOEoD8mbxXJ6Gb6QrRO72Kt3z62vJp7yOeMsnXUkfioVSyJVwbkbchCs2Y4YZY3FEREbKysKNdHJhhqmn6AXvx66arAK3HeZoyf5eusfk26alhbEdJqsJgFP5VROV5l57q8VKhH8hAxg-oeidCGGJXPjLGeb-5iGPjdGhQ1Ng1i9kt7VDV4icb8B2AbNC2Ie9xP6b0R11PX4jUd8D3Jogf2f0ZhAs5Is8WHcrxsCyk3lWvgOyzWxpRx2lSpmBRmSwksPrKJk_7JuzDZ1Tdpz6mubjV6DzlmqDJJjf32hBIMnaYOhOUz5k1FzZ8mybsSbnM9UjzHYr5xIf4rkmVAfuPnU2FGu8NtCQaOtt9G-TziBFgT3ZjxBCL9QaaC39BRulGE6tyCAT8NM9svTD_AbNyINUzO2M0R61OXYQfzXEeiui-sO6eYIc3x_z-YdFFQ" \
     --header "Content-Type: multipart/form-data" \
     --header "Accept: application/json" \
-    --form "file=@/private/var/folders/wy/1yz2w5p91q13336262xr4yzw0000gn/T/phpFRXCpf" </code></pre></div>
+    --form "file=@/private/var/folders/wy/1yz2w5p91q13336262xr4yzw0000gn/T/phpiMhyyW" </code></pre></div>
 
 
 <div class="javascript-example">
@@ -35403,6 +43734,23 @@ fetch(url, {
     headers,
     body,
 }).then(response =&gt; response.json());</code></pre></div>
+
+
+<div class="jsonToDart-example">
+    <pre><code class="language-dart">
+class Store {
+  final String? message;
+
+  Store({this.message, });
+
+  factory Store.fromJson(Map&lt;String, dynamic&gt; json) =&gt; Store(
+    message: json['message'],
+  );
+
+  Map&lt;String, dynamic&gt; toJson() =&gt; {
+    'message': message,
+  };
+}</code></pre></div>
 
 </span>
 
@@ -35516,7 +43864,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
                value=""
                data-component="body">
     <br>
-<p>files to upload. Example: <code>/private/var/folders/wy/1yz2w5p91q13336262xr4yzw0000gn/T/phpFRXCpf</code></p>
+<p>files to upload. Example: <code>/private/var/folders/wy/1yz2w5p91q13336262xr4yzw0000gn/T/phpiMhyyW</code></p>
         </div>
         </form>
 
@@ -35534,7 +43882,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 <div class="bash-example">
     <pre><code class="language-bash">curl --request GET \
-    --get "http://127.0.0.1:8000/api/v3/user/policy/delete/10" \
+    --get "http://127.0.0.1:8000/api/v3/user/policy/delete/7" \
     --header "Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJhdWQiOiIxIiwianRpIjoiNTJkNDhkYzhjNTc4ODIwZWVmODFmY2NhOWJiMmJiODFlZGE1MTUwMTVkYmU5YzdkNzFkODAyYTRmZWNhMWQ5ZGJhYWEzMTc2YjI1OTJmMTgiLCJpYXQiOjE3NjQwNjAzNDQuMDUyOTc0LCJuYmYiOjE3NjQwNjAzNDQuMDUyOTc1LCJleHAiOjE3OTU1OTYzNDQuMDQzNjUyLCJzdWIiOiIxNjgiLCJzY29wZXMiOltdfQ.X9tS38uM-UlrpFlYZihD_kmuCcSX_hdGsRBJcNGfrWXAClMiqeTxNTC45Ftxw-ddmDQ59t5xJLlnWp2Rx57itO-IHclNmwnVJDPAh1l9D8CZBGxBSoN0FvmbWeYDNQnA7ud77YLekrcSAuKMdBX3J1UKq6ytvWwi6ChnuRFqcQ-fpzK-jgkMhGm-WFHw0H3a34afdBdSUUFutESlwMvTqmXILYVcIwaJpEAjamf3rn6wIOEoD8mbxXJ6Gb6QrRO72Kt3z62vJp7yOeMsnXUkfioVSyJVwbkbchCs2Y4YZY3FEREbKysKNdHJhhqmn6AXvx66arAK3HeZoyf5eusfk26alhbEdJqsJgFP5VROV5l57q8VKhH8hAxg-oeidCGGJXPjLGeb-5iGPjdGhQ1Ng1i9kt7VDV4icb8B2AbNC2Ie9xP6b0R11PX4jUd8D3Jogf2f0ZhAs5Is8WHcrxsCyk3lWvgOyzWxpRx2lSpmBRmSwksPrKJk_7JuzDZ1Tdpz6mubjV6DzlmqDJJjf32hBIMnaYOhOUz5k1FzZ8mybsSbnM9UjzHYr5xIf4rkmVAfuPnU2FGu8NtCQaOtt9G-TziBFgT3ZjxBCL9QaaC39BRulGE6tyCAT8NM9svTD_AbNyINUzO2M0R61OXYQfzXEeiui-sO6eYIc3x_z-YdFFQ" \
     --header "Content-Type: application/json" \
     --header "Accept: application/json"</code></pre></div>
@@ -35542,7 +43890,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 <div class="javascript-example">
     <pre><code class="language-javascript">const url = new URL(
-    "http://127.0.0.1:8000/api/v3/user/policy/delete/10"
+    "http://127.0.0.1:8000/api/v3/user/policy/delete/7"
 );
 
 const headers = {
@@ -35555,6 +43903,23 @@ fetch(url, {
     method: "GET",
     headers,
 }).then(response =&gt; response.json());</code></pre></div>
+
+
+<div class="jsonToDart-example">
+    <pre><code class="language-dart">
+class 7 {
+  final String? message;
+
+  7({this.message, });
+
+  factory 7.fromJson(Map&lt;String, dynamic&gt; json) =&gt; 7(
+    message: json['message'],
+  );
+
+  Map&lt;String, dynamic&gt; toJson() =&gt; {
+    'message': message,
+  };
+}</code></pre></div>
 
 </span>
 
@@ -35665,10 +44030,10 @@ You can check the Dev Tools console for debugging information.</code></pre>
  &nbsp;
                 <input type="number" style="display: none"
                step="any"               name="id"                data-endpoint="GETapi-v3-user-policy-delete--id-"
-               value="10"
+               value="7"
                data-component="url">
     <br>
-<p>The ID of the policy to delete. Example: <code>10</code></p>
+<p>The ID of the policy to delete. Example: <code>7</code></p>
             </div>
                     </form>
 
@@ -35686,7 +44051,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 <div class="bash-example">
     <pre><code class="language-bash">curl --request GET \
-    --get "http://127.0.0.1:8000/api/v3/user/policy/download/et" \
+    --get "http://127.0.0.1:8000/api/v3/user/policy/download/eos" \
     --header "Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJhdWQiOiIxIiwianRpIjoiNTJkNDhkYzhjNTc4ODIwZWVmODFmY2NhOWJiMmJiODFlZGE1MTUwMTVkYmU5YzdkNzFkODAyYTRmZWNhMWQ5ZGJhYWEzMTc2YjI1OTJmMTgiLCJpYXQiOjE3NjQwNjAzNDQuMDUyOTc0LCJuYmYiOjE3NjQwNjAzNDQuMDUyOTc1LCJleHAiOjE3OTU1OTYzNDQuMDQzNjUyLCJzdWIiOiIxNjgiLCJzY29wZXMiOltdfQ.X9tS38uM-UlrpFlYZihD_kmuCcSX_hdGsRBJcNGfrWXAClMiqeTxNTC45Ftxw-ddmDQ59t5xJLlnWp2Rx57itO-IHclNmwnVJDPAh1l9D8CZBGxBSoN0FvmbWeYDNQnA7ud77YLekrcSAuKMdBX3J1UKq6ytvWwi6ChnuRFqcQ-fpzK-jgkMhGm-WFHw0H3a34afdBdSUUFutESlwMvTqmXILYVcIwaJpEAjamf3rn6wIOEoD8mbxXJ6Gb6QrRO72Kt3z62vJp7yOeMsnXUkfioVSyJVwbkbchCs2Y4YZY3FEREbKysKNdHJhhqmn6AXvx66arAK3HeZoyf5eusfk26alhbEdJqsJgFP5VROV5l57q8VKhH8hAxg-oeidCGGJXPjLGeb-5iGPjdGhQ1Ng1i9kt7VDV4icb8B2AbNC2Ie9xP6b0R11PX4jUd8D3Jogf2f0ZhAs5Is8WHcrxsCyk3lWvgOyzWxpRx2lSpmBRmSwksPrKJk_7JuzDZ1Tdpz6mubjV6DzlmqDJJjf32hBIMnaYOhOUz5k1FzZ8mybsSbnM9UjzHYr5xIf4rkmVAfuPnU2FGu8NtCQaOtt9G-TziBFgT3ZjxBCL9QaaC39BRulGE6tyCAT8NM9svTD_AbNyINUzO2M0R61OXYQfzXEeiui-sO6eYIc3x_z-YdFFQ" \
     --header "Content-Type: application/json" \
     --header "Accept: application/json"</code></pre></div>
@@ -35694,7 +44059,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 <div class="javascript-example">
     <pre><code class="language-javascript">const url = new URL(
-    "http://127.0.0.1:8000/api/v3/user/policy/download/et"
+    "http://127.0.0.1:8000/api/v3/user/policy/download/eos"
 );
 
 const headers = {
@@ -35707,6 +44072,23 @@ fetch(url, {
     method: "GET",
     headers,
 }).then(response =&gt; response.json());</code></pre></div>
+
+
+<div class="jsonToDart-example">
+    <pre><code class="language-dart">
+class Eos {
+  final String? error;
+
+  Eos({this.error, });
+
+  factory Eos.fromJson(Map&lt;String, dynamic&gt; json) =&gt; Eos(
+    error: json['error'],
+  );
+
+  Map&lt;String, dynamic&gt; toJson() =&gt; {
+    'error': error,
+  };
+}</code></pre></div>
 
 </span>
 
@@ -35815,10 +44197,10 @@ You can check the Dev Tools console for debugging information.</code></pre>
  &nbsp;
                 <input type="text" style="display: none"
                               name="id"                data-endpoint="GETapi-v3-user-policy-download--id-"
-               value="et"
+               value="eos"
                data-component="url">
     <br>
-<p>The ID of the download. Example: <code>et</code></p>
+<p>The ID of the download. Example: <code>eos</code></p>
             </div>
                     </form>
 
@@ -35836,7 +44218,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 <div class="bash-example">
     <pre><code class="language-bash">curl --request GET \
-    --get "http://127.0.0.1:8000/api/v3/user/policy/view/3" \
+    --get "http://127.0.0.1:8000/api/v3/user/policy/view/16" \
     --header "Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJhdWQiOiIxIiwianRpIjoiNTJkNDhkYzhjNTc4ODIwZWVmODFmY2NhOWJiMmJiODFlZGE1MTUwMTVkYmU5YzdkNzFkODAyYTRmZWNhMWQ5ZGJhYWEzMTc2YjI1OTJmMTgiLCJpYXQiOjE3NjQwNjAzNDQuMDUyOTc0LCJuYmYiOjE3NjQwNjAzNDQuMDUyOTc1LCJleHAiOjE3OTU1OTYzNDQuMDQzNjUyLCJzdWIiOiIxNjgiLCJzY29wZXMiOltdfQ.X9tS38uM-UlrpFlYZihD_kmuCcSX_hdGsRBJcNGfrWXAClMiqeTxNTC45Ftxw-ddmDQ59t5xJLlnWp2Rx57itO-IHclNmwnVJDPAh1l9D8CZBGxBSoN0FvmbWeYDNQnA7ud77YLekrcSAuKMdBX3J1UKq6ytvWwi6ChnuRFqcQ-fpzK-jgkMhGm-WFHw0H3a34afdBdSUUFutESlwMvTqmXILYVcIwaJpEAjamf3rn6wIOEoD8mbxXJ6Gb6QrRO72Kt3z62vJp7yOeMsnXUkfioVSyJVwbkbchCs2Y4YZY3FEREbKysKNdHJhhqmn6AXvx66arAK3HeZoyf5eusfk26alhbEdJqsJgFP5VROV5l57q8VKhH8hAxg-oeidCGGJXPjLGeb-5iGPjdGhQ1Ng1i9kt7VDV4icb8B2AbNC2Ie9xP6b0R11PX4jUd8D3Jogf2f0ZhAs5Is8WHcrxsCyk3lWvgOyzWxpRx2lSpmBRmSwksPrKJk_7JuzDZ1Tdpz6mubjV6DzlmqDJJjf32hBIMnaYOhOUz5k1FzZ8mybsSbnM9UjzHYr5xIf4rkmVAfuPnU2FGu8NtCQaOtt9G-TziBFgT3ZjxBCL9QaaC39BRulGE6tyCAT8NM9svTD_AbNyINUzO2M0R61OXYQfzXEeiui-sO6eYIc3x_z-YdFFQ" \
     --header "Content-Type: application/json" \
     --header "Accept: application/json"</code></pre></div>
@@ -35844,7 +44226,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 <div class="javascript-example">
     <pre><code class="language-javascript">const url = new URL(
-    "http://127.0.0.1:8000/api/v3/user/policy/view/3"
+    "http://127.0.0.1:8000/api/v3/user/policy/view/16"
 );
 
 const headers = {
@@ -35857,6 +44239,49 @@ fetch(url, {
     method: "GET",
     headers,
 }).then(response =&gt; response.json());</code></pre></div>
+
+
+<div class="jsonToDart-example">
+    <pre><code class="language-dart">
+class 16 {
+  final Data? data;
+
+  16({this.data, });
+
+  factory 16.fromJson(Map&lt;String, dynamic&gt; json) =&gt; 16(
+    data: json['data'] != null ? Data.fromJson(json['data'] as Map&lt;String, dynamic&gt;) : null,
+  );
+
+  Map&lt;String, dynamic&gt; toJson() =&gt; {
+    'data': data?.toJson(),
+  };
+}
+
+class Data {
+  final int? id;
+  final String? file_name;
+  final String? file_extension;
+  final int? user_id;
+  final String? file;
+
+  Data({this.id, this.file_name, this.file_extension, this.user_id, this.file, });
+
+  factory Data.fromJson(Map&lt;String, dynamic&gt; json) =&gt; Data(
+    id: json['id'],
+    file_name: json['file_name'],
+    file_extension: json['file_extension'],
+    user_id: json['user_id'],
+    file: json['file'],
+  );
+
+  Map&lt;String, dynamic&gt; toJson() =&gt; {
+    'id': id,
+    'file_name': file_name,
+    'file_extension': file_extension,
+    'user_id': user_id,
+    'file': file,
+  };
+}</code></pre></div>
 
 </span>
 
@@ -35973,10 +44398,10 @@ You can check the Dev Tools console for debugging information.</code></pre>
  &nbsp;
                 <input type="number" style="display: none"
                step="any"               name="id"                data-endpoint="GETapi-v3-user-policy-view--id-"
-               value="3"
+               value="16"
                data-component="url">
     <br>
-<p>The ID of the policy to view. Example: <code>3</code></p>
+<p>The ID of the policy to view. Example: <code>16</code></p>
             </div>
                     </form>
 
@@ -36019,6 +44444,79 @@ fetch(url, {
     method: "POST",
     headers,
 }).then(response =&gt; response.json());</code></pre></div>
+
+
+<div class="jsonToDart-example">
+    <pre><code class="language-dart">
+class Profile {
+  final bool? status;
+  final String? message;
+  final Data? data;
+
+  Profile({this.status, this.message, this.data, });
+
+  factory Profile.fromJson(Map&lt;String, dynamic&gt; json) =&gt; Profile(
+    status: json['status'],
+    message: json['message'],
+    data: json['data'] != null ? Data.fromJson(json['data'] as Map&lt;String, dynamic&gt;) : null,
+  );
+
+  Map&lt;String, dynamic&gt; toJson() =&gt; {
+    'status': status,
+    'message': message,
+    'data': data?.toJson(),
+  };
+}
+
+class Data {
+  final int? id;
+  final String? user_name;
+  final String? first_name;
+  final dynamic? middle_name;
+  final String? last_name;
+  final String? email;
+  final String? phone;
+  final dynamic? email_verified_at;
+  final String? profile_picture;
+  final String? address;
+  final int? status;
+  final String? created_at;
+  final String? updated_at;
+
+  Data({this.id, this.user_name, this.first_name, this.middle_name, this.last_name, this.email, this.phone, this.email_verified_at, this.profile_picture, this.address, this.status, this.created_at, this.updated_at, });
+
+  factory Data.fromJson(Map&lt;String, dynamic&gt; json) =&gt; Data(
+    id: json['id'],
+    user_name: json['user_name'],
+    first_name: json['first_name'],
+    middle_name: json['middle_name'],
+    last_name: json['last_name'],
+    email: json['email'],
+    phone: json['phone'],
+    email_verified_at: json['email_verified_at'],
+    profile_picture: json['profile_picture'],
+    address: json['address'],
+    status: json['status'],
+    created_at: json['created_at'],
+    updated_at: json['updated_at'],
+  );
+
+  Map&lt;String, dynamic&gt; toJson() =&gt; {
+    'id': id,
+    'user_name': user_name,
+    'first_name': first_name,
+    'middle_name': middle_name,
+    'last_name': last_name,
+    'email': email,
+    'phone': phone,
+    'email_verified_at': email_verified_at,
+    'profile_picture': profile_picture,
+    'address': address,
+    'status': status,
+    'created_at': created_at,
+    'updated_at': updated_at,
+  };
+}</code></pre></div>
 
 </span>
 
@@ -36193,6 +44691,26 @@ fetch(url, {
     headers,
     body: JSON.stringify(body),
 }).then(response =&gt; response.json());</code></pre></div>
+
+
+<div class="jsonToDart-example">
+    <pre><code class="language-dart">
+class Profile {
+  final bool? status;
+  final String? message;
+
+  Profile({this.status, this.message, });
+
+  factory Profile.fromJson(Map&lt;String, dynamic&gt; json) =&gt; Profile(
+    status: json['status'],
+    message: json['message'],
+  );
+
+  Map&lt;String, dynamic&gt; toJson() =&gt; {
+    'status': status,
+    'message': message,
+  };
+}</code></pre></div>
 
 </span>
 
@@ -36419,7 +44937,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
     --header "Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJhdWQiOiIxIiwianRpIjoiNTJkNDhkYzhjNTc4ODIwZWVmODFmY2NhOWJiMmJiODFlZGE1MTUwMTVkYmU5YzdkNzFkODAyYTRmZWNhMWQ5ZGJhYWEzMTc2YjI1OTJmMTgiLCJpYXQiOjE3NjQwNjAzNDQuMDUyOTc0LCJuYmYiOjE3NjQwNjAzNDQuMDUyOTc1LCJleHAiOjE3OTU1OTYzNDQuMDQzNjUyLCJzdWIiOiIxNjgiLCJzY29wZXMiOltdfQ.X9tS38uM-UlrpFlYZihD_kmuCcSX_hdGsRBJcNGfrWXAClMiqeTxNTC45Ftxw-ddmDQ59t5xJLlnWp2Rx57itO-IHclNmwnVJDPAh1l9D8CZBGxBSoN0FvmbWeYDNQnA7ud77YLekrcSAuKMdBX3J1UKq6ytvWwi6ChnuRFqcQ-fpzK-jgkMhGm-WFHw0H3a34afdBdSUUFutESlwMvTqmXILYVcIwaJpEAjamf3rn6wIOEoD8mbxXJ6Gb6QrRO72Kt3z62vJp7yOeMsnXUkfioVSyJVwbkbchCs2Y4YZY3FEREbKysKNdHJhhqmn6AXvx66arAK3HeZoyf5eusfk26alhbEdJqsJgFP5VROV5l57q8VKhH8hAxg-oeidCGGJXPjLGeb-5iGPjdGhQ1Ng1i9kt7VDV4icb8B2AbNC2Ie9xP6b0R11PX4jUd8D3Jogf2f0ZhAs5Is8WHcrxsCyk3lWvgOyzWxpRx2lSpmBRmSwksPrKJk_7JuzDZ1Tdpz6mubjV6DzlmqDJJjf32hBIMnaYOhOUz5k1FzZ8mybsSbnM9UjzHYr5xIf4rkmVAfuPnU2FGu8NtCQaOtt9G-TziBFgT3ZjxBCL9QaaC39BRulGE6tyCAT8NM9svTD_AbNyINUzO2M0R61OXYQfzXEeiui-sO6eYIc3x_z-YdFFQ" \
     --header "Content-Type: multipart/form-data" \
     --header "Accept: application/json" \
-    --form "profile_picture=@/private/var/folders/wy/1yz2w5p91q13336262xr4yzw0000gn/T/phpIdWoQ8" </code></pre></div>
+    --form "profile_picture=@/private/var/folders/wy/1yz2w5p91q13336262xr4yzw0000gn/T/phptJ8Bti" </code></pre></div>
 
 
 <div class="javascript-example">
@@ -36441,6 +44959,26 @@ fetch(url, {
     headers,
     body,
 }).then(response =&gt; response.json());</code></pre></div>
+
+
+<div class="jsonToDart-example">
+    <pre><code class="language-dart">
+class Update {
+  final bool? status;
+  final String? message;
+
+  Update({this.status, this.message, });
+
+  factory Update.fromJson(Map&lt;String, dynamic&gt; json) =&gt; Update(
+    status: json['status'],
+    message: json['message'],
+  );
+
+  Map&lt;String, dynamic&gt; toJson() =&gt; {
+    'status': status,
+    'message': message,
+  };
+}</code></pre></div>
 
 </span>
 
@@ -36556,7 +45094,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
                value=""
                data-component="body">
     <br>
-<p>The profile picture of the user. Example: <code>/private/var/folders/wy/1yz2w5p91q13336262xr4yzw0000gn/T/phpIdWoQ8</code></p>
+<p>The profile picture of the user. Example: <code>/private/var/folders/wy/1yz2w5p91q13336262xr4yzw0000gn/T/phptJ8Bti</code></p>
         </div>
         </form>
 
@@ -36608,6 +45146,26 @@ fetch(url, {
     headers,
     body: JSON.stringify(body),
 }).then(response =&gt; response.json());</code></pre></div>
+
+
+<div class="jsonToDart-example">
+    <pre><code class="language-dart">
+class Password {
+  final bool? status;
+  final String? message;
+
+  Password({this.status, this.message, });
+
+  factory Password.fromJson(Map&lt;String, dynamic&gt; json) =&gt; Password(
+    status: json['status'],
+    message: json['message'],
+  );
+
+  Map&lt;String, dynamic&gt; toJson() =&gt; {
+    'status': status,
+    'message': message,
+  };
+}</code></pre></div>
 
 </span>
 
@@ -36784,6 +45342,26 @@ fetch(url, {
     body: JSON.stringify(body),
 }).then(response =&gt; response.json());</code></pre></div>
 
+
+<div class="jsonToDart-example">
+    <pre><code class="language-dart">
+class Permission {
+  final bool? status;
+  final String? message;
+
+  Permission({this.status, this.message, });
+
+  factory Permission.fromJson(Map&lt;String, dynamic&gt; json) =&gt; Permission(
+    status: json['status'],
+    message: json['message'],
+  );
+
+  Map&lt;String, dynamic&gt; toJson() =&gt; {
+    'status': status,
+    'message': message,
+  };
+}</code></pre></div>
+
 </span>
 
 <span id="example-responses-POSTapi-v3-user-check-role-permission">
@@ -36958,6 +45536,49 @@ fetch(url, {
     headers,
 }).then(response =&gt; response.json());</code></pre></div>
 
+
+<div class="jsonToDart-example">
+    <pre><code class="language-dart">
+class Permission {
+  final bool? status;
+  final List&lt;MenusItem&gt;? menus;
+  final String? message;
+
+  Permission({this.status, this.menus, this.message, });
+
+  factory Permission.fromJson(Map&lt;String, dynamic&gt; json) =&gt; Permission(
+    status: json['status'],
+    menus: (json['menus'] as List&lt;dynamic&gt;?)?.map((e) =&gt; MenusItem.fromJson(e as Map&lt;String, dynamic&gt;)).toList(),
+    message: json['message'],
+  );
+
+  Map&lt;String, dynamic&gt; toJson() =&gt; {
+    'status': status,
+    'menus': menus?.map((e) =&gt; e.toJson()).toList(),
+    'message': message,
+  };
+}
+
+class MenusItem {
+  final String? menu_name;
+  final String? permission_name;
+  final bool? active;
+
+  MenusItem({this.menu_name, this.permission_name, this.active, });
+
+  factory MenusItem.fromJson(Map&lt;String, dynamic&gt; json) =&gt; MenusItem(
+    menu_name: json['menu_name'],
+    permission_name: json['permission_name'],
+    active: json['active'],
+  );
+
+  Map&lt;String, dynamic&gt; toJson() =&gt; {
+    'menu_name': menu_name,
+    'permission_name': permission_name,
+    'active': active,
+  };
+}</code></pre></div>
+
 </span>
 
 <span id="example-responses-POSTapi-v3-user-check-menu-permission">
@@ -37126,6 +45747,134 @@ fetch(url, {
     method: "GET",
     headers,
 }).then(response =&gt; response.json());</code></pre></div>
+
+
+<div class="jsonToDart-example">
+    <pre><code class="language-dart">
+class Notifications {
+  final List? list;
+
+  Notifications({this.list, });
+
+  factory Notifications.fromJson(Map&lt;String, dynamic&gt; json) =&gt; Notifications(
+    list: json['list'] != null ? List.fromJson(json['list'] as Map&lt;String, dynamic&gt;) : null,
+  );
+
+  Map&lt;String, dynamic&gt; toJson() =&gt; {
+    'list': list?.toJson(),
+  };
+}
+
+class List {
+  final int? current_page;
+  final List&lt;DataItem&gt;? data;
+  final String? first_page_url;
+  final int? from;
+  final int? last_page;
+  final String? last_page_url;
+  final List&lt;LinksItem&gt;? links;
+  final String? next_page_url;
+  final String? path;
+  final int? per_page;
+  final dynamic? prev_page_url;
+  final int? to;
+  final int? total;
+
+  List({this.current_page, this.data, this.first_page_url, this.from, this.last_page, this.last_page_url, this.links, this.next_page_url, this.path, this.per_page, this.prev_page_url, this.to, this.total, });
+
+  factory List.fromJson(Map&lt;String, dynamic&gt; json) =&gt; List(
+    current_page: json['current_page'],
+    data: (json['data'] as List&lt;dynamic&gt;?)?.map((e) =&gt; DataItem.fromJson(e as Map&lt;String, dynamic&gt;)).toList(),
+    first_page_url: json['first_page_url'],
+    from: json['from'],
+    last_page: json['last_page'],
+    last_page_url: json['last_page_url'],
+    links: (json['links'] as List&lt;dynamic&gt;?)?.map((e) =&gt; LinksItem.fromJson(e as Map&lt;String, dynamic&gt;)).toList(),
+    next_page_url: json['next_page_url'],
+    path: json['path'],
+    per_page: json['per_page'],
+    prev_page_url: json['prev_page_url'],
+    to: json['to'],
+    total: json['total'],
+  );
+
+  Map&lt;String, dynamic&gt; toJson() =&gt; {
+    'current_page': current_page,
+    'data': data?.map((e) =&gt; e.toJson()).toList(),
+    'first_page_url': first_page_url,
+    'from': from,
+    'last_page': last_page,
+    'last_page_url': last_page_url,
+    'links': links?.map((e) =&gt; e.toJson()).toList(),
+    'next_page_url': next_page_url,
+    'path': path,
+    'per_page': per_page,
+    'prev_page_url': prev_page_url,
+    'to': to,
+    'total': total,
+  };
+}
+
+class LinksItem {
+  final dynamic? url;
+  final String? label;
+  final bool? active;
+
+  LinksItem({this.url, this.label, this.active, });
+
+  factory LinksItem.fromJson(Map&lt;String, dynamic&gt; json) =&gt; LinksItem(
+    url: json['url'],
+    label: json['label'],
+    active: json['active'],
+  );
+
+  Map&lt;String, dynamic&gt; toJson() =&gt; {
+    'url': url,
+    'label': label,
+    'active': active,
+  };
+}
+
+class DataItem {
+  final int? id;
+  final int? user_id;
+  final dynamic? chat_id;
+  final String? message;
+  final int? status;
+  final String? type;
+  final int? is_read;
+  final int? is_delete;
+  final String? created_at;
+  final String? updated_at;
+
+  DataItem({this.id, this.user_id, this.chat_id, this.message, this.status, this.type, this.is_read, this.is_delete, this.created_at, this.updated_at, });
+
+  factory DataItem.fromJson(Map&lt;String, dynamic&gt; json) =&gt; DataItem(
+    id: json['id'],
+    user_id: json['user_id'],
+    chat_id: json['chat_id'],
+    message: json['message'],
+    status: json['status'],
+    type: json['type'],
+    is_read: json['is_read'],
+    is_delete: json['is_delete'],
+    created_at: json['created_at'],
+    updated_at: json['updated_at'],
+  );
+
+  Map&lt;String, dynamic&gt; toJson() =&gt; {
+    'id': id,
+    'user_id': user_id,
+    'chat_id': chat_id,
+    'message': message,
+    'status': status,
+    'type': type,
+    'is_read': is_read,
+    'is_delete': is_delete,
+    'created_at': created_at,
+    'updated_at': updated_at,
+  };
+}</code></pre></div>
 
 </span>
 
@@ -37327,6 +46076,23 @@ fetch(url, {
     headers,
 }).then(response =&gt; response.json());</code></pre></div>
 
+
+<div class="jsonToDart-example">
+    <pre><code class="language-dart">
+class 1 {
+  final String? message;
+
+  1({this.message, });
+
+  factory 1.fromJson(Map&lt;String, dynamic&gt; json) =&gt; 1(
+    message: json['message'],
+  );
+
+  Map&lt;String, dynamic&gt; toJson() =&gt; {
+    'message': message,
+  };
+}</code></pre></div>
+
 </span>
 
 <span id="example-responses-GETapi-v3-user-notification-read--type---id-">
@@ -37490,6 +46256,26 @@ fetch(url, {
     headers,
 }).then(response =&gt; response.json());</code></pre></div>
 
+
+<div class="jsonToDart-example">
+    <pre><code class="language-dart">
+class Clear {
+  final String? message;
+  final bool? status;
+
+  Clear({this.message, this.status, });
+
+  factory Clear.fromJson(Map&lt;String, dynamic&gt; json) =&gt; Clear(
+    message: json['message'],
+    status: json['status'],
+  );
+
+  Map&lt;String, dynamic&gt; toJson() =&gt; {
+    'message': message,
+    'status': status,
+  };
+}</code></pre></div>
+
 </span>
 
 <span id="example-responses-GETapi-v3-user-notification-clear">
@@ -37621,6 +46407,49 @@ fetch(url, {
     method: "GET",
     headers,
 }).then(response =&gt; response.json());</code></pre></div>
+
+
+<div class="jsonToDart-example">
+    <pre><code class="language-dart">
+class Count {
+  final bool? status;
+  final Data? data;
+
+  Count({this.status, this.data, });
+
+  factory Count.fromJson(Map&lt;String, dynamic&gt; json) =&gt; Count(
+    status: json['status'],
+    data: json['data'] != null ? Data.fromJson(json['data'] as Map&lt;String, dynamic&gt;) : null,
+  );
+
+  Map&lt;String, dynamic&gt; toJson() =&gt; {
+    'status': status,
+    'data': data?.toJson(),
+  };
+}
+
+class Data {
+  final int? mail;
+  final int? chat;
+  final int? team_chat;
+  final int? total;
+
+  Data({this.mail, this.chat, this.team_chat, this.total, });
+
+  factory Data.fromJson(Map&lt;String, dynamic&gt; json) =&gt; Data(
+    mail: json['mail'],
+    chat: json['chat'],
+    team_chat: json['team_chat'],
+    total: json['total'],
+  );
+
+  Map&lt;String, dynamic&gt; toJson() =&gt; {
+    'mail': mail,
+    'chat': chat,
+    'team_chat': team_chat,
+    'total': total,
+  };
+}</code></pre></div>
 
 </span>
 
@@ -37767,6 +46596,26 @@ fetch(url, {
     headers,
     body: JSON.stringify(body),
 }).then(response =&gt; response.json());</code></pre></div>
+
+
+<div class="jsonToDart-example">
+    <pre><code class="language-dart">
+class Token {
+  final bool? status;
+  final String? message;
+
+  Token({this.status, this.message, });
+
+  factory Token.fromJson(Map&lt;String, dynamic&gt; json) =&gt; Token(
+    status: json['status'],
+    message: json['message'],
+  );
+
+  Map&lt;String, dynamic&gt; toJson() =&gt; {
+    'status': status,
+    'message': message,
+  };
+}</code></pre></div>
 
 </span>
 
@@ -37916,6 +46765,107 @@ fetch(url, {
     method: "GET",
     headers,
 }).then(response =&gt; response.json());</code></pre></div>
+
+
+<div class="jsonToDart-example">
+    <pre><code class="language-dart">
+class Permissions {
+  final List&lt;RolesItem&gt;? roles;
+
+  Permissions({this.roles, });
+
+  factory Permissions.fromJson(Map&lt;String, dynamic&gt; json) =&gt; Permissions(
+    roles: (json['roles'] as List&lt;dynamic&gt;?)?.map((e) =&gt; RolesItem.fromJson(e as Map&lt;String, dynamic&gt;)).toList(),
+  );
+
+  Map&lt;String, dynamic&gt; toJson() =&gt; {
+    'roles': roles?.map((e) =&gt; e.toJson()).toList(),
+  };
+}
+
+class RolesItem {
+  final int? id;
+  final String? name;
+  final String? guard_name;
+  final int? type;
+  final int? is_ecclesia;
+  final String? created_at;
+  final String? updated_at;
+  final List&lt;PermissionsItem&gt;? permissions;
+
+  RolesItem({this.id, this.name, this.guard_name, this.type, this.is_ecclesia, this.created_at, this.updated_at, this.permissions, });
+
+  factory RolesItem.fromJson(Map&lt;String, dynamic&gt; json) =&gt; RolesItem(
+    id: json['id'],
+    name: json['name'],
+    guard_name: json['guard_name'],
+    type: json['type'],
+    is_ecclesia: json['is_ecclesia'],
+    created_at: json['created_at'],
+    updated_at: json['updated_at'],
+    permissions: (json['permissions'] as List&lt;dynamic&gt;?)?.map((e) =&gt; PermissionsItem.fromJson(e as Map&lt;String, dynamic&gt;)).toList(),
+  );
+
+  Map&lt;String, dynamic&gt; toJson() =&gt; {
+    'id': id,
+    'name': name,
+    'guard_name': guard_name,
+    'type': type,
+    'is_ecclesia': is_ecclesia,
+    'created_at': created_at,
+    'updated_at': updated_at,
+    'permissions': permissions?.map((e) =&gt; e.toJson()).toList(),
+  };
+}
+
+class PermissionsItem {
+  final int? id;
+  final String? name;
+  final String? guard_name;
+  final int? type;
+  final String? created_at;
+  final String? updated_at;
+  final Pivot? pivot;
+
+  PermissionsItem({this.id, this.name, this.guard_name, this.type, this.created_at, this.updated_at, this.pivot, });
+
+  factory PermissionsItem.fromJson(Map&lt;String, dynamic&gt; json) =&gt; PermissionsItem(
+    id: json['id'],
+    name: json['name'],
+    guard_name: json['guard_name'],
+    type: json['type'],
+    created_at: json['created_at'],
+    updated_at: json['updated_at'],
+    pivot: json['pivot'] != null ? Pivot.fromJson(json['pivot'] as Map&lt;String, dynamic&gt;) : null,
+  );
+
+  Map&lt;String, dynamic&gt; toJson() =&gt; {
+    'id': id,
+    'name': name,
+    'guard_name': guard_name,
+    'type': type,
+    'created_at': created_at,
+    'updated_at': updated_at,
+    'pivot': pivot?.toJson(),
+  };
+}
+
+class Pivot {
+  final int? role_id;
+  final int? permission_id;
+
+  Pivot({this.role_id, this.permission_id, });
+
+  factory Pivot.fromJson(Map&lt;String, dynamic&gt; json) =&gt; Pivot(
+    role_id: json['role_id'],
+    permission_id: json['permission_id'],
+  );
+
+  Map&lt;String, dynamic&gt; toJson() =&gt; {
+    'role_id': role_id,
+    'permission_id': permission_id,
+  };
+}</code></pre></div>
 
 </span>
 
@@ -38081,6 +47031,52 @@ fetch(url, {
     headers,
 }).then(response =&gt; response.json());</code></pre></div>
 
+
+<div class="jsonToDart-example">
+    <pre><code class="language-dart">
+class Permissions {
+  final List&lt;PermissionsItem&gt;? permissions;
+
+  Permissions({this.permissions, });
+
+  factory Permissions.fromJson(Map&lt;String, dynamic&gt; json) =&gt; Permissions(
+    permissions: (json['permissions'] as List&lt;dynamic&gt;?)?.map((e) =&gt; PermissionsItem.fromJson(e as Map&lt;String, dynamic&gt;)).toList(),
+  );
+
+  Map&lt;String, dynamic&gt; toJson() =&gt; {
+    'permissions': permissions?.map((e) =&gt; e.toJson()).toList(),
+  };
+}
+
+class PermissionsItem {
+  final int? id;
+  final String? name;
+  final String? guard_name;
+  final int? type;
+  final String? created_at;
+  final String? updated_at;
+
+  PermissionsItem({this.id, this.name, this.guard_name, this.type, this.created_at, this.updated_at, });
+
+  factory PermissionsItem.fromJson(Map&lt;String, dynamic&gt; json) =&gt; PermissionsItem(
+    id: json['id'],
+    name: json['name'],
+    guard_name: json['guard_name'],
+    type: json['type'],
+    created_at: json['created_at'],
+    updated_at: json['updated_at'],
+  );
+
+  Map&lt;String, dynamic&gt; toJson() =&gt; {
+    'id': id,
+    'name': name,
+    'guard_name': guard_name,
+    'type': type,
+    'created_at': created_at,
+    'updated_at': updated_at,
+  };
+}</code></pre></div>
+
 </span>
 
 <span id="example-responses-GETapi-v3-user-role-permissions-permissions">
@@ -38228,6 +47224,110 @@ fetch(url, {
     method: "GET",
     headers,
 }).then(response =&gt; response.json());</code></pre></div>
+
+
+<div class="jsonToDart-example">
+    <pre><code class="language-dart">
+class 2 {
+  final Role? role;
+  final List&lt;PermissionsItem&gt;? permissions;
+
+  2({this.role, this.permissions, });
+
+  factory 2.fromJson(Map&lt;String, dynamic&gt; json) =&gt; 2(
+    role: json['role'] != null ? Role.fromJson(json['role'] as Map&lt;String, dynamic&gt;) : null,
+    permissions: (json['permissions'] as List&lt;dynamic&gt;?)?.map((e) =&gt; PermissionsItem.fromJson(e as Map&lt;String, dynamic&gt;)).toList(),
+  );
+
+  Map&lt;String, dynamic&gt; toJson() =&gt; {
+    'role': role?.toJson(),
+    'permissions': permissions?.map((e) =&gt; e.toJson()).toList(),
+  };
+}
+
+class Role {
+  final int? id;
+  final String? name;
+  final String? guard_name;
+  final int? type;
+  final int? is_ecclesia;
+  final String? created_at;
+  final String? updated_at;
+  final List&lt;PermissionsItem&gt;? permissions;
+
+  Role({this.id, this.name, this.guard_name, this.type, this.is_ecclesia, this.created_at, this.updated_at, this.permissions, });
+
+  factory Role.fromJson(Map&lt;String, dynamic&gt; json) =&gt; Role(
+    id: json['id'],
+    name: json['name'],
+    guard_name: json['guard_name'],
+    type: json['type'],
+    is_ecclesia: json['is_ecclesia'],
+    created_at: json['created_at'],
+    updated_at: json['updated_at'],
+    permissions: (json['permissions'] as List&lt;dynamic&gt;?)?.map((e) =&gt; PermissionsItem.fromJson(e as Map&lt;String, dynamic&gt;)).toList(),
+  );
+
+  Map&lt;String, dynamic&gt; toJson() =&gt; {
+    'id': id,
+    'name': name,
+    'guard_name': guard_name,
+    'type': type,
+    'is_ecclesia': is_ecclesia,
+    'created_at': created_at,
+    'updated_at': updated_at,
+    'permissions': permissions?.map((e) =&gt; e.toJson()).toList(),
+  };
+}
+
+class PermissionsItem {
+  final int? id;
+  final String? name;
+  final String? guard_name;
+  final int? type;
+  final String? created_at;
+  final String? updated_at;
+  final Pivot? pivot;
+
+  PermissionsItem({this.id, this.name, this.guard_name, this.type, this.created_at, this.updated_at, this.pivot, });
+
+  factory PermissionsItem.fromJson(Map&lt;String, dynamic&gt; json) =&gt; PermissionsItem(
+    id: json['id'],
+    name: json['name'],
+    guard_name: json['guard_name'],
+    type: json['type'],
+    created_at: json['created_at'],
+    updated_at: json['updated_at'],
+    pivot: json['pivot'] != null ? Pivot.fromJson(json['pivot'] as Map&lt;String, dynamic&gt;) : null,
+  );
+
+  Map&lt;String, dynamic&gt; toJson() =&gt; {
+    'id': id,
+    'name': name,
+    'guard_name': guard_name,
+    'type': type,
+    'created_at': created_at,
+    'updated_at': updated_at,
+    'pivot': pivot?.toJson(),
+  };
+}
+
+class Pivot {
+  final int? role_id;
+  final int? permission_id;
+
+  Pivot({this.role_id, this.permission_id, });
+
+  factory Pivot.fromJson(Map&lt;String, dynamic&gt; json) =&gt; Pivot(
+    role_id: json['role_id'],
+    permission_id: json['permission_id'],
+  );
+
+  Map&lt;String, dynamic&gt; toJson() =&gt; {
+    'role_id': role_id,
+    'permission_id': permission_id,
+  };
+}</code></pre></div>
 
 </span>
 
@@ -38433,6 +47533,58 @@ fetch(url, {
     headers,
     body: JSON.stringify(body),
 }).then(response =&gt; response.json());</code></pre></div>
+
+
+<div class="jsonToDart-example">
+    <pre><code class="language-dart">
+class Permissions {
+  final String? message;
+  final Role? role;
+
+  Permissions({this.message, this.role, });
+
+  factory Permissions.fromJson(Map&lt;String, dynamic&gt; json) =&gt; Permissions(
+    message: json['message'],
+    role: json['role'] != null ? Role.fromJson(json['role'] as Map&lt;String, dynamic&gt;) : null,
+  );
+
+  Map&lt;String, dynamic&gt; toJson() =&gt; {
+    'message': message,
+    'role': role?.toJson(),
+  };
+}
+
+class Role {
+  final String? name;
+  final String? guard_name;
+  final int? type;
+  final int? is_ecclesia;
+  final String? updated_at;
+  final String? created_at;
+  final int? id;
+
+  Role({this.name, this.guard_name, this.type, this.is_ecclesia, this.updated_at, this.created_at, this.id, });
+
+  factory Role.fromJson(Map&lt;String, dynamic&gt; json) =&gt; Role(
+    name: json['name'],
+    guard_name: json['guard_name'],
+    type: json['type'],
+    is_ecclesia: json['is_ecclesia'],
+    updated_at: json['updated_at'],
+    created_at: json['created_at'],
+    id: json['id'],
+  );
+
+  Map&lt;String, dynamic&gt; toJson() =&gt; {
+    'name': name,
+    'guard_name': guard_name,
+    'type': type,
+    'is_ecclesia': is_ecclesia,
+    'updated_at': updated_at,
+    'created_at': created_at,
+    'id': id,
+  };
+}</code></pre></div>
 
 </span>
 
@@ -38642,6 +47794,58 @@ fetch(url, {
     body: JSON.stringify(body),
 }).then(response =&gt; response.json());</code></pre></div>
 
+
+<div class="jsonToDart-example">
+    <pre><code class="language-dart">
+class 2 {
+  final String? message;
+  final Role? role;
+
+  2({this.message, this.role, });
+
+  factory 2.fromJson(Map&lt;String, dynamic&gt; json) =&gt; 2(
+    message: json['message'],
+    role: json['role'] != null ? Role.fromJson(json['role'] as Map&lt;String, dynamic&gt;) : null,
+  );
+
+  Map&lt;String, dynamic&gt; toJson() =&gt; {
+    'message': message,
+    'role': role?.toJson(),
+  };
+}
+
+class Role {
+  final int? id;
+  final String? name;
+  final String? guard_name;
+  final int? type;
+  final int? is_ecclesia;
+  final String? created_at;
+  final String? updated_at;
+
+  Role({this.id, this.name, this.guard_name, this.type, this.is_ecclesia, this.created_at, this.updated_at, });
+
+  factory Role.fromJson(Map&lt;String, dynamic&gt; json) =&gt; Role(
+    id: json['id'],
+    name: json['name'],
+    guard_name: json['guard_name'],
+    type: json['type'],
+    is_ecclesia: json['is_ecclesia'],
+    created_at: json['created_at'],
+    updated_at: json['updated_at'],
+  );
+
+  Map&lt;String, dynamic&gt; toJson() =&gt; {
+    'id': id,
+    'name': name,
+    'guard_name': guard_name,
+    'type': type,
+    'is_ecclesia': is_ecclesia,
+    'created_at': created_at,
+    'updated_at': updated_at,
+  };
+}</code></pre></div>
+
 </span>
 
 <span id="example-responses-PUTapi-v3-user-role-permissions--id-">
@@ -38848,6 +48052,23 @@ fetch(url, {
     headers,
 }).then(response =&gt; response.json());</code></pre></div>
 
+
+<div class="jsonToDart-example">
+    <pre><code class="language-dart">
+class 3 {
+  final String? message;
+
+  3({this.message, });
+
+  factory 3.fromJson(Map&lt;String, dynamic&gt; json) =&gt; 3(
+    message: json['message'],
+  );
+
+  Map&lt;String, dynamic&gt; toJson() =&gt; {
+    'message': message,
+  };
+}</code></pre></div>
+
 </span>
 
 <span id="example-responses-DELETEapi-v3-user-role-permissions--id-">
@@ -39012,6 +48233,98 @@ fetch(url, {
     method: "GET",
     headers,
 }).then(response =&gt; response.json());</code></pre></div>
+
+
+<div class="jsonToDart-example">
+    <pre><code class="language-dart">
+class List {
+  final List&lt;DataItem&gt;? data;
+
+  List({this.data, });
+
+  factory List.fromJson(Map&lt;String, dynamic&gt; json) =&gt; List(
+    data: (json['data'] as List&lt;dynamic&gt;?)?.map((e) =&gt; DataItem.fromJson(e as Map&lt;String, dynamic&gt;)).toList(),
+  );
+
+  Map&lt;String, dynamic&gt; toJson() =&gt; {
+    'data': data?.map((e) =&gt; e.toJson()).toList(),
+  };
+}
+
+class DataItem {
+  final int? id;
+  final String? name;
+  final String? guard_name;
+  final String? created_at;
+  final String? updated_at;
+  final List&lt;PermissionsItem&gt;? permissions;
+
+  DataItem({this.id, this.name, this.guard_name, this.created_at, this.updated_at, this.permissions, });
+
+  factory DataItem.fromJson(Map&lt;String, dynamic&gt; json) =&gt; DataItem(
+    id: json['id'],
+    name: json['name'],
+    guard_name: json['guard_name'],
+    created_at: json['created_at'],
+    updated_at: json['updated_at'],
+    permissions: (json['permissions'] as List&lt;dynamic&gt;?)?.map((e) =&gt; PermissionsItem.fromJson(e as Map&lt;String, dynamic&gt;)).toList(),
+  );
+
+  Map&lt;String, dynamic&gt; toJson() =&gt; {
+    'id': id,
+    'name': name,
+    'guard_name': guard_name,
+    'created_at': created_at,
+    'updated_at': updated_at,
+    'permissions': permissions?.map((e) =&gt; e.toJson()).toList(),
+  };
+}
+
+class PermissionsItem {
+  final int? id;
+  final String? name;
+  final String? guard_name;
+  final String? created_at;
+  final String? updated_at;
+  final Pivot? pivot;
+
+  PermissionsItem({this.id, this.name, this.guard_name, this.created_at, this.updated_at, this.pivot, });
+
+  factory PermissionsItem.fromJson(Map&lt;String, dynamic&gt; json) =&gt; PermissionsItem(
+    id: json['id'],
+    name: json['name'],
+    guard_name: json['guard_name'],
+    created_at: json['created_at'],
+    updated_at: json['updated_at'],
+    pivot: json['pivot'] != null ? Pivot.fromJson(json['pivot'] as Map&lt;String, dynamic&gt;) : null,
+  );
+
+  Map&lt;String, dynamic&gt; toJson() =&gt; {
+    'id': id,
+    'name': name,
+    'guard_name': guard_name,
+    'created_at': created_at,
+    'updated_at': updated_at,
+    'pivot': pivot?.toJson(),
+  };
+}
+
+class Pivot {
+  final int? role_id;
+  final int? permission_id;
+
+  Pivot({this.role_id, this.permission_id, });
+
+  factory Pivot.fromJson(Map&lt;String, dynamic&gt; json) =&gt; Pivot(
+    role_id: json['role_id'],
+    permission_id: json['permission_id'],
+  );
+
+  Map&lt;String, dynamic&gt; toJson() =&gt; {
+    'role_id': role_id,
+    'permission_id': permission_id,
+  };
+}</code></pre></div>
 
 </span>
 
@@ -39460,7 +48773,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 <div class="bash-example">
     <pre><code class="language-bash">curl --request POST \
-    "http://127.0.0.1:8000/api/v3/user/roles/edit/adipisci" \
+    "http://127.0.0.1:8000/api/v3/user/roles/edit/repudiandae" \
     --header "Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJhdWQiOiIxIiwianRpIjoiNTJkNDhkYzhjNTc4ODIwZWVmODFmY2NhOWJiMmJiODFlZGE1MTUwMTVkYmU5YzdkNzFkODAyYTRmZWNhMWQ5ZGJhYWEzMTc2YjI1OTJmMTgiLCJpYXQiOjE3NjQwNjAzNDQuMDUyOTc0LCJuYmYiOjE3NjQwNjAzNDQuMDUyOTc1LCJleHAiOjE3OTU1OTYzNDQuMDQzNjUyLCJzdWIiOiIxNjgiLCJzY29wZXMiOltdfQ.X9tS38uM-UlrpFlYZihD_kmuCcSX_hdGsRBJcNGfrWXAClMiqeTxNTC45Ftxw-ddmDQ59t5xJLlnWp2Rx57itO-IHclNmwnVJDPAh1l9D8CZBGxBSoN0FvmbWeYDNQnA7ud77YLekrcSAuKMdBX3J1UKq6ytvWwi6ChnuRFqcQ-fpzK-jgkMhGm-WFHw0H3a34afdBdSUUFutESlwMvTqmXILYVcIwaJpEAjamf3rn6wIOEoD8mbxXJ6Gb6QrRO72Kt3z62vJp7yOeMsnXUkfioVSyJVwbkbchCs2Y4YZY3FEREbKysKNdHJhhqmn6AXvx66arAK3HeZoyf5eusfk26alhbEdJqsJgFP5VROV5l57q8VKhH8hAxg-oeidCGGJXPjLGeb-5iGPjdGhQ1Ng1i9kt7VDV4icb8B2AbNC2Ie9xP6b0R11PX4jUd8D3Jogf2f0ZhAs5Is8WHcrxsCyk3lWvgOyzWxpRx2lSpmBRmSwksPrKJk_7JuzDZ1Tdpz6mubjV6DzlmqDJJjf32hBIMnaYOhOUz5k1FzZ8mybsSbnM9UjzHYr5xIf4rkmVAfuPnU2FGu8NtCQaOtt9G-TziBFgT3ZjxBCL9QaaC39BRulGE6tyCAT8NM9svTD_AbNyINUzO2M0R61OXYQfzXEeiui-sO6eYIc3x_z-YdFFQ" \
     --header "Content-Type: application/json" \
     --header "Accept: application/json"</code></pre></div>
@@ -39468,7 +48781,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 <div class="javascript-example">
     <pre><code class="language-javascript">const url = new URL(
-    "http://127.0.0.1:8000/api/v3/user/roles/edit/adipisci"
+    "http://127.0.0.1:8000/api/v3/user/roles/edit/repudiandae"
 );
 
 const headers = {
@@ -39481,6 +48794,72 @@ fetch(url, {
     method: "POST",
     headers,
 }).then(response =&gt; response.json());</code></pre></div>
+
+
+<div class="jsonToDart-example">
+    <pre><code class="language-dart">
+class Repudiandae {
+  final List&lt;ModulesItem&gt;? modules;
+
+  Repudiandae({this.modules, });
+
+  factory Repudiandae.fromJson(Map&lt;String, dynamic&gt; json) =&gt; Repudiandae(
+    modules: (json['modules'] as List&lt;dynamic&gt;?)?.map((e) =&gt; ModulesItem.fromJson(e as Map&lt;String, dynamic&gt;)).toList(),
+  );
+
+  Map&lt;String, dynamic&gt; toJson() =&gt; {
+    'modules': modules?.map((e) =&gt; e.toJson()).toList(),
+  };
+}
+
+class ModulesItem {
+  final String? module;
+  final Permissions? permissions;
+
+  ModulesItem({this.module, this.permissions, });
+
+  factory ModulesItem.fromJson(Map&lt;String, dynamic&gt; json) =&gt; ModulesItem(
+    module: json['module'],
+    permissions: json['permissions'] != null ? Permissions.fromJson(json['permissions'] as Map&lt;String, dynamic&gt;) : null,
+  );
+
+  Map&lt;String, dynamic&gt; toJson() =&gt; {
+    'module': module,
+    'permissions': permissions?.toJson(),
+  };
+}
+
+class Permissions {
+  final int? manage;
+  final int? view;
+  final int? create;
+  final int? edit;
+  final int? delete;
+  final int? upload;
+  final int? download;
+
+  Permissions({this.manage, this.view, this.create, this.edit, this.delete, this.upload, this.download, });
+
+  factory Permissions.fromJson(Map&lt;String, dynamic&gt; json) =&gt; Permissions(
+    manage: json['manage'],
+    view: json['view'],
+    create: json['create'],
+    edit: json['edit'],
+    delete: json['delete'],
+    upload: json['upload'],
+    download: json['download'],
+  );
+
+  Map&lt;String, dynamic&gt; toJson() =&gt; {
+    'manage': manage,
+    'view': view,
+    'create': create,
+    'edit': edit,
+    'delete': delete,
+    'upload': upload,
+    'download': download,
+  };
+}</code></pre></div>
 
 </span>
 
@@ -39796,10 +49175,10 @@ You can check the Dev Tools console for debugging information.</code></pre>
  &nbsp;
                 <input type="text" style="display: none"
                               name="id"                data-endpoint="POSTapi-v3-user-roles-edit--id-"
-               value="adipisci"
+               value="repudiandae"
                data-component="url">
     <br>
-<p>The ID of the edit. Example: <code>adipisci</code></p>
+<p>The ID of the edit. Example: <code>repudiandae</code></p>
             </div>
                     </form>
 
@@ -39848,6 +49227,125 @@ fetch(url, {
     method: "GET",
     headers,
 }).then(response =&gt; response.json());</code></pre></div>
+
+
+<div class="jsonToDart-example">
+    <pre><code class="language-dart">
+class Load {
+  final Data? data;
+
+  Load({this.data, });
+
+  factory Load.fromJson(Map&lt;String, dynamic&gt; json) =&gt; Load(
+    data: json['data'] != null ? Data.fromJson(json['data'] as Map&lt;String, dynamic&gt;) : null,
+  );
+
+  Map&lt;String, dynamic&gt; toJson() =&gt; {
+    'data': data?.toJson(),
+  };
+}
+
+class Data {
+  final int? current_page;
+  final List&lt;DataItem&gt;? data;
+  final String? first_page_url;
+  final int? from;
+  final int? last_page;
+  final String? last_page_url;
+  final List&lt;LinksItem&gt;? links;
+  final dynamic? next_page_url;
+  final String? path;
+  final int? per_page;
+  final dynamic? prev_page_url;
+  final int? to;
+  final int? total;
+
+  Data({this.current_page, this.data, this.first_page_url, this.from, this.last_page, this.last_page_url, this.links, this.next_page_url, this.path, this.per_page, this.prev_page_url, this.to, this.total, });
+
+  factory Data.fromJson(Map&lt;String, dynamic&gt; json) =&gt; Data(
+    current_page: json['current_page'],
+    data: (json['data'] as List&lt;dynamic&gt;?)?.map((e) =&gt; DataItem.fromJson(e as Map&lt;String, dynamic&gt;)).toList(),
+    first_page_url: json['first_page_url'],
+    from: json['from'],
+    last_page: json['last_page'],
+    last_page_url: json['last_page_url'],
+    links: (json['links'] as List&lt;dynamic&gt;?)?.map((e) =&gt; LinksItem.fromJson(e as Map&lt;String, dynamic&gt;)).toList(),
+    next_page_url: json['next_page_url'],
+    path: json['path'],
+    per_page: json['per_page'],
+    prev_page_url: json['prev_page_url'],
+    to: json['to'],
+    total: json['total'],
+  );
+
+  Map&lt;String, dynamic&gt; toJson() =&gt; {
+    'current_page': current_page,
+    'data': data?.map((e) =&gt; e.toJson()).toList(),
+    'first_page_url': first_page_url,
+    'from': from,
+    'last_page': last_page,
+    'last_page_url': last_page_url,
+    'links': links?.map((e) =&gt; e.toJson()).toList(),
+    'next_page_url': next_page_url,
+    'path': path,
+    'per_page': per_page,
+    'prev_page_url': prev_page_url,
+    'to': to,
+    'total': total,
+  };
+}
+
+class LinksItem {
+  final dynamic? url;
+  final String? label;
+  final bool? active;
+
+  LinksItem({this.url, this.label, this.active, });
+
+  factory LinksItem.fromJson(Map&lt;String, dynamic&gt; json) =&gt; LinksItem(
+    url: json['url'],
+    label: json['label'],
+    active: json['active'],
+  );
+
+  Map&lt;String, dynamic&gt; toJson() =&gt; {
+    'url': url,
+    'label': label,
+    'active': active,
+  };
+}
+
+class DataItem {
+  final int? id;
+  final int? user_id;
+  final String? file_name;
+  final String? file_extension;
+  final String? file;
+  final String? created_at;
+  final String? updated_at;
+
+  DataItem({this.id, this.user_id, this.file_name, this.file_extension, this.file, this.created_at, this.updated_at, });
+
+  factory DataItem.fromJson(Map&lt;String, dynamic&gt; json) =&gt; DataItem(
+    id: json['id'],
+    user_id: json['user_id'],
+    file_name: json['file_name'],
+    file_extension: json['file_extension'],
+    file: json['file'],
+    created_at: json['created_at'],
+    updated_at: json['updated_at'],
+  );
+
+  Map&lt;String, dynamic&gt; toJson() =&gt; {
+    'id': id,
+    'user_id': user_id,
+    'file_name': file_name,
+    'file_extension': file_extension,
+    'file': file,
+    'created_at': created_at,
+    'updated_at': updated_at,
+  };
+}</code></pre></div>
 
 </span>
 
@@ -40041,7 +49539,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
     --header "Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJhdWQiOiIxIiwianRpIjoiNTJkNDhkYzhjNTc4ODIwZWVmODFmY2NhOWJiMmJiODFlZGE1MTUwMTVkYmU5YzdkNzFkODAyYTRmZWNhMWQ5ZGJhYWEzMTc2YjI1OTJmMTgiLCJpYXQiOjE3NjQwNjAzNDQuMDUyOTc0LCJuYmYiOjE3NjQwNjAzNDQuMDUyOTc1LCJleHAiOjE3OTU1OTYzNDQuMDQzNjUyLCJzdWIiOiIxNjgiLCJzY29wZXMiOltdfQ.X9tS38uM-UlrpFlYZihD_kmuCcSX_hdGsRBJcNGfrWXAClMiqeTxNTC45Ftxw-ddmDQ59t5xJLlnWp2Rx57itO-IHclNmwnVJDPAh1l9D8CZBGxBSoN0FvmbWeYDNQnA7ud77YLekrcSAuKMdBX3J1UKq6ytvWwi6ChnuRFqcQ-fpzK-jgkMhGm-WFHw0H3a34afdBdSUUFutESlwMvTqmXILYVcIwaJpEAjamf3rn6wIOEoD8mbxXJ6Gb6QrRO72Kt3z62vJp7yOeMsnXUkfioVSyJVwbkbchCs2Y4YZY3FEREbKysKNdHJhhqmn6AXvx66arAK3HeZoyf5eusfk26alhbEdJqsJgFP5VROV5l57q8VKhH8hAxg-oeidCGGJXPjLGeb-5iGPjdGhQ1Ng1i9kt7VDV4icb8B2AbNC2Ie9xP6b0R11PX4jUd8D3Jogf2f0ZhAs5Is8WHcrxsCyk3lWvgOyzWxpRx2lSpmBRmSwksPrKJk_7JuzDZ1Tdpz6mubjV6DzlmqDJJjf32hBIMnaYOhOUz5k1FzZ8mybsSbnM9UjzHYr5xIf4rkmVAfuPnU2FGu8NtCQaOtt9G-TziBFgT3ZjxBCL9QaaC39BRulGE6tyCAT8NM9svTD_AbNyINUzO2M0R61OXYQfzXEeiui-sO6eYIc3x_z-YdFFQ" \
     --header "Content-Type: multipart/form-data" \
     --header "Accept: application/json" \
-    --form "file=@/private/var/folders/wy/1yz2w5p91q13336262xr4yzw0000gn/T/phpz6XQd1" </code></pre></div>
+    --form "file=@/private/var/folders/wy/1yz2w5p91q13336262xr4yzw0000gn/T/phpM7VNYc" </code></pre></div>
 
 
 <div class="javascript-example">
@@ -40063,6 +49561,23 @@ fetch(url, {
     headers,
     body,
 }).then(response =&gt; response.json());</code></pre></div>
+
+
+<div class="jsonToDart-example">
+    <pre><code class="language-dart">
+class Store {
+  final String? message;
+
+  Store({this.message, });
+
+  factory Store.fromJson(Map&lt;String, dynamic&gt; json) =&gt; Store(
+    message: json['message'],
+  );
+
+  Map&lt;String, dynamic&gt; toJson() =&gt; {
+    'message': message,
+  };
+}</code></pre></div>
 
 </span>
 
@@ -40176,7 +49691,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
                value=""
                data-component="body">
     <br>
-<p>files to upload. Example: <code>/private/var/folders/wy/1yz2w5p91q13336262xr4yzw0000gn/T/phpz6XQd1</code></p>
+<p>files to upload. Example: <code>/private/var/folders/wy/1yz2w5p91q13336262xr4yzw0000gn/T/phpM7VNYc</code></p>
         </div>
         </form>
 
@@ -40194,7 +49709,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 <div class="bash-example">
     <pre><code class="language-bash">curl --request GET \
-    --get "http://127.0.0.1:8000/api/v3/user/strategy/delete/2" \
+    --get "http://127.0.0.1:8000/api/v3/user/strategy/delete/19" \
     --header "Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJhdWQiOiIxIiwianRpIjoiNTJkNDhkYzhjNTc4ODIwZWVmODFmY2NhOWJiMmJiODFlZGE1MTUwMTVkYmU5YzdkNzFkODAyYTRmZWNhMWQ5ZGJhYWEzMTc2YjI1OTJmMTgiLCJpYXQiOjE3NjQwNjAzNDQuMDUyOTc0LCJuYmYiOjE3NjQwNjAzNDQuMDUyOTc1LCJleHAiOjE3OTU1OTYzNDQuMDQzNjUyLCJzdWIiOiIxNjgiLCJzY29wZXMiOltdfQ.X9tS38uM-UlrpFlYZihD_kmuCcSX_hdGsRBJcNGfrWXAClMiqeTxNTC45Ftxw-ddmDQ59t5xJLlnWp2Rx57itO-IHclNmwnVJDPAh1l9D8CZBGxBSoN0FvmbWeYDNQnA7ud77YLekrcSAuKMdBX3J1UKq6ytvWwi6ChnuRFqcQ-fpzK-jgkMhGm-WFHw0H3a34afdBdSUUFutESlwMvTqmXILYVcIwaJpEAjamf3rn6wIOEoD8mbxXJ6Gb6QrRO72Kt3z62vJp7yOeMsnXUkfioVSyJVwbkbchCs2Y4YZY3FEREbKysKNdHJhhqmn6AXvx66arAK3HeZoyf5eusfk26alhbEdJqsJgFP5VROV5l57q8VKhH8hAxg-oeidCGGJXPjLGeb-5iGPjdGhQ1Ng1i9kt7VDV4icb8B2AbNC2Ie9xP6b0R11PX4jUd8D3Jogf2f0ZhAs5Is8WHcrxsCyk3lWvgOyzWxpRx2lSpmBRmSwksPrKJk_7JuzDZ1Tdpz6mubjV6DzlmqDJJjf32hBIMnaYOhOUz5k1FzZ8mybsSbnM9UjzHYr5xIf4rkmVAfuPnU2FGu8NtCQaOtt9G-TziBFgT3ZjxBCL9QaaC39BRulGE6tyCAT8NM9svTD_AbNyINUzO2M0R61OXYQfzXEeiui-sO6eYIc3x_z-YdFFQ" \
     --header "Content-Type: application/json" \
     --header "Accept: application/json"</code></pre></div>
@@ -40202,7 +49717,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 <div class="javascript-example">
     <pre><code class="language-javascript">const url = new URL(
-    "http://127.0.0.1:8000/api/v3/user/strategy/delete/2"
+    "http://127.0.0.1:8000/api/v3/user/strategy/delete/19"
 );
 
 const headers = {
@@ -40215,6 +49730,23 @@ fetch(url, {
     method: "GET",
     headers,
 }).then(response =&gt; response.json());</code></pre></div>
+
+
+<div class="jsonToDart-example">
+    <pre><code class="language-dart">
+class 19 {
+  final String? message;
+
+  19({this.message, });
+
+  factory 19.fromJson(Map&lt;String, dynamic&gt; json) =&gt; 19(
+    message: json['message'],
+  );
+
+  Map&lt;String, dynamic&gt; toJson() =&gt; {
+    'message': message,
+  };
+}</code></pre></div>
 
 </span>
 
@@ -40325,10 +49857,10 @@ You can check the Dev Tools console for debugging information.</code></pre>
  &nbsp;
                 <input type="number" style="display: none"
                step="any"               name="id"                data-endpoint="GETapi-v3-user-strategy-delete--id-"
-               value="2"
+               value="19"
                data-component="url">
     <br>
-<p>The ID of the strategy to delete. Example: <code>2</code></p>
+<p>The ID of the strategy to delete. Example: <code>19</code></p>
             </div>
                     </form>
 
@@ -40346,7 +49878,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 <div class="bash-example">
     <pre><code class="language-bash">curl --request GET \
-    --get "http://127.0.0.1:8000/api/v3/user/strategy/download/culpa" \
+    --get "http://127.0.0.1:8000/api/v3/user/strategy/download/mollitia" \
     --header "Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJhdWQiOiIxIiwianRpIjoiNTJkNDhkYzhjNTc4ODIwZWVmODFmY2NhOWJiMmJiODFlZGE1MTUwMTVkYmU5YzdkNzFkODAyYTRmZWNhMWQ5ZGJhYWEzMTc2YjI1OTJmMTgiLCJpYXQiOjE3NjQwNjAzNDQuMDUyOTc0LCJuYmYiOjE3NjQwNjAzNDQuMDUyOTc1LCJleHAiOjE3OTU1OTYzNDQuMDQzNjUyLCJzdWIiOiIxNjgiLCJzY29wZXMiOltdfQ.X9tS38uM-UlrpFlYZihD_kmuCcSX_hdGsRBJcNGfrWXAClMiqeTxNTC45Ftxw-ddmDQ59t5xJLlnWp2Rx57itO-IHclNmwnVJDPAh1l9D8CZBGxBSoN0FvmbWeYDNQnA7ud77YLekrcSAuKMdBX3J1UKq6ytvWwi6ChnuRFqcQ-fpzK-jgkMhGm-WFHw0H3a34afdBdSUUFutESlwMvTqmXILYVcIwaJpEAjamf3rn6wIOEoD8mbxXJ6Gb6QrRO72Kt3z62vJp7yOeMsnXUkfioVSyJVwbkbchCs2Y4YZY3FEREbKysKNdHJhhqmn6AXvx66arAK3HeZoyf5eusfk26alhbEdJqsJgFP5VROV5l57q8VKhH8hAxg-oeidCGGJXPjLGeb-5iGPjdGhQ1Ng1i9kt7VDV4icb8B2AbNC2Ie9xP6b0R11PX4jUd8D3Jogf2f0ZhAs5Is8WHcrxsCyk3lWvgOyzWxpRx2lSpmBRmSwksPrKJk_7JuzDZ1Tdpz6mubjV6DzlmqDJJjf32hBIMnaYOhOUz5k1FzZ8mybsSbnM9UjzHYr5xIf4rkmVAfuPnU2FGu8NtCQaOtt9G-TziBFgT3ZjxBCL9QaaC39BRulGE6tyCAT8NM9svTD_AbNyINUzO2M0R61OXYQfzXEeiui-sO6eYIc3x_z-YdFFQ" \
     --header "Content-Type: application/json" \
     --header "Accept: application/json"</code></pre></div>
@@ -40354,7 +49886,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 <div class="javascript-example">
     <pre><code class="language-javascript">const url = new URL(
-    "http://127.0.0.1:8000/api/v3/user/strategy/download/culpa"
+    "http://127.0.0.1:8000/api/v3/user/strategy/download/mollitia"
 );
 
 const headers = {
@@ -40367,6 +49899,23 @@ fetch(url, {
     method: "GET",
     headers,
 }).then(response =&gt; response.json());</code></pre></div>
+
+
+<div class="jsonToDart-example">
+    <pre><code class="language-dart">
+class Mollitia {
+  final String? error;
+
+  Mollitia({this.error, });
+
+  factory Mollitia.fromJson(Map&lt;String, dynamic&gt; json) =&gt; Mollitia(
+    error: json['error'],
+  );
+
+  Map&lt;String, dynamic&gt; toJson() =&gt; {
+    'error': error,
+  };
+}</code></pre></div>
 
 </span>
 
@@ -40475,10 +50024,10 @@ You can check the Dev Tools console for debugging information.</code></pre>
  &nbsp;
                 <input type="text" style="display: none"
                               name="id"                data-endpoint="GETapi-v3-user-strategy-download--id-"
-               value="culpa"
+               value="mollitia"
                data-component="url">
     <br>
-<p>The ID of the download. Example: <code>culpa</code></p>
+<p>The ID of the download. Example: <code>mollitia</code></p>
             </div>
                     </form>
 
@@ -40496,7 +50045,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 <div class="bash-example">
     <pre><code class="language-bash">curl --request GET \
-    --get "http://127.0.0.1:8000/api/v3/user/strategy/view/12" \
+    --get "http://127.0.0.1:8000/api/v3/user/strategy/view/15" \
     --header "Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJhdWQiOiIxIiwianRpIjoiNTJkNDhkYzhjNTc4ODIwZWVmODFmY2NhOWJiMmJiODFlZGE1MTUwMTVkYmU5YzdkNzFkODAyYTRmZWNhMWQ5ZGJhYWEzMTc2YjI1OTJmMTgiLCJpYXQiOjE3NjQwNjAzNDQuMDUyOTc0LCJuYmYiOjE3NjQwNjAzNDQuMDUyOTc1LCJleHAiOjE3OTU1OTYzNDQuMDQzNjUyLCJzdWIiOiIxNjgiLCJzY29wZXMiOltdfQ.X9tS38uM-UlrpFlYZihD_kmuCcSX_hdGsRBJcNGfrWXAClMiqeTxNTC45Ftxw-ddmDQ59t5xJLlnWp2Rx57itO-IHclNmwnVJDPAh1l9D8CZBGxBSoN0FvmbWeYDNQnA7ud77YLekrcSAuKMdBX3J1UKq6ytvWwi6ChnuRFqcQ-fpzK-jgkMhGm-WFHw0H3a34afdBdSUUFutESlwMvTqmXILYVcIwaJpEAjamf3rn6wIOEoD8mbxXJ6Gb6QrRO72Kt3z62vJp7yOeMsnXUkfioVSyJVwbkbchCs2Y4YZY3FEREbKysKNdHJhhqmn6AXvx66arAK3HeZoyf5eusfk26alhbEdJqsJgFP5VROV5l57q8VKhH8hAxg-oeidCGGJXPjLGeb-5iGPjdGhQ1Ng1i9kt7VDV4icb8B2AbNC2Ie9xP6b0R11PX4jUd8D3Jogf2f0ZhAs5Is8WHcrxsCyk3lWvgOyzWxpRx2lSpmBRmSwksPrKJk_7JuzDZ1Tdpz6mubjV6DzlmqDJJjf32hBIMnaYOhOUz5k1FzZ8mybsSbnM9UjzHYr5xIf4rkmVAfuPnU2FGu8NtCQaOtt9G-TziBFgT3ZjxBCL9QaaC39BRulGE6tyCAT8NM9svTD_AbNyINUzO2M0R61OXYQfzXEeiui-sO6eYIc3x_z-YdFFQ" \
     --header "Content-Type: application/json" \
     --header "Accept: application/json"</code></pre></div>
@@ -40504,7 +50053,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 <div class="javascript-example">
     <pre><code class="language-javascript">const url = new URL(
-    "http://127.0.0.1:8000/api/v3/user/strategy/view/12"
+    "http://127.0.0.1:8000/api/v3/user/strategy/view/15"
 );
 
 const headers = {
@@ -40517,6 +50066,49 @@ fetch(url, {
     method: "GET",
     headers,
 }).then(response =&gt; response.json());</code></pre></div>
+
+
+<div class="jsonToDart-example">
+    <pre><code class="language-dart">
+class 15 {
+  final Data? data;
+
+  15({this.data, });
+
+  factory 15.fromJson(Map&lt;String, dynamic&gt; json) =&gt; 15(
+    data: json['data'] != null ? Data.fromJson(json['data'] as Map&lt;String, dynamic&gt;) : null,
+  );
+
+  Map&lt;String, dynamic&gt; toJson() =&gt; {
+    'data': data?.toJson(),
+  };
+}
+
+class Data {
+  final int? id;
+  final String? file_name;
+  final String? file_extension;
+  final int? user_id;
+  final String? file;
+
+  Data({this.id, this.file_name, this.file_extension, this.user_id, this.file, });
+
+  factory Data.fromJson(Map&lt;String, dynamic&gt; json) =&gt; Data(
+    id: json['id'],
+    file_name: json['file_name'],
+    file_extension: json['file_extension'],
+    user_id: json['user_id'],
+    file: json['file'],
+  );
+
+  Map&lt;String, dynamic&gt; toJson() =&gt; {
+    'id': id,
+    'file_name': file_name,
+    'file_extension': file_extension,
+    'user_id': user_id,
+    'file': file,
+  };
+}</code></pre></div>
 
 </span>
 
@@ -40633,10 +50225,10 @@ You can check the Dev Tools console for debugging information.</code></pre>
  &nbsp;
                 <input type="number" style="display: none"
                step="any"               name="id"                data-endpoint="GETapi-v3-user-strategy-view--id-"
-               value="12"
+               value="15"
                data-component="url">
     <br>
-<p>The ID of the strategy to view. Example: <code>12</code></p>
+<p>The ID of the strategy to view. Example: <code>15</code></p>
             </div>
                     </form>
 
@@ -40663,7 +50255,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
     --header "Content-Type: application/json" \
     --header "Accept: application/json" \
     --data "{
-    \"message\": \"et\"
+    \"message\": \"vel\"
 }"
 </code></pre></div>
 
@@ -40680,7 +50272,7 @@ const headers = {
 };
 
 let body = {
-    "message": "et"
+    "message": "vel"
 };
 
 fetch(url, {
@@ -40688,6 +50280,23 @@ fetch(url, {
     headers,
     body: JSON.stringify(body),
 }).then(response =&gt; response.json());</code></pre></div>
+
+
+<div class="jsonToDart-example">
+    <pre><code class="language-dart">
+class Chatbot {
+  final dynamic? message;
+
+  Chatbot({this.message, });
+
+  factory Chatbot.fromJson(Map&lt;String, dynamic&gt; json) =&gt; Chatbot(
+    message: json['message'],
+  );
+
+  Map&lt;String, dynamic&gt; toJson() =&gt; {
+    'message': message,
+  };
+}</code></pre></div>
 
 </span>
 
@@ -40789,10 +50398,10 @@ You can check the Dev Tools console for debugging information.</code></pre>
 <i>optional</i> &nbsp;
                 <input type="text" style="display: none"
                               name="message"                data-endpoint="POSTapi-v3-user-chatbot"
-               value="et"
+               value="vel"
                data-component="body">
     <br>
-<p>Example: <code>et</code></p>
+<p>Example: <code>vel</code></p>
         </div>
         </form>
 
@@ -40804,6 +50413,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
                     <div class="lang-selector">
                                                         <button type="button" class="lang-button" data-language-name="bash">bash</button>
                                                         <button type="button" class="lang-button" data-language-name="javascript">javascript</button>
+                                                        <button type="button" class="lang-button" data-language-name="jsonToDart">jsonToDart</button>
                             </div>
             </div>
 </div>

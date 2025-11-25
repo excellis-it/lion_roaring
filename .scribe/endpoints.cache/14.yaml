@@ -629,7 +629,7 @@ endpoints:
         name: to
         description: 'JSON-encoded array of recipient emails in the format [{"value": "masum2@excellisit.net"}, {"value": "user2@example.com"}].'
         required: true
-        example: ducimus
+        example: at
         type: string
         enumValues: []
         exampleWasSpecified: false
@@ -639,7 +639,7 @@ endpoints:
         name: cc
         description: 'JSON-encoded array of CC recipient emails in the same format as the "to" field. Optional.'
         required: false
-        example: facere
+        example: itaque
         type: string
         enumValues: []
         exampleWasSpecified: false
@@ -649,7 +649,7 @@ endpoints:
         name: subject
         description: 'The subject of the email.'
         required: true
-        example: consequuntur
+        example: expedita
         type: string
         enumValues: []
         exampleWasSpecified: false
@@ -659,7 +659,7 @@ endpoints:
         name: message
         description: 'The body content of the email.'
         required: true
-        example: est
+        example: officiis
         type: string
         enumValues: []
         exampleWasSpecified: false
@@ -677,10 +677,10 @@ endpoints:
         nullable: false
         custom: []
     cleanBodyParameters:
-      to: ducimus
-      cc: facere
-      subject: consequuntur
-      message: est
+      to: at
+      cc: itaque
+      subject: expedita
+      message: officiis
     fileParameters:
       attachments:
         - null
@@ -759,7 +759,7 @@ endpoints:
         name: to
         description: 'JSON-encoded array of recipient emails in the format [{"value": "user1@example.com"}, {"value": "user2@example.com"}].'
         required: true
-        example: repudiandae
+        example: eius
         type: string
         enumValues: []
         exampleWasSpecified: false
@@ -769,7 +769,7 @@ endpoints:
         name: cc
         description: 'JSON-encoded array of CC recipient emails in the same format as the "to" field. Optional.'
         required: false
-        example: quo
+        example: nesciunt
         type: string
         enumValues: []
         exampleWasSpecified: false
@@ -779,7 +779,7 @@ endpoints:
         name: subject
         description: 'The subject of the reply email.'
         required: true
-        example: cum
+        example: similique
         type: string
         enumValues: []
         exampleWasSpecified: false
@@ -789,7 +789,7 @@ endpoints:
         name: message
         description: 'The body content of the reply email.'
         required: true
-        example: accusantium
+        example: magni
         type: string
         enumValues: []
         exampleWasSpecified: false
@@ -810,18 +810,18 @@ endpoints:
         name: main_mail_id
         description: 'The ID of the main email thread being replied to.'
         required: true
-        example: 1
+        example: 6
         type: integer
         enumValues: []
         exampleWasSpecified: false
         nullable: false
         custom: []
     cleanBodyParameters:
-      to: repudiandae
-      cc: quo
-      subject: cum
-      message: accusantium
-      main_mail_id: 1
+      to: eius
+      cc: nesciunt
+      subject: similique
+      message: magni
+      main_mail_id: 6
     fileParameters:
       attachments:
         - null
@@ -901,7 +901,7 @@ endpoints:
         name: to
         description: 'JSON-encoded array of recipient emails in the format [{"value": "user1@example.com"}, {"value": "user2@example.com"}].'
         required: true
-        example: magni
+        example: doloremque
         type: string
         enumValues: []
         exampleWasSpecified: false
@@ -911,7 +911,7 @@ endpoints:
         name: cc
         description: 'JSON-encoded array of CC recipient emails in the same format as the "to" field. Optional.'
         required: false
-        example: qui
+        example: numquam
         type: string
         enumValues: []
         exampleWasSpecified: false
@@ -921,7 +921,7 @@ endpoints:
         name: subject
         description: 'The subject of the forwarded email.'
         required: true
-        example: voluptates
+        example: deserunt
         type: string
         enumValues: []
         exampleWasSpecified: false
@@ -931,7 +931,7 @@ endpoints:
         name: message
         description: 'The body content of the forwarded email.'
         required: true
-        example: ex
+        example: hic
         type: string
         enumValues: []
         exampleWasSpecified: false
@@ -949,10 +949,10 @@ endpoints:
         nullable: false
         custom: []
     cleanBodyParameters:
-      to: magni
-      cc: qui
-      subject: voluptates
-      message: ex
+      to: doloremque
+      cc: numquam
+      subject: deserunt
+      message: hic
     fileParameters:
       attachments:
         - null

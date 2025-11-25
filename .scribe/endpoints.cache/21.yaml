@@ -200,14 +200,14 @@ endpoints:
         name: id
         description: 'The ID of the policy to delete.'
         required: true
-        example: 10
+        example: 7
         type: integer
         enumValues: []
         exampleWasSpecified: false
         nullable: false
         custom: []
     cleanUrlParameters:
-      id: 10
+      id: 7
     queryParameters: []
     cleanQueryParameters: []
     bodyParameters: []
@@ -257,14 +257,14 @@ endpoints:
         name: id
         description: 'The ID of the download.'
         required: true
-        example: et
+        example: eos
         type: string
         enumValues: []
         exampleWasSpecified: false
         nullable: false
         custom: []
     cleanUrlParameters:
-      id: et
+      id: eos
     queryParameters: []
     cleanQueryParameters: []
     bodyParameters: []
@@ -314,14 +314,14 @@ endpoints:
         name: id
         description: 'The ID of the policy to view.'
         required: true
-        example: 3
+        example: 16
         type: integer
         enumValues: []
         exampleWasSpecified: false
         nullable: false
         custom: []
     cleanUrlParameters:
-      id: 3
+      id: 16
     queryParameters: []
     cleanQueryParameters: []
     bodyParameters: []

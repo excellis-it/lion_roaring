@@ -673,7 +673,7 @@ endpoints:
         name: banner_title
         description: 'nullable Banner title'
         required: false
-        example: eos
+        example: ad
         type: string
         enumValues: []
         exampleWasSpecified: false
@@ -683,7 +683,7 @@ endpoints:
         name: banner_subtitle
         description: 'nullable Banner subtitle'
         required: false
-        example: maiores
+        example: unde
         type: string
         enumValues: []
         exampleWasSpecified: false
@@ -693,7 +693,7 @@ endpoints:
         name: product_category_title
         description: 'Product category title'
         required: true
-        example: est
+        example: omnis
         type: string
         enumValues: []
         exampleWasSpecified: false
@@ -703,7 +703,7 @@ endpoints:
         name: product_category_subtitle
         description: 'Product category subtitle'
         required: true
-        example: atque
+        example: perferendis
         type: string
         enumValues: []
         exampleWasSpecified: false
@@ -713,7 +713,7 @@ endpoints:
         name: featured_product_title
         description: 'Featured product title'
         required: true
-        example: nobis
+        example: voluptatem
         type: string
         enumValues: []
         exampleWasSpecified: false
@@ -723,7 +723,7 @@ endpoints:
         name: featured_product_subtitle
         description: 'Featured product subtitle'
         required: true
-        example: sed
+        example: dolores
         type: string
         enumValues: []
         exampleWasSpecified: false
@@ -733,7 +733,7 @@ endpoints:
         name: new_arrival_title
         description: 'New arrival title'
         required: true
-        example: provident
+        example: dolorem
         type: string
         enumValues: []
         exampleWasSpecified: false
@@ -743,7 +743,7 @@ endpoints:
         name: new_arrival_subtitle
         description: 'New arrival subtitle'
         required: true
-        example: ex
+        example: dolore
         type: string
         enumValues: []
         exampleWasSpecified: false
@@ -753,7 +753,7 @@ endpoints:
         name: new_product_title
         description: 'New product title'
         required: true
-        example: laborum
+        example: iste
         type: string
         enumValues: []
         exampleWasSpecified: false
@@ -763,7 +763,7 @@ endpoints:
         name: new_product_subtitle
         description: 'New product subtitle'
         required: true
-        example: mollitia
+        example: molestiae
         type: string
         enumValues: []
         exampleWasSpecified: false
@@ -773,7 +773,7 @@ endpoints:
         name: shop_now_title
         description: 'nullable Shop Now title'
         required: false
-        example: molestiae
+        example: voluptas
         type: string
         enumValues: []
         exampleWasSpecified: false
@@ -783,7 +783,7 @@ endpoints:
         name: shop_now_description
         description: 'nullable Shop Now description'
         required: false
-        example: veritatis
+        example: omnis
         type: string
         enumValues: []
         exampleWasSpecified: false
@@ -793,7 +793,7 @@ endpoints:
         name: shop_now_button_text
         description: 'nullable Shop Now button text'
         required: false
-        example: saepe
+        example: quam
         type: string
         enumValues: []
         exampleWasSpecified: false
@@ -803,7 +803,7 @@ endpoints:
         name: shop_now_button_link
         description: 'nullable Shop Now button link'
         required: false
-        example: aut
+        example: repudiandae
         type: string
         enumValues: []
         exampleWasSpecified: false
@@ -813,7 +813,7 @@ endpoints:
         name: about_section_title
         description: 'nullable About section main title'
         required: false
-        example: cumque
+        example: asperiores
         type: string
         enumValues: []
         exampleWasSpecified: false
@@ -823,7 +823,7 @@ endpoints:
         name: about_section_text_one_title
         description: 'nullable About section text one title'
         required: false
-        example: similique
+        example: quis
         type: string
         enumValues: []
         exampleWasSpecified: false
@@ -833,7 +833,7 @@ endpoints:
         name: about_section_text_one_content
         description: 'nullable About section text one content'
         required: false
-        example: quis
+        example: consectetur
         type: string
         enumValues: []
         exampleWasSpecified: false
@@ -843,7 +843,7 @@ endpoints:
         name: about_section_text_two_title
         description: 'nullable About section text two title'
         required: false
-        example: quia
+        example: ea
         type: string
         enumValues: []
         exampleWasSpecified: false
@@ -853,7 +853,7 @@ endpoints:
         name: about_section_text_two_content
         description: 'nullable About section text two content'
         required: false
-        example: et
+        example: corporis
         type: string
         enumValues: []
         exampleWasSpecified: false
@@ -863,7 +863,7 @@ endpoints:
         name: about_section_text_three_title
         description: 'nullable About section text three title'
         required: false
-        example: voluptas
+        example: exercitationem
         type: string
         enumValues: []
         exampleWasSpecified: false
@@ -873,7 +873,7 @@ endpoints:
         name: about_section_text_three_content
         description: 'nullable About section text three content'
         required: false
-        example: animi
+        example: ratione
         type: string
         enumValues: []
         exampleWasSpecified: false
@@ -883,7 +883,7 @@ endpoints:
         name: slider_data_second_title
         description: 'nullable Second slider section title'
         required: false
-        example: itaque
+        example: est
         type: string
         enumValues: []
         exampleWasSpecified: false
@@ -893,7 +893,7 @@ endpoints:
         name: 'slider_titles.*'
         description: 'nullable Array of titles for first slider'
         required: false
-        example: ullam
+        example: ipsum
         type: string
         enumValues: []
         exampleWasSpecified: false
@@ -903,7 +903,7 @@ endpoints:
         name: 'slider_subtitles.*'
         description: 'nullable Array of subtitles for first slider'
         required: false
-        example: ullam
+        example: aut
         type: string
         enumValues: []
         exampleWasSpecified: false
@@ -913,7 +913,7 @@ endpoints:
         name: 'slider_links.*'
         description: 'nullable Array of links for first slider'
         required: false
-        example: maxime
+        example: laudantium
         type: string
         enumValues: []
         exampleWasSpecified: false
@@ -923,7 +923,7 @@ endpoints:
         name: 'slider_buttons.*'
         description: 'nullable Array of button texts for first slider'
         required: false
-        example: aliquam
+        example: ut
         type: string
         enumValues: []
         exampleWasSpecified: false
@@ -943,7 +943,7 @@ endpoints:
         name: 'slider_titles_second.*'
         description: 'nullable Array of titles for second slider'
         required: false
-        example: aspernatur
+        example: ullam
         type: string
         enumValues: []
         exampleWasSpecified: false
@@ -953,7 +953,7 @@ endpoints:
         name: 'slider_subtitles_second.*'
         description: 'nullable Array of subtitles for second slider'
         required: false
-        example: sed
+        example: et
         type: string
         enumValues: []
         exampleWasSpecified: false
@@ -963,7 +963,7 @@ endpoints:
         name: 'slider_links_second.*'
         description: 'nullable Array of links for second slider'
         required: false
-        example: eos
+        example: nulla
         type: string
         enumValues: []
         exampleWasSpecified: false
@@ -973,7 +973,7 @@ endpoints:
         name: 'slider_buttons_second.*'
         description: 'nullable Array of button texts for second slider'
         required: false
-        example: tenetur
+        example: quisquam
         type: string
         enumValues: []
         exampleWasSpecified: false
@@ -991,28 +991,28 @@ endpoints:
         custom: []
     cleanBodyParameters:
       id: 1
-      banner_title: eos
-      banner_subtitle: maiores
-      product_category_title: est
-      product_category_subtitle: atque
-      featured_product_title: nobis
-      featured_product_subtitle: sed
-      new_arrival_title: provident
-      new_arrival_subtitle: ex
-      new_product_title: laborum
-      new_product_subtitle: mollitia
-      shop_now_title: molestiae
-      shop_now_description: veritatis
-      shop_now_button_text: saepe
-      shop_now_button_link: aut
-      about_section_title: cumque
-      about_section_text_one_title: similique
-      about_section_text_one_content: quis
-      about_section_text_two_title: quia
-      about_section_text_two_content: et
-      about_section_text_three_title: voluptas
-      about_section_text_three_content: animi
-      slider_data_second_title: itaque
+      banner_title: ad
+      banner_subtitle: unde
+      product_category_title: omnis
+      product_category_subtitle: perferendis
+      featured_product_title: voluptatem
+      featured_product_subtitle: dolores
+      new_arrival_title: dolorem
+      new_arrival_subtitle: dolore
+      new_product_title: iste
+      new_product_subtitle: molestiae
+      shop_now_title: voluptas
+      shop_now_description: omnis
+      shop_now_button_text: quam
+      shop_now_button_link: repudiandae
+      about_section_title: asperiores
+      about_section_text_one_title: quis
+      about_section_text_one_content: consectetur
+      about_section_text_two_title: ea
+      about_section_text_two_content: corporis
+      about_section_text_three_title: exercitationem
+      about_section_text_three_content: ratione
+      slider_data_second_title: est
     fileParameters:
       header_logo: null
       banner_image: null
@@ -1449,7 +1449,7 @@ endpoints:
         name: card_one_content
         description: 'optional Card 1 content.'
         required: false
-        example: harum
+        example: libero
         type: string
         enumValues: []
         exampleWasSpecified: false
@@ -1459,7 +1459,7 @@ endpoints:
         name: card_two_title
         description: 'optional Card 2 title.'
         required: false
-        example: cum
+        example: illum
         type: string
         enumValues: []
         exampleWasSpecified: false
@@ -1469,7 +1469,7 @@ endpoints:
         name: card_two_content
         description: 'optional Card 2 content.'
         required: false
-        example: unde
+        example: ea
         type: string
         enumValues: []
         exampleWasSpecified: false
@@ -1479,7 +1479,7 @@ endpoints:
         name: card_three_title
         description: 'optional Card 3 title.'
         required: false
-        example: non
+        example: eligendi
         type: string
         enumValues: []
         exampleWasSpecified: false
@@ -1489,7 +1489,7 @@ endpoints:
         name: card_three_content
         description: 'optional Card 3 content.'
         required: false
-        example: asperiores
+        example: laborum
         type: string
         enumValues: []
         exampleWasSpecified: false
@@ -1499,7 +1499,7 @@ endpoints:
         name: form_title
         description: 'optional Form title.'
         required: false
-        example: at
+        example: consequatur
         type: string
         enumValues: []
         exampleWasSpecified: false
@@ -1509,7 +1509,7 @@ endpoints:
         name: form_subtitle
         description: 'optional Form subtitle.'
         required: false
-        example: voluptates
+        example: quidem
         type: string
         enumValues: []
         exampleWasSpecified: false
@@ -1519,7 +1519,7 @@ endpoints:
         name: call_section_title
         description: 'optional Call section title.'
         required: false
-        example: maxime
+        example: omnis
         type: string
         enumValues: []
         exampleWasSpecified: false
@@ -1529,7 +1529,7 @@ endpoints:
         name: call_section_content
         description: 'optional Call section content.'
         required: false
-        example: iusto
+        example: provident
         type: string
         enumValues: []
         exampleWasSpecified: false
@@ -1539,7 +1539,7 @@ endpoints:
         name: follow_us_title
         description: 'optional Follow us title.'
         required: false
-        example: eos
+        example: ut
         type: string
         enumValues: []
         exampleWasSpecified: false
@@ -1549,7 +1549,7 @@ endpoints:
         name: map_iframe_src
         description: 'optional Map iframe src.'
         required: false
-        example: saepe
+        example: sunt
         type: string
         enumValues: []
         exampleWasSpecified: false
@@ -1568,17 +1568,17 @@ endpoints:
     cleanBodyParameters:
       banner_title: '"Contact Us"'
       card_one_title: '"Support"'
-      card_one_content: harum
-      card_two_title: cum
-      card_two_content: unde
-      card_three_title: non
-      card_three_content: asperiores
-      form_title: at
-      form_subtitle: voluptates
-      call_section_title: maxime
-      call_section_content: iusto
-      follow_us_title: eos
-      map_iframe_src: saepe
+      card_one_content: libero
+      card_two_title: illum
+      card_two_content: ea
+      card_three_title: eligendi
+      card_three_content: laborum
+      form_title: consequatur
+      form_subtitle: quidem
+      call_section_title: omnis
+      call_section_content: provident
+      follow_us_title: ut
+      map_iframe_src: sunt
       id: 1
     fileParameters:
       banner_image: null
