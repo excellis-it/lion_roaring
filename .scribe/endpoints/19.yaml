@@ -1,16 +1,16 @@
-name: 'User Activity'
+name: Meetings
 description: ''
 endpoints:
   -
     httpMethods:
-      - POST
-    uri: api/v3/user/user-activity/log
+      - GET
+    uri: api/v3/user/meetings/load
     metadata:
-      groupName: 'User Activity'
+      groupName: Meetings
       groupDescription: ''
       subgroup: ''
       subgroupDescription: ''
-      title: 'Log user activity entry'
+      title: 'List All Meetings'
       description: ''
       authenticated: true
       custom: []
@@ -20,63 +20,45 @@ endpoints:
       Accept: application/json
     urlParameters: []
     cleanUrlParameters: []
-    queryParameters: []
-    cleanQueryParameters: []
-    bodyParameters:
-      activity_description:
-        name: activity_description
-        description: 'optional Activity description.'
+    queryParameters:
+      search:
+        name: search
+        description: 'optional for search.'
         required: false
-        example: 'Clicked view button'
+        example: '"abc"'
         type: string
         enumValues: []
         exampleWasSpecified: true
         nullable: false
         custom: []
-      permission_access:
-        name: permission_access
-        description: 'optional Permission applied to the request.'
-        required: false
-        example: 'Manage Bulletin'
-        type: string
-        enumValues: []
-        exampleWasSpecified: true
-        nullable: false
-        custom: []
-      device_mac:
-        name: device_mac
-        description: 'optional Device mac if available'
-        required: false
-        example: consequatur
-        type: string
-        enumValues: []
-        exampleWasSpecified: false
-        nullable: false
-        custom: []
-      user_id:
-        name: user_id
-        description: 'optional User id if logging on behalf of another user'
-        required: false
-        example: 12
-        type: integer
-        enumValues: []
-        exampleWasSpecified: false
-        nullable: false
-        custom: []
-    cleanBodyParameters:
-      activity_description: 'Clicked view button'
-      permission_access: 'Manage Bulletin'
-      device_mac: consequatur
-      user_id: 12
+    cleanQueryParameters:
+      search: '"abc"'
+    bodyParameters: []
+    cleanBodyParameters: []
     fileParameters: []
     responses:
       -
         status: 200
         content: |-
           {
-          "status": true,
-          "message": "Activity logged",
-          "data": {"id": 1}
+              "data": [
+                  {
+                      "id": 1,
+                      "user_id": 2,
+                      "title": "Project Sync",
+                      "description": "Weekly project sync meeting.",
+                      "start_time": "2024-11-10T09:00:00.000000Z",
+                      "end_time": "2024-11-10T10:00:00.000000Z",
+                      "meeting_link": "https://meeting.example.com/xyz123",
+                      "created_at": "2024-11-08T12:00:00.000000Z",
+                      "updated_at": "2024-11-08T12:00:00.000000Z",
+                      "user": {
+                          "id": 2,
+                          "name": "John Doe",
+                          "email": "john@example.com"
+                      }
+                  }
+              ]
           }
         headers: []
         description: ''
@@ -85,8 +67,7 @@ endpoints:
         status: 201
         content: |-
           {
-          "status": false,
-          "message": "Validation failed"
+              "error": "Failed to load meetings."
           }
         headers: []
         description: ''
@@ -103,13 +84,13 @@ endpoints:
   -
     httpMethods:
       - POST
-    uri: api/v3/user/user-activity/list
+    uri: api/v3/user/meetings/store
     metadata:
-      groupName: 'User Activity'
+      groupName: Meetings
       groupDescription: ''
       subgroup: ''
       subgroupDescription: ''
-      title: 'List user activities with filters and pagination'
+      title: 'Create Meeting'
       description: ''
       authenticated: true
       custom: []
@@ -122,114 +103,195 @@ endpoints:
     queryParameters: []
     cleanQueryParameters: []
     bodyParameters:
-      user_name:
-        name: user_name
-        description: 'optional Filter by user name'
-        required: false
-        example: sed
+      title:
+        name: title
+        description: 'The title of the meeting.'
+        required: true
+        example: 'Project Sync'
         type: string
         enumValues: []
-        exampleWasSpecified: false
+        exampleWasSpecified: true
         nullable: false
         custom: []
-      email:
-        name: email
-        description: 'optional Filter by email'
+      description:
+        name: description
+        description: 'The description of the meeting.'
         required: false
-        example: yeichmann@example.net
+        example: 'Weekly project sync meeting.'
         type: string
         enumValues: []
-        exampleWasSpecified: false
+        exampleWasSpecified: true
+        nullable: true
+        custom: []
+      start_time:
+        name: start_time
+        description: 'The start time of the meeting in ISO 8601 format.'
+        required: true
+        example: '2024-11-22T01:25'
+        type: datetime
+        enumValues: []
+        exampleWasSpecified: true
         nullable: false
         custom: []
-      user_roles:
-        name: user_roles
-        description: 'optional Filter by roles'
+      end_time:
+        name: end_time
+        description: 'The end time of the meeting in ISO 8601 format.'
+        required: true
+        example: '2024-11-22T02:25'
+        type: datetime
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+      meeting_link:
+        name: meeting_link
+        description: 'The link to join the meeting.'
         required: false
-        example: odio
+        example: 'https://meeting.example.com/xyz123'
         type: string
         enumValues: []
-        exampleWasSpecified: false
-        nullable: false
+        exampleWasSpecified: true
+        nullable: true
         custom: []
-      country_name:
-        name: country_name
-        description: 'optional Filter by country'
+      create_zoom:
+        name: create_zoom
+        description: 'optional Use Zoom to generate meeting.'
         required: false
-        example: quasi
-        type: string
+        example: true
+        type: boolean
         enumValues: []
-        exampleWasSpecified: false
-        nullable: false
-        custom: []
-      activity_type:
-        name: activity_type
-        description: 'optional Filter by activity type'
-        required: false
-        example: natus
-        type: string
-        enumValues: []
-        exampleWasSpecified: false
-        nullable: false
-        custom: []
-      date_from:
-        name: date_from
-        description: 'optional Filter activities from date'
-        required: false
-        example: aut
-        type: date
-        enumValues: []
-        exampleWasSpecified: false
-        nullable: false
-        custom: []
-      date_to:
-        name: date_to
-        description: 'optional Filter activities to date'
-        required: false
-        example: tempora
-        type: date
-        enumValues: []
-        exampleWasSpecified: false
-        nullable: false
-        custom: []
-      per_page:
-        name: per_page
-        description: 'optional Number of results per page. Default 10'
-        required: false
-        example: 8
-        type: integer
-        enumValues: []
-        exampleWasSpecified: false
-        nullable: false
+        exampleWasSpecified: true
+        nullable: true
         custom: []
     cleanBodyParameters:
-      user_name: sed
-      email: yeichmann@example.net
-      user_roles: odio
-      country_name: quasi
-      activity_type: natus
-      date_from: aut
-      date_to: tempora
-      per_page: 8
+      title: 'Project Sync'
+      description: 'Weekly project sync meeting.'
+      start_time: '2024-11-22T01:25'
+      end_time: '2024-11-22T02:25'
+      meeting_link: 'https://meeting.example.com/xyz123'
+      create_zoom: true
     fileParameters: []
     responses:
       -
         status: 200
         content: |-
           {
-           "status": true,
-           "message": "Activities list fetched",
-           "data": {"current_page":1, "data":[]}
+              "message": "Meeting created successfully.",
+              "data": {
+                  "id": 1,
+                  "user_id": 2,
+                  "title": "Project Sync",
+                  "description": "Weekly project sync meeting.",
+                  "start_time": "2024-11-22T01:25",
+                  "end_time": "2024-11-22T02:25",
+                  "meeting_link": "https://meeting.example.com/xyz123",
+                  "created_at": "2024-11-08T12:00:00.000000Z",
+                  "updated_at": "2024-11-08T12:00:00.000000Z"
+              }
           }
         headers: []
         description: ''
         custom: []
       -
-        status: 403
+        status: 201
         content: |-
           {
-           "status": false,
-           "message": "Unauthorized"
+              "error": "Failed to create meeting."
+          }
+        headers: []
+        description: ''
+        custom: []
+    responseFields: []
+    auth:
+      - headers
+      - Authorization
+      - 'Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJhdWQiOiIxIiwianRpIjoiNTJkNDhkYzhjNTc4ODIwZWVmODFmY2NhOWJiMmJiODFlZGE1MTUwMTVkYmU5YzdkNzFkODAyYTRmZWNhMWQ5ZGJhYWEzMTc2YjI1OTJmMTgiLCJpYXQiOjE3NjQwNjAzNDQuMDUyOTc0LCJuYmYiOjE3NjQwNjAzNDQuMDUyOTc1LCJleHAiOjE3OTU1OTYzNDQuMDQzNjUyLCJzdWIiOiIxNjgiLCJzY29wZXMiOltdfQ.X9tS38uM-UlrpFlYZihD_kmuCcSX_hdGsRBJcNGfrWXAClMiqeTxNTC45Ftxw-ddmDQ59t5xJLlnWp2Rx57itO-IHclNmwnVJDPAh1l9D8CZBGxBSoN0FvmbWeYDNQnA7ud77YLekrcSAuKMdBX3J1UKq6ytvWwi6ChnuRFqcQ-fpzK-jgkMhGm-WFHw0H3a34afdBdSUUFutESlwMvTqmXILYVcIwaJpEAjamf3rn6wIOEoD8mbxXJ6Gb6QrRO72Kt3z62vJp7yOeMsnXUkfioVSyJVwbkbchCs2Y4YZY3FEREbKysKNdHJhhqmn6AXvx66arAK3HeZoyf5eusfk26alhbEdJqsJgFP5VROV5l57q8VKhH8hAxg-oeidCGGJXPjLGeb-5iGPjdGhQ1Ng1i9kt7VDV4icb8B2AbNC2Ie9xP6b0R11PX4jUd8D3Jogf2f0ZhAs5Is8WHcrxsCyk3lWvgOyzWxpRx2lSpmBRmSwksPrKJk_7JuzDZ1Tdpz6mubjV6DzlmqDJJjf32hBIMnaYOhOUz5k1FzZ8mybsSbnM9UjzHYr5xIf4rkmVAfuPnU2FGu8NtCQaOtt9G-TziBFgT3ZjxBCL9QaaC39BRulGE6tyCAT8NM9svTD_AbNyINUzO2M0R61OXYQfzXEeiui-sO6eYIc3x_z-YdFFQ'
+    controller: null
+    method: null
+    route: null
+    custom: []
+  -
+    httpMethods:
+      - GET
+    uri: 'api/v3/user/meetings/view/{id}'
+    metadata:
+      groupName: Meetings
+      groupDescription: ''
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'Single Meeting Details'
+      description: ''
+      authenticated: true
+      custom: []
+    headers:
+      Authorization: 'Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJhdWQiOiIxIiwianRpIjoiNTJkNDhkYzhjNTc4ODIwZWVmODFmY2NhOWJiMmJiODFlZGE1MTUwMTVkYmU5YzdkNzFkODAyYTRmZWNhMWQ5ZGJhYWEzMTc2YjI1OTJmMTgiLCJpYXQiOjE3NjQwNjAzNDQuMDUyOTc0LCJuYmYiOjE3NjQwNjAzNDQuMDUyOTc1LCJleHAiOjE3OTU1OTYzNDQuMDQzNjUyLCJzdWIiOiIxNjgiLCJzY29wZXMiOltdfQ.X9tS38uM-UlrpFlYZihD_kmuCcSX_hdGsRBJcNGfrWXAClMiqeTxNTC45Ftxw-ddmDQ59t5xJLlnWp2Rx57itO-IHclNmwnVJDPAh1l9D8CZBGxBSoN0FvmbWeYDNQnA7ud77YLekrcSAuKMdBX3J1UKq6ytvWwi6ChnuRFqcQ-fpzK-jgkMhGm-WFHw0H3a34afdBdSUUFutESlwMvTqmXILYVcIwaJpEAjamf3rn6wIOEoD8mbxXJ6Gb6QrRO72Kt3z62vJp7yOeMsnXUkfioVSyJVwbkbchCs2Y4YZY3FEREbKysKNdHJhhqmn6AXvx66arAK3HeZoyf5eusfk26alhbEdJqsJgFP5VROV5l57q8VKhH8hAxg-oeidCGGJXPjLGeb-5iGPjdGhQ1Ng1i9kt7VDV4icb8B2AbNC2Ie9xP6b0R11PX4jUd8D3Jogf2f0ZhAs5Is8WHcrxsCyk3lWvgOyzWxpRx2lSpmBRmSwksPrKJk_7JuzDZ1Tdpz6mubjV6DzlmqDJJjf32hBIMnaYOhOUz5k1FzZ8mybsSbnM9UjzHYr5xIf4rkmVAfuPnU2FGu8NtCQaOtt9G-TziBFgT3ZjxBCL9QaaC39BRulGE6tyCAT8NM9svTD_AbNyINUzO2M0R61OXYQfzXEeiui-sO6eYIc3x_z-YdFFQ'
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters:
+      id:
+        name: id
+        description: 'The ID of the meeting.'
+        required: true
+        example: 1
+        type: integer
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+    cleanUrlParameters:
+      id: 1
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters: []
+    cleanBodyParameters: []
+    fileParameters: []
+    responses:
+      -
+        status: 200
+        content: |-
+          {
+              "data": {
+                  "id": 1,
+                  "user_id": 2,
+                  "title": "Project Sync",
+                  "description": "Weekly project sync meeting.",
+                  "start_time": "2024-11-10T09:00:00.000000Z",
+                  "end_time": "2024-11-10T10:00:00.000000Z",
+                  "meeting_link": "https://meeting.example.com/xyz123",
+                  "created_at": "2024-11-08T12:00:00.000000Z",
+                  "updated_at": "2024-11-08T12:00:00.000000Z",
+                  "user": {
+                         "id": 12,
+                         "ecclesia_id": 2,
+                         "created_id": "1",
+                         "user_name": "swarnadwip_nath",
+                         "first_name": "Swarnadwip",
+                         "middle_name": null,
+                         "last_name": "Nath",
+                         "email": "swarnadwip@excellisit.net",
+                         "phone": "+1 0741202022",
+                         "email_verified_at": null,
+                         "profile_picture": "profile_picture/yCvplMhdpjc0kIeKG63tfkZwhKNYbcF1ZhfQdDFO.jpg",
+                         "address": "Kokata",
+                         "city": "Kolkata",
+                         "state": "41",
+                         "address2": null,
+                         "country": "101",
+                         "zip": "700001",
+                         "status": 1,
+                         "created_at": "2024-06-21T11:31:27.000000Z",
+                         "updated_at": "2024-09-09T11:02:59.000000Z"
+                  }
+              }
+          }
+        headers: []
+        description: ''
+        custom: []
+      -
+        status: 404
+        content: |-
+          {
+              "error": "Meeting not found."
           }
         headers: []
         description: ''
@@ -246,13 +308,13 @@ endpoints:
   -
     httpMethods:
       - POST
-    uri: api/v3/user/user-activity/by-country
+    uri: 'api/v3/user/meetings/edit/{id}'
     metadata:
-      groupName: 'User Activity'
+      groupName: Meetings
       groupDescription: ''
       subgroup: ''
       subgroupDescription: ''
-      title: 'Get paginated statistics by country'
+      title: 'Update Meeting'
       description: ''
       authenticated: true
       custom: []
@@ -260,32 +322,97 @@ endpoints:
       Authorization: 'Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJhdWQiOiIxIiwianRpIjoiNTJkNDhkYzhjNTc4ODIwZWVmODFmY2NhOWJiMmJiODFlZGE1MTUwMTVkYmU5YzdkNzFkODAyYTRmZWNhMWQ5ZGJhYWEzMTc2YjI1OTJmMTgiLCJpYXQiOjE3NjQwNjAzNDQuMDUyOTc0LCJuYmYiOjE3NjQwNjAzNDQuMDUyOTc1LCJleHAiOjE3OTU1OTYzNDQuMDQzNjUyLCJzdWIiOiIxNjgiLCJzY29wZXMiOltdfQ.X9tS38uM-UlrpFlYZihD_kmuCcSX_hdGsRBJcNGfrWXAClMiqeTxNTC45Ftxw-ddmDQ59t5xJLlnWp2Rx57itO-IHclNmwnVJDPAh1l9D8CZBGxBSoN0FvmbWeYDNQnA7ud77YLekrcSAuKMdBX3J1UKq6ytvWwi6ChnuRFqcQ-fpzK-jgkMhGm-WFHw0H3a34afdBdSUUFutESlwMvTqmXILYVcIwaJpEAjamf3rn6wIOEoD8mbxXJ6Gb6QrRO72Kt3z62vJp7yOeMsnXUkfioVSyJVwbkbchCs2Y4YZY3FEREbKysKNdHJhhqmn6AXvx66arAK3HeZoyf5eusfk26alhbEdJqsJgFP5VROV5l57q8VKhH8hAxg-oeidCGGJXPjLGeb-5iGPjdGhQ1Ng1i9kt7VDV4icb8B2AbNC2Ie9xP6b0R11PX4jUd8D3Jogf2f0ZhAs5Is8WHcrxsCyk3lWvgOyzWxpRx2lSpmBRmSwksPrKJk_7JuzDZ1Tdpz6mubjV6DzlmqDJJjf32hBIMnaYOhOUz5k1FzZ8mybsSbnM9UjzHYr5xIf4rkmVAfuPnU2FGu8NtCQaOtt9G-TziBFgT3ZjxBCL9QaaC39BRulGE6tyCAT8NM9svTD_AbNyINUzO2M0R61OXYQfzXEeiui-sO6eYIc3x_z-YdFFQ'
       Content-Type: application/json
       Accept: application/json
-    urlParameters: []
-    cleanUrlParameters: []
+    urlParameters:
+      id:
+        name: id
+        description: 'The ID of the meeting.'
+        required: true
+        example: 1
+        type: integer
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+    cleanUrlParameters:
+      id: 1
     queryParameters: []
     cleanQueryParameters: []
     bodyParameters:
-      per_page:
-        name: per_page
-        description: 'optional Number of results per page. Default 10'
-        required: false
-        example: 7
-        type: integer
+      title:
+        name: title
+        description: 'The title of the meeting.'
+        required: true
+        example: 'Project Sync Update'
+        type: string
         enumValues: []
-        exampleWasSpecified: false
+        exampleWasSpecified: true
         nullable: false
         custom: []
+      description:
+        name: description
+        description: 'The description of the meeting.'
+        required: false
+        example: 'Updated project sync meeting.'
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: true
+        custom: []
+      start_time:
+        name: start_time
+        description: 'The updated start time in ISO 8601 format.'
+        required: true
+        example: '2024-11-11T09:00:00.000000Z'
+        type: datetime
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+      end_time:
+        name: end_time
+        description: 'The updated end time in ISO 8601 format.'
+        required: true
+        example: '2024-11-11T10:00:00.000000Z'
+        type: datetime
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+      meeting_link:
+        name: meeting_link
+        description: 'The updated link for the meeting.'
+        required: false
+        example: 'https://meeting.example.com/updated123'
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: true
+        custom: []
+      create_zoom:
+        name: create_zoom
+        description: 'optional Use Zoom to generate meeting on update.'
+        required: false
+        example: true
+        type: boolean
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: true
+        custom: []
     cleanBodyParameters:
-      per_page: 7
+      title: 'Project Sync Update'
+      description: 'Updated project sync meeting.'
+      start_time: '2024-11-11T09:00:00.000000Z'
+      end_time: '2024-11-11T10:00:00.000000Z'
+      meeting_link: 'https://meeting.example.com/updated123'
+      create_zoom: true
     fileParameters: []
     responses:
       -
         status: 200
         content: |-
           {
-           "status": true,
-           "message": "Activities by country fetched",
-           "data": {"current_page":1, "data":[]}
+            "message": "Meeting updated successfully.",
+            "status": true
           }
         headers: []
         description: ''
@@ -302,13 +429,13 @@ endpoints:
   -
     httpMethods:
       - POST
-    uri: api/v3/user/user-activity/by-user
+    uri: 'api/v3/user/meetings/delete/{id}'
     metadata:
-      groupName: 'User Activity'
+      groupName: Meetings
       groupDescription: ''
       subgroup: ''
       subgroupDescription: ''
-      title: 'Get paginated statistics by user'
+      title: 'Delete Meeting'
       description: ''
       authenticated: true
       custom: []
@@ -316,32 +443,31 @@ endpoints:
       Authorization: 'Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJhdWQiOiIxIiwianRpIjoiNTJkNDhkYzhjNTc4ODIwZWVmODFmY2NhOWJiMmJiODFlZGE1MTUwMTVkYmU5YzdkNzFkODAyYTRmZWNhMWQ5ZGJhYWEzMTc2YjI1OTJmMTgiLCJpYXQiOjE3NjQwNjAzNDQuMDUyOTc0LCJuYmYiOjE3NjQwNjAzNDQuMDUyOTc1LCJleHAiOjE3OTU1OTYzNDQuMDQzNjUyLCJzdWIiOiIxNjgiLCJzY29wZXMiOltdfQ.X9tS38uM-UlrpFlYZihD_kmuCcSX_hdGsRBJcNGfrWXAClMiqeTxNTC45Ftxw-ddmDQ59t5xJLlnWp2Rx57itO-IHclNmwnVJDPAh1l9D8CZBGxBSoN0FvmbWeYDNQnA7ud77YLekrcSAuKMdBX3J1UKq6ytvWwi6ChnuRFqcQ-fpzK-jgkMhGm-WFHw0H3a34afdBdSUUFutESlwMvTqmXILYVcIwaJpEAjamf3rn6wIOEoD8mbxXJ6Gb6QrRO72Kt3z62vJp7yOeMsnXUkfioVSyJVwbkbchCs2Y4YZY3FEREbKysKNdHJhhqmn6AXvx66arAK3HeZoyf5eusfk26alhbEdJqsJgFP5VROV5l57q8VKhH8hAxg-oeidCGGJXPjLGeb-5iGPjdGhQ1Ng1i9kt7VDV4icb8B2AbNC2Ie9xP6b0R11PX4jUd8D3Jogf2f0ZhAs5Is8WHcrxsCyk3lWvgOyzWxpRx2lSpmBRmSwksPrKJk_7JuzDZ1Tdpz6mubjV6DzlmqDJJjf32hBIMnaYOhOUz5k1FzZ8mybsSbnM9UjzHYr5xIf4rkmVAfuPnU2FGu8NtCQaOtt9G-TziBFgT3ZjxBCL9QaaC39BRulGE6tyCAT8NM9svTD_AbNyINUzO2M0R61OXYQfzXEeiui-sO6eYIc3x_z-YdFFQ'
       Content-Type: application/json
       Accept: application/json
-    urlParameters: []
-    cleanUrlParameters: []
-    queryParameters: []
-    cleanQueryParameters: []
-    bodyParameters:
-      per_page:
-        name: per_page
-        description: 'optional Number of results per page. Default 10'
-        required: false
-        example: 3
+    urlParameters:
+      id:
+        name: id
+        description: 'The ID of the meeting.'
+        required: true
+        example: 1
         type: integer
         enumValues: []
-        exampleWasSpecified: false
+        exampleWasSpecified: true
         nullable: false
         custom: []
-    cleanBodyParameters:
-      per_page: 3
+    cleanUrlParameters:
+      id: 1
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters: []
+    cleanBodyParameters: []
     fileParameters: []
     responses:
       -
         status: 200
         content: |-
           {
-           "status": true,
-           "message": "Activities by user fetched",
-           "data": {"current_page":1, "data":[]}
+            "message": "Meeting deleted successfully.",
+            "status": true
           }
         headers: []
         description: ''
@@ -358,13 +484,13 @@ endpoints:
   -
     httpMethods:
       - POST
-    uri: api/v3/user/user-activity/by-type
+    uri: api/v3/user/meetings/zoom-signature
     metadata:
-      groupName: 'User Activity'
+      groupName: Meetings
       groupDescription: ''
       subgroup: ''
       subgroupDescription: ''
-      title: 'Get paginated statistics by activity type'
+      title: 'Generate Zoom Web SDK signature and meeting details for API clients.'
       description: ''
       authenticated: true
       custom: []
@@ -377,27 +503,129 @@ endpoints:
     queryParameters: []
     cleanQueryParameters: []
     bodyParameters:
-      per_page:
-        name: per_page
-        description: 'optional Number of results per page. Default 10'
-        required: false
-        example: 11
+      meeting_id:
+        name: meeting_id
+        description: 'The ID of the meeting.'
+        required: true
+        example: 1
         type: integer
         enumValues: []
-        exampleWasSpecified: false
+        exampleWasSpecified: true
         nullable: false
         custom: []
     cleanBodyParameters:
-      per_page: 11
+      meeting_id: 1
     fileParameters: []
     responses:
       -
         status: 200
         content: |-
           {
-           "status": true,
-           "message": "Activities by type fetched",
-           "data": {"current_page":1, "data":[]}
+              "status": true,
+              "signature": "....",
+              "sdkKey": "ABC",
+              "meetingNumber": "123456789",
+              "password": null,
+              "topic": "My Meeting",
+              "role": 0,
+              "userName": "John Doe",
+              "userEmail": "john@example.com"
+          }
+        headers: []
+        description: ''
+        custom: []
+      -
+        status: 201
+        content: |-
+          {
+              "status": false,
+              "message": "This meeting is not a Zoom meeting."
+          }
+        headers: []
+        description: ''
+        custom: []
+    responseFields: []
+    auth:
+      - headers
+      - Authorization
+      - 'Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJhdWQiOiIxIiwianRpIjoiNTJkNDhkYzhjNTc4ODIwZWVmODFmY2NhOWJiMmJiODFlZGE1MTUwMTVkYmU5YzdkNzFkODAyYTRmZWNhMWQ5ZGJhYWEzMTc2YjI1OTJmMTgiLCJpYXQiOjE3NjQwNjAzNDQuMDUyOTc0LCJuYmYiOjE3NjQwNjAzNDQuMDUyOTc1LCJleHAiOjE3OTU1OTYzNDQuMDQzNjUyLCJzdWIiOiIxNjgiLCJzY29wZXMiOltdfQ.X9tS38uM-UlrpFlYZihD_kmuCcSX_hdGsRBJcNGfrWXAClMiqeTxNTC45Ftxw-ddmDQ59t5xJLlnWp2Rx57itO-IHclNmwnVJDPAh1l9D8CZBGxBSoN0FvmbWeYDNQnA7ud77YLekrcSAuKMdBX3J1UKq6ytvWwi6ChnuRFqcQ-fpzK-jgkMhGm-WFHw0H3a34afdBdSUUFutESlwMvTqmXILYVcIwaJpEAjamf3rn6wIOEoD8mbxXJ6Gb6QrRO72Kt3z62vJp7yOeMsnXUkfioVSyJVwbkbchCs2Y4YZY3FEREbKysKNdHJhhqmn6AXvx66arAK3HeZoyf5eusfk26alhbEdJqsJgFP5VROV5l57q8VKhH8hAxg-oeidCGGJXPjLGeb-5iGPjdGhQ1Ng1i9kt7VDV4icb8B2AbNC2Ie9xP6b0R11PX4jUd8D3Jogf2f0ZhAs5Is8WHcrxsCyk3lWvgOyzWxpRx2lSpmBRmSwksPrKJk_7JuzDZ1Tdpz6mubjV6DzlmqDJJjf32hBIMnaYOhOUz5k1FzZ8mybsSbnM9UjzHYr5xIf4rkmVAfuPnU2FGu8NtCQaOtt9G-TziBFgT3ZjxBCL9QaaC39BRulGE6tyCAT8NM9svTD_AbNyINUzO2M0R61OXYQfzXEeiui-sO6eYIc3x_z-YdFFQ'
+    controller: null
+    method: null
+    route: null
+    custom: []
+  -
+    httpMethods:
+      - GET
+    uri: api/v3/user/meetings/meetings-calender-fetch-data
+    metadata:
+      groupName: Meetings
+      groupDescription: ''
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'Meetings Calender Data'
+      description: ''
+      authenticated: true
+      custom: []
+    headers:
+      Authorization: 'Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJhdWQiOiIxIiwianRpIjoiNTJkNDhkYzhjNTc4ODIwZWVmODFmY2NhOWJiMmJiODFlZGE1MTUwMTVkYmU5YzdkNzFkODAyYTRmZWNhMWQ5ZGJhYWEzMTc2YjI1OTJmMTgiLCJpYXQiOjE3NjQwNjAzNDQuMDUyOTc0LCJuYmYiOjE3NjQwNjAzNDQuMDUyOTc1LCJleHAiOjE3OTU1OTYzNDQuMDQzNjUyLCJzdWIiOiIxNjgiLCJzY29wZXMiOltdfQ.X9tS38uM-UlrpFlYZihD_kmuCcSX_hdGsRBJcNGfrWXAClMiqeTxNTC45Ftxw-ddmDQ59t5xJLlnWp2Rx57itO-IHclNmwnVJDPAh1l9D8CZBGxBSoN0FvmbWeYDNQnA7ud77YLekrcSAuKMdBX3J1UKq6ytvWwi6ChnuRFqcQ-fpzK-jgkMhGm-WFHw0H3a34afdBdSUUFutESlwMvTqmXILYVcIwaJpEAjamf3rn6wIOEoD8mbxXJ6Gb6QrRO72Kt3z62vJp7yOeMsnXUkfioVSyJVwbkbchCs2Y4YZY3FEREbKysKNdHJhhqmn6AXvx66arAK3HeZoyf5eusfk26alhbEdJqsJgFP5VROV5l57q8VKhH8hAxg-oeidCGGJXPjLGeb-5iGPjdGhQ1Ng1i9kt7VDV4icb8B2AbNC2Ie9xP6b0R11PX4jUd8D3Jogf2f0ZhAs5Is8WHcrxsCyk3lWvgOyzWxpRx2lSpmBRmSwksPrKJk_7JuzDZ1Tdpz6mubjV6DzlmqDJJjf32hBIMnaYOhOUz5k1FzZ8mybsSbnM9UjzHYr5xIf4rkmVAfuPnU2FGu8NtCQaOtt9G-TziBFgT3ZjxBCL9QaaC39BRulGE6tyCAT8NM9svTD_AbNyINUzO2M0R61OXYQfzXEeiui-sO6eYIc3x_z-YdFFQ'
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters: []
+    cleanUrlParameters: []
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters: []
+    cleanBodyParameters: []
+    fileParameters: []
+    responses:
+      -
+        status: 200
+        content: |-
+          {
+             "message": "Calender data fetched successfully.",
+             "data": [
+                 {
+                     "id": 15,
+                     "title": "Project Sync",
+                     "description": "Weekly project sync meeting.",
+                     "start": "2024-11-10T09:00:00.000000Z",
+                     "end": "2024-11-10T10:00:00.000000Z",
+                     "meeting_link": "https://meeting.example.com/xyz123"
+                 },
+                 {
+                     "id": 13,
+                     "title": "fourth meeting",
+                     "description": "afd",
+                     "start": "2024-10-01T18:57",
+                     "end": "2024-10-01T18:58",
+                     "meeting_link": null
+                 },
+                 {
+                     "id": 12,
+                     "title": "Third meeting",
+                     "description": "fd",
+                     "start": "2024-10-01T18:57",
+                     "end": "2024-10-01T18:58",
+                     "meeting_link": null
+                 },
+                 {
+                     "id": 11,
+                     "title": "Second meeting",
+                     "description": "adsf",
+                     "start": "2024-10-01T18:56",
+                     "end": "2024-10-01T18:57",
+                     "meeting_link": null
+                 }
+             ]
+          }
+        headers: []
+        description: ''
+        custom: []
+      -
+        status: 404
+        content: |-
+          {
+              "error": "Meetings not found."
           }
         headers: []
         description: ''

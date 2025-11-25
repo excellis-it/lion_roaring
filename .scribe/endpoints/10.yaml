@@ -1,17 +1,17 @@
-name: 'Estore Colors'
+name: 'Estore Sizes'
 description: ''
 endpoints:
   -
     httpMethods:
       - GET
-    uri: api/v3/user/colors
+    uri: api/v3/user/sizes
     metadata:
-      groupName: 'Estore Colors'
+      groupName: 'Estore Sizes'
       groupDescription: ''
       subgroup: ''
       subgroupDescription: ''
-      title: 'Color List'
-      description: 'This endpoint retrieves a paginated list of all active colors.'
+      title: 'Size List'
+      description: 'This endpoint retrieves a paginated list of all active sizes.'
       authenticated: true
       custom: []
     headers:
@@ -57,57 +57,23 @@ endpoints:
                   "data": [
                       {
                           "id": 1,
-                          "color_name": "Red",
-                          "color": "#ff0000",
+                          "size": "Small - US",
                           "status": 1,
-                          "created_at": "2025-08-28T14:24:03.000000Z",
-                          "updated_at": "2025-08-28T14:24:03.000000Z"
+                          "created_at": "2025-08-28T14:23:32.000000Z",
+                          "updated_at": "2025-09-04T16:08:26.000000Z"
                       },
                       {
                           "id": 2,
-                          "color_name": "Green",
-                          "color": "#00ff04",
+                          "size": "M",
                           "status": 1,
-                          "created_at": "2025-08-28T14:24:18.000000Z",
-                          "updated_at": "2025-08-28T14:24:18.000000Z"
+                          "created_at": "2025-08-28T14:23:36.000000Z",
+                          "updated_at": "2025-08-28T14:23:36.000000Z"
                       },
-                      {
-                          "id": 3,
-                          "color_name": "Blue",
-                          "color": "#0066eb",
-                          "status": 1,
-                          "created_at": "2025-08-28T14:24:35.000000Z",
-                          "updated_at": "2025-08-28T14:24:35.000000Z"
-                      },
-                      {
-                          "id": 4,
-                          "color_name": "Black",
-                          "color": "#000000",
-                          "status": 1,
-                          "created_at": "2025-08-28T14:24:52.000000Z",
-                          "updated_at": "2025-08-28T14:24:52.000000Z"
-                      },
-                      {
-                          "id": 5,
-                          "color_name": "Yellow",
-                          "color": "#00d5ff",
-                          "status": 1,
-                          "created_at": "2025-09-01T15:06:02.000000Z",
-                          "updated_at": "2025-09-04T16:06:29.000000Z"
-                      },
-                      {
-                          "id": 6,
-                          "color_name": "White",
-                          "color": "#ffffff",
-                          "status": 1,
-                          "created_at": "2025-09-13T14:56:54.000000Z",
-                          "updated_at": "2025-09-13T14:56:54.000000Z"
-                      }
                   ],
-                  "first_page_url": "http:*127.0.0.1:8000/api/v3/user/colors?page=1",
+                  "first_page_url": "http:*127.0.0.1:8000/api/v3/user/sizes?page=1",
                   "from": 1,
                   "last_page": 1,
-                  "last_page_url": "http:*127.0.0.1:8000/api/v3/user/colors?page=1",
+                  "last_page_url": "http:*127.0.0.1:8000/api/v3/user/sizes?page=1",
                   "links": [
                       {
                           "url": null,
@@ -115,7 +81,7 @@ endpoints:
                           "active": false
                       },
                       {
-                          "url": "http:*127.0.0.1:8000/api/v3/user/colors?page=1",
+                          "url": "http:*127.0.0.1:8000/api/v3/user/sizes?page=1",
                           "label": "1",
                           "active": true
                       },
@@ -126,11 +92,11 @@ endpoints:
                       }
                   ],
                   "next_page_url": null,
-                  "path": "http:*127.0.0.1:8000/api/v3/user/colors",
+                  "path": "http:*127.0.0.1:8000/api/v3/user/sizes",
                   "per_page": 10,
                   "prev_page_url": null,
-                  "to": 6,
-                  "total": 6
+                  "to": 4,
+                  "total": 4
               },
               "status": true
           }
@@ -159,14 +125,14 @@ endpoints:
   -
     httpMethods:
       - POST
-    uri: api/v3/user/colors/store
+    uri: api/v3/user/sizes/store
     metadata:
-      groupName: 'Estore Colors'
+      groupName: 'Estore Sizes'
       groupDescription: ''
       subgroup: ''
       subgroupDescription: ''
-      title: 'Color Store'
-      description: 'Create a new color.'
+      title: 'Size Store'
+      description: 'Create a new size.'
       authenticated: true
       custom: []
     headers:
@@ -178,19 +144,9 @@ endpoints:
     queryParameters: []
     cleanQueryParameters: []
     bodyParameters:
-      color_name:
-        name: color_name
-        description: 'The color name.'
-        required: true
-        example: '"Medium"'
-        type: string
-        enumValues: []
-        exampleWasSpecified: true
-        nullable: false
-        custom: []
-      color:
-        name: color
-        description: 'The color name.'
+      name:
+        name: name
+        description: 'The size name.'
         required: true
         example: '"Medium"'
         type: string
@@ -200,7 +156,7 @@ endpoints:
         custom: []
       status:
         name: status
-        description: 'Status of the color (1 = active, 0 = inactive).'
+        description: 'Status of the size (1 = active, 0 = inactive).'
         required: true
         example: true
         type: boolean
@@ -209,8 +165,7 @@ endpoints:
         nullable: false
         custom: []
     cleanBodyParameters:
-      color_name: '"Medium"'
-      color: '"Medium"'
+      name: '"Medium"'
       status: true
     fileParameters: []
     responses:
@@ -220,13 +175,12 @@ endpoints:
           {
             "data": {
               "id": 12,
-              "color_name": "Black",
-              "color": "#000000",
+              "size": "Medium",
               "status": 1,
               "created_at": "2025-10-17T10:00:00Z",
               "updated_at": "2025-10-17T10:00:00Z"
             },
-            "message": "Color created successfully.",
+            "message": "Size created successfully.",
             "status": true
           }
         headers: []
@@ -268,14 +222,85 @@ endpoints:
   -
     httpMethods:
       - POST
-    uri: api/v3/user/colors/update
+    uri: api/v3/user/sizes/edit
     metadata:
-      groupName: 'Estore Colors'
+      groupName: 'Estore Sizes'
       groupDescription: ''
       subgroup: ''
       subgroupDescription: ''
-      title: 'Color Update'
-      description: 'Update an existing color by ID.'
+      title: 'Size Edit'
+      description: 'Get details of a specific size by ID for editing.'
+      authenticated: true
+      custom: []
+    headers:
+      Authorization: 'Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJhdWQiOiIxIiwianRpIjoiNTJkNDhkYzhjNTc4ODIwZWVmODFmY2NhOWJiMmJiODFlZGE1MTUwMTVkYmU5YzdkNzFkODAyYTRmZWNhMWQ5ZGJhYWEzMTc2YjI1OTJmMTgiLCJpYXQiOjE3NjQwNjAzNDQuMDUyOTc0LCJuYmYiOjE3NjQwNjAzNDQuMDUyOTc1LCJleHAiOjE3OTU1OTYzNDQuMDQzNjUyLCJzdWIiOiIxNjgiLCJzY29wZXMiOltdfQ.X9tS38uM-UlrpFlYZihD_kmuCcSX_hdGsRBJcNGfrWXAClMiqeTxNTC45Ftxw-ddmDQ59t5xJLlnWp2Rx57itO-IHclNmwnVJDPAh1l9D8CZBGxBSoN0FvmbWeYDNQnA7ud77YLekrcSAuKMdBX3J1UKq6ytvWwi6ChnuRFqcQ-fpzK-jgkMhGm-WFHw0H3a34afdBdSUUFutESlwMvTqmXILYVcIwaJpEAjamf3rn6wIOEoD8mbxXJ6Gb6QrRO72Kt3z62vJp7yOeMsnXUkfioVSyJVwbkbchCs2Y4YZY3FEREbKysKNdHJhhqmn6AXvx66arAK3HeZoyf5eusfk26alhbEdJqsJgFP5VROV5l57q8VKhH8hAxg-oeidCGGJXPjLGeb-5iGPjdGhQ1Ng1i9kt7VDV4icb8B2AbNC2Ie9xP6b0R11PX4jUd8D3Jogf2f0ZhAs5Is8WHcrxsCyk3lWvgOyzWxpRx2lSpmBRmSwksPrKJk_7JuzDZ1Tdpz6mubjV6DzlmqDJJjf32hBIMnaYOhOUz5k1FzZ8mybsSbnM9UjzHYr5xIf4rkmVAfuPnU2FGu8NtCQaOtt9G-TziBFgT3ZjxBCL9QaaC39BRulGE6tyCAT8NM9svTD_AbNyINUzO2M0R61OXYQfzXEeiui-sO6eYIc3x_z-YdFFQ'
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters: []
+    cleanUrlParameters: []
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters:
+      id:
+        name: id
+        description: 'The ID of the size.'
+        required: true
+        example: 5
+        type: integer
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+    cleanBodyParameters:
+      id: 5
+    fileParameters: []
+    responses:
+      -
+        status: 200
+        content: |-
+          {
+            "data": {
+              "id": 5,
+              "size": "Medium",
+              "status": 1,
+              "created_at": "2025-10-17T10:00:00Z",
+              "updated_at": "2025-10-17T12:00:00Z"
+            },
+            "status": true
+          }
+        headers: []
+        description: ''
+        custom: []
+      -
+        status: 201
+        content: |-
+          {
+            "message": "Size not found.",
+            "status": false
+          }
+        headers: []
+        description: ''
+        custom: []
+    responseFields: []
+    auth:
+      - headers
+      - Authorization
+      - 'Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJhdWQiOiIxIiwianRpIjoiNTJkNDhkYzhjNTc4ODIwZWVmODFmY2NhOWJiMmJiODFlZGE1MTUwMTVkYmU5YzdkNzFkODAyYTRmZWNhMWQ5ZGJhYWEzMTc2YjI1OTJmMTgiLCJpYXQiOjE3NjQwNjAzNDQuMDUyOTc0LCJuYmYiOjE3NjQwNjAzNDQuMDUyOTc1LCJleHAiOjE3OTU1OTYzNDQuMDQzNjUyLCJzdWIiOiIxNjgiLCJzY29wZXMiOltdfQ.X9tS38uM-UlrpFlYZihD_kmuCcSX_hdGsRBJcNGfrWXAClMiqeTxNTC45Ftxw-ddmDQ59t5xJLlnWp2Rx57itO-IHclNmwnVJDPAh1l9D8CZBGxBSoN0FvmbWeYDNQnA7ud77YLekrcSAuKMdBX3J1UKq6ytvWwi6ChnuRFqcQ-fpzK-jgkMhGm-WFHw0H3a34afdBdSUUFutESlwMvTqmXILYVcIwaJpEAjamf3rn6wIOEoD8mbxXJ6Gb6QrRO72Kt3z62vJp7yOeMsnXUkfioVSyJVwbkbchCs2Y4YZY3FEREbKysKNdHJhhqmn6AXvx66arAK3HeZoyf5eusfk26alhbEdJqsJgFP5VROV5l57q8VKhH8hAxg-oeidCGGJXPjLGeb-5iGPjdGhQ1Ng1i9kt7VDV4icb8B2AbNC2Ie9xP6b0R11PX4jUd8D3Jogf2f0ZhAs5Is8WHcrxsCyk3lWvgOyzWxpRx2lSpmBRmSwksPrKJk_7JuzDZ1Tdpz6mubjV6DzlmqDJJjf32hBIMnaYOhOUz5k1FzZ8mybsSbnM9UjzHYr5xIf4rkmVAfuPnU2FGu8NtCQaOtt9G-TziBFgT3ZjxBCL9QaaC39BRulGE6tyCAT8NM9svTD_AbNyINUzO2M0R61OXYQfzXEeiui-sO6eYIc3x_z-YdFFQ'
+    controller: null
+    method: null
+    route: null
+    custom: []
+  -
+    httpMethods:
+      - POST
+    uri: api/v3/user/sizes/update
+    metadata:
+      groupName: 'Estore Sizes'
+      groupDescription: ''
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'Size Update'
+      description: 'Update an existing size by ID.'
       authenticated: true
       custom: []
     headers:
@@ -285,7 +310,7 @@ endpoints:
     urlParameters:
       id:
         name: id
-        description: 'The ID of the color.'
+        description: 'The ID of the size.'
         required: true
         example: 5
         type: integer
@@ -300,29 +325,19 @@ endpoints:
     bodyParameters:
       id:
         name: id
-        description: 'The <code>id</code> of an existing record in the colors table.'
+        description: 'The <code>id</code> of an existing record in the sizes table.'
         required: true
-        example: sit
+        example: et
         type: string
         enumValues: []
         exampleWasSpecified: false
         nullable: false
         custom: []
-      color:
-        name: color
-        description: 'The color name.'
+      name:
+        name: name
+        description: 'The size name.'
         required: true
-        example: '"Medium"'
-        type: string
-        enumValues: []
-        exampleWasSpecified: true
-        nullable: false
-        custom: []
-      color_name:
-        name: color_name
-        description: 'The color name.'
-        required: true
-        example: '"Medium"'
+        example: '"Large"'
         type: string
         enumValues: []
         exampleWasSpecified: true
@@ -330,7 +345,7 @@ endpoints:
         custom: []
       status:
         name: status
-        description: 'Status of the color (1 = active, 0 = inactive).'
+        description: 'Status of the size (1 = active, 0 = inactive).'
         required: true
         example: true
         type: boolean
@@ -339,9 +354,8 @@ endpoints:
         nullable: false
         custom: []
     cleanBodyParameters:
-      id: sit
-      color: '"Medium"'
-      color_name: '"Medium"'
+      id: et
+      name: '"Large"'
       status: true
     fileParameters: []
     responses:
@@ -351,13 +365,12 @@ endpoints:
           {
             "data": {
               "id": 5,
-              "color_name": "Black",
-              "color": "#000000",
+              "size": "Large",
               "status": 1,
               "created_at": "2025-10-17T10:00:00Z",
               "updated_at": "2025-10-17T12:00:00Z"
             },
-            "message": "Color updated successfully.",
+            "message": "Size updated successfully.",
             "status": true
           }
         headers: []
@@ -367,7 +380,7 @@ endpoints:
         status: 201
         content: |-
           {
-            "message": "Color not found.",
+            "message": "Size not found.",
             "status": false
           }
         headers: []
@@ -409,14 +422,14 @@ endpoints:
   -
     httpMethods:
       - POST
-    uri: api/v3/user/colors/delete
+    uri: api/v3/user/sizes/delete
     metadata:
-      groupName: 'Estore Colors'
+      groupName: 'Estore Sizes'
       groupDescription: ''
       subgroup: ''
       subgroupDescription: ''
-      title: 'Color Delete'
-      description: 'Delete a color by ID.'
+      title: 'Size Delete'
+      description: 'Delete a size by ID.'
       authenticated: true
       custom: []
     headers:
@@ -426,7 +439,7 @@ endpoints:
     urlParameters:
       id:
         name: id
-        description: 'The ID of the color to delete.'
+        description: 'The ID of the size to delete.'
         required: true
         example: 5
         type: integer
@@ -441,23 +454,23 @@ endpoints:
     bodyParameters:
       id:
         name: id
-        description: 'The <code>id</code> of an existing record in the colors table.'
+        description: 'The <code>id</code> of an existing record in the sizes table.'
         required: true
-        example: placeat
+        example: beatae
         type: string
         enumValues: []
         exampleWasSpecified: false
         nullable: false
         custom: []
     cleanBodyParameters:
-      id: placeat
+      id: beatae
     fileParameters: []
     responses:
       -
         status: 200
         content: |-
           {
-            "message": "Color deleted successfully.",
+            "message": "Size deleted successfully.",
             "status": true
           }
         headers: []
@@ -467,7 +480,7 @@ endpoints:
         status: 201
         content: |-
           {
-            "message": "Color not found.",
+            "message": "Size not found.",
             "status": false
           }
         headers: []
@@ -478,6 +491,77 @@ endpoints:
         content: |-
           {
             "message": "Something went wrong. Please try again later.",
+            "status": false
+          }
+        headers: []
+        description: ''
+        custom: []
+    responseFields: []
+    auth:
+      - headers
+      - Authorization
+      - 'Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJhdWQiOiIxIiwianRpIjoiNTJkNDhkYzhjNTc4ODIwZWVmODFmY2NhOWJiMmJiODFlZGE1MTUwMTVkYmU5YzdkNzFkODAyYTRmZWNhMWQ5ZGJhYWEzMTc2YjI1OTJmMTgiLCJpYXQiOjE3NjQwNjAzNDQuMDUyOTc0LCJuYmYiOjE3NjQwNjAzNDQuMDUyOTc1LCJleHAiOjE3OTU1OTYzNDQuMDQzNjUyLCJzdWIiOiIxNjgiLCJzY29wZXMiOltdfQ.X9tS38uM-UlrpFlYZihD_kmuCcSX_hdGsRBJcNGfrWXAClMiqeTxNTC45Ftxw-ddmDQ59t5xJLlnWp2Rx57itO-IHclNmwnVJDPAh1l9D8CZBGxBSoN0FvmbWeYDNQnA7ud77YLekrcSAuKMdBX3J1UKq6ytvWwi6ChnuRFqcQ-fpzK-jgkMhGm-WFHw0H3a34afdBdSUUFutESlwMvTqmXILYVcIwaJpEAjamf3rn6wIOEoD8mbxXJ6Gb6QrRO72Kt3z62vJp7yOeMsnXUkfioVSyJVwbkbchCs2Y4YZY3FEREbKysKNdHJhhqmn6AXvx66arAK3HeZoyf5eusfk26alhbEdJqsJgFP5VROV5l57q8VKhH8hAxg-oeidCGGJXPjLGeb-5iGPjdGhQ1Ng1i9kt7VDV4icb8B2AbNC2Ie9xP6b0R11PX4jUd8D3Jogf2f0ZhAs5Is8WHcrxsCyk3lWvgOyzWxpRx2lSpmBRmSwksPrKJk_7JuzDZ1Tdpz6mubjV6DzlmqDJJjf32hBIMnaYOhOUz5k1FzZ8mybsSbnM9UjzHYr5xIf4rkmVAfuPnU2FGu8NtCQaOtt9G-TziBFgT3ZjxBCL9QaaC39BRulGE6tyCAT8NM9svTD_AbNyINUzO2M0R61OXYQfzXEeiui-sO6eYIc3x_z-YdFFQ'
+    controller: null
+    method: null
+    route: null
+    custom: []
+  -
+    httpMethods:
+      - POST
+    uri: api/v3/user/colors/edit
+    metadata:
+      groupName: 'Estore Sizes'
+      groupDescription: ''
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'Size Edit'
+      description: 'Get details of a specific size by ID for editing.'
+      authenticated: true
+      custom: []
+    headers:
+      Authorization: 'Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJhdWQiOiIxIiwianRpIjoiNTJkNDhkYzhjNTc4ODIwZWVmODFmY2NhOWJiMmJiODFlZGE1MTUwMTVkYmU5YzdkNzFkODAyYTRmZWNhMWQ5ZGJhYWEzMTc2YjI1OTJmMTgiLCJpYXQiOjE3NjQwNjAzNDQuMDUyOTc0LCJuYmYiOjE3NjQwNjAzNDQuMDUyOTc1LCJleHAiOjE3OTU1OTYzNDQuMDQzNjUyLCJzdWIiOiIxNjgiLCJzY29wZXMiOltdfQ.X9tS38uM-UlrpFlYZihD_kmuCcSX_hdGsRBJcNGfrWXAClMiqeTxNTC45Ftxw-ddmDQ59t5xJLlnWp2Rx57itO-IHclNmwnVJDPAh1l9D8CZBGxBSoN0FvmbWeYDNQnA7ud77YLekrcSAuKMdBX3J1UKq6ytvWwi6ChnuRFqcQ-fpzK-jgkMhGm-WFHw0H3a34afdBdSUUFutESlwMvTqmXILYVcIwaJpEAjamf3rn6wIOEoD8mbxXJ6Gb6QrRO72Kt3z62vJp7yOeMsnXUkfioVSyJVwbkbchCs2Y4YZY3FEREbKysKNdHJhhqmn6AXvx66arAK3HeZoyf5eusfk26alhbEdJqsJgFP5VROV5l57q8VKhH8hAxg-oeidCGGJXPjLGeb-5iGPjdGhQ1Ng1i9kt7VDV4icb8B2AbNC2Ie9xP6b0R11PX4jUd8D3Jogf2f0ZhAs5Is8WHcrxsCyk3lWvgOyzWxpRx2lSpmBRmSwksPrKJk_7JuzDZ1Tdpz6mubjV6DzlmqDJJjf32hBIMnaYOhOUz5k1FzZ8mybsSbnM9UjzHYr5xIf4rkmVAfuPnU2FGu8NtCQaOtt9G-TziBFgT3ZjxBCL9QaaC39BRulGE6tyCAT8NM9svTD_AbNyINUzO2M0R61OXYQfzXEeiui-sO6eYIc3x_z-YdFFQ'
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters: []
+    cleanUrlParameters: []
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters:
+      id:
+        name: id
+        description: 'The ID of the size.'
+        required: true
+        example: 5
+        type: integer
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+    cleanBodyParameters:
+      id: 5
+    fileParameters: []
+    responses:
+      -
+        status: 200
+        content: |-
+          {
+            "data": {
+              "id": 5,
+              "size": "Medium",
+              "status": 1,
+              "created_at": "2025-10-17T10:00:00Z",
+              "updated_at": "2025-10-17T12:00:00Z"
+            },
+            "status": true
+          }
+        headers: []
+        description: ''
+        custom: []
+      -
+        status: 201
+        content: |-
+          {
+            "message": "Size not found.",
             "status": false
           }
         headers: []

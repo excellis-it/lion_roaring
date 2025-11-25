@@ -4,7 +4,7 @@ endpoints:
   -
     httpMethods:
       - GET
-    uri: api/v3/e-store/store-home
+    uri: api/v3/e-learning/store-home
     metadata:
       groupName: E-learning
       groupDescription: ''
@@ -50,7 +50,7 @@ endpoints:
   -
     httpMethods:
       - GET
-    uri: 'api/v3/e-store/category-products/{slug}'
+    uri: 'api/v3/e-learning/category-products/{slug}'
     metadata:
       groupName: E-learning
       groupDescription: ''
@@ -120,7 +120,7 @@ endpoints:
   -
     httpMethods:
       - GET
-    uri: 'api/v3/e-store/product/{slug}'
+    uri: 'api/v3/e-learning/product/{slug}'
     metadata:
       groupName: E-learning
       groupDescription: ''
@@ -139,14 +139,14 @@ endpoints:
         name: slug
         description: 'The slug of the product.'
         required: true
-        example: et
+        example: harum
         type: string
         enumValues: []
         exampleWasSpecified: false
         nullable: false
         custom: []
     cleanUrlParameters:
-      slug: et
+      slug: harum
     queryParameters: []
     cleanQueryParameters: []
     bodyParameters: []
@@ -176,7 +176,7 @@ endpoints:
   -
     httpMethods:
       - GET
-    uri: api/v3/e-store/products-filter
+    uri: api/v3/e-learning/products-filter
     metadata:
       groupName: E-learning
       groupDescription: ''
@@ -198,7 +198,7 @@ endpoints:
         description: 'Optional. Array of category IDs.'
         required: false
         example:
-          - enim
+          - laboriosam
         type: 'string[]'
         enumValues: []
         exampleWasSpecified: false
@@ -208,7 +208,7 @@ endpoints:
         name: latestFilter
         description: 'Optional. Filter by latest, A-Z, Z-A.'
         required: false
-        example: ad
+        example: consequuntur
         type: string
         enumValues: []
         exampleWasSpecified: false
@@ -218,7 +218,7 @@ endpoints:
         name: search
         description: 'Optional. Search by product name.'
         required: false
-        example: sint
+        example: quisquam
         type: string
         enumValues: []
         exampleWasSpecified: false
@@ -228,7 +228,7 @@ endpoints:
         name: page
         description: 'Optional. Page number.'
         required: false
-        example: 5
+        example: 13
         type: integer
         enumValues: []
         exampleWasSpecified: false
@@ -236,10 +236,10 @@ endpoints:
         custom: []
     cleanQueryParameters:
       'category_id[]':
-        - enim
-      latestFilter: ad
-      search: sint
-      page: 5
+        - laboriosam
+      latestFilter: consequuntur
+      search: quisquam
+      page: 13
     bodyParameters: []
     cleanBodyParameters: []
     fileParameters: []

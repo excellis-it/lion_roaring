@@ -1,16 +1,16 @@
-name: 'Forget Password'
+name: Authentication
 description: ''
 endpoints:
   -
     httpMethods:
       - POST
-    uri: api/v3/forget-password
+    uri: api/v3/country-by-id
     metadata:
-      groupName: 'Forget Password'
+      groupName: Authentication
       groupDescription: ''
       subgroup: ''
       subgroupDescription: ''
-      title: 'Forget Password'
+      title: 'Get Country by ID'
       description: ''
       authenticated: false
       custom: []
@@ -22,26 +22,709 @@ endpoints:
     queryParameters: []
     cleanQueryParameters: []
     bodyParameters:
-      email:
-        name: email
-        description: 'The email of the user. Example:'
+      id:
+        name: id
+        description: 'The ID of the country to fetch.'
         required: true
-        example: floyd.hirthe@example.org
-        type: string
+        example: 1
+        type: integer
         enumValues: []
-        exampleWasSpecified: false
+        exampleWasSpecified: true
         nullable: false
         custom: []
     cleanBodyParameters:
-      email: floyd.hirthe@example.org
+      id: 1
     fileParameters: []
     responses:
       -
         status: 200
         content: |-
           {
-          "status": true,
-          "message": "Password reset link sent to your email"
+            "country": {
+              "id": 1,
+              "name": "Country Name",
+              "created_at": "2024-11-11T00:00:00.000000Z",
+              "updated_at": "2024-11-11T00:00:00.000000Z"
+            }
+          }
+        headers: []
+        description: ''
+        custom: []
+      -
+        status: 201
+        content: |-
+          {
+            "message": "Country not found."
+          }
+        headers: []
+        description: ''
+        custom: []
+    responseFields: []
+    auth: []
+    controller: null
+    method: null
+    route: null
+    custom: []
+  -
+    httpMethods:
+      - POST
+    uri: api/v3/register-ecclesi-list
+    metadata:
+      groupName: Authentication
+      groupDescription: ''
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'List of Ecclesia'
+      description: ''
+      authenticated: false
+      custom: []
+    headers:
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters: []
+    cleanUrlParameters: []
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters: []
+    cleanBodyParameters: []
+    fileParameters: []
+    responses:
+      -
+        status: 200
+        content: |-
+          {
+             "eclessias": [
+                 {
+                     "id": 4,
+                     "name": "JMK",
+                     "country": "2",
+                     "created_at": "2024-08-02T22:44:52.000000Z",
+                     "updated_at": "2024-08-05T15:10:55.000000Z"
+                 },
+                 {
+                     "id": 3,
+                     "name": "JMK Shelby",
+                     "country": "5",
+                     "created_at": "2024-08-02T11:04:31.000000Z",
+                     "updated_at": "2024-08-05T15:11:00.000000Z"
+                 },
+                 {
+                     "id": 2,
+                     "name": "Pastor Dr. Paul Devakumar",
+                     "country": "14",
+                     "created_at": "2024-07-26T23:53:53.000000Z",
+                     "updated_at": "2024-08-05T15:11:04.000000Z"
+                 },
+                 {
+                     "id": 1,
+                     "name": "Pastor German Ace",
+                     "country": "17",
+                     "created_at": "2024-07-26T23:53:42.000000Z",
+                     "updated_at": "2024-08-05T15:11:08.000000Z"
+                 }
+             ]
+          }
+        headers: []
+        description: ''
+        custom: []
+      -
+        status: 201
+        content: |-
+          {
+            "message": "No Ecclesia records found."
+          }
+        headers: []
+        description: ''
+        custom: []
+    responseFields: []
+    auth: []
+    controller: null
+    method: null
+    route: null
+    custom: []
+  -
+    httpMethods:
+      - POST
+    uri: api/v3/register-country-list
+    metadata:
+      groupName: Authentication
+      groupDescription: ''
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'Lists Country'
+      description: ''
+      authenticated: false
+      custom: []
+    headers:
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters: []
+    cleanUrlParameters: []
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters: []
+    cleanBodyParameters: []
+    fileParameters: []
+    responses:
+      -
+        status: 200
+        content: |-
+          {
+            "countries": [
+              {
+                "id": 1,
+                "name": "Country Name",
+                "created_at": "2024-11-11T00:00:00.000000Z",
+                "updated_at": "2024-11-11T00:00:00.000000Z"
+              },
+              {
+                "id": 2,
+                "name": "Country Name 2",
+                "created_at": "2024-11-11T00:00:00.000000Z",
+                "updated_at": "2024-11-11T00:00:00.000000Z"
+              },
+              ...
+            ]
+          }
+        headers: []
+        description: ''
+        custom: []
+      -
+        status: 201
+        content: |-
+          {
+            "message": "No records found."
+          }
+        headers: []
+        description: ''
+        custom: []
+    responseFields: []
+    auth: []
+    controller: null
+    method: null
+    route: null
+    custom: []
+  -
+    httpMethods:
+      - POST
+    uri: api/v3/register-states-list
+    metadata:
+      groupName: Authentication
+      groupDescription: ''
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'States by country'
+      description: ''
+      authenticated: false
+      custom: []
+    headers:
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters: []
+    cleanUrlParameters: []
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters:
+      country:
+        name: country
+        description: 'The ID of the country to fetch states for.'
+        required: true
+        example: 1
+        type: integer
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+    cleanBodyParameters:
+      country: 1
+    fileParameters: []
+    responses:
+      -
+        status: 200
+        content: |-
+          {
+            "states": [
+              {
+                "id": 1,
+                "name": "State Name",
+                "country_id": 1,
+                "created_at": "2024-11-12T00:00:00.000000Z",
+                "updated_at": "2024-11-12T00:00:00.000000Z"
+              },
+              ...
+            ]
+          }
+        headers: []
+        description: ''
+        custom: []
+      -
+        status: 201
+        content: |-
+          {
+            "message": "No states found for the specified country."
+          }
+        headers: []
+        description: ''
+        custom: []
+      -
+        status: 201
+        content: |-
+          {
+            "message": "An error occurred while fetching states."
+          }
+        headers: []
+        description: ''
+        custom: []
+    responseFields: []
+    auth: []
+    controller: null
+    method: null
+    route: null
+    custom: []
+  -
+    httpMethods:
+      - POST
+    uri: api/v3/register
+    metadata:
+      groupName: Authentication
+      groupDescription: ''
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'Register a new user'
+      description: 'Registers a new user and sends an email for account pending approval.'
+      authenticated: false
+      custom: []
+    headers:
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters: []
+    cleanUrlParameters: []
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters:
+      user_name:
+        name: user_name
+        description: 'Unique username for the user.'
+        required: true
+        example: johndoe
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+      email:
+        name: email
+        description: 'Unique email address.'
+        required: true
+        example: johndoe@example.com
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+      ecclesia_id:
+        name: ecclesia_id
+        description: 'nullable Ecclesia ID if applicable.'
+        required: false
+        example: 14
+        type: integer
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: false
+        custom: []
+      first_name:
+        name: first_name
+        description: 'First name of the user.'
+        required: true
+        example: John
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+      last_name:
+        name: last_name
+        description: 'Last name of the user.'
+        required: true
+        example: Doe
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+      middle_name:
+        name: middle_name
+        description: 'nullable Middle name of the user.'
+        required: false
+        example: A.
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: true
+        custom: []
+      email_confirmation:
+        name: email_confirmation
+        description: 'Confirmation of the email address. Must match `email`.'
+        required: true
+        example: johndoe@example.com
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+      password:
+        name: password
+        description: 'Password for the user. Must be at least 8 characters and include one special character (@$%&).'
+        required: true
+        example: Password@123
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+      password_confirmation:
+        name: password_confirmation
+        description: 'Confirmation of the password. Must match `password`.'
+        required: true
+        example: Password@123
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+      address:
+        name: address
+        description: 'Address of the user.'
+        required: true
+        example: '123 Main St'
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+      phone:
+        name: phone
+        description: "User's phone number."
+        required: true
+        example: '1234567890'
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+      city:
+        name: city
+        description: 'City of residence.'
+        required: true
+        example: Springfield
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+      country:
+        name: country
+        description: 'Country of residence.'
+        required: true
+        example: 3
+        type: integer
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: false
+        custom: []
+      state:
+        name: state
+        description: 'State of residence.'
+        required: true
+        example: 1
+        type: integer
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: false
+        custom: []
+      address2:
+        name: address2
+        description: 'nullable Additional address information.'
+        required: false
+        example: 'Apt 4B'
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+      zip:
+        name: zip
+        description: 'Zip code.'
+        required: true
+        example: '62704'
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+    cleanBodyParameters:
+      user_name: johndoe
+      email: johndoe@example.com
+      ecclesia_id: 14
+      first_name: John
+      last_name: Doe
+      middle_name: A.
+      email_confirmation: johndoe@example.com
+      password: Password@123
+      password_confirmation: Password@123
+      address: '123 Main St'
+      phone: '1234567890'
+      city: Springfield
+      country: 3
+      state: 1
+      address2: 'Apt 4B'
+      zip: '62704'
+    fileParameters: []
+    responses:
+      -
+        status: 200
+        content: |-
+          {
+           "message": "Please wait for admin approval",
+           "user": {
+               "id": 1,
+               "user_name": "johndoe",
+               "email": "johndoe@example.com",
+               "first_name": "John",
+               "last_name": "Doe",
+               "created_at": "2024-11-06T10:00:00.000000Z",
+               "updated_at": "2024-11-06T10:00:00.000000Z"
+           }
+          }
+        headers: []
+        description: ''
+        custom: []
+      -
+        status: 409
+        content: |-
+          {
+           "error": "Phone number already exists"
+          }
+        headers: []
+        description: ''
+        custom: []
+      -
+        status: 422
+        content: |-
+          {
+           "errors": {
+               "email": ["The email has already been taken."]
+           }
+          }
+        headers: []
+        description: ''
+        custom: []
+    responseFields: []
+    auth: []
+    controller: null
+    method: null
+    route: null
+    custom: []
+  -
+    httpMethods:
+      - POST
+    uri: api/v3/login
+    metadata:
+      groupName: Authentication
+      groupDescription: ''
+      subgroup: ''
+      subgroupDescription: ''
+      title: Login
+      description: ''
+      authenticated: false
+      custom: []
+    headers:
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters: []
+    cleanUrlParameters: []
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters:
+      user_name:
+        name: user_name
+        description: 'The username or email of the user.'
+        required: true
+        example: john_doe
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+      password:
+        name: password
+        description: 'The password of the user.'
+        required: true
+        example: password
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+    cleanBodyParameters:
+      user_name: john_doe
+      password: password
+    fileParameters: []
+    responses:
+      -
+        status: 200
+        content: |-
+          {
+          "token": "dsdsdsd"
+          "status": true
+          "message": "Login successful"
+          }
+        headers: []
+        description: ''
+        custom: []
+    responseFields: []
+    auth: []
+    controller: null
+    method: null
+    route: null
+    custom: []
+  -
+    httpMethods:
+      - POST
+    uri: api/v3/verify-otp
+    metadata:
+      groupName: Authentication
+      groupDescription: ''
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'Verify OTP'
+      description: ''
+      authenticated: false
+      custom: []
+    headers:
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters: []
+    cleanUrlParameters: []
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters:
+      otp:
+        name: otp
+        description: 'The OTP to verify.'
+        required: true
+        example: 1234
+        type: integer
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+      id:
+        name: id
+        description: 'The ID of the user.'
+        required: true
+        example: 1
+        type: integer
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+    cleanBodyParameters:
+      otp: 1234
+      id: 1
+    fileParameters: []
+    responses:
+      -
+        status: 200
+        content: |-
+          {
+          "status": true
+          "message": "OTP verified successfully"
+          }
+        headers: []
+        description: ''
+        custom: []
+    responseFields: []
+    auth: []
+    controller: null
+    method: null
+    route: null
+    custom: []
+  -
+    httpMethods:
+      - POST
+    uri: api/v3/register-agreement
+    metadata:
+      groupName: Authentication
+      groupDescription: ''
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'Register Agreement Details'
+      description: ''
+      authenticated: false
+      custom: []
+    headers:
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters: []
+    cleanUrlParameters: []
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters: []
+    cleanBodyParameters: []
+    fileParameters: []
+    responses:
+      -
+        status: 200
+        content: |-
+          {
+          "status": true
+          "message": "Data found"
+           "data": {
+             "id": 1,
+             "agreement_title": "LION ROARING PMA (PRIVATE MEMBERS ASSOCIATION) AGREEMENT",
+             "agreement_description": "<p>It is the responsibility of the members to read and review the Articles of Association of Lion Roaring PMA in its entirety and agree to adopt and comply to its belief, foundation and purpose of the Lion Roaring PMA. <a href=\"http://127.0.0.1:8001/login\"><strong>Click here to read the full document XXXXXXXX</strong></a></p><h4><strong>Each member agrees to the following excerpt taken from the Articles of Association of PMA:</strong></h4><ul><li>1. Lion Roaring PMA is a Private Members Association protected under the Constitution of the United States of America and the original constitution for these united States of America and the Maryland Constitution</li><li>2. Member agrees and is supportive to the mission and vision of the Lion Roaring</li><li>3. Member strives to contribute to the purpose of the PMA to fulfill the God given call to the founding members as it is written in Section 4 through 15 in the Article of Association</li><li>4. Member will not hold Lion Roaring PMA liable for any materials or contents posted in the website or any paperwork, written articles, education materials or others created within the PMA for its members’ benefits and private usage</li><li>5. Member’s agreement does not entitle a member to any financial or other interest in the Private Members Association or management thereof</li><li>6. Information regarding details of the association, any materials produced or created by Lion Roaring PMA including all paperwork, agreements, articles, PowerPoints presentations, word parchments, coaching, and education materials are private intellectual property of the PMA and will not be shared, replicated, dispersed or distributed with anyone outside the PMA without explicit written permission from the founder</li><li>7. Member’s due diligence is expected and member will hold harmless any member or founder of Lion Roaring PMA and any dispute shall be handled by the founder(s) with final decision for remedy made by the founder(s) and shall be accepted as a settled matter. (Article III for disputes resolution &amp; Article IV for Sovereignty in the Private)</li><li>8. As a private member of the Lion Roaring PMA, member is invoking its united States constitutional rights specifically the 1st, 4th, 5th, 9th and 10th and the Maryland Constitutional rights included in the Maryland Declaration of Rights Sections 1, 2, 6, 10, 24, 26, 36, 40 and 45 and as such take full responsibility for his or her behavior, such that his or her actions shall never constitute anything that can be determined to be of a “clear and present danger of a substantial evil.”</li><li>9. Any actions by the member which are not consistent with the values of the PMA can result in the founder’s decision to ask the member to leave the PMA</li><li>10. Member is connected with each other and the actions affect one another, therefore, the Lion Roaring PMA encourages and supports one another as a family and community</li><li>11. Member and those who are included in this member’s agreement and contract are solely responsible for member’s own outcome or results from participating or receiving any education materials, counsel, coaching, training, mentoring or other services provided by Lion Roaring PMA through its websites or any other resources made available to the members</li><li>12. The terminology used in these articles of organization and member’s agreement is used solely for clarification of the various usages for Private Members Association under universal contract law by and between free, spiritually free men and women, creations of nature and Natures God, whose lives and rights derive from God Almighty and unique Covenant of the man and/or woman with the Creator</li><li>13. Any reference within the Articles of Association to the man shall also include the woman and any reference to one people may include many people. This PMA shall be construed and interpreted in the private and all decisions or disputes will be final as settled by the founders in accordance with Article III</li><li>14. Member agrees that the elimination of one Item or segment of this Agreement does not eliminate the entirety of the Agreement but the Agreement will remain as Agreed</li></ul><p><br>&nbsp;</p>",
+             "created_at": "2024-04-18T08:40:32.000000Z",
+             "updated_at": "2024-04-18T08:40:32.000000Z"
+          }
+        headers: []
+        description: ''
+        custom: []
+    responseFields: []
+    auth: []
+    controller: null
+    method: null
+    route: null
+    custom: []
+  -
+    httpMethods:
+      - POST
+    uri: api/v3/user/logout
+    metadata:
+      groupName: Authentication
+      groupDescription: ''
+      subgroup: ''
+      subgroupDescription: ''
+      title: Logout
+      description: 'Logs out the user by revoking their access token.'
+      authenticated: false
+      custom: []
+    headers:
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters: []
+    cleanUrlParameters: []
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters: []
+    cleanBodyParameters: []
+    fileParameters: []
+    responses:
+      -
+        status: 200
+        content: |-
+          {
+            "message": "User logged out successfully"
           }
         headers: []
         description: ''

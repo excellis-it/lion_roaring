@@ -33,6 +33,7 @@ use App\Http\Controllers\Api\PolicyGuidenceController;
 use App\Http\Controllers\Api\RolePermissionController;
 use App\Http\Controllers\Api\EcclesiaController;
 use App\Http\Controllers\Api\EstoreCmsController;
+use App\Http\Controllers\Api\EstoreController;
 use App\Http\Controllers\Api\FCMController;
 use App\Http\Controllers\Api\SizeController;
 use App\Http\Controllers\Api\PrivateCollaborationController;
@@ -65,6 +66,17 @@ Route::prefix('v3')->middleware(['userActivity'])->group(function () {
     });
 
 
+    // Public E-Store (Ecom) APIs — Home, header/footer, menu, newsletter
+    Route::prefix('e-store')->group(function () {
+        // Public home endpoint that returns home CMS content and featured/new products
+        Route::get('/store-home', [EstoreController::class, 'storeHome']);
+        // Header (logo & menu categories)
+        Route::get('/header', [EstoreController::class, 'header']);
+        // Footer CMS
+        Route::get('/footer', [EstoreController::class, 'footer']);
+        // Newsletter subscribe (public)
+        Route::post('/newsletter', [EstoreController::class, 'newsletterStore']);
+    });
 
 
     Route::prefix('cms')->group(function () {
@@ -92,6 +104,7 @@ Route::prefix('v3')->middleware(['userActivity'])->group(function () {
         // site settings
         Route::get('site-settings', [CmsController::class, 'siteSettings']);
     });
+
     // donation
     Route::post('donation', [DonationController::class, 'donation']);
     Route::post('country-list', [DonationController::class, 'countryList']);
