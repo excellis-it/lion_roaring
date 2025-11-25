@@ -63,7 +63,7 @@ class EstoreController extends Controller
             $homeCms = EcomHomeCms::where('country_code', $countryCode)->orderBy('id', 'desc')->first();
             $header_logo = $homeCms ? $homeCms->header_logo : null;
             $categories = Category::where('status', 1)->orderBy('id', 'DESC')->get();
-            $pages = EcomCmsPage::where('status', 1)->where('country_code', $countryCode)->orderBy('id', 'asc')->get();
+            $pages = EcomCmsPage::where('country_code', $countryCode)->orderBy('id', 'asc')->get();
 
             return response()->json([
                 'data' => [
