@@ -1,203 +1,25 @@
-name: Education
+name: 'Estore CMS'
 description: ''
 endpoints:
   -
     httpMethods:
-      - GET
-    uri: api/v3/user/topics
-    metadata:
-      groupName: Education
-      groupDescription: ''
-      subgroup: Topics
-      subgroupDescription: 'APIs for managing topics in the system.'
-      title: 'Topic Lists'
-      description: ''
-      authenticated: true
-      custom: []
-    headers:
-      Content-Type: application/json
-      Accept: application/json
-    urlParameters: []
-    cleanUrlParameters: []
-    queryParameters: []
-    cleanQueryParameters: []
-    bodyParameters: []
-    cleanBodyParameters: []
-    fileParameters: []
-    responses:
-      -
-        status: 200
-        content: |-
-          {
-             "data": {
-                 "current_page": 1,
-                 "data": [
-                     {
-                         "id": 11,
-                         "topic_name": "Third Topic",
-                         "education_type": "Becoming a Leader",
-                         "created_at": "2024-09-09T11:10:22.000000Z",
-                         "updated_at": "2024-09-09T11:10:22.000000Z"
-                     },
-                     {
-                         "id": 10,
-                         "topic_name": "Third Topic",
-                         "education_type": "Becoming Christ Like",
-                         "created_at": "2024-09-09T11:05:52.000000Z",
-                         "updated_at": "2024-09-09T11:10:04.000000Z"
-                     },
-                 ],
-                 "first_page_url": "http:\/\/127.0.0.1:8000\/api\/v3\/user\/topics?page=1",
-                 "from": 1,
-                 "last_page": 1,
-                 "last_page_url": "http:\/\/127.0.0.1:8000\/api\/v3\/user\/topics?page=1",
-                 "links": [
-                     {
-                         "url": null,
-                         "label": "&laquo; Previous",
-                         "active": false
-                     },
-                     {
-                         "url": "http:\/\/127.0.0.1:8000\/api\/v3\/user\/topics?page=1",
-                         "label": "1",
-                         "active": true
-                     },
-                     {
-                         "url": null,
-                         "label": "Next &raquo;",
-                         "active": false
-                     }
-                 ],
-                 "next_page_url": null,
-                 "path": "http:\/\/127.0.0.1:8000\/api\/v3\/user\/topics",
-                 "per_page": 15,
-                 "prev_page_url": null,
-                 "to": 8,
-                 "total": 8
-             },
-             "status": true
-          }
-        headers: []
-        description: ''
-        custom: []
-    responseFields: []
-    auth: []
-    controller: null
-    method: null
-    route: null
-    custom: []
-  -
-    httpMethods:
       - POST
-    uri: api/v3/user/topics
+    uri: api/v3/user/estore-cms/dashboard
     metadata:
-      groupName: Education
+      groupName: 'Estore CMS'
       groupDescription: ''
-      subgroup: Topics
-      subgroupDescription: 'APIs for managing topics in the system.'
-      title: 'Create Topic'
-      description: ''
+      subgroup: ''
+      subgroupDescription: ''
+      title: Dashboard
+      description: 'Get counts for the dashboard (CMS pages + newsletter subscribers).'
       authenticated: true
       custom: []
     headers:
+      Authorization: 'Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJhdWQiOiIxIiwianRpIjoiNTJkNDhkYzhjNTc4ODIwZWVmODFmY2NhOWJiMmJiODFlZGE1MTUwMTVkYmU5YzdkNzFkODAyYTRmZWNhMWQ5ZGJhYWEzMTc2YjI1OTJmMTgiLCJpYXQiOjE3NjQwNjAzNDQuMDUyOTc0LCJuYmYiOjE3NjQwNjAzNDQuMDUyOTc1LCJleHAiOjE3OTU1OTYzNDQuMDQzNjUyLCJzdWIiOiIxNjgiLCJzY29wZXMiOltdfQ.X9tS38uM-UlrpFlYZihD_kmuCcSX_hdGsRBJcNGfrWXAClMiqeTxNTC45Ftxw-ddmDQ59t5xJLlnWp2Rx57itO-IHclNmwnVJDPAh1l9D8CZBGxBSoN0FvmbWeYDNQnA7ud77YLekrcSAuKMdBX3J1UKq6ytvWwi6ChnuRFqcQ-fpzK-jgkMhGm-WFHw0H3a34afdBdSUUFutESlwMvTqmXILYVcIwaJpEAjamf3rn6wIOEoD8mbxXJ6Gb6QrRO72Kt3z62vJp7yOeMsnXUkfioVSyJVwbkbchCs2Y4YZY3FEREbKysKNdHJhhqmn6AXvx66arAK3HeZoyf5eusfk26alhbEdJqsJgFP5VROV5l57q8VKhH8hAxg-oeidCGGJXPjLGeb-5iGPjdGhQ1Ng1i9kt7VDV4icb8B2AbNC2Ie9xP6b0R11PX4jUd8D3Jogf2f0ZhAs5Is8WHcrxsCyk3lWvgOyzWxpRx2lSpmBRmSwksPrKJk_7JuzDZ1Tdpz6mubjV6DzlmqDJJjf32hBIMnaYOhOUz5k1FzZ8mybsSbnM9UjzHYr5xIf4rkmVAfuPnU2FGu8NtCQaOtt9G-TziBFgT3ZjxBCL9QaaC39BRulGE6tyCAT8NM9svTD_AbNyINUzO2M0R61OXYQfzXEeiui-sO6eYIc3x_z-YdFFQ'
       Content-Type: application/json
       Accept: application/json
     urlParameters: []
     cleanUrlParameters: []
-    queryParameters: []
-    cleanQueryParameters: []
-    bodyParameters:
-      topic_name:
-        name: topic_name
-        description: 'The name of the topic.'
-        required: true
-        example: '"Sample Topic"'
-        type: string
-        enumValues: []
-        exampleWasSpecified: true
-        nullable: false
-        custom: []
-      education_type:
-        name: education_type
-        description: 'The type of education.'
-        required: true
-        example: '"General"'
-        type: string
-        enumValues: []
-        exampleWasSpecified: true
-        nullable: false
-        custom: []
-    cleanBodyParameters:
-      topic_name: '"Sample Topic"'
-      education_type: '"General"'
-    fileParameters: []
-    responses:
-      -
-        status: 200
-        content: |-
-          {
-            "message": "Topic created successfully.",
-            "status": true
-          }
-        headers: []
-        description: ''
-        custom: []
-      -
-        status: 400
-        content: |-
-          {
-            "message": "Validation failed for the provided data.",
-            "status": false
-          }
-        headers: []
-        description: ''
-        custom: []
-    responseFields: []
-    auth: []
-    controller: null
-    method: null
-    route: null
-    custom: []
-  -
-    httpMethods:
-      - GET
-    uri: 'api/v3/user/topics/{topic}/edit'
-    metadata:
-      groupName: Education
-      groupDescription: ''
-      subgroup: Topics
-      subgroupDescription: 'APIs for managing topics in the system.'
-      title: 'View Topic'
-      description: ''
-      authenticated: true
-      custom: []
-    headers:
-      Content-Type: application/json
-      Accept: application/json
-    urlParameters:
-      topic:
-        name: topic
-        description: 'The topic.'
-        required: true
-        example: est
-        type: string
-        enumValues: []
-        exampleWasSpecified: false
-        nullable: false
-        custom: []
-      id:
-        name: id
-        description: 'The ID of the topic.'
-        required: true
-        example: 1
-        type: integer
-        enumValues: []
-        exampleWasSpecified: true
-        nullable: false
-        custom: []
-    cleanUrlParameters:
-      topic: est
-      id: 1
     queryParameters: []
     cleanQueryParameters: []
     bodyParameters: []
@@ -209,17 +31,196 @@ endpoints:
         content: |-
           {
             "data": {
-              "id": 1,
-              "topic_name": "Sample Topic",
-              "education_type": "General"
+              "pages": 12,
+              "newsletter": 34
             },
             "status": true
           }
         headers: []
         description: ''
         custom: []
+      -
+        status: 201
+        content: |-
+          {
+            "message": "Something went wrong. Please try again later.",
+            "status": false
+          }
+        headers: []
+        description: ''
+        custom: []
     responseFields: []
-    auth: []
+    auth:
+      - headers
+      - Authorization
+      - 'Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJhdWQiOiIxIiwianRpIjoiNTJkNDhkYzhjNTc4ODIwZWVmODFmY2NhOWJiMmJiODFlZGE1MTUwMTVkYmU5YzdkNzFkODAyYTRmZWNhMWQ5ZGJhYWEzMTc2YjI1OTJmMTgiLCJpYXQiOjE3NjQwNjAzNDQuMDUyOTc0LCJuYmYiOjE3NjQwNjAzNDQuMDUyOTc1LCJleHAiOjE3OTU1OTYzNDQuMDQzNjUyLCJzdWIiOiIxNjgiLCJzY29wZXMiOltdfQ.X9tS38uM-UlrpFlYZihD_kmuCcSX_hdGsRBJcNGfrWXAClMiqeTxNTC45Ftxw-ddmDQ59t5xJLlnWp2Rx57itO-IHclNmwnVJDPAh1l9D8CZBGxBSoN0FvmbWeYDNQnA7ud77YLekrcSAuKMdBX3J1UKq6ytvWwi6ChnuRFqcQ-fpzK-jgkMhGm-WFHw0H3a34afdBdSUUFutESlwMvTqmXILYVcIwaJpEAjamf3rn6wIOEoD8mbxXJ6Gb6QrRO72Kt3z62vJp7yOeMsnXUkfioVSyJVwbkbchCs2Y4YZY3FEREbKysKNdHJhhqmn6AXvx66arAK3HeZoyf5eusfk26alhbEdJqsJgFP5VROV5l57q8VKhH8hAxg-oeidCGGJXPjLGeb-5iGPjdGhQ1Ng1i9kt7VDV4icb8B2AbNC2Ie9xP6b0R11PX4jUd8D3Jogf2f0ZhAs5Is8WHcrxsCyk3lWvgOyzWxpRx2lSpmBRmSwksPrKJk_7JuzDZ1Tdpz6mubjV6DzlmqDJJjf32hBIMnaYOhOUz5k1FzZ8mybsSbnM9UjzHYr5xIf4rkmVAfuPnU2FGu8NtCQaOtt9G-TziBFgT3ZjxBCL9QaaC39BRulGE6tyCAT8NM9svTD_AbNyINUzO2M0R61OXYQfzXEeiui-sO6eYIc3x_z-YdFFQ'
+    controller: null
+    method: null
+    route: null
+    custom: []
+  -
+    httpMethods:
+      - POST
+    uri: api/v3/user/estore-cms/list
+    metadata:
+      groupName: 'Estore CMS'
+      groupDescription: ''
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'CMS LIST'
+      description: ''
+      authenticated: true
+      custom: []
+    headers:
+      Authorization: 'Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJhdWQiOiIxIiwianRpIjoiNTJkNDhkYzhjNTc4ODIwZWVmODFmY2NhOWJiMmJiODFlZGE1MTUwMTVkYmU5YzdkNzFkODAyYTRmZWNhMWQ5ZGJhYWEzMTc2YjI1OTJmMTgiLCJpYXQiOjE3NjQwNjAzNDQuMDUyOTc0LCJuYmYiOjE3NjQwNjAzNDQuMDUyOTc1LCJleHAiOjE3OTU1OTYzNDQuMDQzNjUyLCJzdWIiOiIxNjgiLCJzY29wZXMiOltdfQ.X9tS38uM-UlrpFlYZihD_kmuCcSX_hdGsRBJcNGfrWXAClMiqeTxNTC45Ftxw-ddmDQ59t5xJLlnWp2Rx57itO-IHclNmwnVJDPAh1l9D8CZBGxBSoN0FvmbWeYDNQnA7ud77YLekrcSAuKMdBX3J1UKq6ytvWwi6ChnuRFqcQ-fpzK-jgkMhGm-WFHw0H3a34afdBdSUUFutESlwMvTqmXILYVcIwaJpEAjamf3rn6wIOEoD8mbxXJ6Gb6QrRO72Kt3z62vJp7yOeMsnXUkfioVSyJVwbkbchCs2Y4YZY3FEREbKysKNdHJhhqmn6AXvx66arAK3HeZoyf5eusfk26alhbEdJqsJgFP5VROV5l57q8VKhH8hAxg-oeidCGGJXPjLGeb-5iGPjdGhQ1Ng1i9kt7VDV4icb8B2AbNC2Ie9xP6b0R11PX4jUd8D3Jogf2f0ZhAs5Is8WHcrxsCyk3lWvgOyzWxpRx2lSpmBRmSwksPrKJk_7JuzDZ1Tdpz6mubjV6DzlmqDJJjf32hBIMnaYOhOUz5k1FzZ8mybsSbnM9UjzHYr5xIf4rkmVAfuPnU2FGu8NtCQaOtt9G-TziBFgT3ZjxBCL9QaaC39BRulGE6tyCAT8NM9svTD_AbNyINUzO2M0R61OXYQfzXEeiui-sO6eYIc3x_z-YdFFQ'
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters: []
+    cleanUrlParameters: []
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters: []
+    cleanBodyParameters: []
+    fileParameters: []
+    responses: []
+    responseFields: []
+    auth:
+      - headers
+      - Authorization
+      - 'Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJhdWQiOiIxIiwianRpIjoiNTJkNDhkYzhjNTc4ODIwZWVmODFmY2NhOWJiMmJiODFlZGE1MTUwMTVkYmU5YzdkNzFkODAyYTRmZWNhMWQ5ZGJhYWEzMTc2YjI1OTJmMTgiLCJpYXQiOjE3NjQwNjAzNDQuMDUyOTc0LCJuYmYiOjE3NjQwNjAzNDQuMDUyOTc1LCJleHAiOjE3OTU1OTYzNDQuMDQzNjUyLCJzdWIiOiIxNjgiLCJzY29wZXMiOltdfQ.X9tS38uM-UlrpFlYZihD_kmuCcSX_hdGsRBJcNGfrWXAClMiqeTxNTC45Ftxw-ddmDQ59t5xJLlnWp2Rx57itO-IHclNmwnVJDPAh1l9D8CZBGxBSoN0FvmbWeYDNQnA7ud77YLekrcSAuKMdBX3J1UKq6ytvWwi6ChnuRFqcQ-fpzK-jgkMhGm-WFHw0H3a34afdBdSUUFutESlwMvTqmXILYVcIwaJpEAjamf3rn6wIOEoD8mbxXJ6Gb6QrRO72Kt3z62vJp7yOeMsnXUkfioVSyJVwbkbchCs2Y4YZY3FEREbKysKNdHJhhqmn6AXvx66arAK3HeZoyf5eusfk26alhbEdJqsJgFP5VROV5l57q8VKhH8hAxg-oeidCGGJXPjLGeb-5iGPjdGhQ1Ng1i9kt7VDV4icb8B2AbNC2Ie9xP6b0R11PX4jUd8D3Jogf2f0ZhAs5Is8WHcrxsCyk3lWvgOyzWxpRx2lSpmBRmSwksPrKJk_7JuzDZ1Tdpz6mubjV6DzlmqDJJjf32hBIMnaYOhOUz5k1FzZ8mybsSbnM9UjzHYr5xIf4rkmVAfuPnU2FGu8NtCQaOtt9G-TziBFgT3ZjxBCL9QaaC39BRulGE6tyCAT8NM9svTD_AbNyINUzO2M0R61OXYQfzXEeiui-sO6eYIc3x_z-YdFFQ'
+    controller: null
+    method: null
+    route: null
+    custom: []
+  -
+    httpMethods:
+      - POST
+    uri: api/v3/user/estore-cms/store
+    metadata:
+      groupName: 'Estore CMS'
+      groupDescription: ''
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'Store CMS Page'
+      description: 'Create a new CMS page.'
+      authenticated: true
+      custom: []
+    headers:
+      Authorization: 'Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJhdWQiOiIxIiwianRpIjoiNTJkNDhkYzhjNTc4ODIwZWVmODFmY2NhOWJiMmJiODFlZGE1MTUwMTVkYmU5YzdkNzFkODAyYTRmZWNhMWQ5ZGJhYWEzMTc2YjI1OTJmMTgiLCJpYXQiOjE3NjQwNjAzNDQuMDUyOTc0LCJuYmYiOjE3NjQwNjAzNDQuMDUyOTc1LCJleHAiOjE3OTU1OTYzNDQuMDQzNjUyLCJzdWIiOiIxNjgiLCJzY29wZXMiOltdfQ.X9tS38uM-UlrpFlYZihD_kmuCcSX_hdGsRBJcNGfrWXAClMiqeTxNTC45Ftxw-ddmDQ59t5xJLlnWp2Rx57itO-IHclNmwnVJDPAh1l9D8CZBGxBSoN0FvmbWeYDNQnA7ud77YLekrcSAuKMdBX3J1UKq6ytvWwi6ChnuRFqcQ-fpzK-jgkMhGm-WFHw0H3a34afdBdSUUFutESlwMvTqmXILYVcIwaJpEAjamf3rn6wIOEoD8mbxXJ6Gb6QrRO72Kt3z62vJp7yOeMsnXUkfioVSyJVwbkbchCs2Y4YZY3FEREbKysKNdHJhhqmn6AXvx66arAK3HeZoyf5eusfk26alhbEdJqsJgFP5VROV5l57q8VKhH8hAxg-oeidCGGJXPjLGeb-5iGPjdGhQ1Ng1i9kt7VDV4icb8B2AbNC2Ie9xP6b0R11PX4jUd8D3Jogf2f0ZhAs5Is8WHcrxsCyk3lWvgOyzWxpRx2lSpmBRmSwksPrKJk_7JuzDZ1Tdpz6mubjV6DzlmqDJJjf32hBIMnaYOhOUz5k1FzZ8mybsSbnM9UjzHYr5xIf4rkmVAfuPnU2FGu8NtCQaOtt9G-TziBFgT3ZjxBCL9QaaC39BRulGE6tyCAT8NM9svTD_AbNyINUzO2M0R61OXYQfzXEeiui-sO6eYIc3x_z-YdFFQ'
+      Content-Type: multipart/form-data
+      Accept: application/json
+    urlParameters: []
+    cleanUrlParameters: []
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters:
+      page_name:
+        name: page_name
+        description: 'The internal page name.'
+        required: true
+        example: '"about_us"'
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+      page_title:
+        name: page_title
+        description: 'The page title.'
+        required: true
+        example: '"About Us"'
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+      page_content:
+        name: page_content
+        description: 'The page content.'
+        required: true
+        example: '"This is the about us content..."'
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+      page_banner_image:
+        name: page_banner_image
+        description: 'Banner image file (jpeg, png, jpg, gif, svg).'
+        required: true
+        example: null
+        type: file
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: false
+        custom: []
+      slug:
+        name: slug
+        description: 'Unique slug for the page.'
+        required: true
+        example: '"about-us"'
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+    cleanBodyParameters:
+      page_name: '"about_us"'
+      page_title: '"About Us"'
+      page_content: '"This is the about us content..."'
+      slug: '"about-us"'
+    fileParameters:
+      page_banner_image: null
+    responses:
+      -
+        status: 201
+        content: |-
+          {
+            "data": {
+              "id": 12,
+              "page_name": "about_us",
+              "page_title": "About Us",
+              "page_content": "This is the about us content...",
+              "page_banner_image": "https://example.com/storage/ecom_cms/banner123.jpg",
+              "slug": "about-us",
+              "created_at": "2025-10-17T12:00:00Z",
+              "updated_at": "2025-10-17T12:00:00Z"
+            },
+            "message": "CMS page added successfully",
+            "status": true
+          }
+        headers: []
+        description: ''
+        custom: []
+      -
+        status: 201
+        content: |-
+          {
+            "message": "Validation failed.",
+            "errors": {
+              "page_name": ["The page name field is required."],
+              "slug": ["The slug has already been taken."]
+            },
+            "status": false
+          }
+        headers: []
+        description: ''
+        custom: []
+      -
+        status: 201
+        content: |-
+          {
+            "message": "Something went wrong. Please try again later.",
+            "status": false
+          }
+        headers: []
+        description: ''
+        custom: []
+    responseFields: []
+    auth:
+      - headers
+      - Authorization
+      - 'Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJhdWQiOiIxIiwianRpIjoiNTJkNDhkYzhjNTc4ODIwZWVmODFmY2NhOWJiMmJiODFlZGE1MTUwMTVkYmU5YzdkNzFkODAyYTRmZWNhMWQ5ZGJhYWEzMTc2YjI1OTJmMTgiLCJpYXQiOjE3NjQwNjAzNDQuMDUyOTc0LCJuYmYiOjE3NjQwNjAzNDQuMDUyOTc1LCJleHAiOjE3OTU1OTYzNDQuMDQzNjUyLCJzdWIiOiIxNjgiLCJzY29wZXMiOltdfQ.X9tS38uM-UlrpFlYZihD_kmuCcSX_hdGsRBJcNGfrWXAClMiqeTxNTC45Ftxw-ddmDQ59t5xJLlnWp2Rx57itO-IHclNmwnVJDPAh1l9D8CZBGxBSoN0FvmbWeYDNQnA7ud77YLekrcSAuKMdBX3J1UKq6ytvWwi6ChnuRFqcQ-fpzK-jgkMhGm-WFHw0H3a34afdBdSUUFutESlwMvTqmXILYVcIwaJpEAjamf3rn6wIOEoD8mbxXJ6Gb6QrRO72Kt3z62vJp7yOeMsnXUkfioVSyJVwbkbchCs2Y4YZY3FEREbKysKNdHJhhqmn6AXvx66arAK3HeZoyf5eusfk26alhbEdJqsJgFP5VROV5l57q8VKhH8hAxg-oeidCGGJXPjLGeb-5iGPjdGhQ1Ng1i9kt7VDV4icb8B2AbNC2Ie9xP6b0R11PX4jUd8D3Jogf2f0ZhAs5Is8WHcrxsCyk3lWvgOyzWxpRx2lSpmBRmSwksPrKJk_7JuzDZ1Tdpz6mubjV6DzlmqDJJjf32hBIMnaYOhOUz5k1FzZ8mybsSbnM9UjzHYr5xIf4rkmVAfuPnU2FGu8NtCQaOtt9G-TziBFgT3ZjxBCL9QaaC39BRulGE6tyCAT8NM9svTD_AbNyINUzO2M0R61OXYQfzXEeiui-sO6eYIc3x_z-YdFFQ'
     controller: null
     method: null
     route: null
@@ -227,313 +228,728 @@ endpoints:
   -
     httpMethods:
       - PUT
-      - PATCH
-    uri: 'api/v3/user/topics/{id}'
+    uri: 'api/v3/user/estore-cms/update/{id}'
     metadata:
-      groupName: Education
+      groupName: 'Estore CMS'
       groupDescription: ''
-      subgroup: Topics
-      subgroupDescription: 'APIs for managing topics in the system.'
-      title: 'Update Topic'
-      description: ''
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'Update CMS Page'
+      description: 'Update an existing CMS page by ID.'
       authenticated: true
       custom: []
     headers:
-      Content-Type: application/json
+      Authorization: 'Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJhdWQiOiIxIiwianRpIjoiNTJkNDhkYzhjNTc4ODIwZWVmODFmY2NhOWJiMmJiODFlZGE1MTUwMTVkYmU5YzdkNzFkODAyYTRmZWNhMWQ5ZGJhYWEzMTc2YjI1OTJmMTgiLCJpYXQiOjE3NjQwNjAzNDQuMDUyOTc0LCJuYmYiOjE3NjQwNjAzNDQuMDUyOTc1LCJleHAiOjE3OTU1OTYzNDQuMDQzNjUyLCJzdWIiOiIxNjgiLCJzY29wZXMiOltdfQ.X9tS38uM-UlrpFlYZihD_kmuCcSX_hdGsRBJcNGfrWXAClMiqeTxNTC45Ftxw-ddmDQ59t5xJLlnWp2Rx57itO-IHclNmwnVJDPAh1l9D8CZBGxBSoN0FvmbWeYDNQnA7ud77YLekrcSAuKMdBX3J1UKq6ytvWwi6ChnuRFqcQ-fpzK-jgkMhGm-WFHw0H3a34afdBdSUUFutESlwMvTqmXILYVcIwaJpEAjamf3rn6wIOEoD8mbxXJ6Gb6QrRO72Kt3z62vJp7yOeMsnXUkfioVSyJVwbkbchCs2Y4YZY3FEREbKysKNdHJhhqmn6AXvx66arAK3HeZoyf5eusfk26alhbEdJqsJgFP5VROV5l57q8VKhH8hAxg-oeidCGGJXPjLGeb-5iGPjdGhQ1Ng1i9kt7VDV4icb8B2AbNC2Ie9xP6b0R11PX4jUd8D3Jogf2f0ZhAs5Is8WHcrxsCyk3lWvgOyzWxpRx2lSpmBRmSwksPrKJk_7JuzDZ1Tdpz6mubjV6DzlmqDJJjf32hBIMnaYOhOUz5k1FzZ8mybsSbnM9UjzHYr5xIf4rkmVAfuPnU2FGu8NtCQaOtt9G-TziBFgT3ZjxBCL9QaaC39BRulGE6tyCAT8NM9svTD_AbNyINUzO2M0R61OXYQfzXEeiui-sO6eYIc3x_z-YdFFQ'
+      Content-Type: multipart/form-data
       Accept: application/json
     urlParameters:
       id:
         name: id
-        description: 'The ID of the topic to update.'
+        description: 'The ID of the CMS page.'
         required: true
-        example: 1
+        example: 5
         type: integer
         enumValues: []
         exampleWasSpecified: true
         nullable: false
         custom: []
     cleanUrlParameters:
-      id: 1
+      id: 5
     queryParameters: []
     cleanQueryParameters: []
     bodyParameters:
-      topic_name:
-        name: topic_name
-        description: 'The name of the topic.'
+      page_name:
+        name: page_name
+        description: 'The internal page name.'
         required: true
-        example: '"Updated Topic"'
+        example: '"About Us"'
         type: string
         enumValues: []
         exampleWasSpecified: true
         nullable: false
         custom: []
-      education_type:
-        name: education_type
-        description: 'The type of education.'
+      page_title:
+        name: page_title
+        description: 'The page title.'
         required: true
-        example: '"General"'
+        example: '"About Our Company"'
         type: string
         enumValues: []
         exampleWasSpecified: true
+        nullable: false
+        custom: []
+      page_content:
+        name: page_content
+        description: 'The content of the page.'
+        required: true
+        example: '"<p>Welcome...</p>"'
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+      slug:
+        name: slug
+        description: 'Unique slug for the page.'
+        required: true
+        example: '"about-us"'
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+      page_banner_image:
+        name: page_banner_image
+        description: 'optional The banner image for the page.'
+        required: false
+        example: null
+        type: file
+        enumValues: []
+        exampleWasSpecified: false
         nullable: false
         custom: []
     cleanBodyParameters:
-      topic_name: '"Updated Topic"'
-      education_type: '"General"'
-    fileParameters: []
+      page_name: '"About Us"'
+      page_title: '"About Our Company"'
+      page_content: '"<p>Welcome...</p>"'
+      slug: '"about-us"'
+    fileParameters:
+      page_banner_image: null
     responses:
       -
         status: 200
         content: |-
           {
-            "message": "Topic updated successfully.",
+            "data": {
+              "id": 5,
+              "page_name": "About Us",
+              "page_title": "About Our Company",
+              "page_content": "<p>Welcome...</p>",
+              "slug": "about-us",
+              "page_banner_image": "https://example.com/storage/ecom_cms/banner.jpg",
+              "updated_at": "2025-10-17T12:00:00Z"
+            },
+            "message": "CMS page updated successfully.",
             "status": true
           }
         headers: []
         description: ''
         custom: []
       -
-        status: 400
+        status: 201
         content: |-
           {
-            "message": "Validation failed for the provided data.",
+            "message": "Validation failed.",
+            "errors": {
+              "slug": ["The slug has already been taken."],
+              "page_name": ["The page name field is required."]
+            },
+            "status": false
+          }
+        headers: []
+        description: ''
+        custom: []
+      -
+        status: 201
+        content: |-
+          {
+            "message": "CMS page not found.",
+            "status": false
+          }
+        headers: []
+        description: ''
+        custom: []
+      -
+        status: 201
+        content: |-
+          {
+            "message": "Something went wrong. Please try again later.",
             "status": false
           }
         headers: []
         description: ''
         custom: []
     responseFields: []
-    auth: []
+    auth:
+      - headers
+      - Authorization
+      - 'Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJhdWQiOiIxIiwianRpIjoiNTJkNDhkYzhjNTc4ODIwZWVmODFmY2NhOWJiMmJiODFlZGE1MTUwMTVkYmU5YzdkNzFkODAyYTRmZWNhMWQ5ZGJhYWEzMTc2YjI1OTJmMTgiLCJpYXQiOjE3NjQwNjAzNDQuMDUyOTc0LCJuYmYiOjE3NjQwNjAzNDQuMDUyOTc1LCJleHAiOjE3OTU1OTYzNDQuMDQzNjUyLCJzdWIiOiIxNjgiLCJzY29wZXMiOltdfQ.X9tS38uM-UlrpFlYZihD_kmuCcSX_hdGsRBJcNGfrWXAClMiqeTxNTC45Ftxw-ddmDQ59t5xJLlnWp2Rx57itO-IHclNmwnVJDPAh1l9D8CZBGxBSoN0FvmbWeYDNQnA7ud77YLekrcSAuKMdBX3J1UKq6ytvWwi6ChnuRFqcQ-fpzK-jgkMhGm-WFHw0H3a34afdBdSUUFutESlwMvTqmXILYVcIwaJpEAjamf3rn6wIOEoD8mbxXJ6Gb6QrRO72Kt3z62vJp7yOeMsnXUkfioVSyJVwbkbchCs2Y4YZY3FEREbKysKNdHJhhqmn6AXvx66arAK3HeZoyf5eusfk26alhbEdJqsJgFP5VROV5l57q8VKhH8hAxg-oeidCGGJXPjLGeb-5iGPjdGhQ1Ng1i9kt7VDV4icb8B2AbNC2Ie9xP6b0R11PX4jUd8D3Jogf2f0ZhAs5Is8WHcrxsCyk3lWvgOyzWxpRx2lSpmBRmSwksPrKJk_7JuzDZ1Tdpz6mubjV6DzlmqDJJjf32hBIMnaYOhOUz5k1FzZ8mybsSbnM9UjzHYr5xIf4rkmVAfuPnU2FGu8NtCQaOtt9G-TziBFgT3ZjxBCL9QaaC39BRulGE6tyCAT8NM9svTD_AbNyINUzO2M0R61OXYQfzXEeiui-sO6eYIc3x_z-YdFFQ'
     controller: null
     method: null
     route: null
     custom: []
   -
     httpMethods:
-      - GET
-    uri: 'api/v3/user/topics/delete/{id}'
+      - POST
+    uri: api/v3/user/estore-cms/delete
     metadata:
-      groupName: Education
+      groupName: 'Estore CMS'
       groupDescription: ''
-      subgroup: Topics
-      subgroupDescription: 'APIs for managing topics in the system.'
-      title: 'Delete Topic'
-      description: ''
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'Delete CMS Page'
+      description: 'Delete an existing CMS page by ID.'
       authenticated: true
       custom: []
     headers:
+      Authorization: 'Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJhdWQiOiIxIiwianRpIjoiNTJkNDhkYzhjNTc4ODIwZWVmODFmY2NhOWJiMmJiODFlZGE1MTUwMTVkYmU5YzdkNzFkODAyYTRmZWNhMWQ5ZGJhYWEzMTc2YjI1OTJmMTgiLCJpYXQiOjE3NjQwNjAzNDQuMDUyOTc0LCJuYmYiOjE3NjQwNjAzNDQuMDUyOTc1LCJleHAiOjE3OTU1OTYzNDQuMDQzNjUyLCJzdWIiOiIxNjgiLCJzY29wZXMiOltdfQ.X9tS38uM-UlrpFlYZihD_kmuCcSX_hdGsRBJcNGfrWXAClMiqeTxNTC45Ftxw-ddmDQ59t5xJLlnWp2Rx57itO-IHclNmwnVJDPAh1l9D8CZBGxBSoN0FvmbWeYDNQnA7ud77YLekrcSAuKMdBX3J1UKq6ytvWwi6ChnuRFqcQ-fpzK-jgkMhGm-WFHw0H3a34afdBdSUUFutESlwMvTqmXILYVcIwaJpEAjamf3rn6wIOEoD8mbxXJ6Gb6QrRO72Kt3z62vJp7yOeMsnXUkfioVSyJVwbkbchCs2Y4YZY3FEREbKysKNdHJhhqmn6AXvx66arAK3HeZoyf5eusfk26alhbEdJqsJgFP5VROV5l57q8VKhH8hAxg-oeidCGGJXPjLGeb-5iGPjdGhQ1Ng1i9kt7VDV4icb8B2AbNC2Ie9xP6b0R11PX4jUd8D3Jogf2f0ZhAs5Is8WHcrxsCyk3lWvgOyzWxpRx2lSpmBRmSwksPrKJk_7JuzDZ1Tdpz6mubjV6DzlmqDJJjf32hBIMnaYOhOUz5k1FzZ8mybsSbnM9UjzHYr5xIf4rkmVAfuPnU2FGu8NtCQaOtt9G-TziBFgT3ZjxBCL9QaaC39BRulGE6tyCAT8NM9svTD_AbNyINUzO2M0R61OXYQfzXEeiui-sO6eYIc3x_z-YdFFQ'
       Content-Type: application/json
       Accept: application/json
-    urlParameters:
+    urlParameters: []
+    cleanUrlParameters: []
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters:
       id:
         name: id
-        description: 'The ID of the topic.'
+        description: 'The ID of the CMS page to delete.'
         required: true
-        example: 1
+        example: 5
         type: integer
         enumValues: []
         exampleWasSpecified: true
         nullable: false
         custom: []
-    cleanUrlParameters:
-      id: 1
-    queryParameters: []
-    cleanQueryParameters: []
-    bodyParameters: []
-    cleanBodyParameters: []
+    cleanBodyParameters:
+      id: 5
     fileParameters: []
     responses:
       -
         status: 200
         content: |-
           {
-            "message": "Topic deleted successfully.",
+            "message": "CMS page deleted successfully.",
             "status": true
           }
         headers: []
         description: ''
         custom: []
-    responseFields: []
-    auth: []
-    controller: null
-    method: null
-    route: null
-    custom: []
-  -
-    httpMethods:
-      - GET
-    uri: api/v3/user/becoming-sovereign
-    metadata:
-      groupName: Education
-      groupDescription: ''
-      subgroup: 'Becoming Sovereign'
-      subgroupDescription: 'APIs for managing becoming sovereign files and topics.'
-      title: 'Becoming Sovereigns List'
-      description: ''
-      authenticated: true
-      custom: []
-    headers:
-      Content-Type: application/json
-      Accept: application/json
-    urlParameters: []
-    cleanUrlParameters: []
-    queryParameters:
-      topic:
-        name: topic
-        description: 'The ID of the topic to filter by.'
-        required: false
-        example: 1
-        type: integer
-        enumValues: []
-        exampleWasSpecified: true
-        nullable: false
-        custom: []
-    cleanQueryParameters:
-      topic: 1
-    bodyParameters: []
-    cleanBodyParameters: []
-    fileParameters: []
-    responses:
       -
-        status: 200
+        status: 201
         content: |-
-          *{
-             "data": {
-                 "current_page": 1,
-                 "data": [
-
-                     {
-                         "id": 60,
-                         "user_id": 1,
-                         "file_name": "topic- Back to the Basics Description and Outline.docx",
-                         "file_extension": "docx",
-                         "topic_id": 4,
-                         "type": "Becoming Sovereign",
-                         "file": "files\/qm5d3aJ5Z6esEep7WZAs19BLo4KRsjXp9w1RITYv.docx",
-                         "created_at": "2024-08-02T09:32:31.000000Z",
-                         "updated_at": "2024-08-02T09:32:31.000000Z"
-                     },
-                     {
-                         "id": 59,
-                         "user_id": 1,
-                         "file_name": "topic-Back to the Basics Part 1.pptx",
-                         "file_extension": "pptx",
-                         "topic_id": 4,
-                         "type": "Becoming Sovereign",
-                         "file": "files\/bv7C4BiH0N1s8WXrVZpPV2s6YTWN5sVUQs5PE584.pptx",
-                         "created_at": "2024-08-02T09:31:40.000000Z",
-                         "updated_at": "2024-08-02T09:31:40.000000Z"
-                     },
-                     {
-                         "id": 57,
-                         "user_id": 1,
-                         "file_name": "topic-Back to the Basics Part 3.pptx",
-                         "file_extension": "pptx",
-                         "topic_id": 4,
-                         "type": "Becoming Sovereign",
-                         "file": "files\/BDp5AHtA4ZIsqziYPUxCbRL91bcbSvAVv4m8S9Zs.pptx",
-                         "created_at": "2024-08-02T09:29:56.000000Z",
-                         "updated_at": "2024-08-02T09:29:56.000000Z"
-                     }
-                 ],
-                 "first_page_url": "http:\/\/127.0.0.1:8000\/api\/v3\/user\/becoming-sovereign?page=1",
-                 "from": 1,
-                 "last_page": 1,
-                 "last_page_url": "http:\/\/127.0.0.1:8000\/api\/v3\/user\/becoming-sovereign?page=1",
-                 "links": [
-                     {
-                         "url": null,
-                         "label": "&laquo; Previous",
-                         "active": false
-                     },
-                     {
-                         "url": "http:\/\/127.0.0.1:8000\/api\/v3\/user\/becoming-sovereign?page=1",
-                         "label": "1",
-                         "active": true
-                     },
-                     {
-                         "url": null,
-                         "label": "Next &raquo;",
-                         "active": false
-                     }
-                 ],
-                 "next_page_url": null,
-                 "path": "http:\/\/127.0.0.1:8000\/api\/v3\/user\/becoming-sovereign",
-                 "per_page": 15,
-                 "prev_page_url": null,
-                 "to": 11,
-                 "total": 11
-             },
-             "topics": [
-                 {
-                     "id": 12,
-                     "topic_name": "abcd",
-                     "education_type": "Becoming Sovereign",
-                     "created_at": "2024-11-08T09:42:48.000000Z",
-                     "updated_at": "2024-11-08T09:42:48.000000Z"
-                 },
-                 {
-                     "id": 6,
-                     "topic_name": "Leadership Development",
-                     "education_type": "Becoming Sovereign",
-                     "created_at": "2024-08-02T09:17:16.000000Z",
-                     "updated_at": "2024-08-16T08:58:34.000000Z"
-                 },
-             ],
-             "new_topic": "",
-             "status": true
+          {
+            "message": "CMS page not found.",
+            "status": false
+          }
+        headers: []
+        description: ''
+        custom: []
+      -
+        status: 201
+        content: |-
+          {
+            "message": "Something went wrong. Please try again later.",
+            "status": false
           }
         headers: []
         description: ''
         custom: []
     responseFields: []
-    auth: []
+    auth:
+      - headers
+      - Authorization
+      - 'Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJhdWQiOiIxIiwianRpIjoiNTJkNDhkYzhjNTc4ODIwZWVmODFmY2NhOWJiMmJiODFlZGE1MTUwMTVkYmU5YzdkNzFkODAyYTRmZWNhMWQ5ZGJhYWEzMTc2YjI1OTJmMTgiLCJpYXQiOjE3NjQwNjAzNDQuMDUyOTc0LCJuYmYiOjE3NjQwNjAzNDQuMDUyOTc1LCJleHAiOjE3OTU1OTYzNDQuMDQzNjUyLCJzdWIiOiIxNjgiLCJzY29wZXMiOltdfQ.X9tS38uM-UlrpFlYZihD_kmuCcSX_hdGsRBJcNGfrWXAClMiqeTxNTC45Ftxw-ddmDQ59t5xJLlnWp2Rx57itO-IHclNmwnVJDPAh1l9D8CZBGxBSoN0FvmbWeYDNQnA7ud77YLekrcSAuKMdBX3J1UKq6ytvWwi6ChnuRFqcQ-fpzK-jgkMhGm-WFHw0H3a34afdBdSUUFutESlwMvTqmXILYVcIwaJpEAjamf3rn6wIOEoD8mbxXJ6Gb6QrRO72Kt3z62vJp7yOeMsnXUkfioVSyJVwbkbchCs2Y4YZY3FEREbKysKNdHJhhqmn6AXvx66arAK3HeZoyf5eusfk26alhbEdJqsJgFP5VROV5l57q8VKhH8hAxg-oeidCGGJXPjLGeb-5iGPjdGhQ1Ng1i9kt7VDV4icb8B2AbNC2Ie9xP6b0R11PX4jUd8D3Jogf2f0ZhAs5Is8WHcrxsCyk3lWvgOyzWxpRx2lSpmBRmSwksPrKJk_7JuzDZ1Tdpz6mubjV6DzlmqDJJjf32hBIMnaYOhOUz5k1FzZ8mybsSbnM9UjzHYr5xIf4rkmVAfuPnU2FGu8NtCQaOtt9G-TziBFgT3ZjxBCL9QaaC39BRulGE6tyCAT8NM9svTD_AbNyINUzO2M0R61OXYQfzXEeiui-sO6eYIc3x_z-YdFFQ'
     controller: null
     method: null
     route: null
     custom: []
   -
     httpMethods:
-      - GET
-    uri: api/v3/user/becoming-sovereign/list-by-topics
+      - POST
+    uri: api/v3/user/estore-cms/store-cms-page
     metadata:
-      groupName: Education
+      groupName: 'Estore CMS'
       groupDescription: ''
-      subgroup: 'Becoming Sovereign'
-      subgroupDescription: 'APIs for managing becoming sovereign files and topics.'
-      title: 'List by Topic'
-      description: ''
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'Get CMS Page'
+      description: 'Retrieve CMS content by page slug.'
       authenticated: true
       custom: []
     headers:
+      Authorization: 'Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJhdWQiOiIxIiwianRpIjoiNTJkNDhkYzhjNTc4ODIwZWVmODFmY2NhOWJiMmJiODFlZGE1MTUwMTVkYmU5YzdkNzFkODAyYTRmZWNhMWQ5ZGJhYWEzMTc2YjI1OTJmMTgiLCJpYXQiOjE3NjQwNjAzNDQuMDUyOTc0LCJuYmYiOjE3NjQwNjAzNDQuMDUyOTc1LCJleHAiOjE3OTU1OTYzNDQuMDQzNjUyLCJzdWIiOiIxNjgiLCJzY29wZXMiOltdfQ.X9tS38uM-UlrpFlYZihD_kmuCcSX_hdGsRBJcNGfrWXAClMiqeTxNTC45Ftxw-ddmDQ59t5xJLlnWp2Rx57itO-IHclNmwnVJDPAh1l9D8CZBGxBSoN0FvmbWeYDNQnA7ud77YLekrcSAuKMdBX3J1UKq6ytvWwi6ChnuRFqcQ-fpzK-jgkMhGm-WFHw0H3a34afdBdSUUFutESlwMvTqmXILYVcIwaJpEAjamf3rn6wIOEoD8mbxXJ6Gb6QrRO72Kt3z62vJp7yOeMsnXUkfioVSyJVwbkbchCs2Y4YZY3FEREbKysKNdHJhhqmn6AXvx66arAK3HeZoyf5eusfk26alhbEdJqsJgFP5VROV5l57q8VKhH8hAxg-oeidCGGJXPjLGeb-5iGPjdGhQ1Ng1i9kt7VDV4icb8B2AbNC2Ie9xP6b0R11PX4jUd8D3Jogf2f0ZhAs5Is8WHcrxsCyk3lWvgOyzWxpRx2lSpmBRmSwksPrKJk_7JuzDZ1Tdpz6mubjV6DzlmqDJJjf32hBIMnaYOhOUz5k1FzZ8mybsSbnM9UjzHYr5xIf4rkmVAfuPnU2FGu8NtCQaOtt9G-TziBFgT3ZjxBCL9QaaC39BRulGE6tyCAT8NM9svTD_AbNyINUzO2M0R61OXYQfzXEeiui-sO6eYIc3x_z-YdFFQ'
       Content-Type: application/json
       Accept: application/json
     urlParameters: []
     cleanUrlParameters: []
-    queryParameters:
-      sortby:
-        name: sortby
-        description: 'The column to sort by (optional, default: id).'
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters:
+      page:
+        name: page
+        description: 'The CMS page slug.'
+        required: true
+        example: '"home"'
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+    cleanBodyParameters:
+      page: '"home"'
+    fileParameters: []
+    responses:
+      -
+        status: 200
+        content: |-
+          {
+            "data": {
+              "id": 5,
+              "title": "Homepage CMS",
+              "content": "<p>Welcome to our store!</p>",
+              "slug": "home",
+              "created_at": "2025-10-17T10:00:00Z",
+              "updated_at": "2025-10-17T12:00:00Z"
+            },
+            "status": true
+          }
+        headers: []
+        description: ''
+        custom: []
+      -
+        status: 201
+        content: |-
+          {
+            "message": "You do not have permission to access this page.",
+            "status": false
+          }
+        headers: []
+        description: ''
+        custom: []
+      -
+        status: 201
+        content: |-
+          {
+            "message": "CMS page not found.",
+            "status": false
+          }
+        headers: []
+        description: ''
+        custom: []
+      -
+        status: 201
+        content: |-
+          {
+            "message": "Something went wrong. Please try again later.",
+            "status": false
+          }
+        headers: []
+        description: ''
+        custom: []
+    responseFields: []
+    auth:
+      - headers
+      - Authorization
+      - 'Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJhdWQiOiIxIiwianRpIjoiNTJkNDhkYzhjNTc4ODIwZWVmODFmY2NhOWJiMmJiODFlZGE1MTUwMTVkYmU5YzdkNzFkODAyYTRmZWNhMWQ5ZGJhYWEzMTc2YjI1OTJmMTgiLCJpYXQiOjE3NjQwNjAzNDQuMDUyOTc0LCJuYmYiOjE3NjQwNjAzNDQuMDUyOTc1LCJleHAiOjE3OTU1OTYzNDQuMDQzNjUyLCJzdWIiOiIxNjgiLCJzY29wZXMiOltdfQ.X9tS38uM-UlrpFlYZihD_kmuCcSX_hdGsRBJcNGfrWXAClMiqeTxNTC45Ftxw-ddmDQ59t5xJLlnWp2Rx57itO-IHclNmwnVJDPAh1l9D8CZBGxBSoN0FvmbWeYDNQnA7ud77YLekrcSAuKMdBX3J1UKq6ytvWwi6ChnuRFqcQ-fpzK-jgkMhGm-WFHw0H3a34afdBdSUUFutESlwMvTqmXILYVcIwaJpEAjamf3rn6wIOEoD8mbxXJ6Gb6QrRO72Kt3z62vJp7yOeMsnXUkfioVSyJVwbkbchCs2Y4YZY3FEREbKysKNdHJhhqmn6AXvx66arAK3HeZoyf5eusfk26alhbEdJqsJgFP5VROV5l57q8VKhH8hAxg-oeidCGGJXPjLGeb-5iGPjdGhQ1Ng1i9kt7VDV4icb8B2AbNC2Ie9xP6b0R11PX4jUd8D3Jogf2f0ZhAs5Is8WHcrxsCyk3lWvgOyzWxpRx2lSpmBRmSwksPrKJk_7JuzDZ1Tdpz6mubjV6DzlmqDJJjf32hBIMnaYOhOUz5k1FzZ8mybsSbnM9UjzHYr5xIf4rkmVAfuPnU2FGu8NtCQaOtt9G-TziBFgT3ZjxBCL9QaaC39BRulGE6tyCAT8NM9svTD_AbNyINUzO2M0R61OXYQfzXEeiui-sO6eYIc3x_z-YdFFQ'
+    controller: null
+    method: null
+    route: null
+    custom: []
+  -
+    httpMethods:
+      - POST
+    uri: api/v3/user/estore-cms/home/update
+    metadata:
+      groupName: 'Estore CMS'
+      groupDescription: ''
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'Home CMS Update'
+      description: 'Update or create the home CMS content.'
+      authenticated: true
+      custom: []
+    headers:
+      Authorization: 'Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJhdWQiOiIxIiwianRpIjoiNTJkNDhkYzhjNTc4ODIwZWVmODFmY2NhOWJiMmJiODFlZGE1MTUwMTVkYmU5YzdkNzFkODAyYTRmZWNhMWQ5ZGJhYWEzMTc2YjI1OTJmMTgiLCJpYXQiOjE3NjQwNjAzNDQuMDUyOTc0LCJuYmYiOjE3NjQwNjAzNDQuMDUyOTc1LCJleHAiOjE3OTU1OTYzNDQuMDQzNjUyLCJzdWIiOiIxNjgiLCJzY29wZXMiOltdfQ.X9tS38uM-UlrpFlYZihD_kmuCcSX_hdGsRBJcNGfrWXAClMiqeTxNTC45Ftxw-ddmDQ59t5xJLlnWp2Rx57itO-IHclNmwnVJDPAh1l9D8CZBGxBSoN0FvmbWeYDNQnA7ud77YLekrcSAuKMdBX3J1UKq6ytvWwi6ChnuRFqcQ-fpzK-jgkMhGm-WFHw0H3a34afdBdSUUFutESlwMvTqmXILYVcIwaJpEAjamf3rn6wIOEoD8mbxXJ6Gb6QrRO72Kt3z62vJp7yOeMsnXUkfioVSyJVwbkbchCs2Y4YZY3FEREbKysKNdHJhhqmn6AXvx66arAK3HeZoyf5eusfk26alhbEdJqsJgFP5VROV5l57q8VKhH8hAxg-oeidCGGJXPjLGeb-5iGPjdGhQ1Ng1i9kt7VDV4icb8B2AbNC2Ie9xP6b0R11PX4jUd8D3Jogf2f0ZhAs5Is8WHcrxsCyk3lWvgOyzWxpRx2lSpmBRmSwksPrKJk_7JuzDZ1Tdpz6mubjV6DzlmqDJJjf32hBIMnaYOhOUz5k1FzZ8mybsSbnM9UjzHYr5xIf4rkmVAfuPnU2FGu8NtCQaOtt9G-TziBFgT3ZjxBCL9QaaC39BRulGE6tyCAT8NM9svTD_AbNyINUzO2M0R61OXYQfzXEeiui-sO6eYIc3x_z-YdFFQ'
+      Content-Type: multipart/form-data
+      Accept: application/json
+    urlParameters: []
+    cleanUrlParameters: []
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters:
+      id:
+        name: id
+        description: 'optional ID of the CMS record to update.'
         required: false
-        example: molestias
+        example: 1
+        type: integer
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: true
+        custom: []
+      header_logo:
+        name: header_logo
+        description: 'nullable Header logo image (multipart/form-data)'
+        required: false
+        example: null
+        type: file
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: true
+        custom: []
+      banner_image:
+        name: banner_image
+        description: 'nullable Banner image'
+        required: false
+        example: null
+        type: file
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: true
+        custom: []
+      banner_image_small:
+        name: banner_image_small
+        description: 'nullable Banner small image'
+        required: false
+        example: null
+        type: file
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: true
+        custom: []
+      product_category_image:
+        name: product_category_image
+        description: 'nullable Product category image'
+        required: false
+        example: null
+        type: file
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: true
+        custom: []
+      featured_product_image:
+        name: featured_product_image
+        description: 'nullable Featured product image'
+        required: false
+        example: null
+        type: file
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: true
+        custom: []
+      new_product_image:
+        name: new_product_image
+        description: 'nullable New product image'
+        required: false
+        example: null
+        type: file
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: true
+        custom: []
+      new_arrival_image:
+        name: new_arrival_image
+        description: 'nullable New arrival image'
+        required: false
+        example: null
+        type: file
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: true
+        custom: []
+      shop_now_image:
+        name: shop_now_image
+        description: 'nullable Shop Now section image'
+        required: false
+        example: null
+        type: file
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: true
+        custom: []
+      about_section_image:
+        name: about_section_image
+        description: 'nullable About section image'
+        required: false
+        example: null
+        type: file
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: true
+        custom: []
+      banner_title:
+        name: banner_title
+        description: 'nullable Banner title'
+        required: false
+        example: eos
+        type: string
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: true
+        custom: []
+      banner_subtitle:
+        name: banner_subtitle
+        description: 'nullable Banner subtitle'
+        required: false
+        example: maiores
+        type: string
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: true
+        custom: []
+      product_category_title:
+        name: product_category_title
+        description: 'Product category title'
+        required: true
+        example: est
+        type: string
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: true
+        custom: []
+      product_category_subtitle:
+        name: product_category_subtitle
+        description: 'Product category subtitle'
+        required: true
+        example: atque
+        type: string
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: true
+        custom: []
+      featured_product_title:
+        name: featured_product_title
+        description: 'Featured product title'
+        required: true
+        example: nobis
+        type: string
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: true
+        custom: []
+      featured_product_subtitle:
+        name: featured_product_subtitle
+        description: 'Featured product subtitle'
+        required: true
+        example: sed
+        type: string
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: true
+        custom: []
+      new_arrival_title:
+        name: new_arrival_title
+        description: 'New arrival title'
+        required: true
+        example: provident
+        type: string
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: true
+        custom: []
+      new_arrival_subtitle:
+        name: new_arrival_subtitle
+        description: 'New arrival subtitle'
+        required: true
+        example: ex
+        type: string
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: true
+        custom: []
+      new_product_title:
+        name: new_product_title
+        description: 'New product title'
+        required: true
+        example: laborum
+        type: string
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: true
+        custom: []
+      new_product_subtitle:
+        name: new_product_subtitle
+        description: 'New product subtitle'
+        required: true
+        example: mollitia
+        type: string
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: true
+        custom: []
+      shop_now_title:
+        name: shop_now_title
+        description: 'nullable Shop Now title'
+        required: false
+        example: molestiae
+        type: string
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: true
+        custom: []
+      shop_now_description:
+        name: shop_now_description
+        description: 'nullable Shop Now description'
+        required: false
+        example: veritatis
+        type: string
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: true
+        custom: []
+      shop_now_button_text:
+        name: shop_now_button_text
+        description: 'nullable Shop Now button text'
+        required: false
+        example: saepe
+        type: string
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: true
+        custom: []
+      shop_now_button_link:
+        name: shop_now_button_link
+        description: 'nullable Shop Now button link'
+        required: false
+        example: aut
+        type: string
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: true
+        custom: []
+      about_section_title:
+        name: about_section_title
+        description: 'nullable About section main title'
+        required: false
+        example: cumque
+        type: string
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: true
+        custom: []
+      about_section_text_one_title:
+        name: about_section_text_one_title
+        description: 'nullable About section text one title'
+        required: false
+        example: similique
+        type: string
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: true
+        custom: []
+      about_section_text_one_content:
+        name: about_section_text_one_content
+        description: 'nullable About section text one content'
+        required: false
+        example: quis
+        type: string
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: true
+        custom: []
+      about_section_text_two_title:
+        name: about_section_text_two_title
+        description: 'nullable About section text two title'
+        required: false
+        example: quia
+        type: string
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: true
+        custom: []
+      about_section_text_two_content:
+        name: about_section_text_two_content
+        description: 'nullable About section text two content'
+        required: false
+        example: et
+        type: string
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: true
+        custom: []
+      about_section_text_three_title:
+        name: about_section_text_three_title
+        description: 'nullable About section text three title'
+        required: false
+        example: voluptas
+        type: string
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: true
+        custom: []
+      about_section_text_three_content:
+        name: about_section_text_three_content
+        description: 'nullable About section text three content'
+        required: false
+        example: animi
+        type: string
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: true
+        custom: []
+      slider_data_second_title:
+        name: slider_data_second_title
+        description: 'nullable Second slider section title'
+        required: false
+        example: itaque
+        type: string
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: true
+        custom: []
+      'slider_titles.*':
+        name: 'slider_titles.*'
+        description: 'nullable Array of titles for first slider'
+        required: false
+        example: ullam
         type: string
         enumValues: []
         exampleWasSpecified: false
         nullable: false
         custom: []
-      sorttype:
-        name: sorttype
-        description: "The sort direction, either 'asc' or 'desc' (optional, default: 'asc')."
+      'slider_subtitles.*':
+        name: 'slider_subtitles.*'
+        description: 'nullable Array of subtitles for first slider'
         required: false
-        example: voluptatibus
+        example: ullam
         type: string
         enumValues: []
         exampleWasSpecified: false
         nullable: false
         custom: []
-      query:
-        name: query
-        description: 'The search query to filter files by ID, file name, or file extension (optional).'
+      'slider_links.*':
+        name: 'slider_links.*'
+        description: 'nullable Array of links for first slider'
+        required: false
+        example: maxime
+        type: string
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: false
+        custom: []
+      'slider_buttons.*':
+        name: 'slider_buttons.*'
+        description: 'nullable Array of button texts for first slider'
+        required: false
+        example: aliquam
+        type: string
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: false
+        custom: []
+      'slider_images.*':
+        name: 'slider_images.*'
+        description: 'nullable Array of images for first slider (multipart/form-data)'
+        required: false
+        example: null
+        type: file
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: false
+        custom: []
+      'slider_titles_second.*':
+        name: 'slider_titles_second.*'
+        description: 'nullable Array of titles for second slider'
+        required: false
+        example: aspernatur
+        type: string
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: false
+        custom: []
+      'slider_subtitles_second.*':
+        name: 'slider_subtitles_second.*'
+        description: 'nullable Array of subtitles for second slider'
         required: false
         example: sed
         type: string
@@ -541,97 +957,77 @@ endpoints:
         exampleWasSpecified: false
         nullable: false
         custom: []
-      topic_id:
-        name: topic_id
-        description: 'The ID of the topic to filter files by (optional).'
+      'slider_links_second.*':
+        name: 'slider_links_second.*'
+        description: 'nullable Array of links for second slider'
         required: false
-        example: 18
-        type: integer
+        example: eos
+        type: string
         enumValues: []
         exampleWasSpecified: false
         nullable: false
         custom: []
-    cleanQueryParameters:
-      sortby: molestias
-      sorttype: voluptatibus
-      query: sed
-      topic_id: 18
-    bodyParameters: []
-    cleanBodyParameters: []
-    fileParameters: []
-    responses:
-      -
-        status: 200
-        content: |-
-          {
-             "message": "Files retrieved successfully.",
-             "data": [
-                 {
-                     "id": 77,
-                     "user_id": 37,
-                     "file_name": "image.png",
-                     "file_extension": "png",
-                     "topic_id": 13,
-                     "type": "Becoming Sovereign",
-                     "file": "files\/WoKa3ViZP3eoU6cqhAqcBqBdVfeGgGADoPS5c8WK.png",
-                     "created_at": "2024-11-08T11:01:16.000000Z",
-                     "updated_at": "2024-11-08T11:01:16.000000Z"
-                 }
-             ],
-             "pagination": {
-                 "total": 1,
-                 "per_page": 15,
-                 "current_page": 1,
-                 "last_page": 1
-             },
-             "status": true
-          }
-        headers: []
-        description: ''
+      'slider_buttons_second.*':
+        name: 'slider_buttons_second.*'
+        description: 'nullable Array of button texts for second slider'
+        required: false
+        example: tenetur
+        type: string
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: false
         custom: []
-    responseFields: []
-    auth: []
-    controller: null
-    method: null
-    route: null
-    custom: []
-  -
-    httpMethods:
-      - GET
-    uri: api/v3/user/becoming-sovereign/topics
-    metadata:
-      groupName: Education
-      groupDescription: ''
-      subgroup: 'Becoming Sovereign'
-      subgroupDescription: 'APIs for managing becoming sovereign files and topics.'
-      title: 'Get List of Topics'
-      description: ''
-      authenticated: true
-      custom: []
-    headers:
-      Content-Type: application/json
-      Accept: application/json
-    urlParameters: []
-    cleanUrlParameters: []
-    queryParameters: []
-    cleanQueryParameters: []
-    bodyParameters: []
-    cleanBodyParameters: []
-    fileParameters: []
+      'slider_images_second.*':
+        name: 'slider_images_second.*'
+        description: 'nullable Array of images for second slider (multipart/form-data)'
+        required: false
+        example: null
+        type: file
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: false
+        custom: []
+    cleanBodyParameters:
+      id: 1
+      banner_title: eos
+      banner_subtitle: maiores
+      product_category_title: est
+      product_category_subtitle: atque
+      featured_product_title: nobis
+      featured_product_subtitle: sed
+      new_arrival_title: provident
+      new_arrival_subtitle: ex
+      new_product_title: laborum
+      new_product_subtitle: mollitia
+      shop_now_title: molestiae
+      shop_now_description: veritatis
+      shop_now_button_text: saepe
+      shop_now_button_link: aut
+      about_section_title: cumque
+      about_section_text_one_title: similique
+      about_section_text_one_content: quis
+      about_section_text_two_title: quia
+      about_section_text_two_content: et
+      about_section_text_three_title: voluptas
+      about_section_text_three_content: animi
+      slider_data_second_title: itaque
+    fileParameters:
+      header_logo: null
+      banner_image: null
+      banner_image_small: null
+      product_category_image: null
+      featured_product_image: null
+      new_product_image: null
+      new_arrival_image: null
+      shop_now_image: null
+      about_section_image: null
     responses:
       -
         status: 200
         content: |-
           {
-            "data": [
-              {
-                "id": 1,
-                "topic_name": "Sample Topic",
-                "education_type": "Becoming Sovereign",
-                "created_at": "2024-09-09T11:02:39.000000Z",
-                "updated_at": "2024-09-09T11:02:39.000000Z"
-              }
-            ],
+            "data": { ,
+            "message": "Home CMS updated successfully",
             "status": true
           }
         headers: []
@@ -641,14 +1037,49 @@ endpoints:
         status: 201
         content: |-
           {
-            "message": "Failed to fetch topics. Please try again later.",
+            "data": { ,
+            "message": "Home CMS added successfully",
+            "status": true
+          }
+        headers: []
+        description: ''
+        custom: []
+      -
+        status: 201
+        content: |-
+          {
+            "message": "Forbidden",
+            "status": false
+          }
+        headers: []
+        description: ''
+        custom: []
+      -
+        status: 201
+        content: |-
+          {
+            "message": "Validation failed.",
+            "errors": { "field": ["error message"] },
+            "status": false
+          }
+        headers: []
+        description: ''
+        custom: []
+      -
+        status: 201
+        content: |-
+          {
+            "message": "Something went wrong. Please try again later.",
             "status": false
           }
         headers: []
         description: ''
         custom: []
     responseFields: []
-    auth: []
+    auth:
+      - headers
+      - Authorization
+      - 'Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJhdWQiOiIxIiwianRpIjoiNTJkNDhkYzhjNTc4ODIwZWVmODFmY2NhOWJiMmJiODFlZGE1MTUwMTVkYmU5YzdkNzFkODAyYTRmZWNhMWQ5ZGJhYWEzMTc2YjI1OTJmMTgiLCJpYXQiOjE3NjQwNjAzNDQuMDUyOTc0LCJuYmYiOjE3NjQwNjAzNDQuMDUyOTc1LCJleHAiOjE3OTU1OTYzNDQuMDQzNjUyLCJzdWIiOiIxNjgiLCJzY29wZXMiOltdfQ.X9tS38uM-UlrpFlYZihD_kmuCcSX_hdGsRBJcNGfrWXAClMiqeTxNTC45Ftxw-ddmDQ59t5xJLlnWp2Rx57itO-IHclNmwnVJDPAh1l9D8CZBGxBSoN0FvmbWeYDNQnA7ud77YLekrcSAuKMdBX3J1UKq6ytvWwi6ChnuRFqcQ-fpzK-jgkMhGm-WFHw0H3a34afdBdSUUFutESlwMvTqmXILYVcIwaJpEAjamf3rn6wIOEoD8mbxXJ6Gb6QrRO72Kt3z62vJp7yOeMsnXUkfioVSyJVwbkbchCs2Y4YZY3FEREbKysKNdHJhhqmn6AXvx66arAK3HeZoyf5eusfk26alhbEdJqsJgFP5VROV5l57q8VKhH8hAxg-oeidCGGJXPjLGeb-5iGPjdGhQ1Ng1i9kt7VDV4icb8B2AbNC2Ie9xP6b0R11PX4jUd8D3Jogf2f0ZhAs5Is8WHcrxsCyk3lWvgOyzWxpRx2lSpmBRmSwksPrKJk_7JuzDZ1Tdpz6mubjV6DzlmqDJJjf32hBIMnaYOhOUz5k1FzZ8mybsSbnM9UjzHYr5xIf4rkmVAfuPnU2FGu8NtCQaOtt9G-TziBFgT3ZjxBCL9QaaC39BRulGE6tyCAT8NM9svTD_AbNyINUzO2M0R61OXYQfzXEeiui-sO6eYIc3x_z-YdFFQ'
     controller: null
     method: null
     route: null
@@ -656,17 +1087,18 @@ endpoints:
   -
     httpMethods:
       - POST
-    uri: api/v3/user/becoming-sovereign/store
+    uri: api/v3/user/estore-cms/footer/update
     metadata:
-      groupName: Education
+      groupName: 'Estore CMS'
       groupDescription: ''
-      subgroup: 'Becoming Sovereign'
-      subgroupDescription: 'APIs for managing becoming sovereign files and topics.'
-      title: 'Create New'
-      description: ''
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'Footer CMS Update'
+      description: 'Create or update the E-commerce footer CMS details.'
       authenticated: true
       custom: []
     headers:
+      Authorization: 'Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJhdWQiOiIxIiwianRpIjoiNTJkNDhkYzhjNTc4ODIwZWVmODFmY2NhOWJiMmJiODFlZGE1MTUwMTVkYmU5YzdkNzFkODAyYTRmZWNhMWQ5ZGJhYWEzMTc2YjI1OTJmMTgiLCJpYXQiOjE3NjQwNjAzNDQuMDUyOTc0LCJuYmYiOjE3NjQwNjAzNDQuMDUyOTc1LCJleHAiOjE3OTU1OTYzNDQuMDQzNjUyLCJzdWIiOiIxNjgiLCJzY29wZXMiOltdfQ.X9tS38uM-UlrpFlYZihD_kmuCcSX_hdGsRBJcNGfrWXAClMiqeTxNTC45Ftxw-ddmDQ59t5xJLlnWp2Rx57itO-IHclNmwnVJDPAh1l9D8CZBGxBSoN0FvmbWeYDNQnA7ud77YLekrcSAuKMdBX3J1UKq6ytvWwi6ChnuRFqcQ-fpzK-jgkMhGm-WFHw0H3a34afdBdSUUFutESlwMvTqmXILYVcIwaJpEAjamf3rn6wIOEoD8mbxXJ6Gb6QrRO72Kt3z62vJp7yOeMsnXUkfioVSyJVwbkbchCs2Y4YZY3FEREbKysKNdHJhhqmn6AXvx66arAK3HeZoyf5eusfk26alhbEdJqsJgFP5VROV5l57q8VKhH8hAxg-oeidCGGJXPjLGeb-5iGPjdGhQ1Ng1i9kt7VDV4icb8B2AbNC2Ie9xP6b0R11PX4jUd8D3Jogf2f0ZhAs5Is8WHcrxsCyk3lWvgOyzWxpRx2lSpmBRmSwksPrKJk_7JuzDZ1Tdpz6mubjV6DzlmqDJJjf32hBIMnaYOhOUz5k1FzZ8mybsSbnM9UjzHYr5xIf4rkmVAfuPnU2FGu8NtCQaOtt9G-TziBFgT3ZjxBCL9QaaC39BRulGE6tyCAT8NM9svTD_AbNyINUzO2M0R61OXYQfzXEeiui-sO6eYIc3x_z-YdFFQ'
       Content-Type: multipart/form-data
       Accept: application/json
     urlParameters: []
@@ -674,212 +1106,130 @@ endpoints:
     queryParameters: []
     cleanQueryParameters: []
     bodyParameters:
-      file:
-        name: file
-        description: 'The file to upload.'
-        required: true
+      footer_logo:
+        name: footer_logo
+        description: 'nullable The footer logo image (jpeg, png, jpg, gif, svg).'
+        required: false
         example: null
         type: file
         enumValues: []
         exampleWasSpecified: false
-        nullable: false
+        nullable: true
         custom: []
-      topic_id:
-        name: topic_id
-        description: 'The ID of the topic to associate the file with.'
+      footer_title:
+        name: footer_title
+        description: 'Footer title.'
         required: true
-        example: 0
-        type: integer
-        enumValues: []
-        exampleWasSpecified: true
-        nullable: false
-        custom: []
-    cleanBodyParameters:
-      topic_id: 0
-    fileParameters:
-      file: null
-    responses:
-      -
-        status: 200
-        content: |-
-          {
-             "message": "File uploaded successfully.",
-             "data": {
-                 "user_id": 37,
-                 "file_name": "image.png",
-                 "file_extension": "png",
-                 "topic_id": "13",
-                 "type": "Becoming Sovereign",
-                 "file": "files/WoKa3ViZP3eoU6cqhAqcBqBdVfeGgGADoPS5c8WK.png",
-                 "updated_at": "2024-11-08T11:01:16.000000Z",
-                 "created_at": "2024-11-08T11:01:16.000000Z",
-                 "id": 77
-             },
-             "status": true
-          }
-        headers: []
-        description: ''
-        custom: []
-      -
-        status: 400
-        content: |-
-          {
-            "message": "The file name has already been taken.",
-            "status": false
-          }
-        headers: []
-        description: ''
-        custom: []
-      -
-        status: 422
-        content: |-
-          {
-            "message": "Validation errors occurred.",
-            "errors": {
-              "file": ["The file field is required."],
-              "topic_id": ["The topic id field is required."]
-            },
-            "status": false
-          }
-        headers: []
-        description: ''
-        custom: []
-    responseFields: []
-    auth: []
-    controller: null
-    method: null
-    route: null
-    custom: []
-  -
-    httpMethods:
-      - GET
-    uri: 'api/v3/user/becoming-sovereign/view/{id}'
-    metadata:
-      groupName: Education
-      groupDescription: ''
-      subgroup: 'Becoming Sovereign'
-      subgroupDescription: 'APIs for managing becoming sovereign files and topics.'
-      title: 'View File'
-      description: ''
-      authenticated: true
-      custom: []
-    headers:
-      Content-Type: application/json
-      Accept: application/json
-    urlParameters:
-      id:
-        name: id
-        description: 'The ID of the file to view.'
-        required: true
-        example: 1
-        type: integer
-        enumValues: []
-        exampleWasSpecified: true
-        nullable: false
-        custom: []
-    cleanUrlParameters:
-      id: 1
-    queryParameters:
-      topic:
-        name: topic
-        description: 'The ID of the topic to filter by (optional).'
-        required: false
-        example: 5
-        type: integer
-        enumValues: []
-        exampleWasSpecified: false
-        nullable: false
-        custom: []
-    cleanQueryParameters:
-      topic: 5
-    bodyParameters: []
-    cleanBodyParameters: []
-    fileParameters: []
-    responses:
-      -
-        status: 200
-        content: |-
-          {
-             "message": "File details retrieved successfully.",
-             "data": {
-                 "id": 77,
-                 "user_id": 37,
-                 "file_name": "image.png",
-                 "file_extension": "png",
-                 "topic_id": 13,
-                 "type": "Becoming Sovereign",
-                 "file": "files/WoKa3ViZP3eoU6cqhAqcBqBdVfeGgGADoPS5c8WK.png",
-                 "created_at": "2024-11-08T11:01:16.000000Z",
-                 "updated_at": "2024-11-08T11:01:16.000000Z"
-             },
-             "new_topic": "",
-             "status": true
-          }
-        headers: []
-        description: ''
-        custom: []
-      -
-        status: 404
-        content: |-
-          {
-            "message": "File not found.",
-            "status": false
-          }
-        headers: []
-        description: ''
-        custom: []
-    responseFields: []
-    auth: []
-    controller: null
-    method: null
-    route: null
-    custom: []
-  -
-    httpMethods:
-      - POST
-    uri: 'api/v3/user/becoming-sovereign/update/{id}'
-    metadata:
-      groupName: Education
-      groupDescription: ''
-      subgroup: 'Becoming Sovereign'
-      subgroupDescription: 'APIs for managing becoming sovereign files and topics.'
-      title: 'Update File'
-      description: ''
-      authenticated: true
-      custom: []
-    headers:
-      Content-Type: multipart/form-data
-      Accept: application/json
-    urlParameters:
-      id:
-        name: id
-        description: 'The ID of the update.'
-        required: true
-        example: aliquam
+        example: '"My Store"'
         type: string
         enumValues: []
-        exampleWasSpecified: false
+        exampleWasSpecified: true
         nullable: false
         custom: []
-    cleanUrlParameters:
-      id: aliquam
-    queryParameters: []
-    cleanQueryParameters: []
-    bodyParameters:
-      file:
-        name: file
-        description: 'The new file to replace the existing one (optional).'
-        required: false
-        example: null
-        type: file
-        enumValues: []
-        exampleWasSpecified: false
-        nullable: false
-        custom: []
-      topic_id:
-        name: topic_id
-        description: 'The ID of the topic to associate with the file.'
+      footer_newsletter_title:
+        name: footer_newsletter_title
+        description: 'Newsletter title.'
         required: true
+        example: '"Subscribe"'
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+      footer_address_title:
+        name: footer_address_title
+        description: 'Address title.'
+        required: true
+        example: '"Our Address"'
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+      footer_address:
+        name: footer_address
+        description: Address.
+        required: true
+        example: '"123 Street, City"'
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+      footer_phone_number:
+        name: footer_phone_number
+        description: 'Phone number.'
+        required: true
+        example: '"+1 123-456-7890"'
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+      footer_email:
+        name: footer_email
+        description: Email.
+        required: true
+        example: '"info@example.com"'
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+      footer_copywrite_text:
+        name: footer_copywrite_text
+        description: 'Copywrite text.'
+        required: true
+        example: '"© 2025 My Store"'
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+      footer_facebook_link:
+        name: footer_facebook_link
+        description: 'nullable Facebook URL.'
+        required: false
+        example: '"https://facebook.com/mystore"'
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: true
+        custom: []
+      footer_twitter_link:
+        name: footer_twitter_link
+        description: 'nullable Twitter URL.'
+        required: false
+        example: '"https://twitter.com/mystore"'
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: true
+        custom: []
+      footer_instagram_link:
+        name: footer_instagram_link
+        description: 'nullable Instagram URL.'
+        required: false
+        example: '"https://instagram.com/mystore"'
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: true
+        custom: []
+      footer_youtube_link:
+        name: footer_youtube_link
+        description: 'nullable YouTube URL.'
+        required: false
+        example: '"https://youtube.com/mystore"'
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: true
+        custom: []
+      id:
+        name: id
+        description: 'optional The ID of the footer CMS to update. Leave empty to create a new one.'
+        required: false
         example: 1
         type: integer
         enumValues: []
@@ -887,35 +1237,43 @@ endpoints:
         nullable: false
         custom: []
     cleanBodyParameters:
-      topic_id: 1
+      footer_title: '"My Store"'
+      footer_newsletter_title: '"Subscribe"'
+      footer_address_title: '"Our Address"'
+      footer_address: '"123 Street, City"'
+      footer_phone_number: '"+1 123-456-7890"'
+      footer_email: '"info@example.com"'
+      footer_copywrite_text: '"© 2025 My Store"'
+      footer_facebook_link: '"https://facebook.com/mystore"'
+      footer_twitter_link: '"https://twitter.com/mystore"'
+      footer_instagram_link: '"https://instagram.com/mystore"'
+      footer_youtube_link: '"https://youtube.com/mystore"'
+      id: 1
     fileParameters:
-      file: null
+      footer_logo: null
     responses:
       -
         status: 200
         content: |-
           {
-            "message": "File updated successfully.",
             "data": {
               "id": 1,
-              "file_name": "updated_sample.pdf",
-              "file_extension": "pdf",
-              "topic_id": 1,
-              "user_id": 1,
-              "file": "updated_file_path_here"
+              "footer_title": "My Store",
+              "footer_logo": "https://example.com/storage/ecom_cms/logo.png"
             },
+            "message": "Footer CMS updated successfully.",
             "status": true
           }
         headers: []
         description: ''
         custom: []
       -
-        status: 400
+        status: 201
         content: |-
           {
             "message": "Validation failed.",
             "errors": {
-              "file": ["The file name has already been taken."]
+              "footer_title": ["The footer title field is required."]
             },
             "status": false
           }
@@ -923,148 +1281,10 @@ endpoints:
         description: ''
         custom: []
       -
-        status: 404
-        content: |-
-          {
-            "message": "File not found.",
-            "status": false
-          }
-        headers: []
-        description: ''
-        custom: []
-      -
-        status: 500
-        content: |-
-          {
-            "message": "Something went wrong. Please try again later.",
-            "status": false
-          }
-        headers: []
-        description: ''
-        custom: []
-    responseFields: []
-    auth: []
-    controller: null
-    method: null
-    route: null
-    custom: []
-  -
-    httpMethods:
-      - GET
-    uri: 'api/v3/user/becoming-sovereign/delete/{id}'
-    metadata:
-      groupName: Education
-      groupDescription: ''
-      subgroup: 'Becoming Sovereign'
-      subgroupDescription: 'APIs for managing becoming sovereign files and topics.'
-      title: 'Delete File'
-      description: ''
-      authenticated: true
-      custom: []
-    headers:
-      Content-Type: application/json
-      Accept: application/json
-    urlParameters:
-      id:
-        name: id
-        description: 'The ID of the file to delete.'
-        required: true
-        example: 1
-        type: integer
-        enumValues: []
-        exampleWasSpecified: true
-        nullable: false
-        custom: []
-    cleanUrlParameters:
-      id: 1
-    queryParameters: []
-    cleanQueryParameters: []
-    bodyParameters: []
-    cleanBodyParameters: []
-    fileParameters: []
-    responses:
-      -
-        status: 200
-        content: |-
-          {
-            "message": "File deleted successfully.",
-            "status": true
-          }
-        headers: []
-        description: ''
-        custom: []
-      -
-        status: 404
-        content: |-
-          {
-            "message": "File not found.",
-            "status": false
-          }
-        headers: []
-        description: ''
-        custom: []
-      -
-        status: 500
-        content: |-
-          {
-            "message": "Something went wrong. Please try again later.",
-            "status": false
-          }
-        headers: []
-        description: ''
-        custom: []
-    responseFields: []
-    auth: []
-    controller: null
-    method: null
-    route: null
-    custom: []
-  -
-    httpMethods:
-      - GET
-    uri: 'api/v3/user/becoming-sovereign/download/{file}'
-    metadata:
-      groupName: Education
-      groupDescription: ''
-      subgroup: 'Becoming Sovereign'
-      subgroupDescription: 'APIs for managing becoming sovereign files and topics.'
-      title: 'Download file'
-      description: ''
-      authenticated: true
-      custom: []
-    headers:
-      Content-Type: application/json
-      Accept: application/json
-    urlParameters:
-      file:
-        name: file
-        description: ''
-        required: true
-        example: tempora
-        type: string
-        enumValues: []
-        exampleWasSpecified: false
-        nullable: false
-        custom: []
-    cleanUrlParameters:
-      file: tempora
-    queryParameters: []
-    cleanQueryParameters: []
-    bodyParameters: []
-    cleanBodyParameters: []
-    fileParameters: []
-    responses:
-      -
-        status: 200
-        content: 'A downloadable file response with the specified file.'
-        headers: []
-        description: ''
-        custom: []
-      -
         status: 201
         content: |-
           {
-            "message": "File not found.",
+            "message": "You do not have permission to access this resource.",
             "status": false
           }
         headers: []
@@ -1081,7 +1301,10 @@ endpoints:
         description: ''
         custom: []
     responseFields: []
-    auth: []
+    auth:
+      - headers
+      - Authorization
+      - 'Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJhdWQiOiIxIiwianRpIjoiNTJkNDhkYzhjNTc4ODIwZWVmODFmY2NhOWJiMmJiODFlZGE1MTUwMTVkYmU5YzdkNzFkODAyYTRmZWNhMWQ5ZGJhYWEzMTc2YjI1OTJmMTgiLCJpYXQiOjE3NjQwNjAzNDQuMDUyOTc0LCJuYmYiOjE3NjQwNjAzNDQuMDUyOTc1LCJleHAiOjE3OTU1OTYzNDQuMDQzNjUyLCJzdWIiOiIxNjgiLCJzY29wZXMiOltdfQ.X9tS38uM-UlrpFlYZihD_kmuCcSX_hdGsRBJcNGfrWXAClMiqeTxNTC45Ftxw-ddmDQ59t5xJLlnWp2Rx57itO-IHclNmwnVJDPAh1l9D8CZBGxBSoN0FvmbWeYDNQnA7ud77YLekrcSAuKMdBX3J1UKq6ytvWwi6ChnuRFqcQ-fpzK-jgkMhGm-WFHw0H3a34afdBdSUUFutESlwMvTqmXILYVcIwaJpEAjamf3rn6wIOEoD8mbxXJ6Gb6QrRO72Kt3z62vJp7yOeMsnXUkfioVSyJVwbkbchCs2Y4YZY3FEREbKysKNdHJhhqmn6AXvx66arAK3HeZoyf5eusfk26alhbEdJqsJgFP5VROV5l57q8VKhH8hAxg-oeidCGGJXPjLGeb-5iGPjdGhQ1Ng1i9kt7VDV4icb8B2AbNC2Ie9xP6b0R11PX4jUd8D3Jogf2f0ZhAs5Is8WHcrxsCyk3lWvgOyzWxpRx2lSpmBRmSwksPrKJk_7JuzDZ1Tdpz6mubjV6DzlmqDJJjf32hBIMnaYOhOUz5k1FzZ8mybsSbnM9UjzHYr5xIf4rkmVAfuPnU2FGu8NtCQaOtt9G-TziBFgT3ZjxBCL9QaaC39BRulGE6tyCAT8NM9svTD_AbNyINUzO2M0R61OXYQfzXEeiui-sO6eYIc3x_z-YdFFQ'
     controller: null
     method: null
     route: null
@@ -1089,253 +1312,18 @@ endpoints:
   -
     httpMethods:
       - GET
-    uri: api/v3/user/becoming-christ-like
+    uri: api/v3/user/estore-cms/contact
     metadata:
-      groupName: Education
+      groupName: 'Estore CMS'
       groupDescription: ''
-      subgroup: 'Becoming Christ Like'
-      subgroupDescription: 'APIs for managing Becoming Christ Like files and topics.'
-      title: 'Becoming Christ Likes List'
-      description: ''
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'Get Contact CMS'
+      description: 'Fetch the latest Contact CMS record.'
       authenticated: true
       custom: []
     headers:
-      Content-Type: application/json
-      Accept: application/json
-    urlParameters: []
-    cleanUrlParameters: []
-    queryParameters:
-      topic:
-        name: topic
-        description: 'The ID of the topic to filter by.'
-        required: false
-        example: 1
-        type: integer
-        enumValues: []
-        exampleWasSpecified: true
-        nullable: false
-        custom: []
-    cleanQueryParameters:
-      topic: 1
-    bodyParameters: []
-    cleanBodyParameters: []
-    fileParameters: []
-    responses:
-      -
-        status: 200
-        content: |-
-          *{
-             "data": {
-                 "current_page": 1,
-                 "data": [
-
-                     {
-                         "id": 60,
-                         "user_id": 1,
-                         "file_name": "topic- Back to the Basics Description and Outline.docx",
-                         "file_extension": "docx",
-                         "topic_id": 4,
-                         "type": "Becoming Christ Like",
-                         "file": "files\/qm5d3aJ5Z6esEep7WZAs19BLo4KRsjXp9w1RITYv.docx",
-                         "created_at": "2024-08-02T09:32:31.000000Z",
-                         "updated_at": "2024-08-02T09:32:31.000000Z"
-                     },
-                     {
-                         "id": 59,
-                         "user_id": 1,
-                         "file_name": "topic-Back to the Basics Part 1.pptx",
-                         "file_extension": "pptx",
-                         "topic_id": 4,
-                         "type": "Becoming Christ Like",
-                         "file": "files\/bv7C4BiH0N1s8WXrVZpPV2s6YTWN5sVUQs5PE584.pptx",
-                         "created_at": "2024-08-02T09:31:40.000000Z",
-                         "updated_at": "2024-08-02T09:31:40.000000Z"
-                     },
-                     {
-                         "id": 57,
-                         "user_id": 1,
-                         "file_name": "topic-Back to the Basics Part 3.pptx",
-                         "file_extension": "pptx",
-                         "topic_id": 4,
-                         "type": "Becoming Christ Like",
-                         "file": "files\/BDp5AHtA4ZIsqziYPUxCbRL91bcbSvAVv4m8S9Zs.pptx",
-                         "created_at": "2024-08-02T09:29:56.000000Z",
-                         "updated_at": "2024-08-02T09:29:56.000000Z"
-                     }
-                 ],
-                 "first_page_url": "http:\/\/127.0.0.1:8000\/api\/v3\/user\/becoming-sovereign?page=1",
-                 "from": 1,
-                 "last_page": 1,
-                 "last_page_url": "http:\/\/127.0.0.1:8000\/api\/v3\/user\/becoming-sovereign?page=1",
-                 "links": [
-                     {
-                         "url": null,
-                         "label": "&laquo; Previous",
-                         "active": false
-                     },
-                     {
-                         "url": "http:\/\/127.0.0.1:8000\/api\/v3\/user\/becoming-sovereign?page=1",
-                         "label": "1",
-                         "active": true
-                     },
-                     {
-                         "url": null,
-                         "label": "Next &raquo;",
-                         "active": false
-                     }
-                 ],
-                 "next_page_url": null,
-                 "path": "http:\/\/127.0.0.1:8000\/api\/v3\/user\/becoming-sovereign",
-                 "per_page": 15,
-                 "prev_page_url": null,
-                 "to": 11,
-                 "total": 11
-             },
-             "topics": [
-                 {
-                     "id": 12,
-                     "topic_name": "abcd",
-                     "education_type": "Becoming Christ Like",
-                     "created_at": "2024-11-08T09:42:48.000000Z",
-                     "updated_at": "2024-11-08T09:42:48.000000Z"
-                 },
-                 {
-                     "id": 6,
-                     "topic_name": "Leadership Development",
-                     "education_type": "Becoming Christ Like",
-                     "created_at": "2024-08-02T09:17:16.000000Z",
-                     "updated_at": "2024-08-16T08:58:34.000000Z"
-                 },
-             ],
-             "new_topic": "",
-             "status": true
-          }
-        headers: []
-        description: ''
-        custom: []
-    responseFields: []
-    auth: []
-    controller: null
-    method: null
-    route: null
-    custom: []
-  -
-    httpMethods:
-      - GET
-    uri: api/v3/user/becoming-christ-like/list-by-topics
-    metadata:
-      groupName: Education
-      groupDescription: ''
-      subgroup: 'Becoming Christ Like'
-      subgroupDescription: 'APIs for managing Becoming Christ Like files and topics.'
-      title: 'List by Topic'
-      description: ''
-      authenticated: true
-      custom: []
-    headers:
-      Content-Type: application/json
-      Accept: application/json
-    urlParameters: []
-    cleanUrlParameters: []
-    queryParameters:
-      sortby:
-        name: sortby
-        description: 'The column to sort by (optional, default: id).'
-        required: false
-        example: necessitatibus
-        type: string
-        enumValues: []
-        exampleWasSpecified: false
-        nullable: false
-        custom: []
-      sorttype:
-        name: sorttype
-        description: "The sort direction, either 'asc' or 'desc' (optional, default: 'asc')."
-        required: false
-        example: et
-        type: string
-        enumValues: []
-        exampleWasSpecified: false
-        nullable: false
-        custom: []
-      query:
-        name: query
-        description: 'The search query to filter files by ID, file name, or file extension (optional).'
-        required: false
-        example: quidem
-        type: string
-        enumValues: []
-        exampleWasSpecified: false
-        nullable: false
-        custom: []
-      topic_id:
-        name: topic_id
-        description: 'The ID of the topic to filter files by (optional).'
-        required: false
-        example: 9
-        type: integer
-        enumValues: []
-        exampleWasSpecified: false
-        nullable: false
-        custom: []
-    cleanQueryParameters:
-      sortby: necessitatibus
-      sorttype: et
-      query: quidem
-      topic_id: 9
-    bodyParameters: []
-    cleanBodyParameters: []
-    fileParameters: []
-    responses:
-      -
-        status: 200
-        content: |-
-          {
-             "message": "Files retrieved successfully.",
-             "data": [
-                 {
-                     "id": 77,
-                     "user_id": 37,
-                     "file_name": "image.png",
-                     "file_extension": "png",
-                     "topic_id": 13,
-                     "type": "Becoming Christ Like",
-                     "file": "files\/WoKa3ViZP3eoU6cqhAqcBqBdVfeGgGADoPS5c8WK.png",
-                     "created_at": "2024-11-08T11:01:16.000000Z",
-                     "updated_at": "2024-11-08T11:01:16.000000Z"
-                 }
-             ],
-             "pagination": {
-                 "total": 1,
-                 "per_page": 15,
-                 "current_page": 1,
-                 "last_page": 1
-             },
-             "status": true
-          }
-        headers: []
-        description: ''
-        custom: []
-    responseFields: []
-    auth: []
-    controller: null
-    method: null
-    route: null
-    custom: []
-  -
-    httpMethods:
-      - GET
-    uri: api/v3/user/becoming-christ-like/topics
-    metadata:
-      groupName: Education
-      groupDescription: ''
-      subgroup: 'Becoming Christ Like'
-      subgroupDescription: 'APIs for managing Becoming Christ Like files and topics.'
-      title: 'Get List of Topics'
-      description: ''
-      authenticated: true
-      custom: []
-    headers:
+      Authorization: 'Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJhdWQiOiIxIiwianRpIjoiNTJkNDhkYzhjNTc4ODIwZWVmODFmY2NhOWJiMmJiODFlZGE1MTUwMTVkYmU5YzdkNzFkODAyYTRmZWNhMWQ5ZGJhYWEzMTc2YjI1OTJmMTgiLCJpYXQiOjE3NjQwNjAzNDQuMDUyOTc0LCJuYmYiOjE3NjQwNjAzNDQuMDUyOTc1LCJleHAiOjE3OTU1OTYzNDQuMDQzNjUyLCJzdWIiOiIxNjgiLCJzY29wZXMiOltdfQ.X9tS38uM-UlrpFlYZihD_kmuCcSX_hdGsRBJcNGfrWXAClMiqeTxNTC45Ftxw-ddmDQ59t5xJLlnWp2Rx57itO-IHclNmwnVJDPAh1l9D8CZBGxBSoN0FvmbWeYDNQnA7ud77YLekrcSAuKMdBX3J1UKq6ytvWwi6ChnuRFqcQ-fpzK-jgkMhGm-WFHw0H3a34afdBdSUUFutESlwMvTqmXILYVcIwaJpEAjamf3rn6wIOEoD8mbxXJ6Gb6QrRO72Kt3z62vJp7yOeMsnXUkfioVSyJVwbkbchCs2Y4YZY3FEREbKysKNdHJhhqmn6AXvx66arAK3HeZoyf5eusfk26alhbEdJqsJgFP5VROV5l57q8VKhH8hAxg-oeidCGGJXPjLGeb-5iGPjdGhQ1Ng1i9kt7VDV4icb8B2AbNC2Ie9xP6b0R11PX4jUd8D3Jogf2f0ZhAs5Is8WHcrxsCyk3lWvgOyzWxpRx2lSpmBRmSwksPrKJk_7JuzDZ1Tdpz6mubjV6DzlmqDJJjf32hBIMnaYOhOUz5k1FzZ8mybsSbnM9UjzHYr5xIf4rkmVAfuPnU2FGu8NtCQaOtt9G-TziBFgT3ZjxBCL9QaaC39BRulGE6tyCAT8NM9svTD_AbNyINUzO2M0R61OXYQfzXEeiui-sO6eYIc3x_z-YdFFQ'
       Content-Type: application/json
       Accept: application/json
     urlParameters: []
@@ -1350,15 +1338,25 @@ endpoints:
         status: 200
         content: |-
           {
-            "data": [
-              {
-                "id": 1,
-                "topic_name": "Sample Topic",
-                "education_type": "Becoming Christ Like",
-                "created_at": "2024-09-09T11:02:39.000000Z",
-                "updated_at": "2024-09-09T11:02:39.000000Z"
-              }
-            ],
+            "data": {
+              "id": 5,
+              "banner_title": "Contact Us",
+              "card_one_title": "Support",
+              "card_one_content": "...",
+              "card_two_title": "Sales",
+              "card_two_content": "...",
+              "card_three_title": "Marketing",
+              "card_three_content": "...",
+              "form_title": "Get in Touch",
+              "form_subtitle": "We are here to help",
+              "call_section_title": "Call Us",
+              "call_section_content": "...",
+              "follow_us_title": "Follow Us",
+              "map_iframe_src": "<iframe ...></iframe>",
+              "banner_image": "ecom_cms/banner_image.jpg",
+              "created_at": "2025-10-17T10:00:00Z",
+              "updated_at": "2025-10-17T12:00:00Z"
+            },
             "status": true
           }
         headers: []
@@ -1368,14 +1366,27 @@ endpoints:
         status: 201
         content: |-
           {
-            "message": "Failed to fetch topics. Please try again later.",
+            "message": "No Contact CMS record found.",
+            "status": false
+          }
+        headers: []
+        description: ''
+        custom: []
+      -
+        status: 201
+        content: |-
+          {
+            "message": "Something went wrong. Please try again later.",
             "status": false
           }
         headers: []
         description: ''
         custom: []
     responseFields: []
-    auth: []
+    auth:
+      - headers
+      - Authorization
+      - 'Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJhdWQiOiIxIiwianRpIjoiNTJkNDhkYzhjNTc4ODIwZWVmODFmY2NhOWJiMmJiODFlZGE1MTUwMTVkYmU5YzdkNzFkODAyYTRmZWNhMWQ5ZGJhYWEzMTc2YjI1OTJmMTgiLCJpYXQiOjE3NjQwNjAzNDQuMDUyOTc0LCJuYmYiOjE3NjQwNjAzNDQuMDUyOTc1LCJleHAiOjE3OTU1OTYzNDQuMDQzNjUyLCJzdWIiOiIxNjgiLCJzY29wZXMiOltdfQ.X9tS38uM-UlrpFlYZihD_kmuCcSX_hdGsRBJcNGfrWXAClMiqeTxNTC45Ftxw-ddmDQ59t5xJLlnWp2Rx57itO-IHclNmwnVJDPAh1l9D8CZBGxBSoN0FvmbWeYDNQnA7ud77YLekrcSAuKMdBX3J1UKq6ytvWwi6ChnuRFqcQ-fpzK-jgkMhGm-WFHw0H3a34afdBdSUUFutESlwMvTqmXILYVcIwaJpEAjamf3rn6wIOEoD8mbxXJ6Gb6QrRO72Kt3z62vJp7yOeMsnXUkfioVSyJVwbkbchCs2Y4YZY3FEREbKysKNdHJhhqmn6AXvx66arAK3HeZoyf5eusfk26alhbEdJqsJgFP5VROV5l57q8VKhH8hAxg-oeidCGGJXPjLGeb-5iGPjdGhQ1Ng1i9kt7VDV4icb8B2AbNC2Ie9xP6b0R11PX4jUd8D3Jogf2f0ZhAs5Is8WHcrxsCyk3lWvgOyzWxpRx2lSpmBRmSwksPrKJk_7JuzDZ1Tdpz6mubjV6DzlmqDJJjf32hBIMnaYOhOUz5k1FzZ8mybsSbnM9UjzHYr5xIf4rkmVAfuPnU2FGu8NtCQaOtt9G-TziBFgT3ZjxBCL9QaaC39BRulGE6tyCAT8NM9svTD_AbNyINUzO2M0R61OXYQfzXEeiui-sO6eYIc3x_z-YdFFQ'
     controller: null
     method: null
     route: null
@@ -1383,17 +1394,18 @@ endpoints:
   -
     httpMethods:
       - POST
-    uri: api/v3/user/becoming-christ-like/store
+    uri: api/v3/user/estore-cms/contact/update
     metadata:
-      groupName: Education
+      groupName: 'Estore CMS'
       groupDescription: ''
-      subgroup: 'Becoming Christ Like'
-      subgroupDescription: 'APIs for managing Becoming Christ Like files and topics.'
-      title: 'Create New'
-      description: ''
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'Contact CMS Update'
+      description: 'Create or update the Contact CMS section.'
       authenticated: true
       custom: []
     headers:
+      Authorization: 'Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJhdWQiOiIxIiwianRpIjoiNTJkNDhkYzhjNTc4ODIwZWVmODFmY2NhOWJiMmJiODFlZGE1MTUwMTVkYmU5YzdkNzFkODAyYTRmZWNhMWQ5ZGJhYWEzMTc2YjI1OTJmMTgiLCJpYXQiOjE3NjQwNjAzNDQuMDUyOTc0LCJuYmYiOjE3NjQwNjAzNDQuMDUyOTc1LCJleHAiOjE3OTU1OTYzNDQuMDQzNjUyLCJzdWIiOiIxNjgiLCJzY29wZXMiOltdfQ.X9tS38uM-UlrpFlYZihD_kmuCcSX_hdGsRBJcNGfrWXAClMiqeTxNTC45Ftxw-ddmDQ59t5xJLlnWp2Rx57itO-IHclNmwnVJDPAh1l9D8CZBGxBSoN0FvmbWeYDNQnA7ud77YLekrcSAuKMdBX3J1UKq6ytvWwi6ChnuRFqcQ-fpzK-jgkMhGm-WFHw0H3a34afdBdSUUFutESlwMvTqmXILYVcIwaJpEAjamf3rn6wIOEoD8mbxXJ6Gb6QrRO72Kt3z62vJp7yOeMsnXUkfioVSyJVwbkbchCs2Y4YZY3FEREbKysKNdHJhhqmn6AXvx66arAK3HeZoyf5eusfk26alhbEdJqsJgFP5VROV5l57q8VKhH8hAxg-oeidCGGJXPjLGeb-5iGPjdGhQ1Ng1i9kt7VDV4icb8B2AbNC2Ie9xP6b0R11PX4jUd8D3Jogf2f0ZhAs5Is8WHcrxsCyk3lWvgOyzWxpRx2lSpmBRmSwksPrKJk_7JuzDZ1Tdpz6mubjV6DzlmqDJJjf32hBIMnaYOhOUz5k1FzZ8mybsSbnM9UjzHYr5xIf4rkmVAfuPnU2FGu8NtCQaOtt9G-TziBFgT3ZjxBCL9QaaC39BRulGE6tyCAT8NM9svTD_AbNyINUzO2M0R61OXYQfzXEeiui-sO6eYIc3x_z-YdFFQ'
       Content-Type: multipart/form-data
       Accept: application/json
     urlParameters: []
@@ -1401,212 +1413,150 @@ endpoints:
     queryParameters: []
     cleanQueryParameters: []
     bodyParameters:
-      file:
-        name: file
-        description: 'The file to upload.'
-        required: true
+      banner_image:
+        name: banner_image
+        description: 'optional Banner image (jpeg, png, jpg, gif, svg)'
+        required: false
         example: null
         type: file
         enumValues: []
         exampleWasSpecified: false
-        nullable: false
+        nullable: true
         custom: []
-      topic_id:
-        name: topic_id
-        description: 'The ID of the topic to associate the file with.'
-        required: true
-        example: 0
-        type: integer
-        enumValues: []
-        exampleWasSpecified: true
-        nullable: false
-        custom: []
-    cleanBodyParameters:
-      topic_id: 0
-    fileParameters:
-      file: null
-    responses:
-      -
-        status: 200
-        content: |-
-          {
-             "message": "File uploaded successfully.",
-             "data": {
-                 "user_id": 37,
-                 "file_name": "image.png",
-                 "file_extension": "png",
-                 "topic_id": "13",
-                 "type": "Becoming Christ Like",
-                 "file": "files/WoKa3ViZP3eoU6cqhAqcBqBdVfeGgGADoPS5c8WK.png",
-                 "updated_at": "2024-11-08T11:01:16.000000Z",
-                 "created_at": "2024-11-08T11:01:16.000000Z",
-                 "id": 77
-             },
-             "status": true
-          }
-        headers: []
-        description: ''
-        custom: []
-      -
-        status: 400
-        content: |-
-          {
-            "message": "The file name has already been taken.",
-            "status": false
-          }
-        headers: []
-        description: ''
-        custom: []
-      -
-        status: 422
-        content: |-
-          {
-            "message": "Validation errors occurred.",
-            "errors": {
-              "file": ["The file field is required."],
-              "topic_id": ["The topic id field is required."]
-            },
-            "status": false
-          }
-        headers: []
-        description: ''
-        custom: []
-    responseFields: []
-    auth: []
-    controller: null
-    method: null
-    route: null
-    custom: []
-  -
-    httpMethods:
-      - GET
-    uri: 'api/v3/user/becoming-christ-like/view/{id}'
-    metadata:
-      groupName: Education
-      groupDescription: ''
-      subgroup: 'Becoming Christ Like'
-      subgroupDescription: 'APIs for managing Becoming Christ Like files and topics.'
-      title: 'View File'
-      description: ''
-      authenticated: true
-      custom: []
-    headers:
-      Content-Type: application/json
-      Accept: application/json
-    urlParameters:
-      id:
-        name: id
-        description: 'The ID of the file to view.'
-        required: true
-        example: 1
-        type: integer
-        enumValues: []
-        exampleWasSpecified: true
-        nullable: false
-        custom: []
-    cleanUrlParameters:
-      id: 1
-    queryParameters:
-      topic:
-        name: topic
-        description: 'The ID of the topic to filter by (optional).'
+      banner_title:
+        name: banner_title
+        description: 'optional Banner title.'
         required: false
-        example: 4
-        type: integer
+        example: '"Contact Us"'
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: true
+        custom: []
+      card_one_title:
+        name: card_one_title
+        description: 'optional Card 1 title.'
+        required: false
+        example: '"Support"'
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: true
+        custom: []
+      card_one_content:
+        name: card_one_content
+        description: 'optional Card 1 content.'
+        required: false
+        example: harum
+        type: string
         enumValues: []
         exampleWasSpecified: false
-        nullable: false
+        nullable: true
         custom: []
-    cleanQueryParameters:
-      topic: 4
-    bodyParameters: []
-    cleanBodyParameters: []
-    fileParameters: []
-    responses:
-      -
-        status: 200
-        content: |-
-          {
-             "message": "File details retrieved successfully.",
-             "data": {
-                 "id": 77,
-                 "user_id": 37,
-                 "file_name": "image.png",
-                 "file_extension": "png",
-                 "topic_id": 13,
-                 "type": "Becoming Christ Like",
-                 "file": "files/WoKa3ViZP3eoU6cqhAqcBqBdVfeGgGADoPS5c8WK.png",
-                 "created_at": "2024-11-08T11:01:16.000000Z",
-                 "updated_at": "2024-11-08T11:01:16.000000Z"
-             },
-             "new_topic": "",
-             "status": true
-          }
-        headers: []
-        description: ''
+      card_two_title:
+        name: card_two_title
+        description: 'optional Card 2 title.'
+        required: false
+        example: cum
+        type: string
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: true
         custom: []
-      -
-        status: 404
-        content: |-
-          {
-            "message": "File not found.",
-            "status": false
-          }
-        headers: []
-        description: ''
+      card_two_content:
+        name: card_two_content
+        description: 'optional Card 2 content.'
+        required: false
+        example: unde
+        type: string
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: true
         custom: []
-    responseFields: []
-    auth: []
-    controller: null
-    method: null
-    route: null
-    custom: []
-  -
-    httpMethods:
-      - POST
-    uri: 'api/v3/user/becoming-christ-like/update/{id}'
-    metadata:
-      groupName: Education
-      groupDescription: ''
-      subgroup: 'Becoming Christ Like'
-      subgroupDescription: 'APIs for managing Becoming Christ Like files and topics.'
-      title: 'Update File'
-      description: ''
-      authenticated: true
-      custom: []
-    headers:
-      Content-Type: multipart/form-data
-      Accept: application/json
-    urlParameters:
-      id:
-        name: id
-        description: 'The ID of the update.'
-        required: true
+      card_three_title:
+        name: card_three_title
+        description: 'optional Card 3 title.'
+        required: false
+        example: non
+        type: string
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: true
+        custom: []
+      card_three_content:
+        name: card_three_content
+        description: 'optional Card 3 content.'
+        required: false
+        example: asperiores
+        type: string
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: true
+        custom: []
+      form_title:
+        name: form_title
+        description: 'optional Form title.'
+        required: false
         example: at
         type: string
         enumValues: []
         exampleWasSpecified: false
-        nullable: false
+        nullable: true
         custom: []
-    cleanUrlParameters:
-      id: at
-    queryParameters: []
-    cleanQueryParameters: []
-    bodyParameters:
-      file:
-        name: file
-        description: 'The new file to replace the existing one (optional).'
+      form_subtitle:
+        name: form_subtitle
+        description: 'optional Form subtitle.'
         required: false
-        example: null
-        type: file
+        example: voluptates
+        type: string
         enumValues: []
         exampleWasSpecified: false
-        nullable: false
+        nullable: true
         custom: []
-      topic_id:
-        name: topic_id
-        description: 'The ID of the topic to associate with the file.'
-        required: true
+      call_section_title:
+        name: call_section_title
+        description: 'optional Call section title.'
+        required: false
+        example: maxime
+        type: string
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: true
+        custom: []
+      call_section_content:
+        name: call_section_content
+        description: 'optional Call section content.'
+        required: false
+        example: iusto
+        type: string
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: true
+        custom: []
+      follow_us_title:
+        name: follow_us_title
+        description: 'optional Follow us title.'
+        required: false
+        example: eos
+        type: string
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: true
+        custom: []
+      map_iframe_src:
+        name: map_iframe_src
+        description: 'optional Map iframe src.'
+        required: false
+        example: saepe
+        type: string
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: true
+        custom: []
+      id:
+        name: id
+        description: 'optional The ID of the CMS record to update.'
+        required: false
         example: 1
         type: integer
         enumValues: []
@@ -1614,35 +1564,49 @@ endpoints:
         nullable: false
         custom: []
     cleanBodyParameters:
-      topic_id: 1
+      banner_title: '"Contact Us"'
+      card_one_title: '"Support"'
+      card_one_content: harum
+      card_two_title: cum
+      card_two_content: unde
+      card_three_title: non
+      card_three_content: asperiores
+      form_title: at
+      form_subtitle: voluptates
+      call_section_title: maxime
+      call_section_content: iusto
+      follow_us_title: eos
+      map_iframe_src: saepe
+      id: 1
     fileParameters:
-      file: null
+      banner_image: null
     responses:
       -
         status: 200
         content: |-
           {
-            "message": "File updated successfully.",
             "data": {
               "id": 1,
-              "file_name": "updated_sample.pdf",
-              "file_extension": "pdf",
-              "topic_id": 1,
-              "user_id": 1,
-              "file": "updated_file_path_here"
+              "banner_title": "Contact Us",
+              "card_one_title": "Support",
+              "card_one_content": "...",
+              "banner_image": "ecom_cms/banner_image.jpg",
+              "...": "..."
             },
+            "message": "Contact CMS updated successfully",
             "status": true
           }
         headers: []
         description: ''
         custom: []
       -
-        status: 400
+        status: 201
         content: |-
           {
             "message": "Validation failed.",
             "errors": {
-              "file": ["The file name has already been taken."]
+              "banner_image": ["The banner image must be an image file."],
+              "banner_title": ["The banner title may not be greater than 255 characters."]
             },
             "status": false
           }
@@ -1650,154 +1614,6 @@ endpoints:
         description: ''
         custom: []
       -
-        status: 404
-        content: |-
-          {
-            "message": "File not found.",
-            "status": false
-          }
-        headers: []
-        description: ''
-        custom: []
-      -
-        status: 500
-        content: |-
-          {
-            "message": "Something went wrong. Please try again later.",
-            "status": false
-          }
-        headers: []
-        description: ''
-        custom: []
-    responseFields: []
-    auth: []
-    controller: null
-    method: null
-    route: null
-    custom: []
-  -
-    httpMethods:
-      - GET
-    uri: 'api/v3/user/becoming-christ-like/delete/{id}'
-    metadata:
-      groupName: Education
-      groupDescription: ''
-      subgroup: 'Becoming Christ Like'
-      subgroupDescription: 'APIs for managing Becoming Christ Like files and topics.'
-      title: 'Delete File'
-      description: ''
-      authenticated: true
-      custom: []
-    headers:
-      Content-Type: application/json
-      Accept: application/json
-    urlParameters:
-      id:
-        name: id
-        description: 'The ID of the file to delete.'
-        required: true
-        example: 1
-        type: integer
-        enumValues: []
-        exampleWasSpecified: true
-        nullable: false
-        custom: []
-    cleanUrlParameters:
-      id: 1
-    queryParameters: []
-    cleanQueryParameters: []
-    bodyParameters: []
-    cleanBodyParameters: []
-    fileParameters: []
-    responses:
-      -
-        status: 200
-        content: |-
-          {
-            "message": "File deleted successfully.",
-            "status": true
-          }
-        headers: []
-        description: ''
-        custom: []
-      -
-        status: 404
-        content: |-
-          {
-            "message": "File not found.",
-            "status": false
-          }
-        headers: []
-        description: ''
-        custom: []
-      -
-        status: 500
-        content: |-
-          {
-            "message": "Something went wrong. Please try again later.",
-            "status": false
-          }
-        headers: []
-        description: ''
-        custom: []
-    responseFields: []
-    auth: []
-    controller: null
-    method: null
-    route: null
-    custom: []
-  -
-    httpMethods:
-      - GET
-    uri: 'api/v3/user/becoming-christ-like/download/{file}'
-    metadata:
-      groupName: Education
-      groupDescription: ''
-      subgroup: 'Becoming Christ Like'
-      subgroupDescription: 'APIs for managing Becoming Christ Like files and topics.'
-      title: 'Download file'
-      description: ''
-      authenticated: true
-      custom: []
-    headers:
-      Content-Type: application/json
-      Accept: application/json
-    urlParameters:
-      file:
-        name: file
-        description: ''
-        required: true
-        example: et
-        type: string
-        enumValues: []
-        exampleWasSpecified: false
-        nullable: false
-        custom: []
-    cleanUrlParameters:
-      file: et
-    queryParameters: []
-    cleanQueryParameters: []
-    bodyParameters: []
-    cleanBodyParameters: []
-    fileParameters: []
-    responses:
-      -
-        status: 200
-        content: 'A downloadable file response with the specified file.'
-        headers: []
-        description: ''
-        custom: []
-      -
-        status: 201
-        content: |-
-          {
-            "message": "File not found.",
-            "status": false
-          }
-        headers: []
-        description: ''
-        custom: []
-      -
         status: 201
         content: |-
           {
@@ -1808,1461 +1624,10 @@ endpoints:
         description: ''
         custom: []
     responseFields: []
-    auth: []
-    controller: null
-    method: null
-    route: null
-    custom: []
-  -
-    httpMethods:
-      - GET
-    uri: api/v3/user/leadership-development
-    metadata:
-      groupName: Education
-      groupDescription: ''
-      subgroup: 'Becoming a Leader'
-      subgroupDescription: 'APIs for managing Becoming a Leader files and topics.'
-      title: 'Becoming a Leaders List'
-      description: ''
-      authenticated: true
-      custom: []
-    headers:
-      Content-Type: application/json
-      Accept: application/json
-    urlParameters: []
-    cleanUrlParameters: []
-    queryParameters:
-      topic:
-        name: topic
-        description: 'The ID of the topic to filter by.'
-        required: false
-        example: 1
-        type: integer
-        enumValues: []
-        exampleWasSpecified: true
-        nullable: false
-        custom: []
-    cleanQueryParameters:
-      topic: 1
-    bodyParameters: []
-    cleanBodyParameters: []
-    fileParameters: []
-    responses:
-      -
-        status: 200
-        content: |-
-          *{
-             "data": {
-                 "current_page": 1,
-                 "data": [
-
-                     {
-                         "id": 60,
-                         "user_id": 1,
-                         "file_name": "topic- Back to the Basics Description and Outline.docx",
-                         "file_extension": "docx",
-                         "topic_id": 4,
-                         "type": "Becoming a Leader",
-                         "file": "files\/qm5d3aJ5Z6esEep7WZAs19BLo4KRsjXp9w1RITYv.docx",
-                         "created_at": "2024-08-02T09:32:31.000000Z",
-                         "updated_at": "2024-08-02T09:32:31.000000Z"
-                     },
-                     {
-                         "id": 59,
-                         "user_id": 1,
-                         "file_name": "topic-Back to the Basics Part 1.pptx",
-                         "file_extension": "pptx",
-                         "topic_id": 4,
-                         "type": "Becoming a Leader",
-                         "file": "files\/bv7C4BiH0N1s8WXrVZpPV2s6YTWN5sVUQs5PE584.pptx",
-                         "created_at": "2024-08-02T09:31:40.000000Z",
-                         "updated_at": "2024-08-02T09:31:40.000000Z"
-                     },
-                     {
-                         "id": 57,
-                         "user_id": 1,
-                         "file_name": "topic-Back to the Basics Part 3.pptx",
-                         "file_extension": "pptx",
-                         "topic_id": 4,
-                         "type": "Becoming a Leader",
-                         "file": "files\/BDp5AHtA4ZIsqziYPUxCbRL91bcbSvAVv4m8S9Zs.pptx",
-                         "created_at": "2024-08-02T09:29:56.000000Z",
-                         "updated_at": "2024-08-02T09:29:56.000000Z"
-                     }
-                 ],
-                 "first_page_url": "http:\/\/127.0.0.1:8000\/api\/v3\/user\/becoming-sovereign?page=1",
-                 "from": 1,
-                 "last_page": 1,
-                 "last_page_url": "http:\/\/127.0.0.1:8000\/api\/v3\/user\/becoming-sovereign?page=1",
-                 "links": [
-                     {
-                         "url": null,
-                         "label": "&laquo; Previous",
-                         "active": false
-                     },
-                     {
-                         "url": "http:\/\/127.0.0.1:8000\/api\/v3\/user\/becoming-sovereign?page=1",
-                         "label": "1",
-                         "active": true
-                     },
-                     {
-                         "url": null,
-                         "label": "Next &raquo;",
-                         "active": false
-                     }
-                 ],
-                 "next_page_url": null,
-                 "path": "http:\/\/127.0.0.1:8000\/api\/v3\/user\/becoming-sovereign",
-                 "per_page": 15,
-                 "prev_page_url": null,
-                 "to": 11,
-                 "total": 11
-             },
-             "topics": [
-                 {
-                     "id": 12,
-                     "topic_name": "abcd",
-                     "education_type": "Becoming a Leader",
-                     "created_at": "2024-11-08T09:42:48.000000Z",
-                     "updated_at": "2024-11-08T09:42:48.000000Z"
-                 },
-                 {
-                     "id": 6,
-                     "topic_name": "Leadership Development",
-                     "education_type": "Becoming a Leader",
-                     "created_at": "2024-08-02T09:17:16.000000Z",
-                     "updated_at": "2024-08-16T08:58:34.000000Z"
-                 },
-             ],
-             "new_topic": "",
-             "status": true
-          }
-        headers: []
-        description: ''
-        custom: []
-    responseFields: []
-    auth: []
-    controller: null
-    method: null
-    route: null
-    custom: []
-  -
-    httpMethods:
-      - GET
-    uri: api/v3/user/leadership-development/list-by-topics
-    metadata:
-      groupName: Education
-      groupDescription: ''
-      subgroup: 'Becoming a Leader'
-      subgroupDescription: 'APIs for managing Becoming a Leader files and topics.'
-      title: 'List by Topic'
-      description: ''
-      authenticated: true
-      custom: []
-    headers:
-      Content-Type: application/json
-      Accept: application/json
-    urlParameters: []
-    cleanUrlParameters: []
-    queryParameters:
-      sortby:
-        name: sortby
-        description: 'The column to sort by (optional, default: id).'
-        required: false
-        example: officia
-        type: string
-        enumValues: []
-        exampleWasSpecified: false
-        nullable: false
-        custom: []
-      sorttype:
-        name: sorttype
-        description: "The sort direction, either 'asc' or 'desc' (optional, default: 'asc')."
-        required: false
-        example: tempora
-        type: string
-        enumValues: []
-        exampleWasSpecified: false
-        nullable: false
-        custom: []
-      query:
-        name: query
-        description: 'The search query to filter files by ID, file name, or file extension (optional).'
-        required: false
-        example: quia
-        type: string
-        enumValues: []
-        exampleWasSpecified: false
-        nullable: false
-        custom: []
-      topic_id:
-        name: topic_id
-        description: 'The ID of the topic to filter files by (optional).'
-        required: false
-        example: 19
-        type: integer
-        enumValues: []
-        exampleWasSpecified: false
-        nullable: false
-        custom: []
-    cleanQueryParameters:
-      sortby: officia
-      sorttype: tempora
-      query: quia
-      topic_id: 19
-    bodyParameters: []
-    cleanBodyParameters: []
-    fileParameters: []
-    responses:
-      -
-        status: 200
-        content: |-
-          {
-             "message": "Files retrieved successfully.",
-             "data": [
-                 {
-                     "id": 77,
-                     "user_id": 37,
-                     "file_name": "image.png",
-                     "file_extension": "png",
-                     "topic_id": 13,
-                     "type": "Becoming a Leader",
-                     "file": "files\/WoKa3ViZP3eoU6cqhAqcBqBdVfeGgGADoPS5c8WK.png",
-                     "created_at": "2024-11-08T11:01:16.000000Z",
-                     "updated_at": "2024-11-08T11:01:16.000000Z"
-                 }
-             ],
-             "pagination": {
-                 "total": 1,
-                 "per_page": 15,
-                 "current_page": 1,
-                 "last_page": 1
-             },
-             "status": true
-          }
-        headers: []
-        description: ''
-        custom: []
-    responseFields: []
-    auth: []
-    controller: null
-    method: null
-    route: null
-    custom: []
-  -
-    httpMethods:
-      - GET
-    uri: api/v3/user/leadership-development/topics
-    metadata:
-      groupName: Education
-      groupDescription: ''
-      subgroup: 'Becoming a Leader'
-      subgroupDescription: 'APIs for managing Becoming a Leader files and topics.'
-      title: 'Get List of Topics'
-      description: ''
-      authenticated: true
-      custom: []
-    headers:
-      Content-Type: application/json
-      Accept: application/json
-    urlParameters: []
-    cleanUrlParameters: []
-    queryParameters: []
-    cleanQueryParameters: []
-    bodyParameters: []
-    cleanBodyParameters: []
-    fileParameters: []
-    responses:
-      -
-        status: 200
-        content: |-
-          {
-            "data": [
-              {
-                "id": 1,
-                "topic_name": "Sample Topic",
-                "education_type": "Becoming a Leader",
-                "created_at": "2024-09-09T11:02:39.000000Z",
-                "updated_at": "2024-09-09T11:02:39.000000Z"
-              }
-            ],
-            "status": true
-          }
-        headers: []
-        description: ''
-        custom: []
-      -
-        status: 201
-        content: |-
-          {
-            "message": "Failed to fetch topics. Please try again later.",
-            "status": false
-          }
-        headers: []
-        description: ''
-        custom: []
-    responseFields: []
-    auth: []
-    controller: null
-    method: null
-    route: null
-    custom: []
-  -
-    httpMethods:
-      - POST
-    uri: api/v3/user/leadership-development/store
-    metadata:
-      groupName: Education
-      groupDescription: ''
-      subgroup: 'Becoming a Leader'
-      subgroupDescription: 'APIs for managing Becoming a Leader files and topics.'
-      title: 'Create New'
-      description: ''
-      authenticated: true
-      custom: []
-    headers:
-      Content-Type: multipart/form-data
-      Accept: application/json
-    urlParameters: []
-    cleanUrlParameters: []
-    queryParameters: []
-    cleanQueryParameters: []
-    bodyParameters:
-      file:
-        name: file
-        description: 'The file to upload.'
-        required: true
-        example: null
-        type: file
-        enumValues: []
-        exampleWasSpecified: false
-        nullable: false
-        custom: []
-      topic_id:
-        name: topic_id
-        description: 'The ID of the topic to associate the file with.'
-        required: true
-        example: 0
-        type: integer
-        enumValues: []
-        exampleWasSpecified: true
-        nullable: false
-        custom: []
-    cleanBodyParameters:
-      topic_id: 0
-    fileParameters:
-      file: null
-    responses:
-      -
-        status: 200
-        content: |-
-          {
-             "message": "File uploaded successfully.",
-             "data": {
-                 "user_id": 37,
-                 "file_name": "image.png",
-                 "file_extension": "png",
-                 "topic_id": "13",
-                 "type": "Becoming a Leader",
-                 "file": "files/WoKa3ViZP3eoU6cqhAqcBqBdVfeGgGADoPS5c8WK.png",
-                 "updated_at": "2024-11-08T11:01:16.000000Z",
-                 "created_at": "2024-11-08T11:01:16.000000Z",
-                 "id": 77
-             },
-             "status": true
-          }
-        headers: []
-        description: ''
-        custom: []
-      -
-        status: 400
-        content: |-
-          {
-            "message": "The file name has already been taken.",
-            "status": false
-          }
-        headers: []
-        description: ''
-        custom: []
-      -
-        status: 422
-        content: |-
-          {
-            "message": "Validation errors occurred.",
-            "errors": {
-              "file": ["The file field is required."],
-              "topic_id": ["The topic id field is required."]
-            },
-            "status": false
-          }
-        headers: []
-        description: ''
-        custom: []
-    responseFields: []
-    auth: []
-    controller: null
-    method: null
-    route: null
-    custom: []
-  -
-    httpMethods:
-      - GET
-    uri: 'api/v3/user/leadership-development/view/{id}'
-    metadata:
-      groupName: Education
-      groupDescription: ''
-      subgroup: 'Becoming a Leader'
-      subgroupDescription: 'APIs for managing Becoming a Leader files and topics.'
-      title: 'View File'
-      description: ''
-      authenticated: true
-      custom: []
-    headers:
-      Content-Type: application/json
-      Accept: application/json
-    urlParameters:
-      id:
-        name: id
-        description: 'The ID of the file to view.'
-        required: true
-        example: 1
-        type: integer
-        enumValues: []
-        exampleWasSpecified: true
-        nullable: false
-        custom: []
-    cleanUrlParameters:
-      id: 1
-    queryParameters:
-      topic:
-        name: topic
-        description: 'The ID of the topic to filter by (optional).'
-        required: false
-        example: 13
-        type: integer
-        enumValues: []
-        exampleWasSpecified: false
-        nullable: false
-        custom: []
-    cleanQueryParameters:
-      topic: 13
-    bodyParameters: []
-    cleanBodyParameters: []
-    fileParameters: []
-    responses:
-      -
-        status: 200
-        content: |-
-          {
-             "message": "File details retrieved successfully.",
-             "data": {
-                 "id": 77,
-                 "user_id": 37,
-                 "file_name": "image.png",
-                 "file_extension": "png",
-                 "topic_id": 13,
-                 "type": "Becoming a Leader",
-                 "file": "files/WoKa3ViZP3eoU6cqhAqcBqBdVfeGgGADoPS5c8WK.png",
-                 "created_at": "2024-11-08T11:01:16.000000Z",
-                 "updated_at": "2024-11-08T11:01:16.000000Z"
-             },
-             "new_topic": "",
-             "status": true
-          }
-        headers: []
-        description: ''
-        custom: []
-      -
-        status: 404
-        content: |-
-          {
-            "message": "File not found.",
-            "status": false
-          }
-        headers: []
-        description: ''
-        custom: []
-    responseFields: []
-    auth: []
-    controller: null
-    method: null
-    route: null
-    custom: []
-  -
-    httpMethods:
-      - POST
-    uri: 'api/v3/user/leadership-development/update/{id}'
-    metadata:
-      groupName: Education
-      groupDescription: ''
-      subgroup: 'Becoming a Leader'
-      subgroupDescription: 'APIs for managing Becoming a Leader files and topics.'
-      title: 'Update File'
-      description: ''
-      authenticated: true
-      custom: []
-    headers:
-      Content-Type: multipart/form-data
-      Accept: application/json
-    urlParameters:
-      id:
-        name: id
-        description: 'The ID of the update.'
-        required: true
-        example: ipsam
-        type: string
-        enumValues: []
-        exampleWasSpecified: false
-        nullable: false
-        custom: []
-    cleanUrlParameters:
-      id: ipsam
-    queryParameters: []
-    cleanQueryParameters: []
-    bodyParameters:
-      file:
-        name: file
-        description: 'The new file to replace the existing one (optional).'
-        required: false
-        example: null
-        type: file
-        enumValues: []
-        exampleWasSpecified: false
-        nullable: false
-        custom: []
-      topic_id:
-        name: topic_id
-        description: 'The ID of the topic to associate with the file.'
-        required: true
-        example: 1
-        type: integer
-        enumValues: []
-        exampleWasSpecified: true
-        nullable: false
-        custom: []
-    cleanBodyParameters:
-      topic_id: 1
-    fileParameters:
-      file: null
-    responses:
-      -
-        status: 200
-        content: |-
-          {
-            "message": "File updated successfully.",
-            "data": {
-              "id": 1,
-              "file_name": "updated_sample.pdf",
-              "file_extension": "pdf",
-              "topic_id": 1,
-              "user_id": 1,
-              "file": "updated_file_path_here"
-            },
-            "status": true
-          }
-        headers: []
-        description: ''
-        custom: []
-      -
-        status: 400
-        content: |-
-          {
-            "message": "Validation failed.",
-            "errors": {
-              "file": ["The file name has already been taken."]
-            },
-            "status": false
-          }
-        headers: []
-        description: ''
-        custom: []
-      -
-        status: 404
-        content: |-
-          {
-            "message": "File not found.",
-            "status": false
-          }
-        headers: []
-        description: ''
-        custom: []
-      -
-        status: 500
-        content: |-
-          {
-            "message": "Something went wrong. Please try again later.",
-            "status": false
-          }
-        headers: []
-        description: ''
-        custom: []
-    responseFields: []
-    auth: []
-    controller: null
-    method: null
-    route: null
-    custom: []
-  -
-    httpMethods:
-      - GET
-    uri: 'api/v3/user/leadership-development/delete/{id}'
-    metadata:
-      groupName: Education
-      groupDescription: ''
-      subgroup: 'Becoming a Leader'
-      subgroupDescription: 'APIs for managing Becoming a Leader files and topics.'
-      title: 'Delete File'
-      description: ''
-      authenticated: true
-      custom: []
-    headers:
-      Content-Type: application/json
-      Accept: application/json
-    urlParameters:
-      id:
-        name: id
-        description: 'The ID of the file to delete.'
-        required: true
-        example: 1
-        type: integer
-        enumValues: []
-        exampleWasSpecified: true
-        nullable: false
-        custom: []
-    cleanUrlParameters:
-      id: 1
-    queryParameters: []
-    cleanQueryParameters: []
-    bodyParameters: []
-    cleanBodyParameters: []
-    fileParameters: []
-    responses:
-      -
-        status: 200
-        content: |-
-          {
-            "message": "File deleted successfully.",
-            "status": true
-          }
-        headers: []
-        description: ''
-        custom: []
-      -
-        status: 404
-        content: |-
-          {
-            "message": "File not found.",
-            "status": false
-          }
-        headers: []
-        description: ''
-        custom: []
-      -
-        status: 500
-        content: |-
-          {
-            "message": "Something went wrong. Please try again later.",
-            "status": false
-          }
-        headers: []
-        description: ''
-        custom: []
-    responseFields: []
-    auth: []
-    controller: null
-    method: null
-    route: null
-    custom: []
-  -
-    httpMethods:
-      - GET
-    uri: 'api/v3/user/leadership-development/download/{file}'
-    metadata:
-      groupName: Education
-      groupDescription: ''
-      subgroup: 'Becoming a Leader'
-      subgroupDescription: 'APIs for managing Becoming a Leader files and topics.'
-      title: 'Download file'
-      description: ''
-      authenticated: true
-      custom: []
-    headers:
-      Content-Type: application/json
-      Accept: application/json
-    urlParameters:
-      file:
-        name: file
-        description: ''
-        required: true
-        example: labore
-        type: string
-        enumValues: []
-        exampleWasSpecified: false
-        nullable: false
-        custom: []
-    cleanUrlParameters:
-      file: labore
-    queryParameters: []
-    cleanQueryParameters: []
-    bodyParameters: []
-    cleanBodyParameters: []
-    fileParameters: []
-    responses:
-      -
-        status: 200
-        content: 'A downloadable file response with the specified file.'
-        headers: []
-        description: ''
-        custom: []
-      -
-        status: 201
-        content: |-
-          {
-            "message": "File not found.",
-            "status": false
-          }
-        headers: []
-        description: ''
-        custom: []
-      -
-        status: 201
-        content: |-
-          {
-            "message": "Something went wrong. Please try again later.",
-            "status": false
-          }
-        headers: []
-        description: ''
-        custom: []
-    responseFields: []
-    auth: []
-    controller: null
-    method: null
-    route: null
-    custom: []
-  -
-    httpMethods:
-      - GET
-    uri: api/v3/user/files
-    metadata:
-      groupName: Education
-      groupDescription: ''
-      subgroup: Files
-      subgroupDescription: 'APIs for managing files.'
-      title: 'Files List'
-      description: ''
-      authenticated: true
-      custom: []
-    headers:
-      Content-Type: application/json
-      Accept: application/json
-    urlParameters: []
-    cleanUrlParameters: []
-    queryParameters:
-      topic:
-        name: topic
-        description: 'The ID of the topic to filter by.'
-        required: false
-        example: 1
-        type: integer
-        enumValues: []
-        exampleWasSpecified: true
-        nullable: false
-        custom: []
-    cleanQueryParameters:
-      topic: 1
-    bodyParameters: []
-    cleanBodyParameters: []
-    fileParameters: []
-    responses:
-      -
-        status: 200
-        content: |-
-          *{
-             "data": {
-                 "current_page": 1,
-                 "data": [
-
-                     {
-                         "id": 60,
-                         "user_id": 1,
-                         "file_name": "topic- Back to the Basics Description and Outline.docx",
-                         "file_extension": "docx",
-                         "topic_id": 4,
-                         "type": "Becoming Christ Like",
-                         "file": "files\/qm5d3aJ5Z6esEep7WZAs19BLo4KRsjXp9w1RITYv.docx",
-                         "created_at": "2024-08-02T09:32:31.000000Z",
-                         "updated_at": "2024-08-02T09:32:31.000000Z"
-                     },
-                     {
-                         "id": 59,
-                         "user_id": 1,
-                         "file_name": "topic-Back to the Basics Part 1.pptx",
-                         "file_extension": "pptx",
-                         "topic_id": 4,
-                         "type": "Becoming Christ Like",
-                         "file": "files\/bv7C4BiH0N1s8WXrVZpPV2s6YTWN5sVUQs5PE584.pptx",
-                         "created_at": "2024-08-02T09:31:40.000000Z",
-                         "updated_at": "2024-08-02T09:31:40.000000Z"
-                     },
-                     {
-                         "id": 57,
-                         "user_id": 1,
-                         "file_name": "topic-Back to the Basics Part 3.pptx",
-                         "file_extension": "pptx",
-                         "topic_id": 4,
-                         "type": "Becoming Christ Like",
-                         "file": "files\/BDp5AHtA4ZIsqziYPUxCbRL91bcbSvAVv4m8S9Zs.pptx",
-                         "created_at": "2024-08-02T09:29:56.000000Z",
-                         "updated_at": "2024-08-02T09:29:56.000000Z"
-                     }
-                 ],
-                 "first_page_url": "http:\/\/127.0.0.1:8000\/api\/v3\/user\/becoming-sovereign?page=1",
-                 "from": 1,
-                 "last_page": 1,
-                 "last_page_url": "http:\/\/127.0.0.1:8000\/api\/v3\/user\/becoming-sovereign?page=1",
-                 "links": [
-                     {
-                         "url": null,
-                         "label": "&laquo; Previous",
-                         "active": false
-                     },
-                     {
-                         "url": "http:\/\/127.0.0.1:8000\/api\/v3\/user\/becoming-sovereign?page=1",
-                         "label": "1",
-                         "active": true
-                     },
-                     {
-                         "url": null,
-                         "label": "Next &raquo;",
-                         "active": false
-                     }
-                 ],
-                 "next_page_url": null,
-                 "path": "http:\/\/127.0.0.1:8000\/api\/v3\/user\/becoming-sovereign",
-                 "per_page": 15,
-                 "prev_page_url": null,
-                 "to": 11,
-                 "total": 11
-             },
-             "topics": [
-                 {
-                     "id": 12,
-                     "topic_name": "abcd",
-                     "education_type": "Becoming Christ Like",
-                     "created_at": "2024-11-08T09:42:48.000000Z",
-                     "updated_at": "2024-11-08T09:42:48.000000Z"
-                 },
-                 {
-                     "id": 6,
-                     "topic_name": "Leadership Development",
-                     "education_type": "Becoming Christ Like",
-                     "created_at": "2024-08-02T09:17:16.000000Z",
-                     "updated_at": "2024-08-16T08:58:34.000000Z"
-                 },
-             ],
-             "new_topic": "",
-             "status": true
-          }
-        headers: []
-        description: ''
-        custom: []
-    responseFields: []
-    auth: []
-    controller: null
-    method: null
-    route: null
-    custom: []
-  -
-    httpMethods:
-      - GET
-    uri: api/v3/user/files/list-by-topics
-    metadata:
-      groupName: Education
-      groupDescription: ''
-      subgroup: Files
-      subgroupDescription: 'APIs for managing files.'
-      title: 'List by Topic'
-      description: ''
-      authenticated: true
-      custom: []
-    headers:
-      Content-Type: application/json
-      Accept: application/json
-    urlParameters: []
-    cleanUrlParameters: []
-    queryParameters:
-      sortby:
-        name: sortby
-        description: 'The column to sort by (optional, default: id).'
-        required: false
-        example: ut
-        type: string
-        enumValues: []
-        exampleWasSpecified: false
-        nullable: false
-        custom: []
-      sorttype:
-        name: sorttype
-        description: "The sort direction, either 'asc' or 'desc' (optional, default: 'asc')."
-        required: false
-        example: quo
-        type: string
-        enumValues: []
-        exampleWasSpecified: false
-        nullable: false
-        custom: []
-      query:
-        name: query
-        description: 'The search query to filter files by ID, file name, or file extension (optional).'
-        required: false
-        example: doloribus
-        type: string
-        enumValues: []
-        exampleWasSpecified: false
-        nullable: false
-        custom: []
-      topic_id:
-        name: topic_id
-        description: 'The ID of the topic to filter files by (optional).'
-        required: false
-        example: 19
-        type: integer
-        enumValues: []
-        exampleWasSpecified: false
-        nullable: false
-        custom: []
-    cleanQueryParameters:
-      sortby: ut
-      sorttype: quo
-      query: doloribus
-      topic_id: 19
-    bodyParameters: []
-    cleanBodyParameters: []
-    fileParameters: []
-    responses:
-      -
-        status: 200
-        content: |-
-          {
-             "message": "Files retrieved successfully.",
-             "data": [
-                 {
-                     "id": 77,
-                     "user_id": 37,
-                     "file_name": "image.png",
-                     "file_extension": "png",
-                     "topic_id": 13,
-                     "type": "Becoming Christ Like",
-                     "file": "files\/WoKa3ViZP3eoU6cqhAqcBqBdVfeGgGADoPS5c8WK.png",
-                     "created_at": "2024-11-08T11:01:16.000000Z",
-                     "updated_at": "2024-11-08T11:01:16.000000Z"
-                 }
-             ],
-             "pagination": {
-                 "total": 1,
-                 "per_page": 15,
-                 "current_page": 1,
-                 "last_page": 1
-             },
-             "status": true
-          }
-        headers: []
-        description: ''
-        custom: []
-    responseFields: []
-    auth: []
-    controller: null
-    method: null
-    route: null
-    custom: []
-  -
-    httpMethods:
-      - GET
-    uri: api/v3/user/files/topics
-    metadata:
-      groupName: Education
-      groupDescription: ''
-      subgroup: Files
-      subgroupDescription: 'APIs for managing files.'
-      title: 'Get List of Topics'
-      description: ''
-      authenticated: true
-      custom: []
-    headers:
-      Content-Type: application/json
-      Accept: application/json
-    urlParameters: []
-    cleanUrlParameters: []
-    queryParameters: []
-    cleanQueryParameters: []
-    bodyParameters: []
-    cleanBodyParameters: []
-    fileParameters: []
-    responses:
-      -
-        status: 200
-        content: |-
-          {
-            "data": [
-              {
-                "id": 1,
-                "topic_name": "Sample Topic",
-                "education_type": "Becoming Christ Like",
-                "created_at": "2024-09-09T11:02:39.000000Z",
-                "updated_at": "2024-09-09T11:02:39.000000Z"
-              }
-            ],
-            "status": true
-          }
-        headers: []
-        description: ''
-        custom: []
-      -
-        status: 201
-        content: |-
-          {
-            "message": "Failed to fetch topics. Please try again later.",
-            "status": false
-          }
-        headers: []
-        description: ''
-        custom: []
-    responseFields: []
-    auth: []
-    controller: null
-    method: null
-    route: null
-    custom: []
-  -
-    httpMethods:
-      - POST
-    uri: api/v3/user/files/store
-    metadata:
-      groupName: Education
-      groupDescription: ''
-      subgroup: Files
-      subgroupDescription: 'APIs for managing files.'
-      title: 'Create New'
-      description: ''
-      authenticated: true
-      custom: []
-    headers:
-      Content-Type: multipart/form-data
-      Accept: application/json
-    urlParameters: []
-    cleanUrlParameters: []
-    queryParameters: []
-    cleanQueryParameters: []
-    bodyParameters:
-      file:
-        name: file
-        description: 'The file to upload.'
-        required: true
-        example: null
-        type: file
-        enumValues: []
-        exampleWasSpecified: false
-        nullable: false
-        custom: []
-      topic_id:
-        name: topic_id
-        description: 'The ID of the topic to associate the file with.'
-        required: true
-        example: 0
-        type: integer
-        enumValues: []
-        exampleWasSpecified: true
-        nullable: false
-        custom: []
-    cleanBodyParameters:
-      topic_id: 0
-    fileParameters:
-      file: null
-    responses:
-      -
-        status: 200
-        content: |-
-          {
-             "message": "File uploaded successfully.",
-             "data": {
-                 "user_id": 37,
-                 "file_name": "image.png",
-                 "file_extension": "png",
-                 "topic_id": "13",
-                 "type": "Becoming Christ Like",
-                 "file": "files/WoKa3ViZP3eoU6cqhAqcBqBdVfeGgGADoPS5c8WK.png",
-                 "updated_at": "2024-11-08T11:01:16.000000Z",
-                 "created_at": "2024-11-08T11:01:16.000000Z",
-                 "id": 77
-             },
-             "status": true
-          }
-        headers: []
-        description: ''
-        custom: []
-      -
-        status: 400
-        content: |-
-          {
-            "message": "The file name has already been taken.",
-            "status": false
-          }
-        headers: []
-        description: ''
-        custom: []
-      -
-        status: 422
-        content: |-
-          {
-            "message": "Validation errors occurred.",
-            "errors": {
-              "file": ["The file field is required."],
-              "topic_id": ["The topic id field is required."]
-            },
-            "status": false
-          }
-        headers: []
-        description: ''
-        custom: []
-    responseFields: []
-    auth: []
-    controller: null
-    method: null
-    route: null
-    custom: []
-  -
-    httpMethods:
-      - GET
-    uri: 'api/v3/user/files/view/{id}'
-    metadata:
-      groupName: Education
-      groupDescription: ''
-      subgroup: Files
-      subgroupDescription: 'APIs for managing files.'
-      title: 'View File'
-      description: ''
-      authenticated: true
-      custom: []
-    headers:
-      Content-Type: application/json
-      Accept: application/json
-    urlParameters:
-      id:
-        name: id
-        description: 'The ID of the file to view.'
-        required: true
-        example: 1
-        type: integer
-        enumValues: []
-        exampleWasSpecified: true
-        nullable: false
-        custom: []
-    cleanUrlParameters:
-      id: 1
-    queryParameters:
-      topic:
-        name: topic
-        description: 'The ID of the topic to filter by (optional).'
-        required: false
-        example: 3
-        type: integer
-        enumValues: []
-        exampleWasSpecified: false
-        nullable: false
-        custom: []
-    cleanQueryParameters:
-      topic: 3
-    bodyParameters: []
-    cleanBodyParameters: []
-    fileParameters: []
-    responses:
-      -
-        status: 200
-        content: |-
-          {
-             "message": "File details retrieved successfully.",
-             "data": {
-                 "id": 77,
-                 "user_id": 37,
-                 "file_name": "image.png",
-                 "file_extension": "png",
-                 "topic_id": 13,
-                 "type": "Becoming Christ Like",
-                 "file": "files/WoKa3ViZP3eoU6cqhAqcBqBdVfeGgGADoPS5c8WK.png",
-                 "created_at": "2024-11-08T11:01:16.000000Z",
-                 "updated_at": "2024-11-08T11:01:16.000000Z"
-             },
-             "new_topic": "",
-             "status": true
-          }
-        headers: []
-        description: ''
-        custom: []
-      -
-        status: 404
-        content: |-
-          {
-            "message": "File not found.",
-            "status": false
-          }
-        headers: []
-        description: ''
-        custom: []
-    responseFields: []
-    auth: []
-    controller: null
-    method: null
-    route: null
-    custom: []
-  -
-    httpMethods:
-      - POST
-    uri: 'api/v3/user/files/update/{id}'
-    metadata:
-      groupName: Education
-      groupDescription: ''
-      subgroup: Files
-      subgroupDescription: 'APIs for managing files.'
-      title: 'Update File'
-      description: ''
-      authenticated: true
-      custom: []
-    headers:
-      Content-Type: multipart/form-data
-      Accept: application/json
-    urlParameters:
-      id:
-        name: id
-        description: 'The ID of the update.'
-        required: true
-        example: nobis
-        type: string
-        enumValues: []
-        exampleWasSpecified: false
-        nullable: false
-        custom: []
-    cleanUrlParameters:
-      id: nobis
-    queryParameters: []
-    cleanQueryParameters: []
-    bodyParameters:
-      file:
-        name: file
-        description: 'The new file to replace the existing one (optional).'
-        required: false
-        example: null
-        type: file
-        enumValues: []
-        exampleWasSpecified: false
-        nullable: false
-        custom: []
-      topic_id:
-        name: topic_id
-        description: 'The ID of the topic to associate with the file.'
-        required: true
-        example: 1
-        type: integer
-        enumValues: []
-        exampleWasSpecified: true
-        nullable: false
-        custom: []
-    cleanBodyParameters:
-      topic_id: 1
-    fileParameters:
-      file: null
-    responses:
-      -
-        status: 200
-        content: |-
-          {
-            "message": "File updated successfully.",
-            "data": {
-              "id": 1,
-              "file_name": "updated_sample.pdf",
-              "file_extension": "pdf",
-              "topic_id": 1,
-              "user_id": 1,
-              "file": "updated_file_path_here"
-            },
-            "status": true
-          }
-        headers: []
-        description: ''
-        custom: []
-      -
-        status: 400
-        content: |-
-          {
-            "message": "Validation failed.",
-            "errors": {
-              "file": ["The file name has already been taken."]
-            },
-            "status": false
-          }
-        headers: []
-        description: ''
-        custom: []
-      -
-        status: 404
-        content: |-
-          {
-            "message": "File not found.",
-            "status": false
-          }
-        headers: []
-        description: ''
-        custom: []
-      -
-        status: 500
-        content: |-
-          {
-            "message": "Something went wrong. Please try again later.",
-            "status": false
-          }
-        headers: []
-        description: ''
-        custom: []
-    responseFields: []
-    auth: []
-    controller: null
-    method: null
-    route: null
-    custom: []
-  -
-    httpMethods:
-      - GET
-    uri: 'api/v3/user/files/delete/{id}'
-    metadata:
-      groupName: Education
-      groupDescription: ''
-      subgroup: Files
-      subgroupDescription: 'APIs for managing files.'
-      title: 'Delete File'
-      description: ''
-      authenticated: true
-      custom: []
-    headers:
-      Content-Type: application/json
-      Accept: application/json
-    urlParameters:
-      id:
-        name: id
-        description: 'The ID of the file to delete.'
-        required: true
-        example: 1
-        type: integer
-        enumValues: []
-        exampleWasSpecified: true
-        nullable: false
-        custom: []
-    cleanUrlParameters:
-      id: 1
-    queryParameters: []
-    cleanQueryParameters: []
-    bodyParameters: []
-    cleanBodyParameters: []
-    fileParameters: []
-    responses:
-      -
-        status: 200
-        content: |-
-          {
-            "message": "File deleted successfully.",
-            "status": true
-          }
-        headers: []
-        description: ''
-        custom: []
-      -
-        status: 404
-        content: |-
-          {
-            "message": "File not found.",
-            "status": false
-          }
-        headers: []
-        description: ''
-        custom: []
-      -
-        status: 500
-        content: |-
-          {
-            "message": "Something went wrong. Please try again later.",
-            "status": false
-          }
-        headers: []
-        description: ''
-        custom: []
-    responseFields: []
-    auth: []
-    controller: null
-    method: null
-    route: null
-    custom: []
-  -
-    httpMethods:
-      - GET
-    uri: 'api/v3/user/files/download/{file}'
-    metadata:
-      groupName: Education
-      groupDescription: ''
-      subgroup: Files
-      subgroupDescription: 'APIs for managing files.'
-      title: 'Download file'
-      description: ''
-      authenticated: true
-      custom: []
-    headers:
-      Content-Type: application/json
-      Accept: application/json
-    urlParameters:
-      file:
-        name: file
-        description: ''
-        required: true
-        example: in
-        type: string
-        enumValues: []
-        exampleWasSpecified: false
-        nullable: false
-        custom: []
-    cleanUrlParameters:
-      file: in
-    queryParameters: []
-    cleanQueryParameters: []
-    bodyParameters: []
-    cleanBodyParameters: []
-    fileParameters: []
-    responses:
-      -
-        status: 200
-        content: 'A downloadable file response with the specified file.'
-        headers: []
-        description: ''
-        custom: []
-      -
-        status: 201
-        content: |-
-          {
-            "message": "File not found.",
-            "status": false
-          }
-        headers: []
-        description: ''
-        custom: []
-      -
-        status: 201
-        content: |-
-          {
-            "message": "Something went wrong. Please try again later.",
-            "status": false
-          }
-        headers: []
-        description: ''
-        custom: []
-    responseFields: []
-    auth: []
+    auth:
+      - headers
+      - Authorization
+      - 'Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJhdWQiOiIxIiwianRpIjoiNTJkNDhkYzhjNTc4ODIwZWVmODFmY2NhOWJiMmJiODFlZGE1MTUwMTVkYmU5YzdkNzFkODAyYTRmZWNhMWQ5ZGJhYWEzMTc2YjI1OTJmMTgiLCJpYXQiOjE3NjQwNjAzNDQuMDUyOTc0LCJuYmYiOjE3NjQwNjAzNDQuMDUyOTc1LCJleHAiOjE3OTU1OTYzNDQuMDQzNjUyLCJzdWIiOiIxNjgiLCJzY29wZXMiOltdfQ.X9tS38uM-UlrpFlYZihD_kmuCcSX_hdGsRBJcNGfrWXAClMiqeTxNTC45Ftxw-ddmDQ59t5xJLlnWp2Rx57itO-IHclNmwnVJDPAh1l9D8CZBGxBSoN0FvmbWeYDNQnA7ud77YLekrcSAuKMdBX3J1UKq6ytvWwi6ChnuRFqcQ-fpzK-jgkMhGm-WFHw0H3a34afdBdSUUFutESlwMvTqmXILYVcIwaJpEAjamf3rn6wIOEoD8mbxXJ6Gb6QrRO72Kt3z62vJp7yOeMsnXUkfioVSyJVwbkbchCs2Y4YZY3FEREbKysKNdHJhhqmn6AXvx66arAK3HeZoyf5eusfk26alhbEdJqsJgFP5VROV5l57q8VKhH8hAxg-oeidCGGJXPjLGeb-5iGPjdGhQ1Ng1i9kt7VDV4icb8B2AbNC2Ie9xP6b0R11PX4jUd8D3Jogf2f0ZhAs5Is8WHcrxsCyk3lWvgOyzWxpRx2lSpmBRmSwksPrKJk_7JuzDZ1Tdpz6mubjV6DzlmqDJJjf32hBIMnaYOhOUz5k1FzZ8mybsSbnM9UjzHYr5xIf4rkmVAfuPnU2FGu8NtCQaOtt9G-TziBFgT3ZjxBCL9QaaC39BRulGE6tyCAT8NM9svTD_AbNyINUzO2M0R61OXYQfzXEeiui-sO6eYIc3x_z-YdFFQ'
     controller: null
     method: null
     route: null

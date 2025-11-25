@@ -310,6 +310,8 @@ Route::prefix('v3')->middleware(['userActivity'])->group(function () {
             Route::get('/view/{id}', [MeetingController::class, 'show']);
             Route::post('/edit/{id}', [MeetingController::class, 'update']);
             Route::post('/delete/{id}', [MeetingController::class, 'destroy']);
+            // Zoom SDK signature for API clients
+            Route::post('/zoom-signature', [MeetingController::class, 'zoomSignature']);
             Route::get('/meetings-calender-fetch-data', [MeetingController::class, 'fetchCalenderData']);
         });
 

@@ -1,20 +1,21 @@
-name: Policy
+name: Jobs
 description: ''
 endpoints:
   -
     httpMethods:
       - GET
-    uri: api/v3/user/policy/load
+    uri: api/v3/user/jobs/load
     metadata:
-      groupName: Policy
+      groupName: Jobs
       groupDescription: ''
       subgroup: ''
       subgroupDescription: ''
-      title: 'Policies List'
+      title: 'All Job Posts'
       description: ''
       authenticated: true
       custom: []
     headers:
+      Authorization: 'Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJhdWQiOiIxIiwianRpIjoiNTJkNDhkYzhjNTc4ODIwZWVmODFmY2NhOWJiMmJiODFlZGE1MTUwMTVkYmU5YzdkNzFkODAyYTRmZWNhMWQ5ZGJhYWEzMTc2YjI1OTJmMTgiLCJpYXQiOjE3NjQwNjAzNDQuMDUyOTc0LCJuYmYiOjE3NjQwNjAzNDQuMDUyOTc1LCJleHAiOjE3OTU1OTYzNDQuMDQzNjUyLCJzdWIiOiIxNjgiLCJzY29wZXMiOltdfQ.X9tS38uM-UlrpFlYZihD_kmuCcSX_hdGsRBJcNGfrWXAClMiqeTxNTC45Ftxw-ddmDQ59t5xJLlnWp2Rx57itO-IHclNmwnVJDPAh1l9D8CZBGxBSoN0FvmbWeYDNQnA7ud77YLekrcSAuKMdBX3J1UKq6ytvWwi6ChnuRFqcQ-fpzK-jgkMhGm-WFHw0H3a34afdBdSUUFutESlwMvTqmXILYVcIwaJpEAjamf3rn6wIOEoD8mbxXJ6Gb6QrRO72Kt3z62vJp7yOeMsnXUkfioVSyJVwbkbchCs2Y4YZY3FEREbKysKNdHJhhqmn6AXvx66arAK3HeZoyf5eusfk26alhbEdJqsJgFP5VROV5l57q8VKhH8hAxg-oeidCGGJXPjLGeb-5iGPjdGhQ1Ng1i9kt7VDV4icb8B2AbNC2Ie9xP6b0R11PX4jUd8D3Jogf2f0ZhAs5Is8WHcrxsCyk3lWvgOyzWxpRx2lSpmBRmSwksPrKJk_7JuzDZ1Tdpz6mubjV6DzlmqDJJjf32hBIMnaYOhOUz5k1FzZ8mybsSbnM9UjzHYr5xIf4rkmVAfuPnU2FGu8NtCQaOtt9G-TziBFgT3ZjxBCL9QaaC39BRulGE6tyCAT8NM9svTD_AbNyINUzO2M0R61OXYQfzXEeiui-sO6eYIc3x_z-YdFFQ'
       Content-Type: application/json
       Accept: application/json
     urlParameters: []
@@ -40,77 +41,148 @@ endpoints:
         status: 200
         content: |-
           {
-             "data": {
-                 "current_page": 1,
-                 "data": [
-                     {
-                         "id": 7,
-                         "user_id": 37,
-                         "file_name": "dummy (1).pdf",
-                         "file_extension": "pdf",
-                         "file": "policies/06C4cc8uACENraZzOjILXIY5QIg4QQrDESsT5Kqv.pdf",
-                         "created_at": "2024-11-11T07:02:33.000000Z",
-                         "updated_at": "2024-11-11T07:02:33.000000Z"
-                     },
-                     {
-                         "id": 6,
-                         "user_id": 1,
-                         "file_name": "partner-Photoroom.jpg",
-                         "file_extension": "jpg",
-                         "file": "policies/L4u3mwqeGc8BuCuHXR5X9ZYOPbV2SYgQcvqDIiIN.jpg",
-                         "created_at": "2024-08-27T06:34:46.000000Z",
-                         "updated_at": "2024-08-27T06:34:46.000000Z"
-                     },
-                     {
-                         "id": 5,
-                         "user_id": 1,
-                         "file_name": "A2ncCVFTo7T9zg1wjM9BPyX9u1PctUGVsPi8oEXb.jpg",
-                         "file_extension": "jpg",
-                         "file": "policies/1sk1WN3iEFUA3ztNYNCApyqR5jKg2RyLSBXHk1oP.jpg",
-                         "created_at": "2024-08-27T06:34:46.000000Z",
-                         "updated_at": "2024-08-27T06:34:46.000000Z"
-                     }
-                 ],
-                 "first_page_url": "http://127.0.0.1:8000/api/v3/user/policy/load?page=1",
-                 "from": 1,
-                 "last_page": 1,
-                 "last_page_url": "http://127.0.0.1:8000/api/v3/user/policy/load?page=1",
-                 "links": [
-                     {
-                         "url": null,
-                         "label": "&laquo; Previous",
-                         "active": false
-                     },
-                     {
-                         "url": "http://127.0.0.1:8000/api/v3/user/policy/load?page=1",
-                         "label": "1",
-                         "active": true
-                     },
-                     {
-                         "url": null,
-                         "label": "Next &raquo;",
-                         "active": false
-                     }
-                 ],
-                 "next_page_url": null,
-                 "path": "http://127.0.0.1:8000/api/v3/user/policy/load",
-                 "per_page": 15,
-                 "prev_page_url": null,
-                 "to": 3,
-                 "total": 3
-             }
+              "data": [
+                  {
+                      "id": 1,
+                      "created_by": 2,
+                      "job_title": "Software Engineer",
+                      "job_description": "<p>Develop and maintain software applications.<p>",
+                      "job_type": "Full-time",
+                      "job_location": "Remote",
+                      "job_salary": "80,000 - 100,000",
+                      "job_experience": "3+ years",
+                      "contact_person": "John Doe",
+                      "contact_email": "johndoe@example.com",
+                      "list_of_values": "Team player, Good communication",
+                      "created_at": "2024-11-08T12:00:00.000000Z",
+                      "updated_at": "2024-11-08T12:00:00.000000Z",
+                      "user": {
+                          "id": 2,
+                          "name": "John Doe",
+                          "email": "john@example.com"
+                      }
+                  },
+                  {
+                      "id": 2,
+                      "created_by": 3,
+                      "job_title": "Project Manager",
+                      "job_description": "Manage project timelines and deliverables.",
+                      "job_type": "Contract",
+                      "job_location": "On-site",
+                      "job_salary": "60,000 - 80,000",
+                      "job_experience": "5+ years",
+                      "contact_person": "Jane Smith",
+                      "contact_email": "janesmith@example.com",
+                      "list_of_values": "Leadership, Organizational skills",
+                      "created_at": "2024-11-08T12:00:00.000000Z",
+                      "updated_at": "2024-11-08T12:00:00.000000Z",
+                      "user": {
+                          "id": 3,
+                          "name": "Jane Smith",
+                          "email": "jane@example.com"
+                      }
+                  }
+              ]
           }
         headers: []
         description: ''
         custom: []
       -
         status: 201
-        content: '{"error": "Failed to fetch policies."}'
+        content: |-
+          {
+              "error": "Failed to load jobs."
+          }
         headers: []
-        description: error
+        description: ''
         custom: []
     responseFields: []
-    auth: []
+    auth:
+      - headers
+      - Authorization
+      - 'Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJhdWQiOiIxIiwianRpIjoiNTJkNDhkYzhjNTc4ODIwZWVmODFmY2NhOWJiMmJiODFlZGE1MTUwMTVkYmU5YzdkNzFkODAyYTRmZWNhMWQ5ZGJhYWEzMTc2YjI1OTJmMTgiLCJpYXQiOjE3NjQwNjAzNDQuMDUyOTc0LCJuYmYiOjE3NjQwNjAzNDQuMDUyOTc1LCJleHAiOjE3OTU1OTYzNDQuMDQzNjUyLCJzdWIiOiIxNjgiLCJzY29wZXMiOltdfQ.X9tS38uM-UlrpFlYZihD_kmuCcSX_hdGsRBJcNGfrWXAClMiqeTxNTC45Ftxw-ddmDQ59t5xJLlnWp2Rx57itO-IHclNmwnVJDPAh1l9D8CZBGxBSoN0FvmbWeYDNQnA7ud77YLekrcSAuKMdBX3J1UKq6ytvWwi6ChnuRFqcQ-fpzK-jgkMhGm-WFHw0H3a34afdBdSUUFutESlwMvTqmXILYVcIwaJpEAjamf3rn6wIOEoD8mbxXJ6Gb6QrRO72Kt3z62vJp7yOeMsnXUkfioVSyJVwbkbchCs2Y4YZY3FEREbKysKNdHJhhqmn6AXvx66arAK3HeZoyf5eusfk26alhbEdJqsJgFP5VROV5l57q8VKhH8hAxg-oeidCGGJXPjLGeb-5iGPjdGhQ1Ng1i9kt7VDV4icb8B2AbNC2Ie9xP6b0R11PX4jUd8D3Jogf2f0ZhAs5Is8WHcrxsCyk3lWvgOyzWxpRx2lSpmBRmSwksPrKJk_7JuzDZ1Tdpz6mubjV6DzlmqDJJjf32hBIMnaYOhOUz5k1FzZ8mybsSbnM9UjzHYr5xIf4rkmVAfuPnU2FGu8NtCQaOtt9G-TziBFgT3ZjxBCL9QaaC39BRulGE6tyCAT8NM9svTD_AbNyINUzO2M0R61OXYQfzXEeiui-sO6eYIc3x_z-YdFFQ'
+    controller: null
+    method: null
+    route: null
+    custom: []
+  -
+    httpMethods:
+      - GET
+    uri: 'api/v3/user/jobs/view/{id}'
+    metadata:
+      groupName: Jobs
+      groupDescription: ''
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'Single Job Details'
+      description: ''
+      authenticated: true
+      custom: []
+    headers:
+      Authorization: 'Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJhdWQiOiIxIiwianRpIjoiNTJkNDhkYzhjNTc4ODIwZWVmODFmY2NhOWJiMmJiODFlZGE1MTUwMTVkYmU5YzdkNzFkODAyYTRmZWNhMWQ5ZGJhYWEzMTc2YjI1OTJmMTgiLCJpYXQiOjE3NjQwNjAzNDQuMDUyOTc0LCJuYmYiOjE3NjQwNjAzNDQuMDUyOTc1LCJleHAiOjE3OTU1OTYzNDQuMDQzNjUyLCJzdWIiOiIxNjgiLCJzY29wZXMiOltdfQ.X9tS38uM-UlrpFlYZihD_kmuCcSX_hdGsRBJcNGfrWXAClMiqeTxNTC45Ftxw-ddmDQ59t5xJLlnWp2Rx57itO-IHclNmwnVJDPAh1l9D8CZBGxBSoN0FvmbWeYDNQnA7ud77YLekrcSAuKMdBX3J1UKq6ytvWwi6ChnuRFqcQ-fpzK-jgkMhGm-WFHw0H3a34afdBdSUUFutESlwMvTqmXILYVcIwaJpEAjamf3rn6wIOEoD8mbxXJ6Gb6QrRO72Kt3z62vJp7yOeMsnXUkfioVSyJVwbkbchCs2Y4YZY3FEREbKysKNdHJhhqmn6AXvx66arAK3HeZoyf5eusfk26alhbEdJqsJgFP5VROV5l57q8VKhH8hAxg-oeidCGGJXPjLGeb-5iGPjdGhQ1Ng1i9kt7VDV4icb8B2AbNC2Ie9xP6b0R11PX4jUd8D3Jogf2f0ZhAs5Is8WHcrxsCyk3lWvgOyzWxpRx2lSpmBRmSwksPrKJk_7JuzDZ1Tdpz6mubjV6DzlmqDJJjf32hBIMnaYOhOUz5k1FzZ8mybsSbnM9UjzHYr5xIf4rkmVAfuPnU2FGu8NtCQaOtt9G-TziBFgT3ZjxBCL9QaaC39BRulGE6tyCAT8NM9svTD_AbNyINUzO2M0R61OXYQfzXEeiui-sO6eYIc3x_z-YdFFQ'
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters:
+      id:
+        name: id
+        description: 'The ID of the job.'
+        required: true
+        example: 1
+        type: integer
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+    cleanUrlParameters:
+      id: 1
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters: []
+    cleanBodyParameters: []
+    fileParameters: []
+    responses:
+      -
+        status: 200
+        content: |-
+          {
+              "data": {
+                  "id": 1,
+                  "created_by": 2,
+                  "job_title": "Software Engineer",
+                  "job_description": "<p><strong>Python </strong>is an interpreted, interactive, object-oriented programming language. It incorporates modules, dynamic typing, dynamic data types and classes. It's also portable, extensible and easy to read and code, which is a big reason it's popular.The language also focuses on designer experience and usability, and one of its largest benefits is that it has functions in many industries and organizations. You can integrate it with<strong> C</strong> and <strong>C++</strong> for more challenging tasks. Common uses of Python include:</p><ul><li>Data visualization</li><li>Artificial intelligence and machine learning</li><li>Finance</li><li>Game development</li><li>Web development</li></ul>",
+                  "job_type": "Full-time",
+                  "job_location": "Remote",
+                  "job_salary": "80,000 - 100,000",
+                  "job_experience": "3+ years",
+                  "contact_person": "John Doe",
+                  "contact_email": "johndoe@example.com",
+                  "list_of_values": "Team player, Good communication",
+                  "created_at": "2024-11-08T12:00:00.000000Z",
+                  "updated_at": "2024-11-08T12:00:00.000000Z",
+                  "user": {
+                      "id": 2,
+                      "name": "John Doe",
+                      "email": "john@example.com"
+                  }
+              }
+          }
+        headers: []
+        description: ''
+        custom: []
+      -
+        status: 404
+        content: |-
+          {
+              "error": "Job not found."
+          }
+        headers: []
+        description: ''
+        custom: []
+    responseFields: []
+    auth:
+      - headers
+      - Authorization
+      - 'Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJhdWQiOiIxIiwianRpIjoiNTJkNDhkYzhjNTc4ODIwZWVmODFmY2NhOWJiMmJiODFlZGE1MTUwMTVkYmU5YzdkNzFkODAyYTRmZWNhMWQ5ZGJhYWEzMTc2YjI1OTJmMTgiLCJpYXQiOjE3NjQwNjAzNDQuMDUyOTc0LCJuYmYiOjE3NjQwNjAzNDQuMDUyOTc1LCJleHAiOjE3OTU1OTYzNDQuMDQzNjUyLCJzdWIiOiIxNjgiLCJzY29wZXMiOltdfQ.X9tS38uM-UlrpFlYZihD_kmuCcSX_hdGsRBJcNGfrWXAClMiqeTxNTC45Ftxw-ddmDQ59t5xJLlnWp2Rx57itO-IHclNmwnVJDPAh1l9D8CZBGxBSoN0FvmbWeYDNQnA7ud77YLekrcSAuKMdBX3J1UKq6ytvWwi6ChnuRFqcQ-fpzK-jgkMhGm-WFHw0H3a34afdBdSUUFutESlwMvTqmXILYVcIwaJpEAjamf3rn6wIOEoD8mbxXJ6Gb6QrRO72Kt3z62vJp7yOeMsnXUkfioVSyJVwbkbchCs2Y4YZY3FEREbKysKNdHJhhqmn6AXvx66arAK3HeZoyf5eusfk26alhbEdJqsJgFP5VROV5l57q8VKhH8hAxg-oeidCGGJXPjLGeb-5iGPjdGhQ1Ng1i9kt7VDV4icb8B2AbNC2Ie9xP6b0R11PX4jUd8D3Jogf2f0ZhAs5Is8WHcrxsCyk3lWvgOyzWxpRx2lSpmBRmSwksPrKJk_7JuzDZ1Tdpz6mubjV6DzlmqDJJjf32hBIMnaYOhOUz5k1FzZ8mybsSbnM9UjzHYr5xIf4rkmVAfuPnU2FGu8NtCQaOtt9G-TziBFgT3ZjxBCL9QaaC39BRulGE6tyCAT8NM9svTD_AbNyINUzO2M0R61OXYQfzXEeiui-sO6eYIc3x_z-YdFFQ'
     controller: null
     method: null
     route: null
@@ -118,191 +190,408 @@ endpoints:
   -
     httpMethods:
       - POST
-    uri: api/v3/user/policy/store
+    uri: api/v3/user/jobs/store
     metadata:
-      groupName: Policy
+      groupName: Jobs
       groupDescription: ''
       subgroup: ''
       subgroupDescription: ''
-      title: 'Create policies'
+      title: 'Create Job'
       description: ''
       authenticated: true
       custom: []
     headers:
-      Content-Type: multipart/form-data
+      Authorization: 'Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJhdWQiOiIxIiwianRpIjoiNTJkNDhkYzhjNTc4ODIwZWVmODFmY2NhOWJiMmJiODFlZGE1MTUwMTVkYmU5YzdkNzFkODAyYTRmZWNhMWQ5ZGJhYWEzMTc2YjI1OTJmMTgiLCJpYXQiOjE3NjQwNjAzNDQuMDUyOTc0LCJuYmYiOjE3NjQwNjAzNDQuMDUyOTc1LCJleHAiOjE3OTU1OTYzNDQuMDQzNjUyLCJzdWIiOiIxNjgiLCJzY29wZXMiOltdfQ.X9tS38uM-UlrpFlYZihD_kmuCcSX_hdGsRBJcNGfrWXAClMiqeTxNTC45Ftxw-ddmDQ59t5xJLlnWp2Rx57itO-IHclNmwnVJDPAh1l9D8CZBGxBSoN0FvmbWeYDNQnA7ud77YLekrcSAuKMdBX3J1UKq6ytvWwi6ChnuRFqcQ-fpzK-jgkMhGm-WFHw0H3a34afdBdSUUFutESlwMvTqmXILYVcIwaJpEAjamf3rn6wIOEoD8mbxXJ6Gb6QrRO72Kt3z62vJp7yOeMsnXUkfioVSyJVwbkbchCs2Y4YZY3FEREbKysKNdHJhhqmn6AXvx66arAK3HeZoyf5eusfk26alhbEdJqsJgFP5VROV5l57q8VKhH8hAxg-oeidCGGJXPjLGeb-5iGPjdGhQ1Ng1i9kt7VDV4icb8B2AbNC2Ie9xP6b0R11PX4jUd8D3Jogf2f0ZhAs5Is8WHcrxsCyk3lWvgOyzWxpRx2lSpmBRmSwksPrKJk_7JuzDZ1Tdpz6mubjV6DzlmqDJJjf32hBIMnaYOhOUz5k1FzZ8mybsSbnM9UjzHYr5xIf4rkmVAfuPnU2FGu8NtCQaOtt9G-TziBFgT3ZjxBCL9QaaC39BRulGE6tyCAT8NM9svTD_AbNyINUzO2M0R61OXYQfzXEeiui-sO6eYIc3x_z-YdFFQ'
+      Content-Type: application/json
       Accept: application/json
     urlParameters: []
     cleanUrlParameters: []
     queryParameters: []
     cleanQueryParameters: []
     bodyParameters:
-      file:
-        name: file
-        description: 'files to upload.'
+      job_title:
+        name: job_title
+        description: 'The title of the job.'
         required: true
-        example: null
-        type: file
+        example: 'Software Engineer'
+        type: string
         enumValues: []
-        exampleWasSpecified: false
+        exampleWasSpecified: true
         nullable: false
         custom: []
-    cleanBodyParameters: []
-    fileParameters:
-      file: null
-    responses:
-      -
-        status: 200
-        content: '{"message": "Policy(s) uploaded successfully."}'
-        headers: []
-        description: success
-        custom: []
-      -
-        status: 201
-        content: '{"error": "Validation failed or duplicate policy found."}'
-        headers: []
-        description: error
-        custom: []
-    responseFields: []
-    auth: []
-    controller: null
-    method: null
-    route: null
-    custom: []
-  -
-    httpMethods:
-      - GET
-    uri: 'api/v3/user/policy/delete/{id}'
-    metadata:
-      groupName: Policy
-      groupDescription: ''
-      subgroup: ''
-      subgroupDescription: ''
-      title: 'Delete policy'
-      description: ''
-      authenticated: true
-      custom: []
-    headers:
-      Content-Type: application/json
-      Accept: application/json
-    urlParameters:
-      id:
-        name: id
-        description: 'The ID of the policy to delete.'
+      job_description:
+        name: job_description
+        description: 'The description of the job.'
         required: true
-        example: 14
-        type: integer
+        example: 'A great job opportunity'
+        type: string
         enumValues: []
-        exampleWasSpecified: false
+        exampleWasSpecified: true
         nullable: false
         custom: []
-    cleanUrlParameters:
-      id: 14
-    queryParameters: []
-    cleanQueryParameters: []
-    bodyParameters: []
-    cleanBodyParameters: []
+      job_type:
+        name: job_type
+        description: 'The type of the job (e.g., full-time, part-time).'
+        required: true
+        example: full-time
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+      job_location:
+        name: job_location
+        description: 'The location of the job.'
+        required: true
+        example: 'New York'
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+      job_salary:
+        name: job_salary
+        description: 'optional The salary for the job.'
+        required: false
+        example: '50000'
+        type: numeric
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+      list_of_values:
+        name: list_of_values
+        description: 'optional List of additional job requirements or values.'
+        required: false
+        example: hourly
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+      currency:
+        name: currency
+        description: 'optional The currency for the salary.'
+        required: false
+        example: USD
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+      job_experience:
+        name: job_experience
+        description: 'optional The minimum experience required for the job.'
+        required: false
+        example: '3'
+        type: numeric
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+      contact_person:
+        name: contact_person
+        description: 'optional The contact person for the job.'
+        required: false
+        example: 'John Doe'
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+      contact_email:
+        name: contact_email
+        description: 'optional The contact email for the job.'
+        required: false
+        example: johndoe@example.com
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+    cleanBodyParameters:
+      job_title: 'Software Engineer'
+      job_description: 'A great job opportunity'
+      job_type: full-time
+      job_location: 'New York'
+      job_salary: '50000'
+      list_of_values: hourly
+      currency: USD
+      job_experience: '3'
+      contact_person: 'John Doe'
+      contact_email: johndoe@example.com
     fileParameters: []
     responses:
       -
         status: 200
-        content: '{"message": "Policy deleted successfully."}'
+        content: |-
+          {
+            "message": "Job has been created successfully.",
+            "job": {
+              "id": 1,
+              "job_title": "Software Engineer",
+              "job_description": "A great job opportunity",
+              "job_type": "full-time",
+              "job_location": "New York",
+              "job_salary": 50000,
+              "currency": "USD",
+              "job_experience": 3,
+              "contact_person": "John Doe",
+              "contact_email": "johndoe@example.com",
+              "list_of_values": "hourly",
+              "created_by": 1,
+              "created_at": "2024-11-27T00:00:00.000000Z",
+              "updated_at": "2024-11-27T00:00:00.000000Z"
+            }
+          }
         headers: []
-        description: success
+        description: ''
         custom: []
       -
         status: 201
-        content: '{"error": "Policy not found or permission denied."}'
+        content: |-
+          {
+            "message": "Validation failed.",
+            "errors": {
+              "job_title": ["The job title is required."],
+              "job_description": ["The job description is required."]
+            }
+          }
         headers: []
-        description: error
+        description: ''
         custom: []
     responseFields: []
-    auth: []
+    auth:
+      - headers
+      - Authorization
+      - 'Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJhdWQiOiIxIiwianRpIjoiNTJkNDhkYzhjNTc4ODIwZWVmODFmY2NhOWJiMmJiODFlZGE1MTUwMTVkYmU5YzdkNzFkODAyYTRmZWNhMWQ5ZGJhYWEzMTc2YjI1OTJmMTgiLCJpYXQiOjE3NjQwNjAzNDQuMDUyOTc0LCJuYmYiOjE3NjQwNjAzNDQuMDUyOTc1LCJleHAiOjE3OTU1OTYzNDQuMDQzNjUyLCJzdWIiOiIxNjgiLCJzY29wZXMiOltdfQ.X9tS38uM-UlrpFlYZihD_kmuCcSX_hdGsRBJcNGfrWXAClMiqeTxNTC45Ftxw-ddmDQ59t5xJLlnWp2Rx57itO-IHclNmwnVJDPAh1l9D8CZBGxBSoN0FvmbWeYDNQnA7ud77YLekrcSAuKMdBX3J1UKq6ytvWwi6ChnuRFqcQ-fpzK-jgkMhGm-WFHw0H3a34afdBdSUUFutESlwMvTqmXILYVcIwaJpEAjamf3rn6wIOEoD8mbxXJ6Gb6QrRO72Kt3z62vJp7yOeMsnXUkfioVSyJVwbkbchCs2Y4YZY3FEREbKysKNdHJhhqmn6AXvx66arAK3HeZoyf5eusfk26alhbEdJqsJgFP5VROV5l57q8VKhH8hAxg-oeidCGGJXPjLGeb-5iGPjdGhQ1Ng1i9kt7VDV4icb8B2AbNC2Ie9xP6b0R11PX4jUd8D3Jogf2f0ZhAs5Is8WHcrxsCyk3lWvgOyzWxpRx2lSpmBRmSwksPrKJk_7JuzDZ1Tdpz6mubjV6DzlmqDJJjf32hBIMnaYOhOUz5k1FzZ8mybsSbnM9UjzHYr5xIf4rkmVAfuPnU2FGu8NtCQaOtt9G-TziBFgT3ZjxBCL9QaaC39BRulGE6tyCAT8NM9svTD_AbNyINUzO2M0R61OXYQfzXEeiui-sO6eYIc3x_z-YdFFQ'
     controller: null
     method: null
     route: null
     custom: []
   -
     httpMethods:
-      - GET
-    uri: 'api/v3/user/policy/download/{id}'
+      - POST
+    uri: 'api/v3/user/jobs/edit/{id}'
     metadata:
-      groupName: Policy
+      groupName: Jobs
       groupDescription: ''
       subgroup: ''
       subgroupDescription: ''
-      title: 'Download policy file'
+      title: 'Update Job'
       description: ''
       authenticated: true
       custom: []
     headers:
+      Authorization: 'Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJhdWQiOiIxIiwianRpIjoiNTJkNDhkYzhjNTc4ODIwZWVmODFmY2NhOWJiMmJiODFlZGE1MTUwMTVkYmU5YzdkNzFkODAyYTRmZWNhMWQ5ZGJhYWEzMTc2YjI1OTJmMTgiLCJpYXQiOjE3NjQwNjAzNDQuMDUyOTc0LCJuYmYiOjE3NjQwNjAzNDQuMDUyOTc1LCJleHAiOjE3OTU1OTYzNDQuMDQzNjUyLCJzdWIiOiIxNjgiLCJzY29wZXMiOltdfQ.X9tS38uM-UlrpFlYZihD_kmuCcSX_hdGsRBJcNGfrWXAClMiqeTxNTC45Ftxw-ddmDQ59t5xJLlnWp2Rx57itO-IHclNmwnVJDPAh1l9D8CZBGxBSoN0FvmbWeYDNQnA7ud77YLekrcSAuKMdBX3J1UKq6ytvWwi6ChnuRFqcQ-fpzK-jgkMhGm-WFHw0H3a34afdBdSUUFutESlwMvTqmXILYVcIwaJpEAjamf3rn6wIOEoD8mbxXJ6Gb6QrRO72Kt3z62vJp7yOeMsnXUkfioVSyJVwbkbchCs2Y4YZY3FEREbKysKNdHJhhqmn6AXvx66arAK3HeZoyf5eusfk26alhbEdJqsJgFP5VROV5l57q8VKhH8hAxg-oeidCGGJXPjLGeb-5iGPjdGhQ1Ng1i9kt7VDV4icb8B2AbNC2Ie9xP6b0R11PX4jUd8D3Jogf2f0ZhAs5Is8WHcrxsCyk3lWvgOyzWxpRx2lSpmBRmSwksPrKJk_7JuzDZ1Tdpz6mubjV6DzlmqDJJjf32hBIMnaYOhOUz5k1FzZ8mybsSbnM9UjzHYr5xIf4rkmVAfuPnU2FGu8NtCQaOtt9G-TziBFgT3ZjxBCL9QaaC39BRulGE6tyCAT8NM9svTD_AbNyINUzO2M0R61OXYQfzXEeiui-sO6eYIc3x_z-YdFFQ'
       Content-Type: application/json
       Accept: application/json
     urlParameters:
       id:
         name: id
-        description: 'The ID of the download.'
+        description: 'The ID of the edit.'
         required: true
-        example: aut
+        example: facilis
         type: string
         enumValues: []
         exampleWasSpecified: false
         nullable: false
         custom: []
     cleanUrlParameters:
-      id: aut
+      id: facilis
     queryParameters: []
     cleanQueryParameters: []
-    bodyParameters: []
-    cleanBodyParameters: []
+    bodyParameters:
+      job_title:
+        name: job_title
+        description: 'The title of the job.'
+        required: true
+        example: 'Software Engineer'
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+      job_description:
+        name: job_description
+        description: 'The description of the job.'
+        required: true
+        example: 'A great job opportunity'
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+      job_type:
+        name: job_type
+        description: 'The type of the job (e.g., full-time, part-time).'
+        required: true
+        example: full-time
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+      job_location:
+        name: job_location
+        description: 'The location of the job.'
+        required: true
+        example: 'New York'
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+      job_salary:
+        name: job_salary
+        description: 'optional The salary for the job.'
+        required: false
+        example: '50000'
+        type: numeric
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+      list_of_values:
+        name: list_of_values
+        description: 'optional List of additional job requirements or values.'
+        required: false
+        example: hourly
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+      currency:
+        name: currency
+        description: 'optional The currency for the salary.'
+        required: false
+        example: USD
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+      job_experience:
+        name: job_experience
+        description: 'optional The minimum experience required for the job.'
+        required: false
+        example: '3'
+        type: numeric
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+      contact_person:
+        name: contact_person
+        description: 'optional The contact person for the job.'
+        required: false
+        example: 'John Doe'
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+      contact_email:
+        name: contact_email
+        description: 'optional The contact email for the job.'
+        required: false
+        example: johndoe@example.com
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+    cleanBodyParameters:
+      job_title: 'Software Engineer'
+      job_description: 'A great job opportunity'
+      job_type: full-time
+      job_location: 'New York'
+      job_salary: '50000'
+      list_of_values: hourly
+      currency: USD
+      job_experience: '3'
+      contact_person: 'John Doe'
+      contact_email: johndoe@example.com
     fileParameters: []
     responses:
       -
         status: 200
-        content: 'The file download response.'
+        content: |-
+          {
+            "message": "Job has been updated successfully.",
+            "job": {
+              "id": 1,
+              "job_title": "Software Engineer",
+              "job_description": "A great job opportunity",
+              "job_type": "full-time",
+              "job_location": "New York",
+              "job_salary": 50000,
+              "currency": "USD",
+              "job_experience": 3,
+              "contact_person": "John Doe",
+              "contact_email": "johndoe@example.com",
+              "list_of_values": "hourly"
+              "created_by": 1,
+              "created_at": "2024-11-27T00:00:00.000000Z",
+              "updated_at": "2024-11-27T00:00:00.000000Z"
+            }
+          }
         headers: []
-        description: success
+        description: ''
         custom: []
       -
         status: 201
-        content: '{"error": "Policy not found or permission denied."}'
+        content: |-
+          {
+            "message": "Validation failed.",
+            "errors": {
+              "job_title": ["The job title is required."],
+              "job_description": ["The job description is required."]
+            }
+          }
         headers: []
-        description: error
+        description: ''
         custom: []
     responseFields: []
-    auth: []
+    auth:
+      - headers
+      - Authorization
+      - 'Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJhdWQiOiIxIiwianRpIjoiNTJkNDhkYzhjNTc4ODIwZWVmODFmY2NhOWJiMmJiODFlZGE1MTUwMTVkYmU5YzdkNzFkODAyYTRmZWNhMWQ5ZGJhYWEzMTc2YjI1OTJmMTgiLCJpYXQiOjE3NjQwNjAzNDQuMDUyOTc0LCJuYmYiOjE3NjQwNjAzNDQuMDUyOTc1LCJleHAiOjE3OTU1OTYzNDQuMDQzNjUyLCJzdWIiOiIxNjgiLCJzY29wZXMiOltdfQ.X9tS38uM-UlrpFlYZihD_kmuCcSX_hdGsRBJcNGfrWXAClMiqeTxNTC45Ftxw-ddmDQ59t5xJLlnWp2Rx57itO-IHclNmwnVJDPAh1l9D8CZBGxBSoN0FvmbWeYDNQnA7ud77YLekrcSAuKMdBX3J1UKq6ytvWwi6ChnuRFqcQ-fpzK-jgkMhGm-WFHw0H3a34afdBdSUUFutESlwMvTqmXILYVcIwaJpEAjamf3rn6wIOEoD8mbxXJ6Gb6QrRO72Kt3z62vJp7yOeMsnXUkfioVSyJVwbkbchCs2Y4YZY3FEREbKysKNdHJhhqmn6AXvx66arAK3HeZoyf5eusfk26alhbEdJqsJgFP5VROV5l57q8VKhH8hAxg-oeidCGGJXPjLGeb-5iGPjdGhQ1Ng1i9kt7VDV4icb8B2AbNC2Ie9xP6b0R11PX4jUd8D3Jogf2f0ZhAs5Is8WHcrxsCyk3lWvgOyzWxpRx2lSpmBRmSwksPrKJk_7JuzDZ1Tdpz6mubjV6DzlmqDJJjf32hBIMnaYOhOUz5k1FzZ8mybsSbnM9UjzHYr5xIf4rkmVAfuPnU2FGu8NtCQaOtt9G-TziBFgT3ZjxBCL9QaaC39BRulGE6tyCAT8NM9svTD_AbNyINUzO2M0R61OXYQfzXEeiui-sO6eYIc3x_z-YdFFQ'
     controller: null
     method: null
     route: null
     custom: []
   -
     httpMethods:
-      - GET
-    uri: 'api/v3/user/policy/view/{id}'
+      - POST
+    uri: 'api/v3/user/jobs/delete/{id}'
     metadata:
-      groupName: Policy
+      groupName: Jobs
       groupDescription: ''
       subgroup: ''
       subgroupDescription: ''
-      title: 'Single Policy details'
+      title: 'Delete Job'
       description: ''
       authenticated: true
       custom: []
     headers:
+      Authorization: 'Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJhdWQiOiIxIiwianRpIjoiNTJkNDhkYzhjNTc4ODIwZWVmODFmY2NhOWJiMmJiODFlZGE1MTUwMTVkYmU5YzdkNzFkODAyYTRmZWNhMWQ5ZGJhYWEzMTc2YjI1OTJmMTgiLCJpYXQiOjE3NjQwNjAzNDQuMDUyOTc0LCJuYmYiOjE3NjQwNjAzNDQuMDUyOTc1LCJleHAiOjE3OTU1OTYzNDQuMDQzNjUyLCJzdWIiOiIxNjgiLCJzY29wZXMiOltdfQ.X9tS38uM-UlrpFlYZihD_kmuCcSX_hdGsRBJcNGfrWXAClMiqeTxNTC45Ftxw-ddmDQ59t5xJLlnWp2Rx57itO-IHclNmwnVJDPAh1l9D8CZBGxBSoN0FvmbWeYDNQnA7ud77YLekrcSAuKMdBX3J1UKq6ytvWwi6ChnuRFqcQ-fpzK-jgkMhGm-WFHw0H3a34afdBdSUUFutESlwMvTqmXILYVcIwaJpEAjamf3rn6wIOEoD8mbxXJ6Gb6QrRO72Kt3z62vJp7yOeMsnXUkfioVSyJVwbkbchCs2Y4YZY3FEREbKysKNdHJhhqmn6AXvx66arAK3HeZoyf5eusfk26alhbEdJqsJgFP5VROV5l57q8VKhH8hAxg-oeidCGGJXPjLGeb-5iGPjdGhQ1Ng1i9kt7VDV4icb8B2AbNC2Ie9xP6b0R11PX4jUd8D3Jogf2f0ZhAs5Is8WHcrxsCyk3lWvgOyzWxpRx2lSpmBRmSwksPrKJk_7JuzDZ1Tdpz6mubjV6DzlmqDJJjf32hBIMnaYOhOUz5k1FzZ8mybsSbnM9UjzHYr5xIf4rkmVAfuPnU2FGu8NtCQaOtt9G-TziBFgT3ZjxBCL9QaaC39BRulGE6tyCAT8NM9svTD_AbNyINUzO2M0R61OXYQfzXEeiui-sO6eYIc3x_z-YdFFQ'
       Content-Type: application/json
       Accept: application/json
     urlParameters:
       id:
         name: id
-        description: 'The ID of the policy to view.'
+        description: 'The ID of the delete.'
         required: true
-        example: 2
-        type: integer
+        example: qui
+        type: string
         enumValues: []
         exampleWasSpecified: false
         nullable: false
         custom: []
     cleanUrlParameters:
-      id: 2
+      id: qui
     queryParameters: []
     cleanQueryParameters: []
     bodyParameters: []
@@ -311,18 +600,104 @@ endpoints:
     responses:
       -
         status: 200
-        content: '{"data": {"id": 1, "file_name": "strategy1.pdf", "file_extension": "pdf", "user_id": 1, "file": "policies/strategy1.pdf"}}'
+        content: |-
+          {
+            "message": "Job has been deleted successfully."
+          }
         headers: []
-        description: success
+        description: ''
         custom: []
       -
         status: 201
-        content: '{"error": "Policy not found or permission denied."}'
+        content: |-
+          {
+            "message": "Job not found."
+          }
         headers: []
-        description: error
+        description: ''
         custom: []
     responseFields: []
-    auth: []
+    auth:
+      - headers
+      - Authorization
+      - 'Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJhdWQiOiIxIiwianRpIjoiNTJkNDhkYzhjNTc4ODIwZWVmODFmY2NhOWJiMmJiODFlZGE1MTUwMTVkYmU5YzdkNzFkODAyYTRmZWNhMWQ5ZGJhYWEzMTc2YjI1OTJmMTgiLCJpYXQiOjE3NjQwNjAzNDQuMDUyOTc0LCJuYmYiOjE3NjQwNjAzNDQuMDUyOTc1LCJleHAiOjE3OTU1OTYzNDQuMDQzNjUyLCJzdWIiOiIxNjgiLCJzY29wZXMiOltdfQ.X9tS38uM-UlrpFlYZihD_kmuCcSX_hdGsRBJcNGfrWXAClMiqeTxNTC45Ftxw-ddmDQ59t5xJLlnWp2Rx57itO-IHclNmwnVJDPAh1l9D8CZBGxBSoN0FvmbWeYDNQnA7ud77YLekrcSAuKMdBX3J1UKq6ytvWwi6ChnuRFqcQ-fpzK-jgkMhGm-WFHw0H3a34afdBdSUUFutESlwMvTqmXILYVcIwaJpEAjamf3rn6wIOEoD8mbxXJ6Gb6QrRO72Kt3z62vJp7yOeMsnXUkfioVSyJVwbkbchCs2Y4YZY3FEREbKysKNdHJhhqmn6AXvx66arAK3HeZoyf5eusfk26alhbEdJqsJgFP5VROV5l57q8VKhH8hAxg-oeidCGGJXPjLGeb-5iGPjdGhQ1Ng1i9kt7VDV4icb8B2AbNC2Ie9xP6b0R11PX4jUd8D3Jogf2f0ZhAs5Is8WHcrxsCyk3lWvgOyzWxpRx2lSpmBRmSwksPrKJk_7JuzDZ1Tdpz6mubjV6DzlmqDJJjf32hBIMnaYOhOUz5k1FzZ8mybsSbnM9UjzHYr5xIf4rkmVAfuPnU2FGu8NtCQaOtt9G-TziBFgT3ZjxBCL9QaaC39BRulGE6tyCAT8NM9svTD_AbNyINUzO2M0R61OXYQfzXEeiui-sO6eYIc3x_z-YdFFQ'
+    controller: null
+    method: null
+    route: null
+    custom: []
+  -
+    httpMethods:
+      - POST
+    uri: api/v3/user/jobs/search
+    metadata:
+      groupName: Jobs
+      groupDescription: ''
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'Search Job'
+      description: ''
+      authenticated: true
+      custom: []
+    headers:
+      Authorization: 'Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJhdWQiOiIxIiwianRpIjoiNTJkNDhkYzhjNTc4ODIwZWVmODFmY2NhOWJiMmJiODFlZGE1MTUwMTVkYmU5YzdkNzFkODAyYTRmZWNhMWQ5ZGJhYWEzMTc2YjI1OTJmMTgiLCJpYXQiOjE3NjQwNjAzNDQuMDUyOTc0LCJuYmYiOjE3NjQwNjAzNDQuMDUyOTc1LCJleHAiOjE3OTU1OTYzNDQuMDQzNjUyLCJzdWIiOiIxNjgiLCJzY29wZXMiOltdfQ.X9tS38uM-UlrpFlYZihD_kmuCcSX_hdGsRBJcNGfrWXAClMiqeTxNTC45Ftxw-ddmDQ59t5xJLlnWp2Rx57itO-IHclNmwnVJDPAh1l9D8CZBGxBSoN0FvmbWeYDNQnA7ud77YLekrcSAuKMdBX3J1UKq6ytvWwi6ChnuRFqcQ-fpzK-jgkMhGm-WFHw0H3a34afdBdSUUFutESlwMvTqmXILYVcIwaJpEAjamf3rn6wIOEoD8mbxXJ6Gb6QrRO72Kt3z62vJp7yOeMsnXUkfioVSyJVwbkbchCs2Y4YZY3FEREbKysKNdHJhhqmn6AXvx66arAK3HeZoyf5eusfk26alhbEdJqsJgFP5VROV5l57q8VKhH8hAxg-oeidCGGJXPjLGeb-5iGPjdGhQ1Ng1i9kt7VDV4icb8B2AbNC2Ie9xP6b0R11PX4jUd8D3Jogf2f0ZhAs5Is8WHcrxsCyk3lWvgOyzWxpRx2lSpmBRmSwksPrKJk_7JuzDZ1Tdpz6mubjV6DzlmqDJJjf32hBIMnaYOhOUz5k1FzZ8mybsSbnM9UjzHYr5xIf4rkmVAfuPnU2FGu8NtCQaOtt9G-TziBFgT3ZjxBCL9QaaC39BRulGE6tyCAT8NM9svTD_AbNyINUzO2M0R61OXYQfzXEeiui-sO6eYIc3x_z-YdFFQ'
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters: []
+    cleanUrlParameters: []
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters:
+      query:
+        name: query
+        description: 'The title of the job.'
+        required: true
+        example: abc
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+    cleanBodyParameters:
+      query: abc
+    fileParameters: []
+    responses:
+      -
+        status: 200
+        content: |-
+          {
+            "data": [
+              {
+                "id": 1,
+                "job_title": "Software Developer",
+                "job_description": "Full stack developer needed...",
+                "job_type": "Full-time",
+                "job_location": "New York",
+                "job_salary": 100000,
+                "currency": "USD",
+                "job_experience": 3,
+                "contact_person": "John Doe",
+                "contact_email": "johndoe@example.com"
+              },
+              ...
+            ]
+          }
+        headers: []
+        description: ''
+        custom: []
+      -
+        status: 201
+        content: |-
+          {
+            "message": "An error occurred during the search"
+          }
+        headers: []
+        description: ''
+        custom: []
+    responseFields: []
+    auth:
+      - headers
+      - Authorization
+      - 'Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJhdWQiOiIxIiwianRpIjoiNTJkNDhkYzhjNTc4ODIwZWVmODFmY2NhOWJiMmJiODFlZGE1MTUwMTVkYmU5YzdkNzFkODAyYTRmZWNhMWQ5ZGJhYWEzMTc2YjI1OTJmMTgiLCJpYXQiOjE3NjQwNjAzNDQuMDUyOTc0LCJuYmYiOjE3NjQwNjAzNDQuMDUyOTc1LCJleHAiOjE3OTU1OTYzNDQuMDQzNjUyLCJzdWIiOiIxNjgiLCJzY29wZXMiOltdfQ.X9tS38uM-UlrpFlYZihD_kmuCcSX_hdGsRBJcNGfrWXAClMiqeTxNTC45Ftxw-ddmDQ59t5xJLlnWp2Rx57itO-IHclNmwnVJDPAh1l9D8CZBGxBSoN0FvmbWeYDNQnA7ud77YLekrcSAuKMdBX3J1UKq6ytvWwi6ChnuRFqcQ-fpzK-jgkMhGm-WFHw0H3a34afdBdSUUFutESlwMvTqmXILYVcIwaJpEAjamf3rn6wIOEoD8mbxXJ6Gb6QrRO72Kt3z62vJp7yOeMsnXUkfioVSyJVwbkbchCs2Y4YZY3FEREbKysKNdHJhhqmn6AXvx66arAK3HeZoyf5eusfk26alhbEdJqsJgFP5VROV5l57q8VKhH8hAxg-oeidCGGJXPjLGeb-5iGPjdGhQ1Ng1i9kt7VDV4icb8B2AbNC2Ie9xP6b0R11PX4jUd8D3Jogf2f0ZhAs5Is8WHcrxsCyk3lWvgOyzWxpRx2lSpmBRmSwksPrKJk_7JuzDZ1Tdpz6mubjV6DzlmqDJJjf32hBIMnaYOhOUz5k1FzZ8mybsSbnM9UjzHYr5xIf4rkmVAfuPnU2FGu8NtCQaOtt9G-TziBFgT3ZjxBCL9QaaC39BRulGE6tyCAT8NM9svTD_AbNyINUzO2M0R61OXYQfzXEeiui-sO6eYIc3x_z-YdFFQ'
     controller: null
     method: null
     route: null
