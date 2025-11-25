@@ -35,6 +35,7 @@ use App\Http\Controllers\Api\EcclesiaController;
 use App\Http\Controllers\Api\EstoreCmsController;
 use App\Http\Controllers\Api\FCMController;
 use App\Http\Controllers\Api\SizeController;
+use App\Http\Controllers\Api\PrivateCollaborationController;
 
 /*
 |--------------------------------------------------------------------------
@@ -313,6 +314,17 @@ Route::prefix('v3')->middleware(['userActivity'])->group(function () {
             // Zoom SDK signature for API clients
             Route::post('/zoom-signature', [MeetingController::class, 'zoomSignature']);
             Route::get('/meetings-calender-fetch-data', [MeetingController::class, 'fetchCalenderData']);
+        });
+
+        Route::prefix('private-collaborations')->group(function () {
+            Route::get('/load', [PrivateCollaborationController::class, 'index']);
+            Route::post('/store', [PrivateCollaborationController::class, 'store']);
+            Route::get('/view/{id}', [PrivateCollaborationController::class, 'show']);
+            Route::post('/edit/{id}', [PrivateCollaborationController::class, 'update']);
+            Route::post('/delete/{id}', [PrivateCollaborationController::class, 'destroy']);
+            Route::post('/accept-invitation/{id}', [PrivateCollaborationController::class, 'acceptInvitation']);
+            Route::post('/zoom-signature', [PrivateCollaborationController::class, 'zoomSignature']);
+            Route::get('/private-collaborations-calender-fetch-data', [PrivateCollaborationController::class, 'fetchCalenderData']);
         });
 
         Route::prefix('events')->group(function () {

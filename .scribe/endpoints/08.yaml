@@ -27,14 +27,14 @@ endpoints:
         name: message
         description: ''
         required: false
-        example: vel
+        example: rerum
         type: string
         enumValues: []
         exampleWasSpecified: false
         nullable: false
         custom: []
     cleanBodyParameters:
-      message: vel
+      message: rerum
     fileParameters: []
     responses:
       -

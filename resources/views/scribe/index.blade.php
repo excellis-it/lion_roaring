@@ -786,6 +786,37 @@
                             </li>
                                                                         </ul>
                             </ul>
+                    <ul id="tocify-header-private-collaborations" class="tocify-header">
+                <li class="tocify-item level-1" data-unique="private-collaborations">
+                    <a href="#private-collaborations">Private Collaborations</a>
+                </li>
+                                    <ul id="tocify-subheader-private-collaborations" class="tocify-subheader">
+                                                    <li class="tocify-item level-2" data-unique="private-collaborations-GETapi-v3-user-private-collaborations-load">
+                                <a href="#private-collaborations-GETapi-v3-user-private-collaborations-load">List All Private Collaborations</a>
+                            </li>
+                                                                                <li class="tocify-item level-2" data-unique="private-collaborations-POSTapi-v3-user-private-collaborations-store">
+                                <a href="#private-collaborations-POSTapi-v3-user-private-collaborations-store">Create a private collaboration</a>
+                            </li>
+                                                                                <li class="tocify-item level-2" data-unique="private-collaborations-GETapi-v3-user-private-collaborations-view--id-">
+                                <a href="#private-collaborations-GETapi-v3-user-private-collaborations-view--id-">Get a single collaboration</a>
+                            </li>
+                                                                                <li class="tocify-item level-2" data-unique="private-collaborations-POSTapi-v3-user-private-collaborations-edit--id-">
+                                <a href="#private-collaborations-POSTapi-v3-user-private-collaborations-edit--id-">Update a collaboration</a>
+                            </li>
+                                                                                <li class="tocify-item level-2" data-unique="private-collaborations-POSTapi-v3-user-private-collaborations-delete--id-">
+                                <a href="#private-collaborations-POSTapi-v3-user-private-collaborations-delete--id-">Delete a collaboration</a>
+                            </li>
+                                                                                <li class="tocify-item level-2" data-unique="private-collaborations-POSTapi-v3-user-private-collaborations-accept-invitation--id-">
+                                <a href="#private-collaborations-POSTapi-v3-user-private-collaborations-accept-invitation--id-">Accept invitation for a collaboration</a>
+                            </li>
+                                                                                <li class="tocify-item level-2" data-unique="private-collaborations-POSTapi-v3-user-private-collaborations-zoom-signature">
+                                <a href="#private-collaborations-POSTapi-v3-user-private-collaborations-zoom-signature">Generate Zoom Web SDK signature for collaboration meeting</a>
+                            </li>
+                                                                                <li class="tocify-item level-2" data-unique="private-collaborations-GETapi-v3-user-private-collaborations-private-collaborations-calender-fetch-data">
+                                <a href="#private-collaborations-GETapi-v3-user-private-collaborations-private-collaborations-calender-fetch-data">Fetch calendar data for private collaborations</a>
+                            </li>
+                                                                        </ul>
+                            </ul>
                     <ul id="tocify-header-profile" class="tocify-header">
                 <li class="tocify-item level-1" data-unique="profile">
                     <a href="#profile">Profile</a>
@@ -1675,7 +1706,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
     --data "{
     \"user_name\": \"johndoe\",
     \"email\": \"johndoe@example.com\",
-    \"ecclesia_id\": 20,
+    \"ecclesia_id\": 3,
     \"first_name\": \"John\",
     \"last_name\": \"Doe\",
     \"middle_name\": \"A.\",
@@ -1685,7 +1716,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
     \"address\": \"123 Main St\",
     \"phone\": \"1234567890\",
     \"city\": \"Springfield\",
-    \"country\": 14,
+    \"country\": 1,
     \"state\": 2,
     \"address2\": \"Apt 4B\",
     \"zip\": \"62704\"
@@ -1706,7 +1737,7 @@ const headers = {
 let body = {
     "user_name": "johndoe",
     "email": "johndoe@example.com",
-    "ecclesia_id": 20,
+    "ecclesia_id": 3,
     "first_name": "John",
     "last_name": "Doe",
     "middle_name": "A.",
@@ -1716,7 +1747,7 @@ let body = {
     "address": "123 Main St",
     "phone": "1234567890",
     "city": "Springfield",
-    "country": 14,
+    "country": 1,
     "state": 2,
     "address2": "Apt 4B",
     "zip": "62704"
@@ -1922,10 +1953,10 @@ You can check the Dev Tools console for debugging information.</code></pre>
 <i>optional</i> &nbsp;
                 <input type="number" style="display: none"
                step="any"               name="ecclesia_id"                data-endpoint="POSTapi-v3-register"
-               value="20"
+               value="3"
                data-component="body">
     <br>
-<p>nullable Ecclesia ID if applicable. Example: <code>20</code></p>
+<p>nullable Ecclesia ID if applicable. Example: <code>3</code></p>
         </div>
                 <div style=" padding-left: 28px;  clear: unset;">
             <b style="line-height: 2;"><code>first_name</code></b>&nbsp;&nbsp;
@@ -2032,10 +2063,10 @@ You can check the Dev Tools console for debugging information.</code></pre>
  &nbsp;
                 <input type="number" style="display: none"
                step="any"               name="country"                data-endpoint="POSTapi-v3-register"
-               value="14"
+               value="1"
                data-component="body">
     <br>
-<p>Country of residence. Example: <code>14</code></p>
+<p>Country of residence. Example: <code>1</code></p>
         </div>
                 <div style=" padding-left: 28px;  clear: unset;">
             <b style="line-height: 2;"><code>state</code></b>&nbsp;&nbsp;
@@ -8166,7 +8197,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
     --header "Accept: application/json" \
     --form "reciver_id=2"\
     --form "message=Hello there!"\
-    --form "file=@/private/var/folders/wy/1yz2w5p91q13336262xr4yzw0000gn/T/phpijV1lv" </code></pre></div>
+    --form "file=@/private/var/folders/wy/1yz2w5p91q13336262xr4yzw0000gn/T/phpNaOosc" </code></pre></div>
 
 
 <div class="javascript-example">
@@ -8611,7 +8642,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
                value=""
                data-component="body">
     <br>
-<p>Optional file attachment for the chat message. Example: <code>/private/var/folders/wy/1yz2w5p91q13336262xr4yzw0000gn/T/phpijV1lv</code></p>
+<p>Optional file attachment for the chat message. Example: <code>/private/var/folders/wy/1yz2w5p91q13336262xr4yzw0000gn/T/phpNaOosc</code></p>
         </div>
         </form>
 
@@ -9709,7 +9740,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
     --data "{
     \"first_name\": \"John\",
     \"last_name\": \"Doe\",
-    \"email\": \"irwin.medhurst@example.com\",
+    \"email\": \"jeremie.gusikowski@example.net\",
     \"phone\": \"1234567890\",
     \"message\": \"Hello\"
 }"
@@ -9729,7 +9760,7 @@ const headers = {
 let body = {
     "first_name": "John",
     "last_name": "Doe",
-    "email": "irwin.medhurst@example.com",
+    "email": "jeremie.gusikowski@example.net",
     "phone": "1234567890",
     "message": "Hello"
 };
@@ -9872,10 +9903,10 @@ You can check the Dev Tools console for debugging information.</code></pre>
  &nbsp;
                 <input type="text" style="display: none"
                               name="email"                data-endpoint="POSTapi-v3-contact-us"
-               value="irwin.medhurst@example.com"
+               value="jeremie.gusikowski@example.net"
                data-component="body">
     <br>
-<p>Email of the user. Example: Example: <code>irwin.medhurst@example.com</code></p>
+<p>Email of the user. Example: Example: <code>jeremie.gusikowski@example.net</code></p>
         </div>
                 <div style=" padding-left: 28px;  clear: unset;">
             <b style="line-height: 2;"><code>phone</code></b>&nbsp;&nbsp;
@@ -10111,7 +10142,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
     \"postcode\": \"ZP74857\",
     \"amount\": 150,
     \"country_id\": 2,
-    \"stripeToken\": \"labore\"
+    \"stripeToken\": \"ab\"
 }"
 </code></pre></div>
 
@@ -10136,7 +10167,7 @@ let body = {
     "postcode": "ZP74857",
     "amount": 150,
     "country_id": 2,
-    "stripeToken": "labore"
+    "stripeToken": "ab"
 };
 
 fetch(url, {
@@ -10368,10 +10399,10 @@ You can check the Dev Tools console for debugging information.</code></pre>
 <i>optional</i> &nbsp;
                 <input type="text" style="display: none"
                               name="stripeToken"                data-endpoint="POSTapi-v3-donation"
-               value="labore"
+               value="ab"
                data-component="body">
     <br>
-<p>required. Example: <code>labore</code></p>
+<p>required. Example: <code>ab</code></p>
         </div>
         </form>
 
@@ -10910,7 +10941,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 <div class="bash-example">
     <pre><code class="language-bash">curl --request GET \
-    --get "http://127.0.0.1:8000/api/v3/e-store/product/vel" \
+    --get "http://127.0.0.1:8000/api/v3/e-store/product/dolore" \
     --header "Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJhdWQiOiIxIiwianRpIjoiNTJkNDhkYzhjNTc4ODIwZWVmODFmY2NhOWJiMmJiODFlZGE1MTUwMTVkYmU5YzdkNzFkODAyYTRmZWNhMWQ5ZGJhYWEzMTc2YjI1OTJmMTgiLCJpYXQiOjE3NjQwNjAzNDQuMDUyOTc0LCJuYmYiOjE3NjQwNjAzNDQuMDUyOTc1LCJleHAiOjE3OTU1OTYzNDQuMDQzNjUyLCJzdWIiOiIxNjgiLCJzY29wZXMiOltdfQ.X9tS38uM-UlrpFlYZihD_kmuCcSX_hdGsRBJcNGfrWXAClMiqeTxNTC45Ftxw-ddmDQ59t5xJLlnWp2Rx57itO-IHclNmwnVJDPAh1l9D8CZBGxBSoN0FvmbWeYDNQnA7ud77YLekrcSAuKMdBX3J1UKq6ytvWwi6ChnuRFqcQ-fpzK-jgkMhGm-WFHw0H3a34afdBdSUUFutESlwMvTqmXILYVcIwaJpEAjamf3rn6wIOEoD8mbxXJ6Gb6QrRO72Kt3z62vJp7yOeMsnXUkfioVSyJVwbkbchCs2Y4YZY3FEREbKysKNdHJhhqmn6AXvx66arAK3HeZoyf5eusfk26alhbEdJqsJgFP5VROV5l57q8VKhH8hAxg-oeidCGGJXPjLGeb-5iGPjdGhQ1Ng1i9kt7VDV4icb8B2AbNC2Ie9xP6b0R11PX4jUd8D3Jogf2f0ZhAs5Is8WHcrxsCyk3lWvgOyzWxpRx2lSpmBRmSwksPrKJk_7JuzDZ1Tdpz6mubjV6DzlmqDJJjf32hBIMnaYOhOUz5k1FzZ8mybsSbnM9UjzHYr5xIf4rkmVAfuPnU2FGu8NtCQaOtt9G-TziBFgT3ZjxBCL9QaaC39BRulGE6tyCAT8NM9svTD_AbNyINUzO2M0R61OXYQfzXEeiui-sO6eYIc3x_z-YdFFQ" \
     --header "Content-Type: application/json" \
     --header "Accept: application/json"</code></pre></div>
@@ -10918,7 +10949,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 <div class="javascript-example">
     <pre><code class="language-javascript">const url = new URL(
-    "http://127.0.0.1:8000/api/v3/e-store/product/vel"
+    "http://127.0.0.1:8000/api/v3/e-store/product/dolore"
 );
 
 const headers = {
@@ -10935,11 +10966,11 @@ fetch(url, {
 
 <div class="jsonToDart-example">
     <pre><code class="language-dart">
-class Vel {
+class Dolore {
 
-  Vel({});
+  Dolore({});
 
-  factory Vel.fromJson(Map&lt;String, dynamic&gt; json) =&gt; Vel(
+  factory Dolore.fromJson(Map&lt;String, dynamic&gt; json) =&gt; Dolore(
   );
 
   Map&lt;String, dynamic&gt; toJson() =&gt; {
@@ -11048,10 +11079,10 @@ You can check the Dev Tools console for debugging information.</code></pre>
  &nbsp;
                 <input type="text" style="display: none"
                               name="slug"                data-endpoint="GETapi-v3-e-store-product--slug-"
-               value="vel"
+               value="dolore"
                data-component="url">
     <br>
-<p>The slug of the product. Example: <code>vel</code></p>
+<p>The slug of the product. Example: <code>dolore</code></p>
             </div>
                     </form>
 
@@ -11069,7 +11100,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 <div class="bash-example">
     <pre><code class="language-bash">curl --request GET \
-    --get "http://127.0.0.1:8000/api/v3/e-store/products-filter?category_id%5B%5D[]=consequatur&amp;latestFilter=quo&amp;search=quam&amp;page=11" \
+    --get "http://127.0.0.1:8000/api/v3/e-store/products-filter?category_id%5B%5D[]=et&amp;latestFilter=quia&amp;search=provident&amp;page=19" \
     --header "Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJhdWQiOiIxIiwianRpIjoiNTJkNDhkYzhjNTc4ODIwZWVmODFmY2NhOWJiMmJiODFlZGE1MTUwMTVkYmU5YzdkNzFkODAyYTRmZWNhMWQ5ZGJhYWEzMTc2YjI1OTJmMTgiLCJpYXQiOjE3NjQwNjAzNDQuMDUyOTc0LCJuYmYiOjE3NjQwNjAzNDQuMDUyOTc1LCJleHAiOjE3OTU1OTYzNDQuMDQzNjUyLCJzdWIiOiIxNjgiLCJzY29wZXMiOltdfQ.X9tS38uM-UlrpFlYZihD_kmuCcSX_hdGsRBJcNGfrWXAClMiqeTxNTC45Ftxw-ddmDQ59t5xJLlnWp2Rx57itO-IHclNmwnVJDPAh1l9D8CZBGxBSoN0FvmbWeYDNQnA7ud77YLekrcSAuKMdBX3J1UKq6ytvWwi6ChnuRFqcQ-fpzK-jgkMhGm-WFHw0H3a34afdBdSUUFutESlwMvTqmXILYVcIwaJpEAjamf3rn6wIOEoD8mbxXJ6Gb6QrRO72Kt3z62vJp7yOeMsnXUkfioVSyJVwbkbchCs2Y4YZY3FEREbKysKNdHJhhqmn6AXvx66arAK3HeZoyf5eusfk26alhbEdJqsJgFP5VROV5l57q8VKhH8hAxg-oeidCGGJXPjLGeb-5iGPjdGhQ1Ng1i9kt7VDV4icb8B2AbNC2Ie9xP6b0R11PX4jUd8D3Jogf2f0ZhAs5Is8WHcrxsCyk3lWvgOyzWxpRx2lSpmBRmSwksPrKJk_7JuzDZ1Tdpz6mubjV6DzlmqDJJjf32hBIMnaYOhOUz5k1FzZ8mybsSbnM9UjzHYr5xIf4rkmVAfuPnU2FGu8NtCQaOtt9G-TziBFgT3ZjxBCL9QaaC39BRulGE6tyCAT8NM9svTD_AbNyINUzO2M0R61OXYQfzXEeiui-sO6eYIc3x_z-YdFFQ" \
     --header "Content-Type: application/json" \
     --header "Accept: application/json"</code></pre></div>
@@ -11081,10 +11112,10 @@ You can check the Dev Tools console for debugging information.</code></pre>
 );
 
 const params = {
-    "category_id[][0]": "consequatur",
-    "latestFilter": "quo",
-    "search": "quam",
-    "page": "11",
+    "category_id[][0]": "et",
+    "latestFilter": "quia",
+    "search": "provident",
+    "page": "19",
 };
 Object.keys(params)
     .forEach(key =&gt; url.searchParams.append(key, params[key]));
@@ -11228,10 +11259,10 @@ You can check the Dev Tools console for debugging information.</code></pre>
 <i>optional</i> &nbsp;
                 <input type="text" style="display: none"
                               name="latestFilter"                data-endpoint="GETapi-v3-e-store-products-filter"
-               value="quo"
+               value="quia"
                data-component="query">
     <br>
-<p>Optional. Filter by latest, A-Z, Z-A. Example: <code>quo</code></p>
+<p>Optional. Filter by latest, A-Z, Z-A. Example: <code>quia</code></p>
             </div>
                                     <div style="padding-left: 28px; clear: unset;">
                 <b style="line-height: 2;"><code>search</code></b>&nbsp;&nbsp;
@@ -11239,10 +11270,10 @@ You can check the Dev Tools console for debugging information.</code></pre>
 <i>optional</i> &nbsp;
                 <input type="text" style="display: none"
                               name="search"                data-endpoint="GETapi-v3-e-store-products-filter"
-               value="quam"
+               value="provident"
                data-component="query">
     <br>
-<p>Optional. Search by product name. Example: <code>quam</code></p>
+<p>Optional. Search by product name. Example: <code>provident</code></p>
             </div>
                                     <div style="padding-left: 28px; clear: unset;">
                 <b style="line-height: 2;"><code>page</code></b>&nbsp;&nbsp;
@@ -11250,10 +11281,10 @@ You can check the Dev Tools console for debugging information.</code></pre>
 <i>optional</i> &nbsp;
                 <input type="number" style="display: none"
                step="any"               name="page"                data-endpoint="GETapi-v3-e-store-products-filter"
-               value="11"
+               value="19"
                data-component="query">
     <br>
-<p>Optional. Page number. Example: <code>11</code></p>
+<p>Optional. Page number. Example: <code>19</code></p>
             </div>
                 </form>
 
@@ -13196,7 +13227,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 <div class="bash-example">
     <pre><code class="language-bash">curl --request GET \
-    --get "http://127.0.0.1:8000/api/v3/user/topics/sequi/edit" \
+    --get "http://127.0.0.1:8000/api/v3/user/topics/aut/edit" \
     --header "Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJhdWQiOiIxIiwianRpIjoiNTJkNDhkYzhjNTc4ODIwZWVmODFmY2NhOWJiMmJiODFlZGE1MTUwMTVkYmU5YzdkNzFkODAyYTRmZWNhMWQ5ZGJhYWEzMTc2YjI1OTJmMTgiLCJpYXQiOjE3NjQwNjAzNDQuMDUyOTc0LCJuYmYiOjE3NjQwNjAzNDQuMDUyOTc1LCJleHAiOjE3OTU1OTYzNDQuMDQzNjUyLCJzdWIiOiIxNjgiLCJzY29wZXMiOltdfQ.X9tS38uM-UlrpFlYZihD_kmuCcSX_hdGsRBJcNGfrWXAClMiqeTxNTC45Ftxw-ddmDQ59t5xJLlnWp2Rx57itO-IHclNmwnVJDPAh1l9D8CZBGxBSoN0FvmbWeYDNQnA7ud77YLekrcSAuKMdBX3J1UKq6ytvWwi6ChnuRFqcQ-fpzK-jgkMhGm-WFHw0H3a34afdBdSUUFutESlwMvTqmXILYVcIwaJpEAjamf3rn6wIOEoD8mbxXJ6Gb6QrRO72Kt3z62vJp7yOeMsnXUkfioVSyJVwbkbchCs2Y4YZY3FEREbKysKNdHJhhqmn6AXvx66arAK3HeZoyf5eusfk26alhbEdJqsJgFP5VROV5l57q8VKhH8hAxg-oeidCGGJXPjLGeb-5iGPjdGhQ1Ng1i9kt7VDV4icb8B2AbNC2Ie9xP6b0R11PX4jUd8D3Jogf2f0ZhAs5Is8WHcrxsCyk3lWvgOyzWxpRx2lSpmBRmSwksPrKJk_7JuzDZ1Tdpz6mubjV6DzlmqDJJjf32hBIMnaYOhOUz5k1FzZ8mybsSbnM9UjzHYr5xIf4rkmVAfuPnU2FGu8NtCQaOtt9G-TziBFgT3ZjxBCL9QaaC39BRulGE6tyCAT8NM9svTD_AbNyINUzO2M0R61OXYQfzXEeiui-sO6eYIc3x_z-YdFFQ" \
     --header "Content-Type: application/json" \
     --header "Accept: application/json"</code></pre></div>
@@ -13204,7 +13235,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 <div class="javascript-example">
     <pre><code class="language-javascript">const url = new URL(
-    "http://127.0.0.1:8000/api/v3/user/topics/sequi/edit"
+    "http://127.0.0.1:8000/api/v3/user/topics/aut/edit"
 );
 
 const headers = {
@@ -13363,10 +13394,10 @@ You can check the Dev Tools console for debugging information.</code></pre>
  &nbsp;
                 <input type="text" style="display: none"
                               name="topic"                data-endpoint="GETapi-v3-user-topics--topic--edit"
-               value="sequi"
+               value="aut"
                data-component="url">
     <br>
-<p>The topic. Example: <code>sequi</code></p>
+<p>The topic. Example: <code>aut</code></p>
             </div>
                     <div style="padding-left: 28px; clear: unset;">
                 <b style="line-height: 2;"><code>id</code></b>&nbsp;&nbsp;
@@ -14021,7 +14052,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 <div class="bash-example">
     <pre><code class="language-bash">curl --request GET \
-    --get "http://127.0.0.1:8000/api/v3/user/becoming-sovereign/list-by-topics?sortby=omnis&amp;sorttype=sed&amp;query=saepe&amp;topic_id=7" \
+    --get "http://127.0.0.1:8000/api/v3/user/becoming-sovereign/list-by-topics?sortby=aut&amp;sorttype=excepturi&amp;query=exercitationem&amp;topic_id=2" \
     --header "Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJhdWQiOiIxIiwianRpIjoiNTJkNDhkYzhjNTc4ODIwZWVmODFmY2NhOWJiMmJiODFlZGE1MTUwMTVkYmU5YzdkNzFkODAyYTRmZWNhMWQ5ZGJhYWEzMTc2YjI1OTJmMTgiLCJpYXQiOjE3NjQwNjAzNDQuMDUyOTc0LCJuYmYiOjE3NjQwNjAzNDQuMDUyOTc1LCJleHAiOjE3OTU1OTYzNDQuMDQzNjUyLCJzdWIiOiIxNjgiLCJzY29wZXMiOltdfQ.X9tS38uM-UlrpFlYZihD_kmuCcSX_hdGsRBJcNGfrWXAClMiqeTxNTC45Ftxw-ddmDQ59t5xJLlnWp2Rx57itO-IHclNmwnVJDPAh1l9D8CZBGxBSoN0FvmbWeYDNQnA7ud77YLekrcSAuKMdBX3J1UKq6ytvWwi6ChnuRFqcQ-fpzK-jgkMhGm-WFHw0H3a34afdBdSUUFutESlwMvTqmXILYVcIwaJpEAjamf3rn6wIOEoD8mbxXJ6Gb6QrRO72Kt3z62vJp7yOeMsnXUkfioVSyJVwbkbchCs2Y4YZY3FEREbKysKNdHJhhqmn6AXvx66arAK3HeZoyf5eusfk26alhbEdJqsJgFP5VROV5l57q8VKhH8hAxg-oeidCGGJXPjLGeb-5iGPjdGhQ1Ng1i9kt7VDV4icb8B2AbNC2Ie9xP6b0R11PX4jUd8D3Jogf2f0ZhAs5Is8WHcrxsCyk3lWvgOyzWxpRx2lSpmBRmSwksPrKJk_7JuzDZ1Tdpz6mubjV6DzlmqDJJjf32hBIMnaYOhOUz5k1FzZ8mybsSbnM9UjzHYr5xIf4rkmVAfuPnU2FGu8NtCQaOtt9G-TziBFgT3ZjxBCL9QaaC39BRulGE6tyCAT8NM9svTD_AbNyINUzO2M0R61OXYQfzXEeiui-sO6eYIc3x_z-YdFFQ" \
     --header "Content-Type: application/json" \
     --header "Accept: application/json"</code></pre></div>
@@ -14033,10 +14064,10 @@ You can check the Dev Tools console for debugging information.</code></pre>
 );
 
 const params = {
-    "sortby": "omnis",
-    "sorttype": "sed",
-    "query": "saepe",
-    "topic_id": "7",
+    "sortby": "aut",
+    "sorttype": "excepturi",
+    "query": "exercitationem",
+    "topic_id": "2",
 };
 Object.keys(params)
     .forEach(key =&gt; url.searchParams.append(key, params[key]));
@@ -14259,10 +14290,10 @@ You can check the Dev Tools console for debugging information.</code></pre>
 <i>optional</i> &nbsp;
                 <input type="text" style="display: none"
                               name="sortby"                data-endpoint="GETapi-v3-user-becoming-sovereign-list-by-topics"
-               value="omnis"
+               value="aut"
                data-component="query">
     <br>
-<p>The column to sort by (optional, default: id). Example: <code>omnis</code></p>
+<p>The column to sort by (optional, default: id). Example: <code>aut</code></p>
             </div>
                                     <div style="padding-left: 28px; clear: unset;">
                 <b style="line-height: 2;"><code>sorttype</code></b>&nbsp;&nbsp;
@@ -14270,10 +14301,10 @@ You can check the Dev Tools console for debugging information.</code></pre>
 <i>optional</i> &nbsp;
                 <input type="text" style="display: none"
                               name="sorttype"                data-endpoint="GETapi-v3-user-becoming-sovereign-list-by-topics"
-               value="sed"
+               value="excepturi"
                data-component="query">
     <br>
-<p>The sort direction, either 'asc' or 'desc' (optional, default: 'asc'). Example: <code>sed</code></p>
+<p>The sort direction, either 'asc' or 'desc' (optional, default: 'asc'). Example: <code>excepturi</code></p>
             </div>
                                     <div style="padding-left: 28px; clear: unset;">
                 <b style="line-height: 2;"><code>query</code></b>&nbsp;&nbsp;
@@ -14281,10 +14312,10 @@ You can check the Dev Tools console for debugging information.</code></pre>
 <i>optional</i> &nbsp;
                 <input type="text" style="display: none"
                               name="query"                data-endpoint="GETapi-v3-user-becoming-sovereign-list-by-topics"
-               value="saepe"
+               value="exercitationem"
                data-component="query">
     <br>
-<p>The search query to filter files by ID, file name, or file extension (optional). Example: <code>saepe</code></p>
+<p>The search query to filter files by ID, file name, or file extension (optional). Example: <code>exercitationem</code></p>
             </div>
                                     <div style="padding-left: 28px; clear: unset;">
                 <b style="line-height: 2;"><code>topic_id</code></b>&nbsp;&nbsp;
@@ -14292,10 +14323,10 @@ You can check the Dev Tools console for debugging information.</code></pre>
 <i>optional</i> &nbsp;
                 <input type="number" style="display: none"
                step="any"               name="topic_id"                data-endpoint="GETapi-v3-user-becoming-sovereign-list-by-topics"
-               value="7"
+               value="2"
                data-component="query">
     <br>
-<p>The ID of the topic to filter files by (optional). Example: <code>7</code></p>
+<p>The ID of the topic to filter files by (optional). Example: <code>2</code></p>
             </div>
                 </form>
 
@@ -14514,7 +14545,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
     --header "Content-Type: multipart/form-data" \
     --header "Accept: application/json" \
     --form "topic_id=0"\
-    --form "file=@/private/var/folders/wy/1yz2w5p91q13336262xr4yzw0000gn/T/phphZ68vD" </code></pre></div>
+    --form "file=@/private/var/folders/wy/1yz2w5p91q13336262xr4yzw0000gn/T/phprgchSR" </code></pre></div>
 
 
 <div class="javascript-example">
@@ -14742,7 +14773,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
                value=""
                data-component="body">
     <br>
-<p>The file to upload. Example: <code>/private/var/folders/wy/1yz2w5p91q13336262xr4yzw0000gn/T/phphZ68vD</code></p>
+<p>The file to upload. Example: <code>/private/var/folders/wy/1yz2w5p91q13336262xr4yzw0000gn/T/phprgchSR</code></p>
         </div>
                 <div style=" padding-left: 28px;  clear: unset;">
             <b style="line-height: 2;"><code>topic_id</code></b>&nbsp;&nbsp;
@@ -14771,7 +14802,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 <div class="bash-example">
     <pre><code class="language-bash">curl --request GET \
-    --get "http://127.0.0.1:8000/api/v3/user/becoming-sovereign/view/1?topic=16" \
+    --get "http://127.0.0.1:8000/api/v3/user/becoming-sovereign/view/1?topic=12" \
     --header "Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJhdWQiOiIxIiwianRpIjoiNTJkNDhkYzhjNTc4ODIwZWVmODFmY2NhOWJiMmJiODFlZGE1MTUwMTVkYmU5YzdkNzFkODAyYTRmZWNhMWQ5ZGJhYWEzMTc2YjI1OTJmMTgiLCJpYXQiOjE3NjQwNjAzNDQuMDUyOTc0LCJuYmYiOjE3NjQwNjAzNDQuMDUyOTc1LCJleHAiOjE3OTU1OTYzNDQuMDQzNjUyLCJzdWIiOiIxNjgiLCJzY29wZXMiOltdfQ.X9tS38uM-UlrpFlYZihD_kmuCcSX_hdGsRBJcNGfrWXAClMiqeTxNTC45Ftxw-ddmDQ59t5xJLlnWp2Rx57itO-IHclNmwnVJDPAh1l9D8CZBGxBSoN0FvmbWeYDNQnA7ud77YLekrcSAuKMdBX3J1UKq6ytvWwi6ChnuRFqcQ-fpzK-jgkMhGm-WFHw0H3a34afdBdSUUFutESlwMvTqmXILYVcIwaJpEAjamf3rn6wIOEoD8mbxXJ6Gb6QrRO72Kt3z62vJp7yOeMsnXUkfioVSyJVwbkbchCs2Y4YZY3FEREbKysKNdHJhhqmn6AXvx66arAK3HeZoyf5eusfk26alhbEdJqsJgFP5VROV5l57q8VKhH8hAxg-oeidCGGJXPjLGeb-5iGPjdGhQ1Ng1i9kt7VDV4icb8B2AbNC2Ie9xP6b0R11PX4jUd8D3Jogf2f0ZhAs5Is8WHcrxsCyk3lWvgOyzWxpRx2lSpmBRmSwksPrKJk_7JuzDZ1Tdpz6mubjV6DzlmqDJJjf32hBIMnaYOhOUz5k1FzZ8mybsSbnM9UjzHYr5xIf4rkmVAfuPnU2FGu8NtCQaOtt9G-TziBFgT3ZjxBCL9QaaC39BRulGE6tyCAT8NM9svTD_AbNyINUzO2M0R61OXYQfzXEeiui-sO6eYIc3x_z-YdFFQ" \
     --header "Content-Type: application/json" \
     --header "Accept: application/json"</code></pre></div>
@@ -14783,7 +14814,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 );
 
 const params = {
-    "topic": "16",
+    "topic": "12",
 };
 Object.keys(params)
     .forEach(key =&gt; url.searchParams.append(key, params[key]));
@@ -14998,10 +15029,10 @@ You can check the Dev Tools console for debugging information.</code></pre>
 <i>optional</i> &nbsp;
                 <input type="number" style="display: none"
                step="any"               name="topic"                data-endpoint="GETapi-v3-user-becoming-sovereign-view--id-"
-               value="16"
+               value="12"
                data-component="query">
     <br>
-<p>The ID of the topic to filter by (optional). Example: <code>16</code></p>
+<p>The ID of the topic to filter by (optional). Example: <code>12</code></p>
             </div>
                 </form>
 
@@ -15019,17 +15050,17 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 <div class="bash-example">
     <pre><code class="language-bash">curl --request POST \
-    "http://127.0.0.1:8000/api/v3/user/becoming-sovereign/update/rerum" \
+    "http://127.0.0.1:8000/api/v3/user/becoming-sovereign/update/qui" \
     --header "Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJhdWQiOiIxIiwianRpIjoiNTJkNDhkYzhjNTc4ODIwZWVmODFmY2NhOWJiMmJiODFlZGE1MTUwMTVkYmU5YzdkNzFkODAyYTRmZWNhMWQ5ZGJhYWEzMTc2YjI1OTJmMTgiLCJpYXQiOjE3NjQwNjAzNDQuMDUyOTc0LCJuYmYiOjE3NjQwNjAzNDQuMDUyOTc1LCJleHAiOjE3OTU1OTYzNDQuMDQzNjUyLCJzdWIiOiIxNjgiLCJzY29wZXMiOltdfQ.X9tS38uM-UlrpFlYZihD_kmuCcSX_hdGsRBJcNGfrWXAClMiqeTxNTC45Ftxw-ddmDQ59t5xJLlnWp2Rx57itO-IHclNmwnVJDPAh1l9D8CZBGxBSoN0FvmbWeYDNQnA7ud77YLekrcSAuKMdBX3J1UKq6ytvWwi6ChnuRFqcQ-fpzK-jgkMhGm-WFHw0H3a34afdBdSUUFutESlwMvTqmXILYVcIwaJpEAjamf3rn6wIOEoD8mbxXJ6Gb6QrRO72Kt3z62vJp7yOeMsnXUkfioVSyJVwbkbchCs2Y4YZY3FEREbKysKNdHJhhqmn6AXvx66arAK3HeZoyf5eusfk26alhbEdJqsJgFP5VROV5l57q8VKhH8hAxg-oeidCGGJXPjLGeb-5iGPjdGhQ1Ng1i9kt7VDV4icb8B2AbNC2Ie9xP6b0R11PX4jUd8D3Jogf2f0ZhAs5Is8WHcrxsCyk3lWvgOyzWxpRx2lSpmBRmSwksPrKJk_7JuzDZ1Tdpz6mubjV6DzlmqDJJjf32hBIMnaYOhOUz5k1FzZ8mybsSbnM9UjzHYr5xIf4rkmVAfuPnU2FGu8NtCQaOtt9G-TziBFgT3ZjxBCL9QaaC39BRulGE6tyCAT8NM9svTD_AbNyINUzO2M0R61OXYQfzXEeiui-sO6eYIc3x_z-YdFFQ" \
     --header "Content-Type: multipart/form-data" \
     --header "Accept: application/json" \
     --form "topic_id=1"\
-    --form "file=@/private/var/folders/wy/1yz2w5p91q13336262xr4yzw0000gn/T/phpUr9yu0" </code></pre></div>
+    --form "file=@/private/var/folders/wy/1yz2w5p91q13336262xr4yzw0000gn/T/phpNV6QOx" </code></pre></div>
 
 
 <div class="javascript-example">
     <pre><code class="language-javascript">const url = new URL(
-    "http://127.0.0.1:8000/api/v3/user/becoming-sovereign/update/rerum"
+    "http://127.0.0.1:8000/api/v3/user/becoming-sovereign/update/qui"
 );
 
 const headers = {
@@ -15051,14 +15082,14 @@ fetch(url, {
 
 <div class="jsonToDart-example">
     <pre><code class="language-dart">
-class Rerum {
+class Qui {
   final String? message;
   final Data? data;
   final bool? status;
 
-  Rerum({this.message, this.data, this.status, });
+  Qui({this.message, this.data, this.status, });
 
-  factory Rerum.fromJson(Map&lt;String, dynamic&gt; json) =&gt; Rerum(
+  factory Qui.fromJson(Map&lt;String, dynamic&gt; json) =&gt; Qui(
     message: json['message'],
     data: json['data'] != null ? Data.fromJson(json['data'] as Map&lt;String, dynamic&gt;) : null,
     status: json['status'],
@@ -15244,10 +15275,10 @@ You can check the Dev Tools console for debugging information.</code></pre>
  &nbsp;
                 <input type="text" style="display: none"
                               name="id"                data-endpoint="POSTapi-v3-user-becoming-sovereign-update--id-"
-               value="rerum"
+               value="qui"
                data-component="url">
     <br>
-<p>The ID of the update. Example: <code>rerum</code></p>
+<p>The ID of the update. Example: <code>qui</code></p>
             </div>
                             <h4 class="fancy-heading-panel"><b>Body Parameters</b></h4>
         <div style=" padding-left: 28px;  clear: unset;">
@@ -15259,7 +15290,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
                value=""
                data-component="body">
     <br>
-<p>The new file to replace the existing one (optional). Example: <code>/private/var/folders/wy/1yz2w5p91q13336262xr4yzw0000gn/T/phpUr9yu0</code></p>
+<p>The new file to replace the existing one (optional). Example: <code>/private/var/folders/wy/1yz2w5p91q13336262xr4yzw0000gn/T/phpNV6QOx</code></p>
         </div>
                 <div style=" padding-left: 28px;  clear: unset;">
             <b style="line-height: 2;"><code>topic_id</code></b>&nbsp;&nbsp;
@@ -15472,7 +15503,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 <div class="bash-example">
     <pre><code class="language-bash">curl --request GET \
-    --get "http://127.0.0.1:8000/api/v3/user/becoming-sovereign/download/ut" \
+    --get "http://127.0.0.1:8000/api/v3/user/becoming-sovereign/download/voluptatem" \
     --header "Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJhdWQiOiIxIiwianRpIjoiNTJkNDhkYzhjNTc4ODIwZWVmODFmY2NhOWJiMmJiODFlZGE1MTUwMTVkYmU5YzdkNzFkODAyYTRmZWNhMWQ5ZGJhYWEzMTc2YjI1OTJmMTgiLCJpYXQiOjE3NjQwNjAzNDQuMDUyOTc0LCJuYmYiOjE3NjQwNjAzNDQuMDUyOTc1LCJleHAiOjE3OTU1OTYzNDQuMDQzNjUyLCJzdWIiOiIxNjgiLCJzY29wZXMiOltdfQ.X9tS38uM-UlrpFlYZihD_kmuCcSX_hdGsRBJcNGfrWXAClMiqeTxNTC45Ftxw-ddmDQ59t5xJLlnWp2Rx57itO-IHclNmwnVJDPAh1l9D8CZBGxBSoN0FvmbWeYDNQnA7ud77YLekrcSAuKMdBX3J1UKq6ytvWwi6ChnuRFqcQ-fpzK-jgkMhGm-WFHw0H3a34afdBdSUUFutESlwMvTqmXILYVcIwaJpEAjamf3rn6wIOEoD8mbxXJ6Gb6QrRO72Kt3z62vJp7yOeMsnXUkfioVSyJVwbkbchCs2Y4YZY3FEREbKysKNdHJhhqmn6AXvx66arAK3HeZoyf5eusfk26alhbEdJqsJgFP5VROV5l57q8VKhH8hAxg-oeidCGGJXPjLGeb-5iGPjdGhQ1Ng1i9kt7VDV4icb8B2AbNC2Ie9xP6b0R11PX4jUd8D3Jogf2f0ZhAs5Is8WHcrxsCyk3lWvgOyzWxpRx2lSpmBRmSwksPrKJk_7JuzDZ1Tdpz6mubjV6DzlmqDJJjf32hBIMnaYOhOUz5k1FzZ8mybsSbnM9UjzHYr5xIf4rkmVAfuPnU2FGu8NtCQaOtt9G-TziBFgT3ZjxBCL9QaaC39BRulGE6tyCAT8NM9svTD_AbNyINUzO2M0R61OXYQfzXEeiui-sO6eYIc3x_z-YdFFQ" \
     --header "Content-Type: application/json" \
     --header "Accept: application/json"</code></pre></div>
@@ -15480,7 +15511,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 <div class="javascript-example">
     <pre><code class="language-javascript">const url = new URL(
-    "http://127.0.0.1:8000/api/v3/user/becoming-sovereign/download/ut"
+    "http://127.0.0.1:8000/api/v3/user/becoming-sovereign/download/voluptatem"
 );
 
 const headers = {
@@ -15497,13 +15528,13 @@ fetch(url, {
 
 <div class="jsonToDart-example">
     <pre><code class="language-dart">
-class Ut {
+class Voluptatem {
   final String? message;
   final bool? status;
 
-  Ut({this.message, this.status, });
+  Voluptatem({this.message, this.status, });
 
-  factory Ut.fromJson(Map&lt;String, dynamic&gt; json) =&gt; Ut(
+  factory Voluptatem.fromJson(Map&lt;String, dynamic&gt; json) =&gt; Voluptatem(
     message: json['message'],
     status: json['status'],
   );
@@ -15632,10 +15663,10 @@ You can check the Dev Tools console for debugging information.</code></pre>
  &nbsp;
                 <input type="text" style="display: none"
                               name="file"                data-endpoint="GETapi-v3-user-becoming-sovereign-download--file-"
-               value="ut"
+               value="voluptatem"
                data-component="url">
     <br>
-<p>Example: <code>ut</code></p>
+<p>Example: <code>voluptatem</code></p>
             </div>
                     </form>
 
@@ -15903,7 +15934,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 <div class="bash-example">
     <pre><code class="language-bash">curl --request GET \
-    --get "http://127.0.0.1:8000/api/v3/user/becoming-christ-like/list-by-topics?sortby=placeat&amp;sorttype=nesciunt&amp;query=itaque&amp;topic_id=19" \
+    --get "http://127.0.0.1:8000/api/v3/user/becoming-christ-like/list-by-topics?sortby=recusandae&amp;sorttype=eligendi&amp;query=sint&amp;topic_id=14" \
     --header "Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJhdWQiOiIxIiwianRpIjoiNTJkNDhkYzhjNTc4ODIwZWVmODFmY2NhOWJiMmJiODFlZGE1MTUwMTVkYmU5YzdkNzFkODAyYTRmZWNhMWQ5ZGJhYWEzMTc2YjI1OTJmMTgiLCJpYXQiOjE3NjQwNjAzNDQuMDUyOTc0LCJuYmYiOjE3NjQwNjAzNDQuMDUyOTc1LCJleHAiOjE3OTU1OTYzNDQuMDQzNjUyLCJzdWIiOiIxNjgiLCJzY29wZXMiOltdfQ.X9tS38uM-UlrpFlYZihD_kmuCcSX_hdGsRBJcNGfrWXAClMiqeTxNTC45Ftxw-ddmDQ59t5xJLlnWp2Rx57itO-IHclNmwnVJDPAh1l9D8CZBGxBSoN0FvmbWeYDNQnA7ud77YLekrcSAuKMdBX3J1UKq6ytvWwi6ChnuRFqcQ-fpzK-jgkMhGm-WFHw0H3a34afdBdSUUFutESlwMvTqmXILYVcIwaJpEAjamf3rn6wIOEoD8mbxXJ6Gb6QrRO72Kt3z62vJp7yOeMsnXUkfioVSyJVwbkbchCs2Y4YZY3FEREbKysKNdHJhhqmn6AXvx66arAK3HeZoyf5eusfk26alhbEdJqsJgFP5VROV5l57q8VKhH8hAxg-oeidCGGJXPjLGeb-5iGPjdGhQ1Ng1i9kt7VDV4icb8B2AbNC2Ie9xP6b0R11PX4jUd8D3Jogf2f0ZhAs5Is8WHcrxsCyk3lWvgOyzWxpRx2lSpmBRmSwksPrKJk_7JuzDZ1Tdpz6mubjV6DzlmqDJJjf32hBIMnaYOhOUz5k1FzZ8mybsSbnM9UjzHYr5xIf4rkmVAfuPnU2FGu8NtCQaOtt9G-TziBFgT3ZjxBCL9QaaC39BRulGE6tyCAT8NM9svTD_AbNyINUzO2M0R61OXYQfzXEeiui-sO6eYIc3x_z-YdFFQ" \
     --header "Content-Type: application/json" \
     --header "Accept: application/json"</code></pre></div>
@@ -15915,10 +15946,10 @@ You can check the Dev Tools console for debugging information.</code></pre>
 );
 
 const params = {
-    "sortby": "placeat",
-    "sorttype": "nesciunt",
-    "query": "itaque",
-    "topic_id": "19",
+    "sortby": "recusandae",
+    "sorttype": "eligendi",
+    "query": "sint",
+    "topic_id": "14",
 };
 Object.keys(params)
     .forEach(key =&gt; url.searchParams.append(key, params[key]));
@@ -16141,10 +16172,10 @@ You can check the Dev Tools console for debugging information.</code></pre>
 <i>optional</i> &nbsp;
                 <input type="text" style="display: none"
                               name="sortby"                data-endpoint="GETapi-v3-user-becoming-christ-like-list-by-topics"
-               value="placeat"
+               value="recusandae"
                data-component="query">
     <br>
-<p>The column to sort by (optional, default: id). Example: <code>placeat</code></p>
+<p>The column to sort by (optional, default: id). Example: <code>recusandae</code></p>
             </div>
                                     <div style="padding-left: 28px; clear: unset;">
                 <b style="line-height: 2;"><code>sorttype</code></b>&nbsp;&nbsp;
@@ -16152,10 +16183,10 @@ You can check the Dev Tools console for debugging information.</code></pre>
 <i>optional</i> &nbsp;
                 <input type="text" style="display: none"
                               name="sorttype"                data-endpoint="GETapi-v3-user-becoming-christ-like-list-by-topics"
-               value="nesciunt"
+               value="eligendi"
                data-component="query">
     <br>
-<p>The sort direction, either 'asc' or 'desc' (optional, default: 'asc'). Example: <code>nesciunt</code></p>
+<p>The sort direction, either 'asc' or 'desc' (optional, default: 'asc'). Example: <code>eligendi</code></p>
             </div>
                                     <div style="padding-left: 28px; clear: unset;">
                 <b style="line-height: 2;"><code>query</code></b>&nbsp;&nbsp;
@@ -16163,10 +16194,10 @@ You can check the Dev Tools console for debugging information.</code></pre>
 <i>optional</i> &nbsp;
                 <input type="text" style="display: none"
                               name="query"                data-endpoint="GETapi-v3-user-becoming-christ-like-list-by-topics"
-               value="itaque"
+               value="sint"
                data-component="query">
     <br>
-<p>The search query to filter files by ID, file name, or file extension (optional). Example: <code>itaque</code></p>
+<p>The search query to filter files by ID, file name, or file extension (optional). Example: <code>sint</code></p>
             </div>
                                     <div style="padding-left: 28px; clear: unset;">
                 <b style="line-height: 2;"><code>topic_id</code></b>&nbsp;&nbsp;
@@ -16174,10 +16205,10 @@ You can check the Dev Tools console for debugging information.</code></pre>
 <i>optional</i> &nbsp;
                 <input type="number" style="display: none"
                step="any"               name="topic_id"                data-endpoint="GETapi-v3-user-becoming-christ-like-list-by-topics"
-               value="19"
+               value="14"
                data-component="query">
     <br>
-<p>The ID of the topic to filter files by (optional). Example: <code>19</code></p>
+<p>The ID of the topic to filter files by (optional). Example: <code>14</code></p>
             </div>
                 </form>
 
@@ -16396,7 +16427,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
     --header "Content-Type: multipart/form-data" \
     --header "Accept: application/json" \
     --form "topic_id=0"\
-    --form "file=@/private/var/folders/wy/1yz2w5p91q13336262xr4yzw0000gn/T/php8zyZiC" </code></pre></div>
+    --form "file=@/private/var/folders/wy/1yz2w5p91q13336262xr4yzw0000gn/T/phpQaUyxn" </code></pre></div>
 
 
 <div class="javascript-example">
@@ -16624,7 +16655,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
                value=""
                data-component="body">
     <br>
-<p>The file to upload. Example: <code>/private/var/folders/wy/1yz2w5p91q13336262xr4yzw0000gn/T/php8zyZiC</code></p>
+<p>The file to upload. Example: <code>/private/var/folders/wy/1yz2w5p91q13336262xr4yzw0000gn/T/phpQaUyxn</code></p>
         </div>
                 <div style=" padding-left: 28px;  clear: unset;">
             <b style="line-height: 2;"><code>topic_id</code></b>&nbsp;&nbsp;
@@ -16653,7 +16684,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 <div class="bash-example">
     <pre><code class="language-bash">curl --request GET \
-    --get "http://127.0.0.1:8000/api/v3/user/becoming-christ-like/view/1?topic=20" \
+    --get "http://127.0.0.1:8000/api/v3/user/becoming-christ-like/view/1?topic=2" \
     --header "Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJhdWQiOiIxIiwianRpIjoiNTJkNDhkYzhjNTc4ODIwZWVmODFmY2NhOWJiMmJiODFlZGE1MTUwMTVkYmU5YzdkNzFkODAyYTRmZWNhMWQ5ZGJhYWEzMTc2YjI1OTJmMTgiLCJpYXQiOjE3NjQwNjAzNDQuMDUyOTc0LCJuYmYiOjE3NjQwNjAzNDQuMDUyOTc1LCJleHAiOjE3OTU1OTYzNDQuMDQzNjUyLCJzdWIiOiIxNjgiLCJzY29wZXMiOltdfQ.X9tS38uM-UlrpFlYZihD_kmuCcSX_hdGsRBJcNGfrWXAClMiqeTxNTC45Ftxw-ddmDQ59t5xJLlnWp2Rx57itO-IHclNmwnVJDPAh1l9D8CZBGxBSoN0FvmbWeYDNQnA7ud77YLekrcSAuKMdBX3J1UKq6ytvWwi6ChnuRFqcQ-fpzK-jgkMhGm-WFHw0H3a34afdBdSUUFutESlwMvTqmXILYVcIwaJpEAjamf3rn6wIOEoD8mbxXJ6Gb6QrRO72Kt3z62vJp7yOeMsnXUkfioVSyJVwbkbchCs2Y4YZY3FEREbKysKNdHJhhqmn6AXvx66arAK3HeZoyf5eusfk26alhbEdJqsJgFP5VROV5l57q8VKhH8hAxg-oeidCGGJXPjLGeb-5iGPjdGhQ1Ng1i9kt7VDV4icb8B2AbNC2Ie9xP6b0R11PX4jUd8D3Jogf2f0ZhAs5Is8WHcrxsCyk3lWvgOyzWxpRx2lSpmBRmSwksPrKJk_7JuzDZ1Tdpz6mubjV6DzlmqDJJjf32hBIMnaYOhOUz5k1FzZ8mybsSbnM9UjzHYr5xIf4rkmVAfuPnU2FGu8NtCQaOtt9G-TziBFgT3ZjxBCL9QaaC39BRulGE6tyCAT8NM9svTD_AbNyINUzO2M0R61OXYQfzXEeiui-sO6eYIc3x_z-YdFFQ" \
     --header "Content-Type: application/json" \
     --header "Accept: application/json"</code></pre></div>
@@ -16665,7 +16696,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 );
 
 const params = {
-    "topic": "20",
+    "topic": "2",
 };
 Object.keys(params)
     .forEach(key =&gt; url.searchParams.append(key, params[key]));
@@ -16880,10 +16911,10 @@ You can check the Dev Tools console for debugging information.</code></pre>
 <i>optional</i> &nbsp;
                 <input type="number" style="display: none"
                step="any"               name="topic"                data-endpoint="GETapi-v3-user-becoming-christ-like-view--id-"
-               value="20"
+               value="2"
                data-component="query">
     <br>
-<p>The ID of the topic to filter by (optional). Example: <code>20</code></p>
+<p>The ID of the topic to filter by (optional). Example: <code>2</code></p>
             </div>
                 </form>
 
@@ -16901,17 +16932,17 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 <div class="bash-example">
     <pre><code class="language-bash">curl --request POST \
-    "http://127.0.0.1:8000/api/v3/user/becoming-christ-like/update/assumenda" \
+    "http://127.0.0.1:8000/api/v3/user/becoming-christ-like/update/non" \
     --header "Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJhdWQiOiIxIiwianRpIjoiNTJkNDhkYzhjNTc4ODIwZWVmODFmY2NhOWJiMmJiODFlZGE1MTUwMTVkYmU5YzdkNzFkODAyYTRmZWNhMWQ5ZGJhYWEzMTc2YjI1OTJmMTgiLCJpYXQiOjE3NjQwNjAzNDQuMDUyOTc0LCJuYmYiOjE3NjQwNjAzNDQuMDUyOTc1LCJleHAiOjE3OTU1OTYzNDQuMDQzNjUyLCJzdWIiOiIxNjgiLCJzY29wZXMiOltdfQ.X9tS38uM-UlrpFlYZihD_kmuCcSX_hdGsRBJcNGfrWXAClMiqeTxNTC45Ftxw-ddmDQ59t5xJLlnWp2Rx57itO-IHclNmwnVJDPAh1l9D8CZBGxBSoN0FvmbWeYDNQnA7ud77YLekrcSAuKMdBX3J1UKq6ytvWwi6ChnuRFqcQ-fpzK-jgkMhGm-WFHw0H3a34afdBdSUUFutESlwMvTqmXILYVcIwaJpEAjamf3rn6wIOEoD8mbxXJ6Gb6QrRO72Kt3z62vJp7yOeMsnXUkfioVSyJVwbkbchCs2Y4YZY3FEREbKysKNdHJhhqmn6AXvx66arAK3HeZoyf5eusfk26alhbEdJqsJgFP5VROV5l57q8VKhH8hAxg-oeidCGGJXPjLGeb-5iGPjdGhQ1Ng1i9kt7VDV4icb8B2AbNC2Ie9xP6b0R11PX4jUd8D3Jogf2f0ZhAs5Is8WHcrxsCyk3lWvgOyzWxpRx2lSpmBRmSwksPrKJk_7JuzDZ1Tdpz6mubjV6DzlmqDJJjf32hBIMnaYOhOUz5k1FzZ8mybsSbnM9UjzHYr5xIf4rkmVAfuPnU2FGu8NtCQaOtt9G-TziBFgT3ZjxBCL9QaaC39BRulGE6tyCAT8NM9svTD_AbNyINUzO2M0R61OXYQfzXEeiui-sO6eYIc3x_z-YdFFQ" \
     --header "Content-Type: multipart/form-data" \
     --header "Accept: application/json" \
     --form "topic_id=1"\
-    --form "file=@/private/var/folders/wy/1yz2w5p91q13336262xr4yzw0000gn/T/phpiqTOSM" </code></pre></div>
+    --form "file=@/private/var/folders/wy/1yz2w5p91q13336262xr4yzw0000gn/T/phptf3Itv" </code></pre></div>
 
 
 <div class="javascript-example">
     <pre><code class="language-javascript">const url = new URL(
-    "http://127.0.0.1:8000/api/v3/user/becoming-christ-like/update/assumenda"
+    "http://127.0.0.1:8000/api/v3/user/becoming-christ-like/update/non"
 );
 
 const headers = {
@@ -16933,14 +16964,14 @@ fetch(url, {
 
 <div class="jsonToDart-example">
     <pre><code class="language-dart">
-class Assumenda {
+class Non {
   final String? message;
   final Data? data;
   final bool? status;
 
-  Assumenda({this.message, this.data, this.status, });
+  Non({this.message, this.data, this.status, });
 
-  factory Assumenda.fromJson(Map&lt;String, dynamic&gt; json) =&gt; Assumenda(
+  factory Non.fromJson(Map&lt;String, dynamic&gt; json) =&gt; Non(
     message: json['message'],
     data: json['data'] != null ? Data.fromJson(json['data'] as Map&lt;String, dynamic&gt;) : null,
     status: json['status'],
@@ -17126,10 +17157,10 @@ You can check the Dev Tools console for debugging information.</code></pre>
  &nbsp;
                 <input type="text" style="display: none"
                               name="id"                data-endpoint="POSTapi-v3-user-becoming-christ-like-update--id-"
-               value="assumenda"
+               value="non"
                data-component="url">
     <br>
-<p>The ID of the update. Example: <code>assumenda</code></p>
+<p>The ID of the update. Example: <code>non</code></p>
             </div>
                             <h4 class="fancy-heading-panel"><b>Body Parameters</b></h4>
         <div style=" padding-left: 28px;  clear: unset;">
@@ -17141,7 +17172,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
                value=""
                data-component="body">
     <br>
-<p>The new file to replace the existing one (optional). Example: <code>/private/var/folders/wy/1yz2w5p91q13336262xr4yzw0000gn/T/phpiqTOSM</code></p>
+<p>The new file to replace the existing one (optional). Example: <code>/private/var/folders/wy/1yz2w5p91q13336262xr4yzw0000gn/T/phptf3Itv</code></p>
         </div>
                 <div style=" padding-left: 28px;  clear: unset;">
             <b style="line-height: 2;"><code>topic_id</code></b>&nbsp;&nbsp;
@@ -17354,7 +17385,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 <div class="bash-example">
     <pre><code class="language-bash">curl --request GET \
-    --get "http://127.0.0.1:8000/api/v3/user/becoming-christ-like/download/provident" \
+    --get "http://127.0.0.1:8000/api/v3/user/becoming-christ-like/download/ipsum" \
     --header "Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJhdWQiOiIxIiwianRpIjoiNTJkNDhkYzhjNTc4ODIwZWVmODFmY2NhOWJiMmJiODFlZGE1MTUwMTVkYmU5YzdkNzFkODAyYTRmZWNhMWQ5ZGJhYWEzMTc2YjI1OTJmMTgiLCJpYXQiOjE3NjQwNjAzNDQuMDUyOTc0LCJuYmYiOjE3NjQwNjAzNDQuMDUyOTc1LCJleHAiOjE3OTU1OTYzNDQuMDQzNjUyLCJzdWIiOiIxNjgiLCJzY29wZXMiOltdfQ.X9tS38uM-UlrpFlYZihD_kmuCcSX_hdGsRBJcNGfrWXAClMiqeTxNTC45Ftxw-ddmDQ59t5xJLlnWp2Rx57itO-IHclNmwnVJDPAh1l9D8CZBGxBSoN0FvmbWeYDNQnA7ud77YLekrcSAuKMdBX3J1UKq6ytvWwi6ChnuRFqcQ-fpzK-jgkMhGm-WFHw0H3a34afdBdSUUFutESlwMvTqmXILYVcIwaJpEAjamf3rn6wIOEoD8mbxXJ6Gb6QrRO72Kt3z62vJp7yOeMsnXUkfioVSyJVwbkbchCs2Y4YZY3FEREbKysKNdHJhhqmn6AXvx66arAK3HeZoyf5eusfk26alhbEdJqsJgFP5VROV5l57q8VKhH8hAxg-oeidCGGJXPjLGeb-5iGPjdGhQ1Ng1i9kt7VDV4icb8B2AbNC2Ie9xP6b0R11PX4jUd8D3Jogf2f0ZhAs5Is8WHcrxsCyk3lWvgOyzWxpRx2lSpmBRmSwksPrKJk_7JuzDZ1Tdpz6mubjV6DzlmqDJJjf32hBIMnaYOhOUz5k1FzZ8mybsSbnM9UjzHYr5xIf4rkmVAfuPnU2FGu8NtCQaOtt9G-TziBFgT3ZjxBCL9QaaC39BRulGE6tyCAT8NM9svTD_AbNyINUzO2M0R61OXYQfzXEeiui-sO6eYIc3x_z-YdFFQ" \
     --header "Content-Type: application/json" \
     --header "Accept: application/json"</code></pre></div>
@@ -17362,7 +17393,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 <div class="javascript-example">
     <pre><code class="language-javascript">const url = new URL(
-    "http://127.0.0.1:8000/api/v3/user/becoming-christ-like/download/provident"
+    "http://127.0.0.1:8000/api/v3/user/becoming-christ-like/download/ipsum"
 );
 
 const headers = {
@@ -17379,13 +17410,13 @@ fetch(url, {
 
 <div class="jsonToDart-example">
     <pre><code class="language-dart">
-class Provident {
+class Ipsum {
   final String? message;
   final bool? status;
 
-  Provident({this.message, this.status, });
+  Ipsum({this.message, this.status, });
 
-  factory Provident.fromJson(Map&lt;String, dynamic&gt; json) =&gt; Provident(
+  factory Ipsum.fromJson(Map&lt;String, dynamic&gt; json) =&gt; Ipsum(
     message: json['message'],
     status: json['status'],
   );
@@ -17514,10 +17545,10 @@ You can check the Dev Tools console for debugging information.</code></pre>
  &nbsp;
                 <input type="text" style="display: none"
                               name="file"                data-endpoint="GETapi-v3-user-becoming-christ-like-download--file-"
-               value="provident"
+               value="ipsum"
                data-component="url">
     <br>
-<p>Example: <code>provident</code></p>
+<p>Example: <code>ipsum</code></p>
             </div>
                     </form>
 
@@ -17785,7 +17816,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 <div class="bash-example">
     <pre><code class="language-bash">curl --request GET \
-    --get "http://127.0.0.1:8000/api/v3/user/leadership-development/list-by-topics?sortby=et&amp;sorttype=possimus&amp;query=earum&amp;topic_id=8" \
+    --get "http://127.0.0.1:8000/api/v3/user/leadership-development/list-by-topics?sortby=sunt&amp;sorttype=ex&amp;query=voluptate&amp;topic_id=5" \
     --header "Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJhdWQiOiIxIiwianRpIjoiNTJkNDhkYzhjNTc4ODIwZWVmODFmY2NhOWJiMmJiODFlZGE1MTUwMTVkYmU5YzdkNzFkODAyYTRmZWNhMWQ5ZGJhYWEzMTc2YjI1OTJmMTgiLCJpYXQiOjE3NjQwNjAzNDQuMDUyOTc0LCJuYmYiOjE3NjQwNjAzNDQuMDUyOTc1LCJleHAiOjE3OTU1OTYzNDQuMDQzNjUyLCJzdWIiOiIxNjgiLCJzY29wZXMiOltdfQ.X9tS38uM-UlrpFlYZihD_kmuCcSX_hdGsRBJcNGfrWXAClMiqeTxNTC45Ftxw-ddmDQ59t5xJLlnWp2Rx57itO-IHclNmwnVJDPAh1l9D8CZBGxBSoN0FvmbWeYDNQnA7ud77YLekrcSAuKMdBX3J1UKq6ytvWwi6ChnuRFqcQ-fpzK-jgkMhGm-WFHw0H3a34afdBdSUUFutESlwMvTqmXILYVcIwaJpEAjamf3rn6wIOEoD8mbxXJ6Gb6QrRO72Kt3z62vJp7yOeMsnXUkfioVSyJVwbkbchCs2Y4YZY3FEREbKysKNdHJhhqmn6AXvx66arAK3HeZoyf5eusfk26alhbEdJqsJgFP5VROV5l57q8VKhH8hAxg-oeidCGGJXPjLGeb-5iGPjdGhQ1Ng1i9kt7VDV4icb8B2AbNC2Ie9xP6b0R11PX4jUd8D3Jogf2f0ZhAs5Is8WHcrxsCyk3lWvgOyzWxpRx2lSpmBRmSwksPrKJk_7JuzDZ1Tdpz6mubjV6DzlmqDJJjf32hBIMnaYOhOUz5k1FzZ8mybsSbnM9UjzHYr5xIf4rkmVAfuPnU2FGu8NtCQaOtt9G-TziBFgT3ZjxBCL9QaaC39BRulGE6tyCAT8NM9svTD_AbNyINUzO2M0R61OXYQfzXEeiui-sO6eYIc3x_z-YdFFQ" \
     --header "Content-Type: application/json" \
     --header "Accept: application/json"</code></pre></div>
@@ -17797,10 +17828,10 @@ You can check the Dev Tools console for debugging information.</code></pre>
 );
 
 const params = {
-    "sortby": "et",
-    "sorttype": "possimus",
-    "query": "earum",
-    "topic_id": "8",
+    "sortby": "sunt",
+    "sorttype": "ex",
+    "query": "voluptate",
+    "topic_id": "5",
 };
 Object.keys(params)
     .forEach(key =&gt; url.searchParams.append(key, params[key]));
@@ -18023,10 +18054,10 @@ You can check the Dev Tools console for debugging information.</code></pre>
 <i>optional</i> &nbsp;
                 <input type="text" style="display: none"
                               name="sortby"                data-endpoint="GETapi-v3-user-leadership-development-list-by-topics"
-               value="et"
+               value="sunt"
                data-component="query">
     <br>
-<p>The column to sort by (optional, default: id). Example: <code>et</code></p>
+<p>The column to sort by (optional, default: id). Example: <code>sunt</code></p>
             </div>
                                     <div style="padding-left: 28px; clear: unset;">
                 <b style="line-height: 2;"><code>sorttype</code></b>&nbsp;&nbsp;
@@ -18034,10 +18065,10 @@ You can check the Dev Tools console for debugging information.</code></pre>
 <i>optional</i> &nbsp;
                 <input type="text" style="display: none"
                               name="sorttype"                data-endpoint="GETapi-v3-user-leadership-development-list-by-topics"
-               value="possimus"
+               value="ex"
                data-component="query">
     <br>
-<p>The sort direction, either 'asc' or 'desc' (optional, default: 'asc'). Example: <code>possimus</code></p>
+<p>The sort direction, either 'asc' or 'desc' (optional, default: 'asc'). Example: <code>ex</code></p>
             </div>
                                     <div style="padding-left: 28px; clear: unset;">
                 <b style="line-height: 2;"><code>query</code></b>&nbsp;&nbsp;
@@ -18045,10 +18076,10 @@ You can check the Dev Tools console for debugging information.</code></pre>
 <i>optional</i> &nbsp;
                 <input type="text" style="display: none"
                               name="query"                data-endpoint="GETapi-v3-user-leadership-development-list-by-topics"
-               value="earum"
+               value="voluptate"
                data-component="query">
     <br>
-<p>The search query to filter files by ID, file name, or file extension (optional). Example: <code>earum</code></p>
+<p>The search query to filter files by ID, file name, or file extension (optional). Example: <code>voluptate</code></p>
             </div>
                                     <div style="padding-left: 28px; clear: unset;">
                 <b style="line-height: 2;"><code>topic_id</code></b>&nbsp;&nbsp;
@@ -18056,10 +18087,10 @@ You can check the Dev Tools console for debugging information.</code></pre>
 <i>optional</i> &nbsp;
                 <input type="number" style="display: none"
                step="any"               name="topic_id"                data-endpoint="GETapi-v3-user-leadership-development-list-by-topics"
-               value="8"
+               value="5"
                data-component="query">
     <br>
-<p>The ID of the topic to filter files by (optional). Example: <code>8</code></p>
+<p>The ID of the topic to filter files by (optional). Example: <code>5</code></p>
             </div>
                 </form>
 
@@ -18278,7 +18309,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
     --header "Content-Type: multipart/form-data" \
     --header "Accept: application/json" \
     --form "topic_id=0"\
-    --form "file=@/private/var/folders/wy/1yz2w5p91q13336262xr4yzw0000gn/T/phpg0Sf1K" </code></pre></div>
+    --form "file=@/private/var/folders/wy/1yz2w5p91q13336262xr4yzw0000gn/T/phphIDdHC" </code></pre></div>
 
 
 <div class="javascript-example">
@@ -18506,7 +18537,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
                value=""
                data-component="body">
     <br>
-<p>The file to upload. Example: <code>/private/var/folders/wy/1yz2w5p91q13336262xr4yzw0000gn/T/phpg0Sf1K</code></p>
+<p>The file to upload. Example: <code>/private/var/folders/wy/1yz2w5p91q13336262xr4yzw0000gn/T/phphIDdHC</code></p>
         </div>
                 <div style=" padding-left: 28px;  clear: unset;">
             <b style="line-height: 2;"><code>topic_id</code></b>&nbsp;&nbsp;
@@ -18783,17 +18814,17 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 <div class="bash-example">
     <pre><code class="language-bash">curl --request POST \
-    "http://127.0.0.1:8000/api/v3/user/leadership-development/update/quia" \
+    "http://127.0.0.1:8000/api/v3/user/leadership-development/update/temporibus" \
     --header "Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJhdWQiOiIxIiwianRpIjoiNTJkNDhkYzhjNTc4ODIwZWVmODFmY2NhOWJiMmJiODFlZGE1MTUwMTVkYmU5YzdkNzFkODAyYTRmZWNhMWQ5ZGJhYWEzMTc2YjI1OTJmMTgiLCJpYXQiOjE3NjQwNjAzNDQuMDUyOTc0LCJuYmYiOjE3NjQwNjAzNDQuMDUyOTc1LCJleHAiOjE3OTU1OTYzNDQuMDQzNjUyLCJzdWIiOiIxNjgiLCJzY29wZXMiOltdfQ.X9tS38uM-UlrpFlYZihD_kmuCcSX_hdGsRBJcNGfrWXAClMiqeTxNTC45Ftxw-ddmDQ59t5xJLlnWp2Rx57itO-IHclNmwnVJDPAh1l9D8CZBGxBSoN0FvmbWeYDNQnA7ud77YLekrcSAuKMdBX3J1UKq6ytvWwi6ChnuRFqcQ-fpzK-jgkMhGm-WFHw0H3a34afdBdSUUFutESlwMvTqmXILYVcIwaJpEAjamf3rn6wIOEoD8mbxXJ6Gb6QrRO72Kt3z62vJp7yOeMsnXUkfioVSyJVwbkbchCs2Y4YZY3FEREbKysKNdHJhhqmn6AXvx66arAK3HeZoyf5eusfk26alhbEdJqsJgFP5VROV5l57q8VKhH8hAxg-oeidCGGJXPjLGeb-5iGPjdGhQ1Ng1i9kt7VDV4icb8B2AbNC2Ie9xP6b0R11PX4jUd8D3Jogf2f0ZhAs5Is8WHcrxsCyk3lWvgOyzWxpRx2lSpmBRmSwksPrKJk_7JuzDZ1Tdpz6mubjV6DzlmqDJJjf32hBIMnaYOhOUz5k1FzZ8mybsSbnM9UjzHYr5xIf4rkmVAfuPnU2FGu8NtCQaOtt9G-TziBFgT3ZjxBCL9QaaC39BRulGE6tyCAT8NM9svTD_AbNyINUzO2M0R61OXYQfzXEeiui-sO6eYIc3x_z-YdFFQ" \
     --header "Content-Type: multipart/form-data" \
     --header "Accept: application/json" \
     --form "topic_id=1"\
-    --form "file=@/private/var/folders/wy/1yz2w5p91q13336262xr4yzw0000gn/T/phptlAHP1" </code></pre></div>
+    --form "file=@/private/var/folders/wy/1yz2w5p91q13336262xr4yzw0000gn/T/phpYRJGm4" </code></pre></div>
 
 
 <div class="javascript-example">
     <pre><code class="language-javascript">const url = new URL(
-    "http://127.0.0.1:8000/api/v3/user/leadership-development/update/quia"
+    "http://127.0.0.1:8000/api/v3/user/leadership-development/update/temporibus"
 );
 
 const headers = {
@@ -18815,14 +18846,14 @@ fetch(url, {
 
 <div class="jsonToDart-example">
     <pre><code class="language-dart">
-class Quia {
+class Temporibus {
   final String? message;
   final Data? data;
   final bool? status;
 
-  Quia({this.message, this.data, this.status, });
+  Temporibus({this.message, this.data, this.status, });
 
-  factory Quia.fromJson(Map&lt;String, dynamic&gt; json) =&gt; Quia(
+  factory Temporibus.fromJson(Map&lt;String, dynamic&gt; json) =&gt; Temporibus(
     message: json['message'],
     data: json['data'] != null ? Data.fromJson(json['data'] as Map&lt;String, dynamic&gt;) : null,
     status: json['status'],
@@ -19008,10 +19039,10 @@ You can check the Dev Tools console for debugging information.</code></pre>
  &nbsp;
                 <input type="text" style="display: none"
                               name="id"                data-endpoint="POSTapi-v3-user-leadership-development-update--id-"
-               value="quia"
+               value="temporibus"
                data-component="url">
     <br>
-<p>The ID of the update. Example: <code>quia</code></p>
+<p>The ID of the update. Example: <code>temporibus</code></p>
             </div>
                             <h4 class="fancy-heading-panel"><b>Body Parameters</b></h4>
         <div style=" padding-left: 28px;  clear: unset;">
@@ -19023,7 +19054,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
                value=""
                data-component="body">
     <br>
-<p>The new file to replace the existing one (optional). Example: <code>/private/var/folders/wy/1yz2w5p91q13336262xr4yzw0000gn/T/phptlAHP1</code></p>
+<p>The new file to replace the existing one (optional). Example: <code>/private/var/folders/wy/1yz2w5p91q13336262xr4yzw0000gn/T/phpYRJGm4</code></p>
         </div>
                 <div style=" padding-left: 28px;  clear: unset;">
             <b style="line-height: 2;"><code>topic_id</code></b>&nbsp;&nbsp;
@@ -19236,7 +19267,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 <div class="bash-example">
     <pre><code class="language-bash">curl --request GET \
-    --get "http://127.0.0.1:8000/api/v3/user/leadership-development/download/nisi" \
+    --get "http://127.0.0.1:8000/api/v3/user/leadership-development/download/repellendus" \
     --header "Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJhdWQiOiIxIiwianRpIjoiNTJkNDhkYzhjNTc4ODIwZWVmODFmY2NhOWJiMmJiODFlZGE1MTUwMTVkYmU5YzdkNzFkODAyYTRmZWNhMWQ5ZGJhYWEzMTc2YjI1OTJmMTgiLCJpYXQiOjE3NjQwNjAzNDQuMDUyOTc0LCJuYmYiOjE3NjQwNjAzNDQuMDUyOTc1LCJleHAiOjE3OTU1OTYzNDQuMDQzNjUyLCJzdWIiOiIxNjgiLCJzY29wZXMiOltdfQ.X9tS38uM-UlrpFlYZihD_kmuCcSX_hdGsRBJcNGfrWXAClMiqeTxNTC45Ftxw-ddmDQ59t5xJLlnWp2Rx57itO-IHclNmwnVJDPAh1l9D8CZBGxBSoN0FvmbWeYDNQnA7ud77YLekrcSAuKMdBX3J1UKq6ytvWwi6ChnuRFqcQ-fpzK-jgkMhGm-WFHw0H3a34afdBdSUUFutESlwMvTqmXILYVcIwaJpEAjamf3rn6wIOEoD8mbxXJ6Gb6QrRO72Kt3z62vJp7yOeMsnXUkfioVSyJVwbkbchCs2Y4YZY3FEREbKysKNdHJhhqmn6AXvx66arAK3HeZoyf5eusfk26alhbEdJqsJgFP5VROV5l57q8VKhH8hAxg-oeidCGGJXPjLGeb-5iGPjdGhQ1Ng1i9kt7VDV4icb8B2AbNC2Ie9xP6b0R11PX4jUd8D3Jogf2f0ZhAs5Is8WHcrxsCyk3lWvgOyzWxpRx2lSpmBRmSwksPrKJk_7JuzDZ1Tdpz6mubjV6DzlmqDJJjf32hBIMnaYOhOUz5k1FzZ8mybsSbnM9UjzHYr5xIf4rkmVAfuPnU2FGu8NtCQaOtt9G-TziBFgT3ZjxBCL9QaaC39BRulGE6tyCAT8NM9svTD_AbNyINUzO2M0R61OXYQfzXEeiui-sO6eYIc3x_z-YdFFQ" \
     --header "Content-Type: application/json" \
     --header "Accept: application/json"</code></pre></div>
@@ -19244,7 +19275,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 <div class="javascript-example">
     <pre><code class="language-javascript">const url = new URL(
-    "http://127.0.0.1:8000/api/v3/user/leadership-development/download/nisi"
+    "http://127.0.0.1:8000/api/v3/user/leadership-development/download/repellendus"
 );
 
 const headers = {
@@ -19261,13 +19292,13 @@ fetch(url, {
 
 <div class="jsonToDart-example">
     <pre><code class="language-dart">
-class Nisi {
+class Repellendus {
   final String? message;
   final bool? status;
 
-  Nisi({this.message, this.status, });
+  Repellendus({this.message, this.status, });
 
-  factory Nisi.fromJson(Map&lt;String, dynamic&gt; json) =&gt; Nisi(
+  factory Repellendus.fromJson(Map&lt;String, dynamic&gt; json) =&gt; Repellendus(
     message: json['message'],
     status: json['status'],
   );
@@ -19396,10 +19427,10 @@ You can check the Dev Tools console for debugging information.</code></pre>
  &nbsp;
                 <input type="text" style="display: none"
                               name="file"                data-endpoint="GETapi-v3-user-leadership-development-download--file-"
-               value="nisi"
+               value="repellendus"
                data-component="url">
     <br>
-<p>Example: <code>nisi</code></p>
+<p>Example: <code>repellendus</code></p>
             </div>
                     </form>
 
@@ -19667,7 +19698,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 <div class="bash-example">
     <pre><code class="language-bash">curl --request GET \
-    --get "http://127.0.0.1:8000/api/v3/user/files/list-by-topics?sortby=nihil&amp;sorttype=assumenda&amp;query=ut&amp;topic_id=8" \
+    --get "http://127.0.0.1:8000/api/v3/user/files/list-by-topics?sortby=enim&amp;sorttype=eum&amp;query=architecto&amp;topic_id=1" \
     --header "Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJhdWQiOiIxIiwianRpIjoiNTJkNDhkYzhjNTc4ODIwZWVmODFmY2NhOWJiMmJiODFlZGE1MTUwMTVkYmU5YzdkNzFkODAyYTRmZWNhMWQ5ZGJhYWEzMTc2YjI1OTJmMTgiLCJpYXQiOjE3NjQwNjAzNDQuMDUyOTc0LCJuYmYiOjE3NjQwNjAzNDQuMDUyOTc1LCJleHAiOjE3OTU1OTYzNDQuMDQzNjUyLCJzdWIiOiIxNjgiLCJzY29wZXMiOltdfQ.X9tS38uM-UlrpFlYZihD_kmuCcSX_hdGsRBJcNGfrWXAClMiqeTxNTC45Ftxw-ddmDQ59t5xJLlnWp2Rx57itO-IHclNmwnVJDPAh1l9D8CZBGxBSoN0FvmbWeYDNQnA7ud77YLekrcSAuKMdBX3J1UKq6ytvWwi6ChnuRFqcQ-fpzK-jgkMhGm-WFHw0H3a34afdBdSUUFutESlwMvTqmXILYVcIwaJpEAjamf3rn6wIOEoD8mbxXJ6Gb6QrRO72Kt3z62vJp7yOeMsnXUkfioVSyJVwbkbchCs2Y4YZY3FEREbKysKNdHJhhqmn6AXvx66arAK3HeZoyf5eusfk26alhbEdJqsJgFP5VROV5l57q8VKhH8hAxg-oeidCGGJXPjLGeb-5iGPjdGhQ1Ng1i9kt7VDV4icb8B2AbNC2Ie9xP6b0R11PX4jUd8D3Jogf2f0ZhAs5Is8WHcrxsCyk3lWvgOyzWxpRx2lSpmBRmSwksPrKJk_7JuzDZ1Tdpz6mubjV6DzlmqDJJjf32hBIMnaYOhOUz5k1FzZ8mybsSbnM9UjzHYr5xIf4rkmVAfuPnU2FGu8NtCQaOtt9G-TziBFgT3ZjxBCL9QaaC39BRulGE6tyCAT8NM9svTD_AbNyINUzO2M0R61OXYQfzXEeiui-sO6eYIc3x_z-YdFFQ" \
     --header "Content-Type: application/json" \
     --header "Accept: application/json"</code></pre></div>
@@ -19679,10 +19710,10 @@ You can check the Dev Tools console for debugging information.</code></pre>
 );
 
 const params = {
-    "sortby": "nihil",
-    "sorttype": "assumenda",
-    "query": "ut",
-    "topic_id": "8",
+    "sortby": "enim",
+    "sorttype": "eum",
+    "query": "architecto",
+    "topic_id": "1",
 };
 Object.keys(params)
     .forEach(key =&gt; url.searchParams.append(key, params[key]));
@@ -19905,10 +19936,10 @@ You can check the Dev Tools console for debugging information.</code></pre>
 <i>optional</i> &nbsp;
                 <input type="text" style="display: none"
                               name="sortby"                data-endpoint="GETapi-v3-user-files-list-by-topics"
-               value="nihil"
+               value="enim"
                data-component="query">
     <br>
-<p>The column to sort by (optional, default: id). Example: <code>nihil</code></p>
+<p>The column to sort by (optional, default: id). Example: <code>enim</code></p>
             </div>
                                     <div style="padding-left: 28px; clear: unset;">
                 <b style="line-height: 2;"><code>sorttype</code></b>&nbsp;&nbsp;
@@ -19916,10 +19947,10 @@ You can check the Dev Tools console for debugging information.</code></pre>
 <i>optional</i> &nbsp;
                 <input type="text" style="display: none"
                               name="sorttype"                data-endpoint="GETapi-v3-user-files-list-by-topics"
-               value="assumenda"
+               value="eum"
                data-component="query">
     <br>
-<p>The sort direction, either 'asc' or 'desc' (optional, default: 'asc'). Example: <code>assumenda</code></p>
+<p>The sort direction, either 'asc' or 'desc' (optional, default: 'asc'). Example: <code>eum</code></p>
             </div>
                                     <div style="padding-left: 28px; clear: unset;">
                 <b style="line-height: 2;"><code>query</code></b>&nbsp;&nbsp;
@@ -19927,10 +19958,10 @@ You can check the Dev Tools console for debugging information.</code></pre>
 <i>optional</i> &nbsp;
                 <input type="text" style="display: none"
                               name="query"                data-endpoint="GETapi-v3-user-files-list-by-topics"
-               value="ut"
+               value="architecto"
                data-component="query">
     <br>
-<p>The search query to filter files by ID, file name, or file extension (optional). Example: <code>ut</code></p>
+<p>The search query to filter files by ID, file name, or file extension (optional). Example: <code>architecto</code></p>
             </div>
                                     <div style="padding-left: 28px; clear: unset;">
                 <b style="line-height: 2;"><code>topic_id</code></b>&nbsp;&nbsp;
@@ -19938,10 +19969,10 @@ You can check the Dev Tools console for debugging information.</code></pre>
 <i>optional</i> &nbsp;
                 <input type="number" style="display: none"
                step="any"               name="topic_id"                data-endpoint="GETapi-v3-user-files-list-by-topics"
-               value="8"
+               value="1"
                data-component="query">
     <br>
-<p>The ID of the topic to filter files by (optional). Example: <code>8</code></p>
+<p>The ID of the topic to filter files by (optional). Example: <code>1</code></p>
             </div>
                 </form>
 
@@ -20160,7 +20191,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
     --header "Content-Type: multipart/form-data" \
     --header "Accept: application/json" \
     --form "topic_id=0"\
-    --form "file=@/private/var/folders/wy/1yz2w5p91q13336262xr4yzw0000gn/T/phpt8aFEt" </code></pre></div>
+    --form "file=@/private/var/folders/wy/1yz2w5p91q13336262xr4yzw0000gn/T/phprUFxom" </code></pre></div>
 
 
 <div class="javascript-example">
@@ -20388,7 +20419,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
                value=""
                data-component="body">
     <br>
-<p>The file to upload. Example: <code>/private/var/folders/wy/1yz2w5p91q13336262xr4yzw0000gn/T/phpt8aFEt</code></p>
+<p>The file to upload. Example: <code>/private/var/folders/wy/1yz2w5p91q13336262xr4yzw0000gn/T/phprUFxom</code></p>
         </div>
                 <div style=" padding-left: 28px;  clear: unset;">
             <b style="line-height: 2;"><code>topic_id</code></b>&nbsp;&nbsp;
@@ -20417,7 +20448,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 <div class="bash-example">
     <pre><code class="language-bash">curl --request GET \
-    --get "http://127.0.0.1:8000/api/v3/user/files/view/1?topic=12" \
+    --get "http://127.0.0.1:8000/api/v3/user/files/view/1?topic=5" \
     --header "Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJhdWQiOiIxIiwianRpIjoiNTJkNDhkYzhjNTc4ODIwZWVmODFmY2NhOWJiMmJiODFlZGE1MTUwMTVkYmU5YzdkNzFkODAyYTRmZWNhMWQ5ZGJhYWEzMTc2YjI1OTJmMTgiLCJpYXQiOjE3NjQwNjAzNDQuMDUyOTc0LCJuYmYiOjE3NjQwNjAzNDQuMDUyOTc1LCJleHAiOjE3OTU1OTYzNDQuMDQzNjUyLCJzdWIiOiIxNjgiLCJzY29wZXMiOltdfQ.X9tS38uM-UlrpFlYZihD_kmuCcSX_hdGsRBJcNGfrWXAClMiqeTxNTC45Ftxw-ddmDQ59t5xJLlnWp2Rx57itO-IHclNmwnVJDPAh1l9D8CZBGxBSoN0FvmbWeYDNQnA7ud77YLekrcSAuKMdBX3J1UKq6ytvWwi6ChnuRFqcQ-fpzK-jgkMhGm-WFHw0H3a34afdBdSUUFutESlwMvTqmXILYVcIwaJpEAjamf3rn6wIOEoD8mbxXJ6Gb6QrRO72Kt3z62vJp7yOeMsnXUkfioVSyJVwbkbchCs2Y4YZY3FEREbKysKNdHJhhqmn6AXvx66arAK3HeZoyf5eusfk26alhbEdJqsJgFP5VROV5l57q8VKhH8hAxg-oeidCGGJXPjLGeb-5iGPjdGhQ1Ng1i9kt7VDV4icb8B2AbNC2Ie9xP6b0R11PX4jUd8D3Jogf2f0ZhAs5Is8WHcrxsCyk3lWvgOyzWxpRx2lSpmBRmSwksPrKJk_7JuzDZ1Tdpz6mubjV6DzlmqDJJjf32hBIMnaYOhOUz5k1FzZ8mybsSbnM9UjzHYr5xIf4rkmVAfuPnU2FGu8NtCQaOtt9G-TziBFgT3ZjxBCL9QaaC39BRulGE6tyCAT8NM9svTD_AbNyINUzO2M0R61OXYQfzXEeiui-sO6eYIc3x_z-YdFFQ" \
     --header "Content-Type: application/json" \
     --header "Accept: application/json"</code></pre></div>
@@ -20429,7 +20460,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 );
 
 const params = {
-    "topic": "12",
+    "topic": "5",
 };
 Object.keys(params)
     .forEach(key =&gt; url.searchParams.append(key, params[key]));
@@ -20644,10 +20675,10 @@ You can check the Dev Tools console for debugging information.</code></pre>
 <i>optional</i> &nbsp;
                 <input type="number" style="display: none"
                step="any"               name="topic"                data-endpoint="GETapi-v3-user-files-view--id-"
-               value="12"
+               value="5"
                data-component="query">
     <br>
-<p>The ID of the topic to filter by (optional). Example: <code>12</code></p>
+<p>The ID of the topic to filter by (optional). Example: <code>5</code></p>
             </div>
                 </form>
 
@@ -20665,17 +20696,17 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 <div class="bash-example">
     <pre><code class="language-bash">curl --request POST \
-    "http://127.0.0.1:8000/api/v3/user/files/update/vitae" \
+    "http://127.0.0.1:8000/api/v3/user/files/update/repudiandae" \
     --header "Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJhdWQiOiIxIiwianRpIjoiNTJkNDhkYzhjNTc4ODIwZWVmODFmY2NhOWJiMmJiODFlZGE1MTUwMTVkYmU5YzdkNzFkODAyYTRmZWNhMWQ5ZGJhYWEzMTc2YjI1OTJmMTgiLCJpYXQiOjE3NjQwNjAzNDQuMDUyOTc0LCJuYmYiOjE3NjQwNjAzNDQuMDUyOTc1LCJleHAiOjE3OTU1OTYzNDQuMDQzNjUyLCJzdWIiOiIxNjgiLCJzY29wZXMiOltdfQ.X9tS38uM-UlrpFlYZihD_kmuCcSX_hdGsRBJcNGfrWXAClMiqeTxNTC45Ftxw-ddmDQ59t5xJLlnWp2Rx57itO-IHclNmwnVJDPAh1l9D8CZBGxBSoN0FvmbWeYDNQnA7ud77YLekrcSAuKMdBX3J1UKq6ytvWwi6ChnuRFqcQ-fpzK-jgkMhGm-WFHw0H3a34afdBdSUUFutESlwMvTqmXILYVcIwaJpEAjamf3rn6wIOEoD8mbxXJ6Gb6QrRO72Kt3z62vJp7yOeMsnXUkfioVSyJVwbkbchCs2Y4YZY3FEREbKysKNdHJhhqmn6AXvx66arAK3HeZoyf5eusfk26alhbEdJqsJgFP5VROV5l57q8VKhH8hAxg-oeidCGGJXPjLGeb-5iGPjdGhQ1Ng1i9kt7VDV4icb8B2AbNC2Ie9xP6b0R11PX4jUd8D3Jogf2f0ZhAs5Is8WHcrxsCyk3lWvgOyzWxpRx2lSpmBRmSwksPrKJk_7JuzDZ1Tdpz6mubjV6DzlmqDJJjf32hBIMnaYOhOUz5k1FzZ8mybsSbnM9UjzHYr5xIf4rkmVAfuPnU2FGu8NtCQaOtt9G-TziBFgT3ZjxBCL9QaaC39BRulGE6tyCAT8NM9svTD_AbNyINUzO2M0R61OXYQfzXEeiui-sO6eYIc3x_z-YdFFQ" \
     --header "Content-Type: multipart/form-data" \
     --header "Accept: application/json" \
     --form "topic_id=1"\
-    --form "file=@/private/var/folders/wy/1yz2w5p91q13336262xr4yzw0000gn/T/phpck8NYq" </code></pre></div>
+    --form "file=@/private/var/folders/wy/1yz2w5p91q13336262xr4yzw0000gn/T/phpkPLLZD" </code></pre></div>
 
 
 <div class="javascript-example">
     <pre><code class="language-javascript">const url = new URL(
-    "http://127.0.0.1:8000/api/v3/user/files/update/vitae"
+    "http://127.0.0.1:8000/api/v3/user/files/update/repudiandae"
 );
 
 const headers = {
@@ -20697,14 +20728,14 @@ fetch(url, {
 
 <div class="jsonToDart-example">
     <pre><code class="language-dart">
-class Vitae {
+class Repudiandae {
   final String? message;
   final Data? data;
   final bool? status;
 
-  Vitae({this.message, this.data, this.status, });
+  Repudiandae({this.message, this.data, this.status, });
 
-  factory Vitae.fromJson(Map&lt;String, dynamic&gt; json) =&gt; Vitae(
+  factory Repudiandae.fromJson(Map&lt;String, dynamic&gt; json) =&gt; Repudiandae(
     message: json['message'],
     data: json['data'] != null ? Data.fromJson(json['data'] as Map&lt;String, dynamic&gt;) : null,
     status: json['status'],
@@ -20890,10 +20921,10 @@ You can check the Dev Tools console for debugging information.</code></pre>
  &nbsp;
                 <input type="text" style="display: none"
                               name="id"                data-endpoint="POSTapi-v3-user-files-update--id-"
-               value="vitae"
+               value="repudiandae"
                data-component="url">
     <br>
-<p>The ID of the update. Example: <code>vitae</code></p>
+<p>The ID of the update. Example: <code>repudiandae</code></p>
             </div>
                             <h4 class="fancy-heading-panel"><b>Body Parameters</b></h4>
         <div style=" padding-left: 28px;  clear: unset;">
@@ -20905,7 +20936,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
                value=""
                data-component="body">
     <br>
-<p>The new file to replace the existing one (optional). Example: <code>/private/var/folders/wy/1yz2w5p91q13336262xr4yzw0000gn/T/phpck8NYq</code></p>
+<p>The new file to replace the existing one (optional). Example: <code>/private/var/folders/wy/1yz2w5p91q13336262xr4yzw0000gn/T/phpkPLLZD</code></p>
         </div>
                 <div style=" padding-left: 28px;  clear: unset;">
             <b style="line-height: 2;"><code>topic_id</code></b>&nbsp;&nbsp;
@@ -21118,7 +21149,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 <div class="bash-example">
     <pre><code class="language-bash">curl --request GET \
-    --get "http://127.0.0.1:8000/api/v3/user/files/download/ut" \
+    --get "http://127.0.0.1:8000/api/v3/user/files/download/eum" \
     --header "Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJhdWQiOiIxIiwianRpIjoiNTJkNDhkYzhjNTc4ODIwZWVmODFmY2NhOWJiMmJiODFlZGE1MTUwMTVkYmU5YzdkNzFkODAyYTRmZWNhMWQ5ZGJhYWEzMTc2YjI1OTJmMTgiLCJpYXQiOjE3NjQwNjAzNDQuMDUyOTc0LCJuYmYiOjE3NjQwNjAzNDQuMDUyOTc1LCJleHAiOjE3OTU1OTYzNDQuMDQzNjUyLCJzdWIiOiIxNjgiLCJzY29wZXMiOltdfQ.X9tS38uM-UlrpFlYZihD_kmuCcSX_hdGsRBJcNGfrWXAClMiqeTxNTC45Ftxw-ddmDQ59t5xJLlnWp2Rx57itO-IHclNmwnVJDPAh1l9D8CZBGxBSoN0FvmbWeYDNQnA7ud77YLekrcSAuKMdBX3J1UKq6ytvWwi6ChnuRFqcQ-fpzK-jgkMhGm-WFHw0H3a34afdBdSUUFutESlwMvTqmXILYVcIwaJpEAjamf3rn6wIOEoD8mbxXJ6Gb6QrRO72Kt3z62vJp7yOeMsnXUkfioVSyJVwbkbchCs2Y4YZY3FEREbKysKNdHJhhqmn6AXvx66arAK3HeZoyf5eusfk26alhbEdJqsJgFP5VROV5l57q8VKhH8hAxg-oeidCGGJXPjLGeb-5iGPjdGhQ1Ng1i9kt7VDV4icb8B2AbNC2Ie9xP6b0R11PX4jUd8D3Jogf2f0ZhAs5Is8WHcrxsCyk3lWvgOyzWxpRx2lSpmBRmSwksPrKJk_7JuzDZ1Tdpz6mubjV6DzlmqDJJjf32hBIMnaYOhOUz5k1FzZ8mybsSbnM9UjzHYr5xIf4rkmVAfuPnU2FGu8NtCQaOtt9G-TziBFgT3ZjxBCL9QaaC39BRulGE6tyCAT8NM9svTD_AbNyINUzO2M0R61OXYQfzXEeiui-sO6eYIc3x_z-YdFFQ" \
     --header "Content-Type: application/json" \
     --header "Accept: application/json"</code></pre></div>
@@ -21126,7 +21157,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 <div class="javascript-example">
     <pre><code class="language-javascript">const url = new URL(
-    "http://127.0.0.1:8000/api/v3/user/files/download/ut"
+    "http://127.0.0.1:8000/api/v3/user/files/download/eum"
 );
 
 const headers = {
@@ -21143,13 +21174,13 @@ fetch(url, {
 
 <div class="jsonToDart-example">
     <pre><code class="language-dart">
-class Ut {
+class Eum {
   final String? message;
   final bool? status;
 
-  Ut({this.message, this.status, });
+  Eum({this.message, this.status, });
 
-  factory Ut.fromJson(Map&lt;String, dynamic&gt; json) =&gt; Ut(
+  factory Eum.fromJson(Map&lt;String, dynamic&gt; json) =&gt; Eum(
     message: json['message'],
     status: json['status'],
   );
@@ -21278,10 +21309,10 @@ You can check the Dev Tools console for debugging information.</code></pre>
  &nbsp;
                 <input type="text" style="display: none"
                               name="file"                data-endpoint="GETapi-v3-user-files-download--file-"
-               value="ut"
+               value="eum"
                data-component="url">
     <br>
-<p>Example: <code>ut</code></p>
+<p>Example: <code>eum</code></p>
             </div>
                     </form>
 
@@ -23099,11 +23130,11 @@ with the option to include CC recipients and attachments. Notifications are sent
     --header "Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJhdWQiOiIxIiwianRpIjoiNTJkNDhkYzhjNTc4ODIwZWVmODFmY2NhOWJiMmJiODFlZGE1MTUwMTVkYmU5YzdkNzFkODAyYTRmZWNhMWQ5ZGJhYWEzMTc2YjI1OTJmMTgiLCJpYXQiOjE3NjQwNjAzNDQuMDUyOTc0LCJuYmYiOjE3NjQwNjAzNDQuMDUyOTc1LCJleHAiOjE3OTU1OTYzNDQuMDQzNjUyLCJzdWIiOiIxNjgiLCJzY29wZXMiOltdfQ.X9tS38uM-UlrpFlYZihD_kmuCcSX_hdGsRBJcNGfrWXAClMiqeTxNTC45Ftxw-ddmDQ59t5xJLlnWp2Rx57itO-IHclNmwnVJDPAh1l9D8CZBGxBSoN0FvmbWeYDNQnA7ud77YLekrcSAuKMdBX3J1UKq6ytvWwi6ChnuRFqcQ-fpzK-jgkMhGm-WFHw0H3a34afdBdSUUFutESlwMvTqmXILYVcIwaJpEAjamf3rn6wIOEoD8mbxXJ6Gb6QrRO72Kt3z62vJp7yOeMsnXUkfioVSyJVwbkbchCs2Y4YZY3FEREbKysKNdHJhhqmn6AXvx66arAK3HeZoyf5eusfk26alhbEdJqsJgFP5VROV5l57q8VKhH8hAxg-oeidCGGJXPjLGeb-5iGPjdGhQ1Ng1i9kt7VDV4icb8B2AbNC2Ie9xP6b0R11PX4jUd8D3Jogf2f0ZhAs5Is8WHcrxsCyk3lWvgOyzWxpRx2lSpmBRmSwksPrKJk_7JuzDZ1Tdpz6mubjV6DzlmqDJJjf32hBIMnaYOhOUz5k1FzZ8mybsSbnM9UjzHYr5xIf4rkmVAfuPnU2FGu8NtCQaOtt9G-TziBFgT3ZjxBCL9QaaC39BRulGE6tyCAT8NM9svTD_AbNyINUzO2M0R61OXYQfzXEeiui-sO6eYIc3x_z-YdFFQ" \
     --header "Content-Type: multipart/form-data" \
     --header "Accept: application/json" \
-    --form "to=at"\
-    --form "cc=itaque"\
-    --form "subject=expedita"\
-    --form "message=officiis"\
-    --form "attachments[]=@/private/var/folders/wy/1yz2w5p91q13336262xr4yzw0000gn/T/phpgjnSCa" </code></pre></div>
+    --form "to=ut"\
+    --form "cc=voluptatem"\
+    --form "subject=nulla"\
+    --form "message=quo"\
+    --form "attachments[]=@/private/var/folders/wy/1yz2w5p91q13336262xr4yzw0000gn/T/phpsTwzHX" </code></pre></div>
 
 
 <div class="javascript-example">
@@ -23118,10 +23149,10 @@ const headers = {
 };
 
 const body = new FormData();
-body.append('to', 'at');
-body.append('cc', 'itaque');
-body.append('subject', 'expedita');
-body.append('message', 'officiis');
+body.append('to', 'ut');
+body.append('cc', 'voluptatem');
+body.append('subject', 'nulla');
+body.append('message', 'quo');
 body.append('attachments[]', document.querySelector('input[name="attachments[]"]').files[0]);
 
 fetch(url, {
@@ -23294,10 +23325,10 @@ You can check the Dev Tools console for debugging information.</code></pre>
  &nbsp;
                 <input type="text" style="display: none"
                               name="to"                data-endpoint="POSTapi-v3-user-mail-send"
-               value="at"
+               value="ut"
                data-component="body">
     <br>
-<p>JSON-encoded array of recipient emails in the format [{&quot;value&quot;: &quot;masum2@excellisit.net&quot;}, {&quot;value&quot;: &quot;user2@example.com&quot;}]. Example: <code>at</code></p>
+<p>JSON-encoded array of recipient emails in the format [{&quot;value&quot;: &quot;masum2@excellisit.net&quot;}, {&quot;value&quot;: &quot;user2@example.com&quot;}]. Example: <code>ut</code></p>
         </div>
                 <div style=" padding-left: 28px;  clear: unset;">
             <b style="line-height: 2;"><code>cc</code></b>&nbsp;&nbsp;
@@ -23305,10 +23336,10 @@ You can check the Dev Tools console for debugging information.</code></pre>
 <i>optional</i> &nbsp;
                 <input type="text" style="display: none"
                               name="cc"                data-endpoint="POSTapi-v3-user-mail-send"
-               value="itaque"
+               value="voluptatem"
                data-component="body">
     <br>
-<p>JSON-encoded array of CC recipient emails in the same format as the &quot;to&quot; field. Optional. Example: <code>itaque</code></p>
+<p>JSON-encoded array of CC recipient emails in the same format as the &quot;to&quot; field. Optional. Example: <code>voluptatem</code></p>
         </div>
                 <div style=" padding-left: 28px;  clear: unset;">
             <b style="line-height: 2;"><code>subject</code></b>&nbsp;&nbsp;
@@ -23316,10 +23347,10 @@ You can check the Dev Tools console for debugging information.</code></pre>
  &nbsp;
                 <input type="text" style="display: none"
                               name="subject"                data-endpoint="POSTapi-v3-user-mail-send"
-               value="expedita"
+               value="nulla"
                data-component="body">
     <br>
-<p>The subject of the email. Example: <code>expedita</code></p>
+<p>The subject of the email. Example: <code>nulla</code></p>
         </div>
                 <div style=" padding-left: 28px;  clear: unset;">
             <b style="line-height: 2;"><code>message</code></b>&nbsp;&nbsp;
@@ -23327,10 +23358,10 @@ You can check the Dev Tools console for debugging information.</code></pre>
  &nbsp;
                 <input type="text" style="display: none"
                               name="message"                data-endpoint="POSTapi-v3-user-mail-send"
-               value="officiis"
+               value="quo"
                data-component="body">
     <br>
-<p>The body content of the email. Example: <code>officiis</code></p>
+<p>The body content of the email. Example: <code>quo</code></p>
         </div>
                 <div style=" padding-left: 28px;  clear: unset;">
             <b style="line-height: 2;"><code>attachments</code></b>&nbsp;&nbsp;
@@ -23366,12 +23397,12 @@ including attachments and notifications to recipients.</p>
     --header "Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJhdWQiOiIxIiwianRpIjoiNTJkNDhkYzhjNTc4ODIwZWVmODFmY2NhOWJiMmJiODFlZGE1MTUwMTVkYmU5YzdkNzFkODAyYTRmZWNhMWQ5ZGJhYWEzMTc2YjI1OTJmMTgiLCJpYXQiOjE3NjQwNjAzNDQuMDUyOTc0LCJuYmYiOjE3NjQwNjAzNDQuMDUyOTc1LCJleHAiOjE3OTU1OTYzNDQuMDQzNjUyLCJzdWIiOiIxNjgiLCJzY29wZXMiOltdfQ.X9tS38uM-UlrpFlYZihD_kmuCcSX_hdGsRBJcNGfrWXAClMiqeTxNTC45Ftxw-ddmDQ59t5xJLlnWp2Rx57itO-IHclNmwnVJDPAh1l9D8CZBGxBSoN0FvmbWeYDNQnA7ud77YLekrcSAuKMdBX3J1UKq6ytvWwi6ChnuRFqcQ-fpzK-jgkMhGm-WFHw0H3a34afdBdSUUFutESlwMvTqmXILYVcIwaJpEAjamf3rn6wIOEoD8mbxXJ6Gb6QrRO72Kt3z62vJp7yOeMsnXUkfioVSyJVwbkbchCs2Y4YZY3FEREbKysKNdHJhhqmn6AXvx66arAK3HeZoyf5eusfk26alhbEdJqsJgFP5VROV5l57q8VKhH8hAxg-oeidCGGJXPjLGeb-5iGPjdGhQ1Ng1i9kt7VDV4icb8B2AbNC2Ie9xP6b0R11PX4jUd8D3Jogf2f0ZhAs5Is8WHcrxsCyk3lWvgOyzWxpRx2lSpmBRmSwksPrKJk_7JuzDZ1Tdpz6mubjV6DzlmqDJJjf32hBIMnaYOhOUz5k1FzZ8mybsSbnM9UjzHYr5xIf4rkmVAfuPnU2FGu8NtCQaOtt9G-TziBFgT3ZjxBCL9QaaC39BRulGE6tyCAT8NM9svTD_AbNyINUzO2M0R61OXYQfzXEeiui-sO6eYIc3x_z-YdFFQ" \
     --header "Content-Type: multipart/form-data" \
     --header "Accept: application/json" \
-    --form "to=eius"\
-    --form "cc=nesciunt"\
-    --form "subject=similique"\
-    --form "message=magni"\
+    --form "to=delectus"\
+    --form "cc=ad"\
+    --form "subject=fuga"\
+    --form "message=sit"\
     --form "main_mail_id=6"\
-    --form "attachments[]=@/private/var/folders/wy/1yz2w5p91q13336262xr4yzw0000gn/T/phpYkkmaU" </code></pre></div>
+    --form "attachments[]=@/private/var/folders/wy/1yz2w5p91q13336262xr4yzw0000gn/T/phpuAetW2" </code></pre></div>
 
 
 <div class="javascript-example">
@@ -23386,10 +23417,10 @@ const headers = {
 };
 
 const body = new FormData();
-body.append('to', 'eius');
-body.append('cc', 'nesciunt');
-body.append('subject', 'similique');
-body.append('message', 'magni');
+body.append('to', 'delectus');
+body.append('cc', 'ad');
+body.append('subject', 'fuga');
+body.append('message', 'sit');
 body.append('main_mail_id', '6');
 body.append('attachments[]', document.querySelector('input[name="attachments[]"]').files[0]);
 
@@ -23566,10 +23597,10 @@ You can check the Dev Tools console for debugging information.</code></pre>
  &nbsp;
                 <input type="text" style="display: none"
                               name="to"                data-endpoint="POSTapi-v3-user-mail-sendReply"
-               value="eius"
+               value="delectus"
                data-component="body">
     <br>
-<p>JSON-encoded array of recipient emails in the format [{&quot;value&quot;: &quot;user1@example.com&quot;}, {&quot;value&quot;: &quot;user2@example.com&quot;}]. Example: <code>eius</code></p>
+<p>JSON-encoded array of recipient emails in the format [{&quot;value&quot;: &quot;user1@example.com&quot;}, {&quot;value&quot;: &quot;user2@example.com&quot;}]. Example: <code>delectus</code></p>
         </div>
                 <div style=" padding-left: 28px;  clear: unset;">
             <b style="line-height: 2;"><code>cc</code></b>&nbsp;&nbsp;
@@ -23577,10 +23608,10 @@ You can check the Dev Tools console for debugging information.</code></pre>
 <i>optional</i> &nbsp;
                 <input type="text" style="display: none"
                               name="cc"                data-endpoint="POSTapi-v3-user-mail-sendReply"
-               value="nesciunt"
+               value="ad"
                data-component="body">
     <br>
-<p>JSON-encoded array of CC recipient emails in the same format as the &quot;to&quot; field. Optional. Example: <code>nesciunt</code></p>
+<p>JSON-encoded array of CC recipient emails in the same format as the &quot;to&quot; field. Optional. Example: <code>ad</code></p>
         </div>
                 <div style=" padding-left: 28px;  clear: unset;">
             <b style="line-height: 2;"><code>subject</code></b>&nbsp;&nbsp;
@@ -23588,10 +23619,10 @@ You can check the Dev Tools console for debugging information.</code></pre>
  &nbsp;
                 <input type="text" style="display: none"
                               name="subject"                data-endpoint="POSTapi-v3-user-mail-sendReply"
-               value="similique"
+               value="fuga"
                data-component="body">
     <br>
-<p>The subject of the reply email. Example: <code>similique</code></p>
+<p>The subject of the reply email. Example: <code>fuga</code></p>
         </div>
                 <div style=" padding-left: 28px;  clear: unset;">
             <b style="line-height: 2;"><code>message</code></b>&nbsp;&nbsp;
@@ -23599,10 +23630,10 @@ You can check the Dev Tools console for debugging information.</code></pre>
  &nbsp;
                 <input type="text" style="display: none"
                               name="message"                data-endpoint="POSTapi-v3-user-mail-sendReply"
-               value="magni"
+               value="sit"
                data-component="body">
     <br>
-<p>The body content of the reply email. Example: <code>magni</code></p>
+<p>The body content of the reply email. Example: <code>sit</code></p>
         </div>
                 <div style=" padding-left: 28px;  clear: unset;">
             <b style="line-height: 2;"><code>attachments</code></b>&nbsp;&nbsp;
@@ -23649,11 +23680,11 @@ including optional CC recipients and attachments.</p>
     --header "Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJhdWQiOiIxIiwianRpIjoiNTJkNDhkYzhjNTc4ODIwZWVmODFmY2NhOWJiMmJiODFlZGE1MTUwMTVkYmU5YzdkNzFkODAyYTRmZWNhMWQ5ZGJhYWEzMTc2YjI1OTJmMTgiLCJpYXQiOjE3NjQwNjAzNDQuMDUyOTc0LCJuYmYiOjE3NjQwNjAzNDQuMDUyOTc1LCJleHAiOjE3OTU1OTYzNDQuMDQzNjUyLCJzdWIiOiIxNjgiLCJzY29wZXMiOltdfQ.X9tS38uM-UlrpFlYZihD_kmuCcSX_hdGsRBJcNGfrWXAClMiqeTxNTC45Ftxw-ddmDQ59t5xJLlnWp2Rx57itO-IHclNmwnVJDPAh1l9D8CZBGxBSoN0FvmbWeYDNQnA7ud77YLekrcSAuKMdBX3J1UKq6ytvWwi6ChnuRFqcQ-fpzK-jgkMhGm-WFHw0H3a34afdBdSUUFutESlwMvTqmXILYVcIwaJpEAjamf3rn6wIOEoD8mbxXJ6Gb6QrRO72Kt3z62vJp7yOeMsnXUkfioVSyJVwbkbchCs2Y4YZY3FEREbKysKNdHJhhqmn6AXvx66arAK3HeZoyf5eusfk26alhbEdJqsJgFP5VROV5l57q8VKhH8hAxg-oeidCGGJXPjLGeb-5iGPjdGhQ1Ng1i9kt7VDV4icb8B2AbNC2Ie9xP6b0R11PX4jUd8D3Jogf2f0ZhAs5Is8WHcrxsCyk3lWvgOyzWxpRx2lSpmBRmSwksPrKJk_7JuzDZ1Tdpz6mubjV6DzlmqDJJjf32hBIMnaYOhOUz5k1FzZ8mybsSbnM9UjzHYr5xIf4rkmVAfuPnU2FGu8NtCQaOtt9G-TziBFgT3ZjxBCL9QaaC39BRulGE6tyCAT8NM9svTD_AbNyINUzO2M0R61OXYQfzXEeiui-sO6eYIc3x_z-YdFFQ" \
     --header "Content-Type: multipart/form-data" \
     --header "Accept: application/json" \
-    --form "to=doloremque"\
-    --form "cc=numquam"\
-    --form "subject=deserunt"\
-    --form "message=hic"\
-    --form "attachments[]=@/private/var/folders/wy/1yz2w5p91q13336262xr4yzw0000gn/T/phpMB5Vhn" </code></pre></div>
+    --form "to=est"\
+    --form "cc=distinctio"\
+    --form "subject=possimus"\
+    --form "message=natus"\
+    --form "attachments[]=@/private/var/folders/wy/1yz2w5p91q13336262xr4yzw0000gn/T/phprUT6no" </code></pre></div>
 
 
 <div class="javascript-example">
@@ -23668,10 +23699,10 @@ const headers = {
 };
 
 const body = new FormData();
-body.append('to', 'doloremque');
-body.append('cc', 'numquam');
-body.append('subject', 'deserunt');
-body.append('message', 'hic');
+body.append('to', 'est');
+body.append('cc', 'distinctio');
+body.append('subject', 'possimus');
+body.append('message', 'natus');
 body.append('attachments[]', document.querySelector('input[name="attachments[]"]').files[0]);
 
 fetch(url, {
@@ -23844,10 +23875,10 @@ You can check the Dev Tools console for debugging information.</code></pre>
  &nbsp;
                 <input type="text" style="display: none"
                               name="to"                data-endpoint="POSTapi-v3-user-mail-sendForward"
-               value="doloremque"
+               value="est"
                data-component="body">
     <br>
-<p>JSON-encoded array of recipient emails in the format [{&quot;value&quot;: &quot;user1@example.com&quot;}, {&quot;value&quot;: &quot;user2@example.com&quot;}]. Example: <code>doloremque</code></p>
+<p>JSON-encoded array of recipient emails in the format [{&quot;value&quot;: &quot;user1@example.com&quot;}, {&quot;value&quot;: &quot;user2@example.com&quot;}]. Example: <code>est</code></p>
         </div>
                 <div style=" padding-left: 28px;  clear: unset;">
             <b style="line-height: 2;"><code>cc</code></b>&nbsp;&nbsp;
@@ -23855,10 +23886,10 @@ You can check the Dev Tools console for debugging information.</code></pre>
 <i>optional</i> &nbsp;
                 <input type="text" style="display: none"
                               name="cc"                data-endpoint="POSTapi-v3-user-mail-sendForward"
-               value="numquam"
+               value="distinctio"
                data-component="body">
     <br>
-<p>JSON-encoded array of CC recipient emails in the same format as the &quot;to&quot; field. Optional. Example: <code>numquam</code></p>
+<p>JSON-encoded array of CC recipient emails in the same format as the &quot;to&quot; field. Optional. Example: <code>distinctio</code></p>
         </div>
                 <div style=" padding-left: 28px;  clear: unset;">
             <b style="line-height: 2;"><code>subject</code></b>&nbsp;&nbsp;
@@ -23866,10 +23897,10 @@ You can check the Dev Tools console for debugging information.</code></pre>
  &nbsp;
                 <input type="text" style="display: none"
                               name="subject"                data-endpoint="POSTapi-v3-user-mail-sendForward"
-               value="deserunt"
+               value="possimus"
                data-component="body">
     <br>
-<p>The subject of the forwarded email. Example: <code>deserunt</code></p>
+<p>The subject of the forwarded email. Example: <code>possimus</code></p>
         </div>
                 <div style=" padding-left: 28px;  clear: unset;">
             <b style="line-height: 2;"><code>message</code></b>&nbsp;&nbsp;
@@ -23877,10 +23908,10 @@ You can check the Dev Tools console for debugging information.</code></pre>
  &nbsp;
                 <input type="text" style="display: none"
                               name="message"                data-endpoint="POSTapi-v3-user-mail-sendForward"
-               value="hic"
+               value="natus"
                data-component="body">
     <br>
-<p>The body content of the forwarded email. Example: <code>hic</code></p>
+<p>The body content of the forwarded email. Example: <code>natus</code></p>
         </div>
                 <div style=" padding-left: 28px;  clear: unset;">
             <b style="line-height: 2;"><code>attachments</code></b>&nbsp;&nbsp;
@@ -25942,7 +25973,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
     --form "page_title="About Us""\
     --form "page_content="This is the about us content...""\
     --form "slug="about-us""\
-    --form "page_banner_image=@/private/var/folders/wy/1yz2w5p91q13336262xr4yzw0000gn/T/phpNSlwOu" </code></pre></div>
+    --form "page_banner_image=@/private/var/folders/wy/1yz2w5p91q13336262xr4yzw0000gn/T/phpyFaqUe" </code></pre></div>
 
 
 <div class="javascript-example">
@@ -26202,7 +26233,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
                value=""
                data-component="body">
     <br>
-<p>Banner image file (jpeg, png, jpg, gif, svg). Example: <code>/private/var/folders/wy/1yz2w5p91q13336262xr4yzw0000gn/T/phpNSlwOu</code></p>
+<p>Banner image file (jpeg, png, jpg, gif, svg). Example: <code>/private/var/folders/wy/1yz2w5p91q13336262xr4yzw0000gn/T/phpyFaqUe</code></p>
         </div>
                 <div style=" padding-left: 28px;  clear: unset;">
             <b style="line-height: 2;"><code>slug</code></b>&nbsp;&nbsp;
@@ -26239,7 +26270,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
     --form "page_title="About Our Company""\
     --form "page_content="&lt;p&gt;Welcome...&lt;/p&gt;""\
     --form "slug="about-us""\
-    --form "page_banner_image=@/private/var/folders/wy/1yz2w5p91q13336262xr4yzw0000gn/T/phpxXM191" </code></pre></div>
+    --form "page_banner_image=@/private/var/folders/wy/1yz2w5p91q13336262xr4yzw0000gn/T/phpsR7kdY" </code></pre></div>
 
 
 <div class="javascript-example">
@@ -26528,7 +26559,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
                value=""
                data-component="body">
     <br>
-<p>optional The banner image for the page. Example: <code>/private/var/folders/wy/1yz2w5p91q13336262xr4yzw0000gn/T/phpxXM191</code></p>
+<p>optional The banner image for the page. Example: <code>/private/var/folders/wy/1yz2w5p91q13336262xr4yzw0000gn/T/phpsR7kdY</code></p>
         </div>
         </form>
 
@@ -26983,37 +27014,37 @@ You can check the Dev Tools console for debugging information.</code></pre>
     --header "Content-Type: multipart/form-data" \
     --header "Accept: application/json" \
     --form "id=1"\
-    --form "banner_title=ad"\
-    --form "banner_subtitle=unde"\
+    --form "banner_title=fuga"\
+    --form "banner_subtitle=animi"\
     --form "product_category_title=omnis"\
-    --form "product_category_subtitle=perferendis"\
-    --form "featured_product_title=voluptatem"\
-    --form "featured_product_subtitle=dolores"\
-    --form "new_arrival_title=dolorem"\
-    --form "new_arrival_subtitle=dolore"\
-    --form "new_product_title=iste"\
-    --form "new_product_subtitle=molestiae"\
-    --form "shop_now_title=voluptas"\
-    --form "shop_now_description=omnis"\
-    --form "shop_now_button_text=quam"\
-    --form "shop_now_button_link=repudiandae"\
-    --form "about_section_title=asperiores"\
-    --form "about_section_text_one_title=quis"\
-    --form "about_section_text_one_content=consectetur"\
-    --form "about_section_text_two_title=ea"\
-    --form "about_section_text_two_content=corporis"\
-    --form "about_section_text_three_title=exercitationem"\
-    --form "about_section_text_three_content=ratione"\
-    --form "slider_data_second_title=est"\
-    --form "header_logo=@/private/var/folders/wy/1yz2w5p91q13336262xr4yzw0000gn/T/php3IVy5q" \
-    --form "banner_image=@/private/var/folders/wy/1yz2w5p91q13336262xr4yzw0000gn/T/phpJMcIck" \
-    --form "banner_image_small=@/private/var/folders/wy/1yz2w5p91q13336262xr4yzw0000gn/T/phpptQmyM" \
-    --form "product_category_image=@/private/var/folders/wy/1yz2w5p91q13336262xr4yzw0000gn/T/phpRoDfd8" \
-    --form "featured_product_image=@/private/var/folders/wy/1yz2w5p91q13336262xr4yzw0000gn/T/php1ECFFT" \
-    --form "new_product_image=@/private/var/folders/wy/1yz2w5p91q13336262xr4yzw0000gn/T/php50kAT4" \
-    --form "new_arrival_image=@/private/var/folders/wy/1yz2w5p91q13336262xr4yzw0000gn/T/phpAswrYP" \
-    --form "shop_now_image=@/private/var/folders/wy/1yz2w5p91q13336262xr4yzw0000gn/T/php1AyCJa" \
-    --form "about_section_image=@/private/var/folders/wy/1yz2w5p91q13336262xr4yzw0000gn/T/phpXtyaWp" </code></pre></div>
+    --form "product_category_subtitle=dolorum"\
+    --form "featured_product_title=mollitia"\
+    --form "featured_product_subtitle=sed"\
+    --form "new_arrival_title=laborum"\
+    --form "new_arrival_subtitle=quia"\
+    --form "new_product_title=impedit"\
+    --form "new_product_subtitle=sed"\
+    --form "shop_now_title=dolorem"\
+    --form "shop_now_description=dolor"\
+    --form "shop_now_button_text=quis"\
+    --form "shop_now_button_link=et"\
+    --form "about_section_title=nihil"\
+    --form "about_section_text_one_title=consequatur"\
+    --form "about_section_text_one_content=placeat"\
+    --form "about_section_text_two_title=ab"\
+    --form "about_section_text_two_content=tenetur"\
+    --form "about_section_text_three_title=deserunt"\
+    --form "about_section_text_three_content=voluptatum"\
+    --form "slider_data_second_title=ipsam"\
+    --form "header_logo=@/private/var/folders/wy/1yz2w5p91q13336262xr4yzw0000gn/T/php2kZnZA" \
+    --form "banner_image=@/private/var/folders/wy/1yz2w5p91q13336262xr4yzw0000gn/T/phpxSLl1l" \
+    --form "banner_image_small=@/private/var/folders/wy/1yz2w5p91q13336262xr4yzw0000gn/T/phpi8p7la" \
+    --form "product_category_image=@/private/var/folders/wy/1yz2w5p91q13336262xr4yzw0000gn/T/phpQxLEO7" \
+    --form "featured_product_image=@/private/var/folders/wy/1yz2w5p91q13336262xr4yzw0000gn/T/php2nREs9" \
+    --form "new_product_image=@/private/var/folders/wy/1yz2w5p91q13336262xr4yzw0000gn/T/phpRacnMH" \
+    --form "new_arrival_image=@/private/var/folders/wy/1yz2w5p91q13336262xr4yzw0000gn/T/phpHZEDqO" \
+    --form "shop_now_image=@/private/var/folders/wy/1yz2w5p91q13336262xr4yzw0000gn/T/phph4pW9d" \
+    --form "about_section_image=@/private/var/folders/wy/1yz2w5p91q13336262xr4yzw0000gn/T/phpU7O1wr" </code></pre></div>
 
 
 <div class="javascript-example">
@@ -27029,28 +27060,28 @@ const headers = {
 
 const body = new FormData();
 body.append('id', '1');
-body.append('banner_title', 'ad');
-body.append('banner_subtitle', 'unde');
+body.append('banner_title', 'fuga');
+body.append('banner_subtitle', 'animi');
 body.append('product_category_title', 'omnis');
-body.append('product_category_subtitle', 'perferendis');
-body.append('featured_product_title', 'voluptatem');
-body.append('featured_product_subtitle', 'dolores');
-body.append('new_arrival_title', 'dolorem');
-body.append('new_arrival_subtitle', 'dolore');
-body.append('new_product_title', 'iste');
-body.append('new_product_subtitle', 'molestiae');
-body.append('shop_now_title', 'voluptas');
-body.append('shop_now_description', 'omnis');
-body.append('shop_now_button_text', 'quam');
-body.append('shop_now_button_link', 'repudiandae');
-body.append('about_section_title', 'asperiores');
-body.append('about_section_text_one_title', 'quis');
-body.append('about_section_text_one_content', 'consectetur');
-body.append('about_section_text_two_title', 'ea');
-body.append('about_section_text_two_content', 'corporis');
-body.append('about_section_text_three_title', 'exercitationem');
-body.append('about_section_text_three_content', 'ratione');
-body.append('slider_data_second_title', 'est');
+body.append('product_category_subtitle', 'dolorum');
+body.append('featured_product_title', 'mollitia');
+body.append('featured_product_subtitle', 'sed');
+body.append('new_arrival_title', 'laborum');
+body.append('new_arrival_subtitle', 'quia');
+body.append('new_product_title', 'impedit');
+body.append('new_product_subtitle', 'sed');
+body.append('shop_now_title', 'dolorem');
+body.append('shop_now_description', 'dolor');
+body.append('shop_now_button_text', 'quis');
+body.append('shop_now_button_link', 'et');
+body.append('about_section_title', 'nihil');
+body.append('about_section_text_one_title', 'consequatur');
+body.append('about_section_text_one_content', 'placeat');
+body.append('about_section_text_two_title', 'ab');
+body.append('about_section_text_two_content', 'tenetur');
+body.append('about_section_text_three_title', 'deserunt');
+body.append('about_section_text_three_content', 'voluptatum');
+body.append('slider_data_second_title', 'ipsam');
 body.append('header_logo', document.querySelector('input[name="header_logo"]').files[0]);
 body.append('banner_image', document.querySelector('input[name="banner_image"]').files[0]);
 body.append('banner_image_small', document.querySelector('input[name="banner_image_small"]').files[0]);
@@ -27249,7 +27280,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
                value=""
                data-component="body">
     <br>
-<p>nullable Header logo image (multipart/form-data) Example: <code>/private/var/folders/wy/1yz2w5p91q13336262xr4yzw0000gn/T/php3IVy5q</code></p>
+<p>nullable Header logo image (multipart/form-data) Example: <code>/private/var/folders/wy/1yz2w5p91q13336262xr4yzw0000gn/T/php2kZnZA</code></p>
         </div>
                 <div style=" padding-left: 28px;  clear: unset;">
             <b style="line-height: 2;"><code>banner_image</code></b>&nbsp;&nbsp;
@@ -27260,7 +27291,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
                value=""
                data-component="body">
     <br>
-<p>nullable Banner image Example: <code>/private/var/folders/wy/1yz2w5p91q13336262xr4yzw0000gn/T/phpJMcIck</code></p>
+<p>nullable Banner image Example: <code>/private/var/folders/wy/1yz2w5p91q13336262xr4yzw0000gn/T/phpxSLl1l</code></p>
         </div>
                 <div style=" padding-left: 28px;  clear: unset;">
             <b style="line-height: 2;"><code>banner_image_small</code></b>&nbsp;&nbsp;
@@ -27271,7 +27302,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
                value=""
                data-component="body">
     <br>
-<p>nullable Banner small image Example: <code>/private/var/folders/wy/1yz2w5p91q13336262xr4yzw0000gn/T/phpptQmyM</code></p>
+<p>nullable Banner small image Example: <code>/private/var/folders/wy/1yz2w5p91q13336262xr4yzw0000gn/T/phpi8p7la</code></p>
         </div>
                 <div style=" padding-left: 28px;  clear: unset;">
             <b style="line-height: 2;"><code>product_category_image</code></b>&nbsp;&nbsp;
@@ -27282,7 +27313,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
                value=""
                data-component="body">
     <br>
-<p>nullable Product category image Example: <code>/private/var/folders/wy/1yz2w5p91q13336262xr4yzw0000gn/T/phpRoDfd8</code></p>
+<p>nullable Product category image Example: <code>/private/var/folders/wy/1yz2w5p91q13336262xr4yzw0000gn/T/phpQxLEO7</code></p>
         </div>
                 <div style=" padding-left: 28px;  clear: unset;">
             <b style="line-height: 2;"><code>featured_product_image</code></b>&nbsp;&nbsp;
@@ -27293,7 +27324,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
                value=""
                data-component="body">
     <br>
-<p>nullable Featured product image Example: <code>/private/var/folders/wy/1yz2w5p91q13336262xr4yzw0000gn/T/php1ECFFT</code></p>
+<p>nullable Featured product image Example: <code>/private/var/folders/wy/1yz2w5p91q13336262xr4yzw0000gn/T/php2nREs9</code></p>
         </div>
                 <div style=" padding-left: 28px;  clear: unset;">
             <b style="line-height: 2;"><code>new_product_image</code></b>&nbsp;&nbsp;
@@ -27304,7 +27335,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
                value=""
                data-component="body">
     <br>
-<p>nullable New product image Example: <code>/private/var/folders/wy/1yz2w5p91q13336262xr4yzw0000gn/T/php50kAT4</code></p>
+<p>nullable New product image Example: <code>/private/var/folders/wy/1yz2w5p91q13336262xr4yzw0000gn/T/phpRacnMH</code></p>
         </div>
                 <div style=" padding-left: 28px;  clear: unset;">
             <b style="line-height: 2;"><code>new_arrival_image</code></b>&nbsp;&nbsp;
@@ -27315,7 +27346,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
                value=""
                data-component="body">
     <br>
-<p>nullable New arrival image Example: <code>/private/var/folders/wy/1yz2w5p91q13336262xr4yzw0000gn/T/phpAswrYP</code></p>
+<p>nullable New arrival image Example: <code>/private/var/folders/wy/1yz2w5p91q13336262xr4yzw0000gn/T/phpHZEDqO</code></p>
         </div>
                 <div style=" padding-left: 28px;  clear: unset;">
             <b style="line-height: 2;"><code>shop_now_image</code></b>&nbsp;&nbsp;
@@ -27326,7 +27357,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
                value=""
                data-component="body">
     <br>
-<p>nullable Shop Now section image Example: <code>/private/var/folders/wy/1yz2w5p91q13336262xr4yzw0000gn/T/php1AyCJa</code></p>
+<p>nullable Shop Now section image Example: <code>/private/var/folders/wy/1yz2w5p91q13336262xr4yzw0000gn/T/phph4pW9d</code></p>
         </div>
                 <div style=" padding-left: 28px;  clear: unset;">
             <b style="line-height: 2;"><code>about_section_image</code></b>&nbsp;&nbsp;
@@ -27337,7 +27368,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
                value=""
                data-component="body">
     <br>
-<p>nullable About section image Example: <code>/private/var/folders/wy/1yz2w5p91q13336262xr4yzw0000gn/T/phpXtyaWp</code></p>
+<p>nullable About section image Example: <code>/private/var/folders/wy/1yz2w5p91q13336262xr4yzw0000gn/T/phpU7O1wr</code></p>
         </div>
                 <div style=" padding-left: 28px;  clear: unset;">
             <b style="line-height: 2;"><code>banner_title</code></b>&nbsp;&nbsp;
@@ -27345,10 +27376,10 @@ You can check the Dev Tools console for debugging information.</code></pre>
 <i>optional</i> &nbsp;
                 <input type="text" style="display: none"
                               name="banner_title"                data-endpoint="POSTapi-v3-user-estore-cms-home-update"
-               value="ad"
+               value="fuga"
                data-component="body">
     <br>
-<p>nullable Banner title Example: <code>ad</code></p>
+<p>nullable Banner title Example: <code>fuga</code></p>
         </div>
                 <div style=" padding-left: 28px;  clear: unset;">
             <b style="line-height: 2;"><code>banner_subtitle</code></b>&nbsp;&nbsp;
@@ -27356,10 +27387,10 @@ You can check the Dev Tools console for debugging information.</code></pre>
 <i>optional</i> &nbsp;
                 <input type="text" style="display: none"
                               name="banner_subtitle"                data-endpoint="POSTapi-v3-user-estore-cms-home-update"
-               value="unde"
+               value="animi"
                data-component="body">
     <br>
-<p>nullable Banner subtitle Example: <code>unde</code></p>
+<p>nullable Banner subtitle Example: <code>animi</code></p>
         </div>
                 <div style=" padding-left: 28px;  clear: unset;">
             <b style="line-height: 2;"><code>product_category_title</code></b>&nbsp;&nbsp;
@@ -27378,10 +27409,10 @@ You can check the Dev Tools console for debugging information.</code></pre>
  &nbsp;
                 <input type="text" style="display: none"
                               name="product_category_subtitle"                data-endpoint="POSTapi-v3-user-estore-cms-home-update"
-               value="perferendis"
+               value="dolorum"
                data-component="body">
     <br>
-<p>Product category subtitle Example: <code>perferendis</code></p>
+<p>Product category subtitle Example: <code>dolorum</code></p>
         </div>
                 <div style=" padding-left: 28px;  clear: unset;">
             <b style="line-height: 2;"><code>featured_product_title</code></b>&nbsp;&nbsp;
@@ -27389,10 +27420,10 @@ You can check the Dev Tools console for debugging information.</code></pre>
  &nbsp;
                 <input type="text" style="display: none"
                               name="featured_product_title"                data-endpoint="POSTapi-v3-user-estore-cms-home-update"
-               value="voluptatem"
+               value="mollitia"
                data-component="body">
     <br>
-<p>Featured product title Example: <code>voluptatem</code></p>
+<p>Featured product title Example: <code>mollitia</code></p>
         </div>
                 <div style=" padding-left: 28px;  clear: unset;">
             <b style="line-height: 2;"><code>featured_product_subtitle</code></b>&nbsp;&nbsp;
@@ -27400,10 +27431,10 @@ You can check the Dev Tools console for debugging information.</code></pre>
  &nbsp;
                 <input type="text" style="display: none"
                               name="featured_product_subtitle"                data-endpoint="POSTapi-v3-user-estore-cms-home-update"
-               value="dolores"
+               value="sed"
                data-component="body">
     <br>
-<p>Featured product subtitle Example: <code>dolores</code></p>
+<p>Featured product subtitle Example: <code>sed</code></p>
         </div>
                 <div style=" padding-left: 28px;  clear: unset;">
             <b style="line-height: 2;"><code>new_arrival_title</code></b>&nbsp;&nbsp;
@@ -27411,10 +27442,10 @@ You can check the Dev Tools console for debugging information.</code></pre>
  &nbsp;
                 <input type="text" style="display: none"
                               name="new_arrival_title"                data-endpoint="POSTapi-v3-user-estore-cms-home-update"
-               value="dolorem"
+               value="laborum"
                data-component="body">
     <br>
-<p>New arrival title Example: <code>dolorem</code></p>
+<p>New arrival title Example: <code>laborum</code></p>
         </div>
                 <div style=" padding-left: 28px;  clear: unset;">
             <b style="line-height: 2;"><code>new_arrival_subtitle</code></b>&nbsp;&nbsp;
@@ -27422,10 +27453,10 @@ You can check the Dev Tools console for debugging information.</code></pre>
  &nbsp;
                 <input type="text" style="display: none"
                               name="new_arrival_subtitle"                data-endpoint="POSTapi-v3-user-estore-cms-home-update"
-               value="dolore"
+               value="quia"
                data-component="body">
     <br>
-<p>New arrival subtitle Example: <code>dolore</code></p>
+<p>New arrival subtitle Example: <code>quia</code></p>
         </div>
                 <div style=" padding-left: 28px;  clear: unset;">
             <b style="line-height: 2;"><code>new_product_title</code></b>&nbsp;&nbsp;
@@ -27433,10 +27464,10 @@ You can check the Dev Tools console for debugging information.</code></pre>
  &nbsp;
                 <input type="text" style="display: none"
                               name="new_product_title"                data-endpoint="POSTapi-v3-user-estore-cms-home-update"
-               value="iste"
+               value="impedit"
                data-component="body">
     <br>
-<p>New product title Example: <code>iste</code></p>
+<p>New product title Example: <code>impedit</code></p>
         </div>
                 <div style=" padding-left: 28px;  clear: unset;">
             <b style="line-height: 2;"><code>new_product_subtitle</code></b>&nbsp;&nbsp;
@@ -27444,10 +27475,10 @@ You can check the Dev Tools console for debugging information.</code></pre>
  &nbsp;
                 <input type="text" style="display: none"
                               name="new_product_subtitle"                data-endpoint="POSTapi-v3-user-estore-cms-home-update"
-               value="molestiae"
+               value="sed"
                data-component="body">
     <br>
-<p>New product subtitle Example: <code>molestiae</code></p>
+<p>New product subtitle Example: <code>sed</code></p>
         </div>
                 <div style=" padding-left: 28px;  clear: unset;">
             <b style="line-height: 2;"><code>shop_now_title</code></b>&nbsp;&nbsp;
@@ -27455,10 +27486,10 @@ You can check the Dev Tools console for debugging information.</code></pre>
 <i>optional</i> &nbsp;
                 <input type="text" style="display: none"
                               name="shop_now_title"                data-endpoint="POSTapi-v3-user-estore-cms-home-update"
-               value="voluptas"
+               value="dolorem"
                data-component="body">
     <br>
-<p>nullable Shop Now title Example: <code>voluptas</code></p>
+<p>nullable Shop Now title Example: <code>dolorem</code></p>
         </div>
                 <div style=" padding-left: 28px;  clear: unset;">
             <b style="line-height: 2;"><code>shop_now_description</code></b>&nbsp;&nbsp;
@@ -27466,10 +27497,10 @@ You can check the Dev Tools console for debugging information.</code></pre>
 <i>optional</i> &nbsp;
                 <input type="text" style="display: none"
                               name="shop_now_description"                data-endpoint="POSTapi-v3-user-estore-cms-home-update"
-               value="omnis"
+               value="dolor"
                data-component="body">
     <br>
-<p>nullable Shop Now description Example: <code>omnis</code></p>
+<p>nullable Shop Now description Example: <code>dolor</code></p>
         </div>
                 <div style=" padding-left: 28px;  clear: unset;">
             <b style="line-height: 2;"><code>shop_now_button_text</code></b>&nbsp;&nbsp;
@@ -27477,10 +27508,10 @@ You can check the Dev Tools console for debugging information.</code></pre>
 <i>optional</i> &nbsp;
                 <input type="text" style="display: none"
                               name="shop_now_button_text"                data-endpoint="POSTapi-v3-user-estore-cms-home-update"
-               value="quam"
+               value="quis"
                data-component="body">
     <br>
-<p>nullable Shop Now button text Example: <code>quam</code></p>
+<p>nullable Shop Now button text Example: <code>quis</code></p>
         </div>
                 <div style=" padding-left: 28px;  clear: unset;">
             <b style="line-height: 2;"><code>shop_now_button_link</code></b>&nbsp;&nbsp;
@@ -27488,10 +27519,10 @@ You can check the Dev Tools console for debugging information.</code></pre>
 <i>optional</i> &nbsp;
                 <input type="text" style="display: none"
                               name="shop_now_button_link"                data-endpoint="POSTapi-v3-user-estore-cms-home-update"
-               value="repudiandae"
+               value="et"
                data-component="body">
     <br>
-<p>nullable Shop Now button link Example: <code>repudiandae</code></p>
+<p>nullable Shop Now button link Example: <code>et</code></p>
         </div>
                 <div style=" padding-left: 28px;  clear: unset;">
             <b style="line-height: 2;"><code>about_section_title</code></b>&nbsp;&nbsp;
@@ -27499,10 +27530,10 @@ You can check the Dev Tools console for debugging information.</code></pre>
 <i>optional</i> &nbsp;
                 <input type="text" style="display: none"
                               name="about_section_title"                data-endpoint="POSTapi-v3-user-estore-cms-home-update"
-               value="asperiores"
+               value="nihil"
                data-component="body">
     <br>
-<p>nullable About section main title Example: <code>asperiores</code></p>
+<p>nullable About section main title Example: <code>nihil</code></p>
         </div>
                 <div style=" padding-left: 28px;  clear: unset;">
             <b style="line-height: 2;"><code>about_section_text_one_title</code></b>&nbsp;&nbsp;
@@ -27510,10 +27541,10 @@ You can check the Dev Tools console for debugging information.</code></pre>
 <i>optional</i> &nbsp;
                 <input type="text" style="display: none"
                               name="about_section_text_one_title"                data-endpoint="POSTapi-v3-user-estore-cms-home-update"
-               value="quis"
+               value="consequatur"
                data-component="body">
     <br>
-<p>nullable About section text one title Example: <code>quis</code></p>
+<p>nullable About section text one title Example: <code>consequatur</code></p>
         </div>
                 <div style=" padding-left: 28px;  clear: unset;">
             <b style="line-height: 2;"><code>about_section_text_one_content</code></b>&nbsp;&nbsp;
@@ -27521,10 +27552,10 @@ You can check the Dev Tools console for debugging information.</code></pre>
 <i>optional</i> &nbsp;
                 <input type="text" style="display: none"
                               name="about_section_text_one_content"                data-endpoint="POSTapi-v3-user-estore-cms-home-update"
-               value="consectetur"
+               value="placeat"
                data-component="body">
     <br>
-<p>nullable About section text one content Example: <code>consectetur</code></p>
+<p>nullable About section text one content Example: <code>placeat</code></p>
         </div>
                 <div style=" padding-left: 28px;  clear: unset;">
             <b style="line-height: 2;"><code>about_section_text_two_title</code></b>&nbsp;&nbsp;
@@ -27532,10 +27563,10 @@ You can check the Dev Tools console for debugging information.</code></pre>
 <i>optional</i> &nbsp;
                 <input type="text" style="display: none"
                               name="about_section_text_two_title"                data-endpoint="POSTapi-v3-user-estore-cms-home-update"
-               value="ea"
+               value="ab"
                data-component="body">
     <br>
-<p>nullable About section text two title Example: <code>ea</code></p>
+<p>nullable About section text two title Example: <code>ab</code></p>
         </div>
                 <div style=" padding-left: 28px;  clear: unset;">
             <b style="line-height: 2;"><code>about_section_text_two_content</code></b>&nbsp;&nbsp;
@@ -27543,10 +27574,10 @@ You can check the Dev Tools console for debugging information.</code></pre>
 <i>optional</i> &nbsp;
                 <input type="text" style="display: none"
                               name="about_section_text_two_content"                data-endpoint="POSTapi-v3-user-estore-cms-home-update"
-               value="corporis"
+               value="tenetur"
                data-component="body">
     <br>
-<p>nullable About section text two content Example: <code>corporis</code></p>
+<p>nullable About section text two content Example: <code>tenetur</code></p>
         </div>
                 <div style=" padding-left: 28px;  clear: unset;">
             <b style="line-height: 2;"><code>about_section_text_three_title</code></b>&nbsp;&nbsp;
@@ -27554,10 +27585,10 @@ You can check the Dev Tools console for debugging information.</code></pre>
 <i>optional</i> &nbsp;
                 <input type="text" style="display: none"
                               name="about_section_text_three_title"                data-endpoint="POSTapi-v3-user-estore-cms-home-update"
-               value="exercitationem"
+               value="deserunt"
                data-component="body">
     <br>
-<p>nullable About section text three title Example: <code>exercitationem</code></p>
+<p>nullable About section text three title Example: <code>deserunt</code></p>
         </div>
                 <div style=" padding-left: 28px;  clear: unset;">
             <b style="line-height: 2;"><code>about_section_text_three_content</code></b>&nbsp;&nbsp;
@@ -27565,10 +27596,10 @@ You can check the Dev Tools console for debugging information.</code></pre>
 <i>optional</i> &nbsp;
                 <input type="text" style="display: none"
                               name="about_section_text_three_content"                data-endpoint="POSTapi-v3-user-estore-cms-home-update"
-               value="ratione"
+               value="voluptatum"
                data-component="body">
     <br>
-<p>nullable About section text three content Example: <code>ratione</code></p>
+<p>nullable About section text three content Example: <code>voluptatum</code></p>
         </div>
                 <div style=" padding-left: 28px;  clear: unset;">
             <b style="line-height: 2;"><code>slider_data_second_title</code></b>&nbsp;&nbsp;
@@ -27576,10 +27607,10 @@ You can check the Dev Tools console for debugging information.</code></pre>
 <i>optional</i> &nbsp;
                 <input type="text" style="display: none"
                               name="slider_data_second_title"                data-endpoint="POSTapi-v3-user-estore-cms-home-update"
-               value="est"
+               value="ipsam"
                data-component="body">
     <br>
-<p>nullable Second slider section title Example: <code>est</code></p>
+<p>nullable Second slider section title Example: <code>ipsam</code></p>
         </div>
                 <div style=" padding-left: 28px;  clear: unset;">
         <details>
@@ -27596,10 +27627,10 @@ You can check the Dev Tools console for debugging information.</code></pre>
 <i>optional</i> &nbsp;
                 <input type="text" style="display: none"
                               name="slider_titles.*"                data-endpoint="POSTapi-v3-user-estore-cms-home-update"
-               value="ipsum"
+               value="voluptatem"
                data-component="body">
     <br>
-<p>nullable Array of titles for first slider Example: <code>ipsum</code></p>
+<p>nullable Array of titles for first slider Example: <code>voluptatem</code></p>
                     </div>
                                     </details>
         </div>
@@ -27618,10 +27649,10 @@ You can check the Dev Tools console for debugging information.</code></pre>
 <i>optional</i> &nbsp;
                 <input type="text" style="display: none"
                               name="slider_subtitles.*"                data-endpoint="POSTapi-v3-user-estore-cms-home-update"
-               value="aut"
+               value="aspernatur"
                data-component="body">
     <br>
-<p>nullable Array of subtitles for first slider Example: <code>aut</code></p>
+<p>nullable Array of subtitles for first slider Example: <code>aspernatur</code></p>
                     </div>
                                     </details>
         </div>
@@ -27640,10 +27671,10 @@ You can check the Dev Tools console for debugging information.</code></pre>
 <i>optional</i> &nbsp;
                 <input type="text" style="display: none"
                               name="slider_links.*"                data-endpoint="POSTapi-v3-user-estore-cms-home-update"
-               value="laudantium"
+               value="deserunt"
                data-component="body">
     <br>
-<p>nullable Array of links for first slider Example: <code>laudantium</code></p>
+<p>nullable Array of links for first slider Example: <code>deserunt</code></p>
                     </div>
                                     </details>
         </div>
@@ -27662,10 +27693,10 @@ You can check the Dev Tools console for debugging information.</code></pre>
 <i>optional</i> &nbsp;
                 <input type="text" style="display: none"
                               name="slider_buttons.*"                data-endpoint="POSTapi-v3-user-estore-cms-home-update"
-               value="ut"
+               value="labore"
                data-component="body">
     <br>
-<p>nullable Array of button texts for first slider Example: <code>ut</code></p>
+<p>nullable Array of button texts for first slider Example: <code>labore</code></p>
                     </div>
                                     </details>
         </div>
@@ -27687,7 +27718,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
                value=""
                data-component="body">
     <br>
-<p>nullable Array of images for first slider (multipart/form-data) Example: <code>/private/var/folders/wy/1yz2w5p91q13336262xr4yzw0000gn/T/phpuzcFqD</code></p>
+<p>nullable Array of images for first slider (multipart/form-data) Example: <code>/private/var/folders/wy/1yz2w5p91q13336262xr4yzw0000gn/T/phpnaS6YJ</code></p>
                     </div>
                                     </details>
         </div>
@@ -27706,10 +27737,10 @@ You can check the Dev Tools console for debugging information.</code></pre>
 <i>optional</i> &nbsp;
                 <input type="text" style="display: none"
                               name="slider_titles_second.*"                data-endpoint="POSTapi-v3-user-estore-cms-home-update"
-               value="ullam"
+               value="autem"
                data-component="body">
     <br>
-<p>nullable Array of titles for second slider Example: <code>ullam</code></p>
+<p>nullable Array of titles for second slider Example: <code>autem</code></p>
                     </div>
                                     </details>
         </div>
@@ -27728,10 +27759,10 @@ You can check the Dev Tools console for debugging information.</code></pre>
 <i>optional</i> &nbsp;
                 <input type="text" style="display: none"
                               name="slider_subtitles_second.*"                data-endpoint="POSTapi-v3-user-estore-cms-home-update"
-               value="et"
+               value="ut"
                data-component="body">
     <br>
-<p>nullable Array of subtitles for second slider Example: <code>et</code></p>
+<p>nullable Array of subtitles for second slider Example: <code>ut</code></p>
                     </div>
                                     </details>
         </div>
@@ -27772,10 +27803,10 @@ You can check the Dev Tools console for debugging information.</code></pre>
 <i>optional</i> &nbsp;
                 <input type="text" style="display: none"
                               name="slider_buttons_second.*"                data-endpoint="POSTapi-v3-user-estore-cms-home-update"
-               value="quisquam"
+               value="consequatur"
                data-component="body">
     <br>
-<p>nullable Array of button texts for second slider Example: <code>quisquam</code></p>
+<p>nullable Array of button texts for second slider Example: <code>consequatur</code></p>
                     </div>
                                     </details>
         </div>
@@ -27797,7 +27828,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
                value=""
                data-component="body">
     <br>
-<p>nullable Array of images for second slider (multipart/form-data) Example: <code>/private/var/folders/wy/1yz2w5p91q13336262xr4yzw0000gn/T/phpIJpDfr</code></p>
+<p>nullable Array of images for second slider (multipart/form-data) Example: <code>/private/var/folders/wy/1yz2w5p91q13336262xr4yzw0000gn/T/phpZwcioN</code></p>
                     </div>
                                     </details>
         </div>
@@ -27833,7 +27864,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
     --form "footer_instagram_link="https://instagram.com/mystore""\
     --form "footer_youtube_link="https://youtube.com/mystore""\
     --form "id=1"\
-    --form "footer_logo=@/private/var/folders/wy/1yz2w5p91q13336262xr4yzw0000gn/T/phpqsSzU5" </code></pre></div>
+    --form "footer_logo=@/private/var/folders/wy/1yz2w5p91q13336262xr4yzw0000gn/T/phpi7y99H" </code></pre></div>
 
 
 <div class="javascript-example">
@@ -28055,7 +28086,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
                value=""
                data-component="body">
     <br>
-<p>nullable The footer logo image (jpeg, png, jpg, gif, svg). Example: <code>/private/var/folders/wy/1yz2w5p91q13336262xr4yzw0000gn/T/phpqsSzU5</code></p>
+<p>nullable The footer logo image (jpeg, png, jpg, gif, svg). Example: <code>/private/var/folders/wy/1yz2w5p91q13336262xr4yzw0000gn/T/phpi7y99H</code></p>
         </div>
                 <div style=" padding-left: 28px;  clear: unset;">
             <b style="line-height: 2;"><code>footer_title</code></b>&nbsp;&nbsp;
@@ -28463,19 +28494,19 @@ You can check the Dev Tools console for debugging information.</code></pre>
     --header "Accept: application/json" \
     --form "banner_title="Contact Us""\
     --form "card_one_title="Support""\
-    --form "card_one_content=libero"\
-    --form "card_two_title=illum"\
-    --form "card_two_content=ea"\
-    --form "card_three_title=eligendi"\
-    --form "card_three_content=laborum"\
-    --form "form_title=consequatur"\
-    --form "form_subtitle=quidem"\
-    --form "call_section_title=omnis"\
-    --form "call_section_content=provident"\
-    --form "follow_us_title=ut"\
-    --form "map_iframe_src=sunt"\
+    --form "card_one_content=occaecati"\
+    --form "card_two_title=facilis"\
+    --form "card_two_content=sed"\
+    --form "card_three_title=rerum"\
+    --form "card_three_content=distinctio"\
+    --form "form_title=quia"\
+    --form "form_subtitle=velit"\
+    --form "call_section_title=odit"\
+    --form "call_section_content=sed"\
+    --form "follow_us_title=in"\
+    --form "map_iframe_src=exercitationem"\
     --form "id=1"\
-    --form "banner_image=@/private/var/folders/wy/1yz2w5p91q13336262xr4yzw0000gn/T/phphUqNz7" </code></pre></div>
+    --form "banner_image=@/private/var/folders/wy/1yz2w5p91q13336262xr4yzw0000gn/T/php1dBE67" </code></pre></div>
 
 
 <div class="javascript-example">
@@ -28492,17 +28523,17 @@ const headers = {
 const body = new FormData();
 body.append('banner_title', '"Contact Us"');
 body.append('card_one_title', '"Support"');
-body.append('card_one_content', 'libero');
-body.append('card_two_title', 'illum');
-body.append('card_two_content', 'ea');
-body.append('card_three_title', 'eligendi');
-body.append('card_three_content', 'laborum');
-body.append('form_title', 'consequatur');
-body.append('form_subtitle', 'quidem');
-body.append('call_section_title', 'omnis');
-body.append('call_section_content', 'provident');
-body.append('follow_us_title', 'ut');
-body.append('map_iframe_src', 'sunt');
+body.append('card_one_content', 'occaecati');
+body.append('card_two_title', 'facilis');
+body.append('card_two_content', 'sed');
+body.append('card_three_title', 'rerum');
+body.append('card_three_content', 'distinctio');
+body.append('form_title', 'quia');
+body.append('form_subtitle', 'velit');
+body.append('call_section_title', 'odit');
+body.append('call_section_content', 'sed');
+body.append('follow_us_title', 'in');
+body.append('map_iframe_src', 'exercitationem');
 body.append('id', '1');
 body.append('banner_image', document.querySelector('input[name="banner_image"]').files[0]);
 
@@ -28704,7 +28735,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
                value=""
                data-component="body">
     <br>
-<p>optional Banner image (jpeg, png, jpg, gif, svg) Example: <code>/private/var/folders/wy/1yz2w5p91q13336262xr4yzw0000gn/T/phphUqNz7</code></p>
+<p>optional Banner image (jpeg, png, jpg, gif, svg) Example: <code>/private/var/folders/wy/1yz2w5p91q13336262xr4yzw0000gn/T/php1dBE67</code></p>
         </div>
                 <div style=" padding-left: 28px;  clear: unset;">
             <b style="line-height: 2;"><code>banner_title</code></b>&nbsp;&nbsp;
@@ -28734,10 +28765,10 @@ You can check the Dev Tools console for debugging information.</code></pre>
 <i>optional</i> &nbsp;
                 <input type="text" style="display: none"
                               name="card_one_content"                data-endpoint="POSTapi-v3-user-estore-cms-contact-update"
-               value="libero"
+               value="occaecati"
                data-component="body">
     <br>
-<p>optional Card 1 content. Example: <code>libero</code></p>
+<p>optional Card 1 content. Example: <code>occaecati</code></p>
         </div>
                 <div style=" padding-left: 28px;  clear: unset;">
             <b style="line-height: 2;"><code>card_two_title</code></b>&nbsp;&nbsp;
@@ -28745,10 +28776,10 @@ You can check the Dev Tools console for debugging information.</code></pre>
 <i>optional</i> &nbsp;
                 <input type="text" style="display: none"
                               name="card_two_title"                data-endpoint="POSTapi-v3-user-estore-cms-contact-update"
-               value="illum"
+               value="facilis"
                data-component="body">
     <br>
-<p>optional Card 2 title. Example: <code>illum</code></p>
+<p>optional Card 2 title. Example: <code>facilis</code></p>
         </div>
                 <div style=" padding-left: 28px;  clear: unset;">
             <b style="line-height: 2;"><code>card_two_content</code></b>&nbsp;&nbsp;
@@ -28756,10 +28787,10 @@ You can check the Dev Tools console for debugging information.</code></pre>
 <i>optional</i> &nbsp;
                 <input type="text" style="display: none"
                               name="card_two_content"                data-endpoint="POSTapi-v3-user-estore-cms-contact-update"
-               value="ea"
+               value="sed"
                data-component="body">
     <br>
-<p>optional Card 2 content. Example: <code>ea</code></p>
+<p>optional Card 2 content. Example: <code>sed</code></p>
         </div>
                 <div style=" padding-left: 28px;  clear: unset;">
             <b style="line-height: 2;"><code>card_three_title</code></b>&nbsp;&nbsp;
@@ -28767,10 +28798,10 @@ You can check the Dev Tools console for debugging information.</code></pre>
 <i>optional</i> &nbsp;
                 <input type="text" style="display: none"
                               name="card_three_title"                data-endpoint="POSTapi-v3-user-estore-cms-contact-update"
-               value="eligendi"
+               value="rerum"
                data-component="body">
     <br>
-<p>optional Card 3 title. Example: <code>eligendi</code></p>
+<p>optional Card 3 title. Example: <code>rerum</code></p>
         </div>
                 <div style=" padding-left: 28px;  clear: unset;">
             <b style="line-height: 2;"><code>card_three_content</code></b>&nbsp;&nbsp;
@@ -28778,10 +28809,10 @@ You can check the Dev Tools console for debugging information.</code></pre>
 <i>optional</i> &nbsp;
                 <input type="text" style="display: none"
                               name="card_three_content"                data-endpoint="POSTapi-v3-user-estore-cms-contact-update"
-               value="laborum"
+               value="distinctio"
                data-component="body">
     <br>
-<p>optional Card 3 content. Example: <code>laborum</code></p>
+<p>optional Card 3 content. Example: <code>distinctio</code></p>
         </div>
                 <div style=" padding-left: 28px;  clear: unset;">
             <b style="line-height: 2;"><code>form_title</code></b>&nbsp;&nbsp;
@@ -28789,10 +28820,10 @@ You can check the Dev Tools console for debugging information.</code></pre>
 <i>optional</i> &nbsp;
                 <input type="text" style="display: none"
                               name="form_title"                data-endpoint="POSTapi-v3-user-estore-cms-contact-update"
-               value="consequatur"
+               value="quia"
                data-component="body">
     <br>
-<p>optional Form title. Example: <code>consequatur</code></p>
+<p>optional Form title. Example: <code>quia</code></p>
         </div>
                 <div style=" padding-left: 28px;  clear: unset;">
             <b style="line-height: 2;"><code>form_subtitle</code></b>&nbsp;&nbsp;
@@ -28800,10 +28831,10 @@ You can check the Dev Tools console for debugging information.</code></pre>
 <i>optional</i> &nbsp;
                 <input type="text" style="display: none"
                               name="form_subtitle"                data-endpoint="POSTapi-v3-user-estore-cms-contact-update"
-               value="quidem"
+               value="velit"
                data-component="body">
     <br>
-<p>optional Form subtitle. Example: <code>quidem</code></p>
+<p>optional Form subtitle. Example: <code>velit</code></p>
         </div>
                 <div style=" padding-left: 28px;  clear: unset;">
             <b style="line-height: 2;"><code>call_section_title</code></b>&nbsp;&nbsp;
@@ -28811,10 +28842,10 @@ You can check the Dev Tools console for debugging information.</code></pre>
 <i>optional</i> &nbsp;
                 <input type="text" style="display: none"
                               name="call_section_title"                data-endpoint="POSTapi-v3-user-estore-cms-contact-update"
-               value="omnis"
+               value="odit"
                data-component="body">
     <br>
-<p>optional Call section title. Example: <code>omnis</code></p>
+<p>optional Call section title. Example: <code>odit</code></p>
         </div>
                 <div style=" padding-left: 28px;  clear: unset;">
             <b style="line-height: 2;"><code>call_section_content</code></b>&nbsp;&nbsp;
@@ -28822,10 +28853,10 @@ You can check the Dev Tools console for debugging information.</code></pre>
 <i>optional</i> &nbsp;
                 <input type="text" style="display: none"
                               name="call_section_content"                data-endpoint="POSTapi-v3-user-estore-cms-contact-update"
-               value="provident"
+               value="sed"
                data-component="body">
     <br>
-<p>optional Call section content. Example: <code>provident</code></p>
+<p>optional Call section content. Example: <code>sed</code></p>
         </div>
                 <div style=" padding-left: 28px;  clear: unset;">
             <b style="line-height: 2;"><code>follow_us_title</code></b>&nbsp;&nbsp;
@@ -28833,10 +28864,10 @@ You can check the Dev Tools console for debugging information.</code></pre>
 <i>optional</i> &nbsp;
                 <input type="text" style="display: none"
                               name="follow_us_title"                data-endpoint="POSTapi-v3-user-estore-cms-contact-update"
-               value="ut"
+               value="in"
                data-component="body">
     <br>
-<p>optional Follow us title. Example: <code>ut</code></p>
+<p>optional Follow us title. Example: <code>in</code></p>
         </div>
                 <div style=" padding-left: 28px;  clear: unset;">
             <b style="line-height: 2;"><code>map_iframe_src</code></b>&nbsp;&nbsp;
@@ -28844,10 +28875,10 @@ You can check the Dev Tools console for debugging information.</code></pre>
 <i>optional</i> &nbsp;
                 <input type="text" style="display: none"
                               name="map_iframe_src"                data-endpoint="POSTapi-v3-user-estore-cms-contact-update"
-               value="sunt"
+               value="exercitationem"
                data-component="body">
     <br>
-<p>optional Map iframe src. Example: <code>sunt</code></p>
+<p>optional Map iframe src. Example: <code>exercitationem</code></p>
         </div>
                 <div style=" padding-left: 28px;  clear: unset;">
             <b style="line-height: 2;"><code>id</code></b>&nbsp;&nbsp;
@@ -29532,7 +29563,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
     --header "Content-Type: application/json" \
     --header "Accept: application/json" \
     --data "{
-    \"id\": \"deserunt\",
+    \"id\": \"est\",
     \"color\": \"\\\"Medium\\\"\",
     \"color_name\": \"\\\"Medium\\\"\",
     \"status\": true
@@ -29552,7 +29583,7 @@ const headers = {
 };
 
 let body = {
-    "id": "deserunt",
+    "id": "est",
     "color": "\"Medium\"",
     "color_name": "\"Medium\"",
     "status": true
@@ -29775,10 +29806,10 @@ You can check the Dev Tools console for debugging information.</code></pre>
  &nbsp;
                 <input type="text" style="display: none"
                               name="id"                data-endpoint="POSTapi-v3-user-colors-update"
-               value="deserunt"
+               value="est"
                data-component="body">
     <br>
-<p>The <code>id</code> of an existing record in the colors table. Example: <code>deserunt</code></p>
+<p>The <code>id</code> of an existing record in the colors table. Example: <code>est</code></p>
         </div>
                 <div style=" padding-left: 28px;  clear: unset;">
             <b style="line-height: 2;"><code>color</code></b>&nbsp;&nbsp;
@@ -29844,7 +29875,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
     --header "Content-Type: application/json" \
     --header "Accept: application/json" \
     --data "{
-    \"id\": \"magni\"
+    \"id\": \"nobis\"
 }"
 </code></pre></div>
 
@@ -29861,7 +29892,7 @@ const headers = {
 };
 
 let body = {
-    "id": "magni"
+    "id": "nobis"
 };
 
 fetch(url, {
@@ -30023,10 +30054,10 @@ You can check the Dev Tools console for debugging information.</code></pre>
  &nbsp;
                 <input type="text" style="display: none"
                               name="id"                data-endpoint="POSTapi-v3-user-colors-delete"
-               value="magni"
+               value="nobis"
                data-component="body">
     <br>
-<p>The <code>id</code> of an existing record in the colors table. Example: <code>magni</code></p>
+<p>The <code>id</code> of an existing record in the colors table. Example: <code>nobis</code></p>
         </div>
         </form>
 
@@ -30765,7 +30796,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
     --header "Content-Type: application/json" \
     --header "Accept: application/json" \
     --data "{
-    \"id\": \"consequuntur\",
+    \"id\": \"delectus\",
     \"name\": \"\\\"Large\\\"\",
     \"status\": true
 }"
@@ -30784,7 +30815,7 @@ const headers = {
 };
 
 let body = {
-    "id": "consequuntur",
+    "id": "delectus",
     "name": "\"Large\"",
     "status": true
 };
@@ -31002,10 +31033,10 @@ You can check the Dev Tools console for debugging information.</code></pre>
  &nbsp;
                 <input type="text" style="display: none"
                               name="id"                data-endpoint="POSTapi-v3-user-sizes-update"
-               value="consequuntur"
+               value="delectus"
                data-component="body">
     <br>
-<p>The <code>id</code> of an existing record in the sizes table. Example: <code>consequuntur</code></p>
+<p>The <code>id</code> of an existing record in the sizes table. Example: <code>delectus</code></p>
         </div>
                 <div style=" padding-left: 28px;  clear: unset;">
             <b style="line-height: 2;"><code>name</code></b>&nbsp;&nbsp;
@@ -31060,7 +31091,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
     --header "Content-Type: application/json" \
     --header "Accept: application/json" \
     --data "{
-    \"id\": \"similique\"
+    \"id\": \"ut\"
 }"
 </code></pre></div>
 
@@ -31077,7 +31108,7 @@ const headers = {
 };
 
 let body = {
-    "id": "similique"
+    "id": "ut"
 };
 
 fetch(url, {
@@ -31239,10 +31270,10 @@ You can check the Dev Tools console for debugging information.</code></pre>
  &nbsp;
                 <input type="text" style="display: none"
                               name="id"                data-endpoint="POSTapi-v3-user-sizes-delete"
-               value="similique"
+               value="ut"
                data-component="body">
     <br>
-<p>The <code>id</code> of an existing record in the sizes table. Example: <code>similique</code></p>
+<p>The <code>id</code> of an existing record in the sizes table. Example: <code>ut</code></p>
         </div>
         </form>
 
@@ -33420,7 +33451,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
     --header "Content-Type: application/json" \
     --header "Accept: application/json" \
     --data "{
-    \"email\": \"wisozk.linnea@example.net\"
+    \"email\": \"tmurazik@example.net\"
 }"
 </code></pre></div>
 
@@ -33436,7 +33467,7 @@ const headers = {
 };
 
 let body = {
-    "email": "wisozk.linnea@example.net"
+    "email": "tmurazik@example.net"
 };
 
 fetch(url, {
@@ -33555,10 +33586,10 @@ You can check the Dev Tools console for debugging information.</code></pre>
  &nbsp;
                 <input type="text" style="display: none"
                               name="email"                data-endpoint="POSTapi-v3-forget-password"
-               value="wisozk.linnea@example.net"
+               value="tmurazik@example.net"
                data-component="body">
     <br>
-<p>The email of the user. Example: Example: <code>wisozk.linnea@example.net</code></p>
+<p>The email of the user. Example: Example: <code>tmurazik@example.net</code></p>
         </div>
         </form>
 
@@ -33914,7 +33945,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
     --form "name="Project Z Team""\
     --form "description="Team for Project Z collaboration""\
     --form "members="\
-    --form "group_image=@/private/var/folders/wy/1yz2w5p91q13336262xr4yzw0000gn/T/phptLXx6Y" </code></pre></div>
+    --form "group_image=@/private/var/folders/wy/1yz2w5p91q13336262xr4yzw0000gn/T/phpBx32Iu" </code></pre></div>
 
 
 <div class="javascript-example">
@@ -34127,7 +34158,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
                value=""
                data-component="body">
     <br>
-<p>An image file for the team group. Supported formats: jpeg, png, jpg, gif, svg. Maximum size: 2MB. Example: <code>/private/var/folders/wy/1yz2w5p91q13336262xr4yzw0000gn/T/phptLXx6Y</code></p>
+<p>An image file for the team group. Supported formats: jpeg, png, jpg, gif, svg. Maximum size: 2MB. Example: <code>/private/var/folders/wy/1yz2w5p91q13336262xr4yzw0000gn/T/phpBx32Iu</code></p>
         </div>
         </form>
 
@@ -34696,7 +34727,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
     --header "Accept: application/json" \
     --form "team_id=5"\
     --form "message="Hello team!""\
-    --form "file=@/private/var/folders/wy/1yz2w5p91q13336262xr4yzw0000gn/T/phpZ7fAgU" </code></pre></div>
+    --form "file=@/private/var/folders/wy/1yz2w5p91q13336262xr4yzw0000gn/T/phpZynEDD" </code></pre></div>
 
 
 <div class="javascript-example">
@@ -35081,7 +35112,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
                value=""
                data-component="body">
     <br>
-<p>The attachment file to send, if applicable (optional if a message is provided). Example: <code>/private/var/folders/wy/1yz2w5p91q13336262xr4yzw0000gn/T/phpZ7fAgU</code></p>
+<p>The attachment file to send, if applicable (optional if a message is provided). Example: <code>/private/var/folders/wy/1yz2w5p91q13336262xr4yzw0000gn/T/phpZynEDD</code></p>
         </div>
         </form>
 
@@ -35380,7 +35411,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
     --header "Content-Type: multipart/form-data" \
     --header "Accept: application/json" \
     --form "team_id=5"\
-    --form "group_image=@/private/var/folders/wy/1yz2w5p91q13336262xr4yzw0000gn/T/php7muo3G" </code></pre></div>
+    --form "group_image=@/private/var/folders/wy/1yz2w5p91q13336262xr4yzw0000gn/T/phpeguyQ4" </code></pre></div>
 
 
 <div class="javascript-example">
@@ -35553,7 +35584,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
                value=""
                data-component="body">
     <br>
-<p>The new group image file (JPEG, PNG, JPG, GIF, SVG formats, max size: 2048KB). Example: <code>/private/var/folders/wy/1yz2w5p91q13336262xr4yzw0000gn/T/php7muo3G</code></p>
+<p>The new group image file (JPEG, PNG, JPG, GIF, SVG formats, max size: 2048KB). Example: <code>/private/var/folders/wy/1yz2w5p91q13336262xr4yzw0000gn/T/phpeguyQ4</code></p>
         </div>
         </form>
 
@@ -37642,7 +37673,7 @@ otherwise, it marks the notification as read.</p>
     --data "{
     \"team_id\": 10,
     \"chat_id\": 25,
-    \"is_delete\": 10
+    \"is_delete\": 1
 }"
 </code></pre></div>
 
@@ -37661,7 +37692,7 @@ const headers = {
 let body = {
     "team_id": 10,
     "chat_id": 25,
-    "is_delete": 10
+    "is_delete": 1
 };
 
 fetch(url, {
@@ -37851,10 +37882,10 @@ You can check the Dev Tools console for debugging information.</code></pre>
 <i>optional</i> &nbsp;
                 <input type="number" style="display: none"
                step="any"               name="is_delete"                data-endpoint="POSTapi-v3-user-team-chats-notification"
-               value="10"
+               value="1"
                data-component="body">
     <br>
-<p>optional Indicates if the notification should be marked as read and deleted. Example: <code>10</code></p>
+<p>optional Indicates if the notification should be marked as read and deleted. Example: <code>1</code></p>
         </div>
         </form>
 
@@ -38801,7 +38832,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 <div class="bash-example">
     <pre><code class="language-bash">curl --request POST \
-    "http://127.0.0.1:8000/api/v3/user/jobs/edit/recusandae" \
+    "http://127.0.0.1:8000/api/v3/user/jobs/edit/minima" \
     --header "Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJhdWQiOiIxIiwianRpIjoiNTJkNDhkYzhjNTc4ODIwZWVmODFmY2NhOWJiMmJiODFlZGE1MTUwMTVkYmU5YzdkNzFkODAyYTRmZWNhMWQ5ZGJhYWEzMTc2YjI1OTJmMTgiLCJpYXQiOjE3NjQwNjAzNDQuMDUyOTc0LCJuYmYiOjE3NjQwNjAzNDQuMDUyOTc1LCJleHAiOjE3OTU1OTYzNDQuMDQzNjUyLCJzdWIiOiIxNjgiLCJzY29wZXMiOltdfQ.X9tS38uM-UlrpFlYZihD_kmuCcSX_hdGsRBJcNGfrWXAClMiqeTxNTC45Ftxw-ddmDQ59t5xJLlnWp2Rx57itO-IHclNmwnVJDPAh1l9D8CZBGxBSoN0FvmbWeYDNQnA7ud77YLekrcSAuKMdBX3J1UKq6ytvWwi6ChnuRFqcQ-fpzK-jgkMhGm-WFHw0H3a34afdBdSUUFutESlwMvTqmXILYVcIwaJpEAjamf3rn6wIOEoD8mbxXJ6Gb6QrRO72Kt3z62vJp7yOeMsnXUkfioVSyJVwbkbchCs2Y4YZY3FEREbKysKNdHJhhqmn6AXvx66arAK3HeZoyf5eusfk26alhbEdJqsJgFP5VROV5l57q8VKhH8hAxg-oeidCGGJXPjLGeb-5iGPjdGhQ1Ng1i9kt7VDV4icb8B2AbNC2Ie9xP6b0R11PX4jUd8D3Jogf2f0ZhAs5Is8WHcrxsCyk3lWvgOyzWxpRx2lSpmBRmSwksPrKJk_7JuzDZ1Tdpz6mubjV6DzlmqDJJjf32hBIMnaYOhOUz5k1FzZ8mybsSbnM9UjzHYr5xIf4rkmVAfuPnU2FGu8NtCQaOtt9G-TziBFgT3ZjxBCL9QaaC39BRulGE6tyCAT8NM9svTD_AbNyINUzO2M0R61OXYQfzXEeiui-sO6eYIc3x_z-YdFFQ" \
     --header "Content-Type: application/json" \
     --header "Accept: application/json" \
@@ -38822,7 +38853,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 <div class="javascript-example">
     <pre><code class="language-javascript">const url = new URL(
-    "http://127.0.0.1:8000/api/v3/user/jobs/edit/recusandae"
+    "http://127.0.0.1:8000/api/v3/user/jobs/edit/minima"
 );
 
 const headers = {
@@ -38853,13 +38884,13 @@ fetch(url, {
 
 <div class="jsonToDart-example">
     <pre><code class="language-dart">
-class Recusandae {
+class Minima {
   final String? message;
   final Errors? errors;
 
-  Recusandae({this.message, this.errors, });
+  Minima({this.message, this.errors, });
 
-  factory Recusandae.fromJson(Map&lt;String, dynamic&gt; json) =&gt; Recusandae(
+  factory Minima.fromJson(Map&lt;String, dynamic&gt; json) =&gt; Minima(
     message: json['message'],
     errors: json['errors'] != null ? Errors.fromJson(json['errors'] as Map&lt;String, dynamic&gt;) : null,
   );
@@ -39020,10 +39051,10 @@ You can check the Dev Tools console for debugging information.</code></pre>
  &nbsp;
                 <input type="text" style="display: none"
                               name="id"                data-endpoint="POSTapi-v3-user-jobs-edit--id-"
-               value="recusandae"
+               value="minima"
                data-component="url">
     <br>
-<p>The ID of the edit. Example: <code>recusandae</code></p>
+<p>The ID of the edit. Example: <code>minima</code></p>
             </div>
                             <h4 class="fancy-heading-panel"><b>Body Parameters</b></h4>
         <div style=" padding-left: 28px;  clear: unset;">
@@ -39152,7 +39183,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 <div class="bash-example">
     <pre><code class="language-bash">curl --request POST \
-    "http://127.0.0.1:8000/api/v3/user/jobs/delete/asperiores" \
+    "http://127.0.0.1:8000/api/v3/user/jobs/delete/eum" \
     --header "Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJhdWQiOiIxIiwianRpIjoiNTJkNDhkYzhjNTc4ODIwZWVmODFmY2NhOWJiMmJiODFlZGE1MTUwMTVkYmU5YzdkNzFkODAyYTRmZWNhMWQ5ZGJhYWEzMTc2YjI1OTJmMTgiLCJpYXQiOjE3NjQwNjAzNDQuMDUyOTc0LCJuYmYiOjE3NjQwNjAzNDQuMDUyOTc1LCJleHAiOjE3OTU1OTYzNDQuMDQzNjUyLCJzdWIiOiIxNjgiLCJzY29wZXMiOltdfQ.X9tS38uM-UlrpFlYZihD_kmuCcSX_hdGsRBJcNGfrWXAClMiqeTxNTC45Ftxw-ddmDQ59t5xJLlnWp2Rx57itO-IHclNmwnVJDPAh1l9D8CZBGxBSoN0FvmbWeYDNQnA7ud77YLekrcSAuKMdBX3J1UKq6ytvWwi6ChnuRFqcQ-fpzK-jgkMhGm-WFHw0H3a34afdBdSUUFutESlwMvTqmXILYVcIwaJpEAjamf3rn6wIOEoD8mbxXJ6Gb6QrRO72Kt3z62vJp7yOeMsnXUkfioVSyJVwbkbchCs2Y4YZY3FEREbKysKNdHJhhqmn6AXvx66arAK3HeZoyf5eusfk26alhbEdJqsJgFP5VROV5l57q8VKhH8hAxg-oeidCGGJXPjLGeb-5iGPjdGhQ1Ng1i9kt7VDV4icb8B2AbNC2Ie9xP6b0R11PX4jUd8D3Jogf2f0ZhAs5Is8WHcrxsCyk3lWvgOyzWxpRx2lSpmBRmSwksPrKJk_7JuzDZ1Tdpz6mubjV6DzlmqDJJjf32hBIMnaYOhOUz5k1FzZ8mybsSbnM9UjzHYr5xIf4rkmVAfuPnU2FGu8NtCQaOtt9G-TziBFgT3ZjxBCL9QaaC39BRulGE6tyCAT8NM9svTD_AbNyINUzO2M0R61OXYQfzXEeiui-sO6eYIc3x_z-YdFFQ" \
     --header "Content-Type: application/json" \
     --header "Accept: application/json"</code></pre></div>
@@ -39160,7 +39191,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 <div class="javascript-example">
     <pre><code class="language-javascript">const url = new URL(
-    "http://127.0.0.1:8000/api/v3/user/jobs/delete/asperiores"
+    "http://127.0.0.1:8000/api/v3/user/jobs/delete/eum"
 );
 
 const headers = {
@@ -39177,12 +39208,12 @@ fetch(url, {
 
 <div class="jsonToDart-example">
     <pre><code class="language-dart">
-class Asperiores {
+class Eum {
   final String? message;
 
-  Asperiores({this.message, });
+  Eum({this.message, });
 
-  factory Asperiores.fromJson(Map&lt;String, dynamic&gt; json) =&gt; Asperiores(
+  factory Eum.fromJson(Map&lt;String, dynamic&gt; json) =&gt; Eum(
     message: json['message'],
   );
 
@@ -39300,10 +39331,10 @@ You can check the Dev Tools console for debugging information.</code></pre>
  &nbsp;
                 <input type="text" style="display: none"
                               name="id"                data-endpoint="POSTapi-v3-user-jobs-delete--id-"
-               value="asperiores"
+               value="eum"
                data-component="url">
     <br>
-<p>The ID of the delete. Example: <code>asperiores</code></p>
+<p>The ID of the delete. Example: <code>eum</code></p>
             </div>
                     </form>
 
@@ -42611,12 +42642,12 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 <div class="bash-example">
     <pre><code class="language-bash">curl --request POST \
-    "http://127.0.0.1:8000/api/v3/user/partners/update/fuga" \
+    "http://127.0.0.1:8000/api/v3/user/partners/update/repellat" \
     --header "Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJhdWQiOiIxIiwianRpIjoiNTJkNDhkYzhjNTc4ODIwZWVmODFmY2NhOWJiMmJiODFlZGE1MTUwMTVkYmU5YzdkNzFkODAyYTRmZWNhMWQ5ZGJhYWEzMTc2YjI1OTJmMTgiLCJpYXQiOjE3NjQwNjAzNDQuMDUyOTc0LCJuYmYiOjE3NjQwNjAzNDQuMDUyOTc1LCJleHAiOjE3OTU1OTYzNDQuMDQzNjUyLCJzdWIiOiIxNjgiLCJzY29wZXMiOltdfQ.X9tS38uM-UlrpFlYZihD_kmuCcSX_hdGsRBJcNGfrWXAClMiqeTxNTC45Ftxw-ddmDQ59t5xJLlnWp2Rx57itO-IHclNmwnVJDPAh1l9D8CZBGxBSoN0FvmbWeYDNQnA7ud77YLekrcSAuKMdBX3J1UKq6ytvWwi6ChnuRFqcQ-fpzK-jgkMhGm-WFHw0H3a34afdBdSUUFutESlwMvTqmXILYVcIwaJpEAjamf3rn6wIOEoD8mbxXJ6Gb6QrRO72Kt3z62vJp7yOeMsnXUkfioVSyJVwbkbchCs2Y4YZY3FEREbKysKNdHJhhqmn6AXvx66arAK3HeZoyf5eusfk26alhbEdJqsJgFP5VROV5l57q8VKhH8hAxg-oeidCGGJXPjLGeb-5iGPjdGhQ1Ng1i9kt7VDV4icb8B2AbNC2Ie9xP6b0R11PX4jUd8D3Jogf2f0ZhAs5Is8WHcrxsCyk3lWvgOyzWxpRx2lSpmBRmSwksPrKJk_7JuzDZ1Tdpz6mubjV6DzlmqDJJjf32hBIMnaYOhOUz5k1FzZ8mybsSbnM9UjzHYr5xIf4rkmVAfuPnU2FGu8NtCQaOtt9G-TziBFgT3ZjxBCL9QaaC39BRulGE6tyCAT8NM9svTD_AbNyINUzO2M0R61OXYQfzXEeiui-sO6eYIc3x_z-YdFFQ" \
     --header "Content-Type: application/json" \
     --header "Accept: application/json" \
     --data "{
-    \"role\": \"voluptatum\",
+    \"role\": \"corporis\",
     \"first_name\": \"John\",
     \"last_name\": \"Doe\",
     \"middle_name\": \"Smith\",
@@ -42638,7 +42669,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 <div class="javascript-example">
     <pre><code class="language-javascript">const url = new URL(
-    "http://127.0.0.1:8000/api/v3/user/partners/update/fuga"
+    "http://127.0.0.1:8000/api/v3/user/partners/update/repellat"
 );
 
 const headers = {
@@ -42648,7 +42679,7 @@ const headers = {
 };
 
 let body = {
-    "role": "voluptatum",
+    "role": "corporis",
     "first_name": "John",
     "last_name": "Doe",
     "middle_name": "Smith",
@@ -42675,12 +42706,12 @@ fetch(url, {
 
 <div class="jsonToDart-example">
     <pre><code class="language-dart">
-class Fuga {
+class Repellat {
   final String? message;
 
-  Fuga({this.message, });
+  Repellat({this.message, });
 
-  factory Fuga.fromJson(Map&lt;String, dynamic&gt; json) =&gt; Fuga(
+  factory Repellat.fromJson(Map&lt;String, dynamic&gt; json) =&gt; Repellat(
     message: json['message'],
   );
 
@@ -42799,10 +42830,10 @@ You can check the Dev Tools console for debugging information.</code></pre>
  &nbsp;
                 <input type="text" style="display: none"
                               name="id"                data-endpoint="POSTapi-v3-user-partners-update--id-"
-               value="fuga"
+               value="repellat"
                data-component="url">
     <br>
-<p>The ID of the update. Example: <code>fuga</code></p>
+<p>The ID of the update. Example: <code>repellat</code></p>
             </div>
                             <h4 class="fancy-heading-panel"><b>Body Parameters</b></h4>
         <div style=" padding-left: 28px;  clear: unset;">
@@ -42811,10 +42842,10 @@ You can check the Dev Tools console for debugging information.</code></pre>
  &nbsp;
                 <input type="text" style="display: none"
                               name="role"                data-endpoint="POSTapi-v3-user-partners-update--id-"
-               value="voluptatum"
+               value="corporis"
                data-component="body">
     <br>
-<p>'role' =&gt; 'required',. Example: <code>voluptatum</code></p>
+<p>'role' =&gt; 'required',. Example: <code>corporis</code></p>
         </div>
                 <div style=" padding-left: 28px;  clear: unset;">
             <b style="line-height: 2;"><code>first_name</code></b>&nbsp;&nbsp;
@@ -42997,7 +43028,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 <div class="bash-example">
     <pre><code class="language-bash">curl --request POST \
-    "http://127.0.0.1:8000/api/v3/user/partners/delete/14" \
+    "http://127.0.0.1:8000/api/v3/user/partners/delete/1" \
     --header "Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJhdWQiOiIxIiwianRpIjoiNTJkNDhkYzhjNTc4ODIwZWVmODFmY2NhOWJiMmJiODFlZGE1MTUwMTVkYmU5YzdkNzFkODAyYTRmZWNhMWQ5ZGJhYWEzMTc2YjI1OTJmMTgiLCJpYXQiOjE3NjQwNjAzNDQuMDUyOTc0LCJuYmYiOjE3NjQwNjAzNDQuMDUyOTc1LCJleHAiOjE3OTU1OTYzNDQuMDQzNjUyLCJzdWIiOiIxNjgiLCJzY29wZXMiOltdfQ.X9tS38uM-UlrpFlYZihD_kmuCcSX_hdGsRBJcNGfrWXAClMiqeTxNTC45Ftxw-ddmDQ59t5xJLlnWp2Rx57itO-IHclNmwnVJDPAh1l9D8CZBGxBSoN0FvmbWeYDNQnA7ud77YLekrcSAuKMdBX3J1UKq6ytvWwi6ChnuRFqcQ-fpzK-jgkMhGm-WFHw0H3a34afdBdSUUFutESlwMvTqmXILYVcIwaJpEAjamf3rn6wIOEoD8mbxXJ6Gb6QrRO72Kt3z62vJp7yOeMsnXUkfioVSyJVwbkbchCs2Y4YZY3FEREbKysKNdHJhhqmn6AXvx66arAK3HeZoyf5eusfk26alhbEdJqsJgFP5VROV5l57q8VKhH8hAxg-oeidCGGJXPjLGeb-5iGPjdGhQ1Ng1i9kt7VDV4icb8B2AbNC2Ie9xP6b0R11PX4jUd8D3Jogf2f0ZhAs5Is8WHcrxsCyk3lWvgOyzWxpRx2lSpmBRmSwksPrKJk_7JuzDZ1Tdpz6mubjV6DzlmqDJJjf32hBIMnaYOhOUz5k1FzZ8mybsSbnM9UjzHYr5xIf4rkmVAfuPnU2FGu8NtCQaOtt9G-TziBFgT3ZjxBCL9QaaC39BRulGE6tyCAT8NM9svTD_AbNyINUzO2M0R61OXYQfzXEeiui-sO6eYIc3x_z-YdFFQ" \
     --header "Content-Type: application/json" \
     --header "Accept: application/json"</code></pre></div>
@@ -43005,7 +43036,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 <div class="javascript-example">
     <pre><code class="language-javascript">const url = new URL(
-    "http://127.0.0.1:8000/api/v3/user/partners/delete/14"
+    "http://127.0.0.1:8000/api/v3/user/partners/delete/1"
 );
 
 const headers = {
@@ -43022,12 +43053,12 @@ fetch(url, {
 
 <div class="jsonToDart-example">
     <pre><code class="language-dart">
-class 14 {
+class 1 {
   final String? message;
 
-  14({this.message, });
+  1({this.message, });
 
-  factory 14.fromJson(Map&lt;String, dynamic&gt; json) =&gt; 14(
+  factory 1.fromJson(Map&lt;String, dynamic&gt; json) =&gt; 1(
     message: json['message'],
   );
 
@@ -43146,10 +43177,10 @@ You can check the Dev Tools console for debugging information.</code></pre>
  &nbsp;
                 <input type="number" style="display: none"
                step="any"               name="id"                data-endpoint="POSTapi-v3-user-partners-delete--id-"
-               value="14"
+               value="1"
                data-component="url">
     <br>
-<p>The ID of the partner to delete. Example: <code>14</code></p>
+<p>The ID of the partner to delete. Example: <code>1</code></p>
             </div>
                     </form>
 
@@ -43712,7 +43743,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
     --header "Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJhdWQiOiIxIiwianRpIjoiNTJkNDhkYzhjNTc4ODIwZWVmODFmY2NhOWJiMmJiODFlZGE1MTUwMTVkYmU5YzdkNzFkODAyYTRmZWNhMWQ5ZGJhYWEzMTc2YjI1OTJmMTgiLCJpYXQiOjE3NjQwNjAzNDQuMDUyOTc0LCJuYmYiOjE3NjQwNjAzNDQuMDUyOTc1LCJleHAiOjE3OTU1OTYzNDQuMDQzNjUyLCJzdWIiOiIxNjgiLCJzY29wZXMiOltdfQ.X9tS38uM-UlrpFlYZihD_kmuCcSX_hdGsRBJcNGfrWXAClMiqeTxNTC45Ftxw-ddmDQ59t5xJLlnWp2Rx57itO-IHclNmwnVJDPAh1l9D8CZBGxBSoN0FvmbWeYDNQnA7ud77YLekrcSAuKMdBX3J1UKq6ytvWwi6ChnuRFqcQ-fpzK-jgkMhGm-WFHw0H3a34afdBdSUUFutESlwMvTqmXILYVcIwaJpEAjamf3rn6wIOEoD8mbxXJ6Gb6QrRO72Kt3z62vJp7yOeMsnXUkfioVSyJVwbkbchCs2Y4YZY3FEREbKysKNdHJhhqmn6AXvx66arAK3HeZoyf5eusfk26alhbEdJqsJgFP5VROV5l57q8VKhH8hAxg-oeidCGGJXPjLGeb-5iGPjdGhQ1Ng1i9kt7VDV4icb8B2AbNC2Ie9xP6b0R11PX4jUd8D3Jogf2f0ZhAs5Is8WHcrxsCyk3lWvgOyzWxpRx2lSpmBRmSwksPrKJk_7JuzDZ1Tdpz6mubjV6DzlmqDJJjf32hBIMnaYOhOUz5k1FzZ8mybsSbnM9UjzHYr5xIf4rkmVAfuPnU2FGu8NtCQaOtt9G-TziBFgT3ZjxBCL9QaaC39BRulGE6tyCAT8NM9svTD_AbNyINUzO2M0R61OXYQfzXEeiui-sO6eYIc3x_z-YdFFQ" \
     --header "Content-Type: multipart/form-data" \
     --header "Accept: application/json" \
-    --form "file=@/private/var/folders/wy/1yz2w5p91q13336262xr4yzw0000gn/T/phpiMhyyW" </code></pre></div>
+    --form "file=@/private/var/folders/wy/1yz2w5p91q13336262xr4yzw0000gn/T/phpKIgO2G" </code></pre></div>
 
 
 <div class="javascript-example">
@@ -43864,7 +43895,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
                value=""
                data-component="body">
     <br>
-<p>files to upload. Example: <code>/private/var/folders/wy/1yz2w5p91q13336262xr4yzw0000gn/T/phpiMhyyW</code></p>
+<p>files to upload. Example: <code>/private/var/folders/wy/1yz2w5p91q13336262xr4yzw0000gn/T/phpKIgO2G</code></p>
         </div>
         </form>
 
@@ -43882,7 +43913,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 <div class="bash-example">
     <pre><code class="language-bash">curl --request GET \
-    --get "http://127.0.0.1:8000/api/v3/user/policy/delete/7" \
+    --get "http://127.0.0.1:8000/api/v3/user/policy/delete/18" \
     --header "Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJhdWQiOiIxIiwianRpIjoiNTJkNDhkYzhjNTc4ODIwZWVmODFmY2NhOWJiMmJiODFlZGE1MTUwMTVkYmU5YzdkNzFkODAyYTRmZWNhMWQ5ZGJhYWEzMTc2YjI1OTJmMTgiLCJpYXQiOjE3NjQwNjAzNDQuMDUyOTc0LCJuYmYiOjE3NjQwNjAzNDQuMDUyOTc1LCJleHAiOjE3OTU1OTYzNDQuMDQzNjUyLCJzdWIiOiIxNjgiLCJzY29wZXMiOltdfQ.X9tS38uM-UlrpFlYZihD_kmuCcSX_hdGsRBJcNGfrWXAClMiqeTxNTC45Ftxw-ddmDQ59t5xJLlnWp2Rx57itO-IHclNmwnVJDPAh1l9D8CZBGxBSoN0FvmbWeYDNQnA7ud77YLekrcSAuKMdBX3J1UKq6ytvWwi6ChnuRFqcQ-fpzK-jgkMhGm-WFHw0H3a34afdBdSUUFutESlwMvTqmXILYVcIwaJpEAjamf3rn6wIOEoD8mbxXJ6Gb6QrRO72Kt3z62vJp7yOeMsnXUkfioVSyJVwbkbchCs2Y4YZY3FEREbKysKNdHJhhqmn6AXvx66arAK3HeZoyf5eusfk26alhbEdJqsJgFP5VROV5l57q8VKhH8hAxg-oeidCGGJXPjLGeb-5iGPjdGhQ1Ng1i9kt7VDV4icb8B2AbNC2Ie9xP6b0R11PX4jUd8D3Jogf2f0ZhAs5Is8WHcrxsCyk3lWvgOyzWxpRx2lSpmBRmSwksPrKJk_7JuzDZ1Tdpz6mubjV6DzlmqDJJjf32hBIMnaYOhOUz5k1FzZ8mybsSbnM9UjzHYr5xIf4rkmVAfuPnU2FGu8NtCQaOtt9G-TziBFgT3ZjxBCL9QaaC39BRulGE6tyCAT8NM9svTD_AbNyINUzO2M0R61OXYQfzXEeiui-sO6eYIc3x_z-YdFFQ" \
     --header "Content-Type: application/json" \
     --header "Accept: application/json"</code></pre></div>
@@ -43890,7 +43921,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 <div class="javascript-example">
     <pre><code class="language-javascript">const url = new URL(
-    "http://127.0.0.1:8000/api/v3/user/policy/delete/7"
+    "http://127.0.0.1:8000/api/v3/user/policy/delete/18"
 );
 
 const headers = {
@@ -43907,12 +43938,12 @@ fetch(url, {
 
 <div class="jsonToDart-example">
     <pre><code class="language-dart">
-class 7 {
+class 18 {
   final String? message;
 
-  7({this.message, });
+  18({this.message, });
 
-  factory 7.fromJson(Map&lt;String, dynamic&gt; json) =&gt; 7(
+  factory 18.fromJson(Map&lt;String, dynamic&gt; json) =&gt; 18(
     message: json['message'],
   );
 
@@ -44030,10 +44061,10 @@ You can check the Dev Tools console for debugging information.</code></pre>
  &nbsp;
                 <input type="number" style="display: none"
                step="any"               name="id"                data-endpoint="GETapi-v3-user-policy-delete--id-"
-               value="7"
+               value="18"
                data-component="url">
     <br>
-<p>The ID of the policy to delete. Example: <code>7</code></p>
+<p>The ID of the policy to delete. Example: <code>18</code></p>
             </div>
                     </form>
 
@@ -44051,7 +44082,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 <div class="bash-example">
     <pre><code class="language-bash">curl --request GET \
-    --get "http://127.0.0.1:8000/api/v3/user/policy/download/eos" \
+    --get "http://127.0.0.1:8000/api/v3/user/policy/download/quae" \
     --header "Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJhdWQiOiIxIiwianRpIjoiNTJkNDhkYzhjNTc4ODIwZWVmODFmY2NhOWJiMmJiODFlZGE1MTUwMTVkYmU5YzdkNzFkODAyYTRmZWNhMWQ5ZGJhYWEzMTc2YjI1OTJmMTgiLCJpYXQiOjE3NjQwNjAzNDQuMDUyOTc0LCJuYmYiOjE3NjQwNjAzNDQuMDUyOTc1LCJleHAiOjE3OTU1OTYzNDQuMDQzNjUyLCJzdWIiOiIxNjgiLCJzY29wZXMiOltdfQ.X9tS38uM-UlrpFlYZihD_kmuCcSX_hdGsRBJcNGfrWXAClMiqeTxNTC45Ftxw-ddmDQ59t5xJLlnWp2Rx57itO-IHclNmwnVJDPAh1l9D8CZBGxBSoN0FvmbWeYDNQnA7ud77YLekrcSAuKMdBX3J1UKq6ytvWwi6ChnuRFqcQ-fpzK-jgkMhGm-WFHw0H3a34afdBdSUUFutESlwMvTqmXILYVcIwaJpEAjamf3rn6wIOEoD8mbxXJ6Gb6QrRO72Kt3z62vJp7yOeMsnXUkfioVSyJVwbkbchCs2Y4YZY3FEREbKysKNdHJhhqmn6AXvx66arAK3HeZoyf5eusfk26alhbEdJqsJgFP5VROV5l57q8VKhH8hAxg-oeidCGGJXPjLGeb-5iGPjdGhQ1Ng1i9kt7VDV4icb8B2AbNC2Ie9xP6b0R11PX4jUd8D3Jogf2f0ZhAs5Is8WHcrxsCyk3lWvgOyzWxpRx2lSpmBRmSwksPrKJk_7JuzDZ1Tdpz6mubjV6DzlmqDJJjf32hBIMnaYOhOUz5k1FzZ8mybsSbnM9UjzHYr5xIf4rkmVAfuPnU2FGu8NtCQaOtt9G-TziBFgT3ZjxBCL9QaaC39BRulGE6tyCAT8NM9svTD_AbNyINUzO2M0R61OXYQfzXEeiui-sO6eYIc3x_z-YdFFQ" \
     --header "Content-Type: application/json" \
     --header "Accept: application/json"</code></pre></div>
@@ -44059,7 +44090,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 <div class="javascript-example">
     <pre><code class="language-javascript">const url = new URL(
-    "http://127.0.0.1:8000/api/v3/user/policy/download/eos"
+    "http://127.0.0.1:8000/api/v3/user/policy/download/quae"
 );
 
 const headers = {
@@ -44076,12 +44107,12 @@ fetch(url, {
 
 <div class="jsonToDart-example">
     <pre><code class="language-dart">
-class Eos {
+class Quae {
   final String? error;
 
-  Eos({this.error, });
+  Quae({this.error, });
 
-  factory Eos.fromJson(Map&lt;String, dynamic&gt; json) =&gt; Eos(
+  factory Quae.fromJson(Map&lt;String, dynamic&gt; json) =&gt; Quae(
     error: json['error'],
   );
 
@@ -44197,10 +44228,10 @@ You can check the Dev Tools console for debugging information.</code></pre>
  &nbsp;
                 <input type="text" style="display: none"
                               name="id"                data-endpoint="GETapi-v3-user-policy-download--id-"
-               value="eos"
+               value="quae"
                data-component="url">
     <br>
-<p>The ID of the download. Example: <code>eos</code></p>
+<p>The ID of the download. Example: <code>quae</code></p>
             </div>
                     </form>
 
@@ -44218,7 +44249,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 <div class="bash-example">
     <pre><code class="language-bash">curl --request GET \
-    --get "http://127.0.0.1:8000/api/v3/user/policy/view/16" \
+    --get "http://127.0.0.1:8000/api/v3/user/policy/view/3" \
     --header "Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJhdWQiOiIxIiwianRpIjoiNTJkNDhkYzhjNTc4ODIwZWVmODFmY2NhOWJiMmJiODFlZGE1MTUwMTVkYmU5YzdkNzFkODAyYTRmZWNhMWQ5ZGJhYWEzMTc2YjI1OTJmMTgiLCJpYXQiOjE3NjQwNjAzNDQuMDUyOTc0LCJuYmYiOjE3NjQwNjAzNDQuMDUyOTc1LCJleHAiOjE3OTU1OTYzNDQuMDQzNjUyLCJzdWIiOiIxNjgiLCJzY29wZXMiOltdfQ.X9tS38uM-UlrpFlYZihD_kmuCcSX_hdGsRBJcNGfrWXAClMiqeTxNTC45Ftxw-ddmDQ59t5xJLlnWp2Rx57itO-IHclNmwnVJDPAh1l9D8CZBGxBSoN0FvmbWeYDNQnA7ud77YLekrcSAuKMdBX3J1UKq6ytvWwi6ChnuRFqcQ-fpzK-jgkMhGm-WFHw0H3a34afdBdSUUFutESlwMvTqmXILYVcIwaJpEAjamf3rn6wIOEoD8mbxXJ6Gb6QrRO72Kt3z62vJp7yOeMsnXUkfioVSyJVwbkbchCs2Y4YZY3FEREbKysKNdHJhhqmn6AXvx66arAK3HeZoyf5eusfk26alhbEdJqsJgFP5VROV5l57q8VKhH8hAxg-oeidCGGJXPjLGeb-5iGPjdGhQ1Ng1i9kt7VDV4icb8B2AbNC2Ie9xP6b0R11PX4jUd8D3Jogf2f0ZhAs5Is8WHcrxsCyk3lWvgOyzWxpRx2lSpmBRmSwksPrKJk_7JuzDZ1Tdpz6mubjV6DzlmqDJJjf32hBIMnaYOhOUz5k1FzZ8mybsSbnM9UjzHYr5xIf4rkmVAfuPnU2FGu8NtCQaOtt9G-TziBFgT3ZjxBCL9QaaC39BRulGE6tyCAT8NM9svTD_AbNyINUzO2M0R61OXYQfzXEeiui-sO6eYIc3x_z-YdFFQ" \
     --header "Content-Type: application/json" \
     --header "Accept: application/json"</code></pre></div>
@@ -44226,7 +44257,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 <div class="javascript-example">
     <pre><code class="language-javascript">const url = new URL(
-    "http://127.0.0.1:8000/api/v3/user/policy/view/16"
+    "http://127.0.0.1:8000/api/v3/user/policy/view/3"
 );
 
 const headers = {
@@ -44243,12 +44274,12 @@ fetch(url, {
 
 <div class="jsonToDart-example">
     <pre><code class="language-dart">
-class 16 {
+class 3 {
   final Data? data;
 
-  16({this.data, });
+  3({this.data, });
 
-  factory 16.fromJson(Map&lt;String, dynamic&gt; json) =&gt; 16(
+  factory 3.fromJson(Map&lt;String, dynamic&gt; json) =&gt; 3(
     data: json['data'] != null ? Data.fromJson(json['data'] as Map&lt;String, dynamic&gt;) : null,
   );
 
@@ -44398,12 +44429,1726 @@ You can check the Dev Tools console for debugging information.</code></pre>
  &nbsp;
                 <input type="number" style="display: none"
                step="any"               name="id"                data-endpoint="GETapi-v3-user-policy-view--id-"
-               value="16"
+               value="3"
                data-component="url">
     <br>
-<p>The ID of the policy to view. Example: <code>16</code></p>
+<p>The ID of the policy to view. Example: <code>3</code></p>
             </div>
                     </form>
+
+                <h1 id="private-collaborations">Private Collaborations</h1>
+
+    <p>APIs to manage private collaborations (create, list, invite, accept)</p>
+
+                                <h2 id="private-collaborations-GETapi-v3-user-private-collaborations-load">List All Private Collaborations</h2>
+
+<p>
+<small class="badge badge-darkred">requires authentication</small>
+</p>
+
+
+
+<span id="example-requests-GETapi-v3-user-private-collaborations-load">
+<blockquote>Example request:</blockquote>
+
+
+<div class="bash-example">
+    <pre><code class="language-bash">curl --request GET \
+    --get "http://127.0.0.1:8000/api/v3/user/private-collaborations/load?search=%22project%22" \
+    --header "Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJhdWQiOiIxIiwianRpIjoiNTJkNDhkYzhjNTc4ODIwZWVmODFmY2NhOWJiMmJiODFlZGE1MTUwMTVkYmU5YzdkNzFkODAyYTRmZWNhMWQ5ZGJhYWEzMTc2YjI1OTJmMTgiLCJpYXQiOjE3NjQwNjAzNDQuMDUyOTc0LCJuYmYiOjE3NjQwNjAzNDQuMDUyOTc1LCJleHAiOjE3OTU1OTYzNDQuMDQzNjUyLCJzdWIiOiIxNjgiLCJzY29wZXMiOltdfQ.X9tS38uM-UlrpFlYZihD_kmuCcSX_hdGsRBJcNGfrWXAClMiqeTxNTC45Ftxw-ddmDQ59t5xJLlnWp2Rx57itO-IHclNmwnVJDPAh1l9D8CZBGxBSoN0FvmbWeYDNQnA7ud77YLekrcSAuKMdBX3J1UKq6ytvWwi6ChnuRFqcQ-fpzK-jgkMhGm-WFHw0H3a34afdBdSUUFutESlwMvTqmXILYVcIwaJpEAjamf3rn6wIOEoD8mbxXJ6Gb6QrRO72Kt3z62vJp7yOeMsnXUkfioVSyJVwbkbchCs2Y4YZY3FEREbKysKNdHJhhqmn6AXvx66arAK3HeZoyf5eusfk26alhbEdJqsJgFP5VROV5l57q8VKhH8hAxg-oeidCGGJXPjLGeb-5iGPjdGhQ1Ng1i9kt7VDV4icb8B2AbNC2Ie9xP6b0R11PX4jUd8D3Jogf2f0ZhAs5Is8WHcrxsCyk3lWvgOyzWxpRx2lSpmBRmSwksPrKJk_7JuzDZ1Tdpz6mubjV6DzlmqDJJjf32hBIMnaYOhOUz5k1FzZ8mybsSbnM9UjzHYr5xIf4rkmVAfuPnU2FGu8NtCQaOtt9G-TziBFgT3ZjxBCL9QaaC39BRulGE6tyCAT8NM9svTD_AbNyINUzO2M0R61OXYQfzXEeiui-sO6eYIc3x_z-YdFFQ" \
+    --header "Content-Type: application/json" \
+    --header "Accept: application/json"</code></pre></div>
+
+
+<div class="javascript-example">
+    <pre><code class="language-javascript">const url = new URL(
+    "http://127.0.0.1:8000/api/v3/user/private-collaborations/load"
+);
+
+const params = {
+    "search": ""project"",
+};
+Object.keys(params)
+    .forEach(key =&gt; url.searchParams.append(key, params[key]));
+
+const headers = {
+    "Authorization": "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJhdWQiOiIxIiwianRpIjoiNTJkNDhkYzhjNTc4ODIwZWVmODFmY2NhOWJiMmJiODFlZGE1MTUwMTVkYmU5YzdkNzFkODAyYTRmZWNhMWQ5ZGJhYWEzMTc2YjI1OTJmMTgiLCJpYXQiOjE3NjQwNjAzNDQuMDUyOTc0LCJuYmYiOjE3NjQwNjAzNDQuMDUyOTc1LCJleHAiOjE3OTU1OTYzNDQuMDQzNjUyLCJzdWIiOiIxNjgiLCJzY29wZXMiOltdfQ.X9tS38uM-UlrpFlYZihD_kmuCcSX_hdGsRBJcNGfrWXAClMiqeTxNTC45Ftxw-ddmDQ59t5xJLlnWp2Rx57itO-IHclNmwnVJDPAh1l9D8CZBGxBSoN0FvmbWeYDNQnA7ud77YLekrcSAuKMdBX3J1UKq6ytvWwi6ChnuRFqcQ-fpzK-jgkMhGm-WFHw0H3a34afdBdSUUFutESlwMvTqmXILYVcIwaJpEAjamf3rn6wIOEoD8mbxXJ6Gb6QrRO72Kt3z62vJp7yOeMsnXUkfioVSyJVwbkbchCs2Y4YZY3FEREbKysKNdHJhhqmn6AXvx66arAK3HeZoyf5eusfk26alhbEdJqsJgFP5VROV5l57q8VKhH8hAxg-oeidCGGJXPjLGeb-5iGPjdGhQ1Ng1i9kt7VDV4icb8B2AbNC2Ie9xP6b0R11PX4jUd8D3Jogf2f0ZhAs5Is8WHcrxsCyk3lWvgOyzWxpRx2lSpmBRmSwksPrKJk_7JuzDZ1Tdpz6mubjV6DzlmqDJJjf32hBIMnaYOhOUz5k1FzZ8mybsSbnM9UjzHYr5xIf4rkmVAfuPnU2FGu8NtCQaOtt9G-TziBFgT3ZjxBCL9QaaC39BRulGE6tyCAT8NM9svTD_AbNyINUzO2M0R61OXYQfzXEeiui-sO6eYIc3x_z-YdFFQ",
+    "Content-Type": "application/json",
+    "Accept": "application/json",
+};
+
+fetch(url, {
+    method: "GET",
+    headers,
+}).then(response =&gt; response.json());</code></pre></div>
+
+
+<div class="jsonToDart-example">
+    <pre><code class="language-dart">
+class Load {
+  final List&lt;DataItem&gt;? data;
+
+  Load({this.data, });
+
+  factory Load.fromJson(Map&lt;String, dynamic&gt; json) =&gt; Load(
+    data: (json['data'] as List&lt;dynamic&gt;?)?.map((e) =&gt; DataItem.fromJson(e as Map&lt;String, dynamic&gt;)).toList(),
+  );
+
+  Map&lt;String, dynamic&gt; toJson() =&gt; {
+    'data': data?.map((e) =&gt; e.toJson()).toList(),
+  };
+}
+
+class DataItem {
+  final int? id;
+  final int? user_id;
+  final String? title;
+  final String? description;
+  final String? start_time;
+  final String? end_time;
+  final String? meeting_link;
+  final bool? is_zoom;
+  final User? user;
+
+  DataItem({this.id, this.user_id, this.title, this.description, this.start_time, this.end_time, this.meeting_link, this.is_zoom, this.user, });
+
+  factory DataItem.fromJson(Map&lt;String, dynamic&gt; json) =&gt; DataItem(
+    id: json['id'],
+    user_id: json['user_id'],
+    title: json['title'],
+    description: json['description'],
+    start_time: json['start_time'],
+    end_time: json['end_time'],
+    meeting_link: json['meeting_link'],
+    is_zoom: json['is_zoom'],
+    user: json['user'] != null ? User.fromJson(json['user'] as Map&lt;String, dynamic&gt;) : null,
+  );
+
+  Map&lt;String, dynamic&gt; toJson() =&gt; {
+    'id': id,
+    'user_id': user_id,
+    'title': title,
+    'description': description,
+    'start_time': start_time,
+    'end_time': end_time,
+    'meeting_link': meeting_link,
+    'is_zoom': is_zoom,
+    'user': user?.toJson(),
+  };
+}
+
+class User {
+  final int? id;
+  final String? full_name;
+  final String? email;
+
+  User({this.id, this.full_name, this.email, });
+
+  factory User.fromJson(Map&lt;String, dynamic&gt; json) =&gt; User(
+    id: json['id'],
+    full_name: json['full_name'],
+    email: json['email'],
+  );
+
+  Map&lt;String, dynamic&gt; toJson() =&gt; {
+    'id': id,
+    'full_name': full_name,
+    'email': email,
+  };
+}</code></pre></div>
+
+</span>
+
+<span id="example-responses-GETapi-v3-user-private-collaborations-load">
+            <blockquote>
+            <p>Example response (200):</p>
+        </blockquote>
+                <pre>
+
+<code class="language-json" style="max-height: 300px;">{
+    &quot;data&quot;: [
+        {
+            &quot;id&quot;: 1,
+            &quot;user_id&quot;: 2,
+            &quot;title&quot;: &quot;Project Sync&quot;,
+            &quot;description&quot;: &quot;Weekly sync&quot;,
+            &quot;start_time&quot;: &quot;2024-11-10T09:00:00&quot;,
+            &quot;end_time&quot;: &quot;2024-11-10T10:00:00&quot;,
+            &quot;meeting_link&quot;: &quot;https://zoom.us/j/123456789&quot;,
+            &quot;is_zoom&quot;: true,
+            &quot;user&quot;: {
+                &quot;id&quot;: 2,
+                &quot;full_name&quot;: &quot;John Doe&quot;,
+                &quot;email&quot;: &quot;john@example.com&quot;
+            }
+        }
+    ]
+}</code>
+ </pre>
+            <blockquote>
+            <p>Example response (201):</p>
+        </blockquote>
+                <pre>
+
+<code class="language-json" style="max-height: 300px;">{
+    &quot;error&quot;: &quot;Failed to load collaborations.&quot;
+}</code>
+ </pre>
+    </span>
+<span id="execution-results-GETapi-v3-user-private-collaborations-load" hidden>
+    <blockquote>Received response<span
+                id="execution-response-status-GETapi-v3-user-private-collaborations-load"></span>:
+    </blockquote>
+    <pre class="json"><code id="execution-response-content-GETapi-v3-user-private-collaborations-load"
+      data-empty-response-text="<Empty response>" style="max-height: 400px;"></code></pre>
+</span>
+<span id="execution-error-GETapi-v3-user-private-collaborations-load" hidden>
+    <blockquote>Request failed with error:</blockquote>
+    <pre><code id="execution-error-message-GETapi-v3-user-private-collaborations-load">
+
+Tip: Check that you&#039;re properly connected to the network.
+If you&#039;re a maintainer of ths API, verify that your API is running and you&#039;ve enabled CORS.
+You can check the Dev Tools console for debugging information.</code></pre>
+</span>
+<form id="form-GETapi-v3-user-private-collaborations-load" data-method="GET"
+      data-path="api/v3/user/private-collaborations/load"
+      data-authed="1"
+      data-hasfiles="0"
+      data-isarraybody="0"
+      autocomplete="off"
+      onsubmit="event.preventDefault(); executeTryOut('GETapi-v3-user-private-collaborations-load', this);">
+    <h3>
+        Request&nbsp;&nbsp;&nbsp;
+                    <button type="button"
+                    style="background-color: #8fbcd4; padding: 5px 10px; border-radius: 5px; border-width: thin;"
+                    id="btn-tryout-GETapi-v3-user-private-collaborations-load"
+                    onclick="tryItOut('GETapi-v3-user-private-collaborations-load');">Try it out ⚡
+            </button>
+            <button type="button"
+                    style="background-color: #c97a7e; padding: 5px 10px; border-radius: 5px; border-width: thin;"
+                    id="btn-canceltryout-GETapi-v3-user-private-collaborations-load"
+                    onclick="cancelTryOut('GETapi-v3-user-private-collaborations-load');" hidden>Cancel 🛑
+            </button>&nbsp;&nbsp;
+            <button type="submit"
+                    style="background-color: #6ac174; padding: 5px 10px; border-radius: 5px; border-width: thin;"
+                    id="btn-executetryout-GETapi-v3-user-private-collaborations-load"
+                    data-initial-text="Send Request 💥"
+                    data-loading-text="⏱ Sending..."
+                    hidden>Send Request 💥
+            </button>
+            </h3>
+            <p>
+            <small class="badge badge-green">GET</small>
+            <b><code>api/v3/user/private-collaborations/load</code></b>
+        </p>
+                <h4 class="fancy-heading-panel"><b>Headers</b></h4>
+                                <div style="padding-left: 28px; clear: unset;">
+                <b style="line-height: 2;"><code>Authorization</code></b>&nbsp;&nbsp;
+&nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+                              name="Authorization" class="auth-value"               data-endpoint="GETapi-v3-user-private-collaborations-load"
+               value="Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJhdWQiOiIxIiwianRpIjoiNTJkNDhkYzhjNTc4ODIwZWVmODFmY2NhOWJiMmJiODFlZGE1MTUwMTVkYmU5YzdkNzFkODAyYTRmZWNhMWQ5ZGJhYWEzMTc2YjI1OTJmMTgiLCJpYXQiOjE3NjQwNjAzNDQuMDUyOTc0LCJuYmYiOjE3NjQwNjAzNDQuMDUyOTc1LCJleHAiOjE3OTU1OTYzNDQuMDQzNjUyLCJzdWIiOiIxNjgiLCJzY29wZXMiOltdfQ.X9tS38uM-UlrpFlYZihD_kmuCcSX_hdGsRBJcNGfrWXAClMiqeTxNTC45Ftxw-ddmDQ59t5xJLlnWp2Rx57itO-IHclNmwnVJDPAh1l9D8CZBGxBSoN0FvmbWeYDNQnA7ud77YLekrcSAuKMdBX3J1UKq6ytvWwi6ChnuRFqcQ-fpzK-jgkMhGm-WFHw0H3a34afdBdSUUFutESlwMvTqmXILYVcIwaJpEAjamf3rn6wIOEoD8mbxXJ6Gb6QrRO72Kt3z62vJp7yOeMsnXUkfioVSyJVwbkbchCs2Y4YZY3FEREbKysKNdHJhhqmn6AXvx66arAK3HeZoyf5eusfk26alhbEdJqsJgFP5VROV5l57q8VKhH8hAxg-oeidCGGJXPjLGeb-5iGPjdGhQ1Ng1i9kt7VDV4icb8B2AbNC2Ie9xP6b0R11PX4jUd8D3Jogf2f0ZhAs5Is8WHcrxsCyk3lWvgOyzWxpRx2lSpmBRmSwksPrKJk_7JuzDZ1Tdpz6mubjV6DzlmqDJJjf32hBIMnaYOhOUz5k1FzZ8mybsSbnM9UjzHYr5xIf4rkmVAfuPnU2FGu8NtCQaOtt9G-TziBFgT3ZjxBCL9QaaC39BRulGE6tyCAT8NM9svTD_AbNyINUzO2M0R61OXYQfzXEeiui-sO6eYIc3x_z-YdFFQ"
+               data-component="header">
+    <br>
+<p>Example: <code>Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJhdWQiOiIxIiwianRpIjoiNTJkNDhkYzhjNTc4ODIwZWVmODFmY2NhOWJiMmJiODFlZGE1MTUwMTVkYmU5YzdkNzFkODAyYTRmZWNhMWQ5ZGJhYWEzMTc2YjI1OTJmMTgiLCJpYXQiOjE3NjQwNjAzNDQuMDUyOTc0LCJuYmYiOjE3NjQwNjAzNDQuMDUyOTc1LCJleHAiOjE3OTU1OTYzNDQuMDQzNjUyLCJzdWIiOiIxNjgiLCJzY29wZXMiOltdfQ.X9tS38uM-UlrpFlYZihD_kmuCcSX_hdGsRBJcNGfrWXAClMiqeTxNTC45Ftxw-ddmDQ59t5xJLlnWp2Rx57itO-IHclNmwnVJDPAh1l9D8CZBGxBSoN0FvmbWeYDNQnA7ud77YLekrcSAuKMdBX3J1UKq6ytvWwi6ChnuRFqcQ-fpzK-jgkMhGm-WFHw0H3a34afdBdSUUFutESlwMvTqmXILYVcIwaJpEAjamf3rn6wIOEoD8mbxXJ6Gb6QrRO72Kt3z62vJp7yOeMsnXUkfioVSyJVwbkbchCs2Y4YZY3FEREbKysKNdHJhhqmn6AXvx66arAK3HeZoyf5eusfk26alhbEdJqsJgFP5VROV5l57q8VKhH8hAxg-oeidCGGJXPjLGeb-5iGPjdGhQ1Ng1i9kt7VDV4icb8B2AbNC2Ie9xP6b0R11PX4jUd8D3Jogf2f0ZhAs5Is8WHcrxsCyk3lWvgOyzWxpRx2lSpmBRmSwksPrKJk_7JuzDZ1Tdpz6mubjV6DzlmqDJJjf32hBIMnaYOhOUz5k1FzZ8mybsSbnM9UjzHYr5xIf4rkmVAfuPnU2FGu8NtCQaOtt9G-TziBFgT3ZjxBCL9QaaC39BRulGE6tyCAT8NM9svTD_AbNyINUzO2M0R61OXYQfzXEeiui-sO6eYIc3x_z-YdFFQ</code></p>
+            </div>
+                                <div style="padding-left: 28px; clear: unset;">
+                <b style="line-height: 2;"><code>Content-Type</code></b>&nbsp;&nbsp;
+&nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+                              name="Content-Type"                data-endpoint="GETapi-v3-user-private-collaborations-load"
+               value="application/json"
+               data-component="header">
+    <br>
+<p>Example: <code>application/json</code></p>
+            </div>
+                                <div style="padding-left: 28px; clear: unset;">
+                <b style="line-height: 2;"><code>Accept</code></b>&nbsp;&nbsp;
+&nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+                              name="Accept"                data-endpoint="GETapi-v3-user-private-collaborations-load"
+               value="application/json"
+               data-component="header">
+    <br>
+<p>Example: <code>application/json</code></p>
+            </div>
+                            <h4 class="fancy-heading-panel"><b>Query Parameters</b></h4>
+                                    <div style="padding-left: 28px; clear: unset;">
+                <b style="line-height: 2;"><code>search</code></b>&nbsp;&nbsp;
+<small>string</small>&nbsp;
+<i>optional</i> &nbsp;
+                <input type="text" style="display: none"
+                              name="search"                data-endpoint="GETapi-v3-user-private-collaborations-load"
+               value=""project""
+               data-component="query">
+    <br>
+<p>optional for search filter. Example: <code>"project"</code></p>
+            </div>
+                </form>
+
+                    <h2 id="private-collaborations-POSTapi-v3-user-private-collaborations-store">Create a private collaboration</h2>
+
+<p>
+<small class="badge badge-darkred">requires authentication</small>
+</p>
+
+
+
+<span id="example-requests-POSTapi-v3-user-private-collaborations-store">
+<blockquote>Example request:</blockquote>
+
+
+<div class="bash-example">
+    <pre><code class="language-bash">curl --request POST \
+    "http://127.0.0.1:8000/api/v3/user/private-collaborations/store" \
+    --header "Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJhdWQiOiIxIiwianRpIjoiNTJkNDhkYzhjNTc4ODIwZWVmODFmY2NhOWJiMmJiODFlZGE1MTUwMTVkYmU5YzdkNzFkODAyYTRmZWNhMWQ5ZGJhYWEzMTc2YjI1OTJmMTgiLCJpYXQiOjE3NjQwNjAzNDQuMDUyOTc0LCJuYmYiOjE3NjQwNjAzNDQuMDUyOTc1LCJleHAiOjE3OTU1OTYzNDQuMDQzNjUyLCJzdWIiOiIxNjgiLCJzY29wZXMiOltdfQ.X9tS38uM-UlrpFlYZihD_kmuCcSX_hdGsRBJcNGfrWXAClMiqeTxNTC45Ftxw-ddmDQ59t5xJLlnWp2Rx57itO-IHclNmwnVJDPAh1l9D8CZBGxBSoN0FvmbWeYDNQnA7ud77YLekrcSAuKMdBX3J1UKq6ytvWwi6ChnuRFqcQ-fpzK-jgkMhGm-WFHw0H3a34afdBdSUUFutESlwMvTqmXILYVcIwaJpEAjamf3rn6wIOEoD8mbxXJ6Gb6QrRO72Kt3z62vJp7yOeMsnXUkfioVSyJVwbkbchCs2Y4YZY3FEREbKysKNdHJhhqmn6AXvx66arAK3HeZoyf5eusfk26alhbEdJqsJgFP5VROV5l57q8VKhH8hAxg-oeidCGGJXPjLGeb-5iGPjdGhQ1Ng1i9kt7VDV4icb8B2AbNC2Ie9xP6b0R11PX4jUd8D3Jogf2f0ZhAs5Is8WHcrxsCyk3lWvgOyzWxpRx2lSpmBRmSwksPrKJk_7JuzDZ1Tdpz6mubjV6DzlmqDJJjf32hBIMnaYOhOUz5k1FzZ8mybsSbnM9UjzHYr5xIf4rkmVAfuPnU2FGu8NtCQaOtt9G-TziBFgT3ZjxBCL9QaaC39BRulGE6tyCAT8NM9svTD_AbNyINUzO2M0R61OXYQfzXEeiui-sO6eYIc3x_z-YdFFQ" \
+    --header "Content-Type: application/json" \
+    --header "Accept: application/json" \
+    --data "{
+    \"title\": \"\\\"Team for Project Z\\\"\",
+    \"description\": \"\\\"Meeting to discuss project Z\\\"\",
+    \"start_time\": \"2024-11-22T10:00:00\",
+    \"end_time\": \"2024-11-22T11:00:00\",
+    \"meeting_link\": \"https:\\/\\/meet.example.com\\/abc\",
+    \"create_zoom\": true
+}"
+</code></pre></div>
+
+
+<div class="javascript-example">
+    <pre><code class="language-javascript">const url = new URL(
+    "http://127.0.0.1:8000/api/v3/user/private-collaborations/store"
+);
+
+const headers = {
+    "Authorization": "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJhdWQiOiIxIiwianRpIjoiNTJkNDhkYzhjNTc4ODIwZWVmODFmY2NhOWJiMmJiODFlZGE1MTUwMTVkYmU5YzdkNzFkODAyYTRmZWNhMWQ5ZGJhYWEzMTc2YjI1OTJmMTgiLCJpYXQiOjE3NjQwNjAzNDQuMDUyOTc0LCJuYmYiOjE3NjQwNjAzNDQuMDUyOTc1LCJleHAiOjE3OTU1OTYzNDQuMDQzNjUyLCJzdWIiOiIxNjgiLCJzY29wZXMiOltdfQ.X9tS38uM-UlrpFlYZihD_kmuCcSX_hdGsRBJcNGfrWXAClMiqeTxNTC45Ftxw-ddmDQ59t5xJLlnWp2Rx57itO-IHclNmwnVJDPAh1l9D8CZBGxBSoN0FvmbWeYDNQnA7ud77YLekrcSAuKMdBX3J1UKq6ytvWwi6ChnuRFqcQ-fpzK-jgkMhGm-WFHw0H3a34afdBdSUUFutESlwMvTqmXILYVcIwaJpEAjamf3rn6wIOEoD8mbxXJ6Gb6QrRO72Kt3z62vJp7yOeMsnXUkfioVSyJVwbkbchCs2Y4YZY3FEREbKysKNdHJhhqmn6AXvx66arAK3HeZoyf5eusfk26alhbEdJqsJgFP5VROV5l57q8VKhH8hAxg-oeidCGGJXPjLGeb-5iGPjdGhQ1Ng1i9kt7VDV4icb8B2AbNC2Ie9xP6b0R11PX4jUd8D3Jogf2f0ZhAs5Is8WHcrxsCyk3lWvgOyzWxpRx2lSpmBRmSwksPrKJk_7JuzDZ1Tdpz6mubjV6DzlmqDJJjf32hBIMnaYOhOUz5k1FzZ8mybsSbnM9UjzHYr5xIf4rkmVAfuPnU2FGu8NtCQaOtt9G-TziBFgT3ZjxBCL9QaaC39BRulGE6tyCAT8NM9svTD_AbNyINUzO2M0R61OXYQfzXEeiui-sO6eYIc3x_z-YdFFQ",
+    "Content-Type": "application/json",
+    "Accept": "application/json",
+};
+
+let body = {
+    "title": "\"Team for Project Z\"",
+    "description": "\"Meeting to discuss project Z\"",
+    "start_time": "2024-11-22T10:00:00",
+    "end_time": "2024-11-22T11:00:00",
+    "meeting_link": "https:\/\/meet.example.com\/abc",
+    "create_zoom": true
+};
+
+fetch(url, {
+    method: "POST",
+    headers,
+    body: JSON.stringify(body),
+}).then(response =&gt; response.json());</code></pre></div>
+
+
+<div class="jsonToDart-example">
+    <pre><code class="language-dart">
+class Store {
+  final String? message;
+  final Data? data;
+
+  Store({this.message, this.data, });
+
+  factory Store.fromJson(Map&lt;String, dynamic&gt; json) =&gt; Store(
+    message: json['message'],
+    data: json['data'] != null ? Data.fromJson(json['data'] as Map&lt;String, dynamic&gt;) : null,
+  );
+
+  Map&lt;String, dynamic&gt; toJson() =&gt; {
+    'message': message,
+    'data': data?.toJson(),
+  };
+}
+
+class Data {
+  final int? id;
+  final String? title;
+
+  Data({this.id, this.title, });
+
+  factory Data.fromJson(Map&lt;String, dynamic&gt; json) =&gt; Data(
+    id: json['id'],
+    title: json['title'],
+  );
+
+  Map&lt;String, dynamic&gt; toJson() =&gt; {
+    'id': id,
+    'title': title,
+  };
+}</code></pre></div>
+
+</span>
+
+<span id="example-responses-POSTapi-v3-user-private-collaborations-store">
+            <blockquote>
+            <p>Example response (200):</p>
+        </blockquote>
+                <pre>
+
+<code class="language-json" style="max-height: 300px;">{
+    &quot;message&quot;: &quot;Private collaboration created successfully.&quot;,
+    &quot;data&quot;: {
+        &quot;id&quot;: 1,
+        &quot;title&quot;: &quot;Team for Project Z&quot;
+    }
+}</code>
+ </pre>
+            <blockquote>
+            <p>Example response (201):</p>
+        </blockquote>
+                <pre>
+
+<code class="language-json" style="max-height: 300px;">{
+    &quot;error&quot;: &quot;Failed to create collaboration.&quot;
+}</code>
+ </pre>
+    </span>
+<span id="execution-results-POSTapi-v3-user-private-collaborations-store" hidden>
+    <blockquote>Received response<span
+                id="execution-response-status-POSTapi-v3-user-private-collaborations-store"></span>:
+    </blockquote>
+    <pre class="json"><code id="execution-response-content-POSTapi-v3-user-private-collaborations-store"
+      data-empty-response-text="<Empty response>" style="max-height: 400px;"></code></pre>
+</span>
+<span id="execution-error-POSTapi-v3-user-private-collaborations-store" hidden>
+    <blockquote>Request failed with error:</blockquote>
+    <pre><code id="execution-error-message-POSTapi-v3-user-private-collaborations-store">
+
+Tip: Check that you&#039;re properly connected to the network.
+If you&#039;re a maintainer of ths API, verify that your API is running and you&#039;ve enabled CORS.
+You can check the Dev Tools console for debugging information.</code></pre>
+</span>
+<form id="form-POSTapi-v3-user-private-collaborations-store" data-method="POST"
+      data-path="api/v3/user/private-collaborations/store"
+      data-authed="1"
+      data-hasfiles="0"
+      data-isarraybody="0"
+      autocomplete="off"
+      onsubmit="event.preventDefault(); executeTryOut('POSTapi-v3-user-private-collaborations-store', this);">
+    <h3>
+        Request&nbsp;&nbsp;&nbsp;
+                    <button type="button"
+                    style="background-color: #8fbcd4; padding: 5px 10px; border-radius: 5px; border-width: thin;"
+                    id="btn-tryout-POSTapi-v3-user-private-collaborations-store"
+                    onclick="tryItOut('POSTapi-v3-user-private-collaborations-store');">Try it out ⚡
+            </button>
+            <button type="button"
+                    style="background-color: #c97a7e; padding: 5px 10px; border-radius: 5px; border-width: thin;"
+                    id="btn-canceltryout-POSTapi-v3-user-private-collaborations-store"
+                    onclick="cancelTryOut('POSTapi-v3-user-private-collaborations-store');" hidden>Cancel 🛑
+            </button>&nbsp;&nbsp;
+            <button type="submit"
+                    style="background-color: #6ac174; padding: 5px 10px; border-radius: 5px; border-width: thin;"
+                    id="btn-executetryout-POSTapi-v3-user-private-collaborations-store"
+                    data-initial-text="Send Request 💥"
+                    data-loading-text="⏱ Sending..."
+                    hidden>Send Request 💥
+            </button>
+            </h3>
+            <p>
+            <small class="badge badge-black">POST</small>
+            <b><code>api/v3/user/private-collaborations/store</code></b>
+        </p>
+                <h4 class="fancy-heading-panel"><b>Headers</b></h4>
+                                <div style="padding-left: 28px; clear: unset;">
+                <b style="line-height: 2;"><code>Authorization</code></b>&nbsp;&nbsp;
+&nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+                              name="Authorization" class="auth-value"               data-endpoint="POSTapi-v3-user-private-collaborations-store"
+               value="Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJhdWQiOiIxIiwianRpIjoiNTJkNDhkYzhjNTc4ODIwZWVmODFmY2NhOWJiMmJiODFlZGE1MTUwMTVkYmU5YzdkNzFkODAyYTRmZWNhMWQ5ZGJhYWEzMTc2YjI1OTJmMTgiLCJpYXQiOjE3NjQwNjAzNDQuMDUyOTc0LCJuYmYiOjE3NjQwNjAzNDQuMDUyOTc1LCJleHAiOjE3OTU1OTYzNDQuMDQzNjUyLCJzdWIiOiIxNjgiLCJzY29wZXMiOltdfQ.X9tS38uM-UlrpFlYZihD_kmuCcSX_hdGsRBJcNGfrWXAClMiqeTxNTC45Ftxw-ddmDQ59t5xJLlnWp2Rx57itO-IHclNmwnVJDPAh1l9D8CZBGxBSoN0FvmbWeYDNQnA7ud77YLekrcSAuKMdBX3J1UKq6ytvWwi6ChnuRFqcQ-fpzK-jgkMhGm-WFHw0H3a34afdBdSUUFutESlwMvTqmXILYVcIwaJpEAjamf3rn6wIOEoD8mbxXJ6Gb6QrRO72Kt3z62vJp7yOeMsnXUkfioVSyJVwbkbchCs2Y4YZY3FEREbKysKNdHJhhqmn6AXvx66arAK3HeZoyf5eusfk26alhbEdJqsJgFP5VROV5l57q8VKhH8hAxg-oeidCGGJXPjLGeb-5iGPjdGhQ1Ng1i9kt7VDV4icb8B2AbNC2Ie9xP6b0R11PX4jUd8D3Jogf2f0ZhAs5Is8WHcrxsCyk3lWvgOyzWxpRx2lSpmBRmSwksPrKJk_7JuzDZ1Tdpz6mubjV6DzlmqDJJjf32hBIMnaYOhOUz5k1FzZ8mybsSbnM9UjzHYr5xIf4rkmVAfuPnU2FGu8NtCQaOtt9G-TziBFgT3ZjxBCL9QaaC39BRulGE6tyCAT8NM9svTD_AbNyINUzO2M0R61OXYQfzXEeiui-sO6eYIc3x_z-YdFFQ"
+               data-component="header">
+    <br>
+<p>Example: <code>Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJhdWQiOiIxIiwianRpIjoiNTJkNDhkYzhjNTc4ODIwZWVmODFmY2NhOWJiMmJiODFlZGE1MTUwMTVkYmU5YzdkNzFkODAyYTRmZWNhMWQ5ZGJhYWEzMTc2YjI1OTJmMTgiLCJpYXQiOjE3NjQwNjAzNDQuMDUyOTc0LCJuYmYiOjE3NjQwNjAzNDQuMDUyOTc1LCJleHAiOjE3OTU1OTYzNDQuMDQzNjUyLCJzdWIiOiIxNjgiLCJzY29wZXMiOltdfQ.X9tS38uM-UlrpFlYZihD_kmuCcSX_hdGsRBJcNGfrWXAClMiqeTxNTC45Ftxw-ddmDQ59t5xJLlnWp2Rx57itO-IHclNmwnVJDPAh1l9D8CZBGxBSoN0FvmbWeYDNQnA7ud77YLekrcSAuKMdBX3J1UKq6ytvWwi6ChnuRFqcQ-fpzK-jgkMhGm-WFHw0H3a34afdBdSUUFutESlwMvTqmXILYVcIwaJpEAjamf3rn6wIOEoD8mbxXJ6Gb6QrRO72Kt3z62vJp7yOeMsnXUkfioVSyJVwbkbchCs2Y4YZY3FEREbKysKNdHJhhqmn6AXvx66arAK3HeZoyf5eusfk26alhbEdJqsJgFP5VROV5l57q8VKhH8hAxg-oeidCGGJXPjLGeb-5iGPjdGhQ1Ng1i9kt7VDV4icb8B2AbNC2Ie9xP6b0R11PX4jUd8D3Jogf2f0ZhAs5Is8WHcrxsCyk3lWvgOyzWxpRx2lSpmBRmSwksPrKJk_7JuzDZ1Tdpz6mubjV6DzlmqDJJjf32hBIMnaYOhOUz5k1FzZ8mybsSbnM9UjzHYr5xIf4rkmVAfuPnU2FGu8NtCQaOtt9G-TziBFgT3ZjxBCL9QaaC39BRulGE6tyCAT8NM9svTD_AbNyINUzO2M0R61OXYQfzXEeiui-sO6eYIc3x_z-YdFFQ</code></p>
+            </div>
+                                <div style="padding-left: 28px; clear: unset;">
+                <b style="line-height: 2;"><code>Content-Type</code></b>&nbsp;&nbsp;
+&nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+                              name="Content-Type"                data-endpoint="POSTapi-v3-user-private-collaborations-store"
+               value="application/json"
+               data-component="header">
+    <br>
+<p>Example: <code>application/json</code></p>
+            </div>
+                                <div style="padding-left: 28px; clear: unset;">
+                <b style="line-height: 2;"><code>Accept</code></b>&nbsp;&nbsp;
+&nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+                              name="Accept"                data-endpoint="POSTapi-v3-user-private-collaborations-store"
+               value="application/json"
+               data-component="header">
+    <br>
+<p>Example: <code>application/json</code></p>
+            </div>
+                                <h4 class="fancy-heading-panel"><b>Body Parameters</b></h4>
+        <div style=" padding-left: 28px;  clear: unset;">
+            <b style="line-height: 2;"><code>title</code></b>&nbsp;&nbsp;
+<small>string</small>&nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+                              name="title"                data-endpoint="POSTapi-v3-user-private-collaborations-store"
+               value=""Team for Project Z""
+               data-component="body">
+    <br>
+<p>The title of the collaboration. Example: <code>"Team for Project Z"</code></p>
+        </div>
+                <div style=" padding-left: 28px;  clear: unset;">
+            <b style="line-height: 2;"><code>description</code></b>&nbsp;&nbsp;
+<small>string</small>&nbsp;
+<i>optional</i> &nbsp;
+                <input type="text" style="display: none"
+                              name="description"                data-endpoint="POSTapi-v3-user-private-collaborations-store"
+               value=""Meeting to discuss project Z""
+               data-component="body">
+    <br>
+<p>optional The description. Example: <code>"Meeting to discuss project Z"</code></p>
+        </div>
+                <div style=" padding-left: 28px;  clear: unset;">
+            <b style="line-height: 2;"><code>start_time</code></b>&nbsp;&nbsp;
+<small>datetime</small>&nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+                              name="start_time"                data-endpoint="POSTapi-v3-user-private-collaborations-store"
+               value="2024-11-22T10:00:00"
+               data-component="body">
+    <br>
+<p>The start time in ISO 8601 format. Example: <code>2024-11-22T10:00:00</code></p>
+        </div>
+                <div style=" padding-left: 28px;  clear: unset;">
+            <b style="line-height: 2;"><code>end_time</code></b>&nbsp;&nbsp;
+<small>datetime</small>&nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+                              name="end_time"                data-endpoint="POSTapi-v3-user-private-collaborations-store"
+               value="2024-11-22T11:00:00"
+               data-component="body">
+    <br>
+<p>The end time in ISO 8601 format. Example: <code>2024-11-22T11:00:00</code></p>
+        </div>
+                <div style=" padding-left: 28px;  clear: unset;">
+            <b style="line-height: 2;"><code>meeting_link</code></b>&nbsp;&nbsp;
+<small>string</small>&nbsp;
+<i>optional</i> &nbsp;
+                <input type="text" style="display: none"
+                              name="meeting_link"                data-endpoint="POSTapi-v3-user-private-collaborations-store"
+               value="https://meet.example.com/abc"
+               data-component="body">
+    <br>
+<p>optional Meeting link (if not creating Zoom meeting). Example: <code>https://meet.example.com/abc</code></p>
+        </div>
+                <div style=" padding-left: 28px;  clear: unset;">
+            <b style="line-height: 2;"><code>create_zoom</code></b>&nbsp;&nbsp;
+<small>boolean</small>&nbsp;
+<i>optional</i> &nbsp;
+                <label data-endpoint="POSTapi-v3-user-private-collaborations-store" style="display: none">
+            <input type="radio" name="create_zoom"
+                   value="true"
+                   data-endpoint="POSTapi-v3-user-private-collaborations-store"
+                   data-component="body"             >
+            <code>true</code>
+        </label>
+        <label data-endpoint="POSTapi-v3-user-private-collaborations-store" style="display: none">
+            <input type="radio" name="create_zoom"
+                   value="false"
+                   data-endpoint="POSTapi-v3-user-private-collaborations-store"
+                   data-component="body"             >
+            <code>false</code>
+        </label>
+    <br>
+<p>optional Create a Zoom meeting automatically. Example: <code>true</code></p>
+        </div>
+        </form>
+
+                    <h2 id="private-collaborations-GETapi-v3-user-private-collaborations-view--id-">Get a single collaboration</h2>
+
+<p>
+<small class="badge badge-darkred">requires authentication</small>
+</p>
+
+
+
+<span id="example-requests-GETapi-v3-user-private-collaborations-view--id-">
+<blockquote>Example request:</blockquote>
+
+
+<div class="bash-example">
+    <pre><code class="language-bash">curl --request GET \
+    --get "http://127.0.0.1:8000/api/v3/user/private-collaborations/view/1" \
+    --header "Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJhdWQiOiIxIiwianRpIjoiNTJkNDhkYzhjNTc4ODIwZWVmODFmY2NhOWJiMmJiODFlZGE1MTUwMTVkYmU5YzdkNzFkODAyYTRmZWNhMWQ5ZGJhYWEzMTc2YjI1OTJmMTgiLCJpYXQiOjE3NjQwNjAzNDQuMDUyOTc0LCJuYmYiOjE3NjQwNjAzNDQuMDUyOTc1LCJleHAiOjE3OTU1OTYzNDQuMDQzNjUyLCJzdWIiOiIxNjgiLCJzY29wZXMiOltdfQ.X9tS38uM-UlrpFlYZihD_kmuCcSX_hdGsRBJcNGfrWXAClMiqeTxNTC45Ftxw-ddmDQ59t5xJLlnWp2Rx57itO-IHclNmwnVJDPAh1l9D8CZBGxBSoN0FvmbWeYDNQnA7ud77YLekrcSAuKMdBX3J1UKq6ytvWwi6ChnuRFqcQ-fpzK-jgkMhGm-WFHw0H3a34afdBdSUUFutESlwMvTqmXILYVcIwaJpEAjamf3rn6wIOEoD8mbxXJ6Gb6QrRO72Kt3z62vJp7yOeMsnXUkfioVSyJVwbkbchCs2Y4YZY3FEREbKysKNdHJhhqmn6AXvx66arAK3HeZoyf5eusfk26alhbEdJqsJgFP5VROV5l57q8VKhH8hAxg-oeidCGGJXPjLGeb-5iGPjdGhQ1Ng1i9kt7VDV4icb8B2AbNC2Ie9xP6b0R11PX4jUd8D3Jogf2f0ZhAs5Is8WHcrxsCyk3lWvgOyzWxpRx2lSpmBRmSwksPrKJk_7JuzDZ1Tdpz6mubjV6DzlmqDJJjf32hBIMnaYOhOUz5k1FzZ8mybsSbnM9UjzHYr5xIf4rkmVAfuPnU2FGu8NtCQaOtt9G-TziBFgT3ZjxBCL9QaaC39BRulGE6tyCAT8NM9svTD_AbNyINUzO2M0R61OXYQfzXEeiui-sO6eYIc3x_z-YdFFQ" \
+    --header "Content-Type: application/json" \
+    --header "Accept: application/json"</code></pre></div>
+
+
+<div class="javascript-example">
+    <pre><code class="language-javascript">const url = new URL(
+    "http://127.0.0.1:8000/api/v3/user/private-collaborations/view/1"
+);
+
+const headers = {
+    "Authorization": "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJhdWQiOiIxIiwianRpIjoiNTJkNDhkYzhjNTc4ODIwZWVmODFmY2NhOWJiMmJiODFlZGE1MTUwMTVkYmU5YzdkNzFkODAyYTRmZWNhMWQ5ZGJhYWEzMTc2YjI1OTJmMTgiLCJpYXQiOjE3NjQwNjAzNDQuMDUyOTc0LCJuYmYiOjE3NjQwNjAzNDQuMDUyOTc1LCJleHAiOjE3OTU1OTYzNDQuMDQzNjUyLCJzdWIiOiIxNjgiLCJzY29wZXMiOltdfQ.X9tS38uM-UlrpFlYZihD_kmuCcSX_hdGsRBJcNGfrWXAClMiqeTxNTC45Ftxw-ddmDQ59t5xJLlnWp2Rx57itO-IHclNmwnVJDPAh1l9D8CZBGxBSoN0FvmbWeYDNQnA7ud77YLekrcSAuKMdBX3J1UKq6ytvWwi6ChnuRFqcQ-fpzK-jgkMhGm-WFHw0H3a34afdBdSUUFutESlwMvTqmXILYVcIwaJpEAjamf3rn6wIOEoD8mbxXJ6Gb6QrRO72Kt3z62vJp7yOeMsnXUkfioVSyJVwbkbchCs2Y4YZY3FEREbKysKNdHJhhqmn6AXvx66arAK3HeZoyf5eusfk26alhbEdJqsJgFP5VROV5l57q8VKhH8hAxg-oeidCGGJXPjLGeb-5iGPjdGhQ1Ng1i9kt7VDV4icb8B2AbNC2Ie9xP6b0R11PX4jUd8D3Jogf2f0ZhAs5Is8WHcrxsCyk3lWvgOyzWxpRx2lSpmBRmSwksPrKJk_7JuzDZ1Tdpz6mubjV6DzlmqDJJjf32hBIMnaYOhOUz5k1FzZ8mybsSbnM9UjzHYr5xIf4rkmVAfuPnU2FGu8NtCQaOtt9G-TziBFgT3ZjxBCL9QaaC39BRulGE6tyCAT8NM9svTD_AbNyINUzO2M0R61OXYQfzXEeiui-sO6eYIc3x_z-YdFFQ",
+    "Content-Type": "application/json",
+    "Accept": "application/json",
+};
+
+fetch(url, {
+    method: "GET",
+    headers,
+}).then(response =&gt; response.json());</code></pre></div>
+
+
+<div class="jsonToDart-example">
+    <pre><code class="language-dart">
+class 1 {
+  final Data? data;
+  final bool? is_creator;
+  final bool? has_accepted;
+
+  1({this.data, this.is_creator, this.has_accepted, });
+
+  factory 1.fromJson(Map&lt;String, dynamic&gt; json) =&gt; 1(
+    data: json['data'] != null ? Data.fromJson(json['data'] as Map&lt;String, dynamic&gt;) : null,
+    is_creator: json['is_creator'],
+    has_accepted: json['has_accepted'],
+  );
+
+  Map&lt;String, dynamic&gt; toJson() =&gt; {
+    'data': data?.toJson(),
+    'is_creator': is_creator,
+    'has_accepted': has_accepted,
+  };
+}
+
+class Data {
+  final int? id;
+  final String? title;
+  final Invitations? invitations;
+
+  Data({this.id, this.title, this.invitations, });
+
+  factory Data.fromJson(Map&lt;String, dynamic&gt; json) =&gt; Data(
+    id: json['id'],
+    title: json['title'],
+    invitations: json['invitations'] != null ? Invitations.fromJson(json['invitations'] as Map&lt;String, dynamic&gt;) : null,
+  );
+
+  Map&lt;String, dynamic&gt; toJson() =&gt; {
+    'id': id,
+    'title': title,
+    'invitations': invitations?.toJson(),
+  };
+}
+
+class Invitations {
+
+  Invitations({});
+
+  factory Invitations.fromJson(Map&lt;String, dynamic&gt; json) =&gt; Invitations(
+  );
+
+  Map&lt;String, dynamic&gt; toJson() =&gt; {
+  };
+}</code></pre></div>
+
+</span>
+
+<span id="example-responses-GETapi-v3-user-private-collaborations-view--id-">
+            <blockquote>
+            <p>Example response (200):</p>
+        </blockquote>
+                <pre>
+
+<code class="language-json" style="max-height: 300px;">{
+    &quot;data&quot;: {
+        &quot;id&quot;: 1,
+        &quot;title&quot;: &quot;Project Sync&quot;,
+        &quot;invitations&quot;: []
+    },
+    &quot;is_creator&quot;: true,
+    &quot;has_accepted&quot;: true
+}</code>
+ </pre>
+            <blockquote>
+            <p>Example response (404):</p>
+        </blockquote>
+                <pre>
+
+<code class="language-json" style="max-height: 300px;">{
+    &quot;error&quot;: &quot;Collaboration not found.&quot;
+}</code>
+ </pre>
+    </span>
+<span id="execution-results-GETapi-v3-user-private-collaborations-view--id-" hidden>
+    <blockquote>Received response<span
+                id="execution-response-status-GETapi-v3-user-private-collaborations-view--id-"></span>:
+    </blockquote>
+    <pre class="json"><code id="execution-response-content-GETapi-v3-user-private-collaborations-view--id-"
+      data-empty-response-text="<Empty response>" style="max-height: 400px;"></code></pre>
+</span>
+<span id="execution-error-GETapi-v3-user-private-collaborations-view--id-" hidden>
+    <blockquote>Request failed with error:</blockquote>
+    <pre><code id="execution-error-message-GETapi-v3-user-private-collaborations-view--id-">
+
+Tip: Check that you&#039;re properly connected to the network.
+If you&#039;re a maintainer of ths API, verify that your API is running and you&#039;ve enabled CORS.
+You can check the Dev Tools console for debugging information.</code></pre>
+</span>
+<form id="form-GETapi-v3-user-private-collaborations-view--id-" data-method="GET"
+      data-path="api/v3/user/private-collaborations/view/{id}"
+      data-authed="1"
+      data-hasfiles="0"
+      data-isarraybody="0"
+      autocomplete="off"
+      onsubmit="event.preventDefault(); executeTryOut('GETapi-v3-user-private-collaborations-view--id-', this);">
+    <h3>
+        Request&nbsp;&nbsp;&nbsp;
+                    <button type="button"
+                    style="background-color: #8fbcd4; padding: 5px 10px; border-radius: 5px; border-width: thin;"
+                    id="btn-tryout-GETapi-v3-user-private-collaborations-view--id-"
+                    onclick="tryItOut('GETapi-v3-user-private-collaborations-view--id-');">Try it out ⚡
+            </button>
+            <button type="button"
+                    style="background-color: #c97a7e; padding: 5px 10px; border-radius: 5px; border-width: thin;"
+                    id="btn-canceltryout-GETapi-v3-user-private-collaborations-view--id-"
+                    onclick="cancelTryOut('GETapi-v3-user-private-collaborations-view--id-');" hidden>Cancel 🛑
+            </button>&nbsp;&nbsp;
+            <button type="submit"
+                    style="background-color: #6ac174; padding: 5px 10px; border-radius: 5px; border-width: thin;"
+                    id="btn-executetryout-GETapi-v3-user-private-collaborations-view--id-"
+                    data-initial-text="Send Request 💥"
+                    data-loading-text="⏱ Sending..."
+                    hidden>Send Request 💥
+            </button>
+            </h3>
+            <p>
+            <small class="badge badge-green">GET</small>
+            <b><code>api/v3/user/private-collaborations/view/{id}</code></b>
+        </p>
+                <h4 class="fancy-heading-panel"><b>Headers</b></h4>
+                                <div style="padding-left: 28px; clear: unset;">
+                <b style="line-height: 2;"><code>Authorization</code></b>&nbsp;&nbsp;
+&nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+                              name="Authorization" class="auth-value"               data-endpoint="GETapi-v3-user-private-collaborations-view--id-"
+               value="Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJhdWQiOiIxIiwianRpIjoiNTJkNDhkYzhjNTc4ODIwZWVmODFmY2NhOWJiMmJiODFlZGE1MTUwMTVkYmU5YzdkNzFkODAyYTRmZWNhMWQ5ZGJhYWEzMTc2YjI1OTJmMTgiLCJpYXQiOjE3NjQwNjAzNDQuMDUyOTc0LCJuYmYiOjE3NjQwNjAzNDQuMDUyOTc1LCJleHAiOjE3OTU1OTYzNDQuMDQzNjUyLCJzdWIiOiIxNjgiLCJzY29wZXMiOltdfQ.X9tS38uM-UlrpFlYZihD_kmuCcSX_hdGsRBJcNGfrWXAClMiqeTxNTC45Ftxw-ddmDQ59t5xJLlnWp2Rx57itO-IHclNmwnVJDPAh1l9D8CZBGxBSoN0FvmbWeYDNQnA7ud77YLekrcSAuKMdBX3J1UKq6ytvWwi6ChnuRFqcQ-fpzK-jgkMhGm-WFHw0H3a34afdBdSUUFutESlwMvTqmXILYVcIwaJpEAjamf3rn6wIOEoD8mbxXJ6Gb6QrRO72Kt3z62vJp7yOeMsnXUkfioVSyJVwbkbchCs2Y4YZY3FEREbKysKNdHJhhqmn6AXvx66arAK3HeZoyf5eusfk26alhbEdJqsJgFP5VROV5l57q8VKhH8hAxg-oeidCGGJXPjLGeb-5iGPjdGhQ1Ng1i9kt7VDV4icb8B2AbNC2Ie9xP6b0R11PX4jUd8D3Jogf2f0ZhAs5Is8WHcrxsCyk3lWvgOyzWxpRx2lSpmBRmSwksPrKJk_7JuzDZ1Tdpz6mubjV6DzlmqDJJjf32hBIMnaYOhOUz5k1FzZ8mybsSbnM9UjzHYr5xIf4rkmVAfuPnU2FGu8NtCQaOtt9G-TziBFgT3ZjxBCL9QaaC39BRulGE6tyCAT8NM9svTD_AbNyINUzO2M0R61OXYQfzXEeiui-sO6eYIc3x_z-YdFFQ"
+               data-component="header">
+    <br>
+<p>Example: <code>Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJhdWQiOiIxIiwianRpIjoiNTJkNDhkYzhjNTc4ODIwZWVmODFmY2NhOWJiMmJiODFlZGE1MTUwMTVkYmU5YzdkNzFkODAyYTRmZWNhMWQ5ZGJhYWEzMTc2YjI1OTJmMTgiLCJpYXQiOjE3NjQwNjAzNDQuMDUyOTc0LCJuYmYiOjE3NjQwNjAzNDQuMDUyOTc1LCJleHAiOjE3OTU1OTYzNDQuMDQzNjUyLCJzdWIiOiIxNjgiLCJzY29wZXMiOltdfQ.X9tS38uM-UlrpFlYZihD_kmuCcSX_hdGsRBJcNGfrWXAClMiqeTxNTC45Ftxw-ddmDQ59t5xJLlnWp2Rx57itO-IHclNmwnVJDPAh1l9D8CZBGxBSoN0FvmbWeYDNQnA7ud77YLekrcSAuKMdBX3J1UKq6ytvWwi6ChnuRFqcQ-fpzK-jgkMhGm-WFHw0H3a34afdBdSUUFutESlwMvTqmXILYVcIwaJpEAjamf3rn6wIOEoD8mbxXJ6Gb6QrRO72Kt3z62vJp7yOeMsnXUkfioVSyJVwbkbchCs2Y4YZY3FEREbKysKNdHJhhqmn6AXvx66arAK3HeZoyf5eusfk26alhbEdJqsJgFP5VROV5l57q8VKhH8hAxg-oeidCGGJXPjLGeb-5iGPjdGhQ1Ng1i9kt7VDV4icb8B2AbNC2Ie9xP6b0R11PX4jUd8D3Jogf2f0ZhAs5Is8WHcrxsCyk3lWvgOyzWxpRx2lSpmBRmSwksPrKJk_7JuzDZ1Tdpz6mubjV6DzlmqDJJjf32hBIMnaYOhOUz5k1FzZ8mybsSbnM9UjzHYr5xIf4rkmVAfuPnU2FGu8NtCQaOtt9G-TziBFgT3ZjxBCL9QaaC39BRulGE6tyCAT8NM9svTD_AbNyINUzO2M0R61OXYQfzXEeiui-sO6eYIc3x_z-YdFFQ</code></p>
+            </div>
+                                <div style="padding-left: 28px; clear: unset;">
+                <b style="line-height: 2;"><code>Content-Type</code></b>&nbsp;&nbsp;
+&nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+                              name="Content-Type"                data-endpoint="GETapi-v3-user-private-collaborations-view--id-"
+               value="application/json"
+               data-component="header">
+    <br>
+<p>Example: <code>application/json</code></p>
+            </div>
+                                <div style="padding-left: 28px; clear: unset;">
+                <b style="line-height: 2;"><code>Accept</code></b>&nbsp;&nbsp;
+&nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+                              name="Accept"                data-endpoint="GETapi-v3-user-private-collaborations-view--id-"
+               value="application/json"
+               data-component="header">
+    <br>
+<p>Example: <code>application/json</code></p>
+            </div>
+                        <h4 class="fancy-heading-panel"><b>URL Parameters</b></h4>
+                    <div style="padding-left: 28px; clear: unset;">
+                <b style="line-height: 2;"><code>id</code></b>&nbsp;&nbsp;
+<small>integer</small>&nbsp;
+ &nbsp;
+                <input type="number" style="display: none"
+               step="any"               name="id"                data-endpoint="GETapi-v3-user-private-collaborations-view--id-"
+               value="1"
+               data-component="url">
+    <br>
+<p>The ID of the collaboration. Example: <code>1</code></p>
+            </div>
+                    </form>
+
+                    <h2 id="private-collaborations-POSTapi-v3-user-private-collaborations-edit--id-">Update a collaboration</h2>
+
+<p>
+<small class="badge badge-darkred">requires authentication</small>
+</p>
+
+
+
+<span id="example-requests-POSTapi-v3-user-private-collaborations-edit--id-">
+<blockquote>Example request:</blockquote>
+
+
+<div class="bash-example">
+    <pre><code class="language-bash">curl --request POST \
+    "http://127.0.0.1:8000/api/v3/user/private-collaborations/edit/1" \
+    --header "Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJhdWQiOiIxIiwianRpIjoiNTJkNDhkYzhjNTc4ODIwZWVmODFmY2NhOWJiMmJiODFlZGE1MTUwMTVkYmU5YzdkNzFkODAyYTRmZWNhMWQ5ZGJhYWEzMTc2YjI1OTJmMTgiLCJpYXQiOjE3NjQwNjAzNDQuMDUyOTc0LCJuYmYiOjE3NjQwNjAzNDQuMDUyOTc1LCJleHAiOjE3OTU1OTYzNDQuMDQzNjUyLCJzdWIiOiIxNjgiLCJzY29wZXMiOltdfQ.X9tS38uM-UlrpFlYZihD_kmuCcSX_hdGsRBJcNGfrWXAClMiqeTxNTC45Ftxw-ddmDQ59t5xJLlnWp2Rx57itO-IHclNmwnVJDPAh1l9D8CZBGxBSoN0FvmbWeYDNQnA7ud77YLekrcSAuKMdBX3J1UKq6ytvWwi6ChnuRFqcQ-fpzK-jgkMhGm-WFHw0H3a34afdBdSUUFutESlwMvTqmXILYVcIwaJpEAjamf3rn6wIOEoD8mbxXJ6Gb6QrRO72Kt3z62vJp7yOeMsnXUkfioVSyJVwbkbchCs2Y4YZY3FEREbKysKNdHJhhqmn6AXvx66arAK3HeZoyf5eusfk26alhbEdJqsJgFP5VROV5l57q8VKhH8hAxg-oeidCGGJXPjLGeb-5iGPjdGhQ1Ng1i9kt7VDV4icb8B2AbNC2Ie9xP6b0R11PX4jUd8D3Jogf2f0ZhAs5Is8WHcrxsCyk3lWvgOyzWxpRx2lSpmBRmSwksPrKJk_7JuzDZ1Tdpz6mubjV6DzlmqDJJjf32hBIMnaYOhOUz5k1FzZ8mybsSbnM9UjzHYr5xIf4rkmVAfuPnU2FGu8NtCQaOtt9G-TziBFgT3ZjxBCL9QaaC39BRulGE6tyCAT8NM9svTD_AbNyINUzO2M0R61OXYQfzXEeiui-sO6eYIc3x_z-YdFFQ" \
+    --header "Content-Type: application/json" \
+    --header "Accept: application/json" \
+    --data "{
+    \"title\": \"quibusdam\",
+    \"description\": \"Qui reprehenderit voluptate natus.\",
+    \"start_time\": \"eum\",
+    \"end_time\": \"recusandae\",
+    \"meeting_link\": \"quia\",
+    \"create_zoom\": false
+}"
+</code></pre></div>
+
+
+<div class="javascript-example">
+    <pre><code class="language-javascript">const url = new URL(
+    "http://127.0.0.1:8000/api/v3/user/private-collaborations/edit/1"
+);
+
+const headers = {
+    "Authorization": "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJhdWQiOiIxIiwianRpIjoiNTJkNDhkYzhjNTc4ODIwZWVmODFmY2NhOWJiMmJiODFlZGE1MTUwMTVkYmU5YzdkNzFkODAyYTRmZWNhMWQ5ZGJhYWEzMTc2YjI1OTJmMTgiLCJpYXQiOjE3NjQwNjAzNDQuMDUyOTc0LCJuYmYiOjE3NjQwNjAzNDQuMDUyOTc1LCJleHAiOjE3OTU1OTYzNDQuMDQzNjUyLCJzdWIiOiIxNjgiLCJzY29wZXMiOltdfQ.X9tS38uM-UlrpFlYZihD_kmuCcSX_hdGsRBJcNGfrWXAClMiqeTxNTC45Ftxw-ddmDQ59t5xJLlnWp2Rx57itO-IHclNmwnVJDPAh1l9D8CZBGxBSoN0FvmbWeYDNQnA7ud77YLekrcSAuKMdBX3J1UKq6ytvWwi6ChnuRFqcQ-fpzK-jgkMhGm-WFHw0H3a34afdBdSUUFutESlwMvTqmXILYVcIwaJpEAjamf3rn6wIOEoD8mbxXJ6Gb6QrRO72Kt3z62vJp7yOeMsnXUkfioVSyJVwbkbchCs2Y4YZY3FEREbKysKNdHJhhqmn6AXvx66arAK3HeZoyf5eusfk26alhbEdJqsJgFP5VROV5l57q8VKhH8hAxg-oeidCGGJXPjLGeb-5iGPjdGhQ1Ng1i9kt7VDV4icb8B2AbNC2Ie9xP6b0R11PX4jUd8D3Jogf2f0ZhAs5Is8WHcrxsCyk3lWvgOyzWxpRx2lSpmBRmSwksPrKJk_7JuzDZ1Tdpz6mubjV6DzlmqDJJjf32hBIMnaYOhOUz5k1FzZ8mybsSbnM9UjzHYr5xIf4rkmVAfuPnU2FGu8NtCQaOtt9G-TziBFgT3ZjxBCL9QaaC39BRulGE6tyCAT8NM9svTD_AbNyINUzO2M0R61OXYQfzXEeiui-sO6eYIc3x_z-YdFFQ",
+    "Content-Type": "application/json",
+    "Accept": "application/json",
+};
+
+let body = {
+    "title": "quibusdam",
+    "description": "Qui reprehenderit voluptate natus.",
+    "start_time": "eum",
+    "end_time": "recusandae",
+    "meeting_link": "quia",
+    "create_zoom": false
+};
+
+fetch(url, {
+    method: "POST",
+    headers,
+    body: JSON.stringify(body),
+}).then(response =&gt; response.json());</code></pre></div>
+
+
+<div class="jsonToDart-example">
+    <pre><code class="language-dart">
+class 1 {
+  final String? message;
+
+  1({this.message, });
+
+  factory 1.fromJson(Map&lt;String, dynamic&gt; json) =&gt; 1(
+    message: json['message'],
+  );
+
+  Map&lt;String, dynamic&gt; toJson() =&gt; {
+    'message': message,
+  };
+}</code></pre></div>
+
+</span>
+
+<span id="example-responses-POSTapi-v3-user-private-collaborations-edit--id-">
+            <blockquote>
+            <p>Example response (200):</p>
+        </blockquote>
+                <pre>
+
+<code class="language-json" style="max-height: 300px;">{
+    &quot;message&quot;: &quot;Private collaboration updated successfully.&quot;
+}</code>
+ </pre>
+            <blockquote>
+            <p>Example response (404):</p>
+        </blockquote>
+                <pre>
+
+<code class="language-json" style="max-height: 300px;">{
+    &quot;error&quot;: &quot;Collaboration not found.&quot;
+}</code>
+ </pre>
+    </span>
+<span id="execution-results-POSTapi-v3-user-private-collaborations-edit--id-" hidden>
+    <blockquote>Received response<span
+                id="execution-response-status-POSTapi-v3-user-private-collaborations-edit--id-"></span>:
+    </blockquote>
+    <pre class="json"><code id="execution-response-content-POSTapi-v3-user-private-collaborations-edit--id-"
+      data-empty-response-text="<Empty response>" style="max-height: 400px;"></code></pre>
+</span>
+<span id="execution-error-POSTapi-v3-user-private-collaborations-edit--id-" hidden>
+    <blockquote>Request failed with error:</blockquote>
+    <pre><code id="execution-error-message-POSTapi-v3-user-private-collaborations-edit--id-">
+
+Tip: Check that you&#039;re properly connected to the network.
+If you&#039;re a maintainer of ths API, verify that your API is running and you&#039;ve enabled CORS.
+You can check the Dev Tools console for debugging information.</code></pre>
+</span>
+<form id="form-POSTapi-v3-user-private-collaborations-edit--id-" data-method="POST"
+      data-path="api/v3/user/private-collaborations/edit/{id}"
+      data-authed="1"
+      data-hasfiles="0"
+      data-isarraybody="0"
+      autocomplete="off"
+      onsubmit="event.preventDefault(); executeTryOut('POSTapi-v3-user-private-collaborations-edit--id-', this);">
+    <h3>
+        Request&nbsp;&nbsp;&nbsp;
+                    <button type="button"
+                    style="background-color: #8fbcd4; padding: 5px 10px; border-radius: 5px; border-width: thin;"
+                    id="btn-tryout-POSTapi-v3-user-private-collaborations-edit--id-"
+                    onclick="tryItOut('POSTapi-v3-user-private-collaborations-edit--id-');">Try it out ⚡
+            </button>
+            <button type="button"
+                    style="background-color: #c97a7e; padding: 5px 10px; border-radius: 5px; border-width: thin;"
+                    id="btn-canceltryout-POSTapi-v3-user-private-collaborations-edit--id-"
+                    onclick="cancelTryOut('POSTapi-v3-user-private-collaborations-edit--id-');" hidden>Cancel 🛑
+            </button>&nbsp;&nbsp;
+            <button type="submit"
+                    style="background-color: #6ac174; padding: 5px 10px; border-radius: 5px; border-width: thin;"
+                    id="btn-executetryout-POSTapi-v3-user-private-collaborations-edit--id-"
+                    data-initial-text="Send Request 💥"
+                    data-loading-text="⏱ Sending..."
+                    hidden>Send Request 💥
+            </button>
+            </h3>
+            <p>
+            <small class="badge badge-black">POST</small>
+            <b><code>api/v3/user/private-collaborations/edit/{id}</code></b>
+        </p>
+                <h4 class="fancy-heading-panel"><b>Headers</b></h4>
+                                <div style="padding-left: 28px; clear: unset;">
+                <b style="line-height: 2;"><code>Authorization</code></b>&nbsp;&nbsp;
+&nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+                              name="Authorization" class="auth-value"               data-endpoint="POSTapi-v3-user-private-collaborations-edit--id-"
+               value="Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJhdWQiOiIxIiwianRpIjoiNTJkNDhkYzhjNTc4ODIwZWVmODFmY2NhOWJiMmJiODFlZGE1MTUwMTVkYmU5YzdkNzFkODAyYTRmZWNhMWQ5ZGJhYWEzMTc2YjI1OTJmMTgiLCJpYXQiOjE3NjQwNjAzNDQuMDUyOTc0LCJuYmYiOjE3NjQwNjAzNDQuMDUyOTc1LCJleHAiOjE3OTU1OTYzNDQuMDQzNjUyLCJzdWIiOiIxNjgiLCJzY29wZXMiOltdfQ.X9tS38uM-UlrpFlYZihD_kmuCcSX_hdGsRBJcNGfrWXAClMiqeTxNTC45Ftxw-ddmDQ59t5xJLlnWp2Rx57itO-IHclNmwnVJDPAh1l9D8CZBGxBSoN0FvmbWeYDNQnA7ud77YLekrcSAuKMdBX3J1UKq6ytvWwi6ChnuRFqcQ-fpzK-jgkMhGm-WFHw0H3a34afdBdSUUFutESlwMvTqmXILYVcIwaJpEAjamf3rn6wIOEoD8mbxXJ6Gb6QrRO72Kt3z62vJp7yOeMsnXUkfioVSyJVwbkbchCs2Y4YZY3FEREbKysKNdHJhhqmn6AXvx66arAK3HeZoyf5eusfk26alhbEdJqsJgFP5VROV5l57q8VKhH8hAxg-oeidCGGJXPjLGeb-5iGPjdGhQ1Ng1i9kt7VDV4icb8B2AbNC2Ie9xP6b0R11PX4jUd8D3Jogf2f0ZhAs5Is8WHcrxsCyk3lWvgOyzWxpRx2lSpmBRmSwksPrKJk_7JuzDZ1Tdpz6mubjV6DzlmqDJJjf32hBIMnaYOhOUz5k1FzZ8mybsSbnM9UjzHYr5xIf4rkmVAfuPnU2FGu8NtCQaOtt9G-TziBFgT3ZjxBCL9QaaC39BRulGE6tyCAT8NM9svTD_AbNyINUzO2M0R61OXYQfzXEeiui-sO6eYIc3x_z-YdFFQ"
+               data-component="header">
+    <br>
+<p>Example: <code>Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJhdWQiOiIxIiwianRpIjoiNTJkNDhkYzhjNTc4ODIwZWVmODFmY2NhOWJiMmJiODFlZGE1MTUwMTVkYmU5YzdkNzFkODAyYTRmZWNhMWQ5ZGJhYWEzMTc2YjI1OTJmMTgiLCJpYXQiOjE3NjQwNjAzNDQuMDUyOTc0LCJuYmYiOjE3NjQwNjAzNDQuMDUyOTc1LCJleHAiOjE3OTU1OTYzNDQuMDQzNjUyLCJzdWIiOiIxNjgiLCJzY29wZXMiOltdfQ.X9tS38uM-UlrpFlYZihD_kmuCcSX_hdGsRBJcNGfrWXAClMiqeTxNTC45Ftxw-ddmDQ59t5xJLlnWp2Rx57itO-IHclNmwnVJDPAh1l9D8CZBGxBSoN0FvmbWeYDNQnA7ud77YLekrcSAuKMdBX3J1UKq6ytvWwi6ChnuRFqcQ-fpzK-jgkMhGm-WFHw0H3a34afdBdSUUFutESlwMvTqmXILYVcIwaJpEAjamf3rn6wIOEoD8mbxXJ6Gb6QrRO72Kt3z62vJp7yOeMsnXUkfioVSyJVwbkbchCs2Y4YZY3FEREbKysKNdHJhhqmn6AXvx66arAK3HeZoyf5eusfk26alhbEdJqsJgFP5VROV5l57q8VKhH8hAxg-oeidCGGJXPjLGeb-5iGPjdGhQ1Ng1i9kt7VDV4icb8B2AbNC2Ie9xP6b0R11PX4jUd8D3Jogf2f0ZhAs5Is8WHcrxsCyk3lWvgOyzWxpRx2lSpmBRmSwksPrKJk_7JuzDZ1Tdpz6mubjV6DzlmqDJJjf32hBIMnaYOhOUz5k1FzZ8mybsSbnM9UjzHYr5xIf4rkmVAfuPnU2FGu8NtCQaOtt9G-TziBFgT3ZjxBCL9QaaC39BRulGE6tyCAT8NM9svTD_AbNyINUzO2M0R61OXYQfzXEeiui-sO6eYIc3x_z-YdFFQ</code></p>
+            </div>
+                                <div style="padding-left: 28px; clear: unset;">
+                <b style="line-height: 2;"><code>Content-Type</code></b>&nbsp;&nbsp;
+&nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+                              name="Content-Type"                data-endpoint="POSTapi-v3-user-private-collaborations-edit--id-"
+               value="application/json"
+               data-component="header">
+    <br>
+<p>Example: <code>application/json</code></p>
+            </div>
+                                <div style="padding-left: 28px; clear: unset;">
+                <b style="line-height: 2;"><code>Accept</code></b>&nbsp;&nbsp;
+&nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+                              name="Accept"                data-endpoint="POSTapi-v3-user-private-collaborations-edit--id-"
+               value="application/json"
+               data-component="header">
+    <br>
+<p>Example: <code>application/json</code></p>
+            </div>
+                        <h4 class="fancy-heading-panel"><b>URL Parameters</b></h4>
+                    <div style="padding-left: 28px; clear: unset;">
+                <b style="line-height: 2;"><code>id</code></b>&nbsp;&nbsp;
+<small>integer</small>&nbsp;
+ &nbsp;
+                <input type="number" style="display: none"
+               step="any"               name="id"                data-endpoint="POSTapi-v3-user-private-collaborations-edit--id-"
+               value="1"
+               data-component="url">
+    <br>
+<p>The ID of the collaboration. Example: <code>1</code></p>
+            </div>
+                            <h4 class="fancy-heading-panel"><b>Body Parameters</b></h4>
+        <div style=" padding-left: 28px;  clear: unset;">
+            <b style="line-height: 2;"><code>title</code></b>&nbsp;&nbsp;
+<small>string</small>&nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+                              name="title"                data-endpoint="POSTapi-v3-user-private-collaborations-edit--id-"
+               value="quibusdam"
+               data-component="body">
+    <br>
+<p>Example: <code>quibusdam</code></p>
+        </div>
+                <div style=" padding-left: 28px;  clear: unset;">
+            <b style="line-height: 2;"><code>description</code></b>&nbsp;&nbsp;
+<small>string</small>&nbsp;
+<i>optional</i> &nbsp;
+                <input type="text" style="display: none"
+                              name="description"                data-endpoint="POSTapi-v3-user-private-collaborations-edit--id-"
+               value="Qui reprehenderit voluptate natus."
+               data-component="body">
+    <br>
+<p>Example: <code>Qui reprehenderit voluptate natus.</code></p>
+        </div>
+                <div style=" padding-left: 28px;  clear: unset;">
+            <b style="line-height: 2;"><code>start_time</code></b>&nbsp;&nbsp;
+<small>datetime</small>&nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+                              name="start_time"                data-endpoint="POSTapi-v3-user-private-collaborations-edit--id-"
+               value="eum"
+               data-component="body">
+    <br>
+<p>Example: <code>eum</code></p>
+        </div>
+                <div style=" padding-left: 28px;  clear: unset;">
+            <b style="line-height: 2;"><code>end_time</code></b>&nbsp;&nbsp;
+<small>datetime</small>&nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+                              name="end_time"                data-endpoint="POSTapi-v3-user-private-collaborations-edit--id-"
+               value="recusandae"
+               data-component="body">
+    <br>
+<p>Example: <code>recusandae</code></p>
+        </div>
+                <div style=" padding-left: 28px;  clear: unset;">
+            <b style="line-height: 2;"><code>meeting_link</code></b>&nbsp;&nbsp;
+<small>string</small>&nbsp;
+<i>optional</i> &nbsp;
+                <input type="text" style="display: none"
+                              name="meeting_link"                data-endpoint="POSTapi-v3-user-private-collaborations-edit--id-"
+               value="quia"
+               data-component="body">
+    <br>
+<p>Example: <code>quia</code></p>
+        </div>
+                <div style=" padding-left: 28px;  clear: unset;">
+            <b style="line-height: 2;"><code>create_zoom</code></b>&nbsp;&nbsp;
+<small>boolean</small>&nbsp;
+<i>optional</i> &nbsp;
+                <label data-endpoint="POSTapi-v3-user-private-collaborations-edit--id-" style="display: none">
+            <input type="radio" name="create_zoom"
+                   value="true"
+                   data-endpoint="POSTapi-v3-user-private-collaborations-edit--id-"
+                   data-component="body"             >
+            <code>true</code>
+        </label>
+        <label data-endpoint="POSTapi-v3-user-private-collaborations-edit--id-" style="display: none">
+            <input type="radio" name="create_zoom"
+                   value="false"
+                   data-endpoint="POSTapi-v3-user-private-collaborations-edit--id-"
+                   data-component="body"             >
+            <code>false</code>
+        </label>
+    <br>
+<p>Example: <code>false</code></p>
+        </div>
+        </form>
+
+                    <h2 id="private-collaborations-POSTapi-v3-user-private-collaborations-delete--id-">Delete a collaboration</h2>
+
+<p>
+<small class="badge badge-darkred">requires authentication</small>
+</p>
+
+
+
+<span id="example-requests-POSTapi-v3-user-private-collaborations-delete--id-">
+<blockquote>Example request:</blockquote>
+
+
+<div class="bash-example">
+    <pre><code class="language-bash">curl --request POST \
+    "http://127.0.0.1:8000/api/v3/user/private-collaborations/delete/12" \
+    --header "Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJhdWQiOiIxIiwianRpIjoiNTJkNDhkYzhjNTc4ODIwZWVmODFmY2NhOWJiMmJiODFlZGE1MTUwMTVkYmU5YzdkNzFkODAyYTRmZWNhMWQ5ZGJhYWEzMTc2YjI1OTJmMTgiLCJpYXQiOjE3NjQwNjAzNDQuMDUyOTc0LCJuYmYiOjE3NjQwNjAzNDQuMDUyOTc1LCJleHAiOjE3OTU1OTYzNDQuMDQzNjUyLCJzdWIiOiIxNjgiLCJzY29wZXMiOltdfQ.X9tS38uM-UlrpFlYZihD_kmuCcSX_hdGsRBJcNGfrWXAClMiqeTxNTC45Ftxw-ddmDQ59t5xJLlnWp2Rx57itO-IHclNmwnVJDPAh1l9D8CZBGxBSoN0FvmbWeYDNQnA7ud77YLekrcSAuKMdBX3J1UKq6ytvWwi6ChnuRFqcQ-fpzK-jgkMhGm-WFHw0H3a34afdBdSUUFutESlwMvTqmXILYVcIwaJpEAjamf3rn6wIOEoD8mbxXJ6Gb6QrRO72Kt3z62vJp7yOeMsnXUkfioVSyJVwbkbchCs2Y4YZY3FEREbKysKNdHJhhqmn6AXvx66arAK3HeZoyf5eusfk26alhbEdJqsJgFP5VROV5l57q8VKhH8hAxg-oeidCGGJXPjLGeb-5iGPjdGhQ1Ng1i9kt7VDV4icb8B2AbNC2Ie9xP6b0R11PX4jUd8D3Jogf2f0ZhAs5Is8WHcrxsCyk3lWvgOyzWxpRx2lSpmBRmSwksPrKJk_7JuzDZ1Tdpz6mubjV6DzlmqDJJjf32hBIMnaYOhOUz5k1FzZ8mybsSbnM9UjzHYr5xIf4rkmVAfuPnU2FGu8NtCQaOtt9G-TziBFgT3ZjxBCL9QaaC39BRulGE6tyCAT8NM9svTD_AbNyINUzO2M0R61OXYQfzXEeiui-sO6eYIc3x_z-YdFFQ" \
+    --header "Content-Type: application/json" \
+    --header "Accept: application/json"</code></pre></div>
+
+
+<div class="javascript-example">
+    <pre><code class="language-javascript">const url = new URL(
+    "http://127.0.0.1:8000/api/v3/user/private-collaborations/delete/12"
+);
+
+const headers = {
+    "Authorization": "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJhdWQiOiIxIiwianRpIjoiNTJkNDhkYzhjNTc4ODIwZWVmODFmY2NhOWJiMmJiODFlZGE1MTUwMTVkYmU5YzdkNzFkODAyYTRmZWNhMWQ5ZGJhYWEzMTc2YjI1OTJmMTgiLCJpYXQiOjE3NjQwNjAzNDQuMDUyOTc0LCJuYmYiOjE3NjQwNjAzNDQuMDUyOTc1LCJleHAiOjE3OTU1OTYzNDQuMDQzNjUyLCJzdWIiOiIxNjgiLCJzY29wZXMiOltdfQ.X9tS38uM-UlrpFlYZihD_kmuCcSX_hdGsRBJcNGfrWXAClMiqeTxNTC45Ftxw-ddmDQ59t5xJLlnWp2Rx57itO-IHclNmwnVJDPAh1l9D8CZBGxBSoN0FvmbWeYDNQnA7ud77YLekrcSAuKMdBX3J1UKq6ytvWwi6ChnuRFqcQ-fpzK-jgkMhGm-WFHw0H3a34afdBdSUUFutESlwMvTqmXILYVcIwaJpEAjamf3rn6wIOEoD8mbxXJ6Gb6QrRO72Kt3z62vJp7yOeMsnXUkfioVSyJVwbkbchCs2Y4YZY3FEREbKysKNdHJhhqmn6AXvx66arAK3HeZoyf5eusfk26alhbEdJqsJgFP5VROV5l57q8VKhH8hAxg-oeidCGGJXPjLGeb-5iGPjdGhQ1Ng1i9kt7VDV4icb8B2AbNC2Ie9xP6b0R11PX4jUd8D3Jogf2f0ZhAs5Is8WHcrxsCyk3lWvgOyzWxpRx2lSpmBRmSwksPrKJk_7JuzDZ1Tdpz6mubjV6DzlmqDJJjf32hBIMnaYOhOUz5k1FzZ8mybsSbnM9UjzHYr5xIf4rkmVAfuPnU2FGu8NtCQaOtt9G-TziBFgT3ZjxBCL9QaaC39BRulGE6tyCAT8NM9svTD_AbNyINUzO2M0R61OXYQfzXEeiui-sO6eYIc3x_z-YdFFQ",
+    "Content-Type": "application/json",
+    "Accept": "application/json",
+};
+
+fetch(url, {
+    method: "POST",
+    headers,
+}).then(response =&gt; response.json());</code></pre></div>
+
+
+<div class="jsonToDart-example">
+    <pre><code class="language-dart">
+class 12 {
+  final String? message;
+  final bool? status;
+
+  12({this.message, this.status, });
+
+  factory 12.fromJson(Map&lt;String, dynamic&gt; json) =&gt; 12(
+    message: json['message'],
+    status: json['status'],
+  );
+
+  Map&lt;String, dynamic&gt; toJson() =&gt; {
+    'message': message,
+    'status': status,
+  };
+}</code></pre></div>
+
+</span>
+
+<span id="example-responses-POSTapi-v3-user-private-collaborations-delete--id-">
+            <blockquote>
+            <p>Example response (200):</p>
+        </blockquote>
+                <pre>
+
+<code class="language-json" style="max-height: 300px;">{
+    &quot;message&quot;: &quot;Private collaboration deleted successfully.&quot;,
+    &quot;status&quot;: true
+}</code>
+ </pre>
+            <blockquote>
+            <p>Example response (201):</p>
+        </blockquote>
+                <pre>
+
+<code class="language-json" style="max-height: 300px;">{
+    &quot;error&quot;: &quot;Failed to delete collaboration.&quot;
+}</code>
+ </pre>
+    </span>
+<span id="execution-results-POSTapi-v3-user-private-collaborations-delete--id-" hidden>
+    <blockquote>Received response<span
+                id="execution-response-status-POSTapi-v3-user-private-collaborations-delete--id-"></span>:
+    </blockquote>
+    <pre class="json"><code id="execution-response-content-POSTapi-v3-user-private-collaborations-delete--id-"
+      data-empty-response-text="<Empty response>" style="max-height: 400px;"></code></pre>
+</span>
+<span id="execution-error-POSTapi-v3-user-private-collaborations-delete--id-" hidden>
+    <blockquote>Request failed with error:</blockquote>
+    <pre><code id="execution-error-message-POSTapi-v3-user-private-collaborations-delete--id-">
+
+Tip: Check that you&#039;re properly connected to the network.
+If you&#039;re a maintainer of ths API, verify that your API is running and you&#039;ve enabled CORS.
+You can check the Dev Tools console for debugging information.</code></pre>
+</span>
+<form id="form-POSTapi-v3-user-private-collaborations-delete--id-" data-method="POST"
+      data-path="api/v3/user/private-collaborations/delete/{id}"
+      data-authed="1"
+      data-hasfiles="0"
+      data-isarraybody="0"
+      autocomplete="off"
+      onsubmit="event.preventDefault(); executeTryOut('POSTapi-v3-user-private-collaborations-delete--id-', this);">
+    <h3>
+        Request&nbsp;&nbsp;&nbsp;
+                    <button type="button"
+                    style="background-color: #8fbcd4; padding: 5px 10px; border-radius: 5px; border-width: thin;"
+                    id="btn-tryout-POSTapi-v3-user-private-collaborations-delete--id-"
+                    onclick="tryItOut('POSTapi-v3-user-private-collaborations-delete--id-');">Try it out ⚡
+            </button>
+            <button type="button"
+                    style="background-color: #c97a7e; padding: 5px 10px; border-radius: 5px; border-width: thin;"
+                    id="btn-canceltryout-POSTapi-v3-user-private-collaborations-delete--id-"
+                    onclick="cancelTryOut('POSTapi-v3-user-private-collaborations-delete--id-');" hidden>Cancel 🛑
+            </button>&nbsp;&nbsp;
+            <button type="submit"
+                    style="background-color: #6ac174; padding: 5px 10px; border-radius: 5px; border-width: thin;"
+                    id="btn-executetryout-POSTapi-v3-user-private-collaborations-delete--id-"
+                    data-initial-text="Send Request 💥"
+                    data-loading-text="⏱ Sending..."
+                    hidden>Send Request 💥
+            </button>
+            </h3>
+            <p>
+            <small class="badge badge-black">POST</small>
+            <b><code>api/v3/user/private-collaborations/delete/{id}</code></b>
+        </p>
+                <h4 class="fancy-heading-panel"><b>Headers</b></h4>
+                                <div style="padding-left: 28px; clear: unset;">
+                <b style="line-height: 2;"><code>Authorization</code></b>&nbsp;&nbsp;
+&nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+                              name="Authorization" class="auth-value"               data-endpoint="POSTapi-v3-user-private-collaborations-delete--id-"
+               value="Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJhdWQiOiIxIiwianRpIjoiNTJkNDhkYzhjNTc4ODIwZWVmODFmY2NhOWJiMmJiODFlZGE1MTUwMTVkYmU5YzdkNzFkODAyYTRmZWNhMWQ5ZGJhYWEzMTc2YjI1OTJmMTgiLCJpYXQiOjE3NjQwNjAzNDQuMDUyOTc0LCJuYmYiOjE3NjQwNjAzNDQuMDUyOTc1LCJleHAiOjE3OTU1OTYzNDQuMDQzNjUyLCJzdWIiOiIxNjgiLCJzY29wZXMiOltdfQ.X9tS38uM-UlrpFlYZihD_kmuCcSX_hdGsRBJcNGfrWXAClMiqeTxNTC45Ftxw-ddmDQ59t5xJLlnWp2Rx57itO-IHclNmwnVJDPAh1l9D8CZBGxBSoN0FvmbWeYDNQnA7ud77YLekrcSAuKMdBX3J1UKq6ytvWwi6ChnuRFqcQ-fpzK-jgkMhGm-WFHw0H3a34afdBdSUUFutESlwMvTqmXILYVcIwaJpEAjamf3rn6wIOEoD8mbxXJ6Gb6QrRO72Kt3z62vJp7yOeMsnXUkfioVSyJVwbkbchCs2Y4YZY3FEREbKysKNdHJhhqmn6AXvx66arAK3HeZoyf5eusfk26alhbEdJqsJgFP5VROV5l57q8VKhH8hAxg-oeidCGGJXPjLGeb-5iGPjdGhQ1Ng1i9kt7VDV4icb8B2AbNC2Ie9xP6b0R11PX4jUd8D3Jogf2f0ZhAs5Is8WHcrxsCyk3lWvgOyzWxpRx2lSpmBRmSwksPrKJk_7JuzDZ1Tdpz6mubjV6DzlmqDJJjf32hBIMnaYOhOUz5k1FzZ8mybsSbnM9UjzHYr5xIf4rkmVAfuPnU2FGu8NtCQaOtt9G-TziBFgT3ZjxBCL9QaaC39BRulGE6tyCAT8NM9svTD_AbNyINUzO2M0R61OXYQfzXEeiui-sO6eYIc3x_z-YdFFQ"
+               data-component="header">
+    <br>
+<p>Example: <code>Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJhdWQiOiIxIiwianRpIjoiNTJkNDhkYzhjNTc4ODIwZWVmODFmY2NhOWJiMmJiODFlZGE1MTUwMTVkYmU5YzdkNzFkODAyYTRmZWNhMWQ5ZGJhYWEzMTc2YjI1OTJmMTgiLCJpYXQiOjE3NjQwNjAzNDQuMDUyOTc0LCJuYmYiOjE3NjQwNjAzNDQuMDUyOTc1LCJleHAiOjE3OTU1OTYzNDQuMDQzNjUyLCJzdWIiOiIxNjgiLCJzY29wZXMiOltdfQ.X9tS38uM-UlrpFlYZihD_kmuCcSX_hdGsRBJcNGfrWXAClMiqeTxNTC45Ftxw-ddmDQ59t5xJLlnWp2Rx57itO-IHclNmwnVJDPAh1l9D8CZBGxBSoN0FvmbWeYDNQnA7ud77YLekrcSAuKMdBX3J1UKq6ytvWwi6ChnuRFqcQ-fpzK-jgkMhGm-WFHw0H3a34afdBdSUUFutESlwMvTqmXILYVcIwaJpEAjamf3rn6wIOEoD8mbxXJ6Gb6QrRO72Kt3z62vJp7yOeMsnXUkfioVSyJVwbkbchCs2Y4YZY3FEREbKysKNdHJhhqmn6AXvx66arAK3HeZoyf5eusfk26alhbEdJqsJgFP5VROV5l57q8VKhH8hAxg-oeidCGGJXPjLGeb-5iGPjdGhQ1Ng1i9kt7VDV4icb8B2AbNC2Ie9xP6b0R11PX4jUd8D3Jogf2f0ZhAs5Is8WHcrxsCyk3lWvgOyzWxpRx2lSpmBRmSwksPrKJk_7JuzDZ1Tdpz6mubjV6DzlmqDJJjf32hBIMnaYOhOUz5k1FzZ8mybsSbnM9UjzHYr5xIf4rkmVAfuPnU2FGu8NtCQaOtt9G-TziBFgT3ZjxBCL9QaaC39BRulGE6tyCAT8NM9svTD_AbNyINUzO2M0R61OXYQfzXEeiui-sO6eYIc3x_z-YdFFQ</code></p>
+            </div>
+                                <div style="padding-left: 28px; clear: unset;">
+                <b style="line-height: 2;"><code>Content-Type</code></b>&nbsp;&nbsp;
+&nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+                              name="Content-Type"                data-endpoint="POSTapi-v3-user-private-collaborations-delete--id-"
+               value="application/json"
+               data-component="header">
+    <br>
+<p>Example: <code>application/json</code></p>
+            </div>
+                                <div style="padding-left: 28px; clear: unset;">
+                <b style="line-height: 2;"><code>Accept</code></b>&nbsp;&nbsp;
+&nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+                              name="Accept"                data-endpoint="POSTapi-v3-user-private-collaborations-delete--id-"
+               value="application/json"
+               data-component="header">
+    <br>
+<p>Example: <code>application/json</code></p>
+            </div>
+                        <h4 class="fancy-heading-panel"><b>URL Parameters</b></h4>
+                    <div style="padding-left: 28px; clear: unset;">
+                <b style="line-height: 2;"><code>id</code></b>&nbsp;&nbsp;
+<small>integer</small>&nbsp;
+ &nbsp;
+                <input type="number" style="display: none"
+               step="any"               name="id"                data-endpoint="POSTapi-v3-user-private-collaborations-delete--id-"
+               value="12"
+               data-component="url">
+    <br>
+<p>The ID of the collaboration. Example: <code>12</code></p>
+            </div>
+                    </form>
+
+                    <h2 id="private-collaborations-POSTapi-v3-user-private-collaborations-accept-invitation--id-">Accept invitation for a collaboration</h2>
+
+<p>
+<small class="badge badge-darkred">requires authentication</small>
+</p>
+
+
+
+<span id="example-requests-POSTapi-v3-user-private-collaborations-accept-invitation--id-">
+<blockquote>Example request:</blockquote>
+
+
+<div class="bash-example">
+    <pre><code class="language-bash">curl --request POST \
+    "http://127.0.0.1:8000/api/v3/user/private-collaborations/accept-invitation/3" \
+    --header "Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJhdWQiOiIxIiwianRpIjoiNTJkNDhkYzhjNTc4ODIwZWVmODFmY2NhOWJiMmJiODFlZGE1MTUwMTVkYmU5YzdkNzFkODAyYTRmZWNhMWQ5ZGJhYWEzMTc2YjI1OTJmMTgiLCJpYXQiOjE3NjQwNjAzNDQuMDUyOTc0LCJuYmYiOjE3NjQwNjAzNDQuMDUyOTc1LCJleHAiOjE3OTU1OTYzNDQuMDQzNjUyLCJzdWIiOiIxNjgiLCJzY29wZXMiOltdfQ.X9tS38uM-UlrpFlYZihD_kmuCcSX_hdGsRBJcNGfrWXAClMiqeTxNTC45Ftxw-ddmDQ59t5xJLlnWp2Rx57itO-IHclNmwnVJDPAh1l9D8CZBGxBSoN0FvmbWeYDNQnA7ud77YLekrcSAuKMdBX3J1UKq6ytvWwi6ChnuRFqcQ-fpzK-jgkMhGm-WFHw0H3a34afdBdSUUFutESlwMvTqmXILYVcIwaJpEAjamf3rn6wIOEoD8mbxXJ6Gb6QrRO72Kt3z62vJp7yOeMsnXUkfioVSyJVwbkbchCs2Y4YZY3FEREbKysKNdHJhhqmn6AXvx66arAK3HeZoyf5eusfk26alhbEdJqsJgFP5VROV5l57q8VKhH8hAxg-oeidCGGJXPjLGeb-5iGPjdGhQ1Ng1i9kt7VDV4icb8B2AbNC2Ie9xP6b0R11PX4jUd8D3Jogf2f0ZhAs5Is8WHcrxsCyk3lWvgOyzWxpRx2lSpmBRmSwksPrKJk_7JuzDZ1Tdpz6mubjV6DzlmqDJJjf32hBIMnaYOhOUz5k1FzZ8mybsSbnM9UjzHYr5xIf4rkmVAfuPnU2FGu8NtCQaOtt9G-TziBFgT3ZjxBCL9QaaC39BRulGE6tyCAT8NM9svTD_AbNyINUzO2M0R61OXYQfzXEeiui-sO6eYIc3x_z-YdFFQ" \
+    --header "Content-Type: application/json" \
+    --header "Accept: application/json"</code></pre></div>
+
+
+<div class="javascript-example">
+    <pre><code class="language-javascript">const url = new URL(
+    "http://127.0.0.1:8000/api/v3/user/private-collaborations/accept-invitation/3"
+);
+
+const headers = {
+    "Authorization": "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJhdWQiOiIxIiwianRpIjoiNTJkNDhkYzhjNTc4ODIwZWVmODFmY2NhOWJiMmJiODFlZGE1MTUwMTVkYmU5YzdkNzFkODAyYTRmZWNhMWQ5ZGJhYWEzMTc2YjI1OTJmMTgiLCJpYXQiOjE3NjQwNjAzNDQuMDUyOTc0LCJuYmYiOjE3NjQwNjAzNDQuMDUyOTc1LCJleHAiOjE3OTU1OTYzNDQuMDQzNjUyLCJzdWIiOiIxNjgiLCJzY29wZXMiOltdfQ.X9tS38uM-UlrpFlYZihD_kmuCcSX_hdGsRBJcNGfrWXAClMiqeTxNTC45Ftxw-ddmDQ59t5xJLlnWp2Rx57itO-IHclNmwnVJDPAh1l9D8CZBGxBSoN0FvmbWeYDNQnA7ud77YLekrcSAuKMdBX3J1UKq6ytvWwi6ChnuRFqcQ-fpzK-jgkMhGm-WFHw0H3a34afdBdSUUFutESlwMvTqmXILYVcIwaJpEAjamf3rn6wIOEoD8mbxXJ6Gb6QrRO72Kt3z62vJp7yOeMsnXUkfioVSyJVwbkbchCs2Y4YZY3FEREbKysKNdHJhhqmn6AXvx66arAK3HeZoyf5eusfk26alhbEdJqsJgFP5VROV5l57q8VKhH8hAxg-oeidCGGJXPjLGeb-5iGPjdGhQ1Ng1i9kt7VDV4icb8B2AbNC2Ie9xP6b0R11PX4jUd8D3Jogf2f0ZhAs5Is8WHcrxsCyk3lWvgOyzWxpRx2lSpmBRmSwksPrKJk_7JuzDZ1Tdpz6mubjV6DzlmqDJJjf32hBIMnaYOhOUz5k1FzZ8mybsSbnM9UjzHYr5xIf4rkmVAfuPnU2FGu8NtCQaOtt9G-TziBFgT3ZjxBCL9QaaC39BRulGE6tyCAT8NM9svTD_AbNyINUzO2M0R61OXYQfzXEeiui-sO6eYIc3x_z-YdFFQ",
+    "Content-Type": "application/json",
+    "Accept": "application/json",
+};
+
+fetch(url, {
+    method: "POST",
+    headers,
+}).then(response =&gt; response.json());</code></pre></div>
+
+
+<div class="jsonToDart-example">
+    <pre><code class="language-dart">
+class 3 {
+  final bool? status;
+  final String? message;
+
+  3({this.status, this.message, });
+
+  factory 3.fromJson(Map&lt;String, dynamic&gt; json) =&gt; 3(
+    status: json['status'],
+    message: json['message'],
+  );
+
+  Map&lt;String, dynamic&gt; toJson() =&gt; {
+    'status': status,
+    'message': message,
+  };
+}</code></pre></div>
+
+</span>
+
+<span id="example-responses-POSTapi-v3-user-private-collaborations-accept-invitation--id-">
+            <blockquote>
+            <p>Example response (200):</p>
+        </blockquote>
+                <pre>
+
+<code class="language-json" style="max-height: 300px;">{
+    &quot;status&quot;: true,
+    &quot;message&quot;: &quot;Invitation accepted successfully.&quot;
+}</code>
+ </pre>
+            <blockquote>
+            <p>Example response (403):</p>
+        </blockquote>
+                <pre>
+
+<code class="language-json" style="max-height: 300px;">{
+    &quot;status&quot;: false,
+    &quot;message&quot;: &quot;You have not been invited to this collaboration.&quot;
+}</code>
+ </pre>
+    </span>
+<span id="execution-results-POSTapi-v3-user-private-collaborations-accept-invitation--id-" hidden>
+    <blockquote>Received response<span
+                id="execution-response-status-POSTapi-v3-user-private-collaborations-accept-invitation--id-"></span>:
+    </blockquote>
+    <pre class="json"><code id="execution-response-content-POSTapi-v3-user-private-collaborations-accept-invitation--id-"
+      data-empty-response-text="<Empty response>" style="max-height: 400px;"></code></pre>
+</span>
+<span id="execution-error-POSTapi-v3-user-private-collaborations-accept-invitation--id-" hidden>
+    <blockquote>Request failed with error:</blockquote>
+    <pre><code id="execution-error-message-POSTapi-v3-user-private-collaborations-accept-invitation--id-">
+
+Tip: Check that you&#039;re properly connected to the network.
+If you&#039;re a maintainer of ths API, verify that your API is running and you&#039;ve enabled CORS.
+You can check the Dev Tools console for debugging information.</code></pre>
+</span>
+<form id="form-POSTapi-v3-user-private-collaborations-accept-invitation--id-" data-method="POST"
+      data-path="api/v3/user/private-collaborations/accept-invitation/{id}"
+      data-authed="1"
+      data-hasfiles="0"
+      data-isarraybody="0"
+      autocomplete="off"
+      onsubmit="event.preventDefault(); executeTryOut('POSTapi-v3-user-private-collaborations-accept-invitation--id-', this);">
+    <h3>
+        Request&nbsp;&nbsp;&nbsp;
+                    <button type="button"
+                    style="background-color: #8fbcd4; padding: 5px 10px; border-radius: 5px; border-width: thin;"
+                    id="btn-tryout-POSTapi-v3-user-private-collaborations-accept-invitation--id-"
+                    onclick="tryItOut('POSTapi-v3-user-private-collaborations-accept-invitation--id-');">Try it out ⚡
+            </button>
+            <button type="button"
+                    style="background-color: #c97a7e; padding: 5px 10px; border-radius: 5px; border-width: thin;"
+                    id="btn-canceltryout-POSTapi-v3-user-private-collaborations-accept-invitation--id-"
+                    onclick="cancelTryOut('POSTapi-v3-user-private-collaborations-accept-invitation--id-');" hidden>Cancel 🛑
+            </button>&nbsp;&nbsp;
+            <button type="submit"
+                    style="background-color: #6ac174; padding: 5px 10px; border-radius: 5px; border-width: thin;"
+                    id="btn-executetryout-POSTapi-v3-user-private-collaborations-accept-invitation--id-"
+                    data-initial-text="Send Request 💥"
+                    data-loading-text="⏱ Sending..."
+                    hidden>Send Request 💥
+            </button>
+            </h3>
+            <p>
+            <small class="badge badge-black">POST</small>
+            <b><code>api/v3/user/private-collaborations/accept-invitation/{id}</code></b>
+        </p>
+                <h4 class="fancy-heading-panel"><b>Headers</b></h4>
+                                <div style="padding-left: 28px; clear: unset;">
+                <b style="line-height: 2;"><code>Authorization</code></b>&nbsp;&nbsp;
+&nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+                              name="Authorization" class="auth-value"               data-endpoint="POSTapi-v3-user-private-collaborations-accept-invitation--id-"
+               value="Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJhdWQiOiIxIiwianRpIjoiNTJkNDhkYzhjNTc4ODIwZWVmODFmY2NhOWJiMmJiODFlZGE1MTUwMTVkYmU5YzdkNzFkODAyYTRmZWNhMWQ5ZGJhYWEzMTc2YjI1OTJmMTgiLCJpYXQiOjE3NjQwNjAzNDQuMDUyOTc0LCJuYmYiOjE3NjQwNjAzNDQuMDUyOTc1LCJleHAiOjE3OTU1OTYzNDQuMDQzNjUyLCJzdWIiOiIxNjgiLCJzY29wZXMiOltdfQ.X9tS38uM-UlrpFlYZihD_kmuCcSX_hdGsRBJcNGfrWXAClMiqeTxNTC45Ftxw-ddmDQ59t5xJLlnWp2Rx57itO-IHclNmwnVJDPAh1l9D8CZBGxBSoN0FvmbWeYDNQnA7ud77YLekrcSAuKMdBX3J1UKq6ytvWwi6ChnuRFqcQ-fpzK-jgkMhGm-WFHw0H3a34afdBdSUUFutESlwMvTqmXILYVcIwaJpEAjamf3rn6wIOEoD8mbxXJ6Gb6QrRO72Kt3z62vJp7yOeMsnXUkfioVSyJVwbkbchCs2Y4YZY3FEREbKysKNdHJhhqmn6AXvx66arAK3HeZoyf5eusfk26alhbEdJqsJgFP5VROV5l57q8VKhH8hAxg-oeidCGGJXPjLGeb-5iGPjdGhQ1Ng1i9kt7VDV4icb8B2AbNC2Ie9xP6b0R11PX4jUd8D3Jogf2f0ZhAs5Is8WHcrxsCyk3lWvgOyzWxpRx2lSpmBRmSwksPrKJk_7JuzDZ1Tdpz6mubjV6DzlmqDJJjf32hBIMnaYOhOUz5k1FzZ8mybsSbnM9UjzHYr5xIf4rkmVAfuPnU2FGu8NtCQaOtt9G-TziBFgT3ZjxBCL9QaaC39BRulGE6tyCAT8NM9svTD_AbNyINUzO2M0R61OXYQfzXEeiui-sO6eYIc3x_z-YdFFQ"
+               data-component="header">
+    <br>
+<p>Example: <code>Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJhdWQiOiIxIiwianRpIjoiNTJkNDhkYzhjNTc4ODIwZWVmODFmY2NhOWJiMmJiODFlZGE1MTUwMTVkYmU5YzdkNzFkODAyYTRmZWNhMWQ5ZGJhYWEzMTc2YjI1OTJmMTgiLCJpYXQiOjE3NjQwNjAzNDQuMDUyOTc0LCJuYmYiOjE3NjQwNjAzNDQuMDUyOTc1LCJleHAiOjE3OTU1OTYzNDQuMDQzNjUyLCJzdWIiOiIxNjgiLCJzY29wZXMiOltdfQ.X9tS38uM-UlrpFlYZihD_kmuCcSX_hdGsRBJcNGfrWXAClMiqeTxNTC45Ftxw-ddmDQ59t5xJLlnWp2Rx57itO-IHclNmwnVJDPAh1l9D8CZBGxBSoN0FvmbWeYDNQnA7ud77YLekrcSAuKMdBX3J1UKq6ytvWwi6ChnuRFqcQ-fpzK-jgkMhGm-WFHw0H3a34afdBdSUUFutESlwMvTqmXILYVcIwaJpEAjamf3rn6wIOEoD8mbxXJ6Gb6QrRO72Kt3z62vJp7yOeMsnXUkfioVSyJVwbkbchCs2Y4YZY3FEREbKysKNdHJhhqmn6AXvx66arAK3HeZoyf5eusfk26alhbEdJqsJgFP5VROV5l57q8VKhH8hAxg-oeidCGGJXPjLGeb-5iGPjdGhQ1Ng1i9kt7VDV4icb8B2AbNC2Ie9xP6b0R11PX4jUd8D3Jogf2f0ZhAs5Is8WHcrxsCyk3lWvgOyzWxpRx2lSpmBRmSwksPrKJk_7JuzDZ1Tdpz6mubjV6DzlmqDJJjf32hBIMnaYOhOUz5k1FzZ8mybsSbnM9UjzHYr5xIf4rkmVAfuPnU2FGu8NtCQaOtt9G-TziBFgT3ZjxBCL9QaaC39BRulGE6tyCAT8NM9svTD_AbNyINUzO2M0R61OXYQfzXEeiui-sO6eYIc3x_z-YdFFQ</code></p>
+            </div>
+                                <div style="padding-left: 28px; clear: unset;">
+                <b style="line-height: 2;"><code>Content-Type</code></b>&nbsp;&nbsp;
+&nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+                              name="Content-Type"                data-endpoint="POSTapi-v3-user-private-collaborations-accept-invitation--id-"
+               value="application/json"
+               data-component="header">
+    <br>
+<p>Example: <code>application/json</code></p>
+            </div>
+                                <div style="padding-left: 28px; clear: unset;">
+                <b style="line-height: 2;"><code>Accept</code></b>&nbsp;&nbsp;
+&nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+                              name="Accept"                data-endpoint="POSTapi-v3-user-private-collaborations-accept-invitation--id-"
+               value="application/json"
+               data-component="header">
+    <br>
+<p>Example: <code>application/json</code></p>
+            </div>
+                        <h4 class="fancy-heading-panel"><b>URL Parameters</b></h4>
+                    <div style="padding-left: 28px; clear: unset;">
+                <b style="line-height: 2;"><code>id</code></b>&nbsp;&nbsp;
+<small>integer</small>&nbsp;
+ &nbsp;
+                <input type="number" style="display: none"
+               step="any"               name="id"                data-endpoint="POSTapi-v3-user-private-collaborations-accept-invitation--id-"
+               value="3"
+               data-component="url">
+    <br>
+<p>The ID of the collaboration to accept. Example: <code>3</code></p>
+            </div>
+                    </form>
+
+                    <h2 id="private-collaborations-POSTapi-v3-user-private-collaborations-zoom-signature">Generate Zoom Web SDK signature for collaboration meeting</h2>
+
+<p>
+<small class="badge badge-darkred">requires authentication</small>
+</p>
+
+
+
+<span id="example-requests-POSTapi-v3-user-private-collaborations-zoom-signature">
+<blockquote>Example request:</blockquote>
+
+
+<div class="bash-example">
+    <pre><code class="language-bash">curl --request POST \
+    "http://127.0.0.1:8000/api/v3/user/private-collaborations/zoom-signature" \
+    --header "Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJhdWQiOiIxIiwianRpIjoiNTJkNDhkYzhjNTc4ODIwZWVmODFmY2NhOWJiMmJiODFlZGE1MTUwMTVkYmU5YzdkNzFkODAyYTRmZWNhMWQ5ZGJhYWEzMTc2YjI1OTJmMTgiLCJpYXQiOjE3NjQwNjAzNDQuMDUyOTc0LCJuYmYiOjE3NjQwNjAzNDQuMDUyOTc1LCJleHAiOjE3OTU1OTYzNDQuMDQzNjUyLCJzdWIiOiIxNjgiLCJzY29wZXMiOltdfQ.X9tS38uM-UlrpFlYZihD_kmuCcSX_hdGsRBJcNGfrWXAClMiqeTxNTC45Ftxw-ddmDQ59t5xJLlnWp2Rx57itO-IHclNmwnVJDPAh1l9D8CZBGxBSoN0FvmbWeYDNQnA7ud77YLekrcSAuKMdBX3J1UKq6ytvWwi6ChnuRFqcQ-fpzK-jgkMhGm-WFHw0H3a34afdBdSUUFutESlwMvTqmXILYVcIwaJpEAjamf3rn6wIOEoD8mbxXJ6Gb6QrRO72Kt3z62vJp7yOeMsnXUkfioVSyJVwbkbchCs2Y4YZY3FEREbKysKNdHJhhqmn6AXvx66arAK3HeZoyf5eusfk26alhbEdJqsJgFP5VROV5l57q8VKhH8hAxg-oeidCGGJXPjLGeb-5iGPjdGhQ1Ng1i9kt7VDV4icb8B2AbNC2Ie9xP6b0R11PX4jUd8D3Jogf2f0ZhAs5Is8WHcrxsCyk3lWvgOyzWxpRx2lSpmBRmSwksPrKJk_7JuzDZ1Tdpz6mubjV6DzlmqDJJjf32hBIMnaYOhOUz5k1FzZ8mybsSbnM9UjzHYr5xIf4rkmVAfuPnU2FGu8NtCQaOtt9G-TziBFgT3ZjxBCL9QaaC39BRulGE6tyCAT8NM9svTD_AbNyINUzO2M0R61OXYQfzXEeiui-sO6eYIc3x_z-YdFFQ" \
+    --header "Content-Type: application/json" \
+    --header "Accept: application/json" \
+    --data "{
+    \"collaboration_id\": 1
+}"
+</code></pre></div>
+
+
+<div class="javascript-example">
+    <pre><code class="language-javascript">const url = new URL(
+    "http://127.0.0.1:8000/api/v3/user/private-collaborations/zoom-signature"
+);
+
+const headers = {
+    "Authorization": "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJhdWQiOiIxIiwianRpIjoiNTJkNDhkYzhjNTc4ODIwZWVmODFmY2NhOWJiMmJiODFlZGE1MTUwMTVkYmU5YzdkNzFkODAyYTRmZWNhMWQ5ZGJhYWEzMTc2YjI1OTJmMTgiLCJpYXQiOjE3NjQwNjAzNDQuMDUyOTc0LCJuYmYiOjE3NjQwNjAzNDQuMDUyOTc1LCJleHAiOjE3OTU1OTYzNDQuMDQzNjUyLCJzdWIiOiIxNjgiLCJzY29wZXMiOltdfQ.X9tS38uM-UlrpFlYZihD_kmuCcSX_hdGsRBJcNGfrWXAClMiqeTxNTC45Ftxw-ddmDQ59t5xJLlnWp2Rx57itO-IHclNmwnVJDPAh1l9D8CZBGxBSoN0FvmbWeYDNQnA7ud77YLekrcSAuKMdBX3J1UKq6ytvWwi6ChnuRFqcQ-fpzK-jgkMhGm-WFHw0H3a34afdBdSUUFutESlwMvTqmXILYVcIwaJpEAjamf3rn6wIOEoD8mbxXJ6Gb6QrRO72Kt3z62vJp7yOeMsnXUkfioVSyJVwbkbchCs2Y4YZY3FEREbKysKNdHJhhqmn6AXvx66arAK3HeZoyf5eusfk26alhbEdJqsJgFP5VROV5l57q8VKhH8hAxg-oeidCGGJXPjLGeb-5iGPjdGhQ1Ng1i9kt7VDV4icb8B2AbNC2Ie9xP6b0R11PX4jUd8D3Jogf2f0ZhAs5Is8WHcrxsCyk3lWvgOyzWxpRx2lSpmBRmSwksPrKJk_7JuzDZ1Tdpz6mubjV6DzlmqDJJjf32hBIMnaYOhOUz5k1FzZ8mybsSbnM9UjzHYr5xIf4rkmVAfuPnU2FGu8NtCQaOtt9G-TziBFgT3ZjxBCL9QaaC39BRulGE6tyCAT8NM9svTD_AbNyINUzO2M0R61OXYQfzXEeiui-sO6eYIc3x_z-YdFFQ",
+    "Content-Type": "application/json",
+    "Accept": "application/json",
+};
+
+let body = {
+    "collaboration_id": 1
+};
+
+fetch(url, {
+    method: "POST",
+    headers,
+    body: JSON.stringify(body),
+}).then(response =&gt; response.json());</code></pre></div>
+
+
+<div class="jsonToDart-example">
+    <pre><code class="language-dart">
+class Signature {
+  final bool? status;
+  final String? signature;
+  final String? sdkKey;
+  final String? meetingNumber;
+  final String? userName;
+  final String? userEmail;
+
+  Signature({this.status, this.signature, this.sdkKey, this.meetingNumber, this.userName, this.userEmail, });
+
+  factory Signature.fromJson(Map&lt;String, dynamic&gt; json) =&gt; Signature(
+    status: json['status'],
+    signature: json['signature'],
+    sdkKey: json['sdkKey'],
+    meetingNumber: json['meetingNumber'],
+    userName: json['userName'],
+    userEmail: json['userEmail'],
+  );
+
+  Map&lt;String, dynamic&gt; toJson() =&gt; {
+    'status': status,
+    'signature': signature,
+    'sdkKey': sdkKey,
+    'meetingNumber': meetingNumber,
+    'userName': userName,
+    'userEmail': userEmail,
+  };
+}</code></pre></div>
+
+</span>
+
+<span id="example-responses-POSTapi-v3-user-private-collaborations-zoom-signature">
+            <blockquote>
+            <p>Example response (200):</p>
+        </blockquote>
+                <pre>
+
+<code class="language-json" style="max-height: 300px;">{
+    &quot;status&quot;: true,
+    &quot;signature&quot;: &quot;...&quot;,
+    &quot;sdkKey&quot;: &quot;ABC&quot;,
+    &quot;meetingNumber&quot;: &quot;123456789&quot;,
+    &quot;userName&quot;: &quot;John Doe&quot;,
+    &quot;userEmail&quot;: &quot;john@example.com&quot;
+}</code>
+ </pre>
+            <blockquote>
+            <p>Example response (201):</p>
+        </blockquote>
+                <pre>
+
+<code class="language-json" style="max-height: 300px;">{
+    &quot;status&quot;: false,
+    &quot;message&quot;: &quot;This meeting is not a Zoom meeting.&quot;
+}</code>
+ </pre>
+    </span>
+<span id="execution-results-POSTapi-v3-user-private-collaborations-zoom-signature" hidden>
+    <blockquote>Received response<span
+                id="execution-response-status-POSTapi-v3-user-private-collaborations-zoom-signature"></span>:
+    </blockquote>
+    <pre class="json"><code id="execution-response-content-POSTapi-v3-user-private-collaborations-zoom-signature"
+      data-empty-response-text="<Empty response>" style="max-height: 400px;"></code></pre>
+</span>
+<span id="execution-error-POSTapi-v3-user-private-collaborations-zoom-signature" hidden>
+    <blockquote>Request failed with error:</blockquote>
+    <pre><code id="execution-error-message-POSTapi-v3-user-private-collaborations-zoom-signature">
+
+Tip: Check that you&#039;re properly connected to the network.
+If you&#039;re a maintainer of ths API, verify that your API is running and you&#039;ve enabled CORS.
+You can check the Dev Tools console for debugging information.</code></pre>
+</span>
+<form id="form-POSTapi-v3-user-private-collaborations-zoom-signature" data-method="POST"
+      data-path="api/v3/user/private-collaborations/zoom-signature"
+      data-authed="1"
+      data-hasfiles="0"
+      data-isarraybody="0"
+      autocomplete="off"
+      onsubmit="event.preventDefault(); executeTryOut('POSTapi-v3-user-private-collaborations-zoom-signature', this);">
+    <h3>
+        Request&nbsp;&nbsp;&nbsp;
+                    <button type="button"
+                    style="background-color: #8fbcd4; padding: 5px 10px; border-radius: 5px; border-width: thin;"
+                    id="btn-tryout-POSTapi-v3-user-private-collaborations-zoom-signature"
+                    onclick="tryItOut('POSTapi-v3-user-private-collaborations-zoom-signature');">Try it out ⚡
+            </button>
+            <button type="button"
+                    style="background-color: #c97a7e; padding: 5px 10px; border-radius: 5px; border-width: thin;"
+                    id="btn-canceltryout-POSTapi-v3-user-private-collaborations-zoom-signature"
+                    onclick="cancelTryOut('POSTapi-v3-user-private-collaborations-zoom-signature');" hidden>Cancel 🛑
+            </button>&nbsp;&nbsp;
+            <button type="submit"
+                    style="background-color: #6ac174; padding: 5px 10px; border-radius: 5px; border-width: thin;"
+                    id="btn-executetryout-POSTapi-v3-user-private-collaborations-zoom-signature"
+                    data-initial-text="Send Request 💥"
+                    data-loading-text="⏱ Sending..."
+                    hidden>Send Request 💥
+            </button>
+            </h3>
+            <p>
+            <small class="badge badge-black">POST</small>
+            <b><code>api/v3/user/private-collaborations/zoom-signature</code></b>
+        </p>
+                <h4 class="fancy-heading-panel"><b>Headers</b></h4>
+                                <div style="padding-left: 28px; clear: unset;">
+                <b style="line-height: 2;"><code>Authorization</code></b>&nbsp;&nbsp;
+&nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+                              name="Authorization" class="auth-value"               data-endpoint="POSTapi-v3-user-private-collaborations-zoom-signature"
+               value="Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJhdWQiOiIxIiwianRpIjoiNTJkNDhkYzhjNTc4ODIwZWVmODFmY2NhOWJiMmJiODFlZGE1MTUwMTVkYmU5YzdkNzFkODAyYTRmZWNhMWQ5ZGJhYWEzMTc2YjI1OTJmMTgiLCJpYXQiOjE3NjQwNjAzNDQuMDUyOTc0LCJuYmYiOjE3NjQwNjAzNDQuMDUyOTc1LCJleHAiOjE3OTU1OTYzNDQuMDQzNjUyLCJzdWIiOiIxNjgiLCJzY29wZXMiOltdfQ.X9tS38uM-UlrpFlYZihD_kmuCcSX_hdGsRBJcNGfrWXAClMiqeTxNTC45Ftxw-ddmDQ59t5xJLlnWp2Rx57itO-IHclNmwnVJDPAh1l9D8CZBGxBSoN0FvmbWeYDNQnA7ud77YLekrcSAuKMdBX3J1UKq6ytvWwi6ChnuRFqcQ-fpzK-jgkMhGm-WFHw0H3a34afdBdSUUFutESlwMvTqmXILYVcIwaJpEAjamf3rn6wIOEoD8mbxXJ6Gb6QrRO72Kt3z62vJp7yOeMsnXUkfioVSyJVwbkbchCs2Y4YZY3FEREbKysKNdHJhhqmn6AXvx66arAK3HeZoyf5eusfk26alhbEdJqsJgFP5VROV5l57q8VKhH8hAxg-oeidCGGJXPjLGeb-5iGPjdGhQ1Ng1i9kt7VDV4icb8B2AbNC2Ie9xP6b0R11PX4jUd8D3Jogf2f0ZhAs5Is8WHcrxsCyk3lWvgOyzWxpRx2lSpmBRmSwksPrKJk_7JuzDZ1Tdpz6mubjV6DzlmqDJJjf32hBIMnaYOhOUz5k1FzZ8mybsSbnM9UjzHYr5xIf4rkmVAfuPnU2FGu8NtCQaOtt9G-TziBFgT3ZjxBCL9QaaC39BRulGE6tyCAT8NM9svTD_AbNyINUzO2M0R61OXYQfzXEeiui-sO6eYIc3x_z-YdFFQ"
+               data-component="header">
+    <br>
+<p>Example: <code>Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJhdWQiOiIxIiwianRpIjoiNTJkNDhkYzhjNTc4ODIwZWVmODFmY2NhOWJiMmJiODFlZGE1MTUwMTVkYmU5YzdkNzFkODAyYTRmZWNhMWQ5ZGJhYWEzMTc2YjI1OTJmMTgiLCJpYXQiOjE3NjQwNjAzNDQuMDUyOTc0LCJuYmYiOjE3NjQwNjAzNDQuMDUyOTc1LCJleHAiOjE3OTU1OTYzNDQuMDQzNjUyLCJzdWIiOiIxNjgiLCJzY29wZXMiOltdfQ.X9tS38uM-UlrpFlYZihD_kmuCcSX_hdGsRBJcNGfrWXAClMiqeTxNTC45Ftxw-ddmDQ59t5xJLlnWp2Rx57itO-IHclNmwnVJDPAh1l9D8CZBGxBSoN0FvmbWeYDNQnA7ud77YLekrcSAuKMdBX3J1UKq6ytvWwi6ChnuRFqcQ-fpzK-jgkMhGm-WFHw0H3a34afdBdSUUFutESlwMvTqmXILYVcIwaJpEAjamf3rn6wIOEoD8mbxXJ6Gb6QrRO72Kt3z62vJp7yOeMsnXUkfioVSyJVwbkbchCs2Y4YZY3FEREbKysKNdHJhhqmn6AXvx66arAK3HeZoyf5eusfk26alhbEdJqsJgFP5VROV5l57q8VKhH8hAxg-oeidCGGJXPjLGeb-5iGPjdGhQ1Ng1i9kt7VDV4icb8B2AbNC2Ie9xP6b0R11PX4jUd8D3Jogf2f0ZhAs5Is8WHcrxsCyk3lWvgOyzWxpRx2lSpmBRmSwksPrKJk_7JuzDZ1Tdpz6mubjV6DzlmqDJJjf32hBIMnaYOhOUz5k1FzZ8mybsSbnM9UjzHYr5xIf4rkmVAfuPnU2FGu8NtCQaOtt9G-TziBFgT3ZjxBCL9QaaC39BRulGE6tyCAT8NM9svTD_AbNyINUzO2M0R61OXYQfzXEeiui-sO6eYIc3x_z-YdFFQ</code></p>
+            </div>
+                                <div style="padding-left: 28px; clear: unset;">
+                <b style="line-height: 2;"><code>Content-Type</code></b>&nbsp;&nbsp;
+&nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+                              name="Content-Type"                data-endpoint="POSTapi-v3-user-private-collaborations-zoom-signature"
+               value="application/json"
+               data-component="header">
+    <br>
+<p>Example: <code>application/json</code></p>
+            </div>
+                                <div style="padding-left: 28px; clear: unset;">
+                <b style="line-height: 2;"><code>Accept</code></b>&nbsp;&nbsp;
+&nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+                              name="Accept"                data-endpoint="POSTapi-v3-user-private-collaborations-zoom-signature"
+               value="application/json"
+               data-component="header">
+    <br>
+<p>Example: <code>application/json</code></p>
+            </div>
+                                <h4 class="fancy-heading-panel"><b>Body Parameters</b></h4>
+        <div style=" padding-left: 28px;  clear: unset;">
+            <b style="line-height: 2;"><code>collaboration_id</code></b>&nbsp;&nbsp;
+<small>integer</small>&nbsp;
+ &nbsp;
+                <input type="number" style="display: none"
+               step="any"               name="collaboration_id"                data-endpoint="POSTapi-v3-user-private-collaborations-zoom-signature"
+               value="1"
+               data-component="body">
+    <br>
+<p>The id of the collaboration. Example: <code>1</code></p>
+        </div>
+        </form>
+
+                    <h2 id="private-collaborations-GETapi-v3-user-private-collaborations-private-collaborations-calender-fetch-data">Fetch calendar data for private collaborations</h2>
+
+<p>
+<small class="badge badge-darkred">requires authentication</small>
+</p>
+
+
+
+<span id="example-requests-GETapi-v3-user-private-collaborations-private-collaborations-calender-fetch-data">
+<blockquote>Example request:</blockquote>
+
+
+<div class="bash-example">
+    <pre><code class="language-bash">curl --request GET \
+    --get "http://127.0.0.1:8000/api/v3/user/private-collaborations/private-collaborations-calender-fetch-data" \
+    --header "Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJhdWQiOiIxIiwianRpIjoiNTJkNDhkYzhjNTc4ODIwZWVmODFmY2NhOWJiMmJiODFlZGE1MTUwMTVkYmU5YzdkNzFkODAyYTRmZWNhMWQ5ZGJhYWEzMTc2YjI1OTJmMTgiLCJpYXQiOjE3NjQwNjAzNDQuMDUyOTc0LCJuYmYiOjE3NjQwNjAzNDQuMDUyOTc1LCJleHAiOjE3OTU1OTYzNDQuMDQzNjUyLCJzdWIiOiIxNjgiLCJzY29wZXMiOltdfQ.X9tS38uM-UlrpFlYZihD_kmuCcSX_hdGsRBJcNGfrWXAClMiqeTxNTC45Ftxw-ddmDQ59t5xJLlnWp2Rx57itO-IHclNmwnVJDPAh1l9D8CZBGxBSoN0FvmbWeYDNQnA7ud77YLekrcSAuKMdBX3J1UKq6ytvWwi6ChnuRFqcQ-fpzK-jgkMhGm-WFHw0H3a34afdBdSUUFutESlwMvTqmXILYVcIwaJpEAjamf3rn6wIOEoD8mbxXJ6Gb6QrRO72Kt3z62vJp7yOeMsnXUkfioVSyJVwbkbchCs2Y4YZY3FEREbKysKNdHJhhqmn6AXvx66arAK3HeZoyf5eusfk26alhbEdJqsJgFP5VROV5l57q8VKhH8hAxg-oeidCGGJXPjLGeb-5iGPjdGhQ1Ng1i9kt7VDV4icb8B2AbNC2Ie9xP6b0R11PX4jUd8D3Jogf2f0ZhAs5Is8WHcrxsCyk3lWvgOyzWxpRx2lSpmBRmSwksPrKJk_7JuzDZ1Tdpz6mubjV6DzlmqDJJjf32hBIMnaYOhOUz5k1FzZ8mybsSbnM9UjzHYr5xIf4rkmVAfuPnU2FGu8NtCQaOtt9G-TziBFgT3ZjxBCL9QaaC39BRulGE6tyCAT8NM9svTD_AbNyINUzO2M0R61OXYQfzXEeiui-sO6eYIc3x_z-YdFFQ" \
+    --header "Content-Type: application/json" \
+    --header "Accept: application/json"</code></pre></div>
+
+
+<div class="javascript-example">
+    <pre><code class="language-javascript">const url = new URL(
+    "http://127.0.0.1:8000/api/v3/user/private-collaborations/private-collaborations-calender-fetch-data"
+);
+
+const headers = {
+    "Authorization": "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJhdWQiOiIxIiwianRpIjoiNTJkNDhkYzhjNTc4ODIwZWVmODFmY2NhOWJiMmJiODFlZGE1MTUwMTVkYmU5YzdkNzFkODAyYTRmZWNhMWQ5ZGJhYWEzMTc2YjI1OTJmMTgiLCJpYXQiOjE3NjQwNjAzNDQuMDUyOTc0LCJuYmYiOjE3NjQwNjAzNDQuMDUyOTc1LCJleHAiOjE3OTU1OTYzNDQuMDQzNjUyLCJzdWIiOiIxNjgiLCJzY29wZXMiOltdfQ.X9tS38uM-UlrpFlYZihD_kmuCcSX_hdGsRBJcNGfrWXAClMiqeTxNTC45Ftxw-ddmDQ59t5xJLlnWp2Rx57itO-IHclNmwnVJDPAh1l9D8CZBGxBSoN0FvmbWeYDNQnA7ud77YLekrcSAuKMdBX3J1UKq6ytvWwi6ChnuRFqcQ-fpzK-jgkMhGm-WFHw0H3a34afdBdSUUFutESlwMvTqmXILYVcIwaJpEAjamf3rn6wIOEoD8mbxXJ6Gb6QrRO72Kt3z62vJp7yOeMsnXUkfioVSyJVwbkbchCs2Y4YZY3FEREbKysKNdHJhhqmn6AXvx66arAK3HeZoyf5eusfk26alhbEdJqsJgFP5VROV5l57q8VKhH8hAxg-oeidCGGJXPjLGeb-5iGPjdGhQ1Ng1i9kt7VDV4icb8B2AbNC2Ie9xP6b0R11PX4jUd8D3Jogf2f0ZhAs5Is8WHcrxsCyk3lWvgOyzWxpRx2lSpmBRmSwksPrKJk_7JuzDZ1Tdpz6mubjV6DzlmqDJJjf32hBIMnaYOhOUz5k1FzZ8mybsSbnM9UjzHYr5xIf4rkmVAfuPnU2FGu8NtCQaOtt9G-TziBFgT3ZjxBCL9QaaC39BRulGE6tyCAT8NM9svTD_AbNyINUzO2M0R61OXYQfzXEeiui-sO6eYIc3x_z-YdFFQ",
+    "Content-Type": "application/json",
+    "Accept": "application/json",
+};
+
+fetch(url, {
+    method: "GET",
+    headers,
+}).then(response =&gt; response.json());</code></pre></div>
+
+
+<div class="jsonToDart-example">
+    <pre><code class="language-dart">
+class Data {
+  final String? message;
+  final Data? data;
+
+  Data({this.message, this.data, });
+
+  factory Data.fromJson(Map&lt;String, dynamic&gt; json) =&gt; Data(
+    message: json['message'],
+    data: json['data'] != null ? Data.fromJson(json['data'] as Map&lt;String, dynamic&gt;) : null,
+  );
+
+  Map&lt;String, dynamic&gt; toJson() =&gt; {
+    'message': message,
+    'data': data?.toJson(),
+  };
+}</code></pre></div>
+
+</span>
+
+<span id="example-responses-GETapi-v3-user-private-collaborations-private-collaborations-calender-fetch-data">
+            <blockquote>
+            <p>Example response (200):</p>
+        </blockquote>
+                <pre>
+
+<code class="language-json" style="max-height: 300px;">{
+    &quot;message&quot;: &quot;Calender data fetched successfully.&quot;,
+    &quot;data&quot;: []
+}</code>
+ </pre>
+            <blockquote>
+            <p>Example response (201):</p>
+        </blockquote>
+                <pre>
+
+<code class="language-json" style="max-height: 300px;">{
+    &quot;error&quot;: &quot;Failed to load collaboration calender data.&quot;
+}</code>
+ </pre>
+    </span>
+<span id="execution-results-GETapi-v3-user-private-collaborations-private-collaborations-calender-fetch-data" hidden>
+    <blockquote>Received response<span
+                id="execution-response-status-GETapi-v3-user-private-collaborations-private-collaborations-calender-fetch-data"></span>:
+    </blockquote>
+    <pre class="json"><code id="execution-response-content-GETapi-v3-user-private-collaborations-private-collaborations-calender-fetch-data"
+      data-empty-response-text="<Empty response>" style="max-height: 400px;"></code></pre>
+</span>
+<span id="execution-error-GETapi-v3-user-private-collaborations-private-collaborations-calender-fetch-data" hidden>
+    <blockquote>Request failed with error:</blockquote>
+    <pre><code id="execution-error-message-GETapi-v3-user-private-collaborations-private-collaborations-calender-fetch-data">
+
+Tip: Check that you&#039;re properly connected to the network.
+If you&#039;re a maintainer of ths API, verify that your API is running and you&#039;ve enabled CORS.
+You can check the Dev Tools console for debugging information.</code></pre>
+</span>
+<form id="form-GETapi-v3-user-private-collaborations-private-collaborations-calender-fetch-data" data-method="GET"
+      data-path="api/v3/user/private-collaborations/private-collaborations-calender-fetch-data"
+      data-authed="1"
+      data-hasfiles="0"
+      data-isarraybody="0"
+      autocomplete="off"
+      onsubmit="event.preventDefault(); executeTryOut('GETapi-v3-user-private-collaborations-private-collaborations-calender-fetch-data', this);">
+    <h3>
+        Request&nbsp;&nbsp;&nbsp;
+                    <button type="button"
+                    style="background-color: #8fbcd4; padding: 5px 10px; border-radius: 5px; border-width: thin;"
+                    id="btn-tryout-GETapi-v3-user-private-collaborations-private-collaborations-calender-fetch-data"
+                    onclick="tryItOut('GETapi-v3-user-private-collaborations-private-collaborations-calender-fetch-data');">Try it out ⚡
+            </button>
+            <button type="button"
+                    style="background-color: #c97a7e; padding: 5px 10px; border-radius: 5px; border-width: thin;"
+                    id="btn-canceltryout-GETapi-v3-user-private-collaborations-private-collaborations-calender-fetch-data"
+                    onclick="cancelTryOut('GETapi-v3-user-private-collaborations-private-collaborations-calender-fetch-data');" hidden>Cancel 🛑
+            </button>&nbsp;&nbsp;
+            <button type="submit"
+                    style="background-color: #6ac174; padding: 5px 10px; border-radius: 5px; border-width: thin;"
+                    id="btn-executetryout-GETapi-v3-user-private-collaborations-private-collaborations-calender-fetch-data"
+                    data-initial-text="Send Request 💥"
+                    data-loading-text="⏱ Sending..."
+                    hidden>Send Request 💥
+            </button>
+            </h3>
+            <p>
+            <small class="badge badge-green">GET</small>
+            <b><code>api/v3/user/private-collaborations/private-collaborations-calender-fetch-data</code></b>
+        </p>
+                <h4 class="fancy-heading-panel"><b>Headers</b></h4>
+                                <div style="padding-left: 28px; clear: unset;">
+                <b style="line-height: 2;"><code>Authorization</code></b>&nbsp;&nbsp;
+&nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+                              name="Authorization" class="auth-value"               data-endpoint="GETapi-v3-user-private-collaborations-private-collaborations-calender-fetch-data"
+               value="Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJhdWQiOiIxIiwianRpIjoiNTJkNDhkYzhjNTc4ODIwZWVmODFmY2NhOWJiMmJiODFlZGE1MTUwMTVkYmU5YzdkNzFkODAyYTRmZWNhMWQ5ZGJhYWEzMTc2YjI1OTJmMTgiLCJpYXQiOjE3NjQwNjAzNDQuMDUyOTc0LCJuYmYiOjE3NjQwNjAzNDQuMDUyOTc1LCJleHAiOjE3OTU1OTYzNDQuMDQzNjUyLCJzdWIiOiIxNjgiLCJzY29wZXMiOltdfQ.X9tS38uM-UlrpFlYZihD_kmuCcSX_hdGsRBJcNGfrWXAClMiqeTxNTC45Ftxw-ddmDQ59t5xJLlnWp2Rx57itO-IHclNmwnVJDPAh1l9D8CZBGxBSoN0FvmbWeYDNQnA7ud77YLekrcSAuKMdBX3J1UKq6ytvWwi6ChnuRFqcQ-fpzK-jgkMhGm-WFHw0H3a34afdBdSUUFutESlwMvTqmXILYVcIwaJpEAjamf3rn6wIOEoD8mbxXJ6Gb6QrRO72Kt3z62vJp7yOeMsnXUkfioVSyJVwbkbchCs2Y4YZY3FEREbKysKNdHJhhqmn6AXvx66arAK3HeZoyf5eusfk26alhbEdJqsJgFP5VROV5l57q8VKhH8hAxg-oeidCGGJXPjLGeb-5iGPjdGhQ1Ng1i9kt7VDV4icb8B2AbNC2Ie9xP6b0R11PX4jUd8D3Jogf2f0ZhAs5Is8WHcrxsCyk3lWvgOyzWxpRx2lSpmBRmSwksPrKJk_7JuzDZ1Tdpz6mubjV6DzlmqDJJjf32hBIMnaYOhOUz5k1FzZ8mybsSbnM9UjzHYr5xIf4rkmVAfuPnU2FGu8NtCQaOtt9G-TziBFgT3ZjxBCL9QaaC39BRulGE6tyCAT8NM9svTD_AbNyINUzO2M0R61OXYQfzXEeiui-sO6eYIc3x_z-YdFFQ"
+               data-component="header">
+    <br>
+<p>Example: <code>Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJhdWQiOiIxIiwianRpIjoiNTJkNDhkYzhjNTc4ODIwZWVmODFmY2NhOWJiMmJiODFlZGE1MTUwMTVkYmU5YzdkNzFkODAyYTRmZWNhMWQ5ZGJhYWEzMTc2YjI1OTJmMTgiLCJpYXQiOjE3NjQwNjAzNDQuMDUyOTc0LCJuYmYiOjE3NjQwNjAzNDQuMDUyOTc1LCJleHAiOjE3OTU1OTYzNDQuMDQzNjUyLCJzdWIiOiIxNjgiLCJzY29wZXMiOltdfQ.X9tS38uM-UlrpFlYZihD_kmuCcSX_hdGsRBJcNGfrWXAClMiqeTxNTC45Ftxw-ddmDQ59t5xJLlnWp2Rx57itO-IHclNmwnVJDPAh1l9D8CZBGxBSoN0FvmbWeYDNQnA7ud77YLekrcSAuKMdBX3J1UKq6ytvWwi6ChnuRFqcQ-fpzK-jgkMhGm-WFHw0H3a34afdBdSUUFutESlwMvTqmXILYVcIwaJpEAjamf3rn6wIOEoD8mbxXJ6Gb6QrRO72Kt3z62vJp7yOeMsnXUkfioVSyJVwbkbchCs2Y4YZY3FEREbKysKNdHJhhqmn6AXvx66arAK3HeZoyf5eusfk26alhbEdJqsJgFP5VROV5l57q8VKhH8hAxg-oeidCGGJXPjLGeb-5iGPjdGhQ1Ng1i9kt7VDV4icb8B2AbNC2Ie9xP6b0R11PX4jUd8D3Jogf2f0ZhAs5Is8WHcrxsCyk3lWvgOyzWxpRx2lSpmBRmSwksPrKJk_7JuzDZ1Tdpz6mubjV6DzlmqDJJjf32hBIMnaYOhOUz5k1FzZ8mybsSbnM9UjzHYr5xIf4rkmVAfuPnU2FGu8NtCQaOtt9G-TziBFgT3ZjxBCL9QaaC39BRulGE6tyCAT8NM9svTD_AbNyINUzO2M0R61OXYQfzXEeiui-sO6eYIc3x_z-YdFFQ</code></p>
+            </div>
+                                <div style="padding-left: 28px; clear: unset;">
+                <b style="line-height: 2;"><code>Content-Type</code></b>&nbsp;&nbsp;
+&nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+                              name="Content-Type"                data-endpoint="GETapi-v3-user-private-collaborations-private-collaborations-calender-fetch-data"
+               value="application/json"
+               data-component="header">
+    <br>
+<p>Example: <code>application/json</code></p>
+            </div>
+                                <div style="padding-left: 28px; clear: unset;">
+                <b style="line-height: 2;"><code>Accept</code></b>&nbsp;&nbsp;
+&nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+                              name="Accept"                data-endpoint="GETapi-v3-user-private-collaborations-private-collaborations-calender-fetch-data"
+               value="application/json"
+               data-component="header">
+    <br>
+<p>Example: <code>application/json</code></p>
+            </div>
+                        </form>
 
                 <h1 id="profile">Profile</h1>
 
@@ -44937,7 +46682,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
     --header "Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJhdWQiOiIxIiwianRpIjoiNTJkNDhkYzhjNTc4ODIwZWVmODFmY2NhOWJiMmJiODFlZGE1MTUwMTVkYmU5YzdkNzFkODAyYTRmZWNhMWQ5ZGJhYWEzMTc2YjI1OTJmMTgiLCJpYXQiOjE3NjQwNjAzNDQuMDUyOTc0LCJuYmYiOjE3NjQwNjAzNDQuMDUyOTc1LCJleHAiOjE3OTU1OTYzNDQuMDQzNjUyLCJzdWIiOiIxNjgiLCJzY29wZXMiOltdfQ.X9tS38uM-UlrpFlYZihD_kmuCcSX_hdGsRBJcNGfrWXAClMiqeTxNTC45Ftxw-ddmDQ59t5xJLlnWp2Rx57itO-IHclNmwnVJDPAh1l9D8CZBGxBSoN0FvmbWeYDNQnA7ud77YLekrcSAuKMdBX3J1UKq6ytvWwi6ChnuRFqcQ-fpzK-jgkMhGm-WFHw0H3a34afdBdSUUFutESlwMvTqmXILYVcIwaJpEAjamf3rn6wIOEoD8mbxXJ6Gb6QrRO72Kt3z62vJp7yOeMsnXUkfioVSyJVwbkbchCs2Y4YZY3FEREbKysKNdHJhhqmn6AXvx66arAK3HeZoyf5eusfk26alhbEdJqsJgFP5VROV5l57q8VKhH8hAxg-oeidCGGJXPjLGeb-5iGPjdGhQ1Ng1i9kt7VDV4icb8B2AbNC2Ie9xP6b0R11PX4jUd8D3Jogf2f0ZhAs5Is8WHcrxsCyk3lWvgOyzWxpRx2lSpmBRmSwksPrKJk_7JuzDZ1Tdpz6mubjV6DzlmqDJJjf32hBIMnaYOhOUz5k1FzZ8mybsSbnM9UjzHYr5xIf4rkmVAfuPnU2FGu8NtCQaOtt9G-TziBFgT3ZjxBCL9QaaC39BRulGE6tyCAT8NM9svTD_AbNyINUzO2M0R61OXYQfzXEeiui-sO6eYIc3x_z-YdFFQ" \
     --header "Content-Type: multipart/form-data" \
     --header "Accept: application/json" \
-    --form "profile_picture=@/private/var/folders/wy/1yz2w5p91q13336262xr4yzw0000gn/T/phptJ8Bti" </code></pre></div>
+    --form "profile_picture=@/private/var/folders/wy/1yz2w5p91q13336262xr4yzw0000gn/T/phpplOD3z" </code></pre></div>
 
 
 <div class="javascript-example">
@@ -45094,7 +46839,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
                value=""
                data-component="body">
     <br>
-<p>The profile picture of the user. Example: <code>/private/var/folders/wy/1yz2w5p91q13336262xr4yzw0000gn/T/phptJ8Bti</code></p>
+<p>The profile picture of the user. Example: <code>/private/var/folders/wy/1yz2w5p91q13336262xr4yzw0000gn/T/phpplOD3z</code></p>
         </div>
         </form>
 
@@ -48773,7 +50518,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 <div class="bash-example">
     <pre><code class="language-bash">curl --request POST \
-    "http://127.0.0.1:8000/api/v3/user/roles/edit/repudiandae" \
+    "http://127.0.0.1:8000/api/v3/user/roles/edit/quidem" \
     --header "Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJhdWQiOiIxIiwianRpIjoiNTJkNDhkYzhjNTc4ODIwZWVmODFmY2NhOWJiMmJiODFlZGE1MTUwMTVkYmU5YzdkNzFkODAyYTRmZWNhMWQ5ZGJhYWEzMTc2YjI1OTJmMTgiLCJpYXQiOjE3NjQwNjAzNDQuMDUyOTc0LCJuYmYiOjE3NjQwNjAzNDQuMDUyOTc1LCJleHAiOjE3OTU1OTYzNDQuMDQzNjUyLCJzdWIiOiIxNjgiLCJzY29wZXMiOltdfQ.X9tS38uM-UlrpFlYZihD_kmuCcSX_hdGsRBJcNGfrWXAClMiqeTxNTC45Ftxw-ddmDQ59t5xJLlnWp2Rx57itO-IHclNmwnVJDPAh1l9D8CZBGxBSoN0FvmbWeYDNQnA7ud77YLekrcSAuKMdBX3J1UKq6ytvWwi6ChnuRFqcQ-fpzK-jgkMhGm-WFHw0H3a34afdBdSUUFutESlwMvTqmXILYVcIwaJpEAjamf3rn6wIOEoD8mbxXJ6Gb6QrRO72Kt3z62vJp7yOeMsnXUkfioVSyJVwbkbchCs2Y4YZY3FEREbKysKNdHJhhqmn6AXvx66arAK3HeZoyf5eusfk26alhbEdJqsJgFP5VROV5l57q8VKhH8hAxg-oeidCGGJXPjLGeb-5iGPjdGhQ1Ng1i9kt7VDV4icb8B2AbNC2Ie9xP6b0R11PX4jUd8D3Jogf2f0ZhAs5Is8WHcrxsCyk3lWvgOyzWxpRx2lSpmBRmSwksPrKJk_7JuzDZ1Tdpz6mubjV6DzlmqDJJjf32hBIMnaYOhOUz5k1FzZ8mybsSbnM9UjzHYr5xIf4rkmVAfuPnU2FGu8NtCQaOtt9G-TziBFgT3ZjxBCL9QaaC39BRulGE6tyCAT8NM9svTD_AbNyINUzO2M0R61OXYQfzXEeiui-sO6eYIc3x_z-YdFFQ" \
     --header "Content-Type: application/json" \
     --header "Accept: application/json"</code></pre></div>
@@ -48781,7 +50526,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 <div class="javascript-example">
     <pre><code class="language-javascript">const url = new URL(
-    "http://127.0.0.1:8000/api/v3/user/roles/edit/repudiandae"
+    "http://127.0.0.1:8000/api/v3/user/roles/edit/quidem"
 );
 
 const headers = {
@@ -48798,12 +50543,12 @@ fetch(url, {
 
 <div class="jsonToDart-example">
     <pre><code class="language-dart">
-class Repudiandae {
+class Quidem {
   final List&lt;ModulesItem&gt;? modules;
 
-  Repudiandae({this.modules, });
+  Quidem({this.modules, });
 
-  factory Repudiandae.fromJson(Map&lt;String, dynamic&gt; json) =&gt; Repudiandae(
+  factory Quidem.fromJson(Map&lt;String, dynamic&gt; json) =&gt; Quidem(
     modules: (json['modules'] as List&lt;dynamic&gt;?)?.map((e) =&gt; ModulesItem.fromJson(e as Map&lt;String, dynamic&gt;)).toList(),
   );
 
@@ -49175,10 +50920,10 @@ You can check the Dev Tools console for debugging information.</code></pre>
  &nbsp;
                 <input type="text" style="display: none"
                               name="id"                data-endpoint="POSTapi-v3-user-roles-edit--id-"
-               value="repudiandae"
+               value="quidem"
                data-component="url">
     <br>
-<p>The ID of the edit. Example: <code>repudiandae</code></p>
+<p>The ID of the edit. Example: <code>quidem</code></p>
             </div>
                     </form>
 
@@ -49539,7 +51284,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
     --header "Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJhdWQiOiIxIiwianRpIjoiNTJkNDhkYzhjNTc4ODIwZWVmODFmY2NhOWJiMmJiODFlZGE1MTUwMTVkYmU5YzdkNzFkODAyYTRmZWNhMWQ5ZGJhYWEzMTc2YjI1OTJmMTgiLCJpYXQiOjE3NjQwNjAzNDQuMDUyOTc0LCJuYmYiOjE3NjQwNjAzNDQuMDUyOTc1LCJleHAiOjE3OTU1OTYzNDQuMDQzNjUyLCJzdWIiOiIxNjgiLCJzY29wZXMiOltdfQ.X9tS38uM-UlrpFlYZihD_kmuCcSX_hdGsRBJcNGfrWXAClMiqeTxNTC45Ftxw-ddmDQ59t5xJLlnWp2Rx57itO-IHclNmwnVJDPAh1l9D8CZBGxBSoN0FvmbWeYDNQnA7ud77YLekrcSAuKMdBX3J1UKq6ytvWwi6ChnuRFqcQ-fpzK-jgkMhGm-WFHw0H3a34afdBdSUUFutESlwMvTqmXILYVcIwaJpEAjamf3rn6wIOEoD8mbxXJ6Gb6QrRO72Kt3z62vJp7yOeMsnXUkfioVSyJVwbkbchCs2Y4YZY3FEREbKysKNdHJhhqmn6AXvx66arAK3HeZoyf5eusfk26alhbEdJqsJgFP5VROV5l57q8VKhH8hAxg-oeidCGGJXPjLGeb-5iGPjdGhQ1Ng1i9kt7VDV4icb8B2AbNC2Ie9xP6b0R11PX4jUd8D3Jogf2f0ZhAs5Is8WHcrxsCyk3lWvgOyzWxpRx2lSpmBRmSwksPrKJk_7JuzDZ1Tdpz6mubjV6DzlmqDJJjf32hBIMnaYOhOUz5k1FzZ8mybsSbnM9UjzHYr5xIf4rkmVAfuPnU2FGu8NtCQaOtt9G-TziBFgT3ZjxBCL9QaaC39BRulGE6tyCAT8NM9svTD_AbNyINUzO2M0R61OXYQfzXEeiui-sO6eYIc3x_z-YdFFQ" \
     --header "Content-Type: multipart/form-data" \
     --header "Accept: application/json" \
-    --form "file=@/private/var/folders/wy/1yz2w5p91q13336262xr4yzw0000gn/T/phpM7VNYc" </code></pre></div>
+    --form "file=@/private/var/folders/wy/1yz2w5p91q13336262xr4yzw0000gn/T/phpKt6R65" </code></pre></div>
 
 
 <div class="javascript-example">
@@ -49691,7 +51436,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
                value=""
                data-component="body">
     <br>
-<p>files to upload. Example: <code>/private/var/folders/wy/1yz2w5p91q13336262xr4yzw0000gn/T/phpM7VNYc</code></p>
+<p>files to upload. Example: <code>/private/var/folders/wy/1yz2w5p91q13336262xr4yzw0000gn/T/phpKt6R65</code></p>
         </div>
         </form>
 
@@ -49709,7 +51454,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 <div class="bash-example">
     <pre><code class="language-bash">curl --request GET \
-    --get "http://127.0.0.1:8000/api/v3/user/strategy/delete/19" \
+    --get "http://127.0.0.1:8000/api/v3/user/strategy/delete/8" \
     --header "Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJhdWQiOiIxIiwianRpIjoiNTJkNDhkYzhjNTc4ODIwZWVmODFmY2NhOWJiMmJiODFlZGE1MTUwMTVkYmU5YzdkNzFkODAyYTRmZWNhMWQ5ZGJhYWEzMTc2YjI1OTJmMTgiLCJpYXQiOjE3NjQwNjAzNDQuMDUyOTc0LCJuYmYiOjE3NjQwNjAzNDQuMDUyOTc1LCJleHAiOjE3OTU1OTYzNDQuMDQzNjUyLCJzdWIiOiIxNjgiLCJzY29wZXMiOltdfQ.X9tS38uM-UlrpFlYZihD_kmuCcSX_hdGsRBJcNGfrWXAClMiqeTxNTC45Ftxw-ddmDQ59t5xJLlnWp2Rx57itO-IHclNmwnVJDPAh1l9D8CZBGxBSoN0FvmbWeYDNQnA7ud77YLekrcSAuKMdBX3J1UKq6ytvWwi6ChnuRFqcQ-fpzK-jgkMhGm-WFHw0H3a34afdBdSUUFutESlwMvTqmXILYVcIwaJpEAjamf3rn6wIOEoD8mbxXJ6Gb6QrRO72Kt3z62vJp7yOeMsnXUkfioVSyJVwbkbchCs2Y4YZY3FEREbKysKNdHJhhqmn6AXvx66arAK3HeZoyf5eusfk26alhbEdJqsJgFP5VROV5l57q8VKhH8hAxg-oeidCGGJXPjLGeb-5iGPjdGhQ1Ng1i9kt7VDV4icb8B2AbNC2Ie9xP6b0R11PX4jUd8D3Jogf2f0ZhAs5Is8WHcrxsCyk3lWvgOyzWxpRx2lSpmBRmSwksPrKJk_7JuzDZ1Tdpz6mubjV6DzlmqDJJjf32hBIMnaYOhOUz5k1FzZ8mybsSbnM9UjzHYr5xIf4rkmVAfuPnU2FGu8NtCQaOtt9G-TziBFgT3ZjxBCL9QaaC39BRulGE6tyCAT8NM9svTD_AbNyINUzO2M0R61OXYQfzXEeiui-sO6eYIc3x_z-YdFFQ" \
     --header "Content-Type: application/json" \
     --header "Accept: application/json"</code></pre></div>
@@ -49717,7 +51462,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 <div class="javascript-example">
     <pre><code class="language-javascript">const url = new URL(
-    "http://127.0.0.1:8000/api/v3/user/strategy/delete/19"
+    "http://127.0.0.1:8000/api/v3/user/strategy/delete/8"
 );
 
 const headers = {
@@ -49734,12 +51479,12 @@ fetch(url, {
 
 <div class="jsonToDart-example">
     <pre><code class="language-dart">
-class 19 {
+class 8 {
   final String? message;
 
-  19({this.message, });
+  8({this.message, });
 
-  factory 19.fromJson(Map&lt;String, dynamic&gt; json) =&gt; 19(
+  factory 8.fromJson(Map&lt;String, dynamic&gt; json) =&gt; 8(
     message: json['message'],
   );
 
@@ -49857,10 +51602,10 @@ You can check the Dev Tools console for debugging information.</code></pre>
  &nbsp;
                 <input type="number" style="display: none"
                step="any"               name="id"                data-endpoint="GETapi-v3-user-strategy-delete--id-"
-               value="19"
+               value="8"
                data-component="url">
     <br>
-<p>The ID of the strategy to delete. Example: <code>19</code></p>
+<p>The ID of the strategy to delete. Example: <code>8</code></p>
             </div>
                     </form>
 
@@ -49878,7 +51623,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 <div class="bash-example">
     <pre><code class="language-bash">curl --request GET \
-    --get "http://127.0.0.1:8000/api/v3/user/strategy/download/mollitia" \
+    --get "http://127.0.0.1:8000/api/v3/user/strategy/download/voluptate" \
     --header "Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJhdWQiOiIxIiwianRpIjoiNTJkNDhkYzhjNTc4ODIwZWVmODFmY2NhOWJiMmJiODFlZGE1MTUwMTVkYmU5YzdkNzFkODAyYTRmZWNhMWQ5ZGJhYWEzMTc2YjI1OTJmMTgiLCJpYXQiOjE3NjQwNjAzNDQuMDUyOTc0LCJuYmYiOjE3NjQwNjAzNDQuMDUyOTc1LCJleHAiOjE3OTU1OTYzNDQuMDQzNjUyLCJzdWIiOiIxNjgiLCJzY29wZXMiOltdfQ.X9tS38uM-UlrpFlYZihD_kmuCcSX_hdGsRBJcNGfrWXAClMiqeTxNTC45Ftxw-ddmDQ59t5xJLlnWp2Rx57itO-IHclNmwnVJDPAh1l9D8CZBGxBSoN0FvmbWeYDNQnA7ud77YLekrcSAuKMdBX3J1UKq6ytvWwi6ChnuRFqcQ-fpzK-jgkMhGm-WFHw0H3a34afdBdSUUFutESlwMvTqmXILYVcIwaJpEAjamf3rn6wIOEoD8mbxXJ6Gb6QrRO72Kt3z62vJp7yOeMsnXUkfioVSyJVwbkbchCs2Y4YZY3FEREbKysKNdHJhhqmn6AXvx66arAK3HeZoyf5eusfk26alhbEdJqsJgFP5VROV5l57q8VKhH8hAxg-oeidCGGJXPjLGeb-5iGPjdGhQ1Ng1i9kt7VDV4icb8B2AbNC2Ie9xP6b0R11PX4jUd8D3Jogf2f0ZhAs5Is8WHcrxsCyk3lWvgOyzWxpRx2lSpmBRmSwksPrKJk_7JuzDZ1Tdpz6mubjV6DzlmqDJJjf32hBIMnaYOhOUz5k1FzZ8mybsSbnM9UjzHYr5xIf4rkmVAfuPnU2FGu8NtCQaOtt9G-TziBFgT3ZjxBCL9QaaC39BRulGE6tyCAT8NM9svTD_AbNyINUzO2M0R61OXYQfzXEeiui-sO6eYIc3x_z-YdFFQ" \
     --header "Content-Type: application/json" \
     --header "Accept: application/json"</code></pre></div>
@@ -49886,7 +51631,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 <div class="javascript-example">
     <pre><code class="language-javascript">const url = new URL(
-    "http://127.0.0.1:8000/api/v3/user/strategy/download/mollitia"
+    "http://127.0.0.1:8000/api/v3/user/strategy/download/voluptate"
 );
 
 const headers = {
@@ -49903,12 +51648,12 @@ fetch(url, {
 
 <div class="jsonToDart-example">
     <pre><code class="language-dart">
-class Mollitia {
+class Voluptate {
   final String? error;
 
-  Mollitia({this.error, });
+  Voluptate({this.error, });
 
-  factory Mollitia.fromJson(Map&lt;String, dynamic&gt; json) =&gt; Mollitia(
+  factory Voluptate.fromJson(Map&lt;String, dynamic&gt; json) =&gt; Voluptate(
     error: json['error'],
   );
 
@@ -50024,10 +51769,10 @@ You can check the Dev Tools console for debugging information.</code></pre>
  &nbsp;
                 <input type="text" style="display: none"
                               name="id"                data-endpoint="GETapi-v3-user-strategy-download--id-"
-               value="mollitia"
+               value="voluptate"
                data-component="url">
     <br>
-<p>The ID of the download. Example: <code>mollitia</code></p>
+<p>The ID of the download. Example: <code>voluptate</code></p>
             </div>
                     </form>
 
@@ -50045,7 +51790,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 <div class="bash-example">
     <pre><code class="language-bash">curl --request GET \
-    --get "http://127.0.0.1:8000/api/v3/user/strategy/view/15" \
+    --get "http://127.0.0.1:8000/api/v3/user/strategy/view/17" \
     --header "Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJhdWQiOiIxIiwianRpIjoiNTJkNDhkYzhjNTc4ODIwZWVmODFmY2NhOWJiMmJiODFlZGE1MTUwMTVkYmU5YzdkNzFkODAyYTRmZWNhMWQ5ZGJhYWEzMTc2YjI1OTJmMTgiLCJpYXQiOjE3NjQwNjAzNDQuMDUyOTc0LCJuYmYiOjE3NjQwNjAzNDQuMDUyOTc1LCJleHAiOjE3OTU1OTYzNDQuMDQzNjUyLCJzdWIiOiIxNjgiLCJzY29wZXMiOltdfQ.X9tS38uM-UlrpFlYZihD_kmuCcSX_hdGsRBJcNGfrWXAClMiqeTxNTC45Ftxw-ddmDQ59t5xJLlnWp2Rx57itO-IHclNmwnVJDPAh1l9D8CZBGxBSoN0FvmbWeYDNQnA7ud77YLekrcSAuKMdBX3J1UKq6ytvWwi6ChnuRFqcQ-fpzK-jgkMhGm-WFHw0H3a34afdBdSUUFutESlwMvTqmXILYVcIwaJpEAjamf3rn6wIOEoD8mbxXJ6Gb6QrRO72Kt3z62vJp7yOeMsnXUkfioVSyJVwbkbchCs2Y4YZY3FEREbKysKNdHJhhqmn6AXvx66arAK3HeZoyf5eusfk26alhbEdJqsJgFP5VROV5l57q8VKhH8hAxg-oeidCGGJXPjLGeb-5iGPjdGhQ1Ng1i9kt7VDV4icb8B2AbNC2Ie9xP6b0R11PX4jUd8D3Jogf2f0ZhAs5Is8WHcrxsCyk3lWvgOyzWxpRx2lSpmBRmSwksPrKJk_7JuzDZ1Tdpz6mubjV6DzlmqDJJjf32hBIMnaYOhOUz5k1FzZ8mybsSbnM9UjzHYr5xIf4rkmVAfuPnU2FGu8NtCQaOtt9G-TziBFgT3ZjxBCL9QaaC39BRulGE6tyCAT8NM9svTD_AbNyINUzO2M0R61OXYQfzXEeiui-sO6eYIc3x_z-YdFFQ" \
     --header "Content-Type: application/json" \
     --header "Accept: application/json"</code></pre></div>
@@ -50053,7 +51798,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 <div class="javascript-example">
     <pre><code class="language-javascript">const url = new URL(
-    "http://127.0.0.1:8000/api/v3/user/strategy/view/15"
+    "http://127.0.0.1:8000/api/v3/user/strategy/view/17"
 );
 
 const headers = {
@@ -50070,12 +51815,12 @@ fetch(url, {
 
 <div class="jsonToDart-example">
     <pre><code class="language-dart">
-class 15 {
+class 17 {
   final Data? data;
 
-  15({this.data, });
+  17({this.data, });
 
-  factory 15.fromJson(Map&lt;String, dynamic&gt; json) =&gt; 15(
+  factory 17.fromJson(Map&lt;String, dynamic&gt; json) =&gt; 17(
     data: json['data'] != null ? Data.fromJson(json['data'] as Map&lt;String, dynamic&gt;) : null,
   );
 
@@ -50225,10 +51970,10 @@ You can check the Dev Tools console for debugging information.</code></pre>
  &nbsp;
                 <input type="number" style="display: none"
                step="any"               name="id"                data-endpoint="GETapi-v3-user-strategy-view--id-"
-               value="15"
+               value="17"
                data-component="url">
     <br>
-<p>The ID of the strategy to view. Example: <code>15</code></p>
+<p>The ID of the strategy to view. Example: <code>17</code></p>
             </div>
                     </form>
 
@@ -50255,7 +52000,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
     --header "Content-Type: application/json" \
     --header "Accept: application/json" \
     --data "{
-    \"message\": \"vel\"
+    \"message\": \"rerum\"
 }"
 </code></pre></div>
 
@@ -50272,7 +52017,7 @@ const headers = {
 };
 
 let body = {
-    "message": "vel"
+    "message": "rerum"
 };
 
 fetch(url, {
@@ -50398,10 +52143,10 @@ You can check the Dev Tools console for debugging information.</code></pre>
 <i>optional</i> &nbsp;
                 <input type="text" style="display: none"
                               name="message"                data-endpoint="POSTapi-v3-user-chatbot"
-               value="vel"
+               value="rerum"
                data-component="body">
     <br>
-<p>Example: <code>vel</code></p>
+<p>Example: <code>rerum</code></p>
         </div>
         </form>
 

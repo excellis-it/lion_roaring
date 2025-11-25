@@ -141,14 +141,14 @@ endpoints:
         name: slug
         description: 'The slug of the product.'
         required: true
-        example: vel
+        example: dolore
         type: string
         enumValues: []
         exampleWasSpecified: false
         nullable: false
         custom: []
     cleanUrlParameters:
-      slug: vel
+      slug: dolore
     queryParameters: []
     cleanQueryParameters: []
     bodyParameters: []
@@ -200,7 +200,7 @@ endpoints:
         description: 'Optional. Array of category IDs.'
         required: false
         example:
-          - consequatur
+          - et
         type: 'string[]'
         enumValues: []
         exampleWasSpecified: false
@@ -210,7 +210,7 @@ endpoints:
         name: latestFilter
         description: 'Optional. Filter by latest, A-Z, Z-A.'
         required: false
-        example: quo
+        example: quia
         type: string
         enumValues: []
         exampleWasSpecified: false
@@ -220,7 +220,7 @@ endpoints:
         name: search
         description: 'Optional. Search by product name.'
         required: false
-        example: quam
+        example: provident
         type: string
         enumValues: []
         exampleWasSpecified: false
@@ -230,7 +230,7 @@ endpoints:
         name: page
         description: 'Optional. Page number.'
         required: false
-        example: 11
+        example: 19
         type: integer
         enumValues: []
         exampleWasSpecified: false
@@ -238,10 +238,10 @@ endpoints:
         custom: []
     cleanQueryParameters:
       'category_id[]':
-        - consequatur
-      latestFilter: quo
-      search: quam
-      page: 11
+        - et
+      latestFilter: quia
+      search: provident
+      page: 19
     bodyParameters: []
     cleanBodyParameters: []
     fileParameters: []

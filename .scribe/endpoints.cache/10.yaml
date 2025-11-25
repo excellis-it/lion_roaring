@@ -304,7 +304,7 @@ endpoints:
         name: id
         description: 'The <code>id</code> of an existing record in the colors table.'
         required: true
-        example: deserunt
+        example: est
         type: string
         enumValues: []
         exampleWasSpecified: false
@@ -341,7 +341,7 @@ endpoints:
         nullable: false
         custom: []
     cleanBodyParameters:
-      id: deserunt
+      id: est
       color: '"Medium"'
       color_name: '"Medium"'
       status: true
@@ -445,14 +445,14 @@ endpoints:
         name: id
         description: 'The <code>id</code> of an existing record in the colors table.'
         required: true
-        example: magni
+        example: nobis
         type: string
         enumValues: []
         exampleWasSpecified: false
         nullable: false
         custom: []
     cleanBodyParameters:
-      id: magni
+      id: nobis
     fileParameters: []
     responses:
       -
