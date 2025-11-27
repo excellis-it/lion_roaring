@@ -18,6 +18,32 @@
                     <span class="bottom"></span>
                 </div>
                 <div class="right_top d-flex align-items-center justify-content-end">
+
+                    @php
+                        $currentCode = strtoupper(\App\Helpers\Helper::getVisitorCountryCode());
+                        $countries = \App\Helpers\Helper::getCountries();
+                    @endphp
+                    <div class="input-group input-group-sm">
+                        {{-- <span class="input-group-text bg-dark text-white">
+                            <img style="height: 20px;"
+                                src="{{ asset('frontend_assets/images/flags/' . strtolower($currentCode) . '.png') }}"
+                                alt="">
+                        </span> --}}
+                        <select id="countrySwitcher" class="form-select form-select-sm cst-select cst-select-bottom">
+                            @foreach ($countries as $c)
+                                <option value="{{ strtolower($c->code) }}"
+                                    {{ strtoupper($c->code) === $currentCode ? 'selected' : '' }}
+                                    data-image="{{ asset('frontend_assets/images/flags/' . strtolower($c->code) . '.png') }}">
+                                    {{ $c->name }} ({{ strtoupper($c->code) }})
+                                </option>
+                            @endforeach
+                        </select>
+                    </div>
+
+                
+
+
+
                     <div class="menu-wrepper d-flex">
                         <div class="right_btm">
                             <div class="overlay" id="overlay">

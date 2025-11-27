@@ -58,11 +58,11 @@ p {
 .left_top {
     display: flex;
     justify-content: flex-start;
-    width: 30%;
+    width: 35%;
 }
 
 .right_top {
-    width: 30%;
+    width: 35%;
 }
 
 .main_menu {
@@ -3594,6 +3594,49 @@ li.slick-active button {
     color: #000;
     background-color: #F3A32F;
 }
+
+
+.book-text-mobile-slider{
+    width: 100%;
+    height: auto;
+    background-color: #f5f5f5;
+    border-bottom: 10px solid #643271;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 0px 15px #ccc;
+}
+.book-text-mobile-slider .img-box{
+    width: 170px;
+    height: 170px;
+    overflow: hidden;
+    margin-bottom: 20px;
+}
+.book-text-mobile-slider .img-box img{
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+.client-reviews{
+    width: 100%;
+    height: 300px;
+    overflow-y: scroll;
+}
+.reviews_slider .slick-slide {
+    margin: 20px 10px; /* left + right margin */
+}
+.after_about_for_mobile{
+        display: none;
+    }
+
+.right_top .input-group{
+    width: auto !important;
+}
+
+
+
+
+
+
 
 @media all and (max-width: 600px) {
     .promo-box-container {

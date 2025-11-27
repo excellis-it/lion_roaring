@@ -109,12 +109,12 @@
                 <div class="col-xxl-5 col-lg-6 mb-4" data-aos="fade-up" data-aos-duration="1000">
                     <div class="four_image">
                         <div class="row align-items-center justify-content-center">
-                            <div class="col-xl-5 col-lg-6 col-md-6 col-sm-6 mb-4 top-imgs" data-aos="fade-right"
+                            <div class="col-xl-5 col-lg-6 col-md-6 col-sm-6 col-6 mb-4 top-imgs" data-aos="fade-right"
                                 data-aos-duration="800">
                                 <img src="{{ asset('frontend_assets/images/abt_one.png') }}" class="about_four_ii mb-3">
                                 <img src="{{ asset('frontend_assets/images/abt_one1.png') }}" class="about_four_ii mb-3">
                             </div>
-                            <div class="col-xl-5 col-lg-6 col-md-6 col-sm-6 mb-4 bottom-img" data-aos="fade-up"
+                            <div class="col-xl-5 col-lg-6 col-md-6 col-sm-6 col-6 mb-4 bottom-img" data-aos="fade-up"
                                 data-aos-duration="1600">
                                 <img src="{{ asset('frontend_assets/images/abt_one2.png') }}"
                                     class="about_four_ii mb-3 mt-5">
@@ -137,7 +137,7 @@
             </div>
         </div>
     </section>
-    <section class="after_about after_about_hm">
+    <section class="after_about after_about_hm display-desktop">
         <div class="container-fluid">
             <div class="row justify-content-center">
                 <div class="col-xl-12">
@@ -193,6 +193,103 @@
             </div>
         </div>
     </section>
+
+
+    <section class="after_about_for_mobile common-padd">
+        <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-lg-8">
+                <div class="about_text heading_hp text-center">
+                    <!-- <h6>{{ $home['section_1_title'] ?? 'title' }}</h6> -->
+                    <h2 class="text-center"> {{ $home['section_1_sub_title'] ?? 'title' }}</h2>
+                    <p style="font-weight: 400;">
+                        <strong>{!! $home['section_1_description'] ?? 'description' !!}</strong>
+                    </p>
+                </div>
+            </div>
+        </div>
+            
+
+            <div class="reviews_slider">
+                <div>
+                    <div class="book-text-mobile-slider">
+                        <div class="img-box">
+                            <img src="{{ asset('frontend_assets/images/banner_img.png') }}" alt=""
+                                class="user-img">
+                        </div>
+                        <div class="client-reviews">
+                            <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Maxime excepturi aperiam tempore quis itaque ut repellendus unde error, eligendi ratione soluta ea labore, reiciendis quos est? Quasi alias voluptatibus mollitia quibusdam eveniet saepe officiis iure suscipit quis vitae vel cum impedit dolorem ullam, asperiores accusantium facilis. Praesentium debitis suscipit distinctio! Lorem ipsum dolor sit amet consectetur adipisicing elit. Maxime excepturi aperiam tempore quis itaque ut repellendus unde error, eligendi ratione soluta ea labore, reiciendis quos est? Quasi alias voluptatibus mollitia quibusdam eveniet saepe officiis iure suscipit quis vitae vel cum impedit dolorem ullam, asperiores accusantium facilis. Praesentium debitis suscipit distinctio!</p>
+                        </div>
+                    </div>
+                </div>
+                <div>
+                    <div class="book-text-mobile-slider">
+                        <div class="img-box">
+                            <img src="{{ asset('frontend_assets/images/banner_img.png') }}" alt=""
+                                class="user-img">
+                        </div>
+                        <div class="client-reviews">
+                            <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Maxime excepturi aperiam tempore quis itaque ut repellendus unde error, eligendi ratione soluta ea labore, reiciendis quos est? Quasi alias voluptatibus mollitia quibusdam eveniet saepe officiis iure suscipit quis vitae vel cum impedit dolorem ullam, asperiores accusantium facilis. Praesentium debitis suscipit distinctio! Lorem ipsum dolor sit amet consectetur adipisicing elit. Maxime excepturi aperiam tempore quis itaque ut repellendus unde error, eligendi ratione soluta ea labore, reiciendis quos est? Quasi alias voluptatibus mollitia quibusdam eveniet saepe officiis iure suscipit quis vitae vel cum impedit dolorem ullam, asperiores accusantium facilis. Praesentium debitis suscipit distinctio!</p>
+                        </div>
+                    </div>
+                </div>
+                <div>
+                    <div class="book-text-mobile-slider">
+                        <div class="img-box">
+                            <img src="{{ asset('frontend_assets/images/banner_img.png') }}" alt=""
+                                class="user-img">
+                        </div>
+                        <div class="client-reviews">
+                            <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Maxime excepturi aperiam tempore quis itaque ut repellendus unde error, eligendi ratione soluta ea labore, reiciendis quos est? Quasi alias voluptatibus mollitia quibusdam eveniet saepe officiis iure suscipit quis vitae vel cum impedit dolorem ullam, asperiores accusantium facilis. Praesentium debitis suscipit distinctio! Lorem ipsum dolor sit amet consectetur adipisicing elit. Maxime excepturi aperiam tempore quis itaque ut repellendus unde error, eligendi ratione soluta ea labore, reiciendis quos est? Quasi alias voluptatibus mollitia quibusdam eveniet saepe officiis iure suscipit quis vitae vel cum impedit dolorem ullam, asperiores accusantium facilis. Praesentium debitis suscipit distinctio!</p>
+                        </div>
+                    </div>
+                </div>
+                <div>
+                    <div class="book-text-mobile-slider">
+                        <div class="img-box">
+                            <img src="{{ asset('frontend_assets/images/banner_img.png') }}" alt=""
+                                class="user-img">
+                        </div>
+                        <div class="client-reviews">
+                            <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Maxime excepturi aperiam tempore quis itaque ut repellendus unde error, eligendi ratione soluta ea labore, reiciendis quos est? Quasi alias voluptatibus mollitia quibusdam eveniet saepe officiis iure suscipit quis vitae vel cum impedit dolorem ullam, asperiores accusantium facilis. Praesentium debitis suscipit distinctio! Lorem ipsum dolor sit amet consectetur adipisicing elit. Maxime excepturi aperiam tempore quis itaque ut repellendus unde error, eligendi ratione soluta ea labore, reiciendis quos est? Quasi alias voluptatibus mollitia quibusdam eveniet saepe officiis iure suscipit quis vitae vel cum impedit dolorem ullam, asperiores accusantium facilis. Praesentium debitis suscipit distinctio!</p>
+                        </div>
+                    </div>
+                </div>
+                <div>
+                    <div class="book-text-mobile-slider">
+                        <div class="img-box">
+                            <img src="{{ asset('frontend_assets/images/banner_img.png') }}" alt=""
+                                class="user-img">
+                        </div>
+                        <div class="client-reviews">
+                            <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Maxime excepturi aperiam tempore quis itaque ut repellendus unde error, eligendi ratione soluta ea labore, reiciendis quos est? Quasi alias voluptatibus mollitia quibusdam eveniet saepe officiis iure suscipit quis vitae vel cum impedit dolorem ullam, asperiores accusantium facilis. Praesentium debitis suscipit distinctio! Lorem ipsum dolor sit amet consectetur adipisicing elit. Maxime excepturi aperiam tempore quis itaque ut repellendus unde error, eligendi ratione soluta ea labore, reiciendis quos est? Quasi alias voluptatibus mollitia quibusdam eveniet saepe officiis iure suscipit quis vitae vel cum impedit dolorem ullam, asperiores accusantium facilis. Praesentium debitis suscipit distinctio!</p>
+                        </div>
+                    </div>
+                </div>
+                <div>
+                    <div class="book-text-mobile-slider">
+                        <div class="img-box">
+                            <img src="{{ asset('frontend_assets/images/banner_img.png') }}" alt=""
+                                class="user-img">
+                        </div>
+                        <div class="client-reviews">
+                            <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Maxime excepturi aperiam tempore quis itaque ut repellendus unde error, eligendi ratione soluta ea labore, reiciendis quos est? Quasi alias voluptatibus mollitia quibusdam eveniet saepe officiis iure suscipit quis vitae vel cum impedit dolorem ullam, asperiores accusantium facilis. Praesentium debitis suscipit distinctio! Lorem ipsum dolor sit amet consectetur adipisicing elit. Maxime excepturi aperiam tempore quis itaque ut repellendus unde error, eligendi ratione soluta ea labore, reiciendis quos est? Quasi alias voluptatibus mollitia quibusdam eveniet saepe officiis iure suscipit quis vitae vel cum impedit dolorem ullam, asperiores accusantium facilis. Praesentium debitis suscipit distinctio!</p>
+                        </div>
+                    </div>
+                </div>
+                
+            </div>
+        </div>
+    </section>
+
+
+
+
+
+
+
+
+
 
     <div class="promo-box-container">
         <p class="title"><a href="#" target="_blank" rel="noopener">Want to create an impact? <span
