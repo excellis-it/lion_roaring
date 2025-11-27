@@ -19,3 +19,5 @@ codes.zip
 .env copy
 .DS_Store
 /.DS_Store
+/.ai
+/.mcp

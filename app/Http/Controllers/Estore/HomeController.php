@@ -115,13 +115,19 @@ class HomeController extends Controller
             ];
 
             // Decode slider data
-            if ($homeCms->slider_data) {
-                $sliderData = $homeCms->slider_data;
+            $sliderData = [];
+            if (!empty($homeCms->slider_data)) {
+                $sliderData = is_string($homeCms->slider_data)
+                    ? json_decode($homeCms->slider_data, true)
+                    : $homeCms->slider_data;
             }
 
             // Decode second slider data
-            if ($homeCms->slider_data_second) {
-                $sliderDataSecond = $homeCms->slider_data_second;
+            $sliderDataSecond = [];
+            if (!empty($homeCms->slider_data_second)) {
+                $sliderDataSecond = is_string($homeCms->slider_data_second)
+                    ? json_decode($homeCms->slider_data_second, true)
+                    : $homeCms->slider_data_second;
             }
         }
 

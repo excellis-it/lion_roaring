@@ -1,65 +1,81 @@
-name: FCM
-description: ''
+name: 'Private Collaborations'
+description: |-
+
+  APIs to manage private collaborations (create, list, invite, accept)
 endpoints:
   -
     httpMethods:
-      - POST
-    uri: api/v3/user/fcm/update-token
+      - GET
+    uri: api/v3/user/private-collaborations/load
     metadata:
-      groupName: FCM
-      groupDescription: ''
+      groupName: 'Private Collaborations'
+      groupDescription: |-
+
+        APIs to manage private collaborations (create, list, invite, accept)
       subgroup: ''
       subgroupDescription: ''
-      title: 'Update FCM Token'
-      description: "Updates the FCM token for the authenticated user's device."
+      title: 'List All Private Collaborations'
+      description: ''
       authenticated: true
       custom: []
     headers:
+      Authorization: 'Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJhdWQiOiIxIiwianRpIjoiYzkzNjcyNzVkMDdlMGY5ZTc5N2Y3NzdiMzFkZGFjZmFiMDAzOWI1Y2E1ZGJjZTQ3ZWY3MjIxMjQ3YTNlMTVlOTQ0YjJlNGY2Nzk2Yjc5MDQiLCJpYXQiOjE3NjQwNzcyMjguMDQyOTgyLCJuYmYiOjE3NjQwNzcyMjguMDQyOTgzLCJleHAiOjE3OTU2MTMyMjguMDM1OTI0LCJzdWIiOiIxIiwic2NvcGVzIjpbXX0.d3N3fp6pTh1JxrRcDMwG0gLBsS0qyH4TWMsTpjbf_piH3rdfBj-04fL3inKHvOEGcZeFIFUr23DnEKVxNiHsiRYHpJz55K9Y0v-CRi4x8QxW9TIx9L63A0RaHGK044HKEq01mKy3_0ho-n2y2-s12umW92piu9A40h77UxhBMqfqHcIwwr3g77_lGtE530jLEFTSavVPHNiL2UtPIzjllRhXJO9LqALirv4txTkGiNs-3QfU4Q_suzKeU1esVJS6cOQ_lojFTeB26zq0ulDlVPYwx_ruWGyvqc4HbTwhUtCddXK-4IbXCyCWhqNqtPTRmBgtMyEy8atM6hbVFjYHDjlefUP0i6ejKmVaiEiIjTbgL2HotoGsRob1awoP5p9uYsixd0-G1OEGlPPL_wv9tlXwFBiU0M4iJnqaYZt6Cdf_MP79bd3ZcDrOaqF0ALTj6sopGau6Ml2zWr6PqChHl7G9ApnDPY_sVqSjovoDeKUhMVgNwogQCqdnbP508CYoKQtrHItBewCDmjMfekZllaMeWpU_3bnsPhfRQaL6R53uAFz5P2I_CtPcdY9W_HCBHHvTNnyrrPQhjBD_WEeT6-pm681nPKckz2qJCuHelQvb_T55SEIpq2QXw-hkMXGrXLF7imLsodNlURRKgIQLpXqdHv9EU2V5A7alUTbdDRQ'
       Content-Type: application/json
       Accept: application/json
     urlParameters: []
     cleanUrlParameters: []
-    queryParameters: []
-    cleanQueryParameters: []
-    bodyParameters:
-      fcm_token:
-        name: fcm_token
-        description: 'The FCM token from the client device.'
-        required: true
-        example: '"dGhpcyBpcyBhIGZha2UgdG9rZW4"'
+    queryParameters:
+      search:
+        name: search
+        description: 'optional for search filter.'
+        required: false
+        example: '"project"'
         type: string
         enumValues: []
         exampleWasSpecified: true
         nullable: false
         custom: []
-    cleanBodyParameters:
-      fcm_token: '"dGhpcyBpcyBhIGZha2UgdG9rZW4"'
+    cleanQueryParameters:
+      search: '"project"'
+    bodyParameters: []
+    cleanBodyParameters: []
     fileParameters: []
     responses:
       -
         status: 200
         content: |-
           {
-            "message": "FCM token updated successfully.",
-            "status": true
+            "data": [
+                {
+                    "id": 1,
+                    "user_id": 2,
+                    "title": "Project Sync",
+                    "description": "Weekly sync",
+                    "start_time": "2024-11-10T09:00:00",
+                    "end_time": "2024-11-10T10:00:00",
+                    "meeting_link": "https://zoom.us/j/123456789",
+                    "is_zoom": true,
+                    "user": { "id": 2, "full_name": "John Doe", "email": "john@example.com" }
+                }
+            ]
           }
         headers: []
         description: ''
         custom: []
       -
-        status: 422
+        status: 201
         content: |-
           {
-            "message": "Validation error.",
-            "errors": {
-              "fcm_token": ["The fcm token field is required."]
-            }
+            "error": "Failed to load collaborations."
           }
         headers: []
         description: ''
         custom: []
     responseFields: []
-    auth: []
+    auth:
+      - headers
+      - Authorization
+      - 'Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJhdWQiOiIxIiwianRpIjoiYzkzNjcyNzVkMDdlMGY5ZTc5N2Y3NzdiMzFkZGFjZmFiMDAzOWI1Y2E1ZGJjZTQ3ZWY3MjIxMjQ3YTNlMTVlOTQ0YjJlNGY2Nzk2Yjc5MDQiLCJpYXQiOjE3NjQwNzcyMjguMDQyOTgyLCJuYmYiOjE3NjQwNzcyMjguMDQyOTgzLCJleHAiOjE3OTU2MTMyMjguMDM1OTI0LCJzdWIiOiIxIiwic2NvcGVzIjpbXX0.d3N3fp6pTh1JxrRcDMwG0gLBsS0qyH4TWMsTpjbf_piH3rdfBj-04fL3inKHvOEGcZeFIFUr23DnEKVxNiHsiRYHpJz55K9Y0v-CRi4x8QxW9TIx9L63A0RaHGK044HKEq01mKy3_0ho-n2y2-s12umW92piu9A40h77UxhBMqfqHcIwwr3g77_lGtE530jLEFTSavVPHNiL2UtPIzjllRhXJO9LqALirv4txTkGiNs-3QfU4Q_suzKeU1esVJS6cOQ_lojFTeB26zq0ulDlVPYwx_ruWGyvqc4HbTwhUtCddXK-4IbXCyCWhqNqtPTRmBgtMyEy8atM6hbVFjYHDjlefUP0i6ejKmVaiEiIjTbgL2HotoGsRob1awoP5p9uYsixd0-G1OEGlPPL_wv9tlXwFBiU0M4iJnqaYZt6Cdf_MP79bd3ZcDrOaqF0ALTj6sopGau6Ml2zWr6PqChHl7G9ApnDPY_sVqSjovoDeKUhMVgNwogQCqdnbP508CYoKQtrHItBewCDmjMfekZllaMeWpU_3bnsPhfRQaL6R53uAFz5P2I_CtPcdY9W_HCBHHvTNnyrrPQhjBD_WEeT6-pm681nPKckz2qJCuHelQvb_T55SEIpq2QXw-hkMXGrXLF7imLsodNlURRKgIQLpXqdHv9EU2V5A7alUTbdDRQ'
     controller: null
     method: null
     route: null
@@ -67,17 +83,515 @@ endpoints:
   -
     httpMethods:
       - POST
-    uri: api/v3/user/fcm/remove-token
+    uri: api/v3/user/private-collaborations/store
     metadata:
-      groupName: FCM
-      groupDescription: ''
+      groupName: 'Private Collaborations'
+      groupDescription: |-
+
+        APIs to manage private collaborations (create, list, invite, accept)
       subgroup: ''
       subgroupDescription: ''
-      title: 'Remove FCM Token'
-      description: 'Removes the FCM token for the authenticated user (useful for logout).'
+      title: 'Create a private collaboration'
+      description: ''
       authenticated: true
       custom: []
     headers:
+      Authorization: 'Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJhdWQiOiIxIiwianRpIjoiYzkzNjcyNzVkMDdlMGY5ZTc5N2Y3NzdiMzFkZGFjZmFiMDAzOWI1Y2E1ZGJjZTQ3ZWY3MjIxMjQ3YTNlMTVlOTQ0YjJlNGY2Nzk2Yjc5MDQiLCJpYXQiOjE3NjQwNzcyMjguMDQyOTgyLCJuYmYiOjE3NjQwNzcyMjguMDQyOTgzLCJleHAiOjE3OTU2MTMyMjguMDM1OTI0LCJzdWIiOiIxIiwic2NvcGVzIjpbXX0.d3N3fp6pTh1JxrRcDMwG0gLBsS0qyH4TWMsTpjbf_piH3rdfBj-04fL3inKHvOEGcZeFIFUr23DnEKVxNiHsiRYHpJz55K9Y0v-CRi4x8QxW9TIx9L63A0RaHGK044HKEq01mKy3_0ho-n2y2-s12umW92piu9A40h77UxhBMqfqHcIwwr3g77_lGtE530jLEFTSavVPHNiL2UtPIzjllRhXJO9LqALirv4txTkGiNs-3QfU4Q_suzKeU1esVJS6cOQ_lojFTeB26zq0ulDlVPYwx_ruWGyvqc4HbTwhUtCddXK-4IbXCyCWhqNqtPTRmBgtMyEy8atM6hbVFjYHDjlefUP0i6ejKmVaiEiIjTbgL2HotoGsRob1awoP5p9uYsixd0-G1OEGlPPL_wv9tlXwFBiU0M4iJnqaYZt6Cdf_MP79bd3ZcDrOaqF0ALTj6sopGau6Ml2zWr6PqChHl7G9ApnDPY_sVqSjovoDeKUhMVgNwogQCqdnbP508CYoKQtrHItBewCDmjMfekZllaMeWpU_3bnsPhfRQaL6R53uAFz5P2I_CtPcdY9W_HCBHHvTNnyrrPQhjBD_WEeT6-pm681nPKckz2qJCuHelQvb_T55SEIpq2QXw-hkMXGrXLF7imLsodNlURRKgIQLpXqdHv9EU2V5A7alUTbdDRQ'
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters: []
+    cleanUrlParameters: []
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters:
+      title:
+        name: title
+        description: 'The title of the collaboration.'
+        required: true
+        example: '"Team for Project Z"'
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+      description:
+        name: description
+        description: 'optional The description.'
+        required: false
+        example: '"Meeting to discuss project Z"'
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: true
+        custom: []
+      start_time:
+        name: start_time
+        description: 'The start time in ISO 8601 format.'
+        required: true
+        example: '2024-11-22T10:00:00'
+        type: datetime
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+      end_time:
+        name: end_time
+        description: 'The end time in ISO 8601 format.'
+        required: true
+        example: '2024-11-22T11:00:00'
+        type: datetime
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+      meeting_link:
+        name: meeting_link
+        description: 'optional Meeting link (if not creating Zoom meeting).'
+        required: false
+        example: 'https://meet.example.com/abc'
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: true
+        custom: []
+      create_zoom:
+        name: create_zoom
+        description: 'optional Create a Zoom meeting automatically.'
+        required: false
+        example: true
+        type: boolean
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: true
+        custom: []
+    cleanBodyParameters:
+      title: '"Team for Project Z"'
+      description: '"Meeting to discuss project Z"'
+      start_time: '2024-11-22T10:00:00'
+      end_time: '2024-11-22T11:00:00'
+      meeting_link: 'https://meet.example.com/abc'
+      create_zoom: true
+    fileParameters: []
+    responses:
+      -
+        status: 200
+        content: |-
+          {
+              "message": "Private collaboration created successfully.",
+              "data": {"id": 1, "title": "Team for Project Z"}
+          }
+        headers: []
+        description: ''
+        custom: []
+      -
+        status: 201
+        content: |-
+          {
+              "error": "Failed to create collaboration."
+          }
+        headers: []
+        description: ''
+        custom: []
+    responseFields: []
+    auth:
+      - headers
+      - Authorization
+      - 'Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJhdWQiOiIxIiwianRpIjoiYzkzNjcyNzVkMDdlMGY5ZTc5N2Y3NzdiMzFkZGFjZmFiMDAzOWI1Y2E1ZGJjZTQ3ZWY3MjIxMjQ3YTNlMTVlOTQ0YjJlNGY2Nzk2Yjc5MDQiLCJpYXQiOjE3NjQwNzcyMjguMDQyOTgyLCJuYmYiOjE3NjQwNzcyMjguMDQyOTgzLCJleHAiOjE3OTU2MTMyMjguMDM1OTI0LCJzdWIiOiIxIiwic2NvcGVzIjpbXX0.d3N3fp6pTh1JxrRcDMwG0gLBsS0qyH4TWMsTpjbf_piH3rdfBj-04fL3inKHvOEGcZeFIFUr23DnEKVxNiHsiRYHpJz55K9Y0v-CRi4x8QxW9TIx9L63A0RaHGK044HKEq01mKy3_0ho-n2y2-s12umW92piu9A40h77UxhBMqfqHcIwwr3g77_lGtE530jLEFTSavVPHNiL2UtPIzjllRhXJO9LqALirv4txTkGiNs-3QfU4Q_suzKeU1esVJS6cOQ_lojFTeB26zq0ulDlVPYwx_ruWGyvqc4HbTwhUtCddXK-4IbXCyCWhqNqtPTRmBgtMyEy8atM6hbVFjYHDjlefUP0i6ejKmVaiEiIjTbgL2HotoGsRob1awoP5p9uYsixd0-G1OEGlPPL_wv9tlXwFBiU0M4iJnqaYZt6Cdf_MP79bd3ZcDrOaqF0ALTj6sopGau6Ml2zWr6PqChHl7G9ApnDPY_sVqSjovoDeKUhMVgNwogQCqdnbP508CYoKQtrHItBewCDmjMfekZllaMeWpU_3bnsPhfRQaL6R53uAFz5P2I_CtPcdY9W_HCBHHvTNnyrrPQhjBD_WEeT6-pm681nPKckz2qJCuHelQvb_T55SEIpq2QXw-hkMXGrXLF7imLsodNlURRKgIQLpXqdHv9EU2V5A7alUTbdDRQ'
+    controller: null
+    method: null
+    route: null
+    custom: []
+  -
+    httpMethods:
+      - GET
+    uri: 'api/v3/user/private-collaborations/view/{id}'
+    metadata:
+      groupName: 'Private Collaborations'
+      groupDescription: |-
+
+        APIs to manage private collaborations (create, list, invite, accept)
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'Get a single collaboration'
+      description: ''
+      authenticated: true
+      custom: []
+    headers:
+      Authorization: 'Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJhdWQiOiIxIiwianRpIjoiYzkzNjcyNzVkMDdlMGY5ZTc5N2Y3NzdiMzFkZGFjZmFiMDAzOWI1Y2E1ZGJjZTQ3ZWY3MjIxMjQ3YTNlMTVlOTQ0YjJlNGY2Nzk2Yjc5MDQiLCJpYXQiOjE3NjQwNzcyMjguMDQyOTgyLCJuYmYiOjE3NjQwNzcyMjguMDQyOTgzLCJleHAiOjE3OTU2MTMyMjguMDM1OTI0LCJzdWIiOiIxIiwic2NvcGVzIjpbXX0.d3N3fp6pTh1JxrRcDMwG0gLBsS0qyH4TWMsTpjbf_piH3rdfBj-04fL3inKHvOEGcZeFIFUr23DnEKVxNiHsiRYHpJz55K9Y0v-CRi4x8QxW9TIx9L63A0RaHGK044HKEq01mKy3_0ho-n2y2-s12umW92piu9A40h77UxhBMqfqHcIwwr3g77_lGtE530jLEFTSavVPHNiL2UtPIzjllRhXJO9LqALirv4txTkGiNs-3QfU4Q_suzKeU1esVJS6cOQ_lojFTeB26zq0ulDlVPYwx_ruWGyvqc4HbTwhUtCddXK-4IbXCyCWhqNqtPTRmBgtMyEy8atM6hbVFjYHDjlefUP0i6ejKmVaiEiIjTbgL2HotoGsRob1awoP5p9uYsixd0-G1OEGlPPL_wv9tlXwFBiU0M4iJnqaYZt6Cdf_MP79bd3ZcDrOaqF0ALTj6sopGau6Ml2zWr6PqChHl7G9ApnDPY_sVqSjovoDeKUhMVgNwogQCqdnbP508CYoKQtrHItBewCDmjMfekZllaMeWpU_3bnsPhfRQaL6R53uAFz5P2I_CtPcdY9W_HCBHHvTNnyrrPQhjBD_WEeT6-pm681nPKckz2qJCuHelQvb_T55SEIpq2QXw-hkMXGrXLF7imLsodNlURRKgIQLpXqdHv9EU2V5A7alUTbdDRQ'
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters:
+      id:
+        name: id
+        description: 'The ID of the collaboration.'
+        required: true
+        example: 1
+        type: integer
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+    cleanUrlParameters:
+      id: 1
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters: []
+    cleanBodyParameters: []
+    fileParameters: []
+    responses:
+      -
+        status: 200
+        content: |-
+          {
+             "data": {"id": 1, "title": "Project Sync", "invitations": []},
+             "is_creator": true,
+             "has_accepted": true
+          }
+        headers: []
+        description: ''
+        custom: []
+      -
+        status: 404
+        content: '{ "error": "Collaboration not found." }'
+        headers: []
+        description: ''
+        custom: []
+    responseFields: []
+    auth:
+      - headers
+      - Authorization
+      - 'Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJhdWQiOiIxIiwianRpIjoiYzkzNjcyNzVkMDdlMGY5ZTc5N2Y3NzdiMzFkZGFjZmFiMDAzOWI1Y2E1ZGJjZTQ3ZWY3MjIxMjQ3YTNlMTVlOTQ0YjJlNGY2Nzk2Yjc5MDQiLCJpYXQiOjE3NjQwNzcyMjguMDQyOTgyLCJuYmYiOjE3NjQwNzcyMjguMDQyOTgzLCJleHAiOjE3OTU2MTMyMjguMDM1OTI0LCJzdWIiOiIxIiwic2NvcGVzIjpbXX0.d3N3fp6pTh1JxrRcDMwG0gLBsS0qyH4TWMsTpjbf_piH3rdfBj-04fL3inKHvOEGcZeFIFUr23DnEKVxNiHsiRYHpJz55K9Y0v-CRi4x8QxW9TIx9L63A0RaHGK044HKEq01mKy3_0ho-n2y2-s12umW92piu9A40h77UxhBMqfqHcIwwr3g77_lGtE530jLEFTSavVPHNiL2UtPIzjllRhXJO9LqALirv4txTkGiNs-3QfU4Q_suzKeU1esVJS6cOQ_lojFTeB26zq0ulDlVPYwx_ruWGyvqc4HbTwhUtCddXK-4IbXCyCWhqNqtPTRmBgtMyEy8atM6hbVFjYHDjlefUP0i6ejKmVaiEiIjTbgL2HotoGsRob1awoP5p9uYsixd0-G1OEGlPPL_wv9tlXwFBiU0M4iJnqaYZt6Cdf_MP79bd3ZcDrOaqF0ALTj6sopGau6Ml2zWr6PqChHl7G9ApnDPY_sVqSjovoDeKUhMVgNwogQCqdnbP508CYoKQtrHItBewCDmjMfekZllaMeWpU_3bnsPhfRQaL6R53uAFz5P2I_CtPcdY9W_HCBHHvTNnyrrPQhjBD_WEeT6-pm681nPKckz2qJCuHelQvb_T55SEIpq2QXw-hkMXGrXLF7imLsodNlURRKgIQLpXqdHv9EU2V5A7alUTbdDRQ'
+    controller: null
+    method: null
+    route: null
+    custom: []
+  -
+    httpMethods:
+      - POST
+    uri: 'api/v3/user/private-collaborations/edit/{id}'
+    metadata:
+      groupName: 'Private Collaborations'
+      groupDescription: |-
+
+        APIs to manage private collaborations (create, list, invite, accept)
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'Update a collaboration'
+      description: ''
+      authenticated: true
+      custom: []
+    headers:
+      Authorization: 'Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJhdWQiOiIxIiwianRpIjoiYzkzNjcyNzVkMDdlMGY5ZTc5N2Y3NzdiMzFkZGFjZmFiMDAzOWI1Y2E1ZGJjZTQ3ZWY3MjIxMjQ3YTNlMTVlOTQ0YjJlNGY2Nzk2Yjc5MDQiLCJpYXQiOjE3NjQwNzcyMjguMDQyOTgyLCJuYmYiOjE3NjQwNzcyMjguMDQyOTgzLCJleHAiOjE3OTU2MTMyMjguMDM1OTI0LCJzdWIiOiIxIiwic2NvcGVzIjpbXX0.d3N3fp6pTh1JxrRcDMwG0gLBsS0qyH4TWMsTpjbf_piH3rdfBj-04fL3inKHvOEGcZeFIFUr23DnEKVxNiHsiRYHpJz55K9Y0v-CRi4x8QxW9TIx9L63A0RaHGK044HKEq01mKy3_0ho-n2y2-s12umW92piu9A40h77UxhBMqfqHcIwwr3g77_lGtE530jLEFTSavVPHNiL2UtPIzjllRhXJO9LqALirv4txTkGiNs-3QfU4Q_suzKeU1esVJS6cOQ_lojFTeB26zq0ulDlVPYwx_ruWGyvqc4HbTwhUtCddXK-4IbXCyCWhqNqtPTRmBgtMyEy8atM6hbVFjYHDjlefUP0i6ejKmVaiEiIjTbgL2HotoGsRob1awoP5p9uYsixd0-G1OEGlPPL_wv9tlXwFBiU0M4iJnqaYZt6Cdf_MP79bd3ZcDrOaqF0ALTj6sopGau6Ml2zWr6PqChHl7G9ApnDPY_sVqSjovoDeKUhMVgNwogQCqdnbP508CYoKQtrHItBewCDmjMfekZllaMeWpU_3bnsPhfRQaL6R53uAFz5P2I_CtPcdY9W_HCBHHvTNnyrrPQhjBD_WEeT6-pm681nPKckz2qJCuHelQvb_T55SEIpq2QXw-hkMXGrXLF7imLsodNlURRKgIQLpXqdHv9EU2V5A7alUTbdDRQ'
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters:
+      id:
+        name: id
+        description: 'The ID of the collaboration.'
+        required: true
+        example: 1
+        type: integer
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+    cleanUrlParameters:
+      id: 1
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters:
+      title:
+        name: title
+        description: ''
+        required: true
+        example: et
+        type: string
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: false
+        custom: []
+      description:
+        name: description
+        description: ''
+        required: false
+        example: 'Recusandae esse quo quod eos consectetur sunt.'
+        type: string
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: true
+        custom: []
+      start_time:
+        name: start_time
+        description: ''
+        required: true
+        example: labore
+        type: datetime
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: false
+        custom: []
+      end_time:
+        name: end_time
+        description: ''
+        required: true
+        example: ipsum
+        type: datetime
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: false
+        custom: []
+      meeting_link:
+        name: meeting_link
+        description: ''
+        required: false
+        example: repellendus
+        type: string
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: true
+        custom: []
+      create_zoom:
+        name: create_zoom
+        description: ''
+        required: false
+        example: false
+        type: boolean
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: true
+        custom: []
+    cleanBodyParameters:
+      title: et
+      description: 'Recusandae esse quo quod eos consectetur sunt.'
+      start_time: labore
+      end_time: ipsum
+      meeting_link: repellendus
+      create_zoom: false
+    fileParameters: []
+    responses:
+      -
+        status: 200
+        content: '{"message": "Private collaboration updated successfully."}'
+        headers: []
+        description: ''
+        custom: []
+      -
+        status: 404
+        content: '{"error": "Collaboration not found."}'
+        headers: []
+        description: ''
+        custom: []
+    responseFields: []
+    auth:
+      - headers
+      - Authorization
+      - 'Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJhdWQiOiIxIiwianRpIjoiYzkzNjcyNzVkMDdlMGY5ZTc5N2Y3NzdiMzFkZGFjZmFiMDAzOWI1Y2E1ZGJjZTQ3ZWY3MjIxMjQ3YTNlMTVlOTQ0YjJlNGY2Nzk2Yjc5MDQiLCJpYXQiOjE3NjQwNzcyMjguMDQyOTgyLCJuYmYiOjE3NjQwNzcyMjguMDQyOTgzLCJleHAiOjE3OTU2MTMyMjguMDM1OTI0LCJzdWIiOiIxIiwic2NvcGVzIjpbXX0.d3N3fp6pTh1JxrRcDMwG0gLBsS0qyH4TWMsTpjbf_piH3rdfBj-04fL3inKHvOEGcZeFIFUr23DnEKVxNiHsiRYHpJz55K9Y0v-CRi4x8QxW9TIx9L63A0RaHGK044HKEq01mKy3_0ho-n2y2-s12umW92piu9A40h77UxhBMqfqHcIwwr3g77_lGtE530jLEFTSavVPHNiL2UtPIzjllRhXJO9LqALirv4txTkGiNs-3QfU4Q_suzKeU1esVJS6cOQ_lojFTeB26zq0ulDlVPYwx_ruWGyvqc4HbTwhUtCddXK-4IbXCyCWhqNqtPTRmBgtMyEy8atM6hbVFjYHDjlefUP0i6ejKmVaiEiIjTbgL2HotoGsRob1awoP5p9uYsixd0-G1OEGlPPL_wv9tlXwFBiU0M4iJnqaYZt6Cdf_MP79bd3ZcDrOaqF0ALTj6sopGau6Ml2zWr6PqChHl7G9ApnDPY_sVqSjovoDeKUhMVgNwogQCqdnbP508CYoKQtrHItBewCDmjMfekZllaMeWpU_3bnsPhfRQaL6R53uAFz5P2I_CtPcdY9W_HCBHHvTNnyrrPQhjBD_WEeT6-pm681nPKckz2qJCuHelQvb_T55SEIpq2QXw-hkMXGrXLF7imLsodNlURRKgIQLpXqdHv9EU2V5A7alUTbdDRQ'
+    controller: null
+    method: null
+    route: null
+    custom: []
+  -
+    httpMethods:
+      - POST
+    uri: 'api/v3/user/private-collaborations/delete/{id}'
+    metadata:
+      groupName: 'Private Collaborations'
+      groupDescription: |-
+
+        APIs to manage private collaborations (create, list, invite, accept)
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'Delete a collaboration'
+      description: ''
+      authenticated: true
+      custom: []
+    headers:
+      Authorization: 'Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJhdWQiOiIxIiwianRpIjoiYzkzNjcyNzVkMDdlMGY5ZTc5N2Y3NzdiMzFkZGFjZmFiMDAzOWI1Y2E1ZGJjZTQ3ZWY3MjIxMjQ3YTNlMTVlOTQ0YjJlNGY2Nzk2Yjc5MDQiLCJpYXQiOjE3NjQwNzcyMjguMDQyOTgyLCJuYmYiOjE3NjQwNzcyMjguMDQyOTgzLCJleHAiOjE3OTU2MTMyMjguMDM1OTI0LCJzdWIiOiIxIiwic2NvcGVzIjpbXX0.d3N3fp6pTh1JxrRcDMwG0gLBsS0qyH4TWMsTpjbf_piH3rdfBj-04fL3inKHvOEGcZeFIFUr23DnEKVxNiHsiRYHpJz55K9Y0v-CRi4x8QxW9TIx9L63A0RaHGK044HKEq01mKy3_0ho-n2y2-s12umW92piu9A40h77UxhBMqfqHcIwwr3g77_lGtE530jLEFTSavVPHNiL2UtPIzjllRhXJO9LqALirv4txTkGiNs-3QfU4Q_suzKeU1esVJS6cOQ_lojFTeB26zq0ulDlVPYwx_ruWGyvqc4HbTwhUtCddXK-4IbXCyCWhqNqtPTRmBgtMyEy8atM6hbVFjYHDjlefUP0i6ejKmVaiEiIjTbgL2HotoGsRob1awoP5p9uYsixd0-G1OEGlPPL_wv9tlXwFBiU0M4iJnqaYZt6Cdf_MP79bd3ZcDrOaqF0ALTj6sopGau6Ml2zWr6PqChHl7G9ApnDPY_sVqSjovoDeKUhMVgNwogQCqdnbP508CYoKQtrHItBewCDmjMfekZllaMeWpU_3bnsPhfRQaL6R53uAFz5P2I_CtPcdY9W_HCBHHvTNnyrrPQhjBD_WEeT6-pm681nPKckz2qJCuHelQvb_T55SEIpq2QXw-hkMXGrXLF7imLsodNlURRKgIQLpXqdHv9EU2V5A7alUTbdDRQ'
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters:
+      id:
+        name: id
+        description: 'The ID of the collaboration.'
+        required: true
+        example: 14
+        type: integer
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: false
+        custom: []
+    cleanUrlParameters:
+      id: 14
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters: []
+    cleanBodyParameters: []
+    fileParameters: []
+    responses:
+      -
+        status: 200
+        content: '{"message": "Private collaboration deleted successfully.", "status": true}'
+        headers: []
+        description: ''
+        custom: []
+      -
+        status: 201
+        content: '{"error": "Failed to delete collaboration."}'
+        headers: []
+        description: ''
+        custom: []
+    responseFields: []
+    auth:
+      - headers
+      - Authorization
+      - 'Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJhdWQiOiIxIiwianRpIjoiYzkzNjcyNzVkMDdlMGY5ZTc5N2Y3NzdiMzFkZGFjZmFiMDAzOWI1Y2E1ZGJjZTQ3ZWY3MjIxMjQ3YTNlMTVlOTQ0YjJlNGY2Nzk2Yjc5MDQiLCJpYXQiOjE3NjQwNzcyMjguMDQyOTgyLCJuYmYiOjE3NjQwNzcyMjguMDQyOTgzLCJleHAiOjE3OTU2MTMyMjguMDM1OTI0LCJzdWIiOiIxIiwic2NvcGVzIjpbXX0.d3N3fp6pTh1JxrRcDMwG0gLBsS0qyH4TWMsTpjbf_piH3rdfBj-04fL3inKHvOEGcZeFIFUr23DnEKVxNiHsiRYHpJz55K9Y0v-CRi4x8QxW9TIx9L63A0RaHGK044HKEq01mKy3_0ho-n2y2-s12umW92piu9A40h77UxhBMqfqHcIwwr3g77_lGtE530jLEFTSavVPHNiL2UtPIzjllRhXJO9LqALirv4txTkGiNs-3QfU4Q_suzKeU1esVJS6cOQ_lojFTeB26zq0ulDlVPYwx_ruWGyvqc4HbTwhUtCddXK-4IbXCyCWhqNqtPTRmBgtMyEy8atM6hbVFjYHDjlefUP0i6ejKmVaiEiIjTbgL2HotoGsRob1awoP5p9uYsixd0-G1OEGlPPL_wv9tlXwFBiU0M4iJnqaYZt6Cdf_MP79bd3ZcDrOaqF0ALTj6sopGau6Ml2zWr6PqChHl7G9ApnDPY_sVqSjovoDeKUhMVgNwogQCqdnbP508CYoKQtrHItBewCDmjMfekZllaMeWpU_3bnsPhfRQaL6R53uAFz5P2I_CtPcdY9W_HCBHHvTNnyrrPQhjBD_WEeT6-pm681nPKckz2qJCuHelQvb_T55SEIpq2QXw-hkMXGrXLF7imLsodNlURRKgIQLpXqdHv9EU2V5A7alUTbdDRQ'
+    controller: null
+    method: null
+    route: null
+    custom: []
+  -
+    httpMethods:
+      - POST
+    uri: 'api/v3/user/private-collaborations/accept-invitation/{id}'
+    metadata:
+      groupName: 'Private Collaborations'
+      groupDescription: |-
+
+        APIs to manage private collaborations (create, list, invite, accept)
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'Accept invitation for a collaboration'
+      description: ''
+      authenticated: true
+      custom: []
+    headers:
+      Authorization: 'Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJhdWQiOiIxIiwianRpIjoiYzkzNjcyNzVkMDdlMGY5ZTc5N2Y3NzdiMzFkZGFjZmFiMDAzOWI1Y2E1ZGJjZTQ3ZWY3MjIxMjQ3YTNlMTVlOTQ0YjJlNGY2Nzk2Yjc5MDQiLCJpYXQiOjE3NjQwNzcyMjguMDQyOTgyLCJuYmYiOjE3NjQwNzcyMjguMDQyOTgzLCJleHAiOjE3OTU2MTMyMjguMDM1OTI0LCJzdWIiOiIxIiwic2NvcGVzIjpbXX0.d3N3fp6pTh1JxrRcDMwG0gLBsS0qyH4TWMsTpjbf_piH3rdfBj-04fL3inKHvOEGcZeFIFUr23DnEKVxNiHsiRYHpJz55K9Y0v-CRi4x8QxW9TIx9L63A0RaHGK044HKEq01mKy3_0ho-n2y2-s12umW92piu9A40h77UxhBMqfqHcIwwr3g77_lGtE530jLEFTSavVPHNiL2UtPIzjllRhXJO9LqALirv4txTkGiNs-3QfU4Q_suzKeU1esVJS6cOQ_lojFTeB26zq0ulDlVPYwx_ruWGyvqc4HbTwhUtCddXK-4IbXCyCWhqNqtPTRmBgtMyEy8atM6hbVFjYHDjlefUP0i6ejKmVaiEiIjTbgL2HotoGsRob1awoP5p9uYsixd0-G1OEGlPPL_wv9tlXwFBiU0M4iJnqaYZt6Cdf_MP79bd3ZcDrOaqF0ALTj6sopGau6Ml2zWr6PqChHl7G9ApnDPY_sVqSjovoDeKUhMVgNwogQCqdnbP508CYoKQtrHItBewCDmjMfekZllaMeWpU_3bnsPhfRQaL6R53uAFz5P2I_CtPcdY9W_HCBHHvTNnyrrPQhjBD_WEeT6-pm681nPKckz2qJCuHelQvb_T55SEIpq2QXw-hkMXGrXLF7imLsodNlURRKgIQLpXqdHv9EU2V5A7alUTbdDRQ'
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters:
+      id:
+        name: id
+        description: 'The ID of the collaboration to accept.'
+        required: true
+        example: 5
+        type: integer
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: false
+        custom: []
+    cleanUrlParameters:
+      id: 5
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters: []
+    cleanBodyParameters: []
+    fileParameters: []
+    responses:
+      -
+        status: 200
+        content: '{"status": true, "message": "Invitation accepted successfully."}'
+        headers: []
+        description: ''
+        custom: []
+      -
+        status: 403
+        content: '{"status": false, "message": "You have not been invited to this collaboration."}'
+        headers: []
+        description: ''
+        custom: []
+    responseFields: []
+    auth:
+      - headers
+      - Authorization
+      - 'Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJhdWQiOiIxIiwianRpIjoiYzkzNjcyNzVkMDdlMGY5ZTc5N2Y3NzdiMzFkZGFjZmFiMDAzOWI1Y2E1ZGJjZTQ3ZWY3MjIxMjQ3YTNlMTVlOTQ0YjJlNGY2Nzk2Yjc5MDQiLCJpYXQiOjE3NjQwNzcyMjguMDQyOTgyLCJuYmYiOjE3NjQwNzcyMjguMDQyOTgzLCJleHAiOjE3OTU2MTMyMjguMDM1OTI0LCJzdWIiOiIxIiwic2NvcGVzIjpbXX0.d3N3fp6pTh1JxrRcDMwG0gLBsS0qyH4TWMsTpjbf_piH3rdfBj-04fL3inKHvOEGcZeFIFUr23DnEKVxNiHsiRYHpJz55K9Y0v-CRi4x8QxW9TIx9L63A0RaHGK044HKEq01mKy3_0ho-n2y2-s12umW92piu9A40h77UxhBMqfqHcIwwr3g77_lGtE530jLEFTSavVPHNiL2UtPIzjllRhXJO9LqALirv4txTkGiNs-3QfU4Q_suzKeU1esVJS6cOQ_lojFTeB26zq0ulDlVPYwx_ruWGyvqc4HbTwhUtCddXK-4IbXCyCWhqNqtPTRmBgtMyEy8atM6hbVFjYHDjlefUP0i6ejKmVaiEiIjTbgL2HotoGsRob1awoP5p9uYsixd0-G1OEGlPPL_wv9tlXwFBiU0M4iJnqaYZt6Cdf_MP79bd3ZcDrOaqF0ALTj6sopGau6Ml2zWr6PqChHl7G9ApnDPY_sVqSjovoDeKUhMVgNwogQCqdnbP508CYoKQtrHItBewCDmjMfekZllaMeWpU_3bnsPhfRQaL6R53uAFz5P2I_CtPcdY9W_HCBHHvTNnyrrPQhjBD_WEeT6-pm681nPKckz2qJCuHelQvb_T55SEIpq2QXw-hkMXGrXLF7imLsodNlURRKgIQLpXqdHv9EU2V5A7alUTbdDRQ'
+    controller: null
+    method: null
+    route: null
+    custom: []
+  -
+    httpMethods:
+      - POST
+    uri: api/v3/user/private-collaborations/zoom-signature
+    metadata:
+      groupName: 'Private Collaborations'
+      groupDescription: |-
+
+        APIs to manage private collaborations (create, list, invite, accept)
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'Generate Zoom Web SDK signature for collaboration meeting'
+      description: ''
+      authenticated: true
+      custom: []
+    headers:
+      Authorization: 'Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJhdWQiOiIxIiwianRpIjoiYzkzNjcyNzVkMDdlMGY5ZTc5N2Y3NzdiMzFkZGFjZmFiMDAzOWI1Y2E1ZGJjZTQ3ZWY3MjIxMjQ3YTNlMTVlOTQ0YjJlNGY2Nzk2Yjc5MDQiLCJpYXQiOjE3NjQwNzcyMjguMDQyOTgyLCJuYmYiOjE3NjQwNzcyMjguMDQyOTgzLCJleHAiOjE3OTU2MTMyMjguMDM1OTI0LCJzdWIiOiIxIiwic2NvcGVzIjpbXX0.d3N3fp6pTh1JxrRcDMwG0gLBsS0qyH4TWMsTpjbf_piH3rdfBj-04fL3inKHvOEGcZeFIFUr23DnEKVxNiHsiRYHpJz55K9Y0v-CRi4x8QxW9TIx9L63A0RaHGK044HKEq01mKy3_0ho-n2y2-s12umW92piu9A40h77UxhBMqfqHcIwwr3g77_lGtE530jLEFTSavVPHNiL2UtPIzjllRhXJO9LqALirv4txTkGiNs-3QfU4Q_suzKeU1esVJS6cOQ_lojFTeB26zq0ulDlVPYwx_ruWGyvqc4HbTwhUtCddXK-4IbXCyCWhqNqtPTRmBgtMyEy8atM6hbVFjYHDjlefUP0i6ejKmVaiEiIjTbgL2HotoGsRob1awoP5p9uYsixd0-G1OEGlPPL_wv9tlXwFBiU0M4iJnqaYZt6Cdf_MP79bd3ZcDrOaqF0ALTj6sopGau6Ml2zWr6PqChHl7G9ApnDPY_sVqSjovoDeKUhMVgNwogQCqdnbP508CYoKQtrHItBewCDmjMfekZllaMeWpU_3bnsPhfRQaL6R53uAFz5P2I_CtPcdY9W_HCBHHvTNnyrrPQhjBD_WEeT6-pm681nPKckz2qJCuHelQvb_T55SEIpq2QXw-hkMXGrXLF7imLsodNlURRKgIQLpXqdHv9EU2V5A7alUTbdDRQ'
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters: []
+    cleanUrlParameters: []
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters:
+      collaboration_id:
+        name: collaboration_id
+        description: 'The id of the collaboration.'
+        required: true
+        example: 1
+        type: integer
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+    cleanBodyParameters:
+      collaboration_id: 1
+    fileParameters: []
+    responses:
+      -
+        status: 200
+        content: |-
+          {
+              "status": true,
+              "signature": "...",
+              "sdkKey": "ABC",
+              "meetingNumber": "123456789",
+              "userName": "John Doe",
+              "userEmail": "john@example.com"
+          }
+        headers: []
+        description: ''
+        custom: []
+      -
+        status: 201
+        content: '{"status": false, "message": "This meeting is not a Zoom meeting."}'
+        headers: []
+        description: ''
+        custom: []
+    responseFields: []
+    auth:
+      - headers
+      - Authorization
+      - 'Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJhdWQiOiIxIiwianRpIjoiYzkzNjcyNzVkMDdlMGY5ZTc5N2Y3NzdiMzFkZGFjZmFiMDAzOWI1Y2E1ZGJjZTQ3ZWY3MjIxMjQ3YTNlMTVlOTQ0YjJlNGY2Nzk2Yjc5MDQiLCJpYXQiOjE3NjQwNzcyMjguMDQyOTgyLCJuYmYiOjE3NjQwNzcyMjguMDQyOTgzLCJleHAiOjE3OTU2MTMyMjguMDM1OTI0LCJzdWIiOiIxIiwic2NvcGVzIjpbXX0.d3N3fp6pTh1JxrRcDMwG0gLBsS0qyH4TWMsTpjbf_piH3rdfBj-04fL3inKHvOEGcZeFIFUr23DnEKVxNiHsiRYHpJz55K9Y0v-CRi4x8QxW9TIx9L63A0RaHGK044HKEq01mKy3_0ho-n2y2-s12umW92piu9A40h77UxhBMqfqHcIwwr3g77_lGtE530jLEFTSavVPHNiL2UtPIzjllRhXJO9LqALirv4txTkGiNs-3QfU4Q_suzKeU1esVJS6cOQ_lojFTeB26zq0ulDlVPYwx_ruWGyvqc4HbTwhUtCddXK-4IbXCyCWhqNqtPTRmBgtMyEy8atM6hbVFjYHDjlefUP0i6ejKmVaiEiIjTbgL2HotoGsRob1awoP5p9uYsixd0-G1OEGlPPL_wv9tlXwFBiU0M4iJnqaYZt6Cdf_MP79bd3ZcDrOaqF0ALTj6sopGau6Ml2zWr6PqChHl7G9ApnDPY_sVqSjovoDeKUhMVgNwogQCqdnbP508CYoKQtrHItBewCDmjMfekZllaMeWpU_3bnsPhfRQaL6R53uAFz5P2I_CtPcdY9W_HCBHHvTNnyrrPQhjBD_WEeT6-pm681nPKckz2qJCuHelQvb_T55SEIpq2QXw-hkMXGrXLF7imLsodNlURRKgIQLpXqdHv9EU2V5A7alUTbdDRQ'
+    controller: null
+    method: null
+    route: null
+    custom: []
+  -
+    httpMethods:
+      - GET
+    uri: api/v3/user/private-collaborations/private-collaborations-calender-fetch-data
+    metadata:
+      groupName: 'Private Collaborations'
+      groupDescription: |-
+
+        APIs to manage private collaborations (create, list, invite, accept)
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'Fetch calendar data for private collaborations'
+      description: ''
+      authenticated: true
+      custom: []
+    headers:
+      Authorization: 'Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJhdWQiOiIxIiwianRpIjoiYzkzNjcyNzVkMDdlMGY5ZTc5N2Y3NzdiMzFkZGFjZmFiMDAzOWI1Y2E1ZGJjZTQ3ZWY3MjIxMjQ3YTNlMTVlOTQ0YjJlNGY2Nzk2Yjc5MDQiLCJpYXQiOjE3NjQwNzcyMjguMDQyOTgyLCJuYmYiOjE3NjQwNzcyMjguMDQyOTgzLCJleHAiOjE3OTU2MTMyMjguMDM1OTI0LCJzdWIiOiIxIiwic2NvcGVzIjpbXX0.d3N3fp6pTh1JxrRcDMwG0gLBsS0qyH4TWMsTpjbf_piH3rdfBj-04fL3inKHvOEGcZeFIFUr23DnEKVxNiHsiRYHpJz55K9Y0v-CRi4x8QxW9TIx9L63A0RaHGK044HKEq01mKy3_0ho-n2y2-s12umW92piu9A40h77UxhBMqfqHcIwwr3g77_lGtE530jLEFTSavVPHNiL2UtPIzjllRhXJO9LqALirv4txTkGiNs-3QfU4Q_suzKeU1esVJS6cOQ_lojFTeB26zq0ulDlVPYwx_ruWGyvqc4HbTwhUtCddXK-4IbXCyCWhqNqtPTRmBgtMyEy8atM6hbVFjYHDjlefUP0i6ejKmVaiEiIjTbgL2HotoGsRob1awoP5p9uYsixd0-G1OEGlPPL_wv9tlXwFBiU0M4iJnqaYZt6Cdf_MP79bd3ZcDrOaqF0ALTj6sopGau6Ml2zWr6PqChHl7G9ApnDPY_sVqSjovoDeKUhMVgNwogQCqdnbP508CYoKQtrHItBewCDmjMfekZllaMeWpU_3bnsPhfRQaL6R53uAFz5P2I_CtPcdY9W_HCBHHvTNnyrrPQhjBD_WEeT6-pm681nPKckz2qJCuHelQvb_T55SEIpq2QXw-hkMXGrXLF7imLsodNlURRKgIQLpXqdHv9EU2V5A7alUTbdDRQ'
       Content-Type: application/json
       Accept: application/json
     urlParameters: []
@@ -90,88 +604,21 @@ endpoints:
     responses:
       -
         status: 200
-        content: |-
-          {
-            "message": "FCM token removed successfully.",
-            "status": true
-          }
-        headers: []
-        description: ''
-        custom: []
-    responseFields: []
-    auth: []
-    controller: null
-    method: null
-    route: null
-    custom: []
-  -
-    httpMethods:
-      - POST
-    uri: api/v3/user/fcm/test-notification
-    metadata:
-      groupName: FCM
-      groupDescription: ''
-      subgroup: ''
-      subgroupDescription: ''
-      title: 'Send Test Notification'
-      description: "Sends a test notification to the authenticated user's device."
-      authenticated: true
-      custom: []
-    headers:
-      Content-Type: application/json
-      Accept: application/json
-    urlParameters: []
-    cleanUrlParameters: []
-    queryParameters: []
-    cleanQueryParameters: []
-    bodyParameters:
-      title:
-        name: title
-        description: 'The notification title.'
-        required: true
-        example: '"Test Notification"'
-        type: string
-        enumValues: []
-        exampleWasSpecified: true
-        nullable: false
-        custom: []
-      body:
-        name: body
-        description: 'The notification body.'
-        required: true
-        example: '"This is a test message"'
-        type: string
-        enumValues: []
-        exampleWasSpecified: true
-        nullable: false
-        custom: []
-    cleanBodyParameters:
-      title: '"Test Notification"'
-      body: '"This is a test message"'
-    fileParameters: []
-    responses:
-      -
-        status: 200
-        content: |-
-          {
-            "message": "Test notification sent successfully.",
-            "status": true
-          }
+        content: '{"message": "Calender data fetched successfully.", "data": []}'
         headers: []
         description: ''
         custom: []
       -
-        status: 400
-        content: |-
-          {
-            "message": "No FCM token found for user.",
-            "status": false
-          }
+        status: 201
+        content: '{"error": "Failed to load collaboration calender data."}'
         headers: []
         description: ''
         custom: []
     responseFields: []
-    auth: []
+    auth:
+      - headers
+      - Authorization
+      - 'Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJhdWQiOiIxIiwianRpIjoiYzkzNjcyNzVkMDdlMGY5ZTc5N2Y3NzdiMzFkZGFjZmFiMDAzOWI1Y2E1ZGJjZTQ3ZWY3MjIxMjQ3YTNlMTVlOTQ0YjJlNGY2Nzk2Yjc5MDQiLCJpYXQiOjE3NjQwNzcyMjguMDQyOTgyLCJuYmYiOjE3NjQwNzcyMjguMDQyOTgzLCJleHAiOjE3OTU2MTMyMjguMDM1OTI0LCJzdWIiOiIxIiwic2NvcGVzIjpbXX0.d3N3fp6pTh1JxrRcDMwG0gLBsS0qyH4TWMsTpjbf_piH3rdfBj-04fL3inKHvOEGcZeFIFUr23DnEKVxNiHsiRYHpJz55K9Y0v-CRi4x8QxW9TIx9L63A0RaHGK044HKEq01mKy3_0ho-n2y2-s12umW92piu9A40h77UxhBMqfqHcIwwr3g77_lGtE530jLEFTSavVPHNiL2UtPIzjllRhXJO9LqALirv4txTkGiNs-3QfU4Q_suzKeU1esVJS6cOQ_lojFTeB26zq0ulDlVPYwx_ruWGyvqc4HbTwhUtCddXK-4IbXCyCWhqNqtPTRmBgtMyEy8atM6hbVFjYHDjlefUP0i6ejKmVaiEiIjTbgL2HotoGsRob1awoP5p9uYsixd0-G1OEGlPPL_wv9tlXwFBiU0M4iJnqaYZt6Cdf_MP79bd3ZcDrOaqF0ALTj6sopGau6Ml2zWr6PqChHl7G9ApnDPY_sVqSjovoDeKUhMVgNwogQCqdnbP508CYoKQtrHItBewCDmjMfekZllaMeWpU_3bnsPhfRQaL6R53uAFz5P2I_CtPcdY9W_HCBHHvTNnyrrPQhjBD_WEeT6-pm681nPKckz2qJCuHelQvb_T55SEIpq2QXw-hkMXGrXLF7imLsodNlURRKgIQLpXqdHv9EU2V5A7alUTbdDRQ'
     controller: null
     method: null
     route: null
