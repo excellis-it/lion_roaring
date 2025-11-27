@@ -154,7 +154,7 @@
 }
 
 .overlay ul li a {
-    display: block;
+    display: inline-block;
     position: relative;
     color: #fff;
     text-decoration: none;

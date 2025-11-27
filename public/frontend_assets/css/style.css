@@ -3602,12 +3602,12 @@ li.slick-active button {
         display: block;
         margin-top: 1.6rem;
         margin-bottom: 1.6rem;
-        width: 300px;
-        height: 200px;
+        /* width: 300px; */
+        /* height: 200px; */
         z-index: 1;
         color: #000;
-        background: linear-gradient(rgba(241, 143, 1, 0.9), rgba(241, 143, 1, 0.9)),
-            url("https://placeimg.com/300/300/any") no-repeat 90%;
+        /* background: linear-gradient(rgba(241, 143, 1, 0.9), rgba(241, 143, 1, 0.9)),
+            url("https://placeimg.com/300/300/any") no-repeat 90%; */
     }
 
     .promo-box-container .title {
@@ -3615,12 +3615,12 @@ li.slick-active button {
         line-height: 28px;
     }
 
-    .promo-box-container .title span.lighter {
+    /* .promo-box-container .title span.lighter {
         font-size: 19px;
         display: block;
         line-height: 24px;
         margin-top: 10px;
-    }
+    } */
 
     .promo-box-container .cta-button {
         font-size: 12px;
@@ -3629,7 +3629,7 @@ li.slick-active button {
 
     .promo-box-container .right-triangle {
         width: 39%;
-        background: linear-gradient(rgba(128, 0, 128, 0.6), rgba(128, 0, 128, 0.6)),
-            url("https://placeimg.com/300/300/any") no-repeat 90%;
+        /* background: linear-gradient(rgba(128, 0, 128, 0.6), rgba(128, 0, 128, 0.6)),
+            url("https://placeimg.com/300/300/any") no-repeat 90%; */
     }
 }
