@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Elearning;
 use App\Http\Controllers\Controller;
 use App\Models\ElearningCategory;
 use App\Models\ElearningProduct;
+use App\Models\ElearningTopic;
 use App\Models\ElearningReview;
 use Illuminate\Http\Request;
 
@@ -12,7 +13,7 @@ class ElearningProductController extends Controller
 {
     public function productDetails($slug)
     {
-        $product = ElearningProduct::where('slug', $slug)->first();
+        $product = ElearningProduct::with('elearningTopic')->where('slug', $slug)->first();
         $related_products = ElearningProduct::where('category_id', $product->category_id)
             ->where(function ($query) use ($product) {
                 $query->where('id', '!=', $product->id)
@@ -29,7 +30,7 @@ class ElearningProductController extends Controller
     public function products(Request $request, $category_id = null)
     {
         $category_id = $category_id ?? ''; // Default value is ' '
-        $products = ElearningProduct::where('status', 1);
+        $products = ElearningProduct::where('status', 1)->with('elearningTopic');
         if ($category_id) {
             $products = $products->where('category_id', $category_id);
             $category = ElearningCategory::find($category_id);
@@ -41,7 +42,8 @@ class ElearningProductController extends Controller
 
         $products_count  = $products->count();
         $categories = ElearningCategory::where('status', 1)->orderBy('id', 'DESC')->get();
-        return view('elearning.products')->with(compact('products', 'categories', 'category_id', 'products_count', 'category'));
+        $topics = ElearningTopic::orderBy('id', 'desc')->get();
+        return view('elearning.products')->with(compact('products', 'categories', 'category_id', 'products_count', 'category', 'topics'));
     }
 
     public static function productsFilter(Request $request)
@@ -54,11 +56,23 @@ class ElearningProductController extends Controller
             $prices = $request->prices ?? [];
             $latest_filter = $request->latestFilter ?? '';
             $search = $request->search ?? '';
+            $topic_id = $request->elearning_topic_id ?? [];
+            $topic_search = $request->elearning_topic_search ?? '';
 
-            $products = ElearningProduct::where('status', 1)->with('image');
+            $products = ElearningProduct::where('status', 1)->with(['image', 'elearningTopic']);
 
             if (!empty($category_id)) {
                 $products->whereIn('category_id', $category_id);
+            }
+
+            if (!empty($topic_id)) {
+                $products->whereIn('elearning_topic_id', $topic_id);
+            }
+
+            if (!empty($topic_search)) {
+                $products->whereHas('elearningTopic', function ($q) use ($topic_search) {
+                    $q->where('topic_name', 'LIKE', "%$topic_search%");
+                });
             }
 
             // if (!empty($prices)) {

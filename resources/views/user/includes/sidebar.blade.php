@@ -550,6 +550,19 @@
                                          <span>E-learning Categories</span>
                                      </a>
                                  @endif
+                                 {{-- elearning topics  --}}
+                                 @if (Gate::check('Manage Elearning Topic'))
+                                     <a href="{{ route('elearning-topics.index') }}">
+                                         <span>
+                                             <img src="{{ asset('user_assets/images/ICON/Store/Product_Categories.svg') }}"
+                                                 alt="">
+                                         </span>
+                                         <span>E-learning Topics</span>
+                                     </a>
+                                 @endif
+
+
+
                                  @if (Gate::check('Manage Elearning Product'))
                                      <a href="{{ route('elearning.index') }}">
                                          <span>

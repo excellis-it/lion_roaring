@@ -71,6 +71,7 @@ use App\Http\Controllers\User\SubscriptionController;
 use App\Http\Controllers\User\TeamChatController;
 use App\Http\Controllers\User\TeamController;
 use App\Http\Controllers\User\TopicController;
+use App\Http\Controllers\User\ElearningTopicController;
 use App\Http\Controllers\Admin\SettingsController;
 use App\Http\Controllers\Admin\TermsAndConditionController;
 use App\Http\Controllers\Admin\CountryController;
@@ -124,7 +125,7 @@ Route::get('dbmigrate', function () {
 
 // db seed
 Route::get('dbseed', function () {
-    Artisan::call('db:seed CountryPermissionSeeder');
+    Artisan::call('db:seed AddElearningTopicPermission');
     return "Database seeding has been successfully";
 });
 
@@ -517,6 +518,7 @@ Route::prefix('user')->middleware(['user', 'preventBackHistory', 'userActivity']
         'partners' => PartnerController::class,
         'bulletins' => BulletinController::class,
         'topics' => TopicController::class,
+        'elearning-topics' => ElearningTopicController::class,
         'categories' => CategoryController::class,
         'elearning-categories' => ElearningCategoryController::class,
         'products' => ProductController::class,
@@ -702,6 +704,11 @@ Route::prefix('user')->middleware(['user', 'preventBackHistory', 'userActivity']
     Route::post('/elearning-cms/home/update', [ElearningCmsController::class, 'homeCmsUpdate'])->name('user.elearning-cms.home.update');
     Route::post('/elearning-cms/footer/update', [ElearningCmsController::class, 'footerUpdate'])->name('user.elearning-cms.footer.update');
 
+    Route::prefix('elearning-topics')->group(function () {
+        Route::get('/elearning-topic-delete/{id}', [ElearningTopicController::class, 'delete'])->name('elearning-topics.delete');
+    });
+
+
     Route::prefix('meetings')->group(function () {
         Route::get('/meeting-delete/{id}', [MeetingSchedulingController::class, 'delete'])->name('meetings.delete');
 
@@ -747,6 +754,7 @@ Route::prefix('user')->middleware(['user', 'preventBackHistory', 'userActivity']
     Route::prefix('topics')->group(function () {
         Route::get('/topic-delete/{id}', [TopicController::class, 'delete'])->name('topics.delete');
     });
+
 
     Route::prefix('bulletins')->group(function () {
         Route::get('/bulletin-delete/{id}', [BulletinController::class, 'delete'])->name('bulletins.delete');

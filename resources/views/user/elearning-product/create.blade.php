@@ -56,6 +56,23 @@
                                     @endif
                                 </div>
                             </div>
+                            {{-- elearning_topic_id --}}
+                            <div class="col-md-6 mb-2">
+                                <div class="box_label">
+                                    <label for="elearning_topic_id"> Topic</label>
+                                    <select name="elearning_topic_id" id="elearning_topic_id" class="form-control">
+                                        <option value="">Select Topic</option>
+                                        @foreach ($topics as $topic)
+                                            <option value="{{ $topic->id }}"
+                                                {{ old('elearning_topic_id') == $topic->id ? 'selected' : '' }}>
+                                                {{ $topic->topic_name }}</option>
+                                        @endforeach
+                                    </select>
+                                    @if ($errors->has('elearning_topic_id'))
+                                        <span class="error">{{ $errors->first('elearning_topic_id') }}</span>
+                                    @endif
+                                </div>
+                            </div>
                             {{-- price --}}
                             {{-- <div class="col-md-6 mb-2">
                                 <div class="box_label">
@@ -113,8 +130,8 @@
                                     @endif
                                 </div>
                             </div>
-                              {{-- button_name --}}
-                              <div class="col-md-6 mb-2">
+                            {{-- button_name --}}
+                            <div class="col-md-6 mb-2">
                                 <div class="box_label">
                                     <label for="button_name"> Button Name*</label>
                                     <input type="text" name="button_name" id="button_name" class="form-control"

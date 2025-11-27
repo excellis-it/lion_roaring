@@ -18,7 +18,7 @@ use App\Models\ElearningEcomHomeCms;
 class ElearningController extends Controller
 {
     //
-     /**
+    /**
      * Fetch Products
      *
      *
@@ -97,7 +97,7 @@ class ElearningController extends Controller
         try {
             // If category_id is provided, filter products by category
             $category_id = $category_id ?? ''; // Default value is ''
-            $productsQuery = ElearningProduct::with('image')->where('status', 1);
+            $productsQuery = ElearningProduct::with(['image', 'elearningTopic'])->where('status', 1);
 
             // Check if category_id is provided and filter by category
             if ($category_id) {
@@ -154,8 +154,8 @@ class ElearningController extends Controller
     {
         try {
             $categories = ElearningCategory::where('status', 1)->orderBy('id', 'DESC')->get();
-            $feature_products = ElearningProduct::with('image')->where('status', 1)->where('feature_product', 1)->orderBy('id', 'DESC')->get();
-            $new_products = ElearningProduct::with('image')->where('status', 1)->orderBy('id', 'DESC')->limit(10)->get();
+            $feature_products = ElearningProduct::with(['image', 'elearningTopic'])->where('status', 1)->where('feature_product', 1)->orderBy('id', 'DESC')->get();
+            $new_products = ElearningProduct::with(['image', 'elearningTopic'])->where('status', 1)->orderBy('id', 'DESC')->limit(10)->get();
             $section_titles = ElearningEcomHomeCms::orderBy('id', 'desc')->first();
 
             return response()->json([
@@ -203,7 +203,7 @@ class ElearningController extends Controller
                 return response()->json(['message' => 'Category not found'], 201);
             }
 
-            $products = ElearningProduct::with('image')
+            $products = ElearningProduct::with(['image', 'elearningTopic'])
                 ->where('status', 1)
                 ->where('category_id', $category->id)
                 ->orderBy('id', 'DESC')
@@ -263,6 +263,8 @@ class ElearningController extends Controller
      * Filter Products
      *
      * @queryParam category_id[] array Optional. Array of category IDs.
+     * @queryParam elearning_topic_id[] array Optional. Array of ElearningTopic IDs.
+     * @queryParam elearning_topic_search string Optional. Search by ElearningTopic text.
      * @queryParam latestFilter string Optional. Filter by latest, A-Z, Z-A.
      * @queryParam search string Optional. Search by product name.
      * @queryParam page integer Optional. Page number.
@@ -282,10 +284,24 @@ class ElearningController extends Controller
             $latest_filter = $request->latestFilter ?? '';
             $search = $request->search ?? '';
 
-            $products = ElearningProduct::with('image')->where('status', 1);
+            $products = ElearningProduct::with(['image', 'elearningTopic'])->where('status', 1);
 
             if (!empty($category_id)) {
                 $products->whereIn('category_id', $category_id);
+            }
+
+            // Topic filter
+            $elearning_topic_id = $request->elearning_topic_id ?? [];
+            $elearning_topic_search = $request->elearning_topic_search ?? '';
+
+            if (!empty($elearning_topic_id)) {
+                $products->whereIn('elearning_topic_id', $elearning_topic_id);
+            }
+
+            if (!empty($elearning_topic_search)) {
+                $products->whereHas('elearningTopic', function ($q) use ($elearning_topic_search) {
+                    $q->where('topic_name', 'LIKE', "%$elearning_topic_search%");
+                });
             }
 
             if (!empty($latest_filter)) {

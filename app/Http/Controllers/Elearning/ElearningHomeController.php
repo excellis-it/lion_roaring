@@ -16,9 +16,9 @@ class ElearningHomeController extends Controller
     {
         $categories = ElearningCategory::where('status', 1)->orderBy('id', 'DESC')->get();
 
-        $feature_products = ElearningProduct::where('status', 1)->where('feature_product', 1)->orderBy('id', 'DESC')->get();
+        $feature_products = ElearningProduct::with('topic')->where('status', 1)->where('feature_product', 1)->orderBy('id', 'DESC')->get();
 
-        $new_products = ElearningProduct::where('status', 1)->orderBy('id', 'DESC')->limit(10)->get();
+        $new_products = ElearningProduct::with('topic')->where('status', 1)->orderBy('id', 'DESC')->limit(10)->get();
         $books = ElearningProduct::where('status', 1)->whereHas('category', function ($q) {
             $q->where('slug', 'books');
         })->orderBy('id', 'DESC')->limit(10)->get();
