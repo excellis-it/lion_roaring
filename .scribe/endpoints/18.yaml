@@ -1,16 +1,16 @@
-name: Jobs
+name: Bulletins
 description: ''
 endpoints:
   -
     httpMethods:
       - GET
-    uri: api/v3/user/jobs/load
+    uri: api/v3/user/bulletins/load
     metadata:
-      groupName: Jobs
+      groupName: Bulletins
       groupDescription: ''
       subgroup: ''
       subgroupDescription: ''
-      title: 'All Job Posts'
+      title: 'Bulletins List'
       description: ''
       authenticated: true
       custom: []
@@ -44,54 +44,13 @@ endpoints:
               "data": [
                   {
                       "id": 1,
-                      "created_by": 2,
-                      "job_title": "Software Engineer",
-                      "job_description": "<p>Develop and maintain software applications.<p>",
-                      "job_type": "Full-time",
-                      "job_location": "Remote",
-                      "job_salary": "80,000 - 100,000",
-                      "job_experience": "3+ years",
-                      "contact_person": "John Doe",
-                      "contact_email": "johndoe@example.com",
-                      "list_of_values": "Team player, Good communication",
+                      "user_id": 1,
+                      "title": "Sample Bulletin Title",
+                      "description": "Sample Bulletin Description",
                       "created_at": "2024-11-08T12:00:00.000000Z",
-                      "updated_at": "2024-11-08T12:00:00.000000Z",
-                      "user": {
-                          "id": 2,
-                          "name": "John Doe",
-                          "email": "john@example.com"
-                      }
-                  },
-                  {
-                      "id": 2,
-                      "created_by": 3,
-                      "job_title": "Project Manager",
-                      "job_description": "Manage project timelines and deliverables.",
-                      "job_type": "Contract",
-                      "job_location": "On-site",
-                      "job_salary": "60,000 - 80,000",
-                      "job_experience": "5+ years",
-                      "contact_person": "Jane Smith",
-                      "contact_email": "janesmith@example.com",
-                      "list_of_values": "Leadership, Organizational skills",
-                      "created_at": "2024-11-08T12:00:00.000000Z",
-                      "updated_at": "2024-11-08T12:00:00.000000Z",
-                      "user": {
-                          "id": 3,
-                          "name": "Jane Smith",
-                          "email": "jane@example.com"
-                      }
+                      "updated_at": "2024-11-08T12:00:00.000000Z"
                   }
               ]
-          }
-        headers: []
-        description: ''
-        custom: []
-      -
-        status: 201
-        content: |-
-          {
-              "error": "Failed to load jobs."
           }
         headers: []
         description: ''
@@ -108,13 +67,13 @@ endpoints:
   -
     httpMethods:
       - GET
-    uri: 'api/v3/user/jobs/view/{id}'
+    uri: 'api/v3/user/bulletins/view/{id}'
     metadata:
-      groupName: Jobs
+      groupName: Bulletins
       groupDescription: ''
       subgroup: ''
       subgroupDescription: ''
-      title: 'Single Job Details'
+      title: 'Fetch Single Bulletin'
       description: ''
       authenticated: true
       custom: []
@@ -125,7 +84,7 @@ endpoints:
     urlParameters:
       id:
         name: id
-        description: 'The ID of the job.'
+        description: 'The ID of the bulletin to retrieve.'
         required: true
         example: 1
         type: integer
@@ -147,33 +106,145 @@ endpoints:
           {
               "data": {
                   "id": 1,
-                  "created_by": 2,
-                  "job_title": "Software Engineer",
-                  "job_description": "<p><strong>Python </strong>is an interpreted, interactive, object-oriented programming language. It incorporates modules, dynamic typing, dynamic data types and classes. It's also portable, extensible and easy to read and code, which is a big reason it's popular.The language also focuses on designer experience and usability, and one of its largest benefits is that it has functions in many industries and organizations. You can integrate it with<strong> C</strong> and <strong>C++</strong> for more challenging tasks. Common uses of Python include:</p><ul><li>Data visualization</li><li>Artificial intelligence and machine learning</li><li>Finance</li><li>Game development</li><li>Web development</li></ul>",
-                  "job_type": "Full-time",
-                  "job_location": "Remote",
-                  "job_salary": "80,000 - 100,000",
-                  "job_experience": "3+ years",
-                  "contact_person": "John Doe",
-                  "contact_email": "johndoe@example.com",
-                  "list_of_values": "Team player, Good communication",
+                  "user_id": 2,
+                  "title": "Sample Bulletin Title",
+                  "description": "Sample bulletin description",
                   "created_at": "2024-11-08T12:00:00.000000Z",
-                  "updated_at": "2024-11-08T12:00:00.000000Z",
-                  "user": {
-                      "id": 2,
-                      "name": "John Doe",
-                      "email": "john@example.com"
-                  }
+                  "updated_at": "2024-11-08T12:00:00.000000Z"
               }
           }
         headers: []
         description: ''
         custom: []
       -
-        status: 404
+        status: 201
         content: |-
           {
-              "error": "Job not found."
+              "error": "Bulletin not found."
+          }
+        headers: []
+        description: ''
+        custom: []
+    responseFields: []
+    auth:
+      - headers
+      - Authorization
+      - 'Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJhdWQiOiIxIiwianRpIjoiYzkzNjcyNzVkMDdlMGY5ZTc5N2Y3NzdiMzFkZGFjZmFiMDAzOWI1Y2E1ZGJjZTQ3ZWY3MjIxMjQ3YTNlMTVlOTQ0YjJlNGY2Nzk2Yjc5MDQiLCJpYXQiOjE3NjQwNzcyMjguMDQyOTgyLCJuYmYiOjE3NjQwNzcyMjguMDQyOTgzLCJleHAiOjE3OTU2MTMyMjguMDM1OTI0LCJzdWIiOiIxIiwic2NvcGVzIjpbXX0.d3N3fp6pTh1JxrRcDMwG0gLBsS0qyH4TWMsTpjbf_piH3rdfBj-04fL3inKHvOEGcZeFIFUr23DnEKVxNiHsiRYHpJz55K9Y0v-CRi4x8QxW9TIx9L63A0RaHGK044HKEq01mKy3_0ho-n2y2-s12umW92piu9A40h77UxhBMqfqHcIwwr3g77_lGtE530jLEFTSavVPHNiL2UtPIzjllRhXJO9LqALirv4txTkGiNs-3QfU4Q_suzKeU1esVJS6cOQ_lojFTeB26zq0ulDlVPYwx_ruWGyvqc4HbTwhUtCddXK-4IbXCyCWhqNqtPTRmBgtMyEy8atM6hbVFjYHDjlefUP0i6ejKmVaiEiIjTbgL2HotoGsRob1awoP5p9uYsixd0-G1OEGlPPL_wv9tlXwFBiU0M4iJnqaYZt6Cdf_MP79bd3ZcDrOaqF0ALTj6sopGau6Ml2zWr6PqChHl7G9ApnDPY_sVqSjovoDeKUhMVgNwogQCqdnbP508CYoKQtrHItBewCDmjMfekZllaMeWpU_3bnsPhfRQaL6R53uAFz5P2I_CtPcdY9W_HCBHHvTNnyrrPQhjBD_WEeT6-pm681nPKckz2qJCuHelQvb_T55SEIpq2QXw-hkMXGrXLF7imLsodNlURRKgIQLpXqdHv9EU2V5A7alUTbdDRQ'
+    controller: null
+    method: null
+    route: null
+    custom: []
+  -
+    httpMethods:
+      - GET
+    uri: api/v3/user/bulletins/board
+    metadata:
+      groupName: Bulletins
+      groupDescription: ''
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'Bulletin Board'
+      description: ''
+      authenticated: true
+      custom: []
+    headers:
+      Authorization: 'Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJhdWQiOiIxIiwianRpIjoiYzkzNjcyNzVkMDdlMGY5ZTc5N2Y3NzdiMzFkZGFjZmFiMDAzOWI1Y2E1ZGJjZTQ3ZWY3MjIxMjQ3YTNlMTVlOTQ0YjJlNGY2Nzk2Yjc5MDQiLCJpYXQiOjE3NjQwNzcyMjguMDQyOTgyLCJuYmYiOjE3NjQwNzcyMjguMDQyOTgzLCJleHAiOjE3OTU2MTMyMjguMDM1OTI0LCJzdWIiOiIxIiwic2NvcGVzIjpbXX0.d3N3fp6pTh1JxrRcDMwG0gLBsS0qyH4TWMsTpjbf_piH3rdfBj-04fL3inKHvOEGcZeFIFUr23DnEKVxNiHsiRYHpJz55K9Y0v-CRi4x8QxW9TIx9L63A0RaHGK044HKEq01mKy3_0ho-n2y2-s12umW92piu9A40h77UxhBMqfqHcIwwr3g77_lGtE530jLEFTSavVPHNiL2UtPIzjllRhXJO9LqALirv4txTkGiNs-3QfU4Q_suzKeU1esVJS6cOQ_lojFTeB26zq0ulDlVPYwx_ruWGyvqc4HbTwhUtCddXK-4IbXCyCWhqNqtPTRmBgtMyEy8atM6hbVFjYHDjlefUP0i6ejKmVaiEiIjTbgL2HotoGsRob1awoP5p9uYsixd0-G1OEGlPPL_wv9tlXwFBiU0M4iJnqaYZt6Cdf_MP79bd3ZcDrOaqF0ALTj6sopGau6Ml2zWr6PqChHl7G9ApnDPY_sVqSjovoDeKUhMVgNwogQCqdnbP508CYoKQtrHItBewCDmjMfekZllaMeWpU_3bnsPhfRQaL6R53uAFz5P2I_CtPcdY9W_HCBHHvTNnyrrPQhjBD_WEeT6-pm681nPKckz2qJCuHelQvb_T55SEIpq2QXw-hkMXGrXLF7imLsodNlURRKgIQLpXqdHv9EU2V5A7alUTbdDRQ'
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters: []
+    cleanUrlParameters: []
+    queryParameters:
+      search:
+        name: search
+        description: 'optional for search.'
+        required: false
+        example: '"abc"'
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+    cleanQueryParameters:
+      search: '"abc"'
+    bodyParameters: []
+    cleanBodyParameters: []
+    fileParameters: []
+    responses:
+      -
+        status: 200
+        content: |-
+          {
+              "data": [
+                  {
+                      "id": 1,
+                      "user_id": 2,
+                      "title": "Sample Bulletin Title",
+                      "description": "Sample bulletin description",
+                      "created_at": "2024-11-08T12:00:00.000000Z",
+                      "updated_at": "2024-11-08T12:00:00.000000Z",
+                      "user": {
+                         "id": 12,
+                         "ecclesia_id": 2,
+                         "created_id": "1",
+                         "user_name": "swarnadwip_nath",
+                         "first_name": "Swarnadwip",
+                         "middle_name": null,
+                         "last_name": "Nath",
+                         "email": "swarnadwip@excellisit.net",
+                         "phone": "+1 0741202022",
+                         "email_verified_at": null,
+                         "profile_picture": "profile_picture/yCvplMhdpjc0kIeKG63tfkZwhKNYbcF1ZhfQdDFO.jpg",
+                         "address": "Kokata",
+                         "city": "Kolkata",
+                         "state": "41",
+                         "address2": null,
+                         "country": "101",
+                         "zip": "700001",
+                         "status": 1,
+                         "created_at": "2024-06-21T11:31:27.000000Z",
+                         "updated_at": "2024-09-09T11:02:59.000000Z"
+                      }
+                  },
+                  {
+                      "id": 2,
+                      "user_id": 3,
+                      "title": "Another Bulletin Title",
+                      "description": "Another bulletin description",
+                      "created_at": "2024-11-08T12:00:00.000000Z",
+                      "updated_at": "2024-11-08T12:00:00.000000Z",
+                      "user": {
+                         "id": 13,
+                         "ecclesia_id": 2,
+                         "created_id": "1",
+                         "user_name": "john_doe",
+                         "first_name": "John",
+                         "middle_name": null,
+                         "last_name": "Chiera",
+                         "email": "john@yopmail.com",
+                         "phone": "07412020202",
+                         "email_verified_at": null,
+                         "profile_picture": "profile_picture/lX7sKGrvLYx22gM1qwGKXToQbPI4ILBFQHxThou7.jpg",
+                         "address": "Kokata",
+                         "city": "Kolkata",
+                         "state": "West Bengal",
+                         "address2": null,
+                         "country": "India",
+                         "zip": "700001",
+                         "status": 1,
+                         "created_at": "2024-06-21T11:32:03.000000Z",
+                         "updated_at": "2024-09-09T06:28:13.000000Z"
+                      }
+                  }
+              ]
+          }
+        headers: []
+        description: ''
+        custom: []
+      -
+        status: 201
+        content: |-
+          {
+              "error": "Failed to load bulletins."
           }
         headers: []
         description: ''
@@ -190,13 +261,13 @@ endpoints:
   -
     httpMethods:
       - POST
-    uri: api/v3/user/jobs/store
+    uri: api/v3/user/bulletins/store
     metadata:
-      groupName: Jobs
+      groupName: Bulletins
       groupDescription: ''
       subgroup: ''
       subgroupDescription: ''
-      title: 'Create Job'
+      title: 'Create Bulletin'
       description: ''
       authenticated: true
       custom: []
@@ -209,140 +280,44 @@ endpoints:
     queryParameters: []
     cleanQueryParameters: []
     bodyParameters:
-      job_title:
-        name: job_title
-        description: 'The title of the job.'
+      title:
+        name: title
+        description: 'The title of the bulletin.'
         required: true
-        example: 'Software Engineer'
+        example: '"New Bulletin Title"'
         type: string
         enumValues: []
         exampleWasSpecified: true
         nullable: false
         custom: []
-      job_description:
-        name: job_description
-        description: 'The description of the job.'
+      description:
+        name: description
+        description: 'The description of the bulletin.'
         required: true
-        example: 'A great job opportunity'
-        type: string
-        enumValues: []
-        exampleWasSpecified: true
-        nullable: false
-        custom: []
-      job_type:
-        name: job_type
-        description: 'The type of the job (e.g., full-time, part-time).'
-        required: true
-        example: full-time
-        type: string
-        enumValues: []
-        exampleWasSpecified: true
-        nullable: false
-        custom: []
-      job_location:
-        name: job_location
-        description: 'The location of the job.'
-        required: true
-        example: 'New York'
-        type: string
-        enumValues: []
-        exampleWasSpecified: true
-        nullable: false
-        custom: []
-      job_salary:
-        name: job_salary
-        description: 'optional The salary for the job.'
-        required: false
-        example: '50000'
-        type: numeric
-        enumValues: []
-        exampleWasSpecified: true
-        nullable: false
-        custom: []
-      list_of_values:
-        name: list_of_values
-        description: 'optional List of additional job requirements or values.'
-        required: false
-        example: hourly
-        type: string
-        enumValues: []
-        exampleWasSpecified: true
-        nullable: false
-        custom: []
-      currency:
-        name: currency
-        description: 'optional The currency for the salary.'
-        required: false
-        example: USD
-        type: string
-        enumValues: []
-        exampleWasSpecified: true
-        nullable: false
-        custom: []
-      job_experience:
-        name: job_experience
-        description: 'optional The minimum experience required for the job.'
-        required: false
-        example: '3'
-        type: numeric
-        enumValues: []
-        exampleWasSpecified: true
-        nullable: false
-        custom: []
-      contact_person:
-        name: contact_person
-        description: 'optional The contact person for the job.'
-        required: false
-        example: 'John Doe'
-        type: string
-        enumValues: []
-        exampleWasSpecified: true
-        nullable: false
-        custom: []
-      contact_email:
-        name: contact_email
-        description: 'optional The contact email for the job.'
-        required: false
-        example: johndoe@example.com
+        example: '"Details about the bulletin."'
         type: string
         enumValues: []
         exampleWasSpecified: true
         nullable: false
         custom: []
     cleanBodyParameters:
-      job_title: 'Software Engineer'
-      job_description: 'A great job opportunity'
-      job_type: full-time
-      job_location: 'New York'
-      job_salary: '50000'
-      list_of_values: hourly
-      currency: USD
-      job_experience: '3'
-      contact_person: 'John Doe'
-      contact_email: johndoe@example.com
+      title: '"New Bulletin Title"'
+      description: '"Details about the bulletin."'
     fileParameters: []
     responses:
       -
         status: 200
         content: |-
           {
-            "message": "Job has been created successfully.",
-            "job": {
-              "id": 1,
-              "job_title": "Software Engineer",
-              "job_description": "A great job opportunity",
-              "job_type": "full-time",
-              "job_location": "New York",
-              "job_salary": 50000,
-              "currency": "USD",
-              "job_experience": 3,
-              "contact_person": "John Doe",
-              "contact_email": "johndoe@example.com",
-              "list_of_values": "hourly",
-              "created_by": 1,
-              "created_at": "2024-11-27T00:00:00.000000Z",
-              "updated_at": "2024-11-27T00:00:00.000000Z"
-            }
+              "message": "Bulletin created successfully.",
+              "data": {
+                  "id": 1,
+                  "user_id": 1,
+                  "title": "New Bulletin Title",
+                  "description": "Details about the bulletin.",
+                  "created_at": "2024-11-08T12:00:00.000000Z",
+                  "updated_at": "2024-11-08T12:00:00.000000Z"
+              }
           }
         headers: []
         description: ''
@@ -351,11 +326,7 @@ endpoints:
         status: 201
         content: |-
           {
-            "message": "Validation failed.",
-            "errors": {
-              "job_title": ["The job title is required."],
-              "job_description": ["The job description is required."]
-            }
+              "error": "Failed to create bulletin."
           }
         headers: []
         description: ''
@@ -371,14 +342,14 @@ endpoints:
     custom: []
   -
     httpMethods:
-      - POST
-    uri: 'api/v3/user/jobs/edit/{id}'
+      - PUT
+    uri: 'api/v3/user/bulletins/edit/{id}'
     metadata:
-      groupName: Jobs
+      groupName: Bulletins
       groupDescription: ''
       subgroup: ''
       subgroupDescription: ''
-      title: 'Update Job'
+      title: 'Update Bulletin'
       description: ''
       authenticated: true
       custom: []
@@ -389,153 +360,57 @@ endpoints:
     urlParameters:
       id:
         name: id
-        description: 'The ID of the edit.'
+        description: 'The ID of the bulletin to update.'
         required: true
-        example: ipsam
-        type: string
+        example: 1
+        type: integer
         enumValues: []
-        exampleWasSpecified: false
+        exampleWasSpecified: true
         nullable: false
         custom: []
     cleanUrlParameters:
-      id: ipsam
+      id: 1
     queryParameters: []
     cleanQueryParameters: []
     bodyParameters:
-      job_title:
-        name: job_title
-        description: 'The title of the job.'
-        required: true
-        example: 'Software Engineer'
-        type: string
-        enumValues: []
-        exampleWasSpecified: true
-        nullable: false
-        custom: []
-      job_description:
-        name: job_description
-        description: 'The description of the job.'
-        required: true
-        example: 'A great job opportunity'
-        type: string
-        enumValues: []
-        exampleWasSpecified: true
-        nullable: false
-        custom: []
-      job_type:
-        name: job_type
-        description: 'The type of the job (e.g., full-time, part-time).'
-        required: true
-        example: full-time
-        type: string
-        enumValues: []
-        exampleWasSpecified: true
-        nullable: false
-        custom: []
-      job_location:
-        name: job_location
-        description: 'The location of the job.'
-        required: true
-        example: 'New York'
-        type: string
-        enumValues: []
-        exampleWasSpecified: true
-        nullable: false
-        custom: []
-      job_salary:
-        name: job_salary
-        description: 'optional The salary for the job.'
+      title:
+        name: title
+        description: 'The new title of the bulletin.'
         required: false
-        example: '50000'
-        type: numeric
-        enumValues: []
-        exampleWasSpecified: true
-        nullable: false
-        custom: []
-      list_of_values:
-        name: list_of_values
-        description: 'optional List of additional job requirements or values.'
-        required: false
-        example: hourly
+        example: '"Updated Bulletin Title"'
         type: string
         enumValues: []
         exampleWasSpecified: true
         nullable: false
         custom: []
-      currency:
-        name: currency
-        description: 'optional The currency for the salary.'
+      description:
+        name: description
+        description: 'The new description of the bulletin.'
         required: false
-        example: USD
-        type: string
-        enumValues: []
-        exampleWasSpecified: true
-        nullable: false
-        custom: []
-      job_experience:
-        name: job_experience
-        description: 'optional The minimum experience required for the job.'
-        required: false
-        example: '3'
-        type: numeric
-        enumValues: []
-        exampleWasSpecified: true
-        nullable: false
-        custom: []
-      contact_person:
-        name: contact_person
-        description: 'optional The contact person for the job.'
-        required: false
-        example: 'John Doe'
-        type: string
-        enumValues: []
-        exampleWasSpecified: true
-        nullable: false
-        custom: []
-      contact_email:
-        name: contact_email
-        description: 'optional The contact email for the job.'
-        required: false
-        example: johndoe@example.com
+        example: '"Updated details about the bulletin."'
         type: string
         enumValues: []
         exampleWasSpecified: true
         nullable: false
         custom: []
     cleanBodyParameters:
-      job_title: 'Software Engineer'
-      job_description: 'A great job opportunity'
-      job_type: full-time
-      job_location: 'New York'
-      job_salary: '50000'
-      list_of_values: hourly
-      currency: USD
-      job_experience: '3'
-      contact_person: 'John Doe'
-      contact_email: johndoe@example.com
+      title: '"Updated Bulletin Title"'
+      description: '"Updated details about the bulletin."'
     fileParameters: []
     responses:
       -
         status: 200
         content: |-
           {
-            "message": "Job has been updated successfully.",
-            "job": {
-              "id": 1,
-              "job_title": "Software Engineer",
-              "job_description": "A great job opportunity",
-              "job_type": "full-time",
-              "job_location": "New York",
-              "job_salary": 50000,
-              "currency": "USD",
-              "job_experience": 3,
-              "contact_person": "John Doe",
-              "contact_email": "johndoe@example.com",
-              "list_of_values": "hourly"
-              "created_by": 1,
-              "created_at": "2024-11-27T00:00:00.000000Z",
-              "updated_at": "2024-11-27T00:00:00.000000Z"
-            }
+              "message": "Bulletin updated successfully.",
+              "data": {
+                  "id": 1,
+                  "user_id": 1,
+                  "title": "Updated Bulletin Title",
+                  "description": "Updated details about the bulletin.",
+                  "created_at": "2024-11-08T12:00:00.000000Z",
+                  "updated_at": "2024-11-08T12:00:00.000000Z"
+              }
           }
         headers: []
         description: ''
@@ -544,11 +419,7 @@ endpoints:
         status: 201
         content: |-
           {
-            "message": "Validation failed.",
-            "errors": {
-              "job_title": ["The job title is required."],
-              "job_description": ["The job description is required."]
-            }
+              "error": "Bulletin not found or unauthorized."
           }
         headers: []
         description: ''
@@ -565,13 +436,13 @@ endpoints:
   -
     httpMethods:
       - POST
-    uri: 'api/v3/user/jobs/delete/{id}'
+    uri: 'api/v3/user/bulletins/delete/{id}'
     metadata:
-      groupName: Jobs
+      groupName: Bulletins
       groupDescription: ''
       subgroup: ''
       subgroupDescription: ''
-      title: 'Delete Job'
+      title: 'Remove Bulletin'
       description: ''
       authenticated: true
       custom: []
@@ -582,16 +453,16 @@ endpoints:
     urlParameters:
       id:
         name: id
-        description: 'The ID of the delete.'
+        description: 'The ID of the bulletin to delete.'
         required: true
-        example: itaque
-        type: string
+        example: 1
+        type: integer
         enumValues: []
-        exampleWasSpecified: false
+        exampleWasSpecified: true
         nullable: false
         custom: []
     cleanUrlParameters:
-      id: itaque
+      id: 1
     queryParameters: []
     cleanQueryParameters: []
     bodyParameters: []
@@ -602,7 +473,7 @@ endpoints:
         status: 200
         content: |-
           {
-            "message": "Job has been deleted successfully."
+              "message": "Bulletin deleted successfully."
           }
         headers: []
         description: ''
@@ -611,84 +482,7 @@ endpoints:
         status: 201
         content: |-
           {
-            "message": "Job not found."
-          }
-        headers: []
-        description: ''
-        custom: []
-    responseFields: []
-    auth:
-      - headers
-      - Authorization
-      - 'Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJhdWQiOiIxIiwianRpIjoiYzkzNjcyNzVkMDdlMGY5ZTc5N2Y3NzdiMzFkZGFjZmFiMDAzOWI1Y2E1ZGJjZTQ3ZWY3MjIxMjQ3YTNlMTVlOTQ0YjJlNGY2Nzk2Yjc5MDQiLCJpYXQiOjE3NjQwNzcyMjguMDQyOTgyLCJuYmYiOjE3NjQwNzcyMjguMDQyOTgzLCJleHAiOjE3OTU2MTMyMjguMDM1OTI0LCJzdWIiOiIxIiwic2NvcGVzIjpbXX0.d3N3fp6pTh1JxrRcDMwG0gLBsS0qyH4TWMsTpjbf_piH3rdfBj-04fL3inKHvOEGcZeFIFUr23DnEKVxNiHsiRYHpJz55K9Y0v-CRi4x8QxW9TIx9L63A0RaHGK044HKEq01mKy3_0ho-n2y2-s12umW92piu9A40h77UxhBMqfqHcIwwr3g77_lGtE530jLEFTSavVPHNiL2UtPIzjllRhXJO9LqALirv4txTkGiNs-3QfU4Q_suzKeU1esVJS6cOQ_lojFTeB26zq0ulDlVPYwx_ruWGyvqc4HbTwhUtCddXK-4IbXCyCWhqNqtPTRmBgtMyEy8atM6hbVFjYHDjlefUP0i6ejKmVaiEiIjTbgL2HotoGsRob1awoP5p9uYsixd0-G1OEGlPPL_wv9tlXwFBiU0M4iJnqaYZt6Cdf_MP79bd3ZcDrOaqF0ALTj6sopGau6Ml2zWr6PqChHl7G9ApnDPY_sVqSjovoDeKUhMVgNwogQCqdnbP508CYoKQtrHItBewCDmjMfekZllaMeWpU_3bnsPhfRQaL6R53uAFz5P2I_CtPcdY9W_HCBHHvTNnyrrPQhjBD_WEeT6-pm681nPKckz2qJCuHelQvb_T55SEIpq2QXw-hkMXGrXLF7imLsodNlURRKgIQLpXqdHv9EU2V5A7alUTbdDRQ'
-    controller: null
-    method: null
-    route: null
-    custom: []
-  -
-    httpMethods:
-      - POST
-    uri: api/v3/user/jobs/search
-    metadata:
-      groupName: Jobs
-      groupDescription: ''
-      subgroup: ''
-      subgroupDescription: ''
-      title: 'Search Job'
-      description: ''
-      authenticated: true
-      custom: []
-    headers:
-      Authorization: 'Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJhdWQiOiIxIiwianRpIjoiYzkzNjcyNzVkMDdlMGY5ZTc5N2Y3NzdiMzFkZGFjZmFiMDAzOWI1Y2E1ZGJjZTQ3ZWY3MjIxMjQ3YTNlMTVlOTQ0YjJlNGY2Nzk2Yjc5MDQiLCJpYXQiOjE3NjQwNzcyMjguMDQyOTgyLCJuYmYiOjE3NjQwNzcyMjguMDQyOTgzLCJleHAiOjE3OTU2MTMyMjguMDM1OTI0LCJzdWIiOiIxIiwic2NvcGVzIjpbXX0.d3N3fp6pTh1JxrRcDMwG0gLBsS0qyH4TWMsTpjbf_piH3rdfBj-04fL3inKHvOEGcZeFIFUr23DnEKVxNiHsiRYHpJz55K9Y0v-CRi4x8QxW9TIx9L63A0RaHGK044HKEq01mKy3_0ho-n2y2-s12umW92piu9A40h77UxhBMqfqHcIwwr3g77_lGtE530jLEFTSavVPHNiL2UtPIzjllRhXJO9LqALirv4txTkGiNs-3QfU4Q_suzKeU1esVJS6cOQ_lojFTeB26zq0ulDlVPYwx_ruWGyvqc4HbTwhUtCddXK-4IbXCyCWhqNqtPTRmBgtMyEy8atM6hbVFjYHDjlefUP0i6ejKmVaiEiIjTbgL2HotoGsRob1awoP5p9uYsixd0-G1OEGlPPL_wv9tlXwFBiU0M4iJnqaYZt6Cdf_MP79bd3ZcDrOaqF0ALTj6sopGau6Ml2zWr6PqChHl7G9ApnDPY_sVqSjovoDeKUhMVgNwogQCqdnbP508CYoKQtrHItBewCDmjMfekZllaMeWpU_3bnsPhfRQaL6R53uAFz5P2I_CtPcdY9W_HCBHHvTNnyrrPQhjBD_WEeT6-pm681nPKckz2qJCuHelQvb_T55SEIpq2QXw-hkMXGrXLF7imLsodNlURRKgIQLpXqdHv9EU2V5A7alUTbdDRQ'
-      Content-Type: application/json
-      Accept: application/json
-    urlParameters: []
-    cleanUrlParameters: []
-    queryParameters: []
-    cleanQueryParameters: []
-    bodyParameters:
-      query:
-        name: query
-        description: 'The title of the job.'
-        required: true
-        example: abc
-        type: string
-        enumValues: []
-        exampleWasSpecified: true
-        nullable: false
-        custom: []
-    cleanBodyParameters:
-      query: abc
-    fileParameters: []
-    responses:
-      -
-        status: 200
-        content: |-
-          {
-            "data": [
-              {
-                "id": 1,
-                "job_title": "Software Developer",
-                "job_description": "Full stack developer needed...",
-                "job_type": "Full-time",
-                "job_location": "New York",
-                "job_salary": 100000,
-                "currency": "USD",
-                "job_experience": 3,
-                "contact_person": "John Doe",
-                "contact_email": "johndoe@example.com"
-              },
-              ...
-            ]
-          }
-        headers: []
-        description: ''
-        custom: []
-      -
-        status: 201
-        content: |-
-          {
-            "message": "An error occurred during the search"
+              "error": "Bulletin not found or unauthorized."
           }
         headers: []
         description: ''

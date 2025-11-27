@@ -1,17 +1,17 @@
-name: 'Estore CMS'
+name: 'Estore Colors'
 description: ''
 endpoints:
   -
     httpMethods:
-      - POST
-    uri: api/v3/user/estore-cms/dashboard
+      - GET
+    uri: api/v3/user/colors
     metadata:
-      groupName: 'Estore CMS'
+      groupName: 'Estore Colors'
       groupDescription: ''
       subgroup: ''
       subgroupDescription: ''
-      title: Dashboard
-      description: 'Get counts for the dashboard (CMS pages + newsletter subscribers).'
+      title: 'Color List'
+      description: 'This endpoint retrieves a paginated list of all active colors.'
       authenticated: true
       custom: []
     headers:
@@ -20,8 +20,30 @@ endpoints:
       Accept: application/json
     urlParameters: []
     cleanUrlParameters: []
-    queryParameters: []
-    cleanQueryParameters: []
+    queryParameters:
+      page:
+        name: page
+        description: 'optional The page number for pagination.'
+        required: false
+        example: 1
+        type: integer
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+      per_page:
+        name: per_page
+        description: 'optional Number of records per page. Defaults to 10.'
+        required: false
+        example: 10
+        type: integer
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+    cleanQueryParameters:
+      page: 1
+      per_page: 10
     bodyParameters: []
     cleanBodyParameters: []
     fileParameters: []
@@ -30,11 +52,87 @@ endpoints:
         status: 200
         content: |-
           {
-            "data": {
-              "pages": 12,
-              "newsletter": 34
-            },
-            "status": true
+              "data": {
+                  "current_page": 1,
+                  "data": [
+                      {
+                          "id": 1,
+                          "color_name": "Red",
+                          "color": "#ff0000",
+                          "status": 1,
+                          "created_at": "2025-08-28T14:24:03.000000Z",
+                          "updated_at": "2025-08-28T14:24:03.000000Z"
+                      },
+                      {
+                          "id": 2,
+                          "color_name": "Green",
+                          "color": "#00ff04",
+                          "status": 1,
+                          "created_at": "2025-08-28T14:24:18.000000Z",
+                          "updated_at": "2025-08-28T14:24:18.000000Z"
+                      },
+                      {
+                          "id": 3,
+                          "color_name": "Blue",
+                          "color": "#0066eb",
+                          "status": 1,
+                          "created_at": "2025-08-28T14:24:35.000000Z",
+                          "updated_at": "2025-08-28T14:24:35.000000Z"
+                      },
+                      {
+                          "id": 4,
+                          "color_name": "Black",
+                          "color": "#000000",
+                          "status": 1,
+                          "created_at": "2025-08-28T14:24:52.000000Z",
+                          "updated_at": "2025-08-28T14:24:52.000000Z"
+                      },
+                      {
+                          "id": 5,
+                          "color_name": "Yellow",
+                          "color": "#00d5ff",
+                          "status": 1,
+                          "created_at": "2025-09-01T15:06:02.000000Z",
+                          "updated_at": "2025-09-04T16:06:29.000000Z"
+                      },
+                      {
+                          "id": 6,
+                          "color_name": "White",
+                          "color": "#ffffff",
+                          "status": 1,
+                          "created_at": "2025-09-13T14:56:54.000000Z",
+                          "updated_at": "2025-09-13T14:56:54.000000Z"
+                      }
+                  ],
+                  "first_page_url": "http:*127.0.0.1:8000/api/v3/user/colors?page=1",
+                  "from": 1,
+                  "last_page": 1,
+                  "last_page_url": "http:*127.0.0.1:8000/api/v3/user/colors?page=1",
+                  "links": [
+                      {
+                          "url": null,
+                          "label": "&laquo; Previous",
+                          "active": false
+                      },
+                      {
+                          "url": "http:*127.0.0.1:8000/api/v3/user/colors?page=1",
+                          "label": "1",
+                          "active": true
+                      },
+                      {
+                          "url": null,
+                          "label": "Next &raquo;",
+                          "active": false
+                      }
+                  ],
+                  "next_page_url": null,
+                  "path": "http:*127.0.0.1:8000/api/v3/user/colors",
+                  "per_page": 10,
+                  "prev_page_url": null,
+                  "to": 6,
+                  "total": 6
+              },
+              "status": true
           }
         headers: []
         description: ''
@@ -43,7 +141,7 @@ endpoints:
         status: 201
         content: |-
           {
-            "message": "Something went wrong. Please try again later.",
+            "message": "Failed to fetch files. Please try again later.",
             "status": false
           }
         headers: []
@@ -61,14 +159,14 @@ endpoints:
   -
     httpMethods:
       - POST
-    uri: api/v3/user/estore-cms/list
+    uri: api/v3/user/colors/store
     metadata:
-      groupName: 'Estore CMS'
+      groupName: 'Estore Colors'
       groupDescription: ''
       subgroup: ''
       subgroupDescription: ''
-      title: 'CMS LIST'
-      description: ''
+      title: 'Color Store'
+      description: 'Create a new color.'
       authenticated: true
       custom: []
     headers:
@@ -79,114 +177,56 @@ endpoints:
     cleanUrlParameters: []
     queryParameters: []
     cleanQueryParameters: []
-    bodyParameters: []
-    cleanBodyParameters: []
-    fileParameters: []
-    responses: []
-    responseFields: []
-    auth:
-      - headers
-      - Authorization
-      - 'Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJhdWQiOiIxIiwianRpIjoiYzkzNjcyNzVkMDdlMGY5ZTc5N2Y3NzdiMzFkZGFjZmFiMDAzOWI1Y2E1ZGJjZTQ3ZWY3MjIxMjQ3YTNlMTVlOTQ0YjJlNGY2Nzk2Yjc5MDQiLCJpYXQiOjE3NjQwNzcyMjguMDQyOTgyLCJuYmYiOjE3NjQwNzcyMjguMDQyOTgzLCJleHAiOjE3OTU2MTMyMjguMDM1OTI0LCJzdWIiOiIxIiwic2NvcGVzIjpbXX0.d3N3fp6pTh1JxrRcDMwG0gLBsS0qyH4TWMsTpjbf_piH3rdfBj-04fL3inKHvOEGcZeFIFUr23DnEKVxNiHsiRYHpJz55K9Y0v-CRi4x8QxW9TIx9L63A0RaHGK044HKEq01mKy3_0ho-n2y2-s12umW92piu9A40h77UxhBMqfqHcIwwr3g77_lGtE530jLEFTSavVPHNiL2UtPIzjllRhXJO9LqALirv4txTkGiNs-3QfU4Q_suzKeU1esVJS6cOQ_lojFTeB26zq0ulDlVPYwx_ruWGyvqc4HbTwhUtCddXK-4IbXCyCWhqNqtPTRmBgtMyEy8atM6hbVFjYHDjlefUP0i6ejKmVaiEiIjTbgL2HotoGsRob1awoP5p9uYsixd0-G1OEGlPPL_wv9tlXwFBiU0M4iJnqaYZt6Cdf_MP79bd3ZcDrOaqF0ALTj6sopGau6Ml2zWr6PqChHl7G9ApnDPY_sVqSjovoDeKUhMVgNwogQCqdnbP508CYoKQtrHItBewCDmjMfekZllaMeWpU_3bnsPhfRQaL6R53uAFz5P2I_CtPcdY9W_HCBHHvTNnyrrPQhjBD_WEeT6-pm681nPKckz2qJCuHelQvb_T55SEIpq2QXw-hkMXGrXLF7imLsodNlURRKgIQLpXqdHv9EU2V5A7alUTbdDRQ'
-    controller: null
-    method: null
-    route: null
-    custom: []
-  -
-    httpMethods:
-      - POST
-    uri: api/v3/user/estore-cms/store
-    metadata:
-      groupName: 'Estore CMS'
-      groupDescription: ''
-      subgroup: ''
-      subgroupDescription: ''
-      title: 'Store CMS Page'
-      description: 'Create a new CMS page.'
-      authenticated: true
-      custom: []
-    headers:
-      Authorization: 'Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJhdWQiOiIxIiwianRpIjoiYzkzNjcyNzVkMDdlMGY5ZTc5N2Y3NzdiMzFkZGFjZmFiMDAzOWI1Y2E1ZGJjZTQ3ZWY3MjIxMjQ3YTNlMTVlOTQ0YjJlNGY2Nzk2Yjc5MDQiLCJpYXQiOjE3NjQwNzcyMjguMDQyOTgyLCJuYmYiOjE3NjQwNzcyMjguMDQyOTgzLCJleHAiOjE3OTU2MTMyMjguMDM1OTI0LCJzdWIiOiIxIiwic2NvcGVzIjpbXX0.d3N3fp6pTh1JxrRcDMwG0gLBsS0qyH4TWMsTpjbf_piH3rdfBj-04fL3inKHvOEGcZeFIFUr23DnEKVxNiHsiRYHpJz55K9Y0v-CRi4x8QxW9TIx9L63A0RaHGK044HKEq01mKy3_0ho-n2y2-s12umW92piu9A40h77UxhBMqfqHcIwwr3g77_lGtE530jLEFTSavVPHNiL2UtPIzjllRhXJO9LqALirv4txTkGiNs-3QfU4Q_suzKeU1esVJS6cOQ_lojFTeB26zq0ulDlVPYwx_ruWGyvqc4HbTwhUtCddXK-4IbXCyCWhqNqtPTRmBgtMyEy8atM6hbVFjYHDjlefUP0i6ejKmVaiEiIjTbgL2HotoGsRob1awoP5p9uYsixd0-G1OEGlPPL_wv9tlXwFBiU0M4iJnqaYZt6Cdf_MP79bd3ZcDrOaqF0ALTj6sopGau6Ml2zWr6PqChHl7G9ApnDPY_sVqSjovoDeKUhMVgNwogQCqdnbP508CYoKQtrHItBewCDmjMfekZllaMeWpU_3bnsPhfRQaL6R53uAFz5P2I_CtPcdY9W_HCBHHvTNnyrrPQhjBD_WEeT6-pm681nPKckz2qJCuHelQvb_T55SEIpq2QXw-hkMXGrXLF7imLsodNlURRKgIQLpXqdHv9EU2V5A7alUTbdDRQ'
-      Content-Type: multipart/form-data
-      Accept: application/json
-    urlParameters: []
-    cleanUrlParameters: []
-    queryParameters: []
-    cleanQueryParameters: []
     bodyParameters:
-      page_name:
-        name: page_name
-        description: 'The internal page name.'
+      color_name:
+        name: color_name
+        description: 'The color name.'
         required: true
-        example: '"about_us"'
+        example: '"Medium"'
         type: string
         enumValues: []
         exampleWasSpecified: true
         nullable: false
         custom: []
-      page_title:
-        name: page_title
-        description: 'The page title.'
+      color:
+        name: color
+        description: 'The color name.'
         required: true
-        example: '"About Us"'
+        example: '"Medium"'
         type: string
         enumValues: []
         exampleWasSpecified: true
         nullable: false
         custom: []
-      page_content:
-        name: page_content
-        description: 'The page content.'
+      status:
+        name: status
+        description: 'Status of the color (1 = active, 0 = inactive).'
         required: true
-        example: '"This is the about us content..."'
-        type: string
-        enumValues: []
-        exampleWasSpecified: true
-        nullable: false
-        custom: []
-      page_banner_image:
-        name: page_banner_image
-        description: 'Banner image file (jpeg, png, jpg, gif, svg).'
-        required: true
-        example: null
-        type: file
-        enumValues: []
-        exampleWasSpecified: false
-        nullable: false
-        custom: []
-      slug:
-        name: slug
-        description: 'Unique slug for the page.'
-        required: true
-        example: '"about-us"'
-        type: string
+        example: true
+        type: boolean
         enumValues: []
         exampleWasSpecified: true
         nullable: false
         custom: []
     cleanBodyParameters:
-      page_name: '"about_us"'
-      page_title: '"About Us"'
-      page_content: '"This is the about us content..."'
-      slug: '"about-us"'
-    fileParameters:
-      page_banner_image: null
+      color_name: '"Medium"'
+      color: '"Medium"'
+      status: true
+    fileParameters: []
     responses:
       -
-        status: 201
+        status: 200
         content: |-
           {
             "data": {
               "id": 12,
-              "page_name": "about_us",
-              "page_title": "About Us",
-              "page_content": "This is the about us content...",
-              "page_banner_image": "https://example.com/storage/ecom_cms/banner123.jpg",
-              "slug": "about-us",
-              "created_at": "2025-10-17T12:00:00Z",
-              "updated_at": "2025-10-17T12:00:00Z"
+              "color_name": "Black",
+              "color": "#000000",
+              "status": 1,
+              "created_at": "2025-10-17T10:00:00Z",
+              "updated_at": "2025-10-17T10:00:00Z"
             },
-            "message": "CMS page added successfully",
+            "message": "Color created successfully.",
             "status": true
           }
         headers: []
@@ -198,8 +238,8 @@ endpoints:
           {
             "message": "Validation failed.",
             "errors": {
-              "page_name": ["The page name field is required."],
-              "slug": ["The slug has already been taken."]
+              "name": ["The name field is required."],
+              "status": ["The status field must be true or false."]
             },
             "status": false
           }
@@ -227,25 +267,25 @@ endpoints:
     custom: []
   -
     httpMethods:
-      - PUT
-    uri: 'api/v3/user/estore-cms/update/{id}'
+      - POST
+    uri: api/v3/user/colors/update
     metadata:
-      groupName: 'Estore CMS'
+      groupName: 'Estore Colors'
       groupDescription: ''
       subgroup: ''
       subgroupDescription: ''
-      title: 'Update CMS Page'
-      description: 'Update an existing CMS page by ID.'
+      title: 'Color Update'
+      description: 'Update an existing color by ID.'
       authenticated: true
       custom: []
     headers:
       Authorization: 'Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJhdWQiOiIxIiwianRpIjoiYzkzNjcyNzVkMDdlMGY5ZTc5N2Y3NzdiMzFkZGFjZmFiMDAzOWI1Y2E1ZGJjZTQ3ZWY3MjIxMjQ3YTNlMTVlOTQ0YjJlNGY2Nzk2Yjc5MDQiLCJpYXQiOjE3NjQwNzcyMjguMDQyOTgyLCJuYmYiOjE3NjQwNzcyMjguMDQyOTgzLCJleHAiOjE3OTU2MTMyMjguMDM1OTI0LCJzdWIiOiIxIiwic2NvcGVzIjpbXX0.d3N3fp6pTh1JxrRcDMwG0gLBsS0qyH4TWMsTpjbf_piH3rdfBj-04fL3inKHvOEGcZeFIFUr23DnEKVxNiHsiRYHpJz55K9Y0v-CRi4x8QxW9TIx9L63A0RaHGK044HKEq01mKy3_0ho-n2y2-s12umW92piu9A40h77UxhBMqfqHcIwwr3g77_lGtE530jLEFTSavVPHNiL2UtPIzjllRhXJO9LqALirv4txTkGiNs-3QfU4Q_suzKeU1esVJS6cOQ_lojFTeB26zq0ulDlVPYwx_ruWGyvqc4HbTwhUtCddXK-4IbXCyCWhqNqtPTRmBgtMyEy8atM6hbVFjYHDjlefUP0i6ejKmVaiEiIjTbgL2HotoGsRob1awoP5p9uYsixd0-G1OEGlPPL_wv9tlXwFBiU0M4iJnqaYZt6Cdf_MP79bd3ZcDrOaqF0ALTj6sopGau6Ml2zWr6PqChHl7G9ApnDPY_sVqSjovoDeKUhMVgNwogQCqdnbP508CYoKQtrHItBewCDmjMfekZllaMeWpU_3bnsPhfRQaL6R53uAFz5P2I_CtPcdY9W_HCBHHvTNnyrrPQhjBD_WEeT6-pm681nPKckz2qJCuHelQvb_T55SEIpq2QXw-hkMXGrXLF7imLsodNlURRKgIQLpXqdHv9EU2V5A7alUTbdDRQ'
-      Content-Type: multipart/form-data
+      Content-Type: application/json
       Accept: application/json
     urlParameters:
       id:
         name: id
-        description: 'The ID of the CMS page.'
+        description: 'The ID of the color.'
         required: true
         example: 5
         type: integer
@@ -258,63 +298,52 @@ endpoints:
     queryParameters: []
     cleanQueryParameters: []
     bodyParameters:
-      page_name:
-        name: page_name
-        description: 'The internal page name.'
+      id:
+        name: id
+        description: 'The <code>id</code> of an existing record in the colors table.'
         required: true
-        example: '"About Us"'
+        example: rerum
         type: string
-        enumValues: []
-        exampleWasSpecified: true
-        nullable: false
-        custom: []
-      page_title:
-        name: page_title
-        description: 'The page title.'
-        required: true
-        example: '"About Our Company"'
-        type: string
-        enumValues: []
-        exampleWasSpecified: true
-        nullable: false
-        custom: []
-      page_content:
-        name: page_content
-        description: 'The content of the page.'
-        required: true
-        example: '"<p>Welcome...</p>"'
-        type: string
-        enumValues: []
-        exampleWasSpecified: true
-        nullable: false
-        custom: []
-      slug:
-        name: slug
-        description: 'Unique slug for the page.'
-        required: true
-        example: '"about-us"'
-        type: string
-        enumValues: []
-        exampleWasSpecified: true
-        nullable: false
-        custom: []
-      page_banner_image:
-        name: page_banner_image
-        description: 'optional The banner image for the page.'
-        required: false
-        example: null
-        type: file
         enumValues: []
         exampleWasSpecified: false
         nullable: false
         custom: []
+      color:
+        name: color
+        description: 'The color name.'
+        required: true
+        example: '"Medium"'
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+      color_name:
+        name: color_name
+        description: 'The color name.'
+        required: true
+        example: '"Medium"'
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+      status:
+        name: status
+        description: 'Status of the color (1 = active, 0 = inactive).'
+        required: true
+        example: true
+        type: boolean
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
     cleanBodyParameters:
-      page_name: '"About Us"'
-      page_title: '"About Our Company"'
-      page_content: '"<p>Welcome...</p>"'
-      slug: '"about-us"'
-    fileParameters:
-      page_banner_image: null
+      id: rerum
+      color: '"Medium"'
+      color_name: '"Medium"'
+      status: true
+    fileParameters: []
     responses:
       -
         status: 200
@@ -322,15 +351,24 @@ endpoints:
           {
             "data": {
               "id": 5,
-              "page_name": "About Us",
-              "page_title": "About Our Company",
-              "page_content": "<p>Welcome...</p>",
-              "slug": "about-us",
-              "page_banner_image": "https://example.com/storage/ecom_cms/banner.jpg",
+              "color_name": "Black",
+              "color": "#000000",
+              "status": 1,
+              "created_at": "2025-10-17T10:00:00Z",
               "updated_at": "2025-10-17T12:00:00Z"
             },
-            "message": "CMS page updated successfully.",
+            "message": "Color updated successfully.",
             "status": true
+          }
+        headers: []
+        description: ''
+        custom: []
+      -
+        status: 201
+        content: |-
+          {
+            "message": "Color not found.",
+            "status": false
           }
         headers: []
         description: ''
@@ -341,19 +379,9 @@ endpoints:
           {
             "message": "Validation failed.",
             "errors": {
-              "slug": ["The slug has already been taken."],
-              "page_name": ["The page name field is required."]
+              "name": ["The name field is required."],
+              "status": ["The status field must be true or false."]
             },
-            "status": false
-          }
-        headers: []
-        description: ''
-        custom: []
-      -
-        status: 201
-        content: |-
-          {
-            "message": "CMS page not found.",
             "status": false
           }
         headers: []
@@ -381,28 +409,24 @@ endpoints:
   -
     httpMethods:
       - POST
-    uri: api/v3/user/estore-cms/delete
+    uri: api/v3/user/colors/delete
     metadata:
-      groupName: 'Estore CMS'
+      groupName: 'Estore Colors'
       groupDescription: ''
       subgroup: ''
       subgroupDescription: ''
-      title: 'Delete CMS Page'
-      description: 'Delete an existing CMS page by ID.'
+      title: 'Color Delete'
+      description: 'Delete a color by ID.'
       authenticated: true
       custom: []
     headers:
       Authorization: 'Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJhdWQiOiIxIiwianRpIjoiYzkzNjcyNzVkMDdlMGY5ZTc5N2Y3NzdiMzFkZGFjZmFiMDAzOWI1Y2E1ZGJjZTQ3ZWY3MjIxMjQ3YTNlMTVlOTQ0YjJlNGY2Nzk2Yjc5MDQiLCJpYXQiOjE3NjQwNzcyMjguMDQyOTgyLCJuYmYiOjE3NjQwNzcyMjguMDQyOTgzLCJleHAiOjE3OTU2MTMyMjguMDM1OTI0LCJzdWIiOiIxIiwic2NvcGVzIjpbXX0.d3N3fp6pTh1JxrRcDMwG0gLBsS0qyH4TWMsTpjbf_piH3rdfBj-04fL3inKHvOEGcZeFIFUr23DnEKVxNiHsiRYHpJz55K9Y0v-CRi4x8QxW9TIx9L63A0RaHGK044HKEq01mKy3_0ho-n2y2-s12umW92piu9A40h77UxhBMqfqHcIwwr3g77_lGtE530jLEFTSavVPHNiL2UtPIzjllRhXJO9LqALirv4txTkGiNs-3QfU4Q_suzKeU1esVJS6cOQ_lojFTeB26zq0ulDlVPYwx_ruWGyvqc4HbTwhUtCddXK-4IbXCyCWhqNqtPTRmBgtMyEy8atM6hbVFjYHDjlefUP0i6ejKmVaiEiIjTbgL2HotoGsRob1awoP5p9uYsixd0-G1OEGlPPL_wv9tlXwFBiU0M4iJnqaYZt6Cdf_MP79bd3ZcDrOaqF0ALTj6sopGau6Ml2zWr6PqChHl7G9ApnDPY_sVqSjovoDeKUhMVgNwogQCqdnbP508CYoKQtrHItBewCDmjMfekZllaMeWpU_3bnsPhfRQaL6R53uAFz5P2I_CtPcdY9W_HCBHHvTNnyrrPQhjBD_WEeT6-pm681nPKckz2qJCuHelQvb_T55SEIpq2QXw-hkMXGrXLF7imLsodNlURRKgIQLpXqdHv9EU2V5A7alUTbdDRQ'
       Content-Type: application/json
       Accept: application/json
-    urlParameters: []
-    cleanUrlParameters: []
-    queryParameters: []
-    cleanQueryParameters: []
-    bodyParameters:
+    urlParameters:
       id:
         name: id
-        description: 'The ID of the CMS page to delete.'
+        description: 'The ID of the color to delete.'
         required: true
         example: 5
         type: integer
@@ -410,953 +434,30 @@ endpoints:
         exampleWasSpecified: true
         nullable: false
         custom: []
-    cleanBodyParameters:
+    cleanUrlParameters:
       id: 5
-    fileParameters: []
-    responses:
-      -
-        status: 200
-        content: |-
-          {
-            "message": "CMS page deleted successfully.",
-            "status": true
-          }
-        headers: []
-        description: ''
-        custom: []
-      -
-        status: 201
-        content: |-
-          {
-            "message": "CMS page not found.",
-            "status": false
-          }
-        headers: []
-        description: ''
-        custom: []
-      -
-        status: 201
-        content: |-
-          {
-            "message": "Something went wrong. Please try again later.",
-            "status": false
-          }
-        headers: []
-        description: ''
-        custom: []
-    responseFields: []
-    auth:
-      - headers
-      - Authorization
-      - 'Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJhdWQiOiIxIiwianRpIjoiYzkzNjcyNzVkMDdlMGY5ZTc5N2Y3NzdiMzFkZGFjZmFiMDAzOWI1Y2E1ZGJjZTQ3ZWY3MjIxMjQ3YTNlMTVlOTQ0YjJlNGY2Nzk2Yjc5MDQiLCJpYXQiOjE3NjQwNzcyMjguMDQyOTgyLCJuYmYiOjE3NjQwNzcyMjguMDQyOTgzLCJleHAiOjE3OTU2MTMyMjguMDM1OTI0LCJzdWIiOiIxIiwic2NvcGVzIjpbXX0.d3N3fp6pTh1JxrRcDMwG0gLBsS0qyH4TWMsTpjbf_piH3rdfBj-04fL3inKHvOEGcZeFIFUr23DnEKVxNiHsiRYHpJz55K9Y0v-CRi4x8QxW9TIx9L63A0RaHGK044HKEq01mKy3_0ho-n2y2-s12umW92piu9A40h77UxhBMqfqHcIwwr3g77_lGtE530jLEFTSavVPHNiL2UtPIzjllRhXJO9LqALirv4txTkGiNs-3QfU4Q_suzKeU1esVJS6cOQ_lojFTeB26zq0ulDlVPYwx_ruWGyvqc4HbTwhUtCddXK-4IbXCyCWhqNqtPTRmBgtMyEy8atM6hbVFjYHDjlefUP0i6ejKmVaiEiIjTbgL2HotoGsRob1awoP5p9uYsixd0-G1OEGlPPL_wv9tlXwFBiU0M4iJnqaYZt6Cdf_MP79bd3ZcDrOaqF0ALTj6sopGau6Ml2zWr6PqChHl7G9ApnDPY_sVqSjovoDeKUhMVgNwogQCqdnbP508CYoKQtrHItBewCDmjMfekZllaMeWpU_3bnsPhfRQaL6R53uAFz5P2I_CtPcdY9W_HCBHHvTNnyrrPQhjBD_WEeT6-pm681nPKckz2qJCuHelQvb_T55SEIpq2QXw-hkMXGrXLF7imLsodNlURRKgIQLpXqdHv9EU2V5A7alUTbdDRQ'
-    controller: null
-    method: null
-    route: null
-    custom: []
-  -
-    httpMethods:
-      - POST
-    uri: api/v3/user/estore-cms/store-cms-page
-    metadata:
-      groupName: 'Estore CMS'
-      groupDescription: ''
-      subgroup: ''
-      subgroupDescription: ''
-      title: 'Get CMS Page'
-      description: 'Retrieve CMS content by page slug.'
-      authenticated: true
-      custom: []
-    headers:
-      Authorization: 'Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJhdWQiOiIxIiwianRpIjoiYzkzNjcyNzVkMDdlMGY5ZTc5N2Y3NzdiMzFkZGFjZmFiMDAzOWI1Y2E1ZGJjZTQ3ZWY3MjIxMjQ3YTNlMTVlOTQ0YjJlNGY2Nzk2Yjc5MDQiLCJpYXQiOjE3NjQwNzcyMjguMDQyOTgyLCJuYmYiOjE3NjQwNzcyMjguMDQyOTgzLCJleHAiOjE3OTU2MTMyMjguMDM1OTI0LCJzdWIiOiIxIiwic2NvcGVzIjpbXX0.d3N3fp6pTh1JxrRcDMwG0gLBsS0qyH4TWMsTpjbf_piH3rdfBj-04fL3inKHvOEGcZeFIFUr23DnEKVxNiHsiRYHpJz55K9Y0v-CRi4x8QxW9TIx9L63A0RaHGK044HKEq01mKy3_0ho-n2y2-s12umW92piu9A40h77UxhBMqfqHcIwwr3g77_lGtE530jLEFTSavVPHNiL2UtPIzjllRhXJO9LqALirv4txTkGiNs-3QfU4Q_suzKeU1esVJS6cOQ_lojFTeB26zq0ulDlVPYwx_ruWGyvqc4HbTwhUtCddXK-4IbXCyCWhqNqtPTRmBgtMyEy8atM6hbVFjYHDjlefUP0i6ejKmVaiEiIjTbgL2HotoGsRob1awoP5p9uYsixd0-G1OEGlPPL_wv9tlXwFBiU0M4iJnqaYZt6Cdf_MP79bd3ZcDrOaqF0ALTj6sopGau6Ml2zWr6PqChHl7G9ApnDPY_sVqSjovoDeKUhMVgNwogQCqdnbP508CYoKQtrHItBewCDmjMfekZllaMeWpU_3bnsPhfRQaL6R53uAFz5P2I_CtPcdY9W_HCBHHvTNnyrrPQhjBD_WEeT6-pm681nPKckz2qJCuHelQvb_T55SEIpq2QXw-hkMXGrXLF7imLsodNlURRKgIQLpXqdHv9EU2V5A7alUTbdDRQ'
-      Content-Type: application/json
-      Accept: application/json
-    urlParameters: []
-    cleanUrlParameters: []
-    queryParameters: []
-    cleanQueryParameters: []
-    bodyParameters:
-      page:
-        name: page
-        description: 'The CMS page slug.'
-        required: true
-        example: '"home"'
-        type: string
-        enumValues: []
-        exampleWasSpecified: true
-        nullable: false
-        custom: []
-    cleanBodyParameters:
-      page: '"home"'
-    fileParameters: []
-    responses:
-      -
-        status: 200
-        content: |-
-          {
-            "data": {
-              "id": 5,
-              "title": "Homepage CMS",
-              "content": "<p>Welcome to our store!</p>",
-              "slug": "home",
-              "created_at": "2025-10-17T10:00:00Z",
-              "updated_at": "2025-10-17T12:00:00Z"
-            },
-            "status": true
-          }
-        headers: []
-        description: ''
-        custom: []
-      -
-        status: 201
-        content: |-
-          {
-            "message": "You do not have permission to access this page.",
-            "status": false
-          }
-        headers: []
-        description: ''
-        custom: []
-      -
-        status: 201
-        content: |-
-          {
-            "message": "CMS page not found.",
-            "status": false
-          }
-        headers: []
-        description: ''
-        custom: []
-      -
-        status: 201
-        content: |-
-          {
-            "message": "Something went wrong. Please try again later.",
-            "status": false
-          }
-        headers: []
-        description: ''
-        custom: []
-    responseFields: []
-    auth:
-      - headers
-      - Authorization
-      - 'Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJhdWQiOiIxIiwianRpIjoiYzkzNjcyNzVkMDdlMGY5ZTc5N2Y3NzdiMzFkZGFjZmFiMDAzOWI1Y2E1ZGJjZTQ3ZWY3MjIxMjQ3YTNlMTVlOTQ0YjJlNGY2Nzk2Yjc5MDQiLCJpYXQiOjE3NjQwNzcyMjguMDQyOTgyLCJuYmYiOjE3NjQwNzcyMjguMDQyOTgzLCJleHAiOjE3OTU2MTMyMjguMDM1OTI0LCJzdWIiOiIxIiwic2NvcGVzIjpbXX0.d3N3fp6pTh1JxrRcDMwG0gLBsS0qyH4TWMsTpjbf_piH3rdfBj-04fL3inKHvOEGcZeFIFUr23DnEKVxNiHsiRYHpJz55K9Y0v-CRi4x8QxW9TIx9L63A0RaHGK044HKEq01mKy3_0ho-n2y2-s12umW92piu9A40h77UxhBMqfqHcIwwr3g77_lGtE530jLEFTSavVPHNiL2UtPIzjllRhXJO9LqALirv4txTkGiNs-3QfU4Q_suzKeU1esVJS6cOQ_lojFTeB26zq0ulDlVPYwx_ruWGyvqc4HbTwhUtCddXK-4IbXCyCWhqNqtPTRmBgtMyEy8atM6hbVFjYHDjlefUP0i6ejKmVaiEiIjTbgL2HotoGsRob1awoP5p9uYsixd0-G1OEGlPPL_wv9tlXwFBiU0M4iJnqaYZt6Cdf_MP79bd3ZcDrOaqF0ALTj6sopGau6Ml2zWr6PqChHl7G9ApnDPY_sVqSjovoDeKUhMVgNwogQCqdnbP508CYoKQtrHItBewCDmjMfekZllaMeWpU_3bnsPhfRQaL6R53uAFz5P2I_CtPcdY9W_HCBHHvTNnyrrPQhjBD_WEeT6-pm681nPKckz2qJCuHelQvb_T55SEIpq2QXw-hkMXGrXLF7imLsodNlURRKgIQLpXqdHv9EU2V5A7alUTbdDRQ'
-    controller: null
-    method: null
-    route: null
-    custom: []
-  -
-    httpMethods:
-      - POST
-    uri: api/v3/user/estore-cms/home/update
-    metadata:
-      groupName: 'Estore CMS'
-      groupDescription: ''
-      subgroup: ''
-      subgroupDescription: ''
-      title: 'Home CMS Update'
-      description: 'Update or create the home CMS content.'
-      authenticated: true
-      custom: []
-    headers:
-      Authorization: 'Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJhdWQiOiIxIiwianRpIjoiYzkzNjcyNzVkMDdlMGY5ZTc5N2Y3NzdiMzFkZGFjZmFiMDAzOWI1Y2E1ZGJjZTQ3ZWY3MjIxMjQ3YTNlMTVlOTQ0YjJlNGY2Nzk2Yjc5MDQiLCJpYXQiOjE3NjQwNzcyMjguMDQyOTgyLCJuYmYiOjE3NjQwNzcyMjguMDQyOTgzLCJleHAiOjE3OTU2MTMyMjguMDM1OTI0LCJzdWIiOiIxIiwic2NvcGVzIjpbXX0.d3N3fp6pTh1JxrRcDMwG0gLBsS0qyH4TWMsTpjbf_piH3rdfBj-04fL3inKHvOEGcZeFIFUr23DnEKVxNiHsiRYHpJz55K9Y0v-CRi4x8QxW9TIx9L63A0RaHGK044HKEq01mKy3_0ho-n2y2-s12umW92piu9A40h77UxhBMqfqHcIwwr3g77_lGtE530jLEFTSavVPHNiL2UtPIzjllRhXJO9LqALirv4txTkGiNs-3QfU4Q_suzKeU1esVJS6cOQ_lojFTeB26zq0ulDlVPYwx_ruWGyvqc4HbTwhUtCddXK-4IbXCyCWhqNqtPTRmBgtMyEy8atM6hbVFjYHDjlefUP0i6ejKmVaiEiIjTbgL2HotoGsRob1awoP5p9uYsixd0-G1OEGlPPL_wv9tlXwFBiU0M4iJnqaYZt6Cdf_MP79bd3ZcDrOaqF0ALTj6sopGau6Ml2zWr6PqChHl7G9ApnDPY_sVqSjovoDeKUhMVgNwogQCqdnbP508CYoKQtrHItBewCDmjMfekZllaMeWpU_3bnsPhfRQaL6R53uAFz5P2I_CtPcdY9W_HCBHHvTNnyrrPQhjBD_WEeT6-pm681nPKckz2qJCuHelQvb_T55SEIpq2QXw-hkMXGrXLF7imLsodNlURRKgIQLpXqdHv9EU2V5A7alUTbdDRQ'
-      Content-Type: multipart/form-data
-      Accept: application/json
-    urlParameters: []
-    cleanUrlParameters: []
     queryParameters: []
     cleanQueryParameters: []
     bodyParameters:
       id:
         name: id
-        description: 'optional ID of the CMS record to update.'
-        required: false
-        example: 1
-        type: integer
-        enumValues: []
-        exampleWasSpecified: true
-        nullable: true
-        custom: []
-      header_logo:
-        name: header_logo
-        description: 'nullable Header logo image (multipart/form-data)'
-        required: false
-        example: null
-        type: file
-        enumValues: []
-        exampleWasSpecified: false
-        nullable: true
-        custom: []
-      banner_image:
-        name: banner_image
-        description: 'nullable Banner image'
-        required: false
-        example: null
-        type: file
-        enumValues: []
-        exampleWasSpecified: false
-        nullable: true
-        custom: []
-      banner_image_small:
-        name: banner_image_small
-        description: 'nullable Banner small image'
-        required: false
-        example: null
-        type: file
-        enumValues: []
-        exampleWasSpecified: false
-        nullable: true
-        custom: []
-      product_category_image:
-        name: product_category_image
-        description: 'nullable Product category image'
-        required: false
-        example: null
-        type: file
-        enumValues: []
-        exampleWasSpecified: false
-        nullable: true
-        custom: []
-      featured_product_image:
-        name: featured_product_image
-        description: 'nullable Featured product image'
-        required: false
-        example: null
-        type: file
-        enumValues: []
-        exampleWasSpecified: false
-        nullable: true
-        custom: []
-      new_product_image:
-        name: new_product_image
-        description: 'nullable New product image'
-        required: false
-        example: null
-        type: file
-        enumValues: []
-        exampleWasSpecified: false
-        nullable: true
-        custom: []
-      new_arrival_image:
-        name: new_arrival_image
-        description: 'nullable New arrival image'
-        required: false
-        example: null
-        type: file
-        enumValues: []
-        exampleWasSpecified: false
-        nullable: true
-        custom: []
-      shop_now_image:
-        name: shop_now_image
-        description: 'nullable Shop Now section image'
-        required: false
-        example: null
-        type: file
-        enumValues: []
-        exampleWasSpecified: false
-        nullable: true
-        custom: []
-      about_section_image:
-        name: about_section_image
-        description: 'nullable About section image'
-        required: false
-        example: null
-        type: file
-        enumValues: []
-        exampleWasSpecified: false
-        nullable: true
-        custom: []
-      banner_title:
-        name: banner_title
-        description: 'nullable Banner title'
-        required: false
-        example: consequuntur
-        type: string
-        enumValues: []
-        exampleWasSpecified: false
-        nullable: true
-        custom: []
-      banner_subtitle:
-        name: banner_subtitle
-        description: 'nullable Banner subtitle'
-        required: false
-        example: non
-        type: string
-        enumValues: []
-        exampleWasSpecified: false
-        nullable: true
-        custom: []
-      product_category_title:
-        name: product_category_title
-        description: 'Product category title'
-        required: true
-        example: facere
-        type: string
-        enumValues: []
-        exampleWasSpecified: false
-        nullable: true
-        custom: []
-      product_category_subtitle:
-        name: product_category_subtitle
-        description: 'Product category subtitle'
-        required: true
-        example: eius
-        type: string
-        enumValues: []
-        exampleWasSpecified: false
-        nullable: true
-        custom: []
-      featured_product_title:
-        name: featured_product_title
-        description: 'Featured product title'
-        required: true
-        example: illo
-        type: string
-        enumValues: []
-        exampleWasSpecified: false
-        nullable: true
-        custom: []
-      featured_product_subtitle:
-        name: featured_product_subtitle
-        description: 'Featured product subtitle'
-        required: true
-        example: saepe
-        type: string
-        enumValues: []
-        exampleWasSpecified: false
-        nullable: true
-        custom: []
-      new_arrival_title:
-        name: new_arrival_title
-        description: 'New arrival title'
-        required: true
-        example: animi
-        type: string
-        enumValues: []
-        exampleWasSpecified: false
-        nullable: true
-        custom: []
-      new_arrival_subtitle:
-        name: new_arrival_subtitle
-        description: 'New arrival subtitle'
+        description: 'The <code>id</code> of an existing record in the colors table.'
         required: true
         example: et
         type: string
         enumValues: []
         exampleWasSpecified: false
-        nullable: true
-        custom: []
-      new_product_title:
-        name: new_product_title
-        description: 'New product title'
-        required: true
-        example: nostrum
-        type: string
-        enumValues: []
-        exampleWasSpecified: false
-        nullable: true
-        custom: []
-      new_product_subtitle:
-        name: new_product_subtitle
-        description: 'New product subtitle'
-        required: true
-        example: qui
-        type: string
-        enumValues: []
-        exampleWasSpecified: false
-        nullable: true
-        custom: []
-      shop_now_title:
-        name: shop_now_title
-        description: 'nullable Shop Now title'
-        required: false
-        example: officiis
-        type: string
-        enumValues: []
-        exampleWasSpecified: false
-        nullable: true
-        custom: []
-      shop_now_description:
-        name: shop_now_description
-        description: 'nullable Shop Now description'
-        required: false
-        example: cumque
-        type: string
-        enumValues: []
-        exampleWasSpecified: false
-        nullable: true
-        custom: []
-      shop_now_button_text:
-        name: shop_now_button_text
-        description: 'nullable Shop Now button text'
-        required: false
-        example: rerum
-        type: string
-        enumValues: []
-        exampleWasSpecified: false
-        nullable: true
-        custom: []
-      shop_now_button_link:
-        name: shop_now_button_link
-        description: 'nullable Shop Now button link'
-        required: false
-        example: molestias
-        type: string
-        enumValues: []
-        exampleWasSpecified: false
-        nullable: true
-        custom: []
-      about_section_title:
-        name: about_section_title
-        description: 'nullable About section main title'
-        required: false
-        example: neque
-        type: string
-        enumValues: []
-        exampleWasSpecified: false
-        nullable: true
-        custom: []
-      about_section_text_one_title:
-        name: about_section_text_one_title
-        description: 'nullable About section text one title'
-        required: false
-        example: incidunt
-        type: string
-        enumValues: []
-        exampleWasSpecified: false
-        nullable: true
-        custom: []
-      about_section_text_one_content:
-        name: about_section_text_one_content
-        description: 'nullable About section text one content'
-        required: false
-        example: expedita
-        type: string
-        enumValues: []
-        exampleWasSpecified: false
-        nullable: true
-        custom: []
-      about_section_text_two_title:
-        name: about_section_text_two_title
-        description: 'nullable About section text two title'
-        required: false
-        example: eos
-        type: string
-        enumValues: []
-        exampleWasSpecified: false
-        nullable: true
-        custom: []
-      about_section_text_two_content:
-        name: about_section_text_two_content
-        description: 'nullable About section text two content'
-        required: false
-        example: sit
-        type: string
-        enumValues: []
-        exampleWasSpecified: false
-        nullable: true
-        custom: []
-      about_section_text_three_title:
-        name: about_section_text_three_title
-        description: 'nullable About section text three title'
-        required: false
-        example: nihil
-        type: string
-        enumValues: []
-        exampleWasSpecified: false
-        nullable: true
-        custom: []
-      about_section_text_three_content:
-        name: about_section_text_three_content
-        description: 'nullable About section text three content'
-        required: false
-        example: sed
-        type: string
-        enumValues: []
-        exampleWasSpecified: false
-        nullable: true
-        custom: []
-      slider_data_second_title:
-        name: slider_data_second_title
-        description: 'nullable Second slider section title'
-        required: false
-        example: ratione
-        type: string
-        enumValues: []
-        exampleWasSpecified: false
-        nullable: true
-        custom: []
-      'slider_titles.*':
-        name: 'slider_titles.*'
-        description: 'nullable Array of titles for first slider'
-        required: false
-        example: aspernatur
-        type: string
-        enumValues: []
-        exampleWasSpecified: false
-        nullable: false
-        custom: []
-      'slider_subtitles.*':
-        name: 'slider_subtitles.*'
-        description: 'nullable Array of subtitles for first slider'
-        required: false
-        example: perspiciatis
-        type: string
-        enumValues: []
-        exampleWasSpecified: false
-        nullable: false
-        custom: []
-      'slider_links.*':
-        name: 'slider_links.*'
-        description: 'nullable Array of links for first slider'
-        required: false
-        example: recusandae
-        type: string
-        enumValues: []
-        exampleWasSpecified: false
-        nullable: false
-        custom: []
-      'slider_buttons.*':
-        name: 'slider_buttons.*'
-        description: 'nullable Array of button texts for first slider'
-        required: false
-        example: nostrum
-        type: string
-        enumValues: []
-        exampleWasSpecified: false
-        nullable: false
-        custom: []
-      'slider_images.*':
-        name: 'slider_images.*'
-        description: 'nullable Array of images for first slider (multipart/form-data)'
-        required: false
-        example: null
-        type: file
-        enumValues: []
-        exampleWasSpecified: false
-        nullable: false
-        custom: []
-      'slider_titles_second.*':
-        name: 'slider_titles_second.*'
-        description: 'nullable Array of titles for second slider'
-        required: false
-        example: quae
-        type: string
-        enumValues: []
-        exampleWasSpecified: false
-        nullable: false
-        custom: []
-      'slider_subtitles_second.*':
-        name: 'slider_subtitles_second.*'
-        description: 'nullable Array of subtitles for second slider'
-        required: false
-        example: vitae
-        type: string
-        enumValues: []
-        exampleWasSpecified: false
-        nullable: false
-        custom: []
-      'slider_links_second.*':
-        name: 'slider_links_second.*'
-        description: 'nullable Array of links for second slider'
-        required: false
-        example: sunt
-        type: string
-        enumValues: []
-        exampleWasSpecified: false
-        nullable: false
-        custom: []
-      'slider_buttons_second.*':
-        name: 'slider_buttons_second.*'
-        description: 'nullable Array of button texts for second slider'
-        required: false
-        example: dolore
-        type: string
-        enumValues: []
-        exampleWasSpecified: false
-        nullable: false
-        custom: []
-      'slider_images_second.*':
-        name: 'slider_images_second.*'
-        description: 'nullable Array of images for second slider (multipart/form-data)'
-        required: false
-        example: null
-        type: file
-        enumValues: []
-        exampleWasSpecified: false
         nullable: false
         custom: []
     cleanBodyParameters:
-      id: 1
-      banner_title: consequuntur
-      banner_subtitle: non
-      product_category_title: facere
-      product_category_subtitle: eius
-      featured_product_title: illo
-      featured_product_subtitle: saepe
-      new_arrival_title: animi
-      new_arrival_subtitle: et
-      new_product_title: nostrum
-      new_product_subtitle: qui
-      shop_now_title: officiis
-      shop_now_description: cumque
-      shop_now_button_text: rerum
-      shop_now_button_link: molestias
-      about_section_title: neque
-      about_section_text_one_title: incidunt
-      about_section_text_one_content: expedita
-      about_section_text_two_title: eos
-      about_section_text_two_content: sit
-      about_section_text_three_title: nihil
-      about_section_text_three_content: sed
-      slider_data_second_title: ratione
-    fileParameters:
-      header_logo: null
-      banner_image: null
-      banner_image_small: null
-      product_category_image: null
-      featured_product_image: null
-      new_product_image: null
-      new_arrival_image: null
-      shop_now_image: null
-      about_section_image: null
-    responses:
-      -
-        status: 200
-        content: |-
-          {
-            "data": { ,
-            "message": "Home CMS updated successfully",
-            "status": true
-          }
-        headers: []
-        description: ''
-        custom: []
-      -
-        status: 201
-        content: |-
-          {
-            "data": { ,
-            "message": "Home CMS added successfully",
-            "status": true
-          }
-        headers: []
-        description: ''
-        custom: []
-      -
-        status: 201
-        content: |-
-          {
-            "message": "Forbidden",
-            "status": false
-          }
-        headers: []
-        description: ''
-        custom: []
-      -
-        status: 201
-        content: |-
-          {
-            "message": "Validation failed.",
-            "errors": { "field": ["error message"] },
-            "status": false
-          }
-        headers: []
-        description: ''
-        custom: []
-      -
-        status: 201
-        content: |-
-          {
-            "message": "Something went wrong. Please try again later.",
-            "status": false
-          }
-        headers: []
-        description: ''
-        custom: []
-    responseFields: []
-    auth:
-      - headers
-      - Authorization
-      - 'Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJhdWQiOiIxIiwianRpIjoiYzkzNjcyNzVkMDdlMGY5ZTc5N2Y3NzdiMzFkZGFjZmFiMDAzOWI1Y2E1ZGJjZTQ3ZWY3MjIxMjQ3YTNlMTVlOTQ0YjJlNGY2Nzk2Yjc5MDQiLCJpYXQiOjE3NjQwNzcyMjguMDQyOTgyLCJuYmYiOjE3NjQwNzcyMjguMDQyOTgzLCJleHAiOjE3OTU2MTMyMjguMDM1OTI0LCJzdWIiOiIxIiwic2NvcGVzIjpbXX0.d3N3fp6pTh1JxrRcDMwG0gLBsS0qyH4TWMsTpjbf_piH3rdfBj-04fL3inKHvOEGcZeFIFUr23DnEKVxNiHsiRYHpJz55K9Y0v-CRi4x8QxW9TIx9L63A0RaHGK044HKEq01mKy3_0ho-n2y2-s12umW92piu9A40h77UxhBMqfqHcIwwr3g77_lGtE530jLEFTSavVPHNiL2UtPIzjllRhXJO9LqALirv4txTkGiNs-3QfU4Q_suzKeU1esVJS6cOQ_lojFTeB26zq0ulDlVPYwx_ruWGyvqc4HbTwhUtCddXK-4IbXCyCWhqNqtPTRmBgtMyEy8atM6hbVFjYHDjlefUP0i6ejKmVaiEiIjTbgL2HotoGsRob1awoP5p9uYsixd0-G1OEGlPPL_wv9tlXwFBiU0M4iJnqaYZt6Cdf_MP79bd3ZcDrOaqF0ALTj6sopGau6Ml2zWr6PqChHl7G9ApnDPY_sVqSjovoDeKUhMVgNwogQCqdnbP508CYoKQtrHItBewCDmjMfekZllaMeWpU_3bnsPhfRQaL6R53uAFz5P2I_CtPcdY9W_HCBHHvTNnyrrPQhjBD_WEeT6-pm681nPKckz2qJCuHelQvb_T55SEIpq2QXw-hkMXGrXLF7imLsodNlURRKgIQLpXqdHv9EU2V5A7alUTbdDRQ'
-    controller: null
-    method: null
-    route: null
-    custom: []
-  -
-    httpMethods:
-      - POST
-    uri: api/v3/user/estore-cms/footer/update
-    metadata:
-      groupName: 'Estore CMS'
-      groupDescription: ''
-      subgroup: ''
-      subgroupDescription: ''
-      title: 'Footer CMS Update'
-      description: 'Create or update the E-commerce footer CMS details.'
-      authenticated: true
-      custom: []
-    headers:
-      Authorization: 'Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJhdWQiOiIxIiwianRpIjoiYzkzNjcyNzVkMDdlMGY5ZTc5N2Y3NzdiMzFkZGFjZmFiMDAzOWI1Y2E1ZGJjZTQ3ZWY3MjIxMjQ3YTNlMTVlOTQ0YjJlNGY2Nzk2Yjc5MDQiLCJpYXQiOjE3NjQwNzcyMjguMDQyOTgyLCJuYmYiOjE3NjQwNzcyMjguMDQyOTgzLCJleHAiOjE3OTU2MTMyMjguMDM1OTI0LCJzdWIiOiIxIiwic2NvcGVzIjpbXX0.d3N3fp6pTh1JxrRcDMwG0gLBsS0qyH4TWMsTpjbf_piH3rdfBj-04fL3inKHvOEGcZeFIFUr23DnEKVxNiHsiRYHpJz55K9Y0v-CRi4x8QxW9TIx9L63A0RaHGK044HKEq01mKy3_0ho-n2y2-s12umW92piu9A40h77UxhBMqfqHcIwwr3g77_lGtE530jLEFTSavVPHNiL2UtPIzjllRhXJO9LqALirv4txTkGiNs-3QfU4Q_suzKeU1esVJS6cOQ_lojFTeB26zq0ulDlVPYwx_ruWGyvqc4HbTwhUtCddXK-4IbXCyCWhqNqtPTRmBgtMyEy8atM6hbVFjYHDjlefUP0i6ejKmVaiEiIjTbgL2HotoGsRob1awoP5p9uYsixd0-G1OEGlPPL_wv9tlXwFBiU0M4iJnqaYZt6Cdf_MP79bd3ZcDrOaqF0ALTj6sopGau6Ml2zWr6PqChHl7G9ApnDPY_sVqSjovoDeKUhMVgNwogQCqdnbP508CYoKQtrHItBewCDmjMfekZllaMeWpU_3bnsPhfRQaL6R53uAFz5P2I_CtPcdY9W_HCBHHvTNnyrrPQhjBD_WEeT6-pm681nPKckz2qJCuHelQvb_T55SEIpq2QXw-hkMXGrXLF7imLsodNlURRKgIQLpXqdHv9EU2V5A7alUTbdDRQ'
-      Content-Type: multipart/form-data
-      Accept: application/json
-    urlParameters: []
-    cleanUrlParameters: []
-    queryParameters: []
-    cleanQueryParameters: []
-    bodyParameters:
-      footer_logo:
-        name: footer_logo
-        description: 'nullable The footer logo image (jpeg, png, jpg, gif, svg).'
-        required: false
-        example: null
-        type: file
-        enumValues: []
-        exampleWasSpecified: false
-        nullable: true
-        custom: []
-      footer_title:
-        name: footer_title
-        description: 'Footer title.'
-        required: true
-        example: '"My Store"'
-        type: string
-        enumValues: []
-        exampleWasSpecified: true
-        nullable: false
-        custom: []
-      footer_newsletter_title:
-        name: footer_newsletter_title
-        description: 'Newsletter title.'
-        required: true
-        example: '"Subscribe"'
-        type: string
-        enumValues: []
-        exampleWasSpecified: true
-        nullable: false
-        custom: []
-      footer_address_title:
-        name: footer_address_title
-        description: 'Address title.'
-        required: true
-        example: '"Our Address"'
-        type: string
-        enumValues: []
-        exampleWasSpecified: true
-        nullable: false
-        custom: []
-      footer_address:
-        name: footer_address
-        description: Address.
-        required: true
-        example: '"123 Street, City"'
-        type: string
-        enumValues: []
-        exampleWasSpecified: true
-        nullable: false
-        custom: []
-      footer_phone_number:
-        name: footer_phone_number
-        description: 'Phone number.'
-        required: true
-        example: '"+1 123-456-7890"'
-        type: string
-        enumValues: []
-        exampleWasSpecified: true
-        nullable: false
-        custom: []
-      footer_email:
-        name: footer_email
-        description: Email.
-        required: true
-        example: '"info@example.com"'
-        type: string
-        enumValues: []
-        exampleWasSpecified: true
-        nullable: false
-        custom: []
-      footer_copywrite_text:
-        name: footer_copywrite_text
-        description: 'Copywrite text.'
-        required: true
-        example: '"© 2025 My Store"'
-        type: string
-        enumValues: []
-        exampleWasSpecified: true
-        nullable: false
-        custom: []
-      footer_facebook_link:
-        name: footer_facebook_link
-        description: 'nullable Facebook URL.'
-        required: false
-        example: '"https://facebook.com/mystore"'
-        type: string
-        enumValues: []
-        exampleWasSpecified: true
-        nullable: true
-        custom: []
-      footer_twitter_link:
-        name: footer_twitter_link
-        description: 'nullable Twitter URL.'
-        required: false
-        example: '"https://twitter.com/mystore"'
-        type: string
-        enumValues: []
-        exampleWasSpecified: true
-        nullable: true
-        custom: []
-      footer_instagram_link:
-        name: footer_instagram_link
-        description: 'nullable Instagram URL.'
-        required: false
-        example: '"https://instagram.com/mystore"'
-        type: string
-        enumValues: []
-        exampleWasSpecified: true
-        nullable: true
-        custom: []
-      footer_youtube_link:
-        name: footer_youtube_link
-        description: 'nullable YouTube URL.'
-        required: false
-        example: '"https://youtube.com/mystore"'
-        type: string
-        enumValues: []
-        exampleWasSpecified: true
-        nullable: true
-        custom: []
-      id:
-        name: id
-        description: 'optional The ID of the footer CMS to update. Leave empty to create a new one.'
-        required: false
-        example: 1
-        type: integer
-        enumValues: []
-        exampleWasSpecified: true
-        nullable: false
-        custom: []
-    cleanBodyParameters:
-      footer_title: '"My Store"'
-      footer_newsletter_title: '"Subscribe"'
-      footer_address_title: '"Our Address"'
-      footer_address: '"123 Street, City"'
-      footer_phone_number: '"+1 123-456-7890"'
-      footer_email: '"info@example.com"'
-      footer_copywrite_text: '"© 2025 My Store"'
-      footer_facebook_link: '"https://facebook.com/mystore"'
-      footer_twitter_link: '"https://twitter.com/mystore"'
-      footer_instagram_link: '"https://instagram.com/mystore"'
-      footer_youtube_link: '"https://youtube.com/mystore"'
-      id: 1
-    fileParameters:
-      footer_logo: null
-    responses:
-      -
-        status: 200
-        content: |-
-          {
-            "data": {
-              "id": 1,
-              "footer_title": "My Store",
-              "footer_logo": "https://example.com/storage/ecom_cms/logo.png"
-            },
-            "message": "Footer CMS updated successfully.",
-            "status": true
-          }
-        headers: []
-        description: ''
-        custom: []
-      -
-        status: 201
-        content: |-
-          {
-            "message": "Validation failed.",
-            "errors": {
-              "footer_title": ["The footer title field is required."]
-            },
-            "status": false
-          }
-        headers: []
-        description: ''
-        custom: []
-      -
-        status: 201
-        content: |-
-          {
-            "message": "You do not have permission to access this resource.",
-            "status": false
-          }
-        headers: []
-        description: ''
-        custom: []
-      -
-        status: 201
-        content: |-
-          {
-            "message": "Something went wrong. Please try again later.",
-            "status": false
-          }
-        headers: []
-        description: ''
-        custom: []
-    responseFields: []
-    auth:
-      - headers
-      - Authorization
-      - 'Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJhdWQiOiIxIiwianRpIjoiYzkzNjcyNzVkMDdlMGY5ZTc5N2Y3NzdiMzFkZGFjZmFiMDAzOWI1Y2E1ZGJjZTQ3ZWY3MjIxMjQ3YTNlMTVlOTQ0YjJlNGY2Nzk2Yjc5MDQiLCJpYXQiOjE3NjQwNzcyMjguMDQyOTgyLCJuYmYiOjE3NjQwNzcyMjguMDQyOTgzLCJleHAiOjE3OTU2MTMyMjguMDM1OTI0LCJzdWIiOiIxIiwic2NvcGVzIjpbXX0.d3N3fp6pTh1JxrRcDMwG0gLBsS0qyH4TWMsTpjbf_piH3rdfBj-04fL3inKHvOEGcZeFIFUr23DnEKVxNiHsiRYHpJz55K9Y0v-CRi4x8QxW9TIx9L63A0RaHGK044HKEq01mKy3_0ho-n2y2-s12umW92piu9A40h77UxhBMqfqHcIwwr3g77_lGtE530jLEFTSavVPHNiL2UtPIzjllRhXJO9LqALirv4txTkGiNs-3QfU4Q_suzKeU1esVJS6cOQ_lojFTeB26zq0ulDlVPYwx_ruWGyvqc4HbTwhUtCddXK-4IbXCyCWhqNqtPTRmBgtMyEy8atM6hbVFjYHDjlefUP0i6ejKmVaiEiIjTbgL2HotoGsRob1awoP5p9uYsixd0-G1OEGlPPL_wv9tlXwFBiU0M4iJnqaYZt6Cdf_MP79bd3ZcDrOaqF0ALTj6sopGau6Ml2zWr6PqChHl7G9ApnDPY_sVqSjovoDeKUhMVgNwogQCqdnbP508CYoKQtrHItBewCDmjMfekZllaMeWpU_3bnsPhfRQaL6R53uAFz5P2I_CtPcdY9W_HCBHHvTNnyrrPQhjBD_WEeT6-pm681nPKckz2qJCuHelQvb_T55SEIpq2QXw-hkMXGrXLF7imLsodNlURRKgIQLpXqdHv9EU2V5A7alUTbdDRQ'
-    controller: null
-    method: null
-    route: null
-    custom: []
-  -
-    httpMethods:
-      - GET
-    uri: api/v3/user/estore-cms/contact
-    metadata:
-      groupName: 'Estore CMS'
-      groupDescription: ''
-      subgroup: ''
-      subgroupDescription: ''
-      title: 'Get Contact CMS'
-      description: 'Fetch the latest Contact CMS record.'
-      authenticated: true
-      custom: []
-    headers:
-      Authorization: 'Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJhdWQiOiIxIiwianRpIjoiYzkzNjcyNzVkMDdlMGY5ZTc5N2Y3NzdiMzFkZGFjZmFiMDAzOWI1Y2E1ZGJjZTQ3ZWY3MjIxMjQ3YTNlMTVlOTQ0YjJlNGY2Nzk2Yjc5MDQiLCJpYXQiOjE3NjQwNzcyMjguMDQyOTgyLCJuYmYiOjE3NjQwNzcyMjguMDQyOTgzLCJleHAiOjE3OTU2MTMyMjguMDM1OTI0LCJzdWIiOiIxIiwic2NvcGVzIjpbXX0.d3N3fp6pTh1JxrRcDMwG0gLBsS0qyH4TWMsTpjbf_piH3rdfBj-04fL3inKHvOEGcZeFIFUr23DnEKVxNiHsiRYHpJz55K9Y0v-CRi4x8QxW9TIx9L63A0RaHGK044HKEq01mKy3_0ho-n2y2-s12umW92piu9A40h77UxhBMqfqHcIwwr3g77_lGtE530jLEFTSavVPHNiL2UtPIzjllRhXJO9LqALirv4txTkGiNs-3QfU4Q_suzKeU1esVJS6cOQ_lojFTeB26zq0ulDlVPYwx_ruWGyvqc4HbTwhUtCddXK-4IbXCyCWhqNqtPTRmBgtMyEy8atM6hbVFjYHDjlefUP0i6ejKmVaiEiIjTbgL2HotoGsRob1awoP5p9uYsixd0-G1OEGlPPL_wv9tlXwFBiU0M4iJnqaYZt6Cdf_MP79bd3ZcDrOaqF0ALTj6sopGau6Ml2zWr6PqChHl7G9ApnDPY_sVqSjovoDeKUhMVgNwogQCqdnbP508CYoKQtrHItBewCDmjMfekZllaMeWpU_3bnsPhfRQaL6R53uAFz5P2I_CtPcdY9W_HCBHHvTNnyrrPQhjBD_WEeT6-pm681nPKckz2qJCuHelQvb_T55SEIpq2QXw-hkMXGrXLF7imLsodNlURRKgIQLpXqdHv9EU2V5A7alUTbdDRQ'
-      Content-Type: application/json
-      Accept: application/json
-    urlParameters: []
-    cleanUrlParameters: []
-    queryParameters: []
-    cleanQueryParameters: []
-    bodyParameters: []
-    cleanBodyParameters: []
+      id: et
     fileParameters: []
     responses:
       -
         status: 200
         content: |-
           {
-            "data": {
-              "id": 5,
-              "banner_title": "Contact Us",
-              "card_one_title": "Support",
-              "card_one_content": "...",
-              "card_two_title": "Sales",
-              "card_two_content": "...",
-              "card_three_title": "Marketing",
-              "card_three_content": "...",
-              "form_title": "Get in Touch",
-              "form_subtitle": "We are here to help",
-              "call_section_title": "Call Us",
-              "call_section_content": "...",
-              "follow_us_title": "Follow Us",
-              "map_iframe_src": "<iframe ...></iframe>",
-              "banner_image": "ecom_cms/banner_image.jpg",
-              "created_at": "2025-10-17T10:00:00Z",
-              "updated_at": "2025-10-17T12:00:00Z"
-            },
+            "message": "Color deleted successfully.",
             "status": true
           }
         headers: []
@@ -1366,248 +467,7 @@ endpoints:
         status: 201
         content: |-
           {
-            "message": "No Contact CMS record found.",
-            "status": false
-          }
-        headers: []
-        description: ''
-        custom: []
-      -
-        status: 201
-        content: |-
-          {
-            "message": "Something went wrong. Please try again later.",
-            "status": false
-          }
-        headers: []
-        description: ''
-        custom: []
-    responseFields: []
-    auth:
-      - headers
-      - Authorization
-      - 'Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJhdWQiOiIxIiwianRpIjoiYzkzNjcyNzVkMDdlMGY5ZTc5N2Y3NzdiMzFkZGFjZmFiMDAzOWI1Y2E1ZGJjZTQ3ZWY3MjIxMjQ3YTNlMTVlOTQ0YjJlNGY2Nzk2Yjc5MDQiLCJpYXQiOjE3NjQwNzcyMjguMDQyOTgyLCJuYmYiOjE3NjQwNzcyMjguMDQyOTgzLCJleHAiOjE3OTU2MTMyMjguMDM1OTI0LCJzdWIiOiIxIiwic2NvcGVzIjpbXX0.d3N3fp6pTh1JxrRcDMwG0gLBsS0qyH4TWMsTpjbf_piH3rdfBj-04fL3inKHvOEGcZeFIFUr23DnEKVxNiHsiRYHpJz55K9Y0v-CRi4x8QxW9TIx9L63A0RaHGK044HKEq01mKy3_0ho-n2y2-s12umW92piu9A40h77UxhBMqfqHcIwwr3g77_lGtE530jLEFTSavVPHNiL2UtPIzjllRhXJO9LqALirv4txTkGiNs-3QfU4Q_suzKeU1esVJS6cOQ_lojFTeB26zq0ulDlVPYwx_ruWGyvqc4HbTwhUtCddXK-4IbXCyCWhqNqtPTRmBgtMyEy8atM6hbVFjYHDjlefUP0i6ejKmVaiEiIjTbgL2HotoGsRob1awoP5p9uYsixd0-G1OEGlPPL_wv9tlXwFBiU0M4iJnqaYZt6Cdf_MP79bd3ZcDrOaqF0ALTj6sopGau6Ml2zWr6PqChHl7G9ApnDPY_sVqSjovoDeKUhMVgNwogQCqdnbP508CYoKQtrHItBewCDmjMfekZllaMeWpU_3bnsPhfRQaL6R53uAFz5P2I_CtPcdY9W_HCBHHvTNnyrrPQhjBD_WEeT6-pm681nPKckz2qJCuHelQvb_T55SEIpq2QXw-hkMXGrXLF7imLsodNlURRKgIQLpXqdHv9EU2V5A7alUTbdDRQ'
-    controller: null
-    method: null
-    route: null
-    custom: []
-  -
-    httpMethods:
-      - POST
-    uri: api/v3/user/estore-cms/contact/update
-    metadata:
-      groupName: 'Estore CMS'
-      groupDescription: ''
-      subgroup: ''
-      subgroupDescription: ''
-      title: 'Contact CMS Update'
-      description: 'Create or update the Contact CMS section.'
-      authenticated: true
-      custom: []
-    headers:
-      Authorization: 'Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJhdWQiOiIxIiwianRpIjoiYzkzNjcyNzVkMDdlMGY5ZTc5N2Y3NzdiMzFkZGFjZmFiMDAzOWI1Y2E1ZGJjZTQ3ZWY3MjIxMjQ3YTNlMTVlOTQ0YjJlNGY2Nzk2Yjc5MDQiLCJpYXQiOjE3NjQwNzcyMjguMDQyOTgyLCJuYmYiOjE3NjQwNzcyMjguMDQyOTgzLCJleHAiOjE3OTU2MTMyMjguMDM1OTI0LCJzdWIiOiIxIiwic2NvcGVzIjpbXX0.d3N3fp6pTh1JxrRcDMwG0gLBsS0qyH4TWMsTpjbf_piH3rdfBj-04fL3inKHvOEGcZeFIFUr23DnEKVxNiHsiRYHpJz55K9Y0v-CRi4x8QxW9TIx9L63A0RaHGK044HKEq01mKy3_0ho-n2y2-s12umW92piu9A40h77UxhBMqfqHcIwwr3g77_lGtE530jLEFTSavVPHNiL2UtPIzjllRhXJO9LqALirv4txTkGiNs-3QfU4Q_suzKeU1esVJS6cOQ_lojFTeB26zq0ulDlVPYwx_ruWGyvqc4HbTwhUtCddXK-4IbXCyCWhqNqtPTRmBgtMyEy8atM6hbVFjYHDjlefUP0i6ejKmVaiEiIjTbgL2HotoGsRob1awoP5p9uYsixd0-G1OEGlPPL_wv9tlXwFBiU0M4iJnqaYZt6Cdf_MP79bd3ZcDrOaqF0ALTj6sopGau6Ml2zWr6PqChHl7G9ApnDPY_sVqSjovoDeKUhMVgNwogQCqdnbP508CYoKQtrHItBewCDmjMfekZllaMeWpU_3bnsPhfRQaL6R53uAFz5P2I_CtPcdY9W_HCBHHvTNnyrrPQhjBD_WEeT6-pm681nPKckz2qJCuHelQvb_T55SEIpq2QXw-hkMXGrXLF7imLsodNlURRKgIQLpXqdHv9EU2V5A7alUTbdDRQ'
-      Content-Type: multipart/form-data
-      Accept: application/json
-    urlParameters: []
-    cleanUrlParameters: []
-    queryParameters: []
-    cleanQueryParameters: []
-    bodyParameters:
-      banner_image:
-        name: banner_image
-        description: 'optional Banner image (jpeg, png, jpg, gif, svg)'
-        required: false
-        example: null
-        type: file
-        enumValues: []
-        exampleWasSpecified: false
-        nullable: true
-        custom: []
-      banner_title:
-        name: banner_title
-        description: 'optional Banner title.'
-        required: false
-        example: '"Contact Us"'
-        type: string
-        enumValues: []
-        exampleWasSpecified: true
-        nullable: true
-        custom: []
-      card_one_title:
-        name: card_one_title
-        description: 'optional Card 1 title.'
-        required: false
-        example: '"Support"'
-        type: string
-        enumValues: []
-        exampleWasSpecified: true
-        nullable: true
-        custom: []
-      card_one_content:
-        name: card_one_content
-        description: 'optional Card 1 content.'
-        required: false
-        example: tenetur
-        type: string
-        enumValues: []
-        exampleWasSpecified: false
-        nullable: true
-        custom: []
-      card_two_title:
-        name: card_two_title
-        description: 'optional Card 2 title.'
-        required: false
-        example: quis
-        type: string
-        enumValues: []
-        exampleWasSpecified: false
-        nullable: true
-        custom: []
-      card_two_content:
-        name: card_two_content
-        description: 'optional Card 2 content.'
-        required: false
-        example: qui
-        type: string
-        enumValues: []
-        exampleWasSpecified: false
-        nullable: true
-        custom: []
-      card_three_title:
-        name: card_three_title
-        description: 'optional Card 3 title.'
-        required: false
-        example: ad
-        type: string
-        enumValues: []
-        exampleWasSpecified: false
-        nullable: true
-        custom: []
-      card_three_content:
-        name: card_three_content
-        description: 'optional Card 3 content.'
-        required: false
-        example: sunt
-        type: string
-        enumValues: []
-        exampleWasSpecified: false
-        nullable: true
-        custom: []
-      form_title:
-        name: form_title
-        description: 'optional Form title.'
-        required: false
-        example: ullam
-        type: string
-        enumValues: []
-        exampleWasSpecified: false
-        nullable: true
-        custom: []
-      form_subtitle:
-        name: form_subtitle
-        description: 'optional Form subtitle.'
-        required: false
-        example: reprehenderit
-        type: string
-        enumValues: []
-        exampleWasSpecified: false
-        nullable: true
-        custom: []
-      call_section_title:
-        name: call_section_title
-        description: 'optional Call section title.'
-        required: false
-        example: fugit
-        type: string
-        enumValues: []
-        exampleWasSpecified: false
-        nullable: true
-        custom: []
-      call_section_content:
-        name: call_section_content
-        description: 'optional Call section content.'
-        required: false
-        example: impedit
-        type: string
-        enumValues: []
-        exampleWasSpecified: false
-        nullable: true
-        custom: []
-      follow_us_title:
-        name: follow_us_title
-        description: 'optional Follow us title.'
-        required: false
-        example: optio
-        type: string
-        enumValues: []
-        exampleWasSpecified: false
-        nullable: true
-        custom: []
-      map_iframe_src:
-        name: map_iframe_src
-        description: 'optional Map iframe src.'
-        required: false
-        example: totam
-        type: string
-        enumValues: []
-        exampleWasSpecified: false
-        nullable: true
-        custom: []
-      id:
-        name: id
-        description: 'optional The ID of the CMS record to update.'
-        required: false
-        example: 1
-        type: integer
-        enumValues: []
-        exampleWasSpecified: true
-        nullable: false
-        custom: []
-    cleanBodyParameters:
-      banner_title: '"Contact Us"'
-      card_one_title: '"Support"'
-      card_one_content: tenetur
-      card_two_title: quis
-      card_two_content: qui
-      card_three_title: ad
-      card_three_content: sunt
-      form_title: ullam
-      form_subtitle: reprehenderit
-      call_section_title: fugit
-      call_section_content: impedit
-      follow_us_title: optio
-      map_iframe_src: totam
-      id: 1
-    fileParameters:
-      banner_image: null
-    responses:
-      -
-        status: 200
-        content: |-
-          {
-            "data": {
-              "id": 1,
-              "banner_title": "Contact Us",
-              "card_one_title": "Support",
-              "card_one_content": "...",
-              "banner_image": "ecom_cms/banner_image.jpg",
-              "...": "..."
-            },
-            "message": "Contact CMS updated successfully",
-            "status": true
-          }
-        headers: []
-        description: ''
-        custom: []
-      -
-        status: 201
-        content: |-
-          {
-            "message": "Validation failed.",
-            "errors": {
-              "banner_image": ["The banner image must be an image file."],
-              "banner_title": ["The banner title may not be greater than 255 characters."]
-            },
+            "message": "Color not found.",
             "status": false
           }
         headers: []

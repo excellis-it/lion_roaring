@@ -78,6 +78,23 @@ Route::prefix('v3')->middleware(['userActivity'])->group(function () {
         Route::get('/categories/menu', [EstoreController::class, 'menuCategories']);
         // Newsletter subscribe (public)
         Route::post('/newsletter', [EstoreController::class, 'newsletterStore']);
+        // Products list (all-products)
+        Route::get('/all-products', [EstoreProductController::class, 'products']);
+        // Product details
+        Route::get('/product/{slug}', [EstoreProductController::class, 'productDetails']);
+        // Products filter
+        Route::get('/products-filter', [EstoreProductController::class, 'productsFilter']);
+        // Live search
+        Route::get('/live-search', [EstoreProductController::class, 'liveSearch']);
+
+        // Cart related (public via session or authenticated via token)
+        Route::get('/cart-count', [EstoreProductController::class, 'cartCount']);
+        Route::get('/cart-list', [EstoreProductController::class, 'cartList']);
+        Route::post('/add-to-cart', [EstoreProductController::class, 'addToCart']);
+        Route::post('/remove-from-cart', [EstoreProductController::class, 'removeFromCart']);
+        Route::post('/update-cart', [EstoreProductController::class, 'updateCart']);
+        Route::post('/clear-cart', [EstoreProductController::class, 'clearCart']);
+        Route::get('/check-product-in-cart', [EstoreProductController::class, 'checkProductInCart']);
     });
 
 
