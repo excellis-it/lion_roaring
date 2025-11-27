@@ -33,8 +33,11 @@ use App\Http\Controllers\Api\PolicyGuidenceController;
 use App\Http\Controllers\Api\RolePermissionController;
 use App\Http\Controllers\Api\EcclesiaController;
 use App\Http\Controllers\Api\EstoreCmsController;
+use App\Http\Controllers\Api\EstoreController;
 use App\Http\Controllers\Api\FCMController;
 use App\Http\Controllers\Api\SizeController;
+use App\Http\Controllers\Api\PrivateCollaborationController;
+use App\Http\Controllers\Api\UserActivityController;
 
 /*
 |--------------------------------------------------------------------------
@@ -54,7 +57,7 @@ use App\Http\Controllers\Api\SizeController;
 Route::prefix('v3')->middleware(['userActivity'])->group(function () {
     Route::post('contact-us', [ContactUsController::class, 'store']);
 
-    Route::prefix('e-store')->group(function () {
+    Route::prefix('e-learning')->group(function () {
         // Route::get('/all-products', [EstoreProductController::class, 'products']);
         Route::get('/store-home', [ElearningController::class, 'storeHome']);
         Route::get('/category-products/{slug}', [ElearningController::class, 'productsByCategorySlug']);
@@ -63,6 +66,36 @@ Route::prefix('v3')->middleware(['userActivity'])->group(function () {
     });
 
 
+    // Public E-Store (Ecom) APIs — Home, header/footer, menu, newsletter
+    Route::prefix('e-store')->group(function () {
+        // Public home endpoint that returns home CMS content and featured/new products
+        Route::get('/store-home', [EstoreController::class, 'storeHome']);
+        // Header (logo & menu categories)
+        Route::get('/header', [EstoreController::class, 'header']);
+        // Footer CMS
+        Route::get('/footer', [EstoreController::class, 'footer']);
+        // Category menu (nested categories for e-store nav)
+        Route::get('/categories/menu', [EstoreController::class, 'menuCategories']);
+        // Newsletter subscribe (public)
+        Route::post('/newsletter', [EstoreController::class, 'newsletterStore']);
+        // Products list (all-products)
+        Route::get('/all-products', [EstoreProductController::class, 'products']);
+        // Product details
+        Route::get('/product/{slug}', [EstoreProductController::class, 'productDetails']);
+        // Products filter
+        Route::get('/products-filter', [EstoreProductController::class, 'productsFilter']);
+        // Live search
+        Route::get('/live-search', [EstoreProductController::class, 'liveSearch']);
+
+        // Cart related (public via session or authenticated via token)
+        Route::get('/cart-count', [EstoreProductController::class, 'cartCount']);
+        Route::get('/cart-list', [EstoreProductController::class, 'cartList']);
+        Route::post('/add-to-cart', [EstoreProductController::class, 'addToCart']);
+        Route::post('/remove-from-cart', [EstoreProductController::class, 'removeFromCart']);
+        Route::post('/update-cart', [EstoreProductController::class, 'updateCart']);
+        Route::post('/clear-cart', [EstoreProductController::class, 'clearCart']);
+        Route::get('/check-product-in-cart', [EstoreProductController::class, 'checkProductInCart']);
+    });
 
 
     Route::prefix('cms')->group(function () {
@@ -90,6 +123,7 @@ Route::prefix('v3')->middleware(['userActivity'])->group(function () {
         // site settings
         Route::get('site-settings', [CmsController::class, 'siteSettings']);
     });
+
     // donation
     Route::post('donation', [DonationController::class, 'donation']);
     Route::post('country-list', [DonationController::class, 'countryList']);
@@ -133,6 +167,8 @@ Route::prefix('v3')->middleware(['userActivity'])->group(function () {
         Route::post('update-fcm-token', [ProfileController::class, 'updateFcmToken']);
 
         Route::post('logout', [AuthController::class, 'logout']);
+
+
 
         Route::prefix('sizes')->group(function () {
             Route::get('/', [SizeController::class, 'index']);
@@ -310,7 +346,32 @@ Route::prefix('v3')->middleware(['userActivity'])->group(function () {
             Route::get('/view/{id}', [MeetingController::class, 'show']);
             Route::post('/edit/{id}', [MeetingController::class, 'update']);
             Route::post('/delete/{id}', [MeetingController::class, 'destroy']);
+            // Zoom SDK signature for API clients
+            Route::post('/zoom-signature', [MeetingController::class, 'zoomSignature']);
             Route::get('/meetings-calender-fetch-data', [MeetingController::class, 'fetchCalenderData']);
+        });
+
+        // User activity APIs
+        Route::prefix('user-activity')->group(function () {
+            // Log an activity (requires auth)
+            Route::post('/log', [UserActivityController::class, 'log']);
+            // List activities (requires 'Manage User Activity' permission)
+            Route::post('/list', [UserActivityController::class, 'list']);
+            // Summary endpoints
+            Route::post('/by-country', [UserActivityController::class, 'byCountry']);
+            Route::post('/by-user', [UserActivityController::class, 'byUser']);
+            Route::post('/by-type', [UserActivityController::class, 'byType']);
+        });
+
+        Route::prefix('private-collaborations')->group(function () {
+            Route::get('/load', [PrivateCollaborationController::class, 'index']);
+            Route::post('/store', [PrivateCollaborationController::class, 'store']);
+            Route::get('/view/{id}', [PrivateCollaborationController::class, 'show']);
+            Route::post('/edit/{id}', [PrivateCollaborationController::class, 'update']);
+            Route::post('/delete/{id}', [PrivateCollaborationController::class, 'destroy']);
+            Route::post('/accept-invitation/{id}', [PrivateCollaborationController::class, 'acceptInvitation']);
+            Route::post('/zoom-signature', [PrivateCollaborationController::class, 'zoomSignature']);
+            Route::get('/private-collaborations-calender-fetch-data', [PrivateCollaborationController::class, 'fetchCalenderData']);
         });
 
         Route::prefix('events')->group(function () {
@@ -392,5 +453,15 @@ Route::prefix('v3')->middleware(['userActivity'])->group(function () {
             Route::post('remove-token', [FCMController::class, 'removeToken']);
             Route::post('test-notification', [FCMController::class, 'sendTestNotification']);
         });
+
+
+        // Estore Ecom user routes
+        // Update authenticated user's location by lat & lng (e-store)
+        Route::post('e-store/update-location', [EstoreController::class, 'updateLocation']);
+
+
+
+
+        //
     });
 });
