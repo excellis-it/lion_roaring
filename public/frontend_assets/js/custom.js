@@ -170,6 +170,40 @@ $(".gallery_slider").slick({
     ],
 });
 
+
+$(".reviews_slider").slick({
+    autoplay: true,
+    speed: 2000,
+    lazyLoad: "progressive",
+    arrows: false,
+    dots: false,
+    slidesToShow: 1,
+    slidesToScroll: 1,
+    centerMode: true,
+    prevArrow:
+        '<div class="slick-nav prev-arrow"><i></i><svg><use xlink:href="#circle"></svg></div>',
+    nextArrow:
+        '<div class="slick-nav next-arrow"><i></i><svg><use xlink:href="#circle"></svg></div>',
+    responsive: [
+        {
+            breakpoint: 1025,
+            settings: {
+                slidesToShow: 5,
+                slidesToScroll: 1,
+                dots: false,
+            },
+        },
+        {
+            breakpoint: 768,
+            settings: {
+                slidesToShow: 1,
+                slidesToScroll: 1,
+                dots: false,
+            },
+        },
+    ],
+});
+
 var timeout;
 
 function hide() {
