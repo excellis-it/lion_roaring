@@ -12,7 +12,10 @@
                         </a>
                     @endif
                     @if (auth()->user()->can('Download Policy'))
-                        <a href="{{ route('policy-guidence.download', $policy->id) }}" class="edit_icon me-2">
+                        <a href="{{ route('policy-guidence.download', $policy->id) }}"
+                            class="edit_icon me-2 file-download"
+                            data-download-url="{{ route('policy-guidence.download', $policy->id) }}"
+                            data-file-name="{{ $policy->file_name }}.{{ $policy->file_extension }}">
                             <i class="fa-solid fa-download"></i>
                         </a>
                     @endif

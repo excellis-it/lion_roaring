@@ -19,15 +19,15 @@ $(document).ready(function () {
 
         // Smooth scroll to user list section (if it exists)
         if ($userListSection.length) {
-            $("html, body").animate({
-                scrollTop: $userListSection.offset().top
-            }, 600); // 600ms = smooth scroll speed
+            $("html, body").animate(
+                {
+                    scrollTop: $userListSection.offset().top,
+                },
+                600
+            ); // 600ms = smooth scroll speed
         }
     });
 });
-
-
-
 
 function toggleTheme(a) {
     $(".preloader").show(),
@@ -46,6 +46,156 @@ $(function () {
             .map(function (a) {
                 return new bootstrap.Popover(a);
             });
+    // Download with progress - global handler
+    $(document).on("click", "a.file-download", function (e) {
+        e.preventDefault();
+        var $link = $(this);
+        var url = $link.data("download-url") || $link.attr("href");
+        var fileName =
+            $link.data("file-name") || url.split("/").pop() || "file";
+        if (!url) return (window.location.href = $link.attr("href"));
+
+        var modalEl = document.getElementById("downloadProgressModal");
+        var modal = bootstrap.Modal.getOrCreateInstance(modalEl);
+        $("#downloadFileName").text(fileName);
+        $("#downloadProgressModal .progress-bar")
+            .css("width", "0%")
+            .attr("aria-valuenow", 0)
+            .text("0%");
+        modal.show();
+
+        var xhr = new XMLHttpRequest();
+        xhr.open("GET", url, true);
+        xhr.responseType = "blob";
+        // store trigger element for accessibility focus restore
+        var triggerElement = $link.get(0);
+
+        xhr.onprogress = function (e) {
+            if (e.lengthComputable) {
+                var percent = Math.round((e.loaded / e.total) * 100);
+                $("#downloadProgressModal .progress-bar")
+                    .css("width", percent + "%")
+                    .attr("aria-valuenow", percent)
+                    .text(percent + "%");
+            } else {
+                $("#downloadProgressModal .progress-bar")
+                    .css("width", "50%")
+                    .attr("aria-valuenow", 50)
+                    .text("Loading...");
+            }
+        };
+        xhr.onload = function (e) {
+            if (xhr.status >= 200 && xhr.status < 300) {
+                var blob = xhr.response;
+                var downloadUrl = window.URL.createObjectURL(blob);
+                var a = document.createElement("a");
+                a.href = downloadUrl;
+                a.download = fileName;
+                document.body.appendChild(a);
+                a.click();
+                a.remove();
+                window.URL.revokeObjectURL(downloadUrl);
+                try {
+                    if (
+                        triggerElement &&
+                        typeof triggerElement.focus === "function"
+                    ) {
+                        triggerElement.focus();
+                    } else if (
+                        typeof document !== "undefined" &&
+                        document.body
+                    ) {
+                        document.body.focus();
+                    }
+                } catch (err) {
+                    /* ignore */
+                }
+                modal.hide();
+                if (typeof toastr !== "undefined")
+                    toastr.success("Download complete");
+            } else {
+                try {
+                    if (
+                        triggerElement &&
+                        typeof triggerElement.focus === "function"
+                    ) {
+                        triggerElement.focus();
+                    } else if (
+                        typeof document !== "undefined" &&
+                        document.body
+                    ) {
+                        document.body.focus();
+                    }
+                } catch (err) {
+                    /* ignore */
+                }
+                modal.hide();
+                alert("Download failed. Please try again.");
+            }
+        };
+        xhr.onerror = function () {
+            try {
+                if (
+                    triggerElement &&
+                    typeof triggerElement.focus === "function"
+                ) {
+                    triggerElement.focus();
+                } else if (typeof document !== "undefined" && document.body) {
+                    document.body.focus();
+                }
+            } catch (err) {
+                /* ignore */
+            }
+            modal.hide();
+            alert("An error occurred while downloading the file.");
+        };
+        // Ensure the modal will hide once the request fully ends, even if onload didn't fire
+        xhr.onloadend = function () {
+            try {
+                if (
+                    triggerElement &&
+                    typeof triggerElement.focus === "function"
+                ) {
+                    triggerElement.focus();
+                } else if (typeof document !== "undefined" && document.body) {
+                    document.body.focus();
+                }
+            } catch (err) {
+                /* ignore */
+            }
+            try {
+                modal.hide();
+            } catch (err) {
+                /* ignore */
+            }
+        };
+        // Abort support from user
+        $("#downloadCancelBtn")
+            .off("click")
+            .on("click", function () {
+                xhr.abort();
+                try {
+                    if (
+                        triggerElement &&
+                        typeof triggerElement.focus === "function"
+                    ) {
+                        triggerElement.focus();
+                    } else if (
+                        typeof document !== "undefined" &&
+                        document.body
+                    ) {
+                        document.body.focus();
+                    }
+                } catch (err) {
+                    /* ignore */
+                }
+                modal.hide();
+                if (typeof toastr !== "undefined")
+                    toastr.info("Download canceled");
+            });
+        xhr.send();
+    });
+
     $(".minus,.add").on("click", function () {
         var a = $(this).closest("div").find(".qty"),
             e = parseInt(a.val()),
@@ -128,8 +278,3 @@ $(function () {
             $(this).addClass("active-theme");
     }),
     $(".preloader").fadeOut();
-
-
-
-
-

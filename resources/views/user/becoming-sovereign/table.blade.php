@@ -9,22 +9,28 @@
             <td>
                 <div class="d-flex">
                     @if (auth()->user()->can('View Becoming Sovereigns'))
-                    <a href="{{ route('becoming-sovereign.view', $file->id). '?topic=' . ($new_topic ?? '') }}" class="edit_icon me-2">
-                        <i class="fa-solid fa-eye"></i>
-                    </a>
+                        <a href="{{ route('becoming-sovereign.view', $file->id) . '?topic=' . ($new_topic ?? '') }}"
+                            class="edit_icon me-2">
+                            <i class="fa-solid fa-eye"></i>
+                        </a>
                     @endif
                     @if (auth()->user()->can('Edit Becoming Sovereigns'))
-                        <a href="{{ route('becoming-sovereign.edit', $file->id). '?topic=' . ($new_topic ?? '') }}" class="delete_icon me-2">
+                        <a href="{{ route('becoming-sovereign.edit', $file->id) . '?topic=' . ($new_topic ?? '') }}"
+                            class="delete_icon me-2">
                             <i class="fa-solid fa-edit"></i>
                         </a>
                     @endif
                     @if (auth()->user()->can('Download Becoming Sovereigns'))
-                    <a href="{{ route('becoming-sovereign.download', $file->id) }}" class="edit_icon me-2">
-                        <i class="fa-solid fa-download"></i>
-                    </a>
+                        <a href="{{ route('becoming-sovereign.download', $file->id) }}"
+                            class="edit_icon me-2 file-download"
+                            data-download-url="{{ route('becoming-sovereign.download', $file->id) }}"
+                            data-file-name="{{ $file->file_name }}.{{ $file->file_extension }}">
+                            <i class="fa-solid fa-download"></i>
+                        </a>
                     @endif
                     @if (auth()->user()->can('Delete Becoming Sovereigns'))
-                        <a href="javascript:void(0)" id="delete" data-route="{{ route('becoming-sovereign.delete', $file->id). '?topic=' . ($new_topic ?? '') }}"
+                        <a href="javascript:void(0)" id="delete"
+                            data-route="{{ route('becoming-sovereign.delete', $file->id) . '?topic=' . ($new_topic ?? '') }}"
                             class="delete_icon">
                             <i class="fa-solid fa-trash"></i>
                         </a>
