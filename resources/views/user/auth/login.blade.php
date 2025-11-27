@@ -33,6 +33,9 @@
         <link href="https://cdnjs.cloudflare.com/ajax/libs/flag-icon-css/3.5.0/css/flag-icon.min.css" rel="stylesheet"
             type="text/css" />
     </head>
+    @php
+        use App\Helpers\Helper;
+    @endphp
 
     <body style="background: #643271">
         <main>

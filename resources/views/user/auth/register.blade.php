@@ -36,6 +36,9 @@
             }
         </style>
     </head>
+    @php
+        use App\Helpers\Helper;
+    @endphp
 
     <body style="background: #643271">
         <main>
