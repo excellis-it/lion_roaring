@@ -70,6 +70,8 @@
             </div>
         </div>
     </section>
+
+    {{-- project_sec_second --}}
 @endsection
 
 @push('scripts')
