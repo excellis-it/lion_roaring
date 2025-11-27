@@ -39,7 +39,7 @@
         <link rel="stylesheet" type="text/css"
             href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
         <link rel="stylesheet" href="https://rawgit.com/mervick/emojionearea/master/dist/emojionearea.min.css">
-           <link href="https://cdnjs.cloudflare.com/ajax/libs/dropzone/4.3.0/dropzone.css" rel="stylesheet">
+        <link href="https://cdnjs.cloudflare.com/ajax/libs/dropzone/4.3.0/dropzone.css" rel="stylesheet">
         @stack('styles')
     </head>
 
@@ -75,7 +75,7 @@
                     <div class="chatbox-body" id="chatboxBody">
                         <!-- Chat messages go here -->
                         <div class="chatbot-message chatbot-bot-message">
-                            <p>Hi! How can I help you today?</p>
+                            <p>Lion Roaring Help & Support</p>
                         </div>
 
                     </div>
@@ -117,7 +117,7 @@
         <script src="https://cdn.socket.io/4.0.1/socket.io.min.js"></script>
         <script src="{{ asset('user_assets/js/chatbot.js') }}"></script>
         <script src="{{ asset('user_assets/js/inapp-notification.js') }}"></script>
-         <script src="https://cdnjs.cloudflare.com/ajax/libs/dropzone/4.3.0/dropzone.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/dropzone/4.3.0/dropzone.js"></script>
         <script>
             $(function() {
                 $('label:contains("*")').each(function() {
@@ -163,6 +163,7 @@
                 },
                 routes: {
                     chatbotMessage: "{{ route('chatbot.message') }}",
+                    chatbotFaqs: "{{ route('chatbot.faqs') }}",
                     notificationList: "{{ route('notification.list') }}",
                     notificationClear: "{{ route('notification.clear') }}",
 

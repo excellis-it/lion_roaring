@@ -981,4 +981,5 @@ Route::prefix('e-learning')->middleware(['user'])->group(function () {
     Route::get('/page/{slug}', [ElearningCmsController::class, 'cmsPageContent'])->name('e-learning.cms-page');
 });
 
+Route::get('/chatbot/faqs', [ChatBotController::class, 'getFaqs'])->name('chatbot.faqs');
 Route::post('/chatbot', [ChatBotController::class, 'FaqChat'])->name('chatbot.message');
