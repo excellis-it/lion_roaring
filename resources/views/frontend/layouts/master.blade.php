@@ -16,7 +16,8 @@
         <link
             href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400;1,500;1,600;1,700;1,800&amp;display=swap"
             rel="stylesheet">
-        <link href="https://fonts.googleapis.com/css2?family=Figtree:ital,wght@0,300..900;1,300..900&display=swap" rel="stylesheet">
+        <link href="https://fonts.googleapis.com/css2?family=Figtree:ital,wght@0,300..900;1,300..900&display=swap"
+            rel="stylesheet">
         <!-- Bootstrap core CSS -->
         <link href="{{ asset('frontend_assets/css/bootstrap.min.css') }}" rel="stylesheet">
         <link rel="stylesheet" type="text/css"
@@ -611,7 +612,12 @@
                         <div class="modal-body">
                             <div class="agre">
                                 <div class="logo-admin">
-                                    <img src="{{ asset('user_assets/images/logo.png') }}" alt="">
+                                    @if (isset(Helper::getFooter()['footer_logo']))
+                                        <img src="{{ Storage::url(Helper::getFooter()['footer_logo']) }}"
+                                            alt="">
+                                    @else
+                                        <img src="{{ asset('user_assets/images/logo.png') }}" alt="">
+                                    @endif
                                 </div>
                                 <div>
                                     <iframe
@@ -652,7 +658,12 @@
                         <div class="modal-body">
                             <div class="agre">
                                 <div class="logo-admin">
-                                    <img src="{{ asset('user_assets/images/logo.png') }}" alt="">
+                                    @if (isset(Helper::getFooter()['footer_logo']))
+                                        <img src="{{ Storage::url(Helper::getFooter()['footer_logo']) }}"
+                                            alt="">
+                                    @else
+                                        <img src="{{ asset('user_assets/images/logo.png') }}" alt="">
+                                    @endif
                                 </div>
 
                                 <div class="heading_hp">
@@ -694,7 +705,6 @@
         </main>
         <script>
             var register_page_route = "{{ route('register') }}";
-           
         </script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.9.0/slick.min.js"></script>

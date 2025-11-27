@@ -2,7 +2,12 @@
     <div style="background: #7851A9">
         <div class="brand-logo d-flex align-items-center justify-content-between">
             <a href="javascript:void(0);" class="text-nowrap logo-img">
-                <img src="{{ asset('user_assets/images/logo.png') }}" class="dark-logo" alt="">
+
+                @if (isset(Helper::getFooter()['footer_logo']))
+                    <img class="dark-logo" src="{{ Storage::url(Helper::getFooter()['footer_logo']) }}" alt="">
+                @else
+                    <img class="dark-logo" src="{{ asset('user_assets/images/logo.png') }}" alt="">
+                @endif
             </a>
             <div class="close-btn d-lg-none d-block sidebartoggler cursor-pointer" id="sidebarCollapse">
                 <i class="ti ti-x fs-8 text-muted"></i>
