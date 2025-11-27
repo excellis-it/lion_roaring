@@ -30,6 +30,11 @@ class Organization extends Model
 
     public function projects()
     {
-        return $this->hasMany(OrganizationProject::class);
+        return $this->hasMany(OrganizationProject::class)->where('section', 1);
+    }
+
+    public function projectsTwo()
+    {
+        return $this->hasMany(OrganizationProject::class)->where('section', 2);
     }
 }

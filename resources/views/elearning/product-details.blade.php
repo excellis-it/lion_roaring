@@ -66,6 +66,9 @@
                         </div>
                     </div>
                     <div class="title">{{ $product->name }}</div>
+                    @if (isset($product->elearningTopic) && $product->elearningTopic)
+                        <div class="topic mb-2"><strong>Topic:</strong> {{ $product->elearningTopic->topic_name }}</div>
+                    @endif
                     <div class="brief-description">
                         {{ $product->short_description }}
                     </div>
@@ -85,7 +88,9 @@
                         </div>
 
                     </div>
-                    <div class=""><a href="{{isset($product->affiliate_link) ? $product->affiliate_link : 'javascript:void(0);'}}" class="red_btn w-100 text-center"><span> Buy Now</span></a>
+                    <div class=""><a
+                            href="{{ isset($product->affiliate_link) ? $product->affiliate_link : 'javascript:void(0);' }}"
+                            class="red_btn w-100 text-center"><span> Buy Now</span></a>
                     </div>
 
 
@@ -183,7 +188,8 @@
                                         <ul class="star_ul">
                                             @if (Helper::getTotalProductRating($related_product->id))
                                                 @for ($i = 1; $i <= 5; $i++)
-                                                    <li><i class="fa-{{ $i <= Helper::getTotalProductRating($related_product->id) ? 'solid' : 'regular' }} fa-star"></i>
+                                                    <li><i
+                                                            class="fa-{{ $i <= Helper::getTotalProductRating($related_product->id) ? 'solid' : 'regular' }} fa-star"></i>
                                                     </li>
                                                 @endfor
                                             @else
@@ -204,7 +210,8 @@
                                         <span class="price_text">$ {{ $related_product->price }}</span>
                                     </div>
                                     <div class="addelarn">
-                                        <a href="{{ route('e-learning.product-details', $related_product->slug) }}"> view details</a>
+                                        <a href="{{ route('e-learning.product-details', $related_product->slug) }}"> view
+                                            details</a>
                                     </div>
                                 </div>
                             </div>

@@ -299,6 +299,115 @@
                             @endif
                         </div>
                     </div>
+                    {{-- Second Project Section --}}
+                    <div class="sales-report-card-wrap mt-5">
+                        <div class="form-head">
+                            <h4>Project Section Two</h4>
+                        </div>
+
+                        <div class="row">
+                            {{-- project_section_two_title --}}
+                            <div class="col-xl-6 col-md-6">
+                                <div class="form-group-div">
+                                    <div class="form-group">
+                                        <label for="floatingInputValue">Project Section Two Title</label>
+                                        <input type="text" class="form-control" id="floatingInputValue"
+                                            name="project_section_two_title"
+                                            value="{{ isset($organization->project_section_two_title) ? $organization->project_section_two_title : old('project_section_two_title') }}"
+                                            placeholder="Project Section Two Title">
+                                    </div>
+                                </div>
+                            </div>
+                            {{-- project_section_two_sub_title --}}
+                            <div class="col-xl-6 col-md-6">
+                                <div class="form-group-div">
+                                    <div class="form-group">
+                                        <label for="floatingInputValue">Project Section Two Sub Title</label>
+                                        <input type="text" class="form-control" id="floatingInputValue"
+                                            name="project_section_two_sub_title"
+                                            value="{{ isset($organization->project_section_two_sub_title) ? $organization->project_section_two_sub_title : old('project_section_two_sub_title') }}"
+                                            placeholder="Project Section Two Sub Title">
+                                    </div>
+                                </div>
+                            </div>
+                            {{-- project_section_two_description --}}
+                            <div class="col-xl-12 col-md-12">
+                                <div class="form-group-div">
+                                    <div class="form-group">
+                                        <label for="floatingInputValue">Project Section Two Description</label>
+                                        <textarea name="project_section_two_description" id="project_section_two_description" cols="30" rows="10"
+                                            placeholder="Project Section Two Description" class="form-control">{{ isset($organization->project_section_two_description) ? $organization->project_section_two_description : old('project_section_two_description') }}</textarea>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row count-class" id="add-more-two">
+                            @if (isset($organization->projectsTwo) && count($organization->projectsTwo) > 0)
+                                @foreach ($organization->projectsTwo as $key => $item)
+                                    <div class="col-xl-5 col-md-5 mt-4">
+                                        <div class="form-group-div">
+                                            <div class="form-group">
+                                                {{-- meta title --}}
+                                                <label for="floatingInputValue">Card Title*</label>
+                                                <input type="text" class="form-control" id="floatingInputValue"
+                                                    required name="card_title_two[]" value="{{ $item->title }}"
+                                                    placeholder="Card Title">
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-5 mt-4">
+                                        <div class="form-group-div">
+                                            <div class="form-group">
+                                                {{-- banner_title --}}
+                                                <label for="floatingInputValue">Card Description*</label>
+                                                <textarea name="card_description_two[]" id="card_description_two_{{ $key }}" cols="30" rows="10"
+                                                    placeholder="Card Description" class="form-control card_description_two">{{ $item->description }}</textarea>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    @if ($key == 0)
+                                        <div class="col-xl-2 mt-4">
+                                            <div class="btn-1">
+                                                <button type="button" class="add-more-two"><i class="ph ph-plus"></i>
+                                                </button>
+                                            </div>
+                                        </div>
+                                    @else
+                                        <div class="col-xl-2 mt-4">
+                                            <div class="btn-1">
+                                                <button type="button" class="remove-two"><i class="ph ph-minus"></i>
+                                                </button>
+                                            </div>
+                                        </div>
+                                    @endif
+                                @endforeach
+                            @else
+                                <div class="col-xl-5 col-md-5 mt-4">
+                                    <div class="form-group-div">
+                                        <div class="form-group">
+                                            <label for="floatingInputValue">Card Title*</label>
+                                            <input type="text" class="form-control" id="floatingInputValue" required
+                                                name="card_title_two[]" value="" placeholder="Card Title">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-5 mt-4">
+                                    <div class="form-group-div">
+                                        <div class="form-group">
+                                            <label for="floatingInputValue">Card Description*</label>
+                                            <textarea name="card_description_two[]" id="card_description_two_0" cols="30" rows="10"
+                                                placeholder="Card Description" class="form-control card_description_two"></textarea>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-xl-2 mt-4">
+                                    <div class="btn-1">
+                                        <button type="button" class="add-more-two"><i class="ph ph-plus"></i> </button>
+                                    </div>
+                                </div>
+                            @endif
+                        </div>
+                    </div>
                     <div class="sales-report-card-wrap mt-5">
                         <div class="form-head">
                             <h4>SEO Management</h4>
@@ -411,6 +520,14 @@
                     height: 400
                 });
             });
+            // Initialize Summernote for project_section_two card descriptions
+            $(".card_description_two").each(function(index, element) {
+                $('#card_description_two_' + index).summernote({
+                    placeholder: 'Card Description',
+                    tabsize: 2,
+                    height: 400
+                });
+            });
 
             // Add more functionality
             $(document).on("click", ".add-more", function() {
@@ -453,6 +570,54 @@
                 });
             });
 
+            // Add more functionality for second project section
+            $(document).on("click", ".add-more-two", function() {
+                var count = $("#add-more-two .col-xl-5").length; // Get the current count of card entries
+
+                // Create new card entry HTML for second section
+                var html = `
+                <div class="col-xl-5 col-md-5 mt-4">
+                    <div class="form-group-div">
+                        <div class="form-group">
+                            <label for="floatingInputValue">Card Title*</label>
+                            <input type="text" class="form-control" name="card_title_two[]" value="" required placeholder="Card Title">
+                            <span class="text-danger" id="job_opportunity_title_two_${count}"></span>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-5 mt-4">
+                    <div class="form-group-div">
+                        <div class="form-group">
+                            <label for="floatingInputValue">Card Description*</label>
+                            <textarea name="card_description_two[]" id="card_description_two_${count}" cols="30" rows="10" class="form-control card_description_two" placeholder="Card Description"></textarea>
+                            <span class="text-danger" id="job_opportunity_description_two_${count}"></span>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-xl-2 mt-4">
+                    <div class="btn-1">
+                        <button type="button" class="remove-two"><i class="ph ph-minus"></i> </button>
+                    </div>
+                </div>`;
+
+                // Append the new fields
+                $("#add-more-two").append(html);
+
+                // Initialize Summernote for the newly added card description textarea
+                $('#card_description_two_' + count).summernote({
+                    placeholder: 'Card Description',
+                    tabsize: 2,
+                    height: 400
+                });
+            });
+
+            // Remove functionality for second section
+            $(document).on("click", ".remove-two", function() {
+                $(this).closest('.col-xl-2').prev('.col-md-5').remove(); // Remove description column
+                $(this).closest('.col-xl-2').prev('.col-xl-5').remove(); // Remove title column
+                $(this).closest('.col-xl-2').remove(); // Remove button column
+            });
+
             // Remove functionality
             $(document).on("click", ".remove", function() {
                 $(this).closest('.col-xl-2').prev('.col-md-5').remove(); // Remove description column
@@ -474,6 +639,12 @@
             });
             $('#project_section_description').summernote({
                 placeholder: 'Project Section Description*',
+                tabsize: 2,
+                height: 400
+            });
+
+            $('#project_section_two_description').summernote({
+                placeholder: 'Project Section Two Description',
                 tabsize: 2,
                 height: 400
             });

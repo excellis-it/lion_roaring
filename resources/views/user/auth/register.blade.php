@@ -36,6 +36,9 @@
             }
         </style>
     </head>
+    @php
+        use App\Helpers\Helper;
+    @endphp
 
     <body style="background: #643271">
         <main>
@@ -45,7 +48,12 @@
                         <div class="col-lg-8">
                             <div class="login_bg_sec border-top-0">
                                 <div class="logo-admin">
-                                    <img src="{{ asset('user_assets/images/logo.png') }}" alt="">
+                                    @if (isset(Helper::getFooter()['footer_logo']))
+                                        <img src="{{ Storage::url(Helper::getFooter()['footer_logo']) }}"
+                                            alt="">
+                                    @else
+                                        <img src="{{ asset('user_assets/images/logo.png') }}" alt="">
+                                    @endif
                                 </div>
                                 <div class="heading_hp">
                                     <h2 id="greeting">Request Private Member Access</h2>

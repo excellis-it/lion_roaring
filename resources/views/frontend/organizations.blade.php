@@ -1,23 +1,23 @@
 @extends('frontend.layouts.master')
 @section('meta_title')
- <meta name="description" content="{{$organization['meta_description'] ?? ''}}">
-    <meta name="keywords" content="{{$organization['meta_keywords'] ?? ''}}">
-    <meta name="title" content="{{$organization['meta_title'] ?? ''}}">
+    <meta name="description" content="{{ $organization['meta_description'] ?? '' }}">
+    <meta name="keywords" content="{{ $organization['meta_keywords'] ?? '' }}">
+    <meta name="title" content="{{ $organization['meta_title'] ?? '' }}">
 @endsection
 @section('title')
-    {{ env('APP_NAME') }} - {{$organization['meta_title'] ?? 'Organization'}}
+    {{ env('APP_NAME') }} - {{ $organization['meta_title'] ?? 'Organization' }}
 @endsection
 @push('styles')
 @endpush
 
 @section('content')
     <section class="inner_banner_sec"
-        style="background-image: url({{($organization['banner_image']) ? Storage::url($organization['banner_image']) : ''}}); background-position: center; background-repeat: no-repeat; background-size: cover">
+        style="background-image: url({{ $organization['banner_image'] ? Storage::url($organization['banner_image']) : '' }}); background-position: center; background-repeat: no-repeat; background-size: cover">
         <div class="container">
             <div class="row justify-content-center">
                 <div class="col-md-8">
                     <div class="inner_banner_ontent text-center">
-                        <h1>{{$organization['banner_title'] ?? 'title'}}</h1>
+                        <h1>{{ $organization['banner_title'] ?? 'title' }}</h1>
                         <p><strong><em>{!! $organization['banner_description'] ?? 'banner description' !!}</em></strong></p>
                     </div>
                 </div>
@@ -50,8 +50,8 @@
     <section class="project_sec">
         <div class="container">
             <div class="heading_hp text-center">
-                <h6>{{$organization['project_section_title'] ?? 'title'}}</h6>
-                <h2>{{$organization['project_section_sub_title'] ?? 'sub title'}}</h2>
+                <h6>{{ $organization['project_section_title'] ?? 'title' }}</h6>
+                <h2>{{ $organization['project_section_sub_title'] ?? 'sub title' }}</h2>
                 <p>{!! $organization['project_section_description'] ?? 'description' !!}</p>
             </div>
             <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 row-cols-xl-4 justify-content-center">
@@ -59,7 +59,32 @@
                     @foreach ($organization->projects as $item)
                         <div class="col mb-4 aos-init" data-aos="fade-up" data-aos-duration="500">
                             <div class="project">
-                                <h4>{{$item->title}}</h4>
+                                <h4>{{ $item->title }}</h4>
+                                <div class="text-box">
+                                    {!! $item->description !!}
+                                </div>
+                            </div>
+                        </div>
+                    @endforeach
+                @endif
+            </div>
+        </div>
+    </section>
+
+    {{-- project_sec_second --}}
+    <section class="project_sec project_sec_second">
+        <div class="container">
+            <div class="heading_hp text-center">
+                <h6>{{ $organization['project_section_two_title'] ?? '' }}</h6>
+                <h2>{{ $organization['project_section_two_sub_title'] ?? '' }}</h2>
+                <p>{!! $organization['project_section_two_description'] ?? '' !!}</p>
+            </div>
+            <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 row-cols-xl-4 justify-content-center">
+                @if ($organization->projectsTwo->isNotEmpty())
+                    @foreach ($organization->projectsTwo as $item)
+                        <div class="col mb-4 aos-init" data-aos="fade-up" data-aos-duration="500">
+                            <div class="project">
+                                <h4>{{ $item->title }}</h4>
                                 <div class="text-box">
                                     {!! $item->description !!}
                                 </div>
