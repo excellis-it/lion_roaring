@@ -29,7 +29,7 @@
                                 src="{{ asset('frontend_assets/images/flags/' . strtolower($currentCode) . '.png') }}"
                                 alt="">
                         </span> --}}
-                        <select id="countrySwitcher" class="form-select form-select-sm cst-select cst-select-bottom">
+                        <select class="countrySwitcher form-select form-select-sm cst-select cst-select-bottom">
                             @foreach ($countries as $c)
                                 <option value="{{ strtolower($c->code) }}"
                                     {{ strtoupper($c->code) === $currentCode ? 'selected' : '' }}
@@ -40,7 +40,7 @@
                         </select>
                     </div>
 
-                
+
 
 
 
@@ -104,12 +104,12 @@
                                     Sign-In/New Member</a>
                             @endif
                         </div>
-                        
+
                         {{-- <div class="login_prf e-store-btn">
                             <a href="{{ route('e-store') }}"><span><i class="fa-solid fa-store"></i></span> E-Store</a>
                         </div> --}}
 
-                        
+
                     </div>
                 </div>
             </div>

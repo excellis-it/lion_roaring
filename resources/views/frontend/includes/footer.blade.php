@@ -34,9 +34,9 @@
                         <p>
                             {!! Helper::getFooter()['footer_title'] ??
                                 'Our main focus is to restore our various communities, villages, cities, states,
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            and
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            our nation by restoring the condition of a person in both the spiritual and the
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            physical.' !!}
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        and
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        our nation by restoring the condition of a person in both the spiritual and the
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        physical.' !!}
                         </p>
                         <div class="col-lg-12">
                             <div class="d-flex align-items-center">
@@ -154,7 +154,7 @@
                                 src="{{ asset('frontend_assets/images/flags/' . strtolower($currentCode) . '.png') }}"
                                 alt="">
                         </span> --}}
-                        <select id="countrySwitcher" class="form-select form-select-sm cst-select cst-select-top">
+                        <select class="countrySwitcher form-select form-select-sm cst-select cst-select-top">
                             @foreach ($countries as $c)
                                 <option value="{{ strtolower($c->code) }}"
                                     {{ strtoupper($c->code) === $currentCode ? 'selected' : '' }}
@@ -205,10 +205,22 @@
             })
         }).then(function(response) {
             if (response.ok) {
-                // optionally update any UI elements
-                var sel = document.getElementById('countrySwitcher');
+                // optionally update any UI elements (update all countrySwitchers)
+                var sels = document.querySelectorAll('.countrySwitcher');
                 var switchTo = '{{ route('home') }}/';
-                if (sel) sel.value = country;
+                if (sels && sels.length > 0) {
+                    sels.forEach(function(s) {
+                        if (s.value !== country) {
+                            s.value = country;
+                            // trigger change for any JS wrappers (e.g., select2) so they pick up the new value
+                            try {
+                                s.dispatchEvent(new Event('change', {
+                                    bubbles: true
+                                }));
+                            } catch (e) {}
+                        }
+                    });
+                }
                 closePopup();
                 // reload so server-side session check will prevent popup next time
                 //  window.location.reload();
@@ -224,16 +236,27 @@
     }
 
     document.addEventListener('DOMContentLoaded', function() {
-        var sel = document.getElementById('countrySwitcher');
-        if (sel) {
-            sel.addEventListener('change', function() {
-                var cc = this.value;
-                if (cc) {
-                    // store session then reload via selectFlag
-                    selectFlag(cc);
-                }
+        var sels = document.querySelectorAll('.countrySwitcher');
+        if (sels && sels.length > 0) {
+            sels.forEach(function(sel) {
+                sel.addEventListener('change', function() {
+                    var cc = this.value;
+                    if (cc) {
+                        // store session then reload via selectFlag
+                        selectFlag(cc);
+                    }
+                });
             });
         }
+
+        // Delegate change events for dynamically-enhanced select elements (e.g., plugins)
+        document.addEventListener('change', function(e) {
+            var target = e.target || e.srcElement;
+            if (target && target.classList && target.classList.contains('countrySwitcher')) {
+                var cc = target.value;
+                if (cc) selectFlag(cc);
+            }
+        }, false);
 
         // Close popup overlay helper if present
         window.closePopup = function() {
