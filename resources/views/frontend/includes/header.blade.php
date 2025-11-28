@@ -67,6 +67,9 @@
                                         <li>
                                             <a href="{{ route('faq') }}">FAQ</a>
                                         </li>
+                                        <li>
+                                            <a href="{{ route('membership') }}">Membership</a>
+                                        </li>
                                         {{-- <li>
                                         <a href="{{ route('contact-us') }}">Contact Us</a>
                                     </li> --}}

@@ -76,6 +76,19 @@
                                                 {{ Auth::user()->ecclesia ? 'Ecclesia: ' . Auth::user()->ecclesia->name : '' }}
                                             </b>
                                         </span>
+                                        <div class="mt-2">
+                                            @php $user_subscription = auth()->user()->userLastSubscription ?? null; @endphp
+                                            @if ($user_subscription)
+                                                <p class="mb-1">Active:
+                                                    <strong>{{ $user_subscription->subscription_name }}</strong> - Expires:
+                                                    {{ $user_subscription->subscription_expire_date }}</p>
+                                                <a href="{{ route('user.membership.index') }}"
+                                                    class="btn btn-sm btn-primary">Manage Membership</a>
+                                            @else
+                                                <a href="{{ route('user.membership.index') }}"
+                                                    class="btn btn-sm btn-success">Subscribe</a>
+                                            @endif
+                                        </div>
                                     </div>
                                 </div>
                             </div>

@@ -64,8 +64,7 @@
                                  <img src="{{ asset('user_assets/images/ICON/Messaging/Messaging.svg') }}"
                                      alt="">
                              </span>
-                             <span
-                                 class="hide-menu">{{ Helper::getMenuName('messaging', 'Messaging') }}</span>
+                             <span class="hide-menu">{{ Helper::getMenuName('messaging', 'Messaging') }}</span>
                              <div class="count_chat_sidebar count_chat_sidebar_count_all" style="display: none;"></div>
                          </a>
                          {{-- collapse --}}
@@ -92,8 +91,7 @@
                                                  alt="">
 
                                          </span>
-                                         <span
-                                             class="hide-menu">{{ Helper::getMenuName('team', 'Team') }}</span>
+                                         <span class="hide-menu">{{ Helper::getMenuName('team', 'Team') }}</span>
                                      </a>
                                  @endif
 
@@ -139,8 +137,7 @@
                              <span>
                                  <img src="{{ asset('user_assets/images/Education.svg') }}" alt="">
                              </span>
-                             <span
-                                 class="hide-menu">{{ Helper::getMenuName('education', 'Education') }}</span>
+                             <span class="hide-menu">{{ Helper::getMenuName('education', 'Education') }}</span>
                          </a>
                          {{-- Collapse content --}}
                          <div class="collapse {{ Request::is('user/topics*') || Request::is('user/becoming-sovereign*') || Request::is('user/becoming-christ-link*') || Request::is('user/leadership-development*') || Request::is('user/file*') ? 'show' : '' }}"
@@ -186,8 +183,7 @@
                                          <span>
                                              <img src="{{ asset('user_assets/images/Files.svg') }}" alt="">
                                          </span>
-                                         <span
-                                             class="hide-menu">{{ Helper::getMenuName('files', 'Files') }}</span>
+                                         <span class="hide-menu">{{ Helper::getMenuName('files', 'Files') }}</span>
                                      </a>
                                  @endif
                                  {{-- <a href="{{ route('user.page', ['name' => 'Communities of interest', 'permission' => 'Manage Education']) }}">
@@ -212,8 +208,7 @@
                                  <img src="{{ asset('user_assets/images/ICON/Bulletin/Bulletin.svg') }}"
                                      alt="">
                              </span>
-                             <span
-                                 class="hide-menu">{{ Helper::getMenuName('bulletins', 'Bulletins') }}</span>
+                             <span class="hide-menu">{{ Helper::getMenuName('bulletins', 'Bulletins') }}</span>
                          </a>
                          {{-- Collapse content --}}
                          <div class="collapse {{ Request::is('user/bulletins*') || Request::is('user/view-calender*') || Request::is('user/jobs*') || Request::is('user/meetings*') || Request::is('user/private-collaborations*') || Request::is('user/bulletin-board*') || Request::is('user/events*') ? 'show' : '' }}"
@@ -312,8 +307,7 @@
                              <span>
                                  <img src="{{ asset('user_assets/images/ICON/Store/Store.svg') }}" alt="">
                              </span>
-                             <span
-                                 class="hide-menu">{{ Helper::getMenuName('estore', 'E-Store') }}</span>
+                             <span class="hide-menu">{{ Helper::getMenuName('estore', 'E-Store') }}</span>
                          </a>
                          {{-- Collapse content --}}
                          <div class="collapse {{ Request::is('user/products*') ||
@@ -531,8 +525,7 @@
                              <span>
                                  <img src="{{ asset('user_assets/images/ICON/elearning.png') }}" alt="">
                              </span>
-                             <span
-                                 class="hide-menu">{{ Helper::getMenuName('elearning', 'E-Learning') }}</span>
+                             <span class="hide-menu">{{ Helper::getMenuName('elearning', 'E-Learning') }}</span>
                          </a>
                          {{-- Collapse content --}}
                          <div class="collapse {{ Request::is('user/elearning*') || Request::is('user/elearning-cms*') || Request::is('user/elearning-cms-page/home*') || Request::is('user/elearning-cms-page/footer*') || Request::is('user/elearning-categories*') ? 'show' : '' }}"
@@ -604,8 +597,7 @@
                              <span>
                                  <img src="{{ asset('user_assets/images/ICON/All_Member.svg') }}" alt="">
                              </span>
-                             <span
-                                 class="hide-menu">{{ Helper::getMenuName('all_members', 'All Members') }}</span>
+                             <span class="hide-menu">{{ Helper::getMenuName('all_members', 'All Members') }}</span>
                          </a>
                      </li>
                  @endif
@@ -660,8 +652,7 @@
                              <span>
                                  <img src="{{ asset('user_assets/images/ICON/Strategy.svg') }}" alt="">
                              </span>
-                             <span
-                                 class="hide-menu">{{ Helper::getMenuName('strategy', 'Strategy') }}</span>
+                             <span class="hide-menu">{{ Helper::getMenuName('strategy', 'Strategy') }}</span>
                          </a>
                      </li>
                  @endif
@@ -678,6 +669,14 @@
                          </a>
                      </li>
                  @endif
+                 <li class="sidebar-item">
+                     <a class="sidebar-link" href="{{ route('user.membership.index') }}" aria-expanded="false">
+                         <span>
+                             <img src="{{ asset('user_assets/images/ICON/membership.svg') }}" alt="">
+                         </span>
+                         <span class="hide-menu">Membership</span>
+                     </a>
+                 </li>
                  {{-- @if (Gate::check('Manage Help'))
                     <li class="sidebar-item">
                         <a class="sidebar-link"
