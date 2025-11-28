@@ -1,5 +1,4 @@
 {{-- @json(session()->all()) --}}
-
 <div class="main_menu_hdr">
     <div class="container-fluid">
         <div class="main_menu">
@@ -24,11 +23,6 @@
                         $countries = \App\Helpers\Helper::getCountries();
                     @endphp
                     <div class="input-group input-group-sm">
-                        {{-- <span class="input-group-text bg-dark text-white">
-                            <img style="height: 20px;"
-                                src="{{ asset('frontend_assets/images/flags/' . strtolower($currentCode) . '.png') }}"
-                                alt="">
-                        </span> --}}
                         <select id="countrySwitcher" class="form-select form-select-sm cst-select cst-select-bottom">
                             @foreach ($countries as $c)
                                 <option value="{{ strtolower($c->code) }}"
