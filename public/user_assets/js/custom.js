@@ -65,6 +65,27 @@ $(function () {
         modal.show();
 
         var xhr = new XMLHttpRequest();
+        // helper: hide modal and remove backdrop reliably
+        var hideModalClean = function () {
+            try {
+                modal.hide();
+            } catch (err) {
+                /* ignore */
+            }
+            // One-time cleanup: remove any leftover backdrops and ensure body isn't stuck with modal-open
+            setTimeout(function () {
+                try {
+                    document
+                        .querySelectorAll(".modal-backdrop")
+                        .forEach(function (el) {
+                            el.remove();
+                        });
+                    document.body.classList.remove("modal-open");
+                } catch (err) {
+                    /* ignore */
+                }
+            }, 350);
+        };
         xhr.open("GET", url, true);
         xhr.responseType = "blob";
         // store trigger element for accessibility focus restore
@@ -110,9 +131,33 @@ $(function () {
                 } catch (err) {
                     /* ignore */
                 }
-                modal.hide();
-                if (typeof toastr !== "undefined")
+                // Try to hide modal and clean backdrop immediately and once more after a short delay.
+                hideModalClean();
+                // In some browsers/'bootstrap' setups modal may sometimes not close correctly; attempt again and remove backdrop.
+                setTimeout(function () {
+                    try {
+                        modal.hide();
+                    } catch (err) {
+                        /* ignore */
+                    }
+                    try {
+                        var backdrops =
+                            document.querySelectorAll(".modal-backdrop");
+                        backdrops.forEach(function (el) {
+                            el.remove();
+                        });
+                        document.body.classList.remove("modal-open");
+                    } catch (err) {
+                        /* ignore */
+                    }
+                }, 350);
+                if (typeof toastr !== "undefined") {
                     toastr.success("Download complete");
+                    // Extra ensure modal closure after the toast is shown
+                    setTimeout(function () {
+                        hideModalClean();
+                    }, 350);
+                }
             } else {
                 try {
                     if (
@@ -129,7 +174,20 @@ $(function () {
                 } catch (err) {
                     /* ignore */
                 }
-                modal.hide();
+                hideModalClean();
+                setTimeout(function () {
+                    hideModalClean();
+                    try {
+                        document
+                            .querySelectorAll(".modal-backdrop")
+                            .forEach(function (el) {
+                                el.remove();
+                            });
+                        document.body.classList.remove("modal-open");
+                    } catch (err) {
+                        /* ignore */
+                    }
+                }, 350);
                 alert("Download failed. Please try again.");
             }
         };
@@ -146,7 +204,20 @@ $(function () {
             } catch (err) {
                 /* ignore */
             }
-            modal.hide();
+            hideModalClean();
+            setTimeout(function () {
+                hideModalClean();
+                try {
+                    document
+                        .querySelectorAll(".modal-backdrop")
+                        .forEach(function (el) {
+                            el.remove();
+                        });
+                    document.body.classList.remove("modal-open");
+                } catch (err) {
+                    /* ignore */
+                }
+            }, 350);
             alert("An error occurred while downloading the file.");
         };
         // Ensure the modal will hide once the request fully ends, even if onload didn't fire
@@ -163,11 +234,20 @@ $(function () {
             } catch (err) {
                 /* ignore */
             }
-            try {
-                modal.hide();
-            } catch (err) {
-                /* ignore */
-            }
+            hideModalClean();
+            setTimeout(function () {
+                hideModalClean();
+                try {
+                    document
+                        .querySelectorAll(".modal-backdrop")
+                        .forEach(function (el) {
+                            el.remove();
+                        });
+                    document.body.classList.remove("modal-open");
+                } catch (err) {
+                    /* ignore */
+                }
+            }, 350);
         };
         // Abort support from user
         $("#downloadCancelBtn")
@@ -189,7 +269,20 @@ $(function () {
                 } catch (err) {
                     /* ignore */
                 }
-                modal.hide();
+                hideModalClean();
+                setTimeout(function () {
+                    hideModalClean();
+                    try {
+                        document
+                            .querySelectorAll(".modal-backdrop")
+                            .forEach(function (el) {
+                                el.remove();
+                            });
+                        document.body.classList.remove("modal-open");
+                    } catch (err) {
+                        /* ignore */
+                    }
+                }, 350);
                 if (typeof toastr !== "undefined")
                     toastr.info("Download canceled");
             });

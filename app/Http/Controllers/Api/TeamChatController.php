@@ -814,7 +814,7 @@ class TeamChatController extends Controller
             $team_chat->team_id = $request->team_id;
             $team_chat->user_id = auth()->id();
 
-           // $input_message = Helper::formatChatSendMessage($request->message);
+            // $input_message = Helper::formatChatSendMessage($request->message);
             $input_message = $request->message;
             // Handle file or message content
             if ($request->file) {
@@ -824,6 +824,7 @@ class TeamChatController extends Controller
                     $team_chat->message = ' ';
                 }
                 $team_chat->attachment = $this->imageUpload($request->file('file'), 'team-chat');
+                $team_chat->attachment_name = $request->file('file')->getClientOriginalName();
                 $message_type = $this->detectMessageType($request->file('file'));
             } else {
                 $team_chat->message = $input_message;
@@ -873,6 +874,7 @@ class TeamChatController extends Controller
                                     'sender_name' => auth()->user()->full_name,
                                     'message' => $input_message,
                                     'attachment' => $request->file ? Storage::url($team_chat->attachment) : '',
+                                    'attachment_name' => $request->file ? ($team_chat->attachment_name ?? basename($team_chat->attachment)) : null,
                                     'msg_type' => $message_type,
                                     'notification_id' => (string) $notification->id
                                 ]

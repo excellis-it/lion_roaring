@@ -87,7 +87,9 @@
                             <input type="hidden" class="existing-attachment"
                                 data-name="{{ $attachment['original_name'] }}"
                                 data-path="{{ asset('storage/' . $attachment['encrypted_name']) }}">
-                            <a class="attatched_file_box"
+                            <a class="attatched_file_box file-download"
+                                data-download-url="{{ asset('storage/' . $attachment['encrypted_name']) }}"
+                                data-file-name="{{ $attachment['original_name'] }}"
                                 href="{{ asset('storage/' . $attachment['encrypted_name']) }}" target="_blank">
                                 <div class="mail_img_box">
                                     <span><img src="{{ asset('user_assets/images/atatched.png') }}" alt="user"

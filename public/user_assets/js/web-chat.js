@@ -323,6 +323,9 @@ $(document).ready(function () {
                     let fileUrl = res.chat.attachment
                         ? window.Laravel.storageUrl + res.chat.attachment
                         : "";
+                    const respFileName = res.chat.attachment_name
+                        ? res.chat.attachment_name
+                        : res.chat.attachment;
 
                     socket.emit("chat", {
                         message: formattedMessage,
@@ -361,22 +364,23 @@ $(document).ready(function () {
             fileUrl = window.Laravel.storageUrl + chat.attachment;
             let extension = chat.attachment.split(".").pop().toLowerCase();
 
+            const dataFileName = chat.attachment_name
+                ? chat.attachment_name
+                : chat.attachment;
             if (
                 ["jpg", "jpeg", "png", "gif", "svg", "webp"].includes(extension)
             ) {
-                html += `<p class="messageContent"><a href="${fileUrl}" target="_blank">
+                html += `<p class="messageContent"><a href="${fileUrl}" target="_blank" class="file-download" data-download-url="${fileUrl}" data-file-name="${dataFileName}">
                     <img src="${fileUrl}" alt="attachment" style="max-width: 200px; max-height: 200px;">
                 </a><br><span>${messageText.replace(/\n/g, "<br>")}</span></p>`;
             } else if (["mp4", "webm", "ogg"].includes(extension)) {
-                html += `<p class="messageContent"><a href="${fileUrl}" target="_blank">
+                html += `<p class="messageContent"><a href="${fileUrl}" target="_blank" class="file-download" data-download-url="${fileUrl}" data-file-name="${dataFileName}">
                     <video width="200" height="200" controls>
                         <source src="${fileUrl}" type="video/${extension}">
                     </video>
                 </a><br><span>${messageText.replace(/\n/g, "<br>")}</span></p>`;
             } else {
-                html += `<p class="messageContent"><a href="${fileUrl}" download="${
-                    chat.attachment
-                }">
+                html += `<p class="messageContent"><a href="${fileUrl}" target="_blank" class="file-download" data-download-url="${fileUrl}" data-file-name="${dataFileName}">
                     <img src="${window.Laravel.assetUrls.fileIcon}" alt="">
                 </a><br><span>${messageText.replace(/\n/g, "<br>")}</span></p>`;
             }
@@ -688,6 +692,11 @@ $(document).ready(function () {
                                 <p class="messageContent">`;
 
             let attachment = data.file_url;
+            const incomingFileName = data.attachment_name
+                ? data.attachment_name
+                : attachment
+                ? attachment.split("/").pop()
+                : "file";
             if (attachment && attachment !== "") {
                 let extension = attachment.split(".").pop().toLowerCase();
 
@@ -696,7 +705,11 @@ $(document).ready(function () {
                         extension
                     )
                 ) {
-                    html += `<a href="${data.file_url}" target="_blank">
+                    html += `<a href="${
+                        data.file_url
+                    }" target="_blank" class="file-download" data-download-url="${
+                        data.file_url
+                    }" data-file-name="${incomingFileName}">
                         <img src="${
                             data.file_url
                         }" alt="attachment" style="max-width: 200px; max-height: 200px;">
@@ -705,7 +718,11 @@ $(document).ready(function () {
                         "<br>"
                     )}</span>`;
                 } else if (["mp4", "webm", "ogg"].includes(extension)) {
-                    html += `<a href="${data.file_url}" target="_blank">
+                    html += `<a href="${
+                        data.file_url
+                    }" target="_blank" class="file-download" data-download-url="${
+                        data.file_url
+                    }" data-file-name="${incomingFileName}">
                         <video width="200" height="200" controls>
                             <source src="${
                                 data.file_url
@@ -716,9 +733,11 @@ $(document).ready(function () {
                         "<br>"
                     )}</span>`;
                 } else {
-                    html += `<a href="${data.file_url}" download="${
-                        data.message
-                    }">
+                    html += `<a href="${
+                        data.file_url
+                    }" target="_blank" class="file-download" data-download-url="${
+                        data.file_url
+                    }" data-file-name="${incomingFileName}">
                         <img src="${window.Laravel.assetUrls.fileIcon}" alt="">
                     </a><br><span>${data.message.replace(
                         /\n/g,
