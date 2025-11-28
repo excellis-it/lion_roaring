@@ -98,6 +98,8 @@ use Illuminate\Support\Str;
 use App\Http\Controllers\VisitorController;
 use App\Http\Controllers\User\UserActivityController;
 use App\Http\Controllers\Admin\MenuController;
+use App\Http\Controllers\Admin\MembershipController;
+use App\Http\Controllers\User\MembershipController as UserMembershipController;
 
 
 /*
@@ -295,16 +297,16 @@ Route::group(['middleware' => ['admin'], 'prefix' => 'admin'], function () {
     });
     // membership management
     Route::prefix('membership')->group(function () {
-        Route::get('/', [\App\Http\Controllers\Admin\MembershipController::class, 'index'])->name('admin.membership.index');
-        Route::get('/create', [\App\Http\Controllers\Admin\MembershipController::class, 'create'])->name('admin.membership.create');
-        Route::post('/store', [\App\Http\Controllers\Admin\MembershipController::class, 'store'])->name('admin.membership.store');
-        Route::get('/edit/{membership}', [\App\Http\Controllers\Admin\MembershipController::class, 'edit'])->name('admin.membership.edit');
-        Route::post('/update/{membership}', [\App\Http\Controllers\Admin\MembershipController::class, 'update'])->name('admin.membership.update');
-        Route::get('/delete/{membership}', [\App\Http\Controllers\Admin\MembershipController::class, 'delete'])->name('admin.membership.delete');
-        Route::match(['get', 'post'], '/settings', [\App\Http\Controllers\Admin\MembershipController::class, 'settings'])->name('admin.membership.settings');
-        Route::get('/members', [\App\Http\Controllers\Admin\MembershipController::class, 'members'])->name('admin.membership.members');
-        Route::get('/members/{user}/payments', [\App\Http\Controllers\Admin\MembershipController::class, 'memberPayments'])->name('admin.membership.member.payments');
-        Route::get('/payments', [\App\Http\Controllers\Admin\MembershipController::class, 'payments'])->name('admin.membership.payments');
+        Route::get('/', [MembershipController::class, 'index'])->name('admin.membership.index');
+        Route::get('/create', [MembershipController::class, 'create'])->name('admin.membership.create');
+        Route::post('/store', [MembershipController::class, 'store'])->name('admin.membership.store');
+        Route::get('/edit/{membership}', [MembershipController::class, 'edit'])->name('admin.membership.edit');
+        Route::post('/update/{membership}', [MembershipController::class, 'update'])->name('admin.membership.update');
+        Route::get('/delete/{membership}', [MembershipController::class, 'delete'])->name('admin.membership.delete');
+        Route::match(['get', 'post'], '/settings', [MembershipController::class, 'settings'])->name('admin.membership.settings');
+        Route::get('/members', [MembershipController::class, 'members'])->name('admin.membership.members');
+        Route::get('/members/{user}/payments', [MembershipController::class, 'memberPayments'])->name('admin.membership.member.payments');
+        Route::get('/payments', [MembershipController::class, 'payments'])->name('admin.membership.payments');
     });
     // manage menu names
     Route::prefix('menu')->group(function () {
@@ -407,11 +409,11 @@ Route::middleware(['userActivity'])->group(function () {
 
 Route::prefix('user')->middleware(['user', 'preventBackHistory', 'userActivity'])->group(function () {
     Route::prefix('membership')->group(function () {
-        Route::get('/', [\App\Http\Controllers\User\MembershipController::class, 'index'])->name('user.membership.index');
-        Route::post('/upgrade/{tier}', [\App\Http\Controllers\User\MembershipController::class, 'upgrade'])->name('user.membership.upgrade');
-        Route::get('/checkout/{tier}', [\App\Http\Controllers\User\MembershipController::class, 'checkout'])->name('user.membership.checkout');
-        Route::get('/checkout/success', [\App\Http\Controllers\User\MembershipController::class, 'checkoutSuccess'])->name('user.membership.checkout.success');
-        Route::post('/renew', [\App\Http\Controllers\User\MembershipController::class, 'renew'])->name('user.membership.renew');
+        Route::get('/', [UserMembershipController::class, 'index'])->name('user.membership.index');
+        Route::post('/upgrade/{tier}', [UserMembershipController::class, 'upgrade'])->name('user.membership.upgrade');
+        Route::get('/checkout/{tier}', [UserMembershipController::class, 'checkout'])->name('user.membership.checkout');
+        Route::get('/checkout/success', [UserMembershipController::class, 'checkoutSuccess'])->name('user.membership.checkout.success');
+        Route::post('/renew', [UserMembershipController::class, 'renew'])->name('user.membership.renew');
     });
 
     // Route::middleware(['member.access'])->group(function () {
@@ -1020,4 +1022,4 @@ Route::post('/chatbot', [ChatBotController::class, 'FaqChat'])->name('chatbot.me
 Route::post('/stripe/webhook', [\App\Http\Controllers\Webhook\StripeWebhookController::class, 'handle'])->name('stripe.webhook');
 
 // Public success URL for Stripe Checkout (so Stripe redirect doesn't require auth)
-Route::get('/membership/checkout/success', [\App\Http\Controllers\User\MembershipController::class, 'checkoutSuccess'])->name('membership.checkout.success');
+Route::get('/membership/checkout/success', [UserMembershipController::class, 'checkoutSuccess'])->name('membership.checkout.success');

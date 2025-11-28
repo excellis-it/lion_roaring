@@ -672,11 +672,14 @@
                  <li class="sidebar-item">
                      <a class="sidebar-link" href="{{ route('user.membership.index') }}" aria-expanded="false">
                          <span>
-                             <img src="{{ asset('user_assets/images/ICON/membership.svg') }}" alt="">
+                             <img src="{{ asset('user_assets/images/ICON/membership.png') }}" alt="">
                          </span>
                          <span class="hide-menu">Membership</span>
                      </a>
                  </li>
+                 <br>
+                 <br>
+                 <br>
                  {{-- @if (Gate::check('Manage Help'))
                     <li class="sidebar-item">
                         <a class="sidebar-link"
