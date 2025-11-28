@@ -98,7 +98,7 @@ use App\Models\Country;
 use Illuminate\Support\Str;
 use App\Http\Controllers\VisitorController;
 use App\Http\Controllers\User\UserActivityController;
-
+use App\Http\Controllers\Admin\MenuController;
 
 
 /*
@@ -293,6 +293,11 @@ Route::group(['middleware' => ['admin'], 'prefix' => 'admin'], function () {
             Route::get('/', [FooterController::class, 'index'])->name('index');
             Route::post('/update', [FooterController::class, 'update'])->name('update');
         });
+    });
+    // manage menu names
+    Route::prefix('menu')->group(function () {
+        Route::get('/', [MenuController::class, 'index'])->name('admin.menu.index');
+        Route::post('/update', [MenuController::class, 'update'])->name('admin.menu.update');
     });
 });
 
