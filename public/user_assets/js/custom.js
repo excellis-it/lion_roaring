@@ -50,6 +50,9 @@ $(function () {
     $(document).on("click", "a.file-download", function (e) {
         e.preventDefault();
         var $link = $(this);
+        if ($link.data("downloading")) {
+            return; // prevent concurrent downloads
+        }
         var url = $link.data("download-url") || $link.attr("href");
         var fileName =
             $link.data("file-name") || url.split("/").pop() || "file";
@@ -63,16 +66,100 @@ $(function () {
             .attr("aria-valuenow", 0)
             .text("0%");
         modal.show();
+        // Ensure focus moves out of the modal before it is hidden (e.g., user clicks close)
+        try {
+            $(modalEl).one("hide.bs.modal", function () {
+                try {
+                    var activeEl = document.activeElement;
+                    if (modalEl && activeEl && modalEl.contains(activeEl)) {
+                        if (
+                            typeof triggerElement !== "undefined" &&
+                            triggerElement &&
+                            typeof triggerElement.focus === "function"
+                        ) {
+                            triggerElement.focus();
+                        } else if (
+                            typeof document !== "undefined" &&
+                            document.body &&
+                            typeof document.body.focus === "function"
+                        ) {
+                            document.body.focus();
+                        } else if (
+                            activeEl &&
+                            typeof activeEl.blur === "function"
+                        ) {
+                            activeEl.blur();
+                        }
+                    }
+                } catch (err) {
+                    /* ignore */
+                }
+            });
+        } catch (err) {
+            /* ignore */
+        }
 
         var xhr = new XMLHttpRequest();
         // helper: hide modal and remove backdrop reliably
         var hideModalClean = function () {
+            // Ensure focus is moved out of the modal before hiding so aria-hidden won't be set
+            try {
+                var activeEl = document.activeElement;
+                if (modalEl && activeEl && modalEl.contains(activeEl)) {
+                    try {
+                        if (
+                            typeof triggerElement !== "undefined" &&
+                            triggerElement &&
+                            typeof triggerElement.focus === "function"
+                        ) {
+                            triggerElement.focus();
+                        } else if (
+                            typeof document !== "undefined" &&
+                            document.body &&
+                            typeof document.body.focus === "function"
+                        ) {
+                            document.body.focus();
+                        } else if (
+                            activeEl &&
+                            typeof activeEl.blur === "function"
+                        ) {
+                            activeEl.blur();
+                        }
+                    } catch (e) {
+                        /* ignore */
+                    }
+                }
+            } catch (err) {
+                /* ignore */
+            }
             try {
                 modal.hide();
             } catch (err) {
                 /* ignore */
             }
-            // One-time cleanup: remove any leftover backdrops and ensure body isn't stuck with modal-open
+            // Attach an event listener to cleanup on hidden (Bootstrap trigger), helps avoid race conditions
+            try {
+                var onHidden = function () {
+                    try {
+                        document
+                            .querySelectorAll(".modal-backdrop")
+                            .forEach(function (el) {
+                                el.remove();
+                            });
+                        document.body.classList.remove("modal-open");
+                    } catch (err) {}
+                    try {
+                        modalEl.removeEventListener(
+                            "hidden.bs.modal",
+                            onHidden
+                        );
+                    } catch (err) {}
+                };
+                modalEl.addEventListener("hidden.bs.modal", onHidden);
+            } catch (err) {
+                /* ignore */
+            }
+            // Fallback cleanup in case the above event doesn't fire (older bootstrap versions / race conditions)
             setTimeout(function () {
                 try {
                     document
@@ -84,10 +171,11 @@ $(function () {
                 } catch (err) {
                     /* ignore */
                 }
-            }, 350);
+            }, 500);
         };
         xhr.open("GET", url, true);
         xhr.responseType = "blob";
+        $link.data("downloading", true);
         // store trigger element for accessibility focus restore
         var triggerElement = $link.get(0);
 
@@ -135,11 +223,8 @@ $(function () {
                 hideModalClean();
                 // In some browsers/'bootstrap' setups modal may sometimes not close correctly; attempt again and remove backdrop.
                 setTimeout(function () {
-                    try {
-                        modal.hide();
-                    } catch (err) {
-                        /* ignore */
-                    }
+                    // Use the unified cleanup which also moves focus safely
+                    hideModalClean();
                     try {
                         var backdrops =
                             document.querySelectorAll(".modal-backdrop");
@@ -248,6 +333,11 @@ $(function () {
                     /* ignore */
                 }
             }, 350);
+            try {
+                $link.data("downloading", false);
+            } catch (ex) {
+                /* ignore */
+            }
         };
         // Abort support from user
         $("#downloadCancelBtn")
@@ -285,6 +375,11 @@ $(function () {
                 }, 350);
                 if (typeof toastr !== "undefined")
                     toastr.info("Download canceled");
+                try {
+                    $link.data("downloading", false);
+                } catch (ex) {
+                    /* ignore */
+                }
             });
         xhr.send();
     });
