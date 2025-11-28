@@ -184,6 +184,12 @@ class AuthController extends Controller
             'name' => $request->full_name,
         ];
 
+        UserActivity::logActivity([
+            'user_id' => $user->id,
+            'activity_type' => 'REGISTER',
+            'activity_description' => 'User registered',
+        ]);
+
         Mail::to($request->email)->send(new AccountPendingApprovalMail($maildata));
         return redirect()->route('home')->with('message', 'Plase wait for admin approval');
     }

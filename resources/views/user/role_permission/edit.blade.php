@@ -81,6 +81,7 @@
                                                 'Role Permission',
                                                 'Elearning CMS',
                                                 'Elearning Category',
+                                                'Elearning Topic',
                                                 'Elearning Product',
                                                 'Estore CMS',
                                                 'Estore Users',

@@ -5,6 +5,7 @@ namespace App\Http\Controllers\User;
 use App\Http\Controllers\Controller;
 use App\Models\ElearningCategory;
 use App\Models\ElearningProduct;
+use App\Models\ElearningTopic;
 use App\Models\ElearningProductImage;
 use App\Traits\ImageTrait;
 use Illuminate\Http\Request;
@@ -48,6 +49,10 @@ class ElearningController extends Controller
                 })->orWhereHas('category', function ($q) use ($query) {
                     $q->where('name', 'like', '%' . $query . '%');
                 });
+
+            $products = $products->orWhereHas('elearningTopic', function ($q) use ($query) {
+                $q->where('topic_name', 'like', '%' . $query . '%');
+            });
             if ($sort_by && $sort_type) {
                 $products = $products->orderBy($sort_by, $sort_type);
             }
@@ -67,7 +72,8 @@ class ElearningController extends Controller
     {
         if (auth()->user()->can('Create Elearning Product')) {
             $categories = ElearningCategory::orderBy('id', 'desc')->get();
-            return view('user.elearning-product.create')->with('categories', $categories);
+            $topics = ElearningTopic::orderBy('id', 'desc')->get();
+            return view('user.elearning-product.create')->with(compact('categories', 'topics'));
         } else {
             abort(403, 'You do not have permission to access this page.');
         }
@@ -93,6 +99,7 @@ class ElearningController extends Controller
             'feature_product' => 'required',
             'slug' => 'required|string|unique:elearning_products',
             'affiliate_link' => 'required|string',
+            'elearning_topic_id' => 'nullable|numeric|exists:elearning_topics,id',
             // 'meta_title' => 'nullable|string|max:255',
             // 'meta_description' => 'nullable|string|max:255',
             'image' => 'required|image|mimes:jpeg,png,jpg,gif,svg,webp',
@@ -104,6 +111,7 @@ class ElearningController extends Controller
 
         $product = new ElearningProduct();
         $product->category_id = $request->category_id;
+        $product->elearning_topic_id = $request->elearning_topic_id;
         $product->user_id = auth()->user()->id;
         $product->name = $request->name;
         // $product->description = $request->description;
@@ -168,7 +176,8 @@ class ElearningController extends Controller
         if (auth()->user()->can('Edit Elearning Product')) {
             $product = ElearningProduct::findOrFail($id);
             $categories = ElearningCategory::orderBy('id', 'desc')->get();
-            return view('user.elearning-product.edit', compact('product', 'categories'));
+            $topics = ElearningTopic::orderBy('id', 'desc')->get();
+            return view('user.elearning-product.edit', compact('product', 'categories', 'topics'));
         } else {
             abort(403, 'You do not have permission to access this page.');
         }
@@ -195,6 +204,7 @@ class ElearningController extends Controller
                 // 'quantity' => 'required|numeric',
                 'slug' => 'required|string|unique:elearning_products,slug,' . $id,
                 'affiliate_link' => 'required|string',
+                'elearning_topic_id' => 'nullable|numeric|exists:elearning_topics,id',
                 // 'meta_title' => 'nullable|string|max:255',
                 // 'meta_description' => 'nullable|string|max:255',
                 'image' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg,webp',
@@ -207,6 +217,7 @@ class ElearningController extends Controller
 
             $product = ElearningProduct::findOrFail($id);
             $product->category_id = $request->category_id;
+            $product->elearning_topic_id = $request->elearning_topic_id;
             $product->name = $request->name;
             // $product->description = $request->description;
             $product->short_description = $request->short_description;

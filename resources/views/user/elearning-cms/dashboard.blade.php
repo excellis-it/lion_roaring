@@ -37,7 +37,8 @@
                                                 </div>
                                             </div>
                                             <div class="ms-3">
-                                                <a href="{{ route('user.elearning-cms.list') }}" class="btn btn-primary">View All</a>
+                                                <a href="{{ route('user.elearning-cms.list') }}"
+                                                    class="btn btn-primary">View All</a>
                                             </div>
                                         </div>
                                     </div>
@@ -55,7 +56,8 @@
                                                 </div>
                                             </div>
                                             <div class="ms-3">
-                                                <a href="{{ route('user.newsletters.index') }}" class="btn btn-primary">View
+                                                <a href="{{ route('user.elearning.newsletters.index') }}"
+                                                    class="btn btn-primary">View
                                                     All</a>
                                             </div>
                                         </div>

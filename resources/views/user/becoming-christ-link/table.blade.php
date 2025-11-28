@@ -17,18 +17,23 @@
                         </a>
                     @endif
                     @if (auth()->user()->can('Edit Becoming Christ Like'))
-                        <a href="{{ route('becoming-christ-link.edit', $file->id) . '?topic=' . ($new_topic ?? '') }}" class="delete_icon me-2">
+                        <a href="{{ route('becoming-christ-link.edit', $file->id) . '?topic=' . ($new_topic ?? '') }}"
+                            class="delete_icon me-2">
                             <i class="fa-solid fa-edit"></i>
                         </a>
                     @endif
                     @if (auth()->user()->can('Download Becoming Christ Like'))
-                        <a href="{{ route('becoming-christ-link.download', $file->id) }}" class="edit_icon me-2">
+                        <a href="{{ route('becoming-christ-link.download', $file->id) }}"
+                            class="edit_icon me-2 file-download"
+                            data-download-url="{{ route('becoming-christ-link.download', $file->id) }}"
+                            data-file-name="{{ $file->file_name }}.{{ $file->file_extension }}">
                             <i class="fa-solid fa-download"></i>
                         </a>
                     @endif
                     @if (auth()->user()->can('Delete Becoming Christ Like'))
                         <a href="javascript:void(0)" id="delete"
-                            data-route="{{ route('becoming-christ-link.delete', $file->id) . '?topic=' . ($new_topic ?? '') }}" class="delete_icon">
+                            data-route="{{ route('becoming-christ-link.delete', $file->id) . '?topic=' . ($new_topic ?? '') }}"
+                            class="delete_icon">
                             <i class="fa-solid fa-trash"></i>
                         </a>
                     @endif

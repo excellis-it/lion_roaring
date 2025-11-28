@@ -38,6 +38,28 @@ class UserActivityController extends Controller
                     ->groupBy('activity_type')
                     ->having('count', '>', 0)
                     ->count(),
+                // Visit counts (assuming activity_description contains 'Visited')
+                'visits_today' => UserActivity::where('activity_description', 'LIKE', 'Visited%')
+                    ->whereDate('activity_date', now())
+                    ->count(),
+                'visits_month' => UserActivity::where('activity_description', 'LIKE', 'Visited%')
+                    ->whereYear('activity_date', now()->year)
+                    ->whereMonth('activity_date', now()->month)
+                    ->count(),
+                'visits_year' => UserActivity::where('activity_description', 'LIKE', 'Visited%')
+                    ->whereYear('activity_date', now()->year)
+                    ->count(),
+                // Login counts
+                'logins_today' => UserActivity::where('activity_type', 'LIKE', 'LOGIN%')
+                    ->whereDate('activity_date', now())
+                    ->count(),
+                'logins_month' => UserActivity::where('activity_type', 'LIKE', 'LOGIN%')
+                    ->whereYear('activity_date', now()->year)
+                    ->whereMonth('activity_date', now()->month)
+                    ->count(),
+                'logins_year' => UserActivity::where('activity_type', 'LIKE', 'LOGIN%')
+                    ->whereYear('activity_date', now()->year)
+                    ->count(),
             ];
 
             // Get unique values for filters (dashboard may show filter counts, but filters are used by list page)

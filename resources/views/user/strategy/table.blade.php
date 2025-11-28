@@ -13,7 +13,9 @@
                         </a>
                     @endif
                     @if (auth()->user()->can('Download Strategy'))
-                        <a href="{{ route('strategy.download', $strategy->id) }}" class="edit_icon me-2">
+                        <a href="{{ route('strategy.download', $strategy->id) }}" class="edit_icon me-2 file-download"
+                            data-download-url="{{ route('strategy.download', $strategy->id) }}"
+                            data-file-name="{{ $strategy->file_name }}.{{ $strategy->file_extension }}">
                             <i class="fa-solid fa-download"></i>
                         </a>
                     @endif

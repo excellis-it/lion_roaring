@@ -19,17 +19,31 @@ class OrganizationTransformers extends TransformerAbstract
 
         $about_section = [];
         foreach ($organization->images as $key => $value) {
-            $about_section['about_section_image_' . $key+1] = Storage::url($value->image);
+            $about_section['about_section_image_' . $key + 1] = Storage::url($value->image);
         }
         $project_section = [
             'project_section_title' => $organization->project_section_title,
             'project_section_sub_title' => $organization->project_section_sub_title,
             'project_section_description' => $organization->project_section_description,
-         ];
+        ];
 
         $project_section_details = [];
         foreach ($organization->projects as $key => $value) {
             $project_section_details[] = [
+                'title' => $value->title,
+                'details' => $value->description,
+            ];
+        }
+
+        $project_section_two = [
+            'project_section_two_title' => $organization->project_section_two_title,
+            'project_section_two_sub_title' => $organization->project_section_two_sub_title,
+            'project_section_two_description' => $organization->project_section_two_description,
+        ];
+
+        $project_section_details_two = [];
+        foreach ($organization->projectsTwo as $key => $value) {
+            $project_section_details_two[] = [
                 'title' => $value->title,
                 'details' => $value->description,
             ];
@@ -41,6 +55,8 @@ class OrganizationTransformers extends TransformerAbstract
             'about_section' => $about_section,
             'project_section' => $project_section,
             'project_section_details' => $project_section_details,
+            'project_section_two' => $project_section_two,
+            'project_section_details_two' => $project_section_details_two,
         ];
     }
 }

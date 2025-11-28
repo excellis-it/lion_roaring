@@ -49,6 +49,7 @@
                                                 <th>
                                                     Product Category
                                                 </th>
+                                                <th>Topic</th>
                                                 <th class="sorting" data-tippy-content="Sort by Product Slug"
                                                     data-sorting_type="desc" data-column_name="slug"
                                                     style="cursor: pointer">Product Slug <span id="slug_icon"><i

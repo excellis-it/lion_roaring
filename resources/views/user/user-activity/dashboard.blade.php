@@ -115,6 +115,45 @@
                             </div>
                         </div>
                     </div>
+                    <div class="row mb-2">
+                        <div class="col-md-2">
+                            <div class="stats-card bg-white">
+                                <h4>Logins Today</h4>
+                                <div class="number">{{ number_format($stats['logins_today'] ?? 0) }}</div>
+                            </div>
+                        </div>
+                        <div class="col-md-2">
+                            <div class="stats-card bg-white">
+                                <h4>Logins This Month</h4>
+                                <div class="number">{{ number_format($stats['logins_month'] ?? 0) }}</div>
+                            </div>
+                        </div>
+                        <div class="col-md-2">
+                            <div class="stats-card bg-white">
+                                <h4>Logins This Year</h4>
+                                <div class="number">{{ number_format($stats['logins_year'] ?? 0) }}</div>
+                            </div>
+                        </div>
+
+                        <div class="col-md-2">
+                            <div class="stats-card bg-white">
+                                <h4>Today's Visits</h4>
+                                <div class="number">{{ number_format($stats['visits_today'] ?? 0) }}</div>
+                            </div>
+                        </div>
+                        <div class="col-md-2">
+                            <div class="stats-card bg-white">
+                                <h4>This Month Visits</h4>
+                                <div class="number">{{ number_format($stats['visits_month'] ?? 0) }}</div>
+                            </div>
+                        </div>
+                        <div class="col-md-2">
+                            <div class="stats-card bg-white">
+                                <h4>This Year Visits</h4>
+                                <div class="number">{{ number_format($stats['visits_year'] ?? 0) }}</div>
+                            </div>
+                        </div>
+                    </div>
 
                     <!-- Detailed Statistics with AJAX Pagination -->
                     <div class="row mb-4">

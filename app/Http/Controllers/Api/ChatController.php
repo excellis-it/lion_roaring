@@ -10,6 +10,8 @@ use App\Models\User;
 use App\Traits\ImageTrait;
 use Illuminate\Support\Facades\Storage;
 use App\Helpers\Helper;
+use Exception;
+use Illuminate\Support\Facades\Log;
 use App\Services\FCMService;
 
 /**
@@ -449,7 +451,7 @@ class ChatController extends Controller
                     ->where('reciver_id', auth()->id());
             })->count();
 
-          //  $input_message = Helper::formatChatSendMessage($request->message);
+            //  $input_message = Helper::formatChatSendMessage($request->message);
             $input_message = $request->message;
 
             $themessage = $input_message;
@@ -461,11 +463,13 @@ class ChatController extends Controller
 
             if ($request->file) {
                 $file = $this->imageUpload($request->file('file'), 'chat');
+                $attachmentName = $request->file('file')->getClientOriginalName();
                 $chatData = Chat::create([
                     'sender_id' => auth()->id(),
                     'reciver_id' => $request->reciver_id,
                     'message' => $themessage,
-                    'attachment' => $file
+                    'attachment' => $file,
+                    'attachment_name' => $attachmentName,
                 ]);
                 $message_type = $this->detectMessageType($request->file('file'));
             } else {
@@ -506,6 +510,7 @@ class ChatController extends Controller
                             'sender_name' => auth()->user()->full_name,
                             'message' => $themessage,
                             'attachment' => $request->file ? Storage::url($chat->attachment) : '',
+                            'attachment_name' => $request->file ? ($chat->attachment_name ?? basename($chat->attachment)) : null,
                             'msg_type' => $message_type,
                             'timestamp' => $chat->created_at_formatted
                         ]
