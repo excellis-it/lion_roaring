@@ -1,5 +1,4 @@
 {{-- @json(session()->all()) --}}
-
 <div class="main_menu_hdr">
     <div class="container-fluid">
         <div class="main_menu">

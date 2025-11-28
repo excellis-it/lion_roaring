@@ -400,6 +400,7 @@ Route::prefix('user')->middleware(['user', 'preventBackHistory', 'userActivity']
     // Route::middleware(['member.access'])->group(function () {
     // Route::get('/dashboard', [UserDashboardController::class, 'dashboard'])->name('user.dashboard');
     Route::get('/profile', [UserDashboardController::class, 'profile'])->name('user.profile');
+    Route::get('/user-subscription', [UserDashboardController::class, 'userSubscription'])->name('user.user-subscription');
     Route::post('/profile-update', [UserDashboardController::class, 'profileUpdate'])->name('user.profile.update');
     Route::get('/change-password', [UserDashboardController::class, 'password'])->name('user.change.password');
     Route::post('/change-password-update', [UserDashboardController::class, 'passwordUpdate'])->name('user.password.update');

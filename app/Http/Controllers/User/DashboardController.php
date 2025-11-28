@@ -34,6 +34,11 @@ class DashboardController extends Controller
         }
     }
 
+    public function userSubscription()
+    {
+        return view('user.user-subscription');
+    }
+
     public function password()
     {
         if (auth()->user()->can('Manage Password')) {
