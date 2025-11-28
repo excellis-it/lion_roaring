@@ -183,7 +183,7 @@ class TeamChatController extends Controller
         if ($request->ajax()) {
             $team_id = $request->team_id;
             $team = Team::where('id', $team_id)->with(['members', 'members.user'])->first()->toArray();
-            $allusers = User::where('status',1)->pluck('id')->toArray();
+            $allusers = User::where('status', 1)->pluck('id')->toArray();
             $team_chats = TeamChat::where('team_id', $team_id)->whereIn('user_id', $allusers)->orderBy('created_at', 'asc')->whereHas('chatMembers', function ($query) {
                 $query->where('user_id', auth()->id());
             })->with('user')->get();
@@ -220,6 +220,7 @@ class TeamChatController extends Controller
                 $team_chat->message = ' ';
             }
             $team_chat->attachment = $this->imageUpload($request->file('file'), 'team-chat');
+            $team_chat->attachment_name = $request->file('file')->getClientOriginalName();
             $message_type = $this->detectMessageType($request->file('file'));
         } else {
             $team_chat->message = $input_message;
@@ -268,6 +269,7 @@ class TeamChatController extends Controller
                                 'sender_name' => auth()->user()->full_name,
                                 'message' => $input_message,
                                 'attachment' => $request->file ? Storage::url($team_chat->attachment) : '',
+                                'attachment_name' => $request->file ? ($team_chat->attachment_name ?? basename($team_chat->attachment)) : null,
                                 'msg_type' => $message_type,
                                 'notification_id' => (string) $notification->id
                             ]

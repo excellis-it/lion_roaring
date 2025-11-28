@@ -162,11 +162,13 @@ class ChatController extends Controller
             }
             if ($request->file) {
                 $file = $this->imageUpload($request->file('file'), 'chat');
+                $attachmentName = $request->file('file')->getClientOriginalName();
                 $chatData = Chat::create([
                     'sender_id' => $request->sender_id,
                     'reciver_id' => $request->reciver_id,
                     'message' => $themessage,
-                    'attachment' => $file
+                    'attachment' => $file,
+                    'attachment_name' => $attachmentName,
                 ]);
                 $message_type = $this->detectMessageType($request->file('file'));
             } else {
@@ -186,13 +188,13 @@ class ChatController extends Controller
             //  $message_type = $this->detectMessageType($request->file);
 
             // if ($request->sender_id != auth()->id()) {
-                    $notification = new Notification();
-                    $notification->user_id = $request->reciver_id;
-                    $notification->chat_id = $chat->id;
-                    $notification->message = 'You have a <b>new message</b> from ' . auth()->user()->full_name;
-                    $notification->type = 'Chat';
-                    $notification->save();
-         //   }
+            $notification = new Notification();
+            $notification->user_id = $request->reciver_id;
+            $notification->chat_id = $chat->id;
+            $notification->message = 'You have a <b>new message</b> from ' . auth()->user()->full_name;
+            $notification->type = 'Chat';
+            $notification->save();
+            //   }
 
             // Send FCM notification to receiver
             $receiver = User::find($request->reciver_id);
@@ -209,6 +211,7 @@ class ChatController extends Controller
                             'sender_name' => auth()->user()->full_name,
                             'message' => $themessage,
                             'attachment' => $request->file ? Storage::url($chat->attachment) : '',
+                            'attachment_name' => $request->file ? ($chat->attachment_name ?? basename($chat->attachment)) : null,
                             'msg_type' => $message_type,
                             'timestamp' => $chat->created_at_formatted
                         ]

@@ -61,6 +61,7 @@ use App\Http\Controllers\User\LiveEventController;
 use App\Http\Controllers\User\MeetingSchedulingController;
 use App\Http\Controllers\User\PrivateCollaborationController;
 use App\Http\Controllers\User\NewsletterController as UserNewsletterController;
+use App\Http\Controllers\User\ElearningNewsletterController as UserElearningNewsletterController;
 use App\Http\Controllers\User\PartnerController;
 use App\Http\Controllers\User\ProductController;
 use App\Http\Controllers\User\ElearningController;
@@ -71,6 +72,7 @@ use App\Http\Controllers\User\SubscriptionController;
 use App\Http\Controllers\User\TeamChatController;
 use App\Http\Controllers\User\TeamController;
 use App\Http\Controllers\User\TopicController;
+use App\Http\Controllers\User\ElearningTopicController;
 use App\Http\Controllers\Admin\SettingsController;
 use App\Http\Controllers\Admin\TermsAndConditionController;
 use App\Http\Controllers\Admin\CountryController;
@@ -96,7 +98,7 @@ use App\Models\Country;
 use Illuminate\Support\Str;
 use App\Http\Controllers\VisitorController;
 use App\Http\Controllers\User\UserActivityController;
-
+use App\Http\Controllers\Admin\MenuController;
 
 
 /*
@@ -124,7 +126,7 @@ Route::get('dbmigrate', function () {
 
 // db seed
 Route::get('dbseed', function () {
-    Artisan::call('db:seed CountryPermissionSeeder');
+    Artisan::call('db:seed AddElearningTopicPermission');
     return "Database seeding has been successfully";
 });
 
@@ -291,6 +293,11 @@ Route::group(['middleware' => ['admin'], 'prefix' => 'admin'], function () {
             Route::get('/', [FooterController::class, 'index'])->name('index');
             Route::post('/update', [FooterController::class, 'update'])->name('update');
         });
+    });
+    // manage menu names
+    Route::prefix('menu')->group(function () {
+        Route::get('/', [MenuController::class, 'index'])->name('admin.menu.index');
+        Route::post('/update', [MenuController::class, 'update'])->name('admin.menu.update');
     });
 });
 
@@ -518,6 +525,7 @@ Route::prefix('user')->middleware(['user', 'preventBackHistory', 'userActivity']
         'partners' => PartnerController::class,
         'bulletins' => BulletinController::class,
         'topics' => TopicController::class,
+        'elearning-topics' => ElearningTopicController::class,
         'categories' => CategoryController::class,
         'elearning-categories' => ElearningCategoryController::class,
         'products' => ProductController::class,
@@ -703,6 +711,11 @@ Route::prefix('user')->middleware(['user', 'preventBackHistory', 'userActivity']
     Route::post('/elearning-cms/home/update', [ElearningCmsController::class, 'homeCmsUpdate'])->name('user.elearning-cms.home.update');
     Route::post('/elearning-cms/footer/update', [ElearningCmsController::class, 'footerUpdate'])->name('user.elearning-cms.footer.update');
 
+    Route::prefix('elearning-topics')->group(function () {
+        Route::get('/elearning-topic-delete/{id}', [ElearningTopicController::class, 'delete'])->name('elearning-topics.delete');
+    });
+
+
     Route::prefix('meetings')->group(function () {
         Route::get('/meeting-delete/{id}', [MeetingSchedulingController::class, 'delete'])->name('meetings.delete');
 
@@ -748,6 +761,7 @@ Route::prefix('user')->middleware(['user', 'preventBackHistory', 'userActivity']
     Route::prefix('topics')->group(function () {
         Route::get('/topic-delete/{id}', [TopicController::class, 'delete'])->name('topics.delete');
     });
+
 
     Route::prefix('bulletins')->group(function () {
         Route::get('/bulletin-delete/{id}', [BulletinController::class, 'delete'])->name('bulletins.delete');
@@ -824,6 +838,14 @@ Route::prefix('user')->middleware(['user', 'preventBackHistory', 'userActivity']
         Route::get('/newsletter-delete/{id}', [UserNewsletterController::class, 'delete'])->name('user.newsletters.delete');
     });
     Route::get('/user-newsletter-fetch-data', [UserNewsletterController::class, 'fetchData'])->name('user.newsletters.fetch-data');
+
+    // E-learning newsletters
+    Route::prefix('elearning-newsletters')->group(function () {
+        Route::get('/', [UserElearningNewsletterController::class, 'list'])->name('user.elearning.newsletters.index');
+        Route::post('/send-email', [UserElearningNewsletterController::class, 'sendEmail'])->name('user.elearning.newsletters.send-mail');
+        Route::get('/newsletter-delete/{id}', [UserElearningNewsletterController::class, 'delete'])->name('user.elearning.newsletters.delete');
+    });
+    Route::get('/user-elearning-newsletter-fetch-data', [UserElearningNewsletterController::class, 'fetchData'])->name('user.elearning.newsletters.fetch-data');
 
     Route::get('/mail-fetch-data', [SendMailController::class, 'fetchData'])->name('mail.fetch-data');
 });
@@ -974,4 +996,5 @@ Route::prefix('e-learning')->middleware(['user'])->group(function () {
     Route::get('/page/{slug}', [ElearningCmsController::class, 'cmsPageContent'])->name('e-learning.cms-page');
 });
 
+Route::get('/chatbot/faqs', [ChatBotController::class, 'getFaqs'])->name('chatbot.faqs');
 Route::post('/chatbot', [ChatBotController::class, 'FaqChat'])->name('chatbot.message');

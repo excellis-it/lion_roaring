@@ -10,7 +10,7 @@
             height: 250px !important;
         }
     </style>
-     <style>
+    <style>
         .image-area {
             position: relative;
             width: 15%;
@@ -100,6 +100,23 @@
                                     @endif
                                 </div>
                             </div>
+                            {{-- elearning_topic_id --}}
+                            <div class="col-md-6 mb-2">
+                                <div class="box_label">
+                                    <label for="elearning_topic_id"> Topic</label>
+                                    <select name="elearning_topic_id" id="elearning_topic_id" class="form-control">
+                                        <option value="">Select Topic</option>
+                                        @foreach ($topics as $topic)
+                                            <option value="{{ $topic->id }}"
+                                                {{ $product->elearning_topic_id == $topic->id ? 'selected' : '' }}>
+                                                {{ $topic->topic_name }}</option>
+                                        @endforeach
+                                    </select>
+                                    @if ($errors->has('elearning_topic_id'))
+                                        <span class="error">{{ $errors->first('elearning_topic_id') }}</span>
+                                    @endif
+                                </div>
+                            </div>
                             {{-- price --}}
                             {{-- <div class="col-md-6 mb-2">
                                 <div class="box_label">
@@ -157,8 +174,8 @@
                                     @endif
                                 </div>
                             </div>
-                              {{-- button_name --}}
-                              <div class="col-md-6 mb-2">
+                            {{-- button_name --}}
+                            <div class="col-md-6 mb-2">
                                 <div class="box_label">
                                     <label for="button_name"> Button Name*</label>
                                     <input type="text" name="button_name" id="button_name" class="form-control"
@@ -197,8 +214,10 @@
                                     <label for="feature_product"> Feature Product*</label>
                                     <select name="feature_product" id="feature_product" class="form-control">
                                         <option value="">Select Feature Product</option>
-                                        <option value="1" {{ $product->feature_product == 1 ? 'selected' : '' }}>Yes</option>
-                                        <option value="0" {{ $product->feature_product == 0 ? 'selected' : '' }}>No</option>
+                                        <option value="1" {{ $product->feature_product == 1 ? 'selected' : '' }}>Yes
+                                        </option>
+                                        <option value="0" {{ $product->feature_product == 0 ? 'selected' : '' }}>No
+                                        </option>
                                     </select>
                                     @if ($errors->has('feature_product'))
                                         <span class="error">{{ $errors->first('feature_product') }}</span>
@@ -260,21 +279,18 @@
                             </div>
                         </div>
                         @if ($product->withOutMainImage)
-                        <div class="row mb-6">
-                            <label for="inputConfirmPassword2"
-                                class="col-form-label">Image Preview</label>
+                            <div class="row mb-6">
+                                <label for="inputConfirmPassword2" class="col-form-label">Image Preview</label>
 
-                            @foreach ($product->withOutMainImage as $image)
-                                <div class="image-area m-4" id="{{ $image->id }}">
-                                    <img src="{{ Storage::url($image->image) }}"
-                                        alt="Preview">
-                                    <a class="remove-image" href="javascript:void(0);"
-                                        data-id="{{ $image->id }}"
-                                        style="display: inline;">&#215;</a>
-                                </div>
-                            @endforeach
-                        </div>
-                    @endif
+                                @foreach ($product->withOutMainImage as $image)
+                                    <div class="image-area m-4" id="{{ $image->id }}">
+                                        <img src="{{ Storage::url($image->image) }}" alt="Preview">
+                                        <a class="remove-image" href="javascript:void(0);" data-id="{{ $image->id }}"
+                                            style="display: inline;">&#215;</a>
+                                    </div>
+                                @endforeach
+                            </div>
+                        @endif
                         {{-- <div class="row">
                             <div class="col-md-12">
                                 <div class="heading_box mb-5">

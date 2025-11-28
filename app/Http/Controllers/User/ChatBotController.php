@@ -143,15 +143,33 @@ class ChatBotController extends Controller
                 ], 200);
             }
 
+            $faqs = Faq::select('id', 'question')->orderBy('id', 'asc')->get();
             return response()->json([
                 'status' => 'error',
                 'message' => 'Sorry, I do not understand your query. Can you please rephrase it? <br>Or Contact Us at <a href="' . env('APP_URL') . '/contact-us">' . env('APP_URL') . '/contact-us</a>',
+                'faqs' => $faqs,
             ], 201);
         } catch (\Exception $e) {
             return response()->json([
                 'status' => 'error',
                 'message' => 'Something went wrong. Please try again later.'
             ], 201);
+        }
+    }
+
+    public function getFaqs(Request $request)
+    {
+        try {
+            $faqs = Faq::select('id', 'question')->orderBy('id', 'asc')->get();
+            return response()->json([
+                'status' => true,
+                'data' => $faqs,
+            ], 200);
+        } catch (\Exception $e) {
+            return response()->json([
+                'status' => false,
+                'message' => 'Could not fetch FAQs',
+            ], 500);
         }
     }
 

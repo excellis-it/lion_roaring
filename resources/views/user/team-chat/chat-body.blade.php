@@ -3,9 +3,10 @@
 @endphp
 @if (isset($is_chat))
     <div class="groupChatHead">
-        <button id="backButton" style="color:#000;" class="btn btn-light chat-back-button me-3 d-inline-flex align-items-center backButton">
-                    <i class="fa fa-arrow-left me-1"></i> Back
-            </button>
+        <button id="backButton" style="color:#000;"
+            class="btn btn-light chat-back-button me-3 d-inline-flex align-items-center backButton">
+            <i class="fa fa-arrow-left me-1"></i> Back
+        </button>
         <div class="main_avtar team-image-{{ $team['id'] }}"><img
                 src="{{ $team['group_image'] ? Storage::url($team['group_image']) : asset('user_assets/images/group.png') }}"
                 alt=""></div>
@@ -70,7 +71,10 @@
                                             $ext = pathinfo($chat->attachment, PATHINFO_EXTENSION);
                                         @endphp
                                         @if (in_array($ext, ['jpg', 'jpeg', 'png', 'gif', 'svg', 'webp']))
-                                            <a href="{{ Storage::url($chat->attachment) }}" target="_blank">
+                                            <a href="{{ Storage::url($chat->attachment) }}" target="_blank"
+                                                class="file-download"
+                                                data-download-url="{{ Storage::url($chat->attachment) }}"
+                                                data-file-name="{{ $chat->attachment_name ?? pathinfo($chat->attachment, PATHINFO_BASENAME) }}">
                                                 <img src="{{ Storage::url($chat->attachment) }}" alt=""
                                                     style="max-width: 200px; max-height: 200px;">
                                             </a>
@@ -81,7 +85,9 @@
                                             </video>
                                         @else
                                             <a href="{{ Storage::url($chat->attachment) }}" target="_blank"
-                                                download="{{ $chat->attachment }}">
+                                                class="file-download"
+                                                data-download-url="{{ Storage::url($chat->attachment) }}"
+                                                data-file-name="{{ $chat->attachment_name ?? pathinfo($chat->attachment, PATHINFO_BASENAME) }}">
                                                 <img src="{{ asset('user_assets/images/file.png') }}" alt="">
                                             </a>
                                         @endif
@@ -138,7 +144,10 @@
                                                 $ext = pathinfo($chat->attachment, PATHINFO_EXTENSION);
                                             @endphp
                                             @if (in_array($ext, ['jpg', 'jpeg', 'png', 'gif', 'svg', 'webp']))
-                                                <a href="{{ Storage::url($chat->attachment) }}" target="_blank">
+                                                <a href="{{ Storage::url($chat->attachment) }}" target="_blank"
+                                                    class="file-download"
+                                                    data-download-url="{{ Storage::url($chat->attachment) }}"
+                                                    data-file-name="{{ $chat->attachment_name ?? pathinfo($chat->attachment, PATHINFO_BASENAME) }}">
                                                     <img src="{{ Storage::url($chat->attachment) }}" alt=""
                                                         style="max-width: 200px; max-height: 200px;">
                                                 </a>
@@ -149,7 +158,9 @@
                                                 </video>
                                             @else
                                                 <a href="{{ Storage::url($chat->attachment) }}" target="_blank"
-                                                    download="{{ $chat->attachment }}">
+                                                    class="file-download"
+                                                    data-download-url="{{ Storage::url($chat->attachment) }}"
+                                                    data-file-name="{{ $chat->attachment_name ?? pathinfo($chat->attachment, PATHINFO_BASENAME) }}">
                                                     <img src="{{ asset('user_assets/images/file.png') }}"
                                                         alt="">
                                                 </a>

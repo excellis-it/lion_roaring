@@ -93,28 +93,28 @@
                     <h4>
                         {!! Helper::getElearningFooterCms() ? Helper::getElearningFooterCms()->footer_newsletter_title : '' !!}
                     </h4>
-                    <div class="ftr-frm">
+                    <div class="ftr_newsletter">
                         <form action="{{ route('e-learning.newsletter') }}" method="post" id="submit-newsletter">
                             @csrf
                             <div class="row">
-                                <div class="form-group col-lg-6 col-md-12">
+                                {{-- <div class="form-group col-lg-6 col-md-12">
                                     <input size="40" class="form-control" id="newsletter_name"
                                         placeholder="Full Name" value="" type="text" name="newsletter_name">
                                     <span class="text-danger" id="newsletter_name_error"></span>
-                                </div>
-                                <div class="form-group col-lg-6 col-md-12">
-                                    <input class="form-control" placeholder="Email ADDRESS" id="newsletter_email"
-                                        value="" type="email" name="newsletter_email">
+                                </div> --}}
+                                <div class="mb-3">
+                                    <input type="email" class="form-control" placeholder="Enter your email address"
+                                        id="newsletter_email" value="" name="newsletter_email">
                                     <span class="text-danger" id="newsletter_email_error"></span>
                                 </div>
-                                <div class="form-group col-12">
+                                {{-- <div class="form-group col-12">
                                     <textarea cols="40" rows="3" class="form-control" id="newsletter_message" placeholder="Message"
                                         name="newsletter_message"></textarea>
                                     <span class="text-danger" id="newsletter_message_error"></span>
-                                </div>
+                                </div> --}}
                             </div>
                             <div class="main-btn">
-                                <input class="red_btn_submit" type="submit" value="Submit" />
+                                <input class="red_btn_submit" type="submit" value="Subscribe" />
                             </div>
                         </form>
                         {{-- <form action="">

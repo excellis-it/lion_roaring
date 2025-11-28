@@ -56,6 +56,9 @@ class OrganizationController extends Controller
             'project_section_title' => 'required',
             'project_section_sub_title' => 'required',
             'project_section_description' => 'required',
+            'project_section_two_title' => 'nullable',
+            'project_section_two_sub_title' => 'nullable',
+            'project_section_two_description' => 'nullable',
         ]);
 
         if ($request->id != '') {
@@ -72,6 +75,10 @@ class OrganizationController extends Controller
         $organization->project_section_title = $request->project_section_title;
         $organization->project_section_sub_title = $request->project_section_sub_title;
         $organization->project_section_description = $request->project_section_description;
+        // second project section fields
+        $organization->project_section_two_title = $request->project_section_two_title;
+        $organization->project_section_two_sub_title = $request->project_section_two_sub_title;
+        $organization->project_section_two_description = $request->project_section_two_description;
         if ($request->hasFile('banner_image')) {
             if (!empty($organization->banner_image) && Storage::exists($organization->banner_image)) {
                 Storage::delete($organization->banner_image);
@@ -95,12 +102,26 @@ class OrganizationController extends Controller
         }
 
         if ($request->card_title) {
-            OrganizationProject::where('organization_id', $organization->id)->delete();
+            OrganizationProject::where('organization_id', $organization->id)->where('section', 1)->delete();
             foreach ($request->card_title as $key => $title) {
                 $organization_project = new OrganizationProject();
                 $organization_project->organization_id = $organization->id;
                 $organization_project->title = $title;
                 $organization_project->description = $request->card_description[$key];
+                $organization_project->section = 1;
+                $organization_project->save();
+            }
+        }
+
+        // process second section cards
+        if ($request->card_title_two) {
+            OrganizationProject::where('organization_id', $organization->id)->where('section', 2)->delete();
+            foreach ($request->card_title_two as $key => $title) {
+                $organization_project = new OrganizationProject();
+                $organization_project->organization_id = $organization->id;
+                $organization_project->title = $title;
+                $organization_project->description = $request->card_description_two[$key] ?? null;
+                $organization_project->section = 2;
                 $organization_project->save();
             }
         }

@@ -76,7 +76,7 @@
                     <div class="chatbox-body" id="chatboxBody">
                         <!-- Chat messages go here -->
                         <div class="chatbot-message chatbot-bot-message">
-                            <p>Hi! How can I help you today?</p>
+                            <p>Lion Roaring Help & Support</p>
                         </div>
 
                     </div>
@@ -118,7 +118,7 @@
         <script src="https://cdn.socket.io/4.0.1/socket.io.min.js"></script>
         <script src="{{ asset('user_assets/js/chatbot.js') }}"></script>
         <script src="{{ asset('user_assets/js/inapp-notification.js') }}"></script>
-         <script src="https://cdnjs.cloudflare.com/ajax/libs/dropzone/4.3.0/dropzone.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/dropzone/4.3.0/dropzone.js"></script>
         <script>
             $(function() {
                 $('label:contains("*")').each(function() {
@@ -164,6 +164,7 @@
                 },
                 routes: {
                     chatbotMessage: "{{ route('chatbot.message') }}",
+                    chatbotFaqs: "{{ route('chatbot.faqs') }}",
                     notificationList: "{{ route('notification.list') }}",
                     notificationClear: "{{ route('notification.clear') }}",
 
@@ -1284,6 +1285,28 @@
 
 
         @stack('scripts')
+        <!-- Download Progress Modal -->
+        <div class="modal fade" id="downloadProgressModal" tabindex="-1" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Downloading</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <p id="downloadFileName" class="mb-2"></p>
+                        <div class="progress" style="height: 22px;">
+                            <div class="progress-bar" role="progressbar" style="width: 0%" aria-valuenow="0"
+                                aria-valuemin="0" aria-valuemax="100">0%</div>
+                        </div>
+                    </div>
+                    {{-- <div class="modal-footer">
+                        <button type="button" class="btn btn-outline-secondary"
+                            id="downloadCancelBtn">Cancel</button>
+                    </div> --}}
+                </div>
+            </div>
+        </div>
     </body>
 
 </html>

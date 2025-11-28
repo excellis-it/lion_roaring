@@ -25,7 +25,12 @@
                         $countries = \App\Helpers\Helper::getCountries();
                     @endphp
                     <div class="input-group input-group-sm">
-                        <select id="countrySwitcher" class="form-select form-select-sm cst-select cst-select-bottom">
+                        {{-- <span class="input-group-text bg-dark text-white">
+                            <img style="height: 20px;"
+                                src="{{ asset('frontend_assets/images/flags/' . strtolower($currentCode) . '.png') }}"
+                                alt="">
+                        </span> --}}
+                        <select class="countrySwitcher form-select form-select-sm cst-select cst-select-bottom">
                             @foreach ($countries as $c)
                                 <option value="{{ strtolower($c->code) }}"
                                     {{ strtoupper($c->code) === $currentCode ? 'selected' : '' }}
@@ -35,8 +40,8 @@
                             @endforeach
                         </select>
                     </div>
-                </div>
-                
+
+
 
 
 
@@ -100,12 +105,12 @@
                                     Sign-In/New Member</a>
                             @endif
                         </div>
-                        
+
                         {{-- <div class="login_prf e-store-btn">
                             <a href="{{ route('e-store') }}"><span><i class="fa-solid fa-store"></i></span> E-Store</a>
                         </div> --}}
 
-                        
+
                     </div>
                 </div>
             </div>

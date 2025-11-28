@@ -12,7 +12,11 @@
         </ul>
 
         <div class="d-block d-lg-none">
-            <img src="{{ asset('user_assets/images/logo.png') }}" class="dark-logo" width="" alt="">
+            @if (isset(Helper::getFooter()['footer_logo']))
+                <img class="dark-logo" src="{{ Storage::url(Helper::getFooter()['footer_logo']) }}" alt="">
+            @else
+                <img class="dark-logo" src="{{ asset('user_assets/images/logo.png') }}" alt="">
+            @endif
         </div>
 
         <ul class="navbar-nav flex-row ms-auto align-items-center justify-content-center">

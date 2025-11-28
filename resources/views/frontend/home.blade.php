@@ -53,22 +53,22 @@
 
             </div>
 
-             @php
-                        $currentCode = strtoupper(\App\Helpers\Helper::getVisitorCountryCode());
-                        $countries = \App\Helpers\Helper::getCountries();
-                    @endphp
+            @php
+                $currentCode = strtoupper(\App\Helpers\Helper::getVisitorCountryCode());
+                $countries = \App\Helpers\Helper::getCountries();
+            @endphp
 
-                    <div class="popup_countrySwitcher">
-                        <select id="countrySwitcher" class="form-select form-select-sm cst-select cst-select-bottom">
-                            @foreach ($countries as $c)
-                                <option value="{{ strtolower($c->code) }}"
-                                    {{ strtoupper($c->code) === $currentCode ? 'selected' : '' }}
-                                    data-image="{{ asset('frontend_assets/images/flags/' . strtolower($c->code) . '.png') }}">
-                                    {{ $c->name }} ({{ strtoupper($c->code) }})
-                                </option>
-                            @endforeach
-                        </select>
-                    </div>
+            <div class="popup_countrySwitcher">
+                <select class="countrySwitcher form-select form-select-sm cst-select cst-select-bottom">
+                    @foreach ($countries as $c)
+                        <option value="{{ strtolower($c->code) }}"
+                            {{ strtoupper($c->code) === $currentCode ? 'selected' : '' }}
+                            data-image="{{ asset('frontend_assets/images/flags/' . strtolower($c->code) . '.png') }}">
+                            {{ $c->name }} ({{ strtoupper($c->code) }})
+                        </option>
+                    @endforeach
+                </select>
+            </div>
         </div>
     </div>
 
@@ -81,14 +81,14 @@
                 <a href="{{ route('details') }}" tabindex="0">
                     <div class="slide__img">
                         <!-- <video autoplay="" muted="" loop="" class="video_part" playsInline>
-                                        <source
-                                            src="{{ isset($home['section_1_video']) ? Storage::url($home['section_1_video']) : 'https://via.placeholder.com/150' }}"
-                                            type="video/mp4">
-                                        Your browser does not support the video tag.
-                                    </video> -->
+                                            <source
+                                                src="{{ isset($home['section_1_video']) ? Storage::url($home['section_1_video']) : 'https://via.placeholder.com/150' }}"
+                                                type="video/mp4">
+                                            Your browser does not support the video tag.
+                                        </video> -->
                         <!-- <img src="" alt="" class="full-image d-block d-md-none" /> -->
                         <!-- <img src="{{ isset($home['banner_image']) ? Storage::url($home['banner_image']) : 'https://via.placeholder.com/150' }}"
-                                        class="full-image overlay-image"> -->
+                                            class="full-image overlay-image"> -->
 
                         <img src="{{ asset('frontend_assets/images/banner_img.png') }}" class="full-image overlay-image">
                     </div>
@@ -174,19 +174,19 @@
                             @endif
                             <div class="page"></div>
                             <!-- <div class="page">
-                                            <img src="{{ isset($home['section_2_right_image']) ? Storage::url($home['section_2_right_image']) : 'https://via.placeholder.com/150' }}"
-                                                            alt="">
-                                            <h4 class="flex-fixed">{{ $home['section_2_right_title'] ?? 'title' }}</h4>
-                                        </div>
-                                        <div class="page">
-                                            <h4 class="flex-fixed">{{ $home['section_2_right_title'] ?? 'title' }}</h4>
-                                            <p>{!! $home['section_2_right_description'] ?? 'description' !!}</p>
-                                        </div>
-                                        <div class="page"></div>
-                                        <div class="page"></div>
-                                        <div class="page"></div>
-                                        <div class="page"></div>
-                                        <div class="page"></div> -->
+                                                <img src="{{ isset($home['section_2_right_image']) ? Storage::url($home['section_2_right_image']) : 'https://via.placeholder.com/150' }}"
+                                                                alt="">
+                                                <h4 class="flex-fixed">{{ $home['section_2_right_title'] ?? 'title' }}</h4>
+                                            </div>
+                                            <div class="page">
+                                                <h4 class="flex-fixed">{{ $home['section_2_right_title'] ?? 'title' }}</h4>
+                                                <p>{!! $home['section_2_right_description'] ?? 'description' !!}</p>
+                                            </div>
+                                            <div class="page"></div>
+                                            <div class="page"></div>
+                                            <div class="page"></div>
+                                            <div class="page"></div>
+                                            <div class="page"></div> -->
                         </div>
                     </div>
                 </div>
@@ -197,18 +197,18 @@
 
     <section class="after_about_for_mobile common-padd">
         <div class="container">
-        <div class="row justify-content-center">
-            <div class="col-lg-8">
-                <div class="about_text heading_hp text-center">
-                    <!-- <h6>{{ $home['section_1_title'] ?? 'title' }}</h6> -->
-                    <h2 class="text-center"> {{ $home['section_1_sub_title'] ?? 'title' }}</h2>
-                    <p style="font-weight: 400;">
-                        <strong>{!! $home['section_1_description'] ?? 'description' !!}</strong>
-                    </p>
+            <div class="row justify-content-center">
+                <div class="col-lg-8">
+                    <div class="about_text heading_hp text-center">
+                        <!-- <h6>{{ $home['section_1_title'] ?? 'title' }}</h6> -->
+                        <h2 class="text-center"> {{ $home['section_1_sub_title'] ?? 'title' }}</h2>
+                        <p style="font-weight: 400;">
+                            <strong>{!! $home['section_1_description'] ?? 'description' !!}</strong>
+                        </p>
+                    </div>
                 </div>
             </div>
-        </div>
-            
+
 
             <div class="reviews_slider">
                 <div>
@@ -218,7 +218,15 @@
                                 class="user-img">
                         </div>
                         <div class="client-reviews">
-                            <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Maxime excepturi aperiam tempore quis itaque ut repellendus unde error, eligendi ratione soluta ea labore, reiciendis quos est? Quasi alias voluptatibus mollitia quibusdam eveniet saepe officiis iure suscipit quis vitae vel cum impedit dolorem ullam, asperiores accusantium facilis. Praesentium debitis suscipit distinctio! Lorem ipsum dolor sit amet consectetur adipisicing elit. Maxime excepturi aperiam tempore quis itaque ut repellendus unde error, eligendi ratione soluta ea labore, reiciendis quos est? Quasi alias voluptatibus mollitia quibusdam eveniet saepe officiis iure suscipit quis vitae vel cum impedit dolorem ullam, asperiores accusantium facilis. Praesentium debitis suscipit distinctio!</p>
+                            <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Maxime excepturi aperiam tempore
+                                quis itaque ut repellendus unde error, eligendi ratione soluta ea labore, reiciendis quos
+                                est? Quasi alias voluptatibus mollitia quibusdam eveniet saepe officiis iure suscipit quis
+                                vitae vel cum impedit dolorem ullam, asperiores accusantium facilis. Praesentium debitis
+                                suscipit distinctio! Lorem ipsum dolor sit amet consectetur adipisicing elit. Maxime
+                                excepturi aperiam tempore quis itaque ut repellendus unde error, eligendi ratione soluta ea
+                                labore, reiciendis quos est? Quasi alias voluptatibus mollitia quibusdam eveniet saepe
+                                officiis iure suscipit quis vitae vel cum impedit dolorem ullam, asperiores accusantium
+                                facilis. Praesentium debitis suscipit distinctio!</p>
                         </div>
                     </div>
                 </div>
@@ -229,7 +237,15 @@
                                 class="user-img">
                         </div>
                         <div class="client-reviews">
-                            <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Maxime excepturi aperiam tempore quis itaque ut repellendus unde error, eligendi ratione soluta ea labore, reiciendis quos est? Quasi alias voluptatibus mollitia quibusdam eveniet saepe officiis iure suscipit quis vitae vel cum impedit dolorem ullam, asperiores accusantium facilis. Praesentium debitis suscipit distinctio! Lorem ipsum dolor sit amet consectetur adipisicing elit. Maxime excepturi aperiam tempore quis itaque ut repellendus unde error, eligendi ratione soluta ea labore, reiciendis quos est? Quasi alias voluptatibus mollitia quibusdam eveniet saepe officiis iure suscipit quis vitae vel cum impedit dolorem ullam, asperiores accusantium facilis. Praesentium debitis suscipit distinctio!</p>
+                            <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Maxime excepturi aperiam tempore
+                                quis itaque ut repellendus unde error, eligendi ratione soluta ea labore, reiciendis quos
+                                est? Quasi alias voluptatibus mollitia quibusdam eveniet saepe officiis iure suscipit quis
+                                vitae vel cum impedit dolorem ullam, asperiores accusantium facilis. Praesentium debitis
+                                suscipit distinctio! Lorem ipsum dolor sit amet consectetur adipisicing elit. Maxime
+                                excepturi aperiam tempore quis itaque ut repellendus unde error, eligendi ratione soluta ea
+                                labore, reiciendis quos est? Quasi alias voluptatibus mollitia quibusdam eveniet saepe
+                                officiis iure suscipit quis vitae vel cum impedit dolorem ullam, asperiores accusantium
+                                facilis. Praesentium debitis suscipit distinctio!</p>
                         </div>
                     </div>
                 </div>
@@ -240,7 +256,15 @@
                                 class="user-img">
                         </div>
                         <div class="client-reviews">
-                            <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Maxime excepturi aperiam tempore quis itaque ut repellendus unde error, eligendi ratione soluta ea labore, reiciendis quos est? Quasi alias voluptatibus mollitia quibusdam eveniet saepe officiis iure suscipit quis vitae vel cum impedit dolorem ullam, asperiores accusantium facilis. Praesentium debitis suscipit distinctio! Lorem ipsum dolor sit amet consectetur adipisicing elit. Maxime excepturi aperiam tempore quis itaque ut repellendus unde error, eligendi ratione soluta ea labore, reiciendis quos est? Quasi alias voluptatibus mollitia quibusdam eveniet saepe officiis iure suscipit quis vitae vel cum impedit dolorem ullam, asperiores accusantium facilis. Praesentium debitis suscipit distinctio!</p>
+                            <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Maxime excepturi aperiam tempore
+                                quis itaque ut repellendus unde error, eligendi ratione soluta ea labore, reiciendis quos
+                                est? Quasi alias voluptatibus mollitia quibusdam eveniet saepe officiis iure suscipit quis
+                                vitae vel cum impedit dolorem ullam, asperiores accusantium facilis. Praesentium debitis
+                                suscipit distinctio! Lorem ipsum dolor sit amet consectetur adipisicing elit. Maxime
+                                excepturi aperiam tempore quis itaque ut repellendus unde error, eligendi ratione soluta ea
+                                labore, reiciendis quos est? Quasi alias voluptatibus mollitia quibusdam eveniet saepe
+                                officiis iure suscipit quis vitae vel cum impedit dolorem ullam, asperiores accusantium
+                                facilis. Praesentium debitis suscipit distinctio!</p>
                         </div>
                     </div>
                 </div>
@@ -251,7 +275,15 @@
                                 class="user-img">
                         </div>
                         <div class="client-reviews">
-                            <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Maxime excepturi aperiam tempore quis itaque ut repellendus unde error, eligendi ratione soluta ea labore, reiciendis quos est? Quasi alias voluptatibus mollitia quibusdam eveniet saepe officiis iure suscipit quis vitae vel cum impedit dolorem ullam, asperiores accusantium facilis. Praesentium debitis suscipit distinctio! Lorem ipsum dolor sit amet consectetur adipisicing elit. Maxime excepturi aperiam tempore quis itaque ut repellendus unde error, eligendi ratione soluta ea labore, reiciendis quos est? Quasi alias voluptatibus mollitia quibusdam eveniet saepe officiis iure suscipit quis vitae vel cum impedit dolorem ullam, asperiores accusantium facilis. Praesentium debitis suscipit distinctio!</p>
+                            <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Maxime excepturi aperiam tempore
+                                quis itaque ut repellendus unde error, eligendi ratione soluta ea labore, reiciendis quos
+                                est? Quasi alias voluptatibus mollitia quibusdam eveniet saepe officiis iure suscipit quis
+                                vitae vel cum impedit dolorem ullam, asperiores accusantium facilis. Praesentium debitis
+                                suscipit distinctio! Lorem ipsum dolor sit amet consectetur adipisicing elit. Maxime
+                                excepturi aperiam tempore quis itaque ut repellendus unde error, eligendi ratione soluta ea
+                                labore, reiciendis quos est? Quasi alias voluptatibus mollitia quibusdam eveniet saepe
+                                officiis iure suscipit quis vitae vel cum impedit dolorem ullam, asperiores accusantium
+                                facilis. Praesentium debitis suscipit distinctio!</p>
                         </div>
                     </div>
                 </div>
@@ -262,7 +294,15 @@
                                 class="user-img">
                         </div>
                         <div class="client-reviews">
-                            <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Maxime excepturi aperiam tempore quis itaque ut repellendus unde error, eligendi ratione soluta ea labore, reiciendis quos est? Quasi alias voluptatibus mollitia quibusdam eveniet saepe officiis iure suscipit quis vitae vel cum impedit dolorem ullam, asperiores accusantium facilis. Praesentium debitis suscipit distinctio! Lorem ipsum dolor sit amet consectetur adipisicing elit. Maxime excepturi aperiam tempore quis itaque ut repellendus unde error, eligendi ratione soluta ea labore, reiciendis quos est? Quasi alias voluptatibus mollitia quibusdam eveniet saepe officiis iure suscipit quis vitae vel cum impedit dolorem ullam, asperiores accusantium facilis. Praesentium debitis suscipit distinctio!</p>
+                            <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Maxime excepturi aperiam tempore
+                                quis itaque ut repellendus unde error, eligendi ratione soluta ea labore, reiciendis quos
+                                est? Quasi alias voluptatibus mollitia quibusdam eveniet saepe officiis iure suscipit quis
+                                vitae vel cum impedit dolorem ullam, asperiores accusantium facilis. Praesentium debitis
+                                suscipit distinctio! Lorem ipsum dolor sit amet consectetur adipisicing elit. Maxime
+                                excepturi aperiam tempore quis itaque ut repellendus unde error, eligendi ratione soluta ea
+                                labore, reiciendis quos est? Quasi alias voluptatibus mollitia quibusdam eveniet saepe
+                                officiis iure suscipit quis vitae vel cum impedit dolorem ullam, asperiores accusantium
+                                facilis. Praesentium debitis suscipit distinctio!</p>
                         </div>
                     </div>
                 </div>
@@ -273,11 +313,19 @@
                                 class="user-img">
                         </div>
                         <div class="client-reviews">
-                            <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Maxime excepturi aperiam tempore quis itaque ut repellendus unde error, eligendi ratione soluta ea labore, reiciendis quos est? Quasi alias voluptatibus mollitia quibusdam eveniet saepe officiis iure suscipit quis vitae vel cum impedit dolorem ullam, asperiores accusantium facilis. Praesentium debitis suscipit distinctio! Lorem ipsum dolor sit amet consectetur adipisicing elit. Maxime excepturi aperiam tempore quis itaque ut repellendus unde error, eligendi ratione soluta ea labore, reiciendis quos est? Quasi alias voluptatibus mollitia quibusdam eveniet saepe officiis iure suscipit quis vitae vel cum impedit dolorem ullam, asperiores accusantium facilis. Praesentium debitis suscipit distinctio!</p>
+                            <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Maxime excepturi aperiam tempore
+                                quis itaque ut repellendus unde error, eligendi ratione soluta ea labore, reiciendis quos
+                                est? Quasi alias voluptatibus mollitia quibusdam eveniet saepe officiis iure suscipit quis
+                                vitae vel cum impedit dolorem ullam, asperiores accusantium facilis. Praesentium debitis
+                                suscipit distinctio! Lorem ipsum dolor sit amet consectetur adipisicing elit. Maxime
+                                excepturi aperiam tempore quis itaque ut repellendus unde error, eligendi ratione soluta ea
+                                labore, reiciendis quos est? Quasi alias voluptatibus mollitia quibusdam eveniet saepe
+                                officiis iure suscipit quis vitae vel cum impedit dolorem ullam, asperiores accusantium
+                                facilis. Praesentium debitis suscipit distinctio!</p>
                         </div>
                     </div>
                 </div>
-                
+
             </div>
         </div>
     </section>
@@ -447,14 +495,14 @@
 
     <!-- @if (count($galleries) > 0)
     <section class="gallery_sec margin_27">
-                        <div class="gallery_slider">
-                            @foreach ($galleries as $galary)
+                            <div class="gallery_slider">
+                                @foreach ($galleries as $galary)
     <div class="gallery_box" style="width: 100%; display: inline-block;">
-                                    <img src="{{ Storage::url($galary->image) }}" alt="">
-                                </div>
+                                        <img src="{{ Storage::url($galary->image) }}" alt="">
+                                    </div>
     @endforeach
-                        </div>
-                    </section>
+                            </div>
+                        </section>
     @endif -->
 @endsection
 

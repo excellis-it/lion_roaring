@@ -27,6 +27,7 @@ use Illuminate\Support\Facades\Storage;
 use PHPUnit\Framework\Constraint\Count;
 use App\Models\User;
 use App\Models\SiteSetting;
+use App\Models\MenuItem;
 use GuzzleHttp\Client;
 use App\Models\WareHouse;
 use App\Models\EstoreCart;
@@ -775,5 +776,29 @@ class Helper
         }
 
         return $results;
+    }
+
+    /**
+     * Return dynamic menu item name by key, otherwise return default
+     *
+     * @param string $key
+     * @param string|null $default
+     * @return string
+     */
+    public static function getMenuName(string $key, ?string $default = null): string
+    {
+        try {
+            $menu = MenuItem::where('key', $key)->first();
+            if ($menu && !empty($menu->name)) {
+                return $menu->name;
+            }
+            if ($menu && !empty($menu->default_name)) {
+                return $menu->default_name;
+            }
+        } catch (\Exception $e) {
+            // ignore and fall back to default
+        }
+
+        return $default ?? ucfirst(str_replace('_', ' ', $key));
     }
 }

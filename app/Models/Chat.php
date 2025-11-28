@@ -16,6 +16,7 @@ class Chat extends Model
         'reciver_id',
         'message',
         'attachment',
+        'attachment_name',
         'seen',
         'deleted_for_sender',
         'deleted_for_reciver',

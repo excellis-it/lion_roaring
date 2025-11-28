@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use App\Models\ElearningTopic;
 
 class ElearningProduct extends Model
 {
@@ -11,6 +12,7 @@ class ElearningProduct extends Model
 
     protected $fillable = [
         'category_id',
+        'elearning_topic_id',
         'name',
         'description',
         'short_description',
@@ -55,4 +57,13 @@ class ElearningProduct extends Model
         return $this->belongsTo(User::class, 'user_id');
     }
 
+    public function elearningTopic()
+    {
+        return $this->belongsTo(ElearningTopic::class, 'elearning_topic_id');
+    }
+
+    public function topic()
+    {
+        return $this->belongsTo(ElearningTopic::class, 'elearning_topic_id');
+    }
 }

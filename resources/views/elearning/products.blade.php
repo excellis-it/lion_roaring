@@ -77,6 +77,40 @@
                             </div>
                         </div>
                     @endif
+                    <div class="padding_filter">
+                        <div class="accordion" id="topicgroup">
+                            <div class="accordion-item">
+                                <h2 class="accordion-header" id="headingTopic">
+                                    <button class="accordion-button" type="button" data-bs-toggle="collapse"
+                                        data-bs-target="#collapseTopic" aria-expanded="true" aria-controls="collapseTopic">
+                                        Topics
+                                    </button>
+                                </h2>
+                                <div id="collapseTopic" class="accordion-collapse collapse show"
+                                    aria-labelledby="headingTopic" data-bs-parent="#topicgroup">
+                                    <div class="accordion-body">
+                                        <div class="new">
+                                            <div class="mb-2">
+                                                <input type="text" id="elearning-topic-search" class="form-control"
+                                                    placeholder="Search topics" />
+                                            </div>
+                                            @if (isset($topics) && count($topics) > 0)
+                                                @foreach ($topics as $topic)
+                                                    <div class="form-group">
+                                                        <input type="checkbox" id="topic{{ $topic->id }}"
+                                                            name="elearning_topic_id" value="{{ $topic->id }}">
+                                                        <label
+                                                            for="topic{{ $topic->id }}">{{ $topic->topic_name }}</label>
+                                                    </div>
+                                                @endforeach
+                                            @endif
+
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                     {{-- <div class="padding_filter">
                         <div class="accordion" id="price">
                             <div class="accordion-item">
@@ -201,11 +235,17 @@
                     page++;
                     var prices = [];
                     var category_id = [];
+                    var elearning_topic_id = [];
+                    var elearning_topic_search = $('#elearning-topic-search').val();
                     var search = $('#serach-product').val();
 
 
                     $('input[name="price"]:checked').each(function() {
                         prices.push($(this).val());
+                    });
+
+                    $('input[name="elearning_topic_id"]:checked').each(function() {
+                        elearning_topic_id.push($(this).val());
                     });
 
                     var latestFilter = $('#latest_filter').val();
@@ -220,20 +260,26 @@
                     @endif
 
                     showLoading(); // Show loading GIF
-                    loadMoreProducts(page, prices, category_id, latestFilter, search); // Load more products
+                    loadMoreProducts(page, prices, category_id, latestFilter, search, elearning_topic_id,
+                        elearning_topic_search); // Load more products
                 }
             }
 
             // Filter products by frame shape, size, material, price, gender
             $(document).on('change',
-                'input[name="price"], #latest_filter, input[name="category_id"]',
+                'input[name="price"], #latest_filter, input[name="category_id"], input[name="elearning_topic_id"]',
                 function() {
                     var prices = [];
                     var category_id = [];
+                    var elearning_topic_id = [];
                     var search = $('#serach-product').val();
 
                     $('input[name="price"]:checked').each(function() {
                         prices.push($(this).val());
+                    });
+
+                    $('input[name="elearning_topic_id"]:checked').each(function() {
+                        elearning_topic_id.push($(this).val());
                     });
 
 
@@ -254,7 +300,7 @@
                     page = 1;
                     $('#products').html('');
 
-                    loadMoreProducts(page, prices, category_id, latestFilter, search);
+                    loadMoreProducts(page, prices, category_id, latestFilter, search, elearning_topic_id, '');
                 });
 
             // Search products
@@ -263,10 +309,15 @@
                 var search = $('#serach-product').val();
                 var prices = [];
                 var category_id = [];
+                var elearning_topic_id = [];
 
 
                 $('input[name="price"]:checked').each(function() {
                     prices.push($(this).val());
+                });
+
+                $('input[name="elearning_topic_id"]:checked').each(function() {
+                    elearning_topic_id.push($(this).val());
                 });
 
                 var latestFilter = $('#latest_filter').val();
@@ -283,18 +334,24 @@
                 page = 1;
                 $('#products').html('');
 
-                loadMoreProducts(page, prices, category_id, latestFilter, search);
+                loadMoreProducts(page, prices, category_id, latestFilter, search, elearning_topic_id, '');
             });
 
-            $(document).on('keyup', '#serach-product', function(e) {
+            $(document).on('keyup', '#serach-product, #elearning-topic-search', function(e) {
                 e.preventDefault();
                 var search = $('#serach-product').val();
                 var prices = [];
                 var category_id = [];
+                var elearning_topic_id = [];
+                var elearning_topic_search = $('#elearning-topic-search').val();
 
 
                 $('input[name="price"]:checked').each(function() {
                     prices.push($(this).val());
+                });
+
+                $('input[name="elearning_topic_id"]:checked').each(function() {
+                    elearning_topic_id.push($(this).val());
                 });
 
                 var latestFilter = $('#latest_filter').val();
@@ -311,13 +368,14 @@
                 page = 1;
                 $('#products').html('');
 
-                loadMoreProducts(page, prices, category_id, latestFilter, search);
+                loadMoreProducts(page, prices, category_id, latestFilter, search, elearning_topic_id,
+                    elearning_topic_search);
             });
 
 
 
             function loadMoreProducts(page, prices = [], category_id = [],
-                latestFilter = '', search = '') {
+                latestFilter = '', search = '', elearning_topic_id = [], elearning_topic_search = '') {
                 $.ajax({
                     url: '{{ route('e-learning.products-filter') }}',
                     type: 'GET',
@@ -325,6 +383,8 @@
                         page: page,
                         category_id: category_id,
                         prices: prices,
+                        elearning_topic_id: elearning_topic_id,
+                        elearning_topic_search: elearning_topic_search,
                         latestFilter: latestFilter,
                         search: search
 

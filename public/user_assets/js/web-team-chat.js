@@ -164,18 +164,21 @@ $(document).ready(function () {
                         .tz(created_at, authTimeZone)
                         .format("hh:mm A");
                     let html = `<div class="message me" id="team-chat-message-${res.chat.id}">`;
+                    const chatAttachmentName = res.chat.attachment_name
+                        ? res.chat.attachment_name
+                        : attachment;
                     if (
                         ["jpg", "jpeg", "png", "gif"].includes(
                             attachement_extention
                         )
                     ) {
-                        html += `<div class="message-wrap"><p class="messageContent"><a href="${fileUrl}" target="_blank"><img src="${fileUrl}" alt="attachment" style="max-width: 200px; max-height: 200px;"></a></p>`;
+                        html += `<div class="message-wrap"><p class="messageContent"><a href="${fileUrl}" target="_blank" class="file-download" data-download-url="${fileUrl}" data-file-name="${chatAttachmentName}"><img src="${fileUrl}" alt="attachment" style="max-width: 200px; max-height: 200px;"></a></p>`;
                     } else if (
                         ["mp4", "webm", "ogg"].includes(attachement_extention)
                     ) {
-                        html += ` <div class="message-wrap"><p class="messageContent"><a href="${fileUrl}" target="_blank"><video width="200" height="200" controls><source src="${fileUrl}" type="video/mp4"><source src="${fileUrl}" type="video/webm"><source src="${fileUrl}" type="video/ogg"></video></a></p>`;
+                        html += ` <div class="message-wrap"><p class="messageContent"><a href="${fileUrl}" target="_blank" class="file-download" data-download-url="${fileUrl}" data-file-name="${chatAttachmentName}"><video width="200" height="200" controls><source src="${fileUrl}" type="video/mp4"><source src="${fileUrl}" type="video/webm"><source src="${fileUrl}" type="video/ogg"></video></a></p>`;
                     } else {
-                        html += `<div class="message-wrap"><p class="messageContent"><a href="${fileUrl}" download="${attachment}"><img src="${fileIcon}" alt=""></a></p>`;
+                        html += `<div class="message-wrap"><p class="messageContent"><a href="${fileUrl}" target="_blank" class="file-download" data-download-url="${fileUrl}" data-file-name="${chatAttachmentName}"><img src="${fileIcon}" alt=""></a></p>`;
                     }
 
                     html += `<div class="dropdown">
@@ -317,8 +320,11 @@ $(document).ready(function () {
                     <span>${data.message.replace(/\n/g, "<br>")}</span>
                  </p>`;
                     } else {
+                        const incomingAttachmentName = data.attachment_name
+                            ? data.attachment_name
+                            : attachment;
                         html += `<p class="messageContent">
-                    <a href="${fileUrl}" download="${attachment}">
+                    <a href="${fileUrl}" target="_blank" class="file-download" data-download-url="${fileUrl}" data-file-name="${incomingAttachmentName}">
                         <img src="${fileIcon}" alt="file">
                     </a><br>
                     <span>${data.message.replace(/\n/g, "<br>")}</span>
@@ -1165,6 +1171,11 @@ $(document).ready(function () {
 
             let fileUrl = "";
             let attachment = data.chat.attachment;
+            const incomingFileName = data.chat.attachment_name
+                ? data.chat.attachment_name
+                : attachment
+                ? attachment.split("/").pop()
+                : "file";
             if (attachment != "") {
                 fileUrl = storageUrl + attachment;
                 let attachement_extention = attachment.split(".").pop();
@@ -1174,7 +1185,7 @@ $(document).ready(function () {
                         attachement_extention
                     )
                 ) {
-                    html += `<a href="${fileUrl}" target="_blank">
+                    html += `<a href="${fileUrl}" target="_blank" class="file-download" data-download-url="${fileUrl}" data-file-name="${incomingFileName}">
                         <img src="${fileUrl}" alt="attachment" style="max-width: 200px; max-height: 200px;">
                      </a><br><span class="">${data.chat.message.replace(
                          /\n/g,
@@ -1183,7 +1194,7 @@ $(document).ready(function () {
                 } else if (
                     ["mp4", "webm", "ogg"].includes(attachement_extention)
                 ) {
-                    html += `<a href="${fileUrl}" target="_blank">
+                    html += `<a href="${fileUrl}" target="_blank" class="file-download" data-download-url="${fileUrl}" data-file-name="${incomingFileName}">
                         <video width="200" height="200" controls>
                             <source src="${fileUrl}" type="video/mp4">
                             <source src="${fileUrl}" type="video/webm">
@@ -1194,7 +1205,7 @@ $(document).ready(function () {
                          "<br>"
                      )}</span>`;
                 } else {
-                    html += `<a href="${fileUrl}" download="${attachment}">
+                    html += `<a href="${fileUrl}" target="_blank" class="file-download" data-download-url="${fileUrl}" data-file-name="${incomingFileName}">
                         <img src="${fileIcon}" alt="">
                      </a><br><span class="">${data.chat.message.replace(
                          /\n/g,
