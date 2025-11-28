@@ -76,6 +76,34 @@
                                                 {{ Auth::user()->ecclesia ? 'Ecclesia: ' . Auth::user()->ecclesia->name : '' }}
                                             </b>
                                         </span>
+                                        <div class="mt-2">
+                                            @php $user_subscription = auth()->user()->userLastSubscription ?? null; @endphp
+                                            @if ($user_subscription)
+                                                <p class="mb-1">Active:
+                                                    <strong>{{ $user_subscription->subscription_name }}</strong> - Expires:
+                                                    @php
+                                                        $exp = \Carbon\Carbon::parse($user_subscription->subscription_expire_date);
+                                                    @endphp
+                                                    {{ $exp->format('M j, Y') }}
+                                                    (
+                                                    @if ($exp->isPast())
+                                                        Expired ({{ $exp->diffForHumans() }})
+                                                    @elseif ($exp->isToday())
+                                                        Today
+                                                    @elseif ($exp->isTomorrow())
+                                                        Tomorrow
+                                                    @else
+                                                        {{ $exp->diffForHumans() }}
+                                                    @endif
+                                                    )
+                                                </p>
+                                                <a href="{{ route('user.membership.index') }}"
+                                                    class="btn btn-sm btn-primary mt-2">Manage Membership</a>
+                                            @else
+                                                <a href="{{ route('user.membership.index') }}"
+                                                    class="print_btn mt-2">Get Membership</a>
+                                            @endif
+                                        </div>
                                     </div>
                                 </div>
                             </div>

@@ -101,17 +101,22 @@
                             href="{{ route('customers.index') }}"> User List</a></li>
                 </ul>
             </li> --}}
-            <li class="dropdown">
-                <a href="javascript:void(0);"
-                    class="menu-toggle nav-link has-dropdown {{ Request::is('admin/plans*') ? 'active' : ' ' }}">
+            <li class="dropdown {{ Request::is('admin/membership*') ? 'active' : ' ' }}">
+                <a href="javascript:void(0);" class="menu-toggle nav-link has-dropdown">
                     <i class="ph ph-cards"></i>
-                    <span> Subscription Plan Management</span>
+                    <span> Membership Plan Management</span>
                 </a>
                 <ul class="dropdown-menu">
-                    <li class="{{ Request::is('admin/plans/create') ? 'active' : ' ' }}"><a class="nav-link"
-                            href="{{ route('plans.create') }}">Create Plan</a></li>
-                    <li class="{{ Request::is('admin/plans') ? 'active' : ' ' }}"><a class="nav-link"
-                            href="{{ route('plans.index') }}"> Plan List</a></li>
+                    <li class="{{ Request::is('admin/membership/create') ? 'active' : ' ' }}"><a class="nav-link"
+                            href="{{ route('admin.membership.create') }}">Create Plan</a></li>
+                    <li class="{{ Request::is('admin/membership') ? 'active' : ' ' }}"><a class="nav-link"
+                            href="{{ route('admin.membership.index') }}"> Plan List</a></li>
+                    <li class="{{ Request::is('admin/membership/members*') ? 'active' : ' ' }}"><a class="nav-link"
+                            href="{{ route('admin.membership.members') }}"> Members</a></li>
+                    <li class="{{ Request::is('admin/membership/payments') ? 'active' : ' ' }}"><a class="nav-link"
+                            href="{{ route('admin.membership.payments') }}"> All Payments</a></li>
+                    <li class="{{ Request::is('admin/membership/settings') ? 'active' : ' ' }}"><a class="nav-link"
+                            href="{{ route('admin.membership.settings') }}">Settings</a></li>
                 </ul>
             </li>
             {{-- @if (Gate::check('Manage All Users'))
@@ -346,6 +351,9 @@
                         @if (Gate::check('Manage Footer'))
                             <li class="{{ Request::is('admin/pages/footer') ? 'active' : '' }}">
                                 <a class="nav-link" href="{{ route('footer.index') }}"> Footer </a>
+                            </li>
+                            <li class="{{ Request::is('admin/membership*') ? 'active' : '' }}">
+                                <a class="nav-link" href="{{ route('admin.membership.index') }}">Membership</a>
                             </li>
                         @endif
 

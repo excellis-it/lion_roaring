@@ -36,7 +36,7 @@ class DashboardController extends Controller
 
     public function userSubscription()
     {
-        return view('user.user-subscription');
+        return redirect()->route('user.membership.index');
     }
 
     public function password()
