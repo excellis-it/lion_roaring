@@ -155,6 +155,15 @@
 .about_text.heading_hp h4{
     font-size: 16px;
 }
+.about_text_new_p p{
+    font-size: 20px;
+}
+.about_text_new_p h3 {
+    font-size: 36px;
+}
+.about_text_new_p ol li {
+    font-size: 20px;
+}
 }
 
 @media (max-width:1280px){
@@ -255,6 +264,9 @@
     .promo-box-container{
         max-width: 850px;
     }
+    .for-mobile-use {
+    width: 40%;
+}
 }
 @media (max-width:991px){
     .our_mis{
@@ -289,10 +301,10 @@
     justify-content: flex-end;
 }
     .right_top {
-        width: 50%;
+        width: 60%;
     }
         .left_top {
-        width: 40%;
+        width: 30%;
     }
     .slide .slide__content--headings .title {
         font-size: 34px;
@@ -312,20 +324,20 @@
     .heading_hp h2 {
         font-size: 24px;
     }
-    .login_prf a{
+    /* .login_prf a{
         font-size: 0px;
         background-color: transparent;
-    }
-    .login_prf a:hover{
+    } */
+    /* .login_prf a:hover{
         background-color: transparent;
-    }
-    .login_prf a span {
+    } */
+    /* .login_prf a span {
         left: 0%;
         top: -1px;
         width: 38px;
         height: 38px;
         background-color: #d98b1c;
-    }
+    } */
 }
 
 @media (max-width:768px){
@@ -430,6 +442,17 @@
     }
         .promo-box-container {
         min-height: 140px;
+    }
+    
+    .right_top {
+        width: 100%;
+    }
+    .for-mobile-use {
+        width: 100%;
+    }
+    .main_menu .navigation.navbar{
+        flex-direction: column-reverse;
+        align-items: end;
     }
 }
 
@@ -596,10 +619,6 @@
     .main_menu{
         padding: 4px 0px;
     }
-    .login_prf a{
-        padding: 3px 4px;
-        font-size: 12px;
-    }
     .menu-wrepper{
         flex-direction: row-reverse;
         /*gap: 5px;*/
@@ -612,22 +631,14 @@
     .login-sec {
     padding: 50px 0;
 }
-.login_prf a span{
-    width: 15px;
-    height: 15px;
-    top: -1px;
-    left: -2%;
-}
-.login_prf a span i {
-    font-size: 9px;
-}
+
 .navbar{
     justify-content: flex-end;
 }
 .goog-te-gadget .goog-te-combo {
-    padding: 3px 0px;
+    padding: 9px 0px;
     width: 100px;
-    font-size: 10px;
+    border: none;
 }
 .button_container{
     height: 30px;
@@ -642,9 +653,7 @@
 .button_container span{
     top: 5px;
 }
-.login_prf a {
-    padding: 3px 6px;
-}
+
 .top-box{
     flex-direction: column;
 }
@@ -704,21 +713,58 @@
     .after_about_for_mobile{
         display: block;
     }
-    .login_prf a span{
-        width: 20px;
-        height: 20px;
-        background-color: #d98b1c;
+     .main_menu_hdr{
+        padding: 3px 0px;
+     }
+     .for-mobile-use{
+        margin-top: 5px;
+     }
+
+     .button_container span:nth-of-type(3){
+        width: 100%;
+     }
+     .button_container span:nth-of-type(2){
+        width: 100%;
+     }
+    .about_text_new_p p {
+        font-size: 16px;
     }
-    .login_prf a span i {
-        font-size: 10px;
+    .about_text_new_p h3 {
+        font-size: 30px;
     }
-     .login_prf a {
-        padding: 0px 0px;
-        background: transparent;
-        font-size: 0px;
+        .about_text_new_p ol li {
+        font-size: 16px;
     }
 }
 @media (max-width:480px){
+    .header-flag-box .input-group div:nth-child(2){
+        padding: 4px 10px !important;
+        justify-content: center !important;
+        gap: 0px !important;
+    }
+    .header-flag-box span {
+    font-size: 0px !important;
+}
+.goog-te-gadget .goog-te-combo{
+    padding: 6px 0px;
+    font-size: 11px;
+}
+    .login_prf a {
+        padding: 6px 9px;
+        font-size: 14px;
+    }
+    .login_prf a span {
+        left: -3%;
+        top: -1px;
+        width: 23px;
+        height: 23px;
+    }
+    .login_prf a span i {
+    font-size: 12px;
+}
+/* .header-flag-box .input-group div:nth-child(2){
+    padding: 6px 6px 6px 10px;
+} */
 /* .login_prf a span{
     display: none;
 } */
@@ -727,11 +773,9 @@
     padding: 0px 0px;
 }
 .logo a img {
-        width: 80px;
+        width: 120px;
     }
-        .right_top {
-        width: 67%;
-    }
+      
     .left_top {
         width: 25%;
     }
@@ -790,8 +834,21 @@
         padding: 40px 0;
     }
      .login_prf a{
-        font-size: 11px;
+        font-size: 12px;
+        padding: 7px 5px;
      } 
+         .login_prf a span {
+        left: 0%;
+        top: 0px;
+        width: 20px;
+        height: 20px;
+    }
+    .login_prf a span i {
+        font-size: 12px;
+    }
+        .promo-box-container {
+        max-width: 350px;
+    }
 }
 
 @media (max-width:360px){

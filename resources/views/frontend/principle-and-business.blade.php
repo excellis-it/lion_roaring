@@ -39,7 +39,7 @@
                             </div>
                         @endif
                     </div>
-                    <div class="about_text heading_hp">
+                    <div class="about_text about_text_new_p heading_hp">
                         {!! $principleAndBusiness['description'] ?? 'Description' !!}
                         {!! $principleAndBusiness['description1'] ?? 'Description' !!}
                         {!! $principleAndBusiness['description2'] ?? 'Description' !!}

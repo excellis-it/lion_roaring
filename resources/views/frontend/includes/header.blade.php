@@ -3,21 +3,23 @@
     <div class="container-fluid">
         <div class="main_menu">
             <div class="navigation navbar">
-                <div class="left_top">
-                    <div class="logo">
-                        <a href="{{ route('home') }}" class="">
-                            <img src="{{ isset($settings['logo']) ? Storage::url($settings['logo']) : asset('frontend_assets/images/logo.png') }}"
-                                alt="Logo" class="img-fluid">
-                        </a>
+                <div class="for-mobile-use d-flex align-items-center justify-content-between">
+                    <div class="left_top">
+                        <div class="logo">
+                            <a href="{{ route('home') }}" class="">
+                                <img src="{{ isset($settings['logo']) ? Storage::url($settings['logo']) : asset('frontend_assets/images/logo.png') }}"
+                                    alt="Logo" class="img-fluid">
+                            </a>
+                        </div>
+                    </div>
+                    <div class="button_container" id="toggle">
+                        <span class="top"></span>
+                        <span class="middle"></span>
+                        <span class="bottom"></span>
                     </div>
                 </div>
-                <div class="button_container" id="toggle">
-                    <span class="top"></span>
-                    <span class="middle"></span>
-                    <span class="bottom"></span>
-                </div>
                 <div class="right_top d-flex align-items-center justify-content-end">
-
+                <div class="header-flag-box">
                     @php
                         $currentCode = strtoupper(\App\Helpers\Helper::getVisitorCountryCode());
                         $countries = \App\Helpers\Helper::getCountries();
@@ -38,10 +40,10 @@
                             @endforeach
                         </select>
                     </div>
+                </div>
 
 
-
-
+   
 
                     <div class="menu-wrepper d-flex">
                         <div class="right_btm">
@@ -77,7 +79,7 @@
                                 </nav>
                             </div>
                         </div>
-                        <div class="right_tran ms-2">
+                        <div class="right_tran ms-1">
                             <div id="google_translate_element"></div>
                         </div>
                     </div>
