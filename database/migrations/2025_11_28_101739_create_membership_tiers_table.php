@@ -25,6 +25,14 @@ class CreateMembershipTiersTable extends Migration
             ['name' => 'Gold', 'slug' => 'gold', 'description' => 'Gold membership with extra benefits', 'cost' => '30', 'created_at' => now(), 'updated_at' => now()],
             ['name' => 'Platinum', 'slug' => 'platinum', 'description' => 'Platinum membership with premium benefits', 'cost' => '60', 'created_at' => now(), 'updated_at' => now()],
         ]);
+
+        // seed to create roles if not exist 'MEMBERSHIP_STANDARD', 'MEMBERSHIP_GOLD', 'MEMBERSHIP_PLATINUM'
+        $roles = [
+            ['name' => 'MEMBERSHIP_STANDARD', 'guard_name' => 'web', 'created_at' => now(), 'updated_at' => now()],
+            ['name' => 'MEMBERSHIP_GOLD', 'guard_name' => 'web', 'created_at' => now(), 'updated_at' => now()],
+            ['name' => 'MEMBERSHIP_PLATINUM', 'guard_name' => 'web', 'created_at' => now(), 'updated_at' => now()],
+        ];
+        DB::table('roles')->insertOrIgnore($roles);
     }
 
     public function down()
