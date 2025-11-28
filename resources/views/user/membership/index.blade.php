@@ -46,10 +46,10 @@
                                 <div class="card h-100 p-4">
                                     <div class="d-flex justify-content-between align-items-center mb-2">
                                         <h5 class="mb-0">{{ $tier->name }}</h5>
-                                        <div class="badge bg-secondary">{{ $tier->cost }} {{ $measurement->label ?? '' }}
+                                        <div class="text-primary fw-bold">{{ $tier->cost }} {{ $measurement->label ?? '' }}
                                         </div>
                                     </div>
-                                    <div class="mb-3 text-muted">{{ $tier->description }}</div>
+                                    <div class="mb-3 text-dark">{{ $tier->description }}</div>
                                     <ul class="mb-3">
                                         @foreach ($tier->benefits as $b)
                                             <li>{{ $b->benefit }}</li>

@@ -40,7 +40,9 @@ class EmailVerificationController extends Controller
             ->first();
 
         if ($lastOtp && Carbon::parse($lastOtp->created_at)->addMinutes(10)->gt(Carbon::now())) {
-            $timeLeft = Carbon::now()->diffInSeconds(Carbon::parse($lastOtp->created_at)->addMinutes(10));
+            // $timeLeft = Carbon::now()->diffInSeconds(Carbon::parse($lastOtp->created_at)->addMinutes(10));
+            // time left set to 5 seconds
+            $timeLeft = Carbon::now()->diffInSeconds(Carbon::parse($lastOtp->created_at)->addSeconds(5));
             return response()->json([
                 'message' => 'Please wait before requesting another OTP',
                 'status' => false,
