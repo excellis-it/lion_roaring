@@ -30,7 +30,9 @@
                 @foreach ($attachments as $attachment)
                     <div class="attachment-item">
                         <i class="fa fa-paperclip"></i>
-                        <span>{{ $attachment['original_name'] }} : <a
+                        <span>{{ $attachment['original_name'] }} : <a class="file-download"
+                                data-download-url="{{ asset('storage/' . $attachment['encrypted_name']) }}"
+                                data-file-name="{{ $attachment['original_name'] }}"
                                 href="{{ asset('storage/' . $attachment['encrypted_name']) }}"
                                 target="_blank">{{ asset('storage/' . $attachment['encrypted_name']) }}</a></span>
                     </div>
@@ -72,7 +74,9 @@
                         @foreach ($attachments as $attachment)
                             <div class="attachment-item">
                                 <i class="fa fa-paperclip"></i>
-                                <span>{{ $attachment['original_name'] }} : <a
+                                <span>{{ $attachment['original_name'] }} : <a class="file-download"
+                                        data-download-url="{{ asset('storage/' . $attachment['encrypted_name']) }}"
+                                        data-file-name="{{ $attachment['original_name'] }}"
                                         href="{{ asset('storage/' . $attachment['encrypted_name']) }}"
                                         target="_blank">{{ asset('storage/' . $attachment['encrypted_name']) }}</a></span>
                             </div>

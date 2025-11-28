@@ -26,7 +26,7 @@
                             <span>
                                 <img src="{{ asset('user_assets/images/Activity.png') }}" alt="">
                             </span>
-                            <span class="hide-menu">Activity</span>
+                            <span class="hide-menu">{{ Helper::getMenuName('activity', 'Activity') }}</span>
                         </a>
                     </li>
                 @endif --}}
@@ -38,7 +38,7 @@
                             <span>
                                 <img src="{{ asset('user_assets/images/Team.png') }}" alt="">
                             </span>
-                            <span class="hide-menu">Team</span>
+                            <span class="hide-menu">{{ Helper::getMenuName('team', 'Team') }}</span>
                         </a>
                     </li>
                 @endif --}}
@@ -50,7 +50,7 @@
                             <span>
                                 <img src="{{ asset('user_assets/images/Files.png') }}" alt="">
                             </span>
-                            <span class="hide-menu">Files</span>
+                            <span class="hide-menu">{{ Helper::getMenuName('files', 'Files') }}</span>
                         </a>
                     </li>
                 @endif --}}
@@ -64,7 +64,8 @@
                                  <img src="{{ asset('user_assets/images/ICON/Messaging/Messaging.svg') }}"
                                      alt="">
                              </span>
-                             <span class="hide-menu">Messaging</span>
+                             <span
+                                 class="hide-menu">{{ Helper::getMenuName('messaging', 'Messaging') }}</span>
                              <div class="count_chat_sidebar count_chat_sidebar_count_all" style="display: none;"></div>
                          </a>
                          {{-- collapse --}}
@@ -79,7 +80,7 @@
                                              <img src="{{ asset('user_assets/images/ICON/Messaging/chat.svg') }}"
                                                  alt="">
                                          </span>
-                                         <span>Chats</span>
+                                         <span>{{ Helper::getMenuName('chats', 'Chats') }}</span>
                                      </a>
                                  @endif
                                  @if (Gate::check('Manage Team'))
@@ -91,7 +92,8 @@
                                                  alt="">
 
                                          </span>
-                                         <span class="hide-menu">Team</span>
+                                         <span
+                                             class="hide-menu">{{ Helper::getMenuName('team', 'Team') }}</span>
                                      </a>
                                  @endif
 
@@ -101,14 +103,14 @@
                                     <span>
                                         <img src="{{ asset('user_assets/images/Calendar.png') }}" alt="">
                                     </span>
-                                    <span>Calendar</span>
+                                    <span>{{ Helper::getMenuName('calendar', 'Calendar') }}</span>
                                 </a>
                                 @endif --}}
                                  {{-- <a href="{{ route('user.page', ['name' => 'Calls', 'permission' => 'Manage Chat']) }}">
                                     <span>
                                         <img src="{{ asset('user_assets/images/Calls.png') }}" alt="">
                                     </span>
-                                    <span>Calls</span>
+                                    <span>{{ Helper::getMenuName('calls', 'Calls') }}</span>
                                 </a> --}}
                                  @if (Gate::check('Manage Email'))
                                      <a href="{{ route('mail.index') }}">
@@ -118,7 +120,7 @@
                                              <img src="{{ asset('user_assets/images/ICON/Messaging/Mail.svg') }}"
                                                  alt="">
                                          </span>
-                                         <span>Mail</span>
+                                         <span>{{ Helper::getMenuName('mail', 'Mail') }}</span>
                                      </a>
                                  @endif
                              </div>
@@ -137,7 +139,8 @@
                              <span>
                                  <img src="{{ asset('user_assets/images/Education.svg') }}" alt="">
                              </span>
-                             <span class="hide-menu">Education</span>
+                             <span
+                                 class="hide-menu">{{ Helper::getMenuName('education', 'Education') }}</span>
                          </a>
                          {{-- Collapse content --}}
                          <div class="collapse {{ Request::is('user/topics*') || Request::is('user/becoming-sovereign*') || Request::is('user/becoming-christ-link*') || Request::is('user/leadership-development*') || Request::is('user/file*') ? 'show' : '' }}"
@@ -148,7 +151,7 @@
                                          <span>
                                              <img src="{{ asset('user_assets/images/Education.svg') }}" alt="">
                                          </span>
-                                         <span>Topics</span>
+                                         <span>{{ Helper::getMenuName('topics', 'Topics') }}</span>
                                      </a>
                                  @endif
                                  @if (Gate::check('Manage Becoming Sovereigns'))
@@ -157,7 +160,7 @@
                                              <img src="{{ asset('user_assets/images/Becoming Sovereign.svg') }}"
                                                  alt="">
                                          </span>
-                                         <span>Becoming Sovereign</span>
+                                         <span>{{ Helper::getMenuName('becoming_sovereign', 'Becoming Sovereign') }}</span>
                                      </a>
                                  @endif
                                  @if (Gate::check('Manage Becoming Christ Like'))
@@ -166,7 +169,7 @@
                                              <img src="{{ asset('user_assets/images/Becoming Christ Like.svg') }}"
                                                  alt="">
                                          </span>
-                                         <span>Becoming Christ Like</span>
+                                         <span>{{ Helper::getMenuName('becoming_christ_like', 'Becoming Christ Like') }}</span>
                                      </a>
                                  @endif
                                  @if (Gate::check('Manage Becoming a Leader'))
@@ -175,7 +178,7 @@
                                              <img src="{{ asset('user_assets/images/Leadership Development.svg') }}"
                                                  alt="">
                                          </span>
-                                         <span>Becoming a Leader</span>
+                                         <span>{{ Helper::getMenuName('becoming_leader', 'Becoming a Leader') }}</span>
                                      </a>
                                  @endif
                                  @if (Gate::check('Manage File'))
@@ -183,14 +186,15 @@
                                          <span>
                                              <img src="{{ asset('user_assets/images/Files.svg') }}" alt="">
                                          </span>
-                                         <span class="hide-menu">Files</span>
+                                         <span
+                                             class="hide-menu">{{ Helper::getMenuName('files', 'Files') }}</span>
                                      </a>
                                  @endif
                                  {{-- <a href="{{ route('user.page', ['name' => 'Communities of interest', 'permission' => 'Manage Education']) }}">
                                     <span>
                                         <img src="{{ asset('user_assets/images/Live Events.png') }}" alt="">
                                     </span>
-                                    <span>Live Events</span>
+                                    <span>{{ Helper::getMenuName('live_events', 'Live Events') }}</span>
                                 </a> --}}
                              </div>
                          </div>
@@ -208,7 +212,8 @@
                                  <img src="{{ asset('user_assets/images/ICON/Bulletin/Bulletin.svg') }}"
                                      alt="">
                              </span>
-                             <span class="hide-menu">Bulletins</span>
+                             <span
+                                 class="hide-menu">{{ Helper::getMenuName('bulletins', 'Bulletins') }}</span>
                          </a>
                          {{-- Collapse content --}}
                          <div class="collapse {{ Request::is('user/bulletins*') || Request::is('user/view-calender*') || Request::is('user/jobs*') || Request::is('user/meetings*') || Request::is('user/private-collaborations*') || Request::is('user/bulletin-board*') || Request::is('user/events*') ? 'show' : '' }}"
@@ -221,7 +226,7 @@
                                              <img src="{{ asset('user_assets/images/ICON/Bulletin/Meeting_Schedule.svg') }}"
                                                  alt="">
                                          </span>
-                                         <span>Bulletins Board</span>
+                                         <span>{{ Helper::getMenuName('bulletin_board', 'Bulletins Board') }}</span>
                                      </a>
                                  @endif
                                  @if (Gate::check('Manage Bulletin'))
@@ -230,7 +235,7 @@
                                              <img src="{{ asset('user_assets/images/ICON/Bulletin/Create_Bulletins.svg') }}"
                                                  alt="">
                                          </span>
-                                         <span>Create Bulletins</span>
+                                         <span>{{ Helper::getMenuName('create_bulletins', 'Create Bulletins') }}</span>
                                      </a>
                                  @endif
                                  @if (Gate::check('Manage Job Postings'))
@@ -239,7 +244,7 @@
                                              <img src="{{ asset('user_assets/images/ICON/Bulletin/Job_Posting.svg') }}"
                                                  alt="">
                                          </span>
-                                         <span>Job Posting</span>
+                                         <span>{{ Helper::getMenuName('job_posting', 'Job Posting') }}</span>
                                      </a>
                                  @endif
                                  @if (Gate::check('Manage Meeting Schedule'))
@@ -248,7 +253,7 @@
                                              <img src="{{ asset('user_assets/images/ICON/Bulletin/Meeting_Schedule.svg') }}"
                                                  alt="">
                                          </span>
-                                         <span>Meeting Schedule</span>
+                                         <span>{{ Helper::getMenuName('meeting_schedule', 'Meeting Schedule') }}</span>
                                      </a>
                                  @endif
 
@@ -256,7 +261,7 @@
                                 <span>
                                     <img src="{{ asset('user_assets/images/Communities of interest.png') }}" alt="">
                                 </span>
-                                <span>Communities of interest</span>
+                                <span>{{ Helper::getMenuName('communities_of_interest', 'Communities of interest') }}</span>
                             </a> --}}
                                  @if (Gate::check('Manage Event'))
                                      <a href="{{ route('events.index') }}">
@@ -264,7 +269,7 @@
                                              <img src="{{ asset('user_assets/images/ICON/Bulletin/Live_Event.svg') }}"
                                                  alt="">
                                          </span>
-                                         <span>Live Events</span>
+                                         <span>{{ Helper::getMenuName('live_events', 'Live Events') }}</span>
                                      </a>
                                  @endif
 
@@ -274,7 +279,7 @@
                                              <img src="{{ asset('user_assets/images/ICON/Bulletin/lecture.svg') }}"
                                                  alt="">
                                          </span>
-                                         <span>Private Collaboration</span>
+                                         <span>{{ Helper::getMenuName('private_collaboration', 'Private Collaboration') }}</span>
                                      </a>
                                  @endif
                              </div>
@@ -286,7 +291,7 @@
                             <span>
                                 <img src="{{ asset('user_assets/images/Meeting Schedule.png') }}" alt="">
                             </span>
-                            <span class="hide-menu">Bulletin Board</span>
+                            <span class="hide-menu">{{ Helper::getMenuName('bulletin_board', 'Bulletin Board') }}</span>
                         </a>
                     </li> --}}
                  @endif
@@ -307,7 +312,8 @@
                              <span>
                                  <img src="{{ asset('user_assets/images/ICON/Store/Store.svg') }}" alt="">
                              </span>
-                             <span class="hide-menu">E-Store</span>
+                             <span
+                                 class="hide-menu">{{ Helper::getMenuName('estore', 'E-Store') }}</span>
                          </a>
                          {{-- Collapse content --}}
                          <div class="collapse {{ Request::is('user/products*') ||
@@ -336,7 +342,7 @@
                                              <img src="{{ asset('user_assets/images/ICON/Store/E-store_Dashboard.svg') }}"
                                                  alt="">
                                          </span>
-                                         <span>E-store Dashboard</span>
+                                         <span>{{ Helper::getMenuName('e_store_dashboard', 'E-store Dashboard') }}</span>
                                      </a>
                                  @endif
 
@@ -346,7 +352,7 @@
                                             <img src="{{ asset('user_assets/images/ICON/All_Member.svg') }}"
                                                 alt="">
                                         </span>
-                                        <span>E-store Users</span>
+                                        <span>{{ Helper::getMenuName('e_store_users', 'E-store Users') }}</span>
                                     </a>
                                 @endif --}}
 
@@ -356,7 +362,7 @@
                                              <img src="{{ asset('user_assets/images/ICON/Store/Product_Categories.svg') }}"
                                                  alt="">
                                          </span>
-                                         <span>Product Categories</span>
+                                         <span>{{ Helper::getMenuName('product_categories', 'Product Categories') }}</span>
                                      </a>
                                  @endif
 
@@ -368,7 +374,7 @@
                                              <img src="{{ asset('user_assets/images/ICON/Store/size.png') }}"
                                                  alt="">
                                          </span>
-                                         <span>Manage Sizes</span>
+                                         <span>{{ Helper::getMenuName('manage_sizes', 'Manage Sizes') }}</span>
                                      </a>
                                  @endif
                                  @if (Gate::check('Manage Estore Colors'))
@@ -377,7 +383,7 @@
                                              <img src="{{ asset('user_assets/images/ICON/Store/color-wheel.png') }}"
                                                  alt="">
                                          </span>
-                                         <span>Manage Colors</span>
+                                         <span>{{ Helper::getMenuName('manage_colors', 'Manage Colors') }}</span>
                                      </a>
                                  @endif
 
@@ -391,7 +397,7 @@
                                              <img src="{{ asset('user_assets/images/ICON/Store/coupon.png') }}"
                                                  alt="">
                                          </span>
-                                         <span>Promo Codes</span>
+                                         <span>{{ Helper::getMenuName('promo_codes', 'Promo Codes') }}</span>
                                      </a>
 
                                      <a href="{{ route('store-settings.index') }}">
@@ -399,7 +405,7 @@
                                              <img src="{{ asset('user_assets/images/ICON/Store/settings.png') }}"
                                                  alt="">
                                          </span>
-                                         <span>E-store Settings</span>
+                                         <span>{{ Helper::getMenuName('e_store_settings', 'E-store Settings') }}</span>
                                      </a>
                                  @endif
                                  @if (Gate::check('Manage Order Status'))
@@ -408,7 +414,7 @@
                                              <img src="{{ asset('user_assets/images/ICON/Store/o-status.png') }}"
                                                  alt="">
                                          </span>
-                                         <span>Order Status</span>
+                                         <span>{{ Helper::getMenuName('order_status', 'Order Status') }}</span>
                                      </a>
                                  @endif
                                  @if (Gate::check('Manage Email Template'))
@@ -417,7 +423,7 @@
                                              <img src="{{ asset('user_assets/images/ICON/Store/o-e-template.png') }}"
                                                  alt="">
                                          </span>
-                                         <span>Orders Email Templates</span>
+                                         <span>{{ Helper::getMenuName('orders_email_templates', 'Orders Email Templates') }}</span>
                                      </a>
                                  @endif
 
@@ -429,7 +435,7 @@
                                              <img src="{{ asset('user_assets/images/ICON/Store/Products.svg') }}"
                                                  alt="">
                                          </span>
-                                         <span>Products</span>
+                                         <span>{{ Helper::getMenuName('products', 'Products') }}</span>
                                      </a>
                                  @endif
                                  {{-- warehouse management --}}
@@ -439,7 +445,7 @@
                                              <img src="{{ asset('user_assets/images/ICON/Store/wharehouse.png') }}"
                                                  alt="">
                                          </span>
-                                         <span>Warehouses</span>
+                                         <span>{{ Helper::getMenuName('warehouses', 'Warehouses') }}</span>
                                      </a>
                                  @endif
 
@@ -451,7 +457,7 @@
                                         <img src="{{ asset('user_assets/images/ICON/Store/warehouse_admin.png') }}"
                                             alt="">
                                     </span>
-                                    <span>Warehouse Admins</span>
+                                    <span>{{ Helper::getMenuName('warehouse_admins', 'Warehouse Admins') }}</span>
                                 </a> --}}
 
                                  {{-- Orders List --}}
@@ -461,7 +467,7 @@
                                              <img src="{{ asset('user_assets/images/ICON/Store/Orders.svg') }}"
                                                  alt="">
                                          </span>
-                                         <span>Orders</span>
+                                         <span>{{ Helper::getMenuName('orders', 'Orders') }}</span>
                                      </a>
                                  @endif
                              </div>
@@ -476,7 +482,8 @@
                              <span>
                                  <img src="{{ asset('user_assets/images/ICON/Store/store-wa.svg') }}" alt="">
                              </span>
-                             <span class="hide-menu">Warehouse Store</span>
+                             <span
+                                 class="hide-menu">{{ Helper::getMenuName('warehouse_store', 'Warehouse Store') }}</span>
                          </a>
                          {{-- Collapse content --}}
                          <div class="collapse {{ Request::is('user/products*') || Request::is('user/store-orders*') || Request::is('user/ware-houses*') || Request::is('user/store-settings*') || Request::is('user/sizes*') || Request::is('user/colors*') || Request::is('user/store-promo-codes*') || Request::is('user/warehouse-admins*') || Request::is('user/store-cms*') || Request::is('user/store-cms-page/home*') || Request::is('user/store-cms-page/footer*') || Request::is('user/categories*') ? 'show' : '' }}"
@@ -489,7 +496,7 @@
                                          <img src="{{ asset('user_assets/images/ICON/Store/wharehouse.png') }}"
                                              alt="">
                                      </span>
-                                     <span>Warehouses</span>
+                                     <span>{{ Helper::getMenuName('warehouses', 'Warehouses') }}</span>
                                  </a>
 
                                  <a href="{{ route('products.index') }}">
@@ -497,7 +504,7 @@
                                          <img src="{{ asset('user_assets/images/ICON/Store/Products.svg') }}"
                                              alt="">
                                      </span>
-                                     <span>Warehouse Products</span>
+                                     <span>{{ Helper::getMenuName('warehouse_products', 'Warehouse Products') }}</span>
                                  </a>
 
 
@@ -508,7 +515,7 @@
                                          <img src="{{ asset('user_assets/images/ICON/Store/Orders.svg') }}"
                                              alt="">
                                      </span>
-                                     <span>Warehouse Orders</span>
+                                     <span>{{ Helper::getMenuName('warehouse_orders', 'Warehouse Orders') }}</span>
                                  </a>
                              </div>
                          </div>
@@ -524,7 +531,8 @@
                              <span>
                                  <img src="{{ asset('user_assets/images/ICON/elearning.png') }}" alt="">
                              </span>
-                             <span class="hide-menu">E-Learning</span>
+                             <span
+                                 class="hide-menu">{{ Helper::getMenuName('elearning', 'E-Learning') }}</span>
                          </a>
                          {{-- Collapse content --}}
                          <div class="collapse {{ Request::is('user/elearning*') || Request::is('user/elearning-cms*') || Request::is('user/elearning-cms-page/home*') || Request::is('user/elearning-cms-page/footer*') || Request::is('user/elearning-categories*') ? 'show' : '' }}"
@@ -537,7 +545,7 @@
                                              <img src="{{ asset('user_assets/images/ICON/Store/E-store_Dashboard.svg') }}"
                                                  alt="">
                                          </span>
-                                         <span>E-learning Dashboard</span>
+                                         <span>{{ Helper::getMenuName('e_learning_dashboard', 'E-learning Dashboard') }}</span>
                                      </a>
                                  @endif
 
@@ -547,7 +555,7 @@
                                              <img src="{{ asset('user_assets/images/ICON/Store/Product_Categories.svg') }}"
                                                  alt="">
                                          </span>
-                                         <span>E-learning Categories</span>
+                                         <span>{{ Helper::getMenuName('e_learning_categories', 'E-learning Categories') }}</span>
                                      </a>
                                  @endif
                                  {{-- elearning topics  --}}
@@ -557,7 +565,7 @@
                                              <img src="{{ asset('user_assets/images/ICON/Store/Product_Categories.svg') }}"
                                                  alt="">
                                          </span>
-                                         <span>E-learning Topics</span>
+                                         <span>{{ Helper::getMenuName('e_learning_topics', 'E-learning Topics') }}</span>
                                      </a>
                                  @endif
 
@@ -569,7 +577,7 @@
                                              <img src="{{ asset('user_assets/images/ICON/Store/Products.svg') }}"
                                                  alt="">
                                          </span>
-                                         <span>E-learning Products</span>
+                                         <span>{{ Helper::getMenuName('e_learning_products', 'E-learning Products') }}</span>
                                      </a>
                                  @endif
                              </div>
@@ -584,7 +592,8 @@
                                  <img src="{{ asset('user_assets/images/ICON/Role_Permission.svg') }}"
                                      alt="">
                              </span>
-                             <span class="hide-menu">Role Permission</span>
+                             <span
+                                 class="hide-menu">{{ Helper::getMenuName('role_permission', 'Role Permission') }}</span>
                          </a>
                      </li>
                  @endif
@@ -595,7 +604,8 @@
                              <span>
                                  <img src="{{ asset('user_assets/images/ICON/All_Member.svg') }}" alt="">
                              </span>
-                             <span class="hide-menu">All Members</span>
+                             <span
+                                 class="hide-menu">{{ Helper::getMenuName('all_members', 'All Members') }}</span>
                          </a>
                      </li>
                  @endif
@@ -608,7 +618,8 @@
                              <span>
                                  <img src="{{ asset('user_assets/images/ICON/activity.png') }}" alt="">
                              </span>
-                             <span class="hide-menu">User Activity</span>
+                             <span
+                                 class="hide-menu">{{ Helper::getMenuName('user_activity', 'User Activity') }}</span>
                          </a>
 
                          <div class="collapse {{ Request::is('user/user-activity*') ? 'show' : '' }}"
@@ -619,14 +630,14 @@
                                          <img src="{{ asset('user_assets/images/ICON/visual-data.png') }}"
                                              alt="">
                                      </span>
-                                     <span>Activity Dashboard</span>
+                                     <span>{{ Helper::getMenuName('activity_dashboard', 'Activity Dashboard') }}</span>
                                  </a>
                                  <a href="{{ route('user-activity-get-list') }}">
                                      <span>
                                          <img src="{{ asset('user_assets/images/ICON/completed-task.png') }}"
                                              alt="">
                                      </span>
-                                     <span>Activity List</span>
+                                     <span>{{ Helper::getMenuName('activity_list', 'Activity List') }}</span>
                                  </a>
                              </div>
                          </div>
@@ -639,7 +650,7 @@
                             <span>
                                 <img src="{{ asset('user_assets/images/ICON/Ecclesias.svg') }}" alt="">
                             </span>
-                            <span class="hide-menu">Ecclesias</span>
+                            <span class="hide-menu">{{ Helper::getMenuName('ecclesias', 'Ecclesias') }}</span>
                         </a>
                     </li>
                 @endif --}}
@@ -649,7 +660,8 @@
                              <span>
                                  <img src="{{ asset('user_assets/images/ICON/Strategy.svg') }}" alt="">
                              </span>
-                             <span class="hide-menu">Strategy</span>
+                             <span
+                                 class="hide-menu">{{ Helper::getMenuName('strategy', 'Strategy') }}</span>
                          </a>
                      </li>
                  @endif
@@ -661,7 +673,8 @@
                                  <img src="{{ asset('user_assets/images/ICON/policy_and_guidance.png') }}"
                                      alt="">
                              </span>
-                             <span class="hide-menu">Policy & <br>Guidance</span>
+                             <span
+                                 class="hide-menu">{{ Helper::getMenuName('policy_guidance', 'Policy & Guidance') }}</span>
                          </a>
                      </li>
                  @endif
@@ -673,7 +686,7 @@
                             <span>
                                 <img src="{{ asset('user_assets/images/ICON/Help.svg') }}" alt="">
                             </span>
-                            <span class="hide-menu">Help</span>
+                            <span class="hide-menu">{{ Helper::getMenuName('help', 'Help') }}</span>
                         </a>
                     </li>
                 @endif --}}

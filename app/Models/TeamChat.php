@@ -16,6 +16,7 @@ class TeamChat extends Model
         'user_id',
         'message',
         'attachment',
+        'attachment_name',
         'is_seen',
         'deleted_at',
         'created_at',
@@ -83,8 +84,8 @@ class TeamChat extends Model
     public function getDeletedAtAttribute($value)
     {
         $timezone = auth()->check()
-        ? $this->resolveUserTimezone(auth()->user()->time_zone)
-        : config('app.timezone');
+            ? $this->resolveUserTimezone(auth()->user()->time_zone)
+            : config('app.timezone');
         return Carbon::parse($value)->timezone($timezone);
     }
 }

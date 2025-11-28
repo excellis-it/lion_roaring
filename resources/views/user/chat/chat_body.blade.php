@@ -77,8 +77,9 @@
 @if (isset($is_chat))
     <div class="row align-items-center">
         <div class="col-xxl-3">
-            <button id="backButton" style="color:#000;" class="btn btn-light chat-back-button me-3 d-inline-flex align-items-center backButton">
-                    <i class="fa fa-arrow-left me-1"></i> Back
+            <button id="backButton" style="color:#000;"
+                class="btn btn-light chat-back-button me-3 d-inline-flex align-items-center backButton">
+                <i class="fa fa-arrow-left me-1"></i> Back
             </button>
         </div>
         <div class="col-xxl-5">
@@ -144,7 +145,9 @@
                                     $ext = pathinfo($chat->attachment, PATHINFO_EXTENSION);
                                 @endphp
                                 @if (in_array($ext, ['jpg', 'jpeg', 'png', 'gif', 'svg', 'webp']))
-                                    <a href="{{ Storage::url($chat->attachment) }}" target="_blank">
+                                    <a href="{{ Storage::url($chat->attachment) }}" target="_blank"
+                                        class="file-download" data-download-url="{{ Storage::url($chat->attachment) }}"
+                                        data-file-name="{{ $chat->attachment_name ?? pathinfo($chat->attachment, PATHINFO_BASENAME) }}">
                                         <img src="{{ Storage::url($chat->attachment) }}" alt=""
                                             style="max-width: 200px; max-height: 200px;">
                                     </a>
@@ -155,7 +158,8 @@
                                     </video>
                                 @else
                                     <a href="{{ Storage::url($chat->attachment) }}" target="_blank"
-                                        download="{{ $chat->attachment }}">
+                                        class="file-download" data-download-url="{{ Storage::url($chat->attachment) }}"
+                                        data-file-name="{{ $chat->attachment_name ?? pathinfo($chat->attachment, PATHINFO_BASENAME) }}">
                                         <img src="{{ asset('user_assets/images/file.png') }}" alt="">
                                     </a>
                                 @endif

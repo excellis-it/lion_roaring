@@ -404,6 +404,9 @@
                         <li class="{{ Request::is('admin/settings/') ? 'active' : ' ' }}">
                             <a class="nav-link" href="{{ route('admin.settings.edit') }}">Settings</a>
                         </li>
+                        <li class="{{ Request::is('admin/menu*') ? 'active' : ' ' }}">
+                            <a class="nav-link" href="{{ route('admin.menu.index') }}">Menu Names</a>
+                        </li>
 
                     </ul>
                 </li>

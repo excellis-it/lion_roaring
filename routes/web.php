@@ -61,6 +61,7 @@ use App\Http\Controllers\User\LiveEventController;
 use App\Http\Controllers\User\MeetingSchedulingController;
 use App\Http\Controllers\User\PrivateCollaborationController;
 use App\Http\Controllers\User\NewsletterController as UserNewsletterController;
+use App\Http\Controllers\User\ElearningNewsletterController as UserElearningNewsletterController;
 use App\Http\Controllers\User\PartnerController;
 use App\Http\Controllers\User\ProductController;
 use App\Http\Controllers\User\ElearningController;
@@ -97,7 +98,7 @@ use App\Models\Country;
 use Illuminate\Support\Str;
 use App\Http\Controllers\VisitorController;
 use App\Http\Controllers\User\UserActivityController;
-
+use App\Http\Controllers\Admin\MenuController;
 
 
 /*
@@ -292,6 +293,11 @@ Route::group(['middleware' => ['admin'], 'prefix' => 'admin'], function () {
             Route::get('/', [FooterController::class, 'index'])->name('index');
             Route::post('/update', [FooterController::class, 'update'])->name('update');
         });
+    });
+    // manage menu names
+    Route::prefix('menu')->group(function () {
+        Route::get('/', [MenuController::class, 'index'])->name('admin.menu.index');
+        Route::post('/update', [MenuController::class, 'update'])->name('admin.menu.update');
     });
 });
 
@@ -831,6 +837,14 @@ Route::prefix('user')->middleware(['user', 'preventBackHistory', 'userActivity']
         Route::get('/newsletter-delete/{id}', [UserNewsletterController::class, 'delete'])->name('user.newsletters.delete');
     });
     Route::get('/user-newsletter-fetch-data', [UserNewsletterController::class, 'fetchData'])->name('user.newsletters.fetch-data');
+
+    // E-learning newsletters
+    Route::prefix('elearning-newsletters')->group(function () {
+        Route::get('/', [UserElearningNewsletterController::class, 'list'])->name('user.elearning.newsletters.index');
+        Route::post('/send-email', [UserElearningNewsletterController::class, 'sendEmail'])->name('user.elearning.newsletters.send-mail');
+        Route::get('/newsletter-delete/{id}', [UserElearningNewsletterController::class, 'delete'])->name('user.elearning.newsletters.delete');
+    });
+    Route::get('/user-elearning-newsletter-fetch-data', [UserElearningNewsletterController::class, 'fetchData'])->name('user.elearning.newsletters.fetch-data');
 
     Route::get('/mail-fetch-data', [SendMailController::class, 'fetchData'])->name('mail.fetch-data');
 });
