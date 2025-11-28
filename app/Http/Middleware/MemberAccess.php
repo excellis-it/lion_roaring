@@ -21,14 +21,14 @@ class MemberAccess
                 return $next($request);
             } else {
                 if (auth()->check() && auth()->user()->hasRole('MEMBER_NON_SOVEREIGN')) {
-                    return redirect()->route('user.subscription')->with('error', 'Your subscription has been expired. Please renew your subscription.');
+                    return redirect()->route('user.profile')->with('error', 'Your subscription has expired or subscription management is temporarily unavailable.');
                 } else {
                     return $next($request);
                 }
             }
         } else {
             if (auth()->check() && auth()->user()->hasRole('MEMBER_NON_SOVEREIGN')) {
-                return redirect()->route('user.subscription')->with('error', 'You have not subscribed to any plan. Please subscribe to a plan.');
+                return redirect()->route('user.profile')->with('error', 'You have not subscribed to a plan or subscription management is temporarily unavailable.');
             } else {
                 return $next($request);
             }
