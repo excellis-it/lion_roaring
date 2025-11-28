@@ -68,7 +68,6 @@ use App\Http\Controllers\User\ElearningController;
 use App\Http\Controllers\User\RolePermissionsController;
 use App\Http\Controllers\User\SendMailController;
 use App\Http\Controllers\User\StrategyController;
-use App\Http\Controllers\User\SubscriptionController;
 use App\Http\Controllers\User\TeamChatController;
 use App\Http\Controllers\User\TeamController;
 use App\Http\Controllers\User\TopicController;
@@ -393,9 +392,6 @@ Route::middleware(['userActivity'])->group(function () {
 });
 
 Route::prefix('user')->middleware(['user', 'preventBackHistory', 'userActivity'])->group(function () {
-    Route::get('/subscription', [SubscriptionController::class, 'subscription'])->name('user.subscription');
-    Route::get('/subscription-payment/{id}', [SubscriptionController::class, 'payment'])->name('user.subscription.payment');
-    Route::get('/stripe-checkout-success', [SubscriptionController::class, 'stripeCheckoutSuccess'])->name('stripe.checkout.success');
 
     // Route::middleware(['member.access'])->group(function () {
     // Route::get('/dashboard', [UserDashboardController::class, 'dashboard'])->name('user.dashboard');

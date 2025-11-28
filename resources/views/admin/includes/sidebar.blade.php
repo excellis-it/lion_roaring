@@ -101,11 +101,11 @@
                             href="{{ route('customers.index') }}"> User List</a></li>
                 </ul>
             </li> --}}
-            {{-- <li class="dropdown">
+            <li class="dropdown">
                 <a href="javascript:void(0);"
                     class="menu-toggle nav-link has-dropdown {{ Request::is('admin/plans*') ? 'active' : ' ' }}">
                     <i class="ph ph-cards"></i>
-                    <span> Plan Management</span>
+                    <span> Subscription Plan Management</span>
                 </a>
                 <ul class="dropdown-menu">
                     <li class="{{ Request::is('admin/plans/create') ? 'active' : ' ' }}"><a class="nav-link"
@@ -113,7 +113,7 @@
                     <li class="{{ Request::is('admin/plans') ? 'active' : ' ' }}"><a class="nav-link"
                             href="{{ route('plans.index') }}"> Plan List</a></li>
                 </ul>
-            </li> --}}
+            </li>
             {{-- @if (Gate::check('Manage All Users'))
                 <li class="dropdown {{ Request::is('admin/ecclessias*') ? 'active' : ' ' }}">
                     <a href="{{ route('ecclessias.index') }}">
