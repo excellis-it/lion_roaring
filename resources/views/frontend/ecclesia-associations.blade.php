@@ -27,19 +27,24 @@
         <div class="container">
             <div class="row align-items-center justify-content-center">
                 <div class="col-xl-10 col-lg-12 aos-init aos-animate" data-aos="fade-up" data-aos-duration="1000">
-                    <div class="about_text heading_hp">
+                    <div class="about_text about_text_new_p heading_hp">
                         @if (isset($ecclesiaAssociations['description']))
                             {!! $ecclesiaAssociations['description'] !!}
                         @endif
+                        
                         @if (isset($ecclesiaAssociations['description1']))
                         {!! $ecclesiaAssociations['description1'] !!}
-                    @endif
+                        @endif
                     </div>
                 </div>
             </div>
         </div>
     </section>
 @endsection
+
+
+
+
 
 @push('scripts')
 @endpush

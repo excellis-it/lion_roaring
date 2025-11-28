@@ -121,9 +121,9 @@ p {
 .login_prf a {
     color: #fff;
     background: var(--sec-color);
-    padding: 10px 12px;
+    padding: 9px 9px;
     border-radius: 30px;
-    font-size: 17px;
+    font-size: 15px;
     font-weight: 500;
 }
 
@@ -135,7 +135,7 @@ p {
     height: 30px;
     display: inline-flex;
     left: -3%;
-    top: -1px;
+    top: 1px;
     position: relative;
     align-items: center;
     justify-content: center;
@@ -1638,7 +1638,7 @@ li.slick-active button {
 
 
 .footer_sec {
-    background: #fff;
+    background: #f9f9f9;
     padding: 80px 0 0px;
 }
 
@@ -1945,6 +1945,7 @@ li.slick-active button {
 
 .project_sec .row .col .project {
     background: var(--main-color);
+    border-radius: 10px;
 }
 
 .project_sec .row .col:nth-child(even) .project {
@@ -2204,7 +2205,113 @@ li.slick-active button {
     width: 100%;
     height: 300px;
     display: block;
+    position: relative;
+    overflow: hidden;
 }
+.picture_wrapper::before{
+    position: absolute;
+	top: 50%;
+	left: 50%;
+	z-index: 2;
+	display: block;
+	content: '';
+	width: 0;
+	height: 0;
+	background: rgba(12, 90, 233, 0.2);
+	/* border-radius: 100%; */
+	-webkit-transform: translate(-50%, -50%);
+	transform: translate(-50%, -50%);
+	opacity: 0;
+}
+.picture_wrapper:hover::before {
+	-webkit-animation: circle 9s;
+	animation: circle .9s;
+}
+@-webkit-keyframes circle {
+	0% {
+		opacity: 1;
+	}
+	40% {
+		opacity: 1;
+	}
+	100% {
+		width: 200%;
+		height: 200%;
+		opacity: 0;
+	}
+}
+@keyframes circle {
+	0% {
+		opacity: 1;
+	}
+	40% {
+		opacity: 1;
+	}
+	100% {
+		width: 200%;
+		height: 200%;
+		opacity: 0;
+	}
+}
+
+
+.picture_wrapper span{
+  position: absolute;
+  background-color: var(--main-color);
+  transition: .3s
+}
+.picture_wrapper .one{
+  height: 0;
+  width: 3px;
+  top: 0;
+  left: 0;
+}
+.picture_wrapper .two{
+  height: 3px;
+  width: 0;
+  bottom: 0;
+  left: 0;
+}
+.picture_wrapper .three{
+  height: 0;
+  width: 3px;
+  bottom:0;
+  right:0
+}
+.picture_wrapper .four{
+  height: 3px;
+  width: 0;
+  top: 0;
+  right: 0;
+}
+.picture_wrapper:hover .one,
+.picture_wrapper:hover .three{
+  height: 100%;
+}
+.picture_wrapper:hover .two,
+.picture_wrapper:hover .four{
+  width: 100%;
+}
+.picture_wrapper:hover img{
+  transition-duration: .3s;
+  transition-delay: .3s;
+  opacity: .5;
+}
+.picture_wrapper .magni-icon{
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%,-50%);
+    font-size: 30px;
+    color: var(--main-color);
+    opacity: 0;
+    transition: .3s
+
+}
+.picture_wrapper:hover .magni-icon{
+    opacity: 1;
+}
+
 
 .srlt {
     width: 100%;
@@ -2342,15 +2449,18 @@ li.slick-active button {
 }
 
 .inner_faq_sec .accordion-button {
-    font-size: 18px;
+    font-size: 22px;
     font-family: var(--heading-font);
 }
 
 .inner_faq_sec .accordion-button:not(.collapsed) {
-    color: #d98b1c;
-    background-color: rgb(217 139 28 / 26%);
+    color: #fff;
+    background-color: var(--main-color);
     box-shadow: inset 0 -1px 0 rgba(0, 0, 0, .125);
     font-weight: 600;
+}
+.accordion-button:not(.collapsed)::after{
+    filter: invert(1);
 }
 
 .login-sec {
@@ -2992,8 +3102,9 @@ li.slick-active button {
 }
 
 .goog-te-gadget .goog-te-combo {
-    padding: 10px 4px;
+    padding: 9px 4px;
     border-radius: 20px;
+    border: none;
 }
 
 /* .project p{
@@ -3632,11 +3743,44 @@ li.slick-active button {
     width: auto !important;
 }
 
+.header-flag-box{
+    border-radius: 40px !important;
+    background-color: #fff !important;
+    /* overflow: hidden !important; */
+}
+.header-flag-box span{
+    font-size: 14px !important;
+}
+.header-flag-box .input-group div:nth-child(2){
+    border:none !important;
+    min-width:auto !important;
+    background-color: #fff !important;
+    border-radius: 40px !important;
+}
 
+/* =======================mobile menu css========================= */
+.for-mobile-use{
+    width: 50%;
+}
 
-
-
-
+/* ===========================inner page css ================================== */
+.about_text_new_p p{
+    font-size: 24px;
+    color: #000;
+    line-height: 1.2;
+}
+.about_text_new_p h3{
+    font-size: 48px;
+    font-weight: 600;
+    color: var(--sec-color);
+}
+.about_text_new_p ol li{
+    font-size: 20px;
+}
+.about_text_new_p ol li strong,
+.about_text_new_p ol li b{
+    color: var(--main-color);
+}
 @media all and (max-width: 600px) {
     .promo-box-container {
         position: relative;
