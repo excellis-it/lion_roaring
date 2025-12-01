@@ -979,6 +979,9 @@ $(document).ready(function () {
         const sendButton = $(".Send");
         sendButton.addClass("sendloading");
 
+        $("#loading").addClass("loading");
+        $("#loading-content").addClass("loading-content");
+
         // Send each file with its individual message
         let promises = [];
 
@@ -1005,9 +1008,11 @@ $(document).ready(function () {
         Promise.all(promises)
             .then(function (responses) {
                 sendButton.removeClass("sendloading");
+                $("#loading").removeClass("loading");
+                $("#loading-content").removeClass("loading-content");
 
                 responses.forEach(function (res) {
-                    if (res.success) {
+                    if (res.success === true) {
                         const chats = res.all_chats || [res.chat];
 
                         chats.forEach(function (chat) {
@@ -1094,6 +1099,8 @@ $(document).ready(function () {
             })
             .catch(function (error) {
                 sendButton.removeClass("sendloading");
+                $("#loading").removeClass("loading");
+                $("#loading-content").removeClass("loading-content");
                 toastr.error("Failed to send files");
                 console.error(error);
             });

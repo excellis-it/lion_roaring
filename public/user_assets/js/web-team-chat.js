@@ -1565,6 +1565,9 @@ $(document).ready(function () {
         const sendButton = $(".Send");
         sendButton.addClass("sendloading");
 
+        $("#loading").addClass("loading");
+        $("#loading-content").addClass("loading-content");
+
         // Send each file with its individual message
         let promises = [];
 
@@ -1591,9 +1594,11 @@ $(document).ready(function () {
         Promise.all(promises)
             .then(function (responses) {
                 sendButton.removeClass("sendloading");
+                $("#loading").removeClass("loading");
+                $("#loading-content").removeClass("loading-content");
 
                 responses.forEach(function (res) {
-                    if (res.success) {
+                    if (res.status === true) {
                         const chats = res.all_chats || [res.chat];
 
                         chats.forEach(function (chat) {
@@ -1625,25 +1630,13 @@ $(document).ready(function () {
                                 chat.message || ""
                             );
 
-                            socket.emit("team_chat", {
-                                message: formattedMessage,
-                                user_id: sender_id,
-                                team_id: team_id,
-                                chat_id: chat.id,
+                            // Use the same event and payload structure as the regular TeamMessageForm send
+                            socket.emit("sendTeamMessage", {
+                                chat: chat,
                                 file_url: fileUrl,
-                                attachment_name: respFileName,
-                                time: chat.created_at_formatted,
+                                chat_member_id: res.chat_member_id,
                                 created_at: chat.new_created_at,
-                                sender_info: {
-                                    id: sender_id,
-                                    first_name:
-                                        window.Laravel.userInfo.firstName,
-                                    middle_name:
-                                        window.Laravel.userInfo.middleName,
-                                    last_name: window.Laravel.userInfo.lastName,
-                                    profile_picture:
-                                        window.Laravel.userInfo.profilePicture,
-                                },
+                                time: chat.created_at_formatted,
                             });
                         });
                     }
@@ -1654,9 +1647,13 @@ $(document).ready(function () {
 
                 // Clear the global files variable
                 window.teamFilesToSend = null;
+                // Update sidebar counts and lists
+                getSidebarNotiCounts();
             })
             .catch(function (error) {
                 sendButton.removeClass("sendloading");
+                $("#loading").removeClass("loading");
+                $("#loading-content").removeClass("loading-content");
                 toastr.error("Failed to send files");
                 console.error(error);
             });
