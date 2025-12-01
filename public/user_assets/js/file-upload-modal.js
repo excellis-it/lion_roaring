@@ -50,10 +50,11 @@
             .on("click", "#selectFilesBtn, #addMoreFiles", function (e) {
                 e.preventDefault();
                 e.stopPropagation();
-                console.log("selectFilesBtn clicked");
+                console.log("select/addMore clicked:", e.target.id);
                 const fileInput = $("#fileInput");
                 if (fileInput.length) {
-                    fileInput.click();
+                    // For addMore, preserve existing value; but open native dialog
+                    fileInput[0].click();
                 }
             });
 
@@ -328,6 +329,9 @@
                 // Use Bootstrap 5 native API
                 const modal = new bootstrap.Modal(modalEl);
                 modal.show();
+
+                // remove any stuck backdrops
+                clearModalBackdrop();
             });
 
         // Select files button (delegated)
@@ -338,9 +342,11 @@
                 "#teamSelectFilesBtn, #teamAddMoreFiles",
                 function (e) {
                     e.preventDefault();
+                    e.stopPropagation();
+                    console.log("team select/addMore clicked:", e.target.id);
                     const fileInput = $("#teamFileInput");
                     if (fileInput.length) {
-                        fileInput.click();
+                        fileInput[0].click();
                     }
                 }
             );

@@ -232,7 +232,7 @@
                 <div id="filesPreviewContainer" style="display: none;">
                     <div class="d-flex justify-content-between align-items-center mb-3">
                         <h6 class="mb-0"><span id="fileCount">0</span> file(s) selected</h6>
-                        <button type="button" class="btn btn-sm btn-outline-secondary" id="addMoreFiles">
+                        <button type="button" class="btn btn-primary" id="addMoreFiles">
                             <i class="fas fa-plus me-1"></i>Add More
                         </button>
                     </div>
@@ -240,7 +240,7 @@
                 </div>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Cancel</button>
                 <button type="button" class="btn btn-primary" id="sendFilesBtn">
                     <i class="fas fa-paper-plane me-2"></i>Send Files
                 </button>
@@ -321,6 +321,7 @@
         display: flex;
         gap: 15px;
         margin-bottom: 10px;
+        color: darkslategrey;
     }
 
     .file-preview-thumbnail {

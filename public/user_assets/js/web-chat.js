@@ -325,12 +325,22 @@ $(document).ready(function () {
         var fileInput = $("#file2")[0];
         var selectedFiles = fileInput && fileInput.files ? fileInput.files : [];
 
-        // Combine selected files and pasted files
+        // Combine selected files, paste files, and modal-selected files
         var allFiles = [];
         for (let i = 0; i < selectedFiles.length; i++) {
             allFiles.push(selectedFiles[i]);
         }
         allFiles = allFiles.concat(pastedFiles);
+        // Include files selected via modal
+        if (window.chatFilesToSend && Array.isArray(window.chatFilesToSend)) {
+            window.chatFilesToSend.forEach(function (fileObj) {
+                if (fileObj && fileObj.file) {
+                    allFiles.push(fileObj.file);
+                }
+            });
+            // clear after adding
+            window.chatFilesToSend = null;
+        }
 
         // Create a FormData object to send both message and files
         var formData = new FormData();

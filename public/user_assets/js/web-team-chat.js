@@ -395,6 +395,15 @@ $(document).ready(function () {
             allFiles.push(selectedFiles[i]);
         }
         allFiles = allFiles.concat(pastedFiles);
+        // Include files from modal selection
+        if (window.teamFilesToSend && Array.isArray(window.teamFilesToSend)) {
+            window.teamFilesToSend.forEach(function (fileObj) {
+                if (fileObj && fileObj.file) {
+                    allFiles.push(fileObj.file);
+                }
+            });
+            window.teamFilesToSend = null;
+        }
 
         // Create a FormData object to send both message and files
         var formData = new FormData();
@@ -548,11 +557,48 @@ $(document).ready(function () {
         $.ajax({
             type: "POST",
             url: url,
-            // Legacy team-file2 handlers removed - replaced by modal workflow
-            $fileNameDisplay.hide();
-        }
-        var team_id = $(this).data("team-id");
-        groupDetails(team_id);
+            data: new FormData(this),
+            processData: false,
+            contentType: false,
+            success: function (resp) {
+                getSidebarNotiCounts();
+                toastr.success(resp.message || "Group updated successfully");
+                // hide modal
+                const modalEl = document.getElementById("exampleModalToggle3");
+                if (modalEl) {
+                    const modalInst = bootstrap.Modal.getInstance(modalEl);
+                    if (modalInst) modalInst.hide();
+                }
+                var team_id = form.find('input[name="team_id"]').val();
+                groupDetails(team_id);
+                $("#loading").removeClass("loading");
+                $("#loading-content").removeClass("loading-content");
+            },
+            error: function (xhr) {
+                $(".text-danger").html("");
+                var errors =
+                    xhr.responseJSON && xhr.responseJSON.errors
+                        ? xhr.responseJSON.errors
+                        : null;
+                if (errors) {
+                    $.each(errors, function (key, value) {
+                        if (key.includes(".")) {
+                            toastr.error(value[0]);
+                        } else {
+                            toastr.error(value[0]);
+                        }
+                    });
+                } else {
+                    toastr.error(
+                        xhr.responseJSON && xhr.responseJSON.message
+                            ? xhr.responseJSON.message
+                            : "Something went wrong"
+                    );
+                }
+                $("#loading").removeClass("loading");
+                $("#loading-content").removeClass("loading-content");
+            },
+        });
     });
     // back-to-group-info-one
     $(document).on("click", ".back-to-group-info-one", function () {
