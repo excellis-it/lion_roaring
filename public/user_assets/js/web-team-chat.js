@@ -1,4 +1,5 @@
 $(document).ready(function () {
+    var pastedFiles = []; // Store pasted image files
     $.ajaxSetup({
         headers: {
             "X-CSRF-TOKEN": $('meta[name="csrf-token"]').attr("content"),
@@ -108,6 +109,14 @@ $(document).ready(function () {
                     }
                 );
 
+                // Reinitialize file upload modals since modal HTML is in the loaded view
+                if (typeof window.reinitFileUploadModals === "function") {
+                    window.reinitFileUploadModals();
+                }
+
+                // Add clipboard paste event listener for images
+                setupTeamClipboardPaste();
+
                 // scrollChatToBottom(teamId);
                 getSidebarNotiCounts();
             },
@@ -116,6 +125,82 @@ $(document).ready(function () {
             },
         });
     }
+
+    // Setup clipboard paste functionality for images in team chat
+    function setupTeamClipboardPaste() {
+        const messageInput = document.querySelector("#TeamMessageInput");
+        const emojiArea = document.querySelector(".emojionearea-editor");
+
+        // Listen to paste event on both the textarea and emoji area
+        [messageInput, emojiArea].forEach((element) => {
+            if (element) {
+                element.addEventListener("paste", handleTeamPaste);
+            }
+        });
+    }
+
+    function handleTeamPaste(e) {
+        const items = (e.clipboardData || e.originalEvent.clipboardData).items;
+
+        for (let i = 0; i < items.length; i++) {
+            if (items[i].type.indexOf("image") !== -1) {
+                e.preventDefault(); // Prevent default paste behavior
+
+                const blob = items[i].getAsFile();
+                const fileName = "pasted-image-" + Date.now() + ".png";
+
+                // Create a File object from the blob
+                const file = new File([blob], fileName, { type: blob.type });
+
+                // Add to pasted files array
+                pastedFiles.push(file);
+
+                // Display the pasted image
+                displayTeamPastedFiles();
+
+                break; // Only handle first image
+            }
+        }
+    }
+
+    function displayTeamPastedFiles() {
+        const $fileNameDisplay = $("#file-name-display");
+        let displayContent = "";
+
+        if (pastedFiles.length > 0) {
+            displayContent =
+                '<div style="display: flex; flex-wrap: wrap; gap: 10px;">';
+
+            pastedFiles.forEach((file, index) => {
+                const reader = new FileReader();
+                reader.onload = function (e) {
+                    const imagePreview = `
+                        <div class="pasted-file-preview" data-index="${index}" style="position: relative; display: inline-block;">
+                            <img src="${e.target.result}" alt="Pasted image"
+                                style="max-width: 100px; max-height: 100px; border: 1px solid #ddd; border-radius: 4px;" />
+                            <i class="fas fa-times remove-team-pasted-file" data-index="${index}"
+                                style="position: absolute; top: -5px; right: -5px; cursor: pointer; color: red;
+                                background: white; border-radius: 50%; padding: 2px 5px;"></i>
+                        </div>
+                    `;
+                    $fileNameDisplay.append(imagePreview);
+                };
+                reader.readAsDataURL(file);
+            });
+
+            displayContent += "</div>";
+            $fileNameDisplay.html(displayContent).show();
+        } else {
+            $fileNameDisplay.hide();
+        }
+    }
+
+    // Remove pasted file in team chat
+    $(document).on("click", ".remove-team-pasted-file", function () {
+        const index = $(this).data("index");
+        pastedFiles.splice(index, 1);
+        displayTeamPastedFiles();
+    });
 
     $(document).on("click", ".group-data", function () {
         var teamId = $(this).data("id");
@@ -210,6 +295,64 @@ $(document).ready(function () {
         });
     });
 
+    // Handle team-file2 change to display multiple files
+    $(document).on("change", "#team-file2", function (e) {
+        var files = $(this).prop("files");
+        var $fileNameDisplay = $("#file-name-display");
+
+        if (files && files.length > 0) {
+            var displayContent =
+                '<div style="display: flex; flex-wrap: wrap; gap: 10px;">';
+
+            Array.from(files).forEach(function (file, index) {
+                var isImage = file.type.startsWith("image/");
+
+                if (isImage) {
+                    var reader = new FileReader();
+                    reader.onload = function (e) {
+                        var imagePreview = `
+                            <div style="position: relative; display: inline-block;">
+                                <img src="${e.target.result}" alt="Image preview"
+                                    style="max-width: 100px; max-height: 100px; border: 1px solid #ddd; border-radius: 4px;" />
+                                <span style="display: block; font-size: 12px; max-width: 100px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">${file.name}</span>
+                            </div>
+                        `;
+                        $fileNameDisplay.append(imagePreview);
+                    };
+                    reader.readAsDataURL(file);
+                } else {
+                    displayContent += `
+                        <div style="display: inline-block;">
+                            <i class="fas fa-file"></i> ${file.name}
+                        </div>
+                    `;
+                }
+            });
+
+            displayContent +=
+                '<i class="fas fa-times remove-team-file" style="cursor: pointer; color: red; margin-left: 10px;"></i></div>';
+
+            if (Array.from(files).every((f) => !f.type.startsWith("image/"))) {
+                $fileNameDisplay.html(displayContent).show();
+            } else {
+                $fileNameDisplay
+                    .html(
+                        '<div style="display: flex; flex-wrap: wrap; gap: 10px; align-items: center;"></div>'
+                    )
+                    .show();
+            }
+        } else {
+            $fileNameDisplay.hide();
+        }
+    });
+
+    // Remove selected team files
+    $(document).on("click", ".remove-team-file", function () {
+        $("#file-name-display").hide();
+        $("#team-file2").val("");
+        pastedFiles = []; // Also clear pasted files
+    });
+
     function formatChatSendMessage(message) {
         const pattern =
             /\b((https?|ftp):\/\/[^\s<>"]+|www\.[^\s<>"]+|[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}[^\s<>"]*)/gi;
@@ -242,19 +385,28 @@ $(document).ready(function () {
 
         var formattedMessage = formatChatSendMessage(message);
 
-        // Get the file data
+        // Get the file data (support multiple files)
         var fileInput = $("#team-file2")[0];
-        var file = fileInput.files[0]; // The selected file
+        var selectedFiles = fileInput && fileInput.files ? fileInput.files : [];
 
-        // Create a FormData object to send both message and file
+        // Combine selected files and pasted files
+        var allFiles = [];
+        for (let i = 0; i < selectedFiles.length; i++) {
+            allFiles.push(selectedFiles[i]);
+        }
+        allFiles = allFiles.concat(pastedFiles);
+
+        // Create a FormData object to send both message and files
         var formData = new FormData();
         formData.append("_token", $("input[name=_token]").val());
         formData.append("message", message);
         formData.append("team_id", team_id);
 
-        // Append the file if one is selected
-        if (file) {
-            formData.append("file", file);
+        // Append all files
+        if (allFiles.length > 0) {
+            allFiles.forEach(function (file) {
+                formData.append("files[]", file);
+            });
         } else {
             if (message.trim() == "") {
                 return false;
@@ -271,46 +423,79 @@ $(document).ready(function () {
             processData: false, // Don't process the data
             contentType: false,
             success: function (resp) {
-                loadChat($("#team_id").val());
                 getSidebarNotiCounts();
 
                 $("#TeamMessageInput")
                     .emojioneArea()[0]
                     .emojioneArea.setText("");
-                $("#team-file2").val("");
+                var fileInputClear = $("#team-file2");
+                if (fileInputClear.length) fileInputClear.val("");
                 $("#file-name-display").hide();
-                let created_at = resp.chat.created_at;
-                let time = moment.tz(created_at, authTimeZone).format("h:mm A");
+                pastedFiles = []; // Clear pasted files
 
-                // append new message to the chat
-                var data = resp.chat;
-                //  groupList(sender_id, data.team_id);
-                let html = `<div class="message me" id="team-chat-message-${data.id}">
-                <div class="message-wrap">`;
+                // Handle all chats returned (for multiple files)
+                const chats = resp.all_chats || [resp.chat];
 
-                let fileUrl = "";
-                let attachment = data.attachment;
+                // Append all messages to chat container
+                chats.forEach(function (chat) {
+                    let created_at = chat.created_at;
+                    let time = moment
+                        .tz(created_at, authTimeZone)
+                        .format("h:mm A");
+                    let html = generateTeamMessageHtml(chat, time);
+                    $("#team-chat-container-" + team_id).append(html);
+                });
 
-                if (attachment && attachment !== "") {
-                    fileUrl = storageUrl + attachment;
-                    let attachement_extention = attachment.split(".").pop();
+                scrollChatToBottom(team_id);
 
-                    if (
-                        ["jpg", "jpeg", "png", "gif"].includes(
-                            attachement_extention
-                        )
-                    ) {
-                        html += `<p class="messageContent">
-                    <a href="${fileUrl}" target="_blank">
+                $("#loading").removeClass("loading");
+                $("#loading-content").removeClass("loading-content");
+
+                // Emit messages to socket
+                chats.forEach(function (chat) {
+                    let fileUrl = chat.attachment
+                        ? storageUrl + chat.attachment
+                        : "";
+
+                    socket.emit("sendTeamMessage", {
+                        chat: chat,
+                        file_url: fileUrl,
+                        chat_member_id: resp.chat_member_id,
+                        created_at: chat.new_created_at,
+                        time: chat.created_at_formatted,
+                    });
+                });
+
+                getSidebarNotiCounts();
+            },
+        });
+    });
+
+    // Helper function to generate team message HTML
+    function generateTeamMessageHtml(data, time) {
+        let html = `<div class="message me" id="team-chat-message-${data.id}">
+            <div class="message-wrap">`;
+
+        let fileUrl = "";
+        let attachment = data.attachment;
+
+        if (attachment && attachment !== "") {
+            fileUrl = storageUrl + attachment;
+            let attachement_extention = attachment.split(".").pop();
+            const dataFileName = data.attachment_name
+                ? data.attachment_name
+                : attachment;
+
+            if (["jpg", "jpeg", "png", "gif"].includes(attachement_extention)) {
+                html += `<p class="messageContent">
+                    <a href="${fileUrl}" target="_blank" class="file-download" data-download-url="${fileUrl}" data-file-name="${dataFileName}">
                         <img src="${fileUrl}" alt="attachment" style="max-width: 200px; max-height: 200px;">
                     </a><br>
                     <span>${data.message.replace(/\n/g, "<br>")}</span>
                  </p>`;
-                    } else if (
-                        ["mp4", "webm", "ogg"].includes(attachement_extention)
-                    ) {
-                        html += `<p class="messageContent">
-                    <a href="${fileUrl}" target="_blank">
+            } else if (["mp4", "webm", "ogg"].includes(attachement_extention)) {
+                html += `<p class="messageContent">
+                    <a href="${fileUrl}" target="_blank" class="file-download" data-download-url="${fileUrl}" data-file-name="${dataFileName}">
                         <video width="200" height="200" controls>
                             <source src="${fileUrl}" type="video/mp4">
                             <source src="${fileUrl}" type="video/webm">
@@ -318,59 +503,41 @@ $(document).ready(function () {
                         </video>
                     </a><br>
                     <span>${data.message.replace(/\n/g, "<br>")}</span>
-                 </p>`;
-                    } else {
-                        const incomingAttachmentName = data.attachment_name
-                            ? data.attachment_name
-                            : attachment;
-                        html += `<p class="messageContent">
-                    <a href="${fileUrl}" target="_blank" class="file-download" data-download-url="${fileUrl}" data-file-name="${incomingAttachmentName}">
-                        <img src="${fileIcon}" alt="file">
+                </p>`;
+            } else {
+                html += `<p class="messageContent">
+                    <a href="${fileUrl}" target="_blank" class="file-download" data-download-url="${fileUrl}" data-file-name="${dataFileName}">
+                        <img src="${fileIcon}" alt="">
                     </a><br>
                     <span>${data.message.replace(/\n/g, "<br>")}</span>
-                 </p>`;
-                    }
-                } else {
-                    html += `<p class="messageContent">${data.message.replace(
-                        /\n/g,
-                        "<br>"
-                    )}</p>`;
-                }
+                </p>`;
+            }
+        } else {
+            html += `<p class="messageContent">${data.message.replace(
+                /\n/g,
+                "<br>"
+            )}</p>`;
+        }
 
-                html += `<div class="messageDetails">
-                                        <div class="messageTime">${time}</div>
-                                    </div>
-                                </div>
-                                <div class="dropdown">
-                                <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton1"
-                                    data-bs-toggle="dropdown" aria-expanded="false">
-                                    <i class="fa-solid fa-ellipsis-vertical"></i>
-                                </button>
-                                <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
-                                    <li><a class="dropdown-item team-remove-chat" data-chat-id="${data.id}" data-del-from="me" data-team-id="${data.team_id}">Remove For Me</a></li>
-                                            <li><a class="dropdown-item team-remove-chat" data-chat-id="${data.id}" data-del-from="everyone" data-team-id="${data.team_id}">Remove For Everyone</a></li>
-                                </ul>
-                            </div></div>
-                                    `;
-                $("#team-chat-container-" + data.team_id).append(html);
+        html += `
+                <div class="dropdown">
+                    <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton1"
+                        data-bs-toggle="dropdown" aria-expanded="false">
+                        <i class="fa-solid fa-ellipsis-vertical"></i>
+                    </button>
+                    <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
+                        <li><a class="dropdown-item team-remove-chat" data-chat-id="${data.id}" data-del-from="me" data-team-id="${data.team_id}">Remove For Me</a></li>
+                        <li><a class="dropdown-item team-remove-chat" data-chat-id="${data.id}" data-del-from="everyone" data-team-id="${data.team_id}">Remove For Everyone</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="messageDetails">
+                <div class="messageTime">${time}</div>
+            </div>
+        </div>`;
 
-                scrollChatToBottom(data.team_id);
-                $("#loading").removeClass("loading");
-                $("#loading-content").removeClass("loading-content");
-                // Send message to socket
-                socket.emit("sendTeamMessage", {
-                    chat: data,
-                    chat_member_id: resp.chat_member_id,
-                    created_at: resp.chat.new_created_at,
-                    time: resp.created_at_formatted,
-                });
-                getSidebarNotiCounts();
-            },
-            error: function (xhr) {
-                toastr.error("Something went wrong");
-            },
-        });
-    });
+        return html;
+    }
 
     $(document).on("submit", "#name-des-update", function (e) {
         e.preventDefault();
@@ -381,46 +548,9 @@ $(document).ready(function () {
         $.ajax({
             type: "POST",
             url: url,
-            data: new FormData(this),
-            processData: false,
-            contentType: false,
-            success: function (resp) {
-                getSidebarNotiCounts();
-                $("#loading").removeClass("loading");
-                $("#loading-content").removeClass("loading-content");
-                toastr.success(resp.message);
-                $(".group-name-" + resp.team_id).html(resp.name);
-                $(".group-des-" + resp.team_id).html(resp.description);
-                $("#exampleModalToggle3").modal("hide");
-                $("#groupInfo").modal("show");
-            },
-            error: function (xhr) {
-                $("#loading").removeClass("loading");
-                $("#loading-content").removeClass("loading-content");
-                $(".text-danger").html("");
-                var errors = xhr.responseJSON.errors;
-                $.each(errors, function (key, value) {
-                    if (key.includes(".")) {
-                        var fieldName = key.split(".")[0];
-                        // Display errors for array fields
-                        var num = key.match(/\d+/)[0];
-                        toastr.error(value[0]);
-                    } else {
-                        // after text danger span
-                        toastr.error(value[0]);
-                    }
-                });
-            },
-        });
-    });
-
-    $(document).on("click", ".group-info", function () {
-        var team_id = $(this).data("team-id");
-        groupDetails(team_id);
-    });
-
-    $(document).on("click", ".back-to-group-info", function () {
-        $("#exampleModalToggle3").modal("hide");
+            // Legacy team-file2 handlers removed - replaced by modal workflow
+            $fileNameDisplay.hide();
+        }
         var team_id = $(this).data("team-id");
         groupDetails(team_id);
     });
@@ -1371,4 +1501,118 @@ $(document).ready(function () {
         }
         getSidebarNotiCounts();
     });
+
+    // Function to send files from modal with individual messages
+    window.sendTeamFilesWithMessages = function (filesWithMessages) {
+        if (!filesWithMessages || filesWithMessages.length === 0) {
+            toastr.warning("No files to send");
+            return;
+        }
+
+        var team_id = $(".team_id").val();
+        if (!team_id) {
+            toastr.error("Please select a team to chat with");
+            return;
+        }
+
+        var url = window.Laravel.routes.teamChatSend;
+        const sendButton = $(".Send");
+        sendButton.addClass("sendloading");
+
+        // Send each file with its individual message
+        let promises = [];
+
+        filesWithMessages.forEach(function (fileObj) {
+            var formData = new FormData();
+            formData.append("_token", $("input[name=_token]").val());
+            formData.append("message", fileObj.message || "");
+            formData.append("team_id", team_id);
+            formData.append("user_id", sender_id);
+            formData.append("files[]", fileObj.file);
+
+            var promise = $.ajax({
+                type: "POST",
+                url: url,
+                data: formData,
+                processData: false,
+                contentType: false,
+            });
+
+            promises.push(promise);
+        });
+
+        // Wait for all files to be sent
+        Promise.all(promises)
+            .then(function (responses) {
+                sendButton.removeClass("sendloading");
+
+                responses.forEach(function (res) {
+                    if (res.success) {
+                        const chats = res.all_chats || [res.chat];
+
+                        chats.forEach(function (chat) {
+                            let html = generateTeamMessageHtml(
+                                chat,
+                                chat.created_at_formatted
+                            );
+                            $("#team-chat-container-" + team_id).append(html);
+                        });
+
+                        // Update group list with first chat
+                        let firstChat = chats[0];
+                        updateGroupLastMessage(
+                            team_id,
+                            firstChat.message || "📎 File",
+                            firstChat.created_at_formatted,
+                            firstChat.id
+                        );
+
+                        // Emit to socket
+                        chats.forEach(function (chat) {
+                            let fileUrl = chat.attachment
+                                ? storageUrl + chat.attachment
+                                : "";
+                            const respFileName = chat.attachment_name
+                                ? chat.attachment_name
+                                : chat.attachment;
+                            var formattedMessage = formatChatSendMessage(
+                                chat.message || ""
+                            );
+
+                            socket.emit("team_chat", {
+                                message: formattedMessage,
+                                user_id: sender_id,
+                                team_id: team_id,
+                                chat_id: chat.id,
+                                file_url: fileUrl,
+                                attachment_name: respFileName,
+                                time: chat.created_at_formatted,
+                                created_at: chat.new_created_at,
+                                sender_info: {
+                                    id: sender_id,
+                                    first_name:
+                                        window.Laravel.userInfo.firstName,
+                                    middle_name:
+                                        window.Laravel.userInfo.middleName,
+                                    last_name: window.Laravel.userInfo.lastName,
+                                    profile_picture:
+                                        window.Laravel.userInfo.profilePicture,
+                                },
+                            });
+                        });
+                    }
+                });
+
+                scrollChatToBottom(team_id);
+                toastr.success("Files sent successfully");
+
+                // Clear the global files variable
+                window.teamFilesToSend = null;
+            })
+            .catch(function (error) {
+                sendButton.removeClass("sendloading");
+                toastr.error("Failed to send files");
+                console.error(error);
+            });
+    };
 });

@@ -1,6 +1,7 @@
 $(document).ready(function () {
     var sender_id = window.Laravel.authUserId;
     var receiver_id = null;
+    var pastedFiles = []; // Store pasted image files
     $.ajaxSetup({
         headers: {
             "X-CSRF-TOKEN": $('meta[name="csrf-token"]').attr("content"),
@@ -70,6 +71,13 @@ $(document).ready(function () {
                             }
                         }
                     );
+
+                    // Add clipboard paste event listener for images
+                    setupClipboardPaste();
+                    // Reinitialize file upload modals since modal HTML is in the loaded view
+                    if (typeof window.reinitFileUploadModals === "function") {
+                        window.reinitFileUploadModals();
+                    }
                 } else {
                     toastr.error(resp.msg);
                 }
@@ -81,6 +89,82 @@ $(document).ready(function () {
             },
         });
     }
+
+    // Setup clipboard paste functionality for images
+    function setupClipboardPaste() {
+        const messageInput = document.querySelector("#MessageInput");
+        const emojiArea = document.querySelector(".emojionearea-editor");
+
+        // Listen to paste event on both the textarea and emoji area
+        [messageInput, emojiArea].forEach((element) => {
+            if (element) {
+                element.addEventListener("paste", handlePaste);
+            }
+        });
+    }
+
+    function handlePaste(e) {
+        const items = (e.clipboardData || e.originalEvent.clipboardData).items;
+
+        for (let i = 0; i < items.length; i++) {
+            if (items[i].type.indexOf("image") !== -1) {
+                e.preventDefault(); // Prevent default paste behavior
+
+                const blob = items[i].getAsFile();
+                const fileName = "pasted-image-" + Date.now() + ".png";
+
+                // Create a File object from the blob
+                const file = new File([blob], fileName, { type: blob.type });
+
+                // Add to pasted files array
+                pastedFiles.push(file);
+
+                // Display the pasted image
+                displayPastedFiles();
+
+                break; // Only handle first image
+            }
+        }
+    }
+
+    function displayPastedFiles() {
+        const $fileNameDisplay = $("#file-name-display");
+        let displayContent = "";
+
+        if (pastedFiles.length > 0) {
+            displayContent =
+                '<div style="display: flex; flex-wrap: wrap; gap: 10px;">';
+
+            pastedFiles.forEach((file, index) => {
+                const reader = new FileReader();
+                reader.onload = function (e) {
+                    const imagePreview = `
+                        <div class="pasted-file-preview" data-index="${index}" style="position: relative; display: inline-block;">
+                            <img src="${e.target.result}" alt="Pasted image"
+                                style="max-width: 100px; max-height: 100px; border: 1px solid #ddd; border-radius: 4px;" />
+                            <i class="fas fa-times remove-pasted-file" data-index="${index}"
+                                style="position: absolute; top: -5px; right: -5px; cursor: pointer; color: red;
+                                background: white; border-radius: 50%; padding: 2px 5px;"></i>
+                        </div>
+                    `;
+                    $fileNameDisplay.append(imagePreview);
+                };
+                reader.readAsDataURL(file);
+            });
+
+            displayContent += "</div>";
+            $fileNameDisplay.html(displayContent).show();
+        } else {
+            $fileNameDisplay.hide();
+        }
+    }
+
+    // Remove pasted file
+    $(document).on("click", ".remove-pasted-file", function () {
+        const index = $(this).data("index");
+        pastedFiles.splice(index, 1);
+        displayPastedFiles();
+    });
 
     function scrollChatToBottom(receiver_id) {
         var messages = document.getElementById("chat-container-" + receiver_id);
@@ -237,20 +321,29 @@ $(document).ready(function () {
 
         var formattedMessage = formatChatSendMessage(message);
 
-        // Get the file data
+        // Get the file data (support multiple files)
         var fileInput = $("#file2")[0];
-        var file = fileInput.files[0];
+        var selectedFiles = fileInput && fileInput.files ? fileInput.files : [];
 
-        // Create a FormData object to send both message and file
+        // Combine selected files and pasted files
+        var allFiles = [];
+        for (let i = 0; i < selectedFiles.length; i++) {
+            allFiles.push(selectedFiles[i]);
+        }
+        allFiles = allFiles.concat(pastedFiles);
+
+        // Create a FormData object to send both message and files
         var formData = new FormData();
         formData.append("_token", $("input[name=_token]").val());
         formData.append("message", message);
         formData.append("reciver_id", receiver_id);
         formData.append("sender_id", sender_id);
 
-        // Append the file if one is selected
-        if (file) {
-            formData.append("file", file);
+        // Append all files
+        if (allFiles.length > 0) {
+            allFiles.forEach(function (file) {
+                formData.append("files[]", file);
+            });
         } else {
             if (message.trim() == "") {
                 return false;
@@ -274,21 +367,26 @@ $(document).ready(function () {
                 sendButton.removeClass("sendloading");
                 if (res.success) {
                     $("#MessageInput").data("emojioneArea").setText("");
-                    $("#file2").val("");
+                    var fileInputClear = $("#file2");
+                    if (fileInputClear.length) fileInputClear.val("");
                     $("#file-name-display").hide();
+                    pastedFiles = []; // Clear pasted files
 
-                    let chat = res.chat.message || "";
-                    let html = generateMessageHtml(res.chat, "me", chat);
+                    // Handle all chats returned (for multiple files)
+                    const chats = res.all_chats || [res.chat];
 
-                    // Append message to chat container
-                    if (res.chat_count > 0) {
+                    chats.forEach(function (chat) {
+                        let chatMessage = chat.message || "";
+                        let html = generateMessageHtml(chat, "me", chatMessage);
+
+                        // Append message to chat container
                         $("#chat-container-" + receiver_id).append(html);
-                    } else {
-                        $("#chat-container-" + receiver_id).html(html);
-                    }
+                    });
+
                     scrollChatToBottom(receiver_id);
 
-                    // Update chat list immediately without API call
+                    // Update chat list immediately without API call (using first chat)
+                    let firstChat = chats[0];
                     let receiverUser = {
                         id: parseInt(receiver_id),
                         first_name: $(".GroupName").text().split(" ")[0] || "",
@@ -300,51 +398,52 @@ $(document).ready(function () {
                                 .join(" ") || "",
                         profile_picture: null, // Will be handled by existing image
                         last_message: {
-                            id: res.chat.id,
-                            message: res.chat.attachment
+                            id: firstChat.id,
+                            message: firstChat.attachment
                                 ? null
-                                : res.chat.message,
-                            attachment: res.chat.attachment,
-                            created_at: res.chat.created_at,
+                                : firstChat.message,
+                            attachment: firstChat.attachment,
+                            created_at: firstChat.created_at,
                         },
                     };
 
                     updateChatListItem(
                         receiverUser,
                         true,
-                        res.chat.message,
-                        !!res.chat.attachment
+                        firstChat.message,
+                        !!firstChat.attachment
                     );
 
                     $("#loading").removeClass("loading");
                     $("#loading-content").removeClass("loading-content");
 
-                    // Emit chat message to the server
-                    let fileUrl = res.chat.attachment
-                        ? window.Laravel.storageUrl + res.chat.attachment
-                        : "";
-                    const respFileName = res.chat.attachment_name
-                        ? res.chat.attachment_name
-                        : res.chat.attachment;
+                    // Emit chat messages to the server
+                    chats.forEach(function (chat) {
+                        let fileUrl = chat.attachment
+                            ? window.Laravel.storageUrl + chat.attachment
+                            : "";
+                        const respFileName = chat.attachment_name
+                            ? chat.attachment_name
+                            : chat.attachment;
 
-                    socket.emit("chat", {
-                        message: formattedMessage,
-                        sender_id: sender_id,
-                        receiver_id: receiver_id,
-                        // receiver_users: res.receiver_users,
-                        chat_id: res.chat.id,
-                        file_url: fileUrl,
-                        time: res.chat.created_at_formatted,
-                        created_at: res.chat.new_created_at,
-                        // Add sender info for chat list updates
-                        sender_info: {
-                            id: sender_id,
-                            first_name: window.Laravel.userInfo.firstName,
-                            middle_name: window.Laravel.userInfo.middleName,
-                            last_name: window.Laravel.userInfo.lastName,
-                            profile_picture:
-                                window.Laravel.userInfo.profilePicture,
-                        },
+                        socket.emit("chat", {
+                            message: formattedMessage,
+                            sender_id: sender_id,
+                            receiver_id: receiver_id,
+                            chat_id: chat.id,
+                            file_url: fileUrl,
+                            attachment_name: respFileName,
+                            time: chat.created_at_formatted,
+                            created_at: chat.new_created_at,
+                            sender_info: {
+                                id: sender_id,
+                                first_name: window.Laravel.userInfo.firstName,
+                                middle_name: window.Laravel.userInfo.middleName,
+                                last_name: window.Laravel.userInfo.lastName,
+                                profile_picture:
+                                    window.Laravel.userInfo.profilePicture,
+                            },
+                        });
                     });
                 } else {
                     //  $("#loading").removeClass("loading");
@@ -418,44 +517,9 @@ $(document).ready(function () {
         return html;
     }
 
-    $("#hit-chat-file").click(function (e) {
-        e.preventDefault();
-        $("#file2").click();
-    });
+    // Old direct binding removed - replaced by modal-based behavior in file-upload-modal.js
 
-    $(document).on("change", "#file2", function (e) {
-        var file = $(this).prop("files")[0];
-        var fileName = file?.name || "";
-        var $fileNameDisplay = $("#file-name-display");
-
-        if (file && fileName) {
-            var isImage = file.type.startsWith("image/");
-            var displayContent = "";
-
-            if (isImage) {
-                var reader = new FileReader();
-                reader.onload = function (e) {
-                    displayContent = `<img src="${e.target.result}" alt="Image preview"
-                        style="max-width: 100px; max-height: 100px; margin-right: 10px;" />
-                        ${fileName}
-                        <i class="fas fa-times remove-file" style="cursor: pointer; color: red; margin-left: 10px;"></i>`;
-                    $fileNameDisplay.html(displayContent).show();
-                };
-                reader.readAsDataURL(file);
-            } else {
-                displayContent = `<i class="fas fa-file"></i> ${fileName}
-                    <i class="fas fa-times remove-file" style="cursor: pointer; color: red; margin-left: 10px;"></i>`;
-                $fileNameDisplay.html(displayContent).show();
-            }
-        } else {
-            $fileNameDisplay.hide();
-        }
-    });
-
-    $(document).on("click", ".remove-file", function () {
-        $("#file-name-display").hide();
-        $("#file2").val("");
-    });
+    // Legacy direct file input (#file2) change and remove handlers removed in favor of modal workflow
 
     // Handle direct file upload
     $(document).on("change", "#file", function (e) {
@@ -887,4 +951,141 @@ $(document).ready(function () {
             });
         }
     });
+
+    // Function to send files from modal with individual messages
+    window.sendChatFilesWithMessages = function (filesWithMessages) {
+        if (!filesWithMessages || filesWithMessages.length === 0) {
+            toastr.warning("No files to send");
+            return;
+        }
+
+        var receiver_id = $(".reciver_id").val();
+        if (!receiver_id) {
+            toastr.error("Please select a user to chat with");
+            return;
+        }
+
+        var url = window.Laravel.routes.chatSend;
+        const sendButton = $(".Send");
+        sendButton.addClass("sendloading");
+
+        // Send each file with its individual message
+        let promises = [];
+
+        filesWithMessages.forEach(function (fileObj) {
+            var formData = new FormData();
+            formData.append("_token", $("input[name=_token]").val());
+            formData.append("message", fileObj.message || "");
+            formData.append("reciver_id", receiver_id);
+            formData.append("sender_id", sender_id);
+            formData.append("files[]", fileObj.file);
+
+            var promise = $.ajax({
+                type: "POST",
+                url: url,
+                data: formData,
+                processData: false,
+                contentType: false,
+            });
+
+            promises.push(promise);
+        });
+
+        // Wait for all files to be sent
+        Promise.all(promises)
+            .then(function (responses) {
+                sendButton.removeClass("sendloading");
+
+                responses.forEach(function (res) {
+                    if (res.success) {
+                        const chats = res.all_chats || [res.chat];
+
+                        chats.forEach(function (chat) {
+                            let chatMessage = chat.message || "";
+                            let html = generateMessageHtml(
+                                chat,
+                                "me",
+                                chatMessage
+                            );
+                            $("#chat-container-" + receiver_id).append(html);
+                        });
+
+                        // Update chat list with first chat
+                        let firstChat = chats[0];
+                        let receiverUser = {
+                            id: parseInt(receiver_id),
+                            first_name:
+                                $(".GroupName").text().split(" ")[0] || "",
+                            last_name:
+                                $(".GroupName")
+                                    .text()
+                                    .split(" ")
+                                    .slice(1)
+                                    .join(" ") || "",
+                            profile_picture: null,
+                            last_message: {
+                                id: firstChat.id,
+                                message: firstChat.attachment
+                                    ? null
+                                    : firstChat.message,
+                                attachment: firstChat.attachment,
+                                created_at: firstChat.created_at,
+                            },
+                        };
+
+                        updateChatListItem(
+                            receiverUser,
+                            true,
+                            firstChat.message,
+                            !!firstChat.attachment
+                        );
+
+                        // Emit to socket
+                        chats.forEach(function (chat) {
+                            let fileUrl = chat.attachment
+                                ? window.Laravel.storageUrl + chat.attachment
+                                : "";
+                            const respFileName = chat.attachment_name
+                                ? chat.attachment_name
+                                : chat.attachment;
+                            var formattedMessage = formatChatSendMessage(
+                                chat.message || ""
+                            );
+
+                            socket.emit("chat", {
+                                message: formattedMessage,
+                                sender_id: sender_id,
+                                receiver_id: receiver_id,
+                                chat_id: chat.id,
+                                file_url: fileUrl,
+                                attachment_name: respFileName,
+                                time: chat.created_at_formatted,
+                                created_at: chat.new_created_at,
+                                sender_info: {
+                                    id: sender_id,
+                                    first_name:
+                                        window.Laravel.userInfo.firstName,
+                                    middle_name:
+                                        window.Laravel.userInfo.middleName,
+                                    last_name: window.Laravel.userInfo.lastName,
+                                    profile_picture:
+                                        window.Laravel.userInfo.profilePicture,
+                                },
+                            });
+                        });
+                    }
+                });
+
+                scrollChatToBottom(receiver_id);
+                toastr.success("Files sent successfully");
+
+                // Clear the global files variable
+                window.chatFilesToSend = null;
+            })
+            .catch(function (error) {
+                sendButton.removeClass("sendloading");
+                toastr.error("Failed to send files");
+                console.error(error);
+            });
+    };
 });
