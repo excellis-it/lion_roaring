@@ -24,11 +24,56 @@
     <section class="contact-us">
         <div class="container">
             <div class="contact-wrap-main">
+                <div class="row pb-5">
+                <div class="col-lg-12">
+                    <div class="heading_hp text-center">
+                        <h2>{{ $contact['title'] ?? 'title' }}</h2>
+                        <p>{!! $contact['description'] ?? 'description' !!}</p>
+                    </div>
+                </div>
+            </div>
                 <div class="row">
-                    <div class="col-xl-6 col-md-12">
-                        <div class="contact-left heading_hp">
-                            <h2>{{ $contact['title'] ?? 'title' }}</h2>
-                            <p>{!! $contact['description'] ?? 'description' !!}</p>
+                        <div class="col-xl-5 col-md-12">
+                        <div class="contact-right">
+                            <div class="contact-info d-flex ">
+                                <div>
+                                    <div class="con-icon">
+                                        <i class="fa-solid fa-location-dot"></i>
+                                    </div>
+                                </div>
+                                <div class="con-text">
+                                    <h3>WRITE US</h3>
+                                    
+                                    <p>{!! nl2br($contact['address']) !!}</p>
+                                    
+                                </div>
+                            </div>
+                            <div class="contact-info d-flex">
+                                <div>
+                                    <div class="con-icon">
+                                        <i class="fa-solid fa-phone"></i>
+                                    </div>
+                                </div>
+                                <div class="con-text">
+                                    <h3>CALL US</h3>
+                                    <a href="tel:{{ $contact['phone'] ?? 'phone' }}">{{ $contact['phone'] ?? 'phone' }}</a>
+                                </div>
+                            </div>
+                            <div class="contact-info d-flex">
+                                <div>
+                                    <div class="con-icon">
+                                        <i class="fa-solid fa-envelope"></i>
+                                    </div>
+                                </div>
+                                <div class="con-text">
+                                    <h3>EMAIL US</h3>
+                                    <a href="mailto:{{ $contact['email'] ?? 'email' }}">{{ $contact['email'] ?? 'email' }}</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-xl-7 col-md-12">
+                        <div class="contact-left">
                             <form action="{{ route('contact-us.form') }}" id="contact-us" method="POST">
                                 @csrf
                                 <div class="contact-form">
@@ -80,7 +125,7 @@
 
                                         <div class="col-xl-12 text-center">
                                             <div class="send-msg">
-                                                <button type="submit" class="btn">SEND MESSAGE</button>
+                                                <button type="submit" class="btn red_btn"><span>SEND MESSAGE</span></button>
                                             </div>
                                         </div>
                                         {{-- success message --}}
@@ -95,50 +140,13 @@
                             </form>
                         </div>
                     </div>
-                    <div class="col-xl-6 col-md-12">
-                        <div class="contact-right">
-                            <div class="contact-info d-flex justify-content-start align-items-start">
-                                <div>
-                                    <div class="con-icon">
-                                        <i class="fa-solid fa-location-dot"></i>
-                                    </div>
-                                </div>
-                                <div class="con-text">
-                                    <h3>WRITE US</h3>
-                                    <p>
-                                    </p>
-                                    <p>{!! nl2br($contact['address']) !!}</p>
-                                    <p></p>
-                                </div>
-                            </div>
-                            <div class="contact-info d-flex justify-content-start align-items-start">
-                                <div>
-                                    <div class="con-icon">
-                                        <i class="fa-solid fa-phone"></i>
-                                    </div>
-                                </div>
-                                <div class="con-text">
-                                    <h3>CALL US</h3>
-                                    <a href="tel:{{ $contact['phone'] ?? 'phone' }}">{{ $contact['phone'] ?? 'phone' }}</a>
-                                </div>
-                            </div>
-                            <div class="contact-info d-flex justify-content-start align-items-start">
-                                <div>
-                                    <div class="con-icon">
-                                        <i class="fa-solid fa-envelope"></i>
-                                    </div>
-                                </div>
-                                <div class="con-text">
-                                    <h3>EMAIL US</h3>
-                                    <a
-                                        href="mailto:{{ $contact['email'] ?? 'email' }}">{{ $contact['email'] ?? 'email' }}</a>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
                 </div>
             </div>
         </div>
+    </section>
+
+    <section class="contact-map-sec">
+            <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3091.831817054105!2d-77.2497209235132!3d39.2012701287163!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x89b62b527ce743e5%3A0xf6bc8de8d111c402!2sThe%20UPS%20Store!5e0!3m2!1sen!2sin!4v1764589008124!5m2!1sen!2sin" width="100%" height="450" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
     </section>
 @endsection
 

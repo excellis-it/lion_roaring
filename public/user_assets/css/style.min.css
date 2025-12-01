@@ -36976,6 +36976,7 @@ fieldset:disabled .btn {
     min-height: 70px;
     padding: 15px 5px 0 6px;
     background: transparent;
+    justify-content: center !important;
 }
 
 .unlimited-access {
@@ -37009,7 +37010,7 @@ fieldset:disabled .btn {
     color: #fff;
     display: block;
     font-size: 15px;
-    white-space: nowrap;
+    white-space: wrap;
     align-items: center;
     line-height: 25px;
     position: relative;
@@ -44883,7 +44884,7 @@ ul {
     color: #EE1B24;
 }
 .dark-logo{
-    width: 110px;
+    width: 100px;
     box-shadow: 9px -5px 11px rgb(0 0 0 / 26%);
     border-radius: 50%;
     padding: 1px;
