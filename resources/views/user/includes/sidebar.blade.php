@@ -677,6 +677,67 @@
                          <span class="hide-menu">Membership</span>
                      </a>
                  </li>
+                 @if (Gate::check('Manage Membership') ||
+                         Gate::check('View Membership Members') ||
+                         Gate::check('View Membership Payments') ||
+                         Gate::check('View Membership Settings'))
+                     <li class="sidebar-item">
+                         <a class="sidebar-link" href="#" aria-expanded="false" data-bs-toggle="collapse"
+                             data-bs-target="#collapseMembershipManagement">
+                             <span>
+                                 <img src="{{ asset('user_assets/images/ICON/policy_and_guidance.png') }}"
+                                     alt="">
+                             </span>
+                             <span class="hide-menu">Membership Management</span>
+                         </a>
+                         {{-- Collapse content --}}
+                         <div class="collapse {{ Request::is('user/membership/manage*') || Request::is('user/membership/create*') || Request::is('user/membership/edit*') || Request::is('user/membership/members*') || Request::is('user/membership/payments*') || Request::is('user/membership/settings*') ? 'show' : '' }}"
+                             id="collapseMembershipManagement">
+                             <div class="menu_bb">
+                                 @if (Gate::check('Manage Membership'))
+                                     <a href="{{ route('user.membership.manage') }}">
+                                         <span>
+                                             <i class="ti ti-list"></i>
+                                         </span>
+                                         <span>Plan List</span>
+                                     </a>
+                                 @endif
+                                 @if (Gate::check('Create Membership'))
+                                     <a href="{{ route('user.membership.create') }}">
+                                         <span>
+                                             <i class="ti ti-plus"></i>
+                                         </span>
+                                         <span>Create Plan</span>
+                                     </a>
+                                 @endif
+                                 @if (Gate::check('View Membership Members'))
+                                     <a href="{{ route('user.membership.members') }}">
+                                         <span>
+                                             <i class="ti ti-users"></i>
+                                         </span>
+                                         <span>Members</span>
+                                     </a>
+                                 @endif
+                                 @if (Gate::check('View Membership Payments'))
+                                     <a href="{{ route('user.membership.payments') }}">
+                                         <span>
+                                             <i class="ti ti-credit-card"></i>
+                                         </span>
+                                         <span>All Payments</span>
+                                     </a>
+                                 @endif
+                                 @if (Gate::check('View Membership Settings'))
+                                     <a href="{{ route('user.membership.settings') }}">
+                                         <span>
+                                             <i class="ti ti-settings"></i>
+                                         </span>
+                                         <span>Settings</span>
+                                     </a>
+                                 @endif
+                             </div>
+                         </div>
+                     </li>
+                 @endif
                  <br>
                  <br>
                  <br>

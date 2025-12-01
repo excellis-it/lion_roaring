@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\MembershipTier;
 use App\Models\MembershipMeasurement;
+use App\Models\MembershipBenefit;
 use App\Models\UserSubscription;
 use App\Models\SubscriptionPayment;
 use Illuminate\Support\Facades\Auth;
@@ -21,6 +22,133 @@ class MembershipController extends Controller
         $tiers = MembershipTier::with('benefits')->get();
         $user_subscription = Auth::user()->userLastSubscription ?? null;
         return view('user.membership.index', compact('measurement', 'tiers', 'user_subscription'));
+    }
+
+    // Management functions
+    public function manage()
+    {
+        if (!auth()->user()->can('Manage Membership')) {
+            abort(403, 'Unauthorized');
+        }
+        $tiers = MembershipTier::with('benefits')->get();
+        $measurement = MembershipMeasurement::first();
+        return view('user.membership.manage', compact('tiers', 'measurement'));
+    }
+
+    public function create()
+    {
+        if (!auth()->user()->can('Create Membership')) {
+            abort(403, 'Unauthorized');
+        }
+        $roles = Role::all();
+        return view('user.membership.create', compact('roles'));
+    }
+
+    public function store(Request $request)
+    {
+        if (!auth()->user()->can('Create Membership')) {
+            abort(403, 'Unauthorized');
+        }
+        $request->validate([
+            'name' => 'required|string|max:255',
+            'slug' => 'required|string|max:255|unique:membership_tiers,slug',
+        ]);
+        $tier = MembershipTier::create($request->only(['name', 'slug', 'description', 'cost', 'role_id']));
+        $benefits = $request->input('benefits', []);
+        foreach ($benefits as $i => $b) {
+            if (!empty($b)) {
+                MembershipBenefit::create(['tier_id' => $tier->id, 'benefit' => $b, 'sort_order' => $i]);
+            }
+        }
+        return redirect()->route('user.membership.manage')->with('success', 'Tier created');
+    }
+
+    public function edit(MembershipTier $membership)
+    {
+        if (!auth()->user()->can('Edit Membership')) {
+            abort(403, 'Unauthorized');
+        }
+        $roles = Role::all();
+        $tier = $membership->load('benefits');
+        return view('user.membership.edit', compact('tier', 'roles'));
+    }
+
+    public function updateTier(Request $request, MembershipTier $membership)
+    {
+        if (!auth()->user()->can('Edit Membership')) {
+            abort(403, 'Unauthorized');
+        }
+        $request->validate(['name' => 'required|string|max:255']);
+        $membership->update($request->only(['name', 'slug', 'description', 'cost', 'role_id']));
+        // update benefits
+        MembershipBenefit::where('tier_id', $membership->id)->delete();
+        $benefits = $request->input('benefits', []);
+        foreach ($benefits as $i => $b) {
+            if (!empty($b)) {
+                MembershipBenefit::create(['tier_id' => $membership->id, 'benefit' => $b, 'sort_order' => $i]);
+            }
+        }
+        return redirect()->route('user.membership.manage')->with('success', 'Tier updated');
+    }
+
+    public function delete(MembershipTier $membership)
+    {
+        if (!auth()->user()->can('Delete Membership')) {
+            abort(403, 'Unauthorized');
+        }
+        $membership->delete();
+        return redirect()->route('user.membership.manage')->with('success', 'Tier removed');
+    }
+
+    public function settings(Request $request)
+    {
+        if (!auth()->user()->can('View Membership Settings')) {
+            abort(403, 'Unauthorized');
+        }
+        $measurement = MembershipMeasurement::first();
+        if ($request->isMethod('post')) {
+            if (!auth()->user()->can('Edit Membership Settings')) {
+                abort(403, 'Unauthorized');
+            }
+            $data = $request->only('label', 'description', 'yearly_dues');
+            if ($measurement) {
+                $measurement->update($data);
+            } else {
+                MembershipMeasurement::create($data);
+            }
+            return redirect()->route('user.membership.manage')->with('success', 'Measurement updated');
+        }
+        return view('user.membership.settings', compact('measurement'));
+    }
+
+    public function members(Request $request)
+    {
+        if (!auth()->user()->can('View Membership Members')) {
+            abort(403, 'Unauthorized');
+        }
+        $date_after =  '2025-11-01';
+        $members = UserSubscription::where('created_at', '>', $date_after)->with(['user', 'payments'])->orderBy('subscription_start_date', 'desc')->paginate(20);
+        return view('user.membership.members', compact('members'));
+    }
+
+    public function memberPayments(User $user)
+    {
+        if (!auth()->user()->can('View Membership Payments')) {
+            abort(403, 'Unauthorized');
+        }
+        $date_after =  '2025-11-01';
+        $payments = SubscriptionPayment::where('user_id', $user->id)->where('created_at', '>', $date_after)->with('userSubscription')->orderBy('id', 'desc')->get();
+        return view('user.membership.payments', compact('payments', 'user'));
+    }
+
+    public function payments(Request $request)
+    {
+        if (!auth()->user()->can('View Membership Payments')) {
+            abort(403, 'Unauthorized');
+        }
+        $date_after =  '2025-11-01';
+        $payments = SubscriptionPayment::where('created_at', '>', $date_after)->with(['user', 'userSubscription'])->orderBy('id', 'desc')->paginate(20);
+        return view('user.membership.payments_all', compact('payments'));
     }
 
     public function upgrade(Request $request, MembershipTier $tier)

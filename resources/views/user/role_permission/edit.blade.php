@@ -79,6 +79,10 @@
                                                 'Policy',
                                                 'Help',
                                                 'Role Permission',
+                                                'Membership',
+                                                'Membership Settings',
+                                                'Membership Members',
+                                                'Membership Payments',
                                                 'Elearning CMS',
                                                 'Elearning Category',
                                                 'Elearning Topic',
@@ -92,12 +96,10 @@
                                                 'Estore Settings',
                                                 'Estore Warehouse',
                                                 'Estore Orders',
-                                                  'Order Status',
+                                                'Order Status',
                                                 'Email Template',
                                                 'User Activity',
-                                            ];
-
-                                        @endphp
+                                        ]; @endphp
                                         <table class="table mb-0 table-center-align">
                                             <thead>
                                                 <tr>
