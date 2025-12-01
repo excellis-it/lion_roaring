@@ -160,18 +160,32 @@ class ChatController extends Controller
             } else {
                 $themessage = ' ';
             }
-            if ($request->file) {
-                $file = $this->imageUpload($request->file('file'), 'chat');
-                $attachmentName = $request->file('file')->getClientOriginalName();
-                $chatData = Chat::create([
-                    'sender_id' => $request->sender_id,
-                    'reciver_id' => $request->reciver_id,
-                    'message' => $themessage,
-                    'attachment' => $file,
-                    'attachment_name' => $attachmentName,
-                ]);
-                $message_type = $this->detectMessageType($request->file('file'));
+
+            // Handle multiple files
+            $files = $request->file('files') ?? ($request->file('file') ? [$request->file('file')] : []);
+            $chats = [];
+
+            if (!empty($files)) {
+                // If multiple files, create separate chat messages for each
+                foreach ($files as $index => $file) {
+                    $uploadedFile = $this->imageUpload($file, 'chat');
+                    $attachmentName = $file->getClientOriginalName();
+                    $message_type = $this->detectMessageType($file);
+
+                    // Only include message text with the first file
+                    $messageForFile = ($index === 0) ? $themessage : ' ';
+
+                    $chatData = Chat::create([
+                        'sender_id' => $request->sender_id,
+                        'reciver_id' => $request->reciver_id,
+                        'message' => $messageForFile,
+                        'attachment' => $uploadedFile,
+                        'attachment_name' => $attachmentName,
+                    ]);
+                    $chats[] = $chatData;
+                }
             } else {
+                // No files, just message
                 $chatData = Chat::create([
                     'sender_id' => $request->sender_id,
                     'reciver_id' => $request->reciver_id,
@@ -179,50 +193,53 @@ class ChatController extends Controller
                     'attachment' => ''
                 ]);
                 $message_type = 'text';
+                $chats[] = $chatData;
             }
 
-            // get chat data with sender and reciver
-            $chat = Chat::with('sender', 'reciver')->find($chatData->id);
-            $chat->created_at_formatted = $chat->created_at->format('h:i a') . ' Today'; // Format the created_at timestamp
+            // Process notifications and FCM for all chat messages
+            $allChats = [];
+            foreach ($chats as $chatData) {
+                $chat = Chat::with('sender', 'reciver')->find($chatData->id);
+                $chat->created_at_formatted = $chat->created_at->format('h:i a') . ' Today';
+                $allChats[] = $chat;
 
-            //  $message_type = $this->detectMessageType($request->file);
+                // Create notification (one per message)
+                $notification = new Notification();
+                $notification->user_id = $request->reciver_id;
+                $notification->chat_id = $chat->id;
+                $notification->message = 'You have a <b>new message</b> from ' . auth()->user()->full_name;
+                $notification->type = 'Chat';
+                $notification->save();
 
-            // if ($request->sender_id != auth()->id()) {
-            $notification = new Notification();
-            $notification->user_id = $request->reciver_id;
-            $notification->chat_id = $chat->id;
-            $notification->message = 'You have a <b>new message</b> from ' . auth()->user()->full_name;
-            $notification->type = 'Chat';
-            $notification->save();
-            //   }
-
-            // Send FCM notification to receiver
-            $receiver = User::find($request->reciver_id);
-            if ($receiver && $receiver->fcm_token) {
-                try {
-                    $this->fcmService->sendToDevice(
-                        $receiver->fcm_token,
-                        'Message from ' . auth()->user()->full_name,
-                        $request->file ? 'Sent an attachment' : $themessage,
-                        [
-                            'type' => 'chat',
-                            'chat_id' => (string) $chat->id,
-                            'sender_id' => (string) auth()->id(),
-                            'sender_name' => auth()->user()->full_name,
-                            'message' => $themessage,
-                            'attachment' => $request->file ? Storage::url($chat->attachment) : '',
-                            'attachment_name' => $request->file ? ($chat->attachment_name ?? basename($chat->attachment)) : null,
-                            'msg_type' => $message_type,
-                            'timestamp' => $chat->created_at_formatted
-                        ]
-                    );
-                    Log::info('FCM chat notification sent successfully', [
-                        'receiver_id' => $receiver->id,
-                        'chat_id' => $chat->id,
-                        'message' => $themessage
-                    ]);
-                } catch (Exception $e) {
-                    Log::error('FCM chat notification failed: ' . $e->getMessage());
+                // Send FCM notification to receiver for each message
+                $receiver = User::find($request->reciver_id);
+                if ($receiver && $receiver->fcm_token) {
+                    try {
+                        $hasAttachment = !empty($chat->attachment);
+                        $this->fcmService->sendToDevice(
+                            $receiver->fcm_token,
+                            'Message from ' . auth()->user()->full_name,
+                            $hasAttachment ? 'Sent an attachment' : $themessage,
+                            [
+                                'type' => 'chat',
+                                'chat_id' => (string) $chat->id,
+                                'sender_id' => (string) auth()->id(),
+                                'sender_name' => auth()->user()->full_name,
+                                'message' => $chat->message,
+                                'attachment' => $hasAttachment ? Storage::url($chat->attachment) : '',
+                                'attachment_name' => $hasAttachment ? ($chat->attachment_name ?? basename($chat->attachment)) : null,
+                                'msg_type' => $hasAttachment ? $this->detectMessageType($chat->attachment) : 'text',
+                                'timestamp' => $chat->created_at_formatted
+                            ]
+                        );
+                        Log::info('FCM chat notification sent successfully', [
+                            'receiver_id' => $receiver->id,
+                            'chat_id' => $chat->id,
+                            'message' => $themessage
+                        ]);
+                    } catch (Exception $e) {
+                        Log::error('FCM chat notification failed: ' . $e->getMessage());
+                    }
                 }
             }
 
@@ -345,7 +362,16 @@ class ChatController extends Controller
             // $receiver_user['last_message'] = $lastMessage;
             // $receiver_user['unseen_chat'] = $unseenChat;
 
-            return response()->json(['msg' => 'Message sent successfully', 'chat' => $chat, 'chat_count' => $chat_count, 'success' => true]);
+            // Return first chat as main response (for backward compatibility)
+            $chat = $allChats[0];
+
+            return response()->json([
+                'msg' => 'Message sent successfully',
+                'chat' => $chat,
+                'all_chats' => $allChats,  // Send all created chats
+                'chat_count' => $chat_count,
+                'success' => true
+            ]);
         } catch (\Throwable $th) {
             return response()->json(['msg' => $th->getMessage(), 'success' => false]);
         }
@@ -360,7 +386,12 @@ class ChatController extends Controller
             return 'text';
         }
 
-        $extension = strtolower($file->getClientOriginalExtension());
+        // Handle both UploadedFile objects and file paths
+        if (is_string($file)) {
+            $extension = strtolower(pathinfo($file, PATHINFO_EXTENSION));
+        } else {
+            $extension = strtolower($file->getClientOriginalExtension());
+        }
 
         $image_extensions = ['jpg', 'jpeg', 'png', 'gif', 'bmp', 'svg', 'webp'];
         $audio_extensions = ['mp3', 'wav', 'ogg', 'aac', 'm4a'];

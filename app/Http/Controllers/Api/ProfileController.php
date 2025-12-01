@@ -566,51 +566,44 @@ class ProfileController extends Controller
     {
         $user = $request->user();
 
-        // Chat::where('id', '!=', null)->update(['seen' => 1]);
-        // MailUser::where('id', '!=', null)->update(['is_read' => 1]);
-        // TeamChat::where('id', '!=', null)->update(['is_seen' => 1]);
-        // ChatMember::where('id', '!=', null)->update(['is_seen' => 1]);
-
+        // Count unread mails where user is receiver and not deleted
         $mailCount = MailUser::where('user_id', $user->id)
-            ->where('is_delete', 0) // Check not deleted first
-            ->where('is_read', 0)   // message can be deleted but not read
-            ->where('is_to', 1)   // Only count mails where user is receiver
+            ->where('is_to', 1)      // Only count mails where user is receiver
+            ->where('is_delete', 0)  // Not deleted
+            ->where('is_read', 0)    // Not read
             ->count();
 
-        // Count unread individual chats where user is receiver
+        // Count unread individual chats where user is receiver and not deleted
+        // AND sender is an active user with valid role (matching chat list display logic)
         $chatCount = Chat::where('reciver_id', $user->id)
             ->where('seen', 0)
             ->where('deleted_for_reciver', 0)
             ->where('delete_from_receiver_id', 0)
+            ->whereHas('sender', function ($query) {
+                // Only count messages from active users with valid roles
+                $query->where('status', 1)
+                    ->whereHas('roles', function ($q) {
+                        $q->whereIn('type', [1, 2, 3]);
+                    });
+            })
             ->count();
 
-        $all_team_chats_ids = TeamChat::pluck('id');
-        $teamChatCount = ChatMember::whereIn('chat_id', $all_team_chats_ids)
-            ->where('user_id', $user->id)
+        // Count unread team chat messages where:
+        // 1. User is a member and not removed from team
+        // 2. Message is not seen by user
+        // 3. Message is not soft deleted
+        $teamChatCount = ChatMember::where('user_id', $user->id)
             ->where('is_seen', 0)
-            // ->whereHas('chat', function ($query) {
-            //     $query->whereNull('deleted_at');
-            // })
+            ->whereHas('chat', function ($query) {
+                // Only count messages that are not soft deleted
+                $query->whereNull('deleted_at');
+            })
+            ->whereHas('chat.team.members', function ($query) use ($user) {
+                // Check user is still a member of the team and not removed
+                $query->where('user_id', $user->id)
+                    ->where('is_removed', false);
+            })
             ->count();
-
-
-        // ChatMember::whereNotIn('chat_id', $all_team_chats_ids)
-        //     ->where('is_seen', 0)
-        //     ->update(['is_seen' => 1]); // Mark all team chat messages as seen
-
-
-        // Count unread team chat messages where user is a member
-        // $teamChatCount = ChatMember::where('user_id', $user->id)
-        //     ->where('is_seen', 0)
-        //     // ->whereHas('chat', function ($query) {
-        //     //     $query->whereNull('deleted_at');
-        //     // })
-        //     ->count();
-        //  $maildata = Crypt::encryptString($mailCount);
-
-
-
-
 
         $totalCount = $mailCount + $chatCount + $teamChatCount;
 
@@ -621,7 +614,6 @@ class ProfileController extends Controller
                 'chat' => $chatCount,
                 'team_chat' => $teamChatCount,
                 'total' => $totalCount,
-                // 'maildata' => $originalMailCount,
             ]
         ], $this->successStatus);
     }

@@ -37,7 +37,7 @@
                                 @endif
                                 @if (auth()->user()->can('Delete Membership'))
                                     <a href="{{ route('user.membership.delete', $tier->id) }}" class="btn btn-sm btn-danger"
-                                        onclick="return confirm('Delete?')">Delete</a>
+                                        onclick="return confirm('Are you sure you want to delete this membership tier? This action cannot be undone.')">Delete</a>
                                 @endif
                             </div>
                         </div>
@@ -47,3 +47,14 @@
         </div>
     </div>
 @endsection
+
+@push('scripts')
+    <script>
+        @if (session('success'))
+            toastr.success("{{ session('success') }}");
+        @endif
+        @if (session('error'))
+            toastr.error("{{ session('error') }}");
+        @endif
+    </script>
+@endpush
