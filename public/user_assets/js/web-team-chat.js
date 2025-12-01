@@ -600,6 +600,12 @@ $(document).ready(function () {
             },
         });
     });
+    // Group info click handler
+    $(document).on("click", ".group-info", function () {
+        var team_id = $(this).data("team-id");
+        groupDetails(team_id);
+    });
+
     // back-to-group-info-one
     $(document).on("click", ".back-to-group-info-one", function () {
         $("#exampleModalToggle2").modal("hide");
