@@ -98,7 +98,6 @@ use Illuminate\Support\Str;
 use App\Http\Controllers\VisitorController;
 use App\Http\Controllers\User\UserActivityController;
 use App\Http\Controllers\Admin\MenuController;
-use App\Http\Controllers\Admin\MembershipController;
 use App\Http\Controllers\User\MembershipController as UserMembershipController;
 
 
@@ -295,19 +294,6 @@ Route::group(['middleware' => ['admin'], 'prefix' => 'admin'], function () {
             Route::post('/update', [FooterController::class, 'update'])->name('update');
         });
     });
-    // membership management
-    Route::prefix('membership')->group(function () {
-        Route::get('/', [MembershipController::class, 'index'])->name('admin.membership.index');
-        Route::get('/create', [MembershipController::class, 'create'])->name('admin.membership.create');
-        Route::post('/store', [MembershipController::class, 'store'])->name('admin.membership.store');
-        Route::get('/edit/{membership}', [MembershipController::class, 'edit'])->name('admin.membership.edit');
-        Route::post('/update/{membership}', [MembershipController::class, 'update'])->name('admin.membership.update');
-        Route::get('/delete/{membership}', [MembershipController::class, 'delete'])->name('admin.membership.delete');
-        Route::match(['get', 'post'], '/settings', [MembershipController::class, 'settings'])->name('admin.membership.settings');
-        Route::get('/members', [MembershipController::class, 'members'])->name('admin.membership.members');
-        Route::get('/members/{user}/payments', [MembershipController::class, 'memberPayments'])->name('admin.membership.member.payments');
-        Route::get('/payments', [MembershipController::class, 'payments'])->name('admin.membership.payments');
-    });
     // manage menu names
     Route::prefix('menu')->group(function () {
         Route::get('/', [MenuController::class, 'index'])->name('admin.menu.index');
@@ -414,6 +400,18 @@ Route::prefix('user')->middleware(['user', 'preventBackHistory', 'userActivity']
         Route::get('/checkout/{tier}', [UserMembershipController::class, 'checkout'])->name('user.membership.checkout');
         Route::get('/checkout/success', [UserMembershipController::class, 'checkoutSuccess'])->name('user.membership.checkout.success');
         Route::post('/renew', [UserMembershipController::class, 'renew'])->name('user.membership.renew');
+
+        // Management routes
+        Route::get('/manage', [UserMembershipController::class, 'manage'])->name('user.membership.manage');
+        Route::get('/create', [UserMembershipController::class, 'create'])->name('user.membership.create');
+        Route::post('/store', [UserMembershipController::class, 'store'])->name('user.membership.store');
+        Route::get('/edit/{membership}', [UserMembershipController::class, 'edit'])->name('user.membership.edit');
+        Route::post('/update/{membership}', [UserMembershipController::class, 'updateTier'])->name('user.membership.update');
+        Route::get('/delete/{membership}', [UserMembershipController::class, 'delete'])->name('user.membership.delete');
+        Route::match(['get', 'post'], '/settings', [UserMembershipController::class, 'settings'])->name('user.membership.settings');
+        Route::get('/members', [UserMembershipController::class, 'members'])->name('user.membership.members');
+        Route::get('/members/{user}/payments', [UserMembershipController::class, 'memberPayments'])->name('user.membership.member.payments');
+        Route::get('/payments', [UserMembershipController::class, 'payments'])->name('user.membership.payments');
     });
 
     // Route::middleware(['member.access'])->group(function () {

@@ -51,7 +51,8 @@
                                         <a href="{{ route('user.membership.checkout', $tier->id) }}"
                                             class="btn btn-upgrade w-100">Become a Member</a>
                                     @else
-                                        <a href="{{ route('login') }}" class="btn btn-outline-primary w-100">Login to Join</a>
+                                        <a href="javascript:void(0);" data-bs-toggle="modal" data-bs-target="#loginModal"
+                                            class="btn btn-upgrade w-100">Login to Join</a>
                                     @endauth
 
                                 </div>
