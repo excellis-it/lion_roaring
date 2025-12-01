@@ -36952,7 +36952,7 @@ fieldset:disabled .btn {
 } */
 
 .left-sidebar {
-    width: 130px;
+    width: 210px;
     position: absolute;
     transition: .2s ease-in;
     height: 100%;
@@ -36976,6 +36976,7 @@ fieldset:disabled .btn {
     min-height: 70px;
     padding: 15px 5px 0 6px;
     background: transparent;
+    justify-content: center !important;
 }
 
 .unlimited-access {
@@ -37372,7 +37373,7 @@ fieldset:disabled .btn {
         width: calc(100% - 150px)
     }
     #main-wrapper[data-layout=vertical][data-sidebartype=full] .body-wrapper {
-        margin-left: 130px;
+        margin-left: 210px;
 
     }
     #main-wrapper[data-layout=vertical][data-sidebartype=mini-sidebar] .body-wrapper {
@@ -44883,7 +44884,7 @@ ul {
     color: #EE1B24;
 }
 .dark-logo{
-    width: 110px;
+    width: 100px;
     box-shadow: 9px -5px 11px rgb(0 0 0 / 26%);
     border-radius: 50%;
     padding: 1px;

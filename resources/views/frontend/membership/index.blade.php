@@ -18,20 +18,15 @@
 
     <section class="py-5 login-sec">
         <div class="container">
-            <div class="row mt-5">
-
-                <div class="mt-5">
-
-                </div>
-
+            <div class="row mt-4">
                 @php $maxCost = $tiers->max('cost'); @endphp
                 @foreach ($tiers as $tier)
-                    <div class="col-lg-4 col-md-4 mb-4">
-                        <div class="card h-100 shadow-sm p-4 tier-card position-relative">
+                    <div class="col-lg-4 col-md-6 mb-4">
+                        <div class="card h-100 shadow-sm tier-card position-relative">
                             @if ($tier->cost == $maxCost)
                                 <div class="ribbon">Most Popular</div>
                             @endif
-                            <div class="card-body d-flex flex-column">
+                            <div class="card-body card-content-body d-flex flex-column">
                                 <div class="d-flex justify-content-between align-items-center mb-3">
                                     <h4 class="card-title mb-0">{{ $tier->name }}</h4>
                                     <div class="text-primary fw-bold">
@@ -49,10 +44,10 @@
                                 <div class="mt-auto text-center">
                                     @auth
                                         <a href="{{ route('user.membership.checkout', $tier->id) }}"
-                                            class="btn btn-upgrade w-100">Become a Member</a>
+                                            class="btn red_btn btn-upgrade w-100"><span>Become a Member</span></a>
                                     @else
                                         <a href="javascript:void(0);" data-bs-toggle="modal" data-bs-target="#loginModal"
-                                            class="btn btn-upgrade w-100">Login to Join</a>
+                                            class="btn red_btn btn-upgrade w-100">Login to Join</a>
                                     @endauth
 
                                 </div>

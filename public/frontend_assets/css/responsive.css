@@ -267,6 +267,9 @@
     .for-mobile-use {
     width: 40%;
 }
+.contact-left{
+    margin-top: 30px;
+}
 }
 @media (max-width:991px){
     .our_mis{
@@ -537,7 +540,7 @@
         font-size: 30px;
     }
     .contact-form{
-        padding:0;
+        padding: 30px 20px 30px 20px;
     }
     .inner_banner_ontent h2 {
         font-size: 35px;
@@ -735,6 +738,30 @@
         .about_text_new_p ol li {
         font-size: 16px;
     }
+    .header-flag-box .input-group div:nth-child(2){
+            min-width: 70px !important;
+    }
+    .footer_sec{
+        padding: 50px 0 0px;
+    }
+    .gallery_page_sec {
+    padding: 50px 0;
+}
+.inner_faq_sec {
+    padding: 50px 0;
+}
+.inner_faq_sec .accordion-button{
+    font-size: 18px;
+}
+.lion_aducation{
+    padding: 10px;
+}
+.contact-us .contact-form .send-msg .btn{
+    width: 60%;
+}
+.contact-right{
+    padding: 0px 0px;
+}
 }
 @media (max-width:480px){
     .header-flag-box .input-group div:nth-child(2){
@@ -754,8 +781,8 @@
         font-size: 14px;
     }
     .login_prf a span {
-        left: -3%;
-        top: -1px;
+        left: -6%;
+        top: 0px;
         width: 23px;
         height: 23px;
     }

@@ -29,7 +29,7 @@
             <div class="row align-items-center justify-content-center mb-5">
                 @if ($organization->images->isNotEmpty())
                     @foreach ($organization->images as $item)
-                        <div class="col-xl-10 col-lg-12 mb-5 aos-init aos-animate" data-aos="fade-up"
+                        <div class="col-xl-10 col-lg-12 mb-4 aos-init aos-animate" data-aos="fade-up"
                             data-aos-duration="1000">
                             <div class="lion_aducation">
                                 <img src="{{ Storage::url($item->image) }}" alt="">
