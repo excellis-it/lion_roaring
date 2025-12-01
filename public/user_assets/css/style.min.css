@@ -36952,7 +36952,7 @@ fieldset:disabled .btn {
 } */
 
 .left-sidebar {
-    width: 210px;
+    width: 130px;
     position: absolute;
     transition: .2s ease-in;
     height: 100%;
@@ -37010,7 +37010,7 @@ fieldset:disabled .btn {
     color: #fff;
     display: block;
     font-size: 15px;
-    white-space: nowrap;
+    white-space: wrap;
     align-items: center;
     line-height: 25px;
     position: relative;
@@ -37373,7 +37373,7 @@ fieldset:disabled .btn {
         width: calc(100% - 150px)
     }
     #main-wrapper[data-layout=vertical][data-sidebartype=full] .body-wrapper {
-        margin-left: 210px;
+        margin-left: 130px;
 
     }
     #main-wrapper[data-layout=vertical][data-sidebartype=mini-sidebar] .body-wrapper {
