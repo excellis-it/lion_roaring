@@ -201,7 +201,7 @@
                             <!-- Drag and Drop Area -->
                             <div id="teamDropZone" class="drop-zone">
                                 <i class="fas fa-cloud-upload-alt fa-3x mb-3"></i>
-                                <p class="mb-2">Drag and drop files here</p>
+                                <p class="mb-2 text-dark">Drag and drop files here</p>
                                 <p class="text-muted small">or</p>
                                 <button type="button" class="btn btn-primary" id="teamSelectFilesBtn">
                                     <i class="fas fa-folder-open me-2"></i>Select Files
@@ -268,6 +268,7 @@
                     background: #f8f9fa;
                     transition: all 0.3s ease;
                     cursor: pointer;
+                    color: #595959;
                 }
 
                 .drop-zone.dragover {

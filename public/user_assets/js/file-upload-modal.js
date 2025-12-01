@@ -39,6 +39,9 @@
                 // Use Bootstrap 5 native API
                 const modal = new bootstrap.Modal(modalEl);
                 modal.show();
+
+                // remove any stuck backdrops
+                clearModalBackdrop();
             });
 
         // Select files button (delegated)
