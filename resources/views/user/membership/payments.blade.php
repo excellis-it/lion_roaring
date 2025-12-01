@@ -31,7 +31,7 @@
                                 <td>${{ number_format($p->payment_amount, 2) }}</td>
                                 <td>{{ $p->payment_method }}</td>
                                 <td>
-                                    <span class="badge {{ $p->payment_status == 'Success' ? 'bg-success' : 'bg-danger' }}">
+                                    <span class=" {{ $p->payment_status == 'Success' ? 'bg-success' : 'bg-danger' }}">
                                         {{ $p->payment_status }}
                                     </span>
                                 </td>
