@@ -787,6 +787,9 @@
 .gift_seed_btn a span i{
     font-size: 14px;
 }
+.contact-map-sec iframe{
+    height: 200px;
+}
 }
 @media (max-width:480px){
     .header-flag-box .input-group div:nth-child(2){
