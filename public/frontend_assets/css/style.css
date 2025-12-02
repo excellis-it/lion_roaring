@@ -3896,24 +3896,24 @@ li.slick-active button {
             padding:30px;
         }
 
-.left-book-sec{
-    position: absolute;
-    padding: 25px 50px 25px 200px;
-}
-.left-book-sec .left-sec-img{
-    width: 500px;
-    height: 800px;
-    /* background-color: #222; */
-}
-.left-sec-img img{
-    width: 100%;
-    height: 100%;
-    object-fit: contain;
-}
+    .left-book-sec{
+        position: absolute;
+        padding: 25px 50px 25px 200px;
+    }
+    .left-book-sec .left-sec-img{
+        width: 500px;
+        height: 600px;
+        /* background-color: #222; */
+    }
+    .left-sec-img img{
+        width: 100%;
+        height: 100%;
+        object-fit: contain;
+    }
 
-.VIpgJd-ZVi9od-ORHb-OEVmcd{
-    display: none !important;
-}
+    .VIpgJd-ZVi9od-ORHb-OEVmcd{
+        display: none !important;
+    }
 @media all and (max-width: 600px) {
     .promo-box-container {
         position: relative;

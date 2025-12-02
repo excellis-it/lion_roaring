@@ -144,7 +144,7 @@
                     <div class="book">
                         <div class="left-book-sec">
                             <div class="left-sec-img">
-                                <img src="{{ asset('frontend_assets/images/banner_img.png') }}" class="full-image overlay-image">
+                                <img src="http://127.0.0.1:8000/storage/footer/CEMnI3pjMdaatfmJwSA0cQqNjA6W4c8Fk8rRA08q.png" class="full-image overlay-image">
                             </div>
                         </div>
                         <div id="pages" class="pages">
