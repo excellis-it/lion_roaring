@@ -142,11 +142,11 @@
             <div class="row justify-content-center">
                 <div class="col-xl-12">
                     <div class="book">
-                         <div class="left-book-sec">
-                                <div class="left-sec-img">
-                                    <img src="{{ asset('frontend_assets/images/banner_img.png') }}" class="full-image overlay-image">
-                                </div>
+                        <div class="left-book-sec">
+                            <div class="left-sec-img">
+                                <img src="{{ asset('frontend_assets/images/banner_img.png') }}" class="full-image overlay-image">
                             </div>
+                        </div>
                         <div id="pages" class="pages">
                             <div class="page first_page text-center">
                                 <img src="{{ asset('frontend_assets/images/banner_img.png') }}" alt=""

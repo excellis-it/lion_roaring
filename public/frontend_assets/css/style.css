@@ -2021,12 +2021,12 @@ li.slick-active button {
 .contact-right {
     position: relative;
     padding: 27px 40px;
-    box-shadow: 10px 25px 50px rgb(0 0 0 / 13%);
+    box-shadow: 10px 25px 50px rgb(0 0 0 / 20%);
     border-radius: 20px;
     margin-top: 0px;
 }
 .contact-left{
-    box-shadow: 10px 25px 50px rgb(0 0 0 / 13%);
+    box-shadow: 10px 25px 50px rgb(0 0 0 / 20%);
     border-radius: 20px;
 }
 .contact-info {
