@@ -52,6 +52,9 @@
 .real_solution_sec {
     padding: 60px 0;
 }
+.left-book-sec{
+    padding: 25px 50px 25px 150px;
+}
 }
 @media (max-width:1440px){
       .after_about_hm .abt_text_white {
@@ -89,6 +92,9 @@
 }
 .slider, .slide {
     height: 750px;
+}
+.left-book-sec {
+    padding: 25px 50px 25px 50px;
 }
 }
 @media (max-width:1366px){
@@ -195,6 +201,9 @@
     .right_top {
         width: 50%;
     }
+    .left-book-sec {
+        padding: 25px 0px 25px 0px;
+    }
 }
 @media (max-width:1200px){
 
@@ -269,6 +278,9 @@
 }
 .contact-left{
     margin-top: 30px;
+}
+.left-book-sec .left-sec-img{
+    width: 410px;
 }
 }
 @media (max-width:991px){
@@ -456,6 +468,9 @@
     .main_menu .navigation.navbar{
         flex-direction: column-reverse;
         align-items: end;
+    }
+    .left-book-sec .left-sec-img {
+        width: 320px;
     }
 }
 
