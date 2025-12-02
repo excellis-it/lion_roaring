@@ -27,7 +27,6 @@
                     @foreach ($galleries as $item)
                     <div class="col-xl-3 col-lg-4 col-md-6 mb-4">
                         <div class="picture_wrapper">
-                            
                             <a href="{{Storage::url($item->image)}}" data-lightbox="models">
                                 <div class="magni-icon">
                                     <i class="fa-solid fa-magnifying-glass"></i>

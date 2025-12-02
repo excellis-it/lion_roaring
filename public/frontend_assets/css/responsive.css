@@ -690,7 +690,7 @@
         font-size: 24px;
     }
     .article.card-4 .card-body{
-            padding: 40px 34px 55px 34px;
+            padding: 20px 20px 55px 20px;
     }
         .real_solution_sec {
         padding: 30px 0;
@@ -762,6 +762,16 @@
 .contact-right{
     padding: 0px 0px;
 }
+.gift_seed_btn a{
+    padding: 12px 5px;
+}
+.gift_seed_btn a span{
+    width: 26px;
+    height: 26px;
+}
+.gift_seed_btn a span i{
+    font-size: 14px;
+}
 }
 @media (max-width:480px){
     .header-flag-box .input-group div:nth-child(2){
@@ -781,7 +791,7 @@
         font-size: 14px;
     }
     .login_prf a span {
-        left: -6%;
+        left: -3%;
         top: 0px;
         width: 23px;
         height: 23px;
@@ -885,8 +895,8 @@
         height: 18px;
     }
         .login_prf a {
-        padding: 4px 4px;
-        font-size: 14px;
+        padding: 5px 4px;
+        font-size: 12px;
     }
     .login_prf a span i {
         font-size: 10px;
@@ -909,5 +919,8 @@
     }
     .button_container.active span {
         top: 7px;
+    }
+    .header-flag-box .input-group div:nth-child(2){
+        padding: 2px 10px !important;
     }
 }
