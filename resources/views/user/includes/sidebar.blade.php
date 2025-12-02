@@ -96,20 +96,7 @@
                                  @endif
 
 
-                                 {{-- @if (Gate::check('Manage Calendar'))
-                                <a href="{{ route('user.page', ['name' => 'Calendar', 'permission' => 'Manage Calendar']) }} ">
-                                    <span>
-                                        <img src="{{ asset('user_assets/images/Calendar.png') }}" alt="">
-                                    </span>
-                                    <span>{{ Helper::getMenuName('calendar', 'Calendar') }}</span>
-                                </a>
-                                @endif --}}
-                                 {{-- <a href="{{ route('user.page', ['name' => 'Calls', 'permission' => 'Manage Chat']) }}">
-                                    <span>
-                                        <img src="{{ asset('user_assets/images/Calls.png') }}" alt="">
-                                    </span>
-                                    <span>{{ Helper::getMenuName('calls', 'Calls') }}</span>
-                                </a> --}}
+                               
                                  @if (Gate::check('Manage Email'))
                                      <a href="{{ route('mail.index') }}">
                                          <div class="count_chat_sidebar count_chat_sidebar_count_mail"

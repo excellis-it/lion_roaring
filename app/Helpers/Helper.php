@@ -298,6 +298,7 @@ class Helper
         $chats = Chat::where('reciver_id', $sender_id)
             ->where('sender_id', $reciver_id)
             ->where('seen', 0)
+            ->where('deleted_for_reciver', 0)
             ->where('delete_from_receiver_id', 0)
             ->count();
         return $chats;
@@ -316,10 +317,16 @@ class Helper
     public static function getTeamCountUnseenMessage($user_id, $team_id)
     {
         $team_chat = ChatMember::where('user_id', $user_id)
-            ->whereHas('chat', function ($query) use ($team_id) {
-                $query->where('team_id', $team_id);
-            })
             ->where('is_seen', 0)
+            ->whereHas('chat', function ($query) use ($team_id) {
+                $query->where('team_id', $team_id)
+                    ->whereNull('deleted_at');
+            })
+            ->whereHas('chat.team.members', function ($query) use ($user_id) {
+                // Check user is still a member and not removed
+                $query->where('user_id', $user_id)
+                    ->where('is_removed', false);
+            })
             ->count();
         return $team_chat;
     }
@@ -425,22 +432,36 @@ class Helper
 
         // Count unread emails where user is recipient and email is not deleted
         $mailCount = \App\Models\MailUser::where('user_id', $user->id)
-            ->where('is_read', 0)
+            ->where('is_to', 1)
             ->where('is_delete', 0)
+            ->where('is_read', 0)
             ->count();
 
         // Count unread individual chats where user is receiver
+        // AND sender is an active user with valid role
         $chatCount = \App\Models\Chat::where('reciver_id', $user->id)
             ->where('seen', 0)
             ->where('deleted_for_reciver', 0)
             ->where('delete_from_receiver_id', 0)
+            ->whereHas('sender', function ($query) {
+                // Only count messages from active users with valid roles
+                $query->where('status', 1)
+                    ->whereHas('roles', function ($q) {
+                        $q->whereIn('type', [1, 2, 3]);
+                    });
+            })
             ->count();
 
-        // Count unread team chat messages where user is a member
+        // Count unread team chat messages where user is a member and not removed
         $teamChatCount = \App\Models\ChatMember::where('user_id', $user->id)
             ->where('is_seen', 0)
             ->whereHas('chat', function ($query) {
                 $query->whereNull('deleted_at');
+            })
+            ->whereHas('chat.team.members', function ($query) use ($user) {
+                // Check user is still a member and not removed
+                $query->where('user_id', $user->id)
+                    ->where('is_removed', false);
             })
             ->count();
 

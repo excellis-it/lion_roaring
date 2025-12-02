@@ -96,6 +96,15 @@ class MembershipController extends Controller
         if (!auth()->user()->can('Delete Membership')) {
             abort(403, 'Unauthorized');
         }
+
+        // Check if any users have subscribed to this tier
+        $activeSubscriptions = UserSubscription::where('plan_id', $membership->id)->count();
+
+        if ($activeSubscriptions > 0) {
+            return redirect()->route('user.membership.manage')
+                ->with('error', 'Cannot delete this membership tier. one or more users have subscribed to this plan.');
+        }
+
         $membership->delete();
         return redirect()->route('user.membership.manage')->with('success', 'Tier removed');
     }

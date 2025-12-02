@@ -187,23 +187,61 @@
     </div>
     <div id="group-member-form-{{ $team['id'] }}-{{ auth()->user()->id }}">
         @if (Helper::checkRemovedFromTeam($team['id'], auth()->user()->id) == false)
-            <div id="file-name-display"
-                style="display:none; margin-top: 5px; color: #555; font-size: 14px;background-color: #d5c8e5;"
-                class="p-2 w-100">
+            <!-- Team File Upload Modal -->
+            <div class="modal fade" id="teamFileUploadModal" tabindex="-1"
+                aria-labelledby="teamFileUploadModalLabel" aria-hidden="true">
+                <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="teamFileUploadModalLabel">Send Files to Group</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            <!-- Drag and Drop Area -->
+                            <div id="teamDropZone" class="drop-zone">
+                                <i class="fas fa-cloud-upload-alt fa-3x mb-3"></i>
+                                <p class="mb-2 text-dark">Drag and drop files here</p>
+                                <p class="text-muted small">or</p>
+                                <button type="button" class="btn btn-primary" id="teamSelectFilesBtn">
+                                    <i class="fas fa-folder-open me-2"></i>Select Files
+                                </button>
+                                <input type="file" id="teamFileInput" style="display: none" multiple
+                                    accept="image/*,video/*,application/pdf,.doc,.docx,.xls,.xlsx,.ppt,.pptx,.txt">
+                            </div>
+
+                            <!-- Files Preview Area -->
+                            <div id="teamFilesPreviewContainer" style="display: none;">
+                                <div class="d-flex justify-content-between align-items-center mb-3">
+                                    <h6 class="mb-0"><span id="teamFileCount">0</span> file(s) selected</h6>
+                                    <button type="button" class="btn btn-primary" id="teamAddMoreFiles">
+                                        <i class="fas fa-plus me-1"></i>Add More
+                                    </button>
+                                </div>
+                                <div id="teamFilesList" class="files-list"></div>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Cancel</button>
+                            <button type="button" class="btn btn-primary" id="teamSendFilesBtn">
+                                <i class="fas fa-paper-plane me-2"></i>Send Files
+                            </button>
+                        </div>
+                    </div>
+                </div>
             </div>
+
             <form id="TeamMessageForm" enctype="multipart/form-data">
                 @csrf
-                <input type="file" id="team-file2" style="display: none" data-team-id="{{ $team['id'] }}"
-                    name="file">
                 <div class="file-upload">
-                    <label for="team-file" id="hit-chat-file" onclick="$('#team-file2').click()">
+                    <span id="hit-team-chat-file" style="cursor: pointer;">
                         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none"
                             viewBox="0 0 24 24">
                             <path fill="currentColor" fill-rule="evenodd"
                                 d="M9 7a5 5 0 0 1 10 0v8a7 7 0 1 1-14 0V9a1 1 0 0 1 2 0v6a5 5 0 0 0 10 0V7a3 3 0 1 0-6 0v8a1 1 0 1 0 2 0V9a1 1 0 1 1 2 0v6a3 3 0 1 1-6 0z"
                                 clip-rule="evenodd" style="color:black"></path>
                         </svg>
-                    </label>
+                    </span>
                 </div>
 
                 <textarea type="text" id="TeamMessageInput" placeholder="Type a message..." rows="1" class="form-control"></textarea>
@@ -219,6 +257,124 @@
                     </button>
                 </div>
             </form>
+
+            <style>
+                .drop-zone {
+                    border: 2px dashed #6200ea;
+                    border-radius: 10px;
+                    padding: 40px;
+                    text-align: center;
+                    background: #f8f9fa;
+                    transition: all 0.3s ease;
+                    cursor: pointer;
+                    color: #595959;
+                }
+
+                .drop-zone.dragover {
+                    background: #e3f2fd;
+                    border-color: #2196f3;
+                    transform: scale(1.02);
+                }
+
+                .files-list {
+                    max-height: 400px;
+                    overflow-y: auto;
+                }
+
+                .file-preview-item {
+                    background: #fff;
+                    border: 1px solid #e0e0e0;
+                    border-radius: 8px;
+                    padding: 15px;
+                    margin-bottom: 15px;
+                    transition: all 0.3s ease;
+                    position: relative;
+                }
+
+                .file-preview-item:hover {
+                    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+                }
+
+                .file-preview-content {
+                    display: flex;
+                    gap: 15px;
+                    margin-bottom: 10px;
+                    color: darkslategrey;
+                }
+
+                .file-preview-thumbnail {
+                    width: 80px;
+                    height: 80px;
+                    border-radius: 6px;
+                    object-fit: cover;
+                    flex-shrink: 0;
+                }
+
+                .file-preview-icon {
+                    width: 80px;
+                    height: 80px;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    background: #f5f5f5;
+                    border-radius: 6px;
+                    font-size: 32px;
+                    color: #6200ea;
+                    flex-shrink: 0;
+                }
+
+                .file-preview-info {
+                    flex: 1;
+                    min-width: 0;
+                }
+
+                .file-preview-name {
+                    font-weight: 500;
+                    margin-bottom: 5px;
+                    word-break: break-word;
+                }
+
+                .file-preview-size {
+                    color: #666;
+                    font-size: 0.875rem;
+                }
+
+                .file-message-input {
+                    width: 100%;
+                    border: 1px solid #ddd;
+                    border-radius: 6px;
+                    padding: 8px 12px;
+                    font-size: 0.875rem;
+                    transition: border-color 0.3s;
+                }
+
+                .file-message-input:focus {
+                    outline: none;
+                    border-color: #6200ea;
+                }
+
+                .remove-file-btn {
+                    position: absolute;
+                    top: 10px;
+                    right: 10px;
+                    background: #dc3545;
+                    color: white;
+                    border: none;
+                    border-radius: 50%;
+                    width: 28px;
+                    height: 28px;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    cursor: pointer;
+                    transition: all 0.3s;
+                }
+
+                .remove-file-btn:hover {
+                    background: #c82333;
+                    transform: scale(1.1);
+                }
+            </style>
         @else
             {{-- show message --}}
             <div class="justify-content-center">

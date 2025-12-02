@@ -208,86 +208,110 @@ class TeamChatController extends Controller
 
     public function send(Request $request)
     {
-
-        $team_chat = new TeamChat();
-        $team_chat->team_id = $request->team_id;
-        $team_chat->user_id = auth()->id();
         $input_message = Helper::formatChatSendMessage($request->message);
-        if ($request->file) {
-            if (!empty($input_message)) {
-                $team_chat->message = $input_message;
-            } else {
-                $team_chat->message = ' ';
+
+        // Handle multiple files
+        $files = $request->file('files') ?? ($request->file('file') ? [$request->file('file')] : []);
+        $team_chats = [];
+
+        if (!empty($files)) {
+            // Create separate messages for each file
+            foreach ($files as $index => $file) {
+                $team_chat = new TeamChat();
+                $team_chat->team_id = $request->team_id;
+                $team_chat->user_id = auth()->id();
+
+                // Only include message text with the first file
+                if ($index === 0 && !empty($input_message)) {
+                    $team_chat->message = $input_message;
+                } else {
+                    $team_chat->message = ' ';
+                }
+
+                $team_chat->attachment = $this->imageUpload($file, 'team-chat');
+                $team_chat->attachment_name = $file->getClientOriginalName();
+                $team_chat->save();
+                $team_chats[] = $team_chat;
             }
-            $team_chat->attachment = $this->imageUpload($request->file('file'), 'team-chat');
-            $team_chat->attachment_name = $request->file('file')->getClientOriginalName();
-            $message_type = $this->detectMessageType($request->file('file'));
         } else {
+            // No files, just message
+            $team_chat = new TeamChat();
+            $team_chat->team_id = $request->team_id;
+            $team_chat->user_id = auth()->id();
             $team_chat->message = $input_message;
             $team_chat->attachment = '';
-            $message_type = 'text';
+            $team_chat->save();
+            $team_chats[] = $team_chat;
         }
-        $team_chat->save();
 
         $teams = TeamMember::where('team_id', $request->team_id)->where('is_removed', false)->get();
         $team = Team::find($request->team_id);
 
-        foreach ($teams as $team_member) {
-            $chat_member = new ChatMember();
-            $chat_member->chat_id = $team_chat->id;
-            $chat_member->user_id = $team_member->user_id;
-            if ($team_member->user_id == auth()->id()) {
-                $chat_member->is_seen = true;
-            } else {
-                $chat_member->is_seen = false;
-            }
-            $chat_member->save();
+        // Process each team chat message
+        $allChats = [];
+        foreach ($team_chats as $team_chat) {
+            // Add chat members for each message
+            foreach ($teams as $team_member) {
+                $chat_member = new ChatMember();
+                $chat_member->chat_id = $team_chat->id;
+                $chat_member->user_id = $team_member->user_id;
+                if ($team_member->user_id == auth()->id()) {
+                    $chat_member->is_seen = true;
+                } else {
+                    $chat_member->is_seen = false;
+                }
+                $chat_member->save();
 
-            if ($team_member->user_id != auth()->id()) {
-                $notification = new Notification();
-                $notification->user_id = $team_member->user_id;
-                $notification->chat_id = $team_chat->id;
-                $notification->message = 'You have a new message in <b>' . $team->name . '</b> group.';
-                $notification->type = 'Team';
-                $notification->save();
+                if ($team_member->user_id != auth()->id()) {
+                    $notification = new Notification();
+                    $notification->user_id = $team_member->user_id;
+                    $notification->chat_id = $team_chat->id;
+                    $notification->message = 'You have a new message in <b>' . $team->name . '</b> group.';
+                    $notification->type = 'Team';
+                    $notification->save();
 
-                // Send FCM notification
-                $member = User::find($team_member->user_id);
-                if ($member && $member->fcm_token) {
-                    try {
-                        $messageText = $request->file ? 'Sent an attachment' : $input_message;
-                        $this->fcmService->sendToDevice(
-                            $member->fcm_token,
-                            $team->name,
-                            auth()->user()->full_name . ': ' . $messageText,
-                            [
-                                'type' => 'team',
-                                'team_id' => (string) $request->team_id,
-                                'team_name' => $team->name,
-                                'chat_id' => (string) $team_chat->id,
-                                'sender_id' => (string) auth()->id(),
-                                'sender_name' => auth()->user()->full_name,
-                                'message' => $input_message,
-                                'attachment' => $request->file ? Storage::url($team_chat->attachment) : '',
-                                'attachment_name' => $request->file ? ($team_chat->attachment_name ?? basename($team_chat->attachment)) : null,
-                                'msg_type' => $message_type,
-                                'notification_id' => (string) $notification->id
-                            ]
-                        );
-                    } catch (Exception $e) {
-                        Log::error('FCM team chat notification failed: ' . $e->getMessage());
+                    // Send FCM notification
+                    $member = User::find($team_member->user_id);
+                    if ($member && $member->fcm_token) {
+                        try {
+                            $hasAttachment = !empty($team_chat->attachment);
+                            $message_type = $hasAttachment ? $this->detectMessageType($team_chat->attachment) : 'text';
+                            $messageText = $hasAttachment ? 'Sent an attachment' : $input_message;
+
+                            $this->fcmService->sendToDevice(
+                                $member->fcm_token,
+                                $team->name,
+                                auth()->user()->full_name . ': ' . $messageText,
+                                [
+                                    'type' => 'team',
+                                    'team_id' => (string) $request->team_id,
+                                    'team_name' => $team->name,
+                                    'chat_id' => (string) $team_chat->id,
+                                    'sender_id' => (string) auth()->id(),
+                                    'sender_name' => auth()->user()->full_name,
+                                    'message' => $team_chat->message,
+                                    'attachment' => $hasAttachment ? Storage::url($team_chat->attachment) : '',
+                                    'attachment_name' => $hasAttachment ? ($team_chat->attachment_name ?? basename($team_chat->attachment)) : null,
+                                    'msg_type' => $message_type,
+                                    'notification_id' => (string) $notification->id
+                                ]
+                            );
+                        } catch (Exception $e) {
+                            Log::error('FCM team chat notification failed: ' . $e->getMessage());
+                        }
                     }
                 }
             }
+
+            $chat = TeamChat::where('id', $team_chat->id)->with('user', 'chatMembers')->first();
+            $chat->new_created_at = $chat->created_at->format('Y-m-d H:i:s');
+            $chat->created_at_formatted = $chat->created_at->format('h:i a') . ' Today';
+            $allChats[] = $chat;
         }
 
-        $chat_member_id = ChatMember::where('chat_id', $team_chat->id)->pluck('user_id')->toArray();
-
-        $chat = TeamChat::where('id', $team_chat->id)->with('user', 'chatMembers')->first();
-
-        // Add formatted timestamp for frontend
-        $chat->new_created_at = $chat->created_at->format('Y-m-d H:i:s');
-        $chat->created_at_formatted = $chat->created_at->format('h:i a') . ' Today';
+        // Get chat member IDs and unseen counts (using first chat for backward compatibility)
+        $firstChat = $allChats[0];
+        $chat_member_id = ChatMember::where('chat_id', $firstChat->id)->pluck('user_id')->toArray();
 
         // Get unseen counts for each team member
         $unseenCounts = [];
@@ -298,10 +322,11 @@ class TeamChatController extends Controller
         return response()->json([
             'message' => 'Message sent successfully.',
             'status' => true,
-            'chat' => $chat,
+            'chat' => $firstChat,  // Return first chat for backward compatibility
+            'all_chats' => $allChats,  // Return all created chats
             'chat_member_id' => $chat_member_id,
-            'formatted_time' => $chat->created_at->format('h:i A'),
-            'created_at_formatted' => $chat->created_at_formatted,
+            'formatted_time' => $firstChat->created_at->format('h:i A'),
+            'created_at_formatted' => $firstChat->created_at_formatted,
             'unseen_counts' => $unseenCounts
         ]);
     }
@@ -315,7 +340,12 @@ class TeamChatController extends Controller
             return 'text';
         }
 
-        $extension = strtolower($file->getClientOriginalExtension());
+        // Handle both UploadedFile objects and file paths
+        if (is_string($file)) {
+            $extension = strtolower(pathinfo($file, PATHINFO_EXTENSION));
+        } else {
+            $extension = strtolower($file->getClientOriginalExtension());
+        }
 
         $image_extensions = ['jpg', 'jpeg', 'png', 'gif', 'bmp', 'svg', 'webp'];
         $audio_extensions = ['mp3', 'wav', 'ogg', 'aac', 'm4a'];
