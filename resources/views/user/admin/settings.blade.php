@@ -1,15 +1,13 @@
-@extends('admin.layouts.master')
+@extends('user.layouts.master')
 @section('title')
     {{ env('APP_NAME') }} | Settings
 @endsection
 @push('styles')
 @endpush
-@section('head')
-    Site Settings
-@endsection
+
 @section('content')
-    <div class="main-content">
-        <div class="inner_page">
+     <div class="container-fluid">
+         <div class="bg_white_border">
             <div class="container mt-3">
 
                 @if (session('success'))

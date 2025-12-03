@@ -15,7 +15,7 @@
                 @if (auth()->user()->can('Create Our Governance'))
                 <a title="Delete" data-route="{{ route('our-governances.delete', $our_governance->id) }}"
                     href="javascript:void(0);" id="delete">
-                    <span class="trash-icon"><i class="ph ph-trash"></i></span>
+                    <span class="trash-icon"><i class="fas fa-trash"></i></span>
                 </a>
                 @endif
             </div>

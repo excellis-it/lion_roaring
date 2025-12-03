@@ -1,17 +1,15 @@
-@extends('admin.layouts.master')
+@extends('user.layouts.master')
 @section('title')
     {{ env('APP_NAME') }} | Update PMA Terms Page
 @endsection
 @push('styles')
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/summernote/0.8.12/summernote-lite.css">
 @endpush
-@section('head')
-    Update PMA Terms Page
-@endsection
+
 
 @section('content')
-    <div class="main-content">
-        <div class="inner_page">
+     <div class="container-fluid">
+         <div class="bg_white_border">
             <div class="card search_bar sales-report-card">
                 <form action="{{ route('pma-terms.store') }}" method="post" enctype="multipart/form-data">
                     @csrf

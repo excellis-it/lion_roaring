@@ -1,4 +1,4 @@
-@extends('admin.layouts.master')
+@extends('user.layouts.master')
 @section('title')
     {{ env('APP_NAME') }} | Update Organization Page
 @endsection
@@ -48,13 +48,11 @@
         }
     </style>
 @endpush
-@section('head')
-    Update Organization Page
-@endsection
+
 
 @section('content')
-    <div class="main-content">
-        <div class="inner_page">
+     <div class="container-fluid">
+         <div class="bg_white_border">
             <div class="card search_bar sales-report-card">
                 <form action="{{ route('organizations.store') }}" method="post" enctype="multipart/form-data">
                     @csrf

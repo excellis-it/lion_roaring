@@ -1,16 +1,14 @@
-@extends('admin.layouts.master')
+@extends('user.layouts.master')
 @section('title')
     {{ env('APP_NAME') }} | Create FAQ
 @endsection
 @push('styles')
 @endpush
-@section('head')
-    Create FAQ
-@endsection
+
 
 @section('content')
-    <div class="main-content">
-        <div class="inner_page">
+     <div class="container-fluid">
+         <div class="bg_white_border">
             <div class="card search_bar sales-report-card">
                 <form action="{{ route('faq.store') }}" method="post" enctype="multipart/form-data">
                     @csrf

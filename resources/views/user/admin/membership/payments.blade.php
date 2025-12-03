@@ -1,8 +1,8 @@
-@extends('admin.layouts.master')
+@extends('user.layouts.master')
 @section('title', 'Payment History')
 @section('content')
-    <div class="main-content">
-        <div class="inner_page">
+     <div class="container-fluid">
+         <div class="bg_white_border">
             <div class="page-header">
                 <h4 class="page-title">Payment History for {{ $user->first_name }} {{ $user->last_name }}</h4>
                 {{-- <a href="{{ route('admin.membership.members') }}" class="btn btn-secondary">Back to Members</a> --}}
@@ -10,8 +10,8 @@
             <div class="card">
                 <div class="card-body">
                     <table class="table table-striped">
-                        <thead>
-                            <tr>
+                       <thead class="color_head">
+                                            <tr class="header-row">
                                 <th>#</th>
                                 <th>Subscription</th>
                                 <th>Transaction ID</th>

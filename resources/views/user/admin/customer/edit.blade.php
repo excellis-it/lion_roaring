@@ -1,15 +1,12 @@
-@extends('admin.layouts.master')
+@extends('user.layouts.master')
 @section('title')
     {{ env('APP_NAME') }} | Edit Customer Details
 @endsection
 @push('styles')
 @endpush
-@section('head')
-    Edit Customer Details
-@endsection
 @section('content')
-    <div class="main-content">
-        <div class="inner_page">
+     <div class="container-fluid">
+         <div class="bg_white_border">
             <div class="card search_bar sales-report-card">
                 <div class="sales-report-card-wrap">
                     <div class="form-head">

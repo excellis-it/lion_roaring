@@ -16,7 +16,7 @@
                     @if (auth()->user()->can('Delete Testimonials'))
                         <a title="Delete" data-route="{{ route('testimonials.delete', $testimonial->id) }}"
                             href="javascript:void(0);" id="delete">
-                            <span class="trash-icon"><i class="ph ph-trash"></i></span>
+                            <span class="trash-icon"><i class="fas fa-trash"></i></span>
                         </a>
                     @endif
                 </div>

@@ -1,4 +1,4 @@
-@extends('admin.layouts.master')
+@extends('user.layouts.master')
 @section('title')
     Admin - {{ env('APP_NAME') }}
 @endsection
@@ -14,9 +14,7 @@
         }
     </style>
 @endpush
-@section('head')
-    Admin
-@endsection
+
 @section('create_button')
     @if (auth()->user()->can('Create Admin List'))
         <a href="javascript:void(0)" id="create-admin" class="btn btn-primary" data-bs-toggle="modal"
@@ -136,14 +134,14 @@
                     </button>
                 </div>
                 <div class="modal-body" id="edit-admin">
-                    @include('admin.admin.edit')
+                    @include('user.admin.admin.edit')
 
                 </div>
             </div>
         </div>
     </div>
-    <div class="main-content">
-        <div class="inner_page">
+     <div class="container-fluid">
+         <div class="bg_white_border">
 
             <div class="card table_sec stuff-list-table">
                 <div class="row justify-content-end">
@@ -152,15 +150,15 @@
 
                             {{-- <div class="col-md-3 pl-0 ml-2">
                                 <button class="btn btn-primary button-search" id="search-button"> <span class=""><i
-                                            class="ph ph-magnifying-glass"></i></span> Search</button>
+                                            class="fa fa-search"></i></span> Search</button>
                             </div> --}}
                         </div>
                     </div>
                 </div>
                 <div class="table-responsive" id="contacts-data">
                     <table id="example" class="dd table table-striped table-bordered" style="width:100%">
-                        <thead>
-                            <tr>
+                       <thead class="color_head">
+                                            <tr class="header-row">
                                 <th>
                                     User Name
                                 </th>
@@ -192,7 +190,7 @@
                                             @if (auth()->user()->can('Delete Admin List'))
                                                 <a href="{{ route('admin.delete', $admin->id) }}"
                                                     onclick="return confirm('Are you sure to delete this admin?')"> <span
-                                                        class="trash-icon"><i class="ph ph-trash"></i></span></a>
+                                                        class="trash-icon"><i class="fas fa-trash"></i></span></a>
                                             @endif
                                         </div>
 

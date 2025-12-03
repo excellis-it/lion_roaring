@@ -1,4 +1,4 @@
-@extends('admin.layouts.master')
+@extends('user.layouts.master')
 @section('title')
     Admin - {{ env('APP_NAME') }}
 @endsection
@@ -14,9 +14,6 @@
         }
     </style>
 @endpush
-@section('head')
-    Create Admin
-@endsection
 
 
 @section('content')
@@ -24,8 +21,8 @@
         <div id="loading-content"></div>
     </section>
 
-    <div class="main-content">
-        <div class="inner_page">
+     <div class="container-fluid">
+         <div class="bg_white_border">
 
             <div class="card card-body">
 

@@ -11,7 +11,7 @@
                     @if (auth()->user()->can('Delete Newsletters'))
                         <a title="Delete" data-route="{{ route('newsletters.delete', $newsletter->id) }}"
                             href="javascript:void(0);" id="delete">
-                            <span class="trash-icon"><i class="ph ph-trash"></i></span>
+                            <span class="trash-icon"><i class="fas fa-trash"></i></span>
                         </a>
                     @endif
                 </div>

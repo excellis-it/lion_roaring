@@ -1,16 +1,14 @@
-@extends('admin.layouts.master')
+@extends('user.layouts.master')
 @section('title')
     {{ env('APP_NAME') }} | Update About us Page
 @endsection
 @push('styles')
 @endpush
-@section('head')
-    Update About us Page
-@endsection
+
 
 @section('content')
-    <div class="main-content">
-        <div class="inner_page">
+     <div class="container-fluid">
+         <div class="bg_white_border">
             <div class="card search_bar sales-report-card">
                 <form action="{{ route('about-us.store') }}" method="post" enctype="multipart/form-data">
                     @csrf

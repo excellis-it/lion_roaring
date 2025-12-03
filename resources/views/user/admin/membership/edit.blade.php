@@ -1,13 +1,11 @@
-@extends('admin.layouts.master')
+@extends('user.layouts.master')
 @section('title')
     {{ env('APP_NAME') }} | Edit Membership Tier
 @endsection
-@section('head')
-    Edit Membership Tier
-@endsection
+
 @section('content')
-    <div class="main-content">
-        <div class="inner_page">
+     <div class="container-fluid">
+         <div class="bg_white_border">
             <div class="card search_bar sales-report-card">
                 <form action="{{ route('admin.membership.update', $tier->id) }}" method="post">
                     @csrf

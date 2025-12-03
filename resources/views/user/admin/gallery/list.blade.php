@@ -1,4 +1,4 @@
-@extends('admin.layouts.master')
+@extends('user.layouts.master')
 @section('title')
     All Gallery Details - {{ env('APP_NAME') }}
 @endsection
@@ -9,9 +9,7 @@
         }
     </style>
 @endpush
-@section('head')
-    All Gallery Details
-@endsection
+
 @section('create_button')
     @if (auth()->user()->can('Create Gallery'))
         <a href="{{ route('gallery.create') }}" class="btn btn-primary">+ Create New Gallery</a>
@@ -21,19 +19,19 @@
     <section id="loading">
         <div id="loading-content"></div>
     </section>
-    <div class="main-content">
-        <div class="inner_page">
+     <div class="container-fluid">
+         <div class="bg_white_border">
 
             <div class="card table_sec stuff-list-table">
                 <div class="row justify-content-end">
                     <div class="col-md-6">
                         <div class="row g-1 justify-content-end">
                             {{-- <div class="col-md-8 pr-0">
-                                <div class="search-field prod-search">
-                                    <input type="text" name="search" id="search" placeholder="search..." required
-                                        class="form-control">
-                                    <a href="javascript:void(0)" class="prod-search-icon"><i
-                                            class="ph ph-magnifying-glass"></i></a>
+                                <div class="search-field">
+                                     <input type="text" name="search" id="search" placeholder="search..."
+                                                required="" class="form-control rounded_search">
+                                     <button class="submit_search" id="search-button"> <span class=""><i
+                                                        class="fa fa-search"></i></span></button>
                                 </div>
                             </div> --}}
                             <div class="col-md-4">
@@ -52,9 +50,9 @@
                     </div>
                 </div>
                 <div class="table-responsive" id="gallery-data">
-                    <table class="table table-bordered" class="display">
-                        <thead>
-                            <tr>
+                    <table class="table align-middle bg-white color_body_text" class="display">
+                       <thead class="color_head">
+                                            <tr class="header-row">
                                 <th class="sorting" data-tippy-content="Sort by Id" data-sorting_type="asc"
                                     data-column_name="id" style="cursor: pointer">Id<span id="id_icon"></span>
                                 </th>
@@ -85,7 +83,7 @@
                                                 @if (auth()->user()->can('Delete Gallery'))
                                                     <a title="Delete " data-route="{{ route('gallery.delete', $item->id) }}"
                                                         href="javascript:void(0);" id="delete">
-                                                        <span class="trash-icon"><i class="ph ph-trash"></i></span>
+                                                        <span class="trash-icon"><i class="fas fa-trash"></i></span>
                                                     </a>
                                                 @endif
                                             </div>

@@ -1,4 +1,4 @@
-@extends('admin.layouts.master')
+@extends('user.layouts.master')
 @section('title')
     All Users - {{ env('APP_NAME') }}
 @endsection
@@ -14,9 +14,7 @@
         }
     </style>
 @endpush
-@section('head')
-    Manage All Users
-@endsection
+
 @section('create_button')
     @if (auth()->user()->can('Create All Users'))
         <a href="javascript:void(0)" id="create-ecclessia" class="btn btn-primary" data-bs-toggle="modal"
@@ -169,14 +167,14 @@
                     </button>
                 </div>
                 <div class="modal-body" id="edit-eclessia">
-                    @include('admin.ecclessia.edit')
+                    @include('user.admin.ecclessia.edit')
 
                 </div>
             </div>
         </div>
     </div>
-    <div class="main-content">
-        <div class="inner_page">
+     <div class="container-fluid">
+         <div class="bg_white_border">
 
             <div class="card table_sec stuff-list-table">
                 <div class="row justify-content-end">
@@ -185,15 +183,15 @@
 
                             {{-- <div class="col-md-3 pl-0 ml-2">
                                 <button class="btn btn-primary button-search" id="search-button"> <span class=""><i
-                                            class="ph ph-magnifying-glass"></i></span> Search</button>
+                                            class="fa fa-search"></i></span> Search</button>
                             </div> --}}
                         </div>
                     </div>
                 </div>
                 <div class="table-responsive" id="contacts-data">
                     <table id="example" class="dd table table-striped table-bordered" style="width:100%">
-                        <thead>
-                            <tr>
+                       <thead class="color_head">
+                                            <tr class="header-row">
                                 <th>
                                     User Name
                                 </th>
@@ -229,7 +227,7 @@
                                             @if (auth()->user()->can('Delete All Users'))
                                                 <a href="{{ route('ecclessias.delete', $ecclessia->id) }}"
                                                     onclick="return confirm('Are you sure to delete this user?')">
-                                                    <span class="trash-icon"><i class="ph ph-trash"></i></span></a>
+                                                    <span class="trash-icon"><i class="fas fa-trash"></i></span></a>
                                             @endif
                                         </div>
 

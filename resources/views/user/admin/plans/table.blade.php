@@ -18,7 +18,7 @@
                         <span class="edit-icon"><i class="ph ph-pencil-simple"></i></span></a>
                     <a title="Delete " data-route="{{ route('plans.delete', $plan->id) }}"
                         href="javascipt:void(0);" id="delete"> <span class="trash-icon"><i
-                                class="ph ph-trash"></i></span></a>
+                                class="fas fa-trash"></i></span></a>
                 </div>
             </td>
 

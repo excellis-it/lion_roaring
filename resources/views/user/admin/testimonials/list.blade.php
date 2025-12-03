@@ -1,4 +1,4 @@
-@extends('admin.layouts.master')
+@extends('user.layouts.master')
 @section('title')
     All Testimonial Details - {{ env('APP_NAME') }}
 @endsection
@@ -9,9 +9,7 @@
         }
     </style>
 @endpush
-@section('head')
-    All Testimonial Details
-@endsection
+
 @section('create_button')
     @if (auth()->user()->can('Create Testimonials'))
         <a href="{{ route('testimonials.create') }}" class="btn btn-primary">+ Create New Testmonial</a>
@@ -21,8 +19,8 @@
     <section id="loading">
         <div id="loading-content"></div>
     </section>
-    <div class="main-content">
-        <div class="inner_page">
+     <div class="container-fluid">
+         <div class="bg_white_border">
 
             <div class="card table_sec stuff-list-table">
                 <div class="row justify-content-end">
@@ -44,24 +42,24 @@
                             </div>
 
                             <div class="col-md-8 pr-0">
-                                <div class="search-field prod-search">
-                                    <input type="text" name="search" id="search" placeholder="search..." required
-                                        class="form-control">
-                                    <a href="javascript:void(0)" class="prod-search-icon"><i
-                                            class="ph ph-magnifying-glass"></i></a>
+                                <div class="search-field">
+                                     <input type="text" name="search" id="search" placeholder="search..."
+                                                required="" class="form-control rounded_search">
+                                     <button class="submit_search" id="search-button"> <span class=""><i
+                                                        class="fa fa-search"></i></span></button>
                                 </div>
                             </div>
                             {{-- <div class="col-md-3 pl-0 ml-2">
                                 <button class="btn btn-primary button-search" id="search-button"> <span class=""><i
-                                            class="ph ph-magnifying-glass"></i></span> Search</button>
+                                            class="fa fa-search"></i></span> Search</button>
                             </div> --}}
                         </div>
                     </div>
                 </div>
                 <div class="table-responsive" id="testimonials-data">
-                    <table class="table table-bordered" class="display">
-                        <thead>
-                            <tr>
+                    <table class="table align-middle bg-white color_body_text" >
+                       <thead class="color_head">
+                                            <tr class="header-row">
                                 <th class="sorting" data-tippy-content="Sort by Id" data-sorting_type="asc"
                                     data-column_name="id" style="cursor: pointer">Id<span id="id_icon"></span>
                                 </th>
@@ -77,7 +75,7 @@
                             </tr>
                         </thead>
                         <tbody>
-                            @include('admin.testimonials.table')
+                            @include('user.admin.testimonials.table')
 
                         </tbody>
                     </table>

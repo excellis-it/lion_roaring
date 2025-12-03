@@ -1,16 +1,13 @@
-@extends('admin.layouts.master')
+@extends('user.layouts.master')
 @section('title')
     {{ env('APP_NAME') }} | Update Contact Us Page
 @endsection
 @push('styles')
 @endpush
-@section('head')
-    Update Contact Us Page
-@endsection
 
 @section('content')
-    <div class="main-content">
-        <div class="inner_page">
+     <div class="container-fluid">
+         <div class="bg_white_border">
             <div class="card search_bar sales-report-card">
                 <form action="{{ route('contact-us-cms.store') }}" method="post" enctype="multipart/form-data">
                     @csrf

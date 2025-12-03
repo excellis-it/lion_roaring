@@ -1,49 +1,47 @@
-@extends('admin.layouts.master')
+@extends('user.layouts.master')
 @section('title')
     All Donations Details - {{ env('APP_NAME') }}
 @endsection
-@push('styles')
+@push('styles') 
     <style>
         .dataTables_filter {
             margin-bottom: 10px !important;
         }
     </style>
 @endpush
-@section('head')
-    All Donations Details
-@endsection
+
 @section('create_button')
 @endsection
 @section('content')
     <section id="loading">
         <div id="loading-content"></div>
     </section>
-    <div class="main-content">
-        <div class="inner_page">
+     <div class="container-fluid">
+         <div class="bg_white_border">
 
             <div class="card table_sec stuff-list-table">
                 <div class="row justify-content-end">
                     <div class="col-md-6">
                         <div class="row g-1 justify-content-end">
                             <div class="col-md-8 pr-0">
-                                <div class="search-field prod-search">
-                                    <input type="text" name="search" id="search" placeholder="search..." required
-                                        class="form-control">
-                                    <a href="javascript:void(0)" class="prod-search-icon"><i
-                                            class="ph ph-magnifying-glass"></i></a>
+                                <div class="search-field">
+                                     <input type="text" name="search" id="search" placeholder="search..."
+                                                required="" class="form-control rounded_search">
+                                     <button class="submit_search" id="search-button"> <span class=""><i
+                                                        class="fa fa-search"></i></span></button>
                                 </div>
                             </div>
                             {{-- <div class="col-md-3 pl-0 ml-2">
                                 <button class="btn btn-primary button-search" id="search-button"> <span class=""><i
-                                            class="ph ph-magnifying-glass"></i></span> Search</button>
+                                            class="fa fa-search"></i></span> Search</button>
                             </div> --}}
                         </div>
                     </div>
                 </div>
                 <div class="table-responsive" id="contacts-data">
-                    <table class="table table-bordered" class="display">
-                        <thead>
-                            <tr>
+                    <table class="table align-middle bg-white color_body_text" class="display">
+                       <thead class="color_head">
+                                            <tr class="header-row">
                                 <th>Id </th>
                                 {{-- transaction_id --}}
                                 <th class="sorting" data-sorting_type="asc" data-column_name="transaction_id"
@@ -92,7 +90,7 @@
                             </tr>
                         </thead>
                         <tbody>
-                            @include('admin.donations.table')
+                            @include('user.admin.donations.table')
 
                         </tbody>
                     </table>
