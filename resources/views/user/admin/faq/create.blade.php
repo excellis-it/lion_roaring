@@ -9,7 +9,7 @@
 @section('content')
      <div class="container-fluid">
          <div class="bg_white_border">
-            <div class="card search_bar sales-report-card">
+          
                 <form action="{{ route('faq.store') }}" method="post" enctype="multipart/form-data">
                     @csrf
                     <div class="sales-report-card-wrap">
@@ -72,14 +72,14 @@
                         </div>
                         <div class="col-xl-12">
                             <div class="btn-1">
-                                <button type="submit">Create FAQ</button>
+                                  <button type="submit" class="print_btn me-2 mt-2">Create FAQ</button>
                             </div>
                         </div>
                     </div>
 
                 </form>
             </div>
-        </div>
+
 
     </div>
 @endsection

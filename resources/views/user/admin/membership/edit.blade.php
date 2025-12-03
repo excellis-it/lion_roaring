@@ -6,7 +6,7 @@
 @section('content')
      <div class="container-fluid">
          <div class="bg_white_border">
-            <div class="card search_bar sales-report-card">
+          
                 <form action="{{ route('admin.membership.update', $tier->id) }}" method="post">
                     @csrf
                     <div class="form-head">

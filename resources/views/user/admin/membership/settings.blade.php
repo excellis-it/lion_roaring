@@ -5,7 +5,7 @@
 @section('content')
      <div class="container-fluid">
          <div class="bg_white_border">
-            <div class="card search_bar sales-report-card">
+          
                 <form action="{{ route('admin.membership.settings') }}" method="post">
                     @csrf
                     <div class="sales-report-card-wrap">

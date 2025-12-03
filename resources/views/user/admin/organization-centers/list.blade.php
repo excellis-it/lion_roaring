@@ -54,7 +54,7 @@
                                 <th class="sorting" data-sorting_type="asc" data-column_name="name" style="cursor: pointer"
                                     data-tippy-content="Sort by Organization Center Name">
                                     Organization Center Name<span id="name_icon"><span
-                                            class="ph ph-caret-down"></span></span></th>
+                                            class="fa fa-arrow-down"></span></span></th>
                                 <th class="sorting" data-sorting_type="asc" data-column_name="slug" style="cursor: pointer"
                                     data-tippy-content="Sort by Slug">Slug<span id="slug_icon"></span></th>
 
@@ -141,14 +141,14 @@
                     reverse_order = 'desc';
                     clear_icon();
                     $('#' + column_name + '_icon').html(
-                        '<span class="ph ph-caret-down"></span>');
+                        '<span class="fa fa-arrow-down"></span>');
                 }
                 if (order_type == 'desc') {
                     $(this).data('sorting_type', 'asc');
                     reverse_order = 'asc';
                     clear_icon();
                     $('#' + column_name + '_icon').html(
-                        '<span class="ph ph-caret-up"></span>');
+                        '<span class="fa fa-arrow-up"></span>');
                 }
                 $('#hidden_column_name').val(column_name);
                 $('#hidden_sort_type').val(reverse_order);

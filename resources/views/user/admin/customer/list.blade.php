@@ -41,7 +41,7 @@
                        <thead class="color_head">
                                             <tr class="header-row">
                                 <th class="sorting" data-tippy-content="Sort by Name" data-sorting_type="desc"
-                                data-column_name="name" style="cursor: pointer"> Name<span id="name_icon"><i class="ph ph-caret-down"></i></span></th>
+                                data-column_name="name" style="cursor: pointer"> Name<span id="name_icon"><i class="fa fa-arrow-down"></i></span></th>
                                 <th class="sorting" data-tippy-content="Sort by User Name" data-sorting_type="desc"
                                 data-column_name="user_name" style="cursor: pointer">User Name<span id="user_name_icon"></span></th>
                                 <th class="sorting" data-tippy-content="Sort by Email" data-sorting_type="desc"
@@ -153,14 +153,14 @@
                     reverse_order = 'desc';
                     clear_icon();
                     $('#' + column_name + '_icon').html(
-                        '<i class="ph ph-caret-down"></i>');
+                        '<i class="fa fa-arrow-down"></i>');
                 }
                 if (order_type == 'desc') {
                     $(this).data('sorting_type', 'asc');
                     reverse_order = 'asc';
                     clear_icon();
                     $('#' + column_name + '_icon').html(
-                        '<i class="ph ph-caret-up"></i>');
+                        '<i class="fa fa-arrow-up"></i>');
                 }
                 $('#hidden_column_name').val(column_name);
                 $('#hidden_sort_type').val(reverse_order);

@@ -9,7 +9,7 @@
 @section('content')
      <div class="container-fluid">
          <div class="bg_white_border">
-            <div class="card search_bar sales-report-card">
+          
                 <form action="{{ route('gallery.update', $gallery->id) }}" method="post" enctype="multipart/form-data">
                     @method('PUT')
                     @csrf
@@ -72,7 +72,7 @@
                             </div>
                             <div class="col-xl-6">
                                 <div class="btn-1">
-                                    <button type="submit">Update Gallery</button>
+                                      <button type="submit" class="print_btn me-2 mt-2">Update Gallery</button>
                                 </div>
                             </div>
                         </div>
@@ -80,7 +80,7 @@
 
                 </form>
             </div>
-        </div>
+
 
     </div>
 @endsection

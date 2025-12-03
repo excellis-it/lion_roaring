@@ -6,7 +6,7 @@
 @section('content')
      <div class="container-fluid">
          <div class="bg_white_border">
-            <div class="card search_bar sales-report-card">
+          
                 <form action="{{ route('admin.membership.store') }}" method="post">
                     @csrf
                     <div class="form-head">

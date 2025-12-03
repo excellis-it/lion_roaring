@@ -137,14 +137,14 @@
                     reverse_order = 'desc';
                     clear_icon();
                     $('#' + column_name + '_icon').html(
-                        '<span class="ph ph-caret-down"></span>');
+                        '<span class="fa fa-arrow-down"></span>');
                 }
                 if (order_type == 'desc') {
                     $(this).data('sorting_type', 'asc');
                     reverse_order = 'asc';
                     clear_icon();
                     $('#' + column_name + '_icon').html(
-                        '<span class="ph ph-caret-up"></span>');
+                        '<span class="fa fa-arrow-up"></span>');
                 }
                 $('#hidden_column_name').val(column_name);
                 $('#hidden_sort_type').val(reverse_order);

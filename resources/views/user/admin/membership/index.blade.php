@@ -6,7 +6,7 @@
 @section('content')
      <div class="container-fluid">
          <div class="bg_white_border">
-            <div class="card search_bar sales-report-card">
+          
                 <div class="sales-report-card-wrap">
                     <div class="form-head d-flex justify-content-between align-items-center">
                         <h4>Membership Tiers</h4>

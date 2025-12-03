@@ -9,7 +9,7 @@
 @section('content')
      <div class="container-fluid">
          <div class="bg_white_border">
-            <div class="card search_bar sales-report-card">
+          
                 <div class="sales-report-card-wrap">
                     <form action="{{ route('plans.store') }}" method="post" enctype="multipart/form-data">
                         @csrf
@@ -86,14 +86,14 @@
                             </div>
                             <div class="col-xl-12">
                                 <div class="btn-1">
-                                    <button type="submit">Create</button>
+                                      <button type="submit" class="print_btn me-2 mt-2">Create</button>
                                 </div>
                             </div>
                         </div>
                 </div>
                 </form>
             </div>
-        </div>
+
 
     </div>
 @endsection

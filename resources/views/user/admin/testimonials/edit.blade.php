@@ -8,7 +8,7 @@
 @section('content')
      <div class="container-fluid">
          <div class="bg_white_border">
-            <div class="card search_bar sales-report-card">
+          
                 <div class="sales-report-card-wrap">
                     <div class="form-head">
                         <h4>Testimonial Details</h4>
@@ -116,13 +116,13 @@
                         </div>
                         <div class="col-xl-12">
                             <div class="btn-1">
-                                <button type="submit">Update Testimonial Details</button>
+                                  <button type="submit" class="print_btn me-2 mt-2">Update Testimonial Details</button>
                             </div>
                         </div>
                 </div>
                 </form>
             </div>
-        </div>
+
 
     </div>
 @endsection
