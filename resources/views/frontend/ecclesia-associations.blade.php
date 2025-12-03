@@ -25,13 +25,22 @@
     </section>
     <section class="login-sec">
         <div class="container">
-            <div class="row align-items-center justify-content-center">
-                <div class="col-xl-10 col-lg-12 aos-init aos-animate" data-aos="fade-up" data-aos-duration="1000">
-                    <div class="about_text about_text_new_p heading_hp">
+            <div class="row align-items-center">
+                <div class="col-xl-12 col-lg-12 aos-init aos-animate" data-aos="fade-up" data-aos-duration="1000">
+                    <div class="about_text about_text_new_p heading_hp text-center">
                         @if (isset($ecclesiaAssociations['description']))
                             {!! $ecclesiaAssociations['description'] !!}
-                        @endif
-                        
+                        @endif 
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <section class="list_text_sec pb-5">
+        <div class="container">
+            <div class="row justify-content-center">
+                <div class="col-xl-10 col-lg-10 aos-init aos-animate" data-aos="fade-up" data-aos-duration="2000">
+                    <div class="about_text about_text_new_p heading_hp">
                         @if (isset($ecclesiaAssociations['description1']))
                         {!! $ecclesiaAssociations['description1'] !!}
                         @endif
