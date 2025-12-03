@@ -121,6 +121,8 @@ class RolePermissionController extends Controller
 
             $rolePermissions = $role->permissions()->get();
 
+           
+
             $permissions1 = $permissions->merge($rolePermissions);
 
 

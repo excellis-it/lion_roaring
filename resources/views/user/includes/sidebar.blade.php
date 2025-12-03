@@ -738,7 +738,8 @@
                          <a class="sidebar-link {{ Request::is('user/admin/donations*') ? 'active' : '' }}"
                              href="{{ route('donations.index') }}" aria-expanded="false">
                              <span>
-                                 <i class="ph ph-coins"></i>
+                                 <img src="{{ asset('user_assets/images/lion-roring-icon/lion-roring-icon/donation.png') }}"
+                                     alt="Donations">
                              </span>
                              <span class="hide-menu">{{ Helper::getMenuName('donations', 'Donations') }}</span>
                          </a>
@@ -750,7 +751,8 @@
                          <a class="sidebar-link {{ Request::is('user/admin/contact-us*') ? 'active' : '' }}"
                              href="{{ route('contact-us.index') }}" aria-expanded="false">
                              <span>
-                                 <i class="ph ph-phone"></i>
+                                 <img src="{{ asset('user_assets/images/lion-roring-icon/lion-roring-icon/contact-massage.png') }}"
+                                     alt="Contact Us Messages">
                              </span>
                              <span
                                  class="hide-menu">{{ Helper::getMenuName('contact_us_messages', 'Contact Us Messages') }}</span>
@@ -763,7 +765,8 @@
                          <a class="sidebar-link {{ Request::is('user/admin/newsletters*') ? 'active' : '' }}"
                              href="{{ route('newsletters.index') }}" aria-expanded="false">
                              <span>
-                                 <i class="ph ph-article"></i>
+                                 <img src="{{ asset('user_assets/images/lion-roring-icon/lion-roring-icon/news-letters.png') }}"
+                                     alt="Newsletters">
                              </span>
                              <span class="hide-menu">{{ Helper::getMenuName('newsletters', 'Newsletters') }}</span>
                          </a>
@@ -775,7 +778,8 @@
                          <a class="sidebar-link" href="#" aria-expanded="false" data-bs-toggle="collapse"
                              data-bs-target="#collapseTestimonials">
                              <span>
-                                 <i class="ph ph-hand-fist"></i>
+                                 <img src="{{ asset('user_assets/images/lion-roring-icon/lion-roring-icon/testimonials.png') }}"
+                                     alt="Testimonials">
                              </span>
                              <span class="hide-menu">{{ Helper::getMenuName('testimonials', 'Testimonials') }}</span>
                          </a>
@@ -784,14 +788,16 @@
                              <div class="menu_bb">
                                  <a href="{{ route('testimonials.index') }}">
                                      <span>
-                                         <i class="ph ph-list"></i>
+                                         <img src="{{ asset('user_assets/images/lion-roring-icon/lion-roring-icon/testimonial-list.png') }}"
+                                             alt="Testimonials List">
                                      </span>
                                      <span>{{ Helper::getMenuName('testimonials_list', 'Testimonials List') }}</span>
                                  </a>
                                  @if (Gate::check('Create Testimonials'))
                                      <a href="{{ route('testimonials.create') }}">
                                          <span>
-                                             <i class="ph ph-plus"></i>
+                                             <img src="{{ asset('user_assets/images/lion-roring-icon/lion-roring-icon/create-testimonials.png') }}"
+                                                 alt="Create Testimonial">
                                          </span>
                                          <span>{{ Helper::getMenuName('testimonials_create', 'Testimonials Create') }}</span>
                                      </a>
@@ -806,7 +812,8 @@
                          <a class="sidebar-link" href="#" aria-expanded="false" data-bs-toggle="collapse"
                              data-bs-target="#collapseOurGovernance">
                              <span>
-                                 <i class="ph ph-scales"></i>
+                                 <img src="{{ asset('user_assets/images/lion-roring-icon/lion-roring-icon/our-governance.png') }}"
+                                     alt="Our Governance">
                              </span>
                              <span
                                  class="hide-menu">{{ Helper::getMenuName('our_governance', 'Our Governance') }}</span>
@@ -816,14 +823,16 @@
                              <div class="menu_bb">
                                  <a href="{{ route('our-governances.index') }}">
                                      <span>
-                                         <i class="ph ph-list"></i>
+                                         <img src="{{ asset('user_assets/images/lion-roring-icon/lion-roring-icon/our-governance-list.png') }}"
+                                             alt="Our Governance List">
                                      </span>
                                      <span>{{ Helper::getMenuName('our_governance_list', 'Our Governance List') }}</span>
                                  </a>
                                  @if (Gate::check('Create Our Governance'))
                                      <a href="{{ route('our-governances.create') }}">
                                          <span>
-                                             <i class="ph ph-plus"></i>
+                                             <img src="{{ asset('user_assets/images/lion-roring-icon/lion-roring-icon/our-governance-create.png') }}"
+                                                 alt="Our Governance Create">
                                          </span>
                                          <span>{{ Helper::getMenuName('our_governance_create', 'Our Governance Create') }}</span>
                                      </a>
@@ -838,7 +847,8 @@
                          <a class="sidebar-link" href="#" aria-expanded="false" data-bs-toggle="collapse"
                              data-bs-target="#collapseOurOrganizations">
                              <span>
-                                 <i class="ph ph-graduation-cap"></i>
+                                 <img src="{{ asset('user_assets/images/lion-roring-icon/lion-roring-icon/our-organisations.png') }}"
+                                     alt="Our Organizations">
                              </span>
                              <span
                                  class="hide-menu">{{ Helper::getMenuName('our_organizations', 'Our Organizations') }}</span>
@@ -848,14 +858,16 @@
                              <div class="menu_bb">
                                  <a href="{{ route('our-organizations.index') }}">
                                      <span>
-                                         <i class="ph ph-list"></i>
+                                         <img src="{{ asset('user_assets/images/lion-roring-icon/lion-roring-icon/our-organisation-list.png') }}"
+                                             alt="Our Organizations List">
                                      </span>
                                      <span>{{ Helper::getMenuName('our_organizations_list', 'Our Organizations List') }}</span>
                                  </a>
                                  @if (Gate::check('Create Our Organization'))
                                      <a href="{{ route('our-organizations.create') }}">
                                          <span>
-                                             <i class="ph ph-plus"></i>
+                                             <img src="{{ asset('user_assets/images/lion-roring-icon/lion-roring-icon/our-organisation-list.png') }}"
+                                                 alt="Plus">
                                          </span>
                                          <span>{{ Helper::getMenuName('our_organizations_create', 'Our Organizations Create') }}</span>
                                      </a>
@@ -870,7 +882,8 @@
                          <a class="sidebar-link" href="#" aria-expanded="false" data-bs-toggle="collapse"
                              data-bs-target="#collapseOrganizationCenter">
                              <span>
-                                 <i class="ph ph-chalkboard-teacher"></i>
+                                 <img src="{{ asset('user_assets/images/lion-roring-icon/lion-roring-icon/organisation-center.png') }}"
+                                     alt="Organization Center">
                              </span>
                              <span
                                  class="hide-menu">{{ Helper::getMenuName('organization_center', 'Organization Center') }}</span>
@@ -880,14 +893,16 @@
                              <div class="menu_bb">
                                  <a href="{{ route('organization-centers.index') }}">
                                      <span>
-                                         <i class="ph ph-list"></i>
+                                         <img src="{{ asset('user_assets/images/lion-roring-icon/lion-roring-icon/organisation-center-list.png') }}"
+                                             alt="Organization Center List">
                                      </span>
                                      <span>{{ Helper::getMenuName('organization_center_list', 'Organization Center List') }}</span>
                                  </a>
                                  @if (Gate::check('Create Organization Center'))
                                      <a href="{{ route('organization-centers.create') }}">
                                          <span>
-                                             <i class="ph ph-plus"></i>
+                                             <img src="{{ asset('user_assets/images/lion-roring-icon/lion-roring-icon/organisation-center-list.png') }}"
+                                                 alt="Plus">
                                          </span>
                                          <span>{{ Helper::getMenuName('organization_center_create', 'Organization Center Create') }}</span>
                                      </a>
@@ -902,7 +917,8 @@
                          <a class="sidebar-link" href="#" aria-expanded="false" data-bs-toggle="collapse"
                              data-bs-target="#collapseServices">
                              <span>
-                                 <i class="ph ph-package"></i>
+                                 <img src="{{ asset('user_assets/images/lion-roring-icon/lion-roring-icon/services.png') }}"
+                                     alt="Services">
                              </span>
                              <span class="hide-menu">{{ Helper::getMenuName('services', 'Services') }}</span>
                          </a>
@@ -913,7 +929,8 @@
                                      @foreach (Helper::getOrganzations() as $key => $organization)
                                          <a href="{{ route('services.index', ['slug' => $organization->slug]) }}">
                                              <span>
-                                                 <i class="ph ph-folder"></i>
+                                                 <img src="{{ asset('user_assets/images/lion-roring-icon/lion-roring-icon/education-center.png') }}"
+                                                     alt="Service">
                                              </span>
                                              <span>{{ $organization->name }}</span>
                                          </a>
@@ -942,7 +959,8 @@
                          <a class="sidebar-link" href="#" aria-expanded="false" data-bs-toggle="collapse"
                              data-bs-target="#collapsePages">
                              <span>
-                                 <i class="ph ph-newspaper"></i>
+                                 <img src="{{ asset('user_assets/images/lion-roring-icon/lion-roring-icon/pages.png') }}"
+                                     alt="Pages">
                              </span>
                              <span class="hide-menu">{{ Helper::getMenuName('pages', 'Pages') }}</span>
                          </a>
@@ -952,7 +970,8 @@
                                  @if (Gate::check('Manage Home Page'))
                                      <a href="{{ route('home-cms.index') }}">
                                          <span>
-                                             <i class="ph ph-house"></i>
+                                             <img src="{{ asset('user_assets/images/lion-roring-icon/lion-roring-icon/home.png') }}"
+                                                 alt="Home">
                                          </span>
                                          <span>{{ Helper::getMenuName('pages_home', 'Home') }}</span>
                                      </a>
@@ -961,7 +980,8 @@
                                  @if (Gate::check('Manage Details Page'))
                                      <a href="{{ route('details.index') }}">
                                          <span>
-                                             <i class="ph ph-info"></i>
+                                             <img src="{{ asset('user_assets/images/lion-roring-icon/lion-roring-icon/details.png') }}"
+                                                 alt="Details">
                                          </span>
                                          <span>{{ Helper::getMenuName('pages_details', 'Details') }}</span>
                                      </a>
@@ -970,7 +990,8 @@
                                  @if (Gate::check('Manage Organizations Page'))
                                      <a href="{{ route('organizations.index') }}">
                                          <span>
-                                             <i class="ph ph-buildings"></i>
+                                             <img src="{{ asset('user_assets/images/lion-roring-icon/lion-roring-icon/organisation-cms.png') }}"
+                                                 alt="Organization CMS">
                                          </span>
                                          <span>{{ Helper::getMenuName('pages_organization_cms', 'Organization CMS') }}</span>
                                      </a>
@@ -979,7 +1000,8 @@
                                  @if (Gate::check('Manage About Us Page'))
                                      <a href="{{ route('about-us.index') }}">
                                          <span>
-                                             <i class="ph ph-users-three"></i>
+                                             <img src="{{ asset('user_assets/images/lion-roring-icon/lion-roring-icon/about-us.png') }}"
+                                                 alt="About Us">
                                          </span>
                                          <span>{{ Helper::getMenuName('pages_about_us', 'About Us') }}</span>
                                      </a>
@@ -988,7 +1010,8 @@
                                  @if (Gate::check('Manage Faq'))
                                      <a href="{{ route('faq.index') }}">
                                          <span>
-                                             <i class="ph ph-question"></i>
+                                             <img src="{{ asset('user_assets/images/lion-roring-icon/lion-roring-icon/faqs.png') }}"
+                                                 alt="FAQ">
                                          </span>
                                          <span>{{ Helper::getMenuName('pages_faqs', 'FAQS') }}</span>
                                      </a>
@@ -997,7 +1020,8 @@
                                  @if (Gate::check('Manage Gallery'))
                                      <a href="{{ route('gallery.index') }}">
                                          <span>
-                                             <i class="ph ph-images"></i>
+                                             <img src="{{ asset('user_assets/images/lion-roring-icon/lion-roring-icon/gallery.png') }}"
+                                                 alt="Gallery">
                                          </span>
                                          <span>{{ Helper::getMenuName('pages_gallery', 'GALLERY') }}</span>
                                      </a>
@@ -1006,7 +1030,8 @@
                                  @if (Gate::check('Manage Ecclesia Association Page'))
                                      <a href="{{ route('ecclesia-associations.index') }}">
                                          <span>
-                                             <i class="ph ph-handshake"></i>
+                                             <img src="{{ asset('user_assets/images/lion-roring-icon/lion-roring-icon/principle-and-business-modal.png') }}"
+                                                 alt="Ecclesia Association">
                                          </span>
                                          <span>{{ Helper::getMenuName('pages_ecclesia_association', 'ECCLESIA ASSOCIATION') }}</span>
                                      </a>
@@ -1015,7 +1040,8 @@
                                  @if (Gate::check('Manage Principle and Business Page'))
                                      <a href="{{ route('principle-and-business.index') }}">
                                          <span>
-                                             <i class="ph ph-briefcase"></i>
+                                             <img src="{{ asset('user_assets/images/lion-roring-icon/lion-roring-icon/principle-and-business-modal.png') }}"
+                                                 alt="Principle and Business">
                                          </span>
                                          <span>{{ Helper::getMenuName('pages_principle_and_business', 'PRINCIPLE AND BUSINESS MODEL') }}</span>
                                      </a>
@@ -1024,7 +1050,8 @@
                                  @if (Gate::check('Manage Contact Us Page'))
                                      <a href="{{ route('contact-us-cms.index') }}">
                                          <span>
-                                             <i class="ph ph-phone"></i>
+                                             <img src="{{ asset('user_assets/images/lion-roring-icon/lion-roring-icon/contact-us.png') }}"
+                                                 alt="Contact Us">
                                          </span>
                                          <span>{{ Helper::getMenuName('pages_contact_us', 'CONTACT US') }}</span>
                                      </a>
@@ -1033,7 +1060,8 @@
                                  @if (Gate::check('Manage Article of Association Page'))
                                      <a href="{{ route('articles-of-association.index') }}">
                                          <span>
-                                             <i class="ph ph-file-text"></i>
+                                             <img src="{{ asset('user_assets/images/lion-roring-icon/lion-roring-icon/artailes-of-assosiations.png') }}"
+                                                 alt="Article of Association">
                                          </span>
                                          <span>{{ Helper::getMenuName('pages_articles_of_association', 'ARTICLES OF ASSOCIATION') }}</span>
                                      </a>
@@ -1042,7 +1070,8 @@
                                  @if (Gate::check('Manage Footer'))
                                      <a href="{{ route('footer.index') }}">
                                          <span>
-                                             <i class="ph ph-layout"></i>
+                                             <img src="{{ asset('user_assets/images/lion-roring-icon/lion-roring-icon/footer.png') }}"
+                                                 alt="Footer">
                                          </span>
                                          <span>{{ Helper::getMenuName('pages_footer', 'Footer') }}</span>
                                      </a>
@@ -1051,7 +1080,8 @@
                                  @if (Gate::check('Manage Register Page Agreement Page'))
                                      <a href="{{ route('register-agreements.index') }}">
                                          <span>
-                                             <i class="ph ph-file-doc"></i>
+                                             <img src="{{ asset('user_assets/images/lion-roring-icon/lion-roring-icon/register-page-agreement.png') }}"
+                                                 alt="Register Page Agreement">
                                          </span>
                                          <span>{{ Helper::getMenuName('pages_register_agreements', 'REGISTER PAGE AGREEMENTS') }}</span>
                                      </a>
@@ -1060,7 +1090,8 @@
                                  @if (Gate::check('Manage PMA Terms Page'))
                                      <a href="{{ route('pma-terms.index') }}">
                                          <span>
-                                             <i class="ph ph-scroll"></i>
+                                             <img src="{{ asset('user_assets/images/lion-roring-icon/lion-roring-icon/pma-terms.png') }}"
+                                                 alt="PMA Terms">
                                          </span>
                                          <span>{{ Helper::getMenuName('pages_pma_terms', 'PMA Terms') }}</span>
                                      </a>
@@ -1069,14 +1100,16 @@
                                  @if (Auth::user()->hasRole('SUPER ADMIN'))
                                      <a href="{{ route('privacy-policy.index') }}">
                                          <span>
-                                             <i class="ph ph-shield-check"></i>
+                                             <img src="{{ asset('user_assets/images/lion-roring-icon/lion-roring-icon/privacy-policy.png') }}"
+                                                 alt="Privacy Policy">
                                          </span>
                                          <span>{{ Helper::getMenuName('pages_privacy_policy', 'Privacy Policy') }}</span>
                                      </a>
 
                                      <a href="{{ route('terms-and-condition.index') }}">
                                          <span>
-                                             <i class="ph ph-file-text"></i>
+                                             <img src="{{ asset('user_assets/images/lion-roring-icon/lion-roring-icon/terms-and-condition.png') }}"
+                                                 alt="Terms and Condition">
                                          </span>
                                          <span>{{ Helper::getMenuName('pages_terms_and_conditions', 'Terms and Conditions') }}</span>
                                      </a>
@@ -1091,7 +1124,8 @@
                          <a class="sidebar-link {{ Request::is('user/admin/admin-countries*') ? 'active' : '' }}"
                              href="{{ route('admin-countries.index') }}" aria-expanded="false">
                              <span>
-                                 <i class="ph ph-flag"></i>
+                                 <img src="{{ asset('user_assets/images/lion-roring-icon/lion-roring-icon/countries.png') }}"
+                                     alt="Countries">
                              </span>
                              <span class="hide-menu">{{ Helper::getMenuName('countries', 'Countries') }}</span>
                          </a>
@@ -1103,7 +1137,8 @@
                          <a class="sidebar-link" href="#" aria-expanded="false" data-bs-toggle="collapse"
                              data-bs-target="#collapseSiteSettings">
                              <span>
-                                 <i class="ph ph-package"></i>
+                                 <img src="{{ asset('user_assets/images/lion-roring-icon/lion-roring-icon/site-setting.png') }}"
+                                     alt="Site Settings">
                              </span>
                              <span
                                  class="hide-menu">{{ Helper::getMenuName('site_settings', 'Site Settings') }}</span>
@@ -1113,13 +1148,15 @@
                              <div class="menu_bb">
                                  <a href="{{ route('admin.settings.edit') }}">
                                      <span>
-                                         <i class="ph ph-gear"></i>
+                                         <img src="{{ asset('user_assets/images/lion-roring-icon/lion-roring-icon/setting.png') }}"
+                                             alt="Settings">
                                      </span>
                                      <span>{{ Helper::getMenuName('site_settings_settings', 'Settings') }}</span>
                                  </a>
                                  <a href="{{ route('admin.menu.index') }}">
                                      <span>
-                                         <i class="ph ph-list-bullets"></i>
+                                         <img src="{{ asset('user_assets/images/lion-roring-icon/lion-roring-icon/menu-names.png') }}"
+                                             alt="Menu Names">
                                      </span>
                                      <span>{{ Helper::getMenuName('site_settings_menu_names', 'Menu Names') }}</span>
                                  </a>

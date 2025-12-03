@@ -2689,3 +2689,48 @@ section {
 }
 
 
+.badge {
+    vertical-align: middle;
+    padding: 7px 12px;
+    font-weight: 600;
+    letter-spacing: 0.3px;
+    border-radius: 30px;
+    font-size: 12px;
+}
+
+.bg-success {
+    background-color: #54ca68 !important;
+}
+
+
+.badge {
+    vertical-align: middle;
+    padding: 7px 12px;
+    font-weight: 600;
+    letter-spacing: 0.3px;
+    border-radius: 30px;
+    font-size: 12px;
+}
+
+.bg-secondary {
+    background-color: #cdd3d8 !important;
+}
+.btn-outline-warning {
+    color: #ffc107;
+    border: 1px solid #ffc107 !important;
+}
+
+.bg-info {
+    background-color: #3abaf4 !important;
+}
+
+
+.badge {
+    vertical-align: middle;
+    padding: 7px 12px;
+    font-weight: 600;
+    letter-spacing: 0.3px;
+    border-radius: 30px;
+    font-size: 12px;
+    color: #fff !important;
+}

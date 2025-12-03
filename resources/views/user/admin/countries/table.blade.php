@@ -26,7 +26,7 @@
                     class="status-span badge {{ $country->status ? 'bg-success' : 'bg-secondary' }}">{{ $country->status ? 'Active' : 'Inactive' }}</span>
             </td>
             <td>
-                <div class="edit-1 d-flex align-items-end justify-content-end">
+                <div class="edit-1 d-flex align-items-center gap-2 justify-content-end">
                     <form action="{{ route('admin-countries.toggle-status', $country) }}" method="POST"
                         class="d-inline mr-4">
                         @csrf

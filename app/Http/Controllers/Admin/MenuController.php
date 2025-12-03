@@ -11,7 +11,7 @@ class MenuController extends Controller
     public function index()
     {
         $items = MenuItem::orderBy('id')->get();
-        return view('admin.menu.index', compact('items'));
+        return view('user.admin.menu.index', compact('items'));
     }
 
     public function update(Request $request)
@@ -24,6 +24,6 @@ class MenuController extends Controller
                 $item->save();
             }
         }
-        return redirect()->route('admin.menu.index')->with('success', 'Menu names updated');
+        return redirect()->route('admin.menu.index')->with('message', 'Menu names updated');
     }
 }

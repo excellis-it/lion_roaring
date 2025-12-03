@@ -333,14 +333,14 @@
                                     @if ($key == 0)
                                         <div class="col-xl-2 mt-4">
                                             <div class="btn-1">
-                                                <button type="button" class="add-more"><i class="ph ph-plus"></i>
+                                                <button type="button" class="add-more"><i class="fas fa-plus"></i>
                                                 </button>
                                             </div>
                                         </div>
                                     @else
                                         <div class="col-xl-2 mt-4">
                                             <div class="btn-1">
-                                                <button type="button" class="remove"><i class="ph ph-minus"></i>
+                                                <button type="button" class="remove"><i class="fas fa-minus"></i>
                                                 </button>
                                             </div>
                                         </div>
@@ -370,7 +370,7 @@
                                 </div>
                                 <div class="col-xl-2 mt-4">
                                     <div class="btn-1">
-                                        <button type="button" class="add-more"><i class="ph ph-plus"></i> </button>
+                                        <button type="button" class="add-more"><i class="fas fa-plus"></i> </button>
                                     </div>
                                 </div>
                             @endif
@@ -435,7 +435,7 @@
                                 </div>
                     <div class="col-xl-2 mt-4">
                                 <div class="btn-1">
-                                    <button type="button" class="remove"><i class="ph ph-minus"></i> </button>
+                                    <button type="button" class="remove"><i class="fas fa-minus"></i> </button>
                                 </div>
                             </div>`;
             $("#add-more").append(html);

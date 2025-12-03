@@ -77,6 +77,7 @@
                             <th class="sorting" data-sorting_type="asc" data-column_name="description"
                                 style="cursor: pointer" data-tippy-content="Sort by Description"><span
                                     id="description_icon"></span>Description</th>
+                                    <th></th>
                         </tr>
                     </thead>
                     <tbody>

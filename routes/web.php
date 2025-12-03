@@ -696,7 +696,7 @@ Route::prefix('user')->middleware(['user', 'preventBackHistory', 'userActivity']
 
 
     Route::group(['prefix' => 'admin'], function () {
-        
+
         Route::get('settings', [SettingsController::class, 'edit'])->name('admin.settings.edit');
         Route::post('settings', [SettingsController::class, 'update'])->name('admin.settings.update');
 
@@ -789,7 +789,10 @@ Route::prefix('user')->middleware(['user', 'preventBackHistory', 'userActivity']
         });
         Route::get('/changeCustomerStatus', [CustomerController::class, 'changeCustomersStatus'])->name('customers.change-status');
         Route::get('/customer-fetch-data', [CustomerController::class, 'fetchData'])->name('customers.fetch-data');
-
+        Route::resources([
+            'contact-us' => ContactusController::class,
+            'newsletters' => NewsletterController::class,
+        ]);
         Route::prefix('pages')->group(function () {
             Route::resources([
                 'faq' => FaqController::class,
@@ -801,8 +804,7 @@ Route::prefix('user')->middleware(['user', 'preventBackHistory', 'userActivity']
                 'about-us' => AboutUsController::class,
                 'home-cms' => HomeCmsController::class,
                 'details' => DetailsController::class,
-                'contact-us' => ContactusController::class,
-                'newsletters' => NewsletterController::class,
+
                 'articles-of-association' => ArticleOfAssociationController::class,
                 'register-agreements' => RegisterAgreementController::class,
                 'members-privacy-policies' => MemberPrivacyPolicyContoller::class,
