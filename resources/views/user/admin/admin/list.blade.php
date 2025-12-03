@@ -143,7 +143,6 @@
      <div class="container-fluid">
          <div class="bg_white_border">
 
-            <div class="card table_sec stuff-list-table">
                 <div class="row justify-content-end">
                     <div class="col-md-6">
                         <div class="row g-1 justify-content-end">
@@ -201,7 +200,6 @@
 
                     </table>
                 </div>
-            </div>
 
         </div>
     </div>

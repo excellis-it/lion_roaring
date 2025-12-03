@@ -6,122 +6,128 @@
 @endpush
 
 @section('content')
-     <div class="container-fluid">
-         <div class="bg_white_border">
-          
-                <div class="sales-report-card-wrap">
-                    <div class="form-head">
-                        <h4>Testimonial Details</h4>
-                    </div>
-                    <form action="{{ route('testimonials.update', $testimonial->id) }}" method="post"
-                        enctype="multipart/form-data">
-                        @method('PUT')
-                        @csrf
-                        <div class="row">
-                            <div class="col-md-6">
-                                <div class="form-group-div">
-                                    <div class="form-group">
-                                        <label for="content_country_code">Content Country*</label>
-                                        <select name="content_country_code" id="content_country_code" class="form-control">
-                                            @foreach (\App\Models\Country::all() as $country)
-                                                <option value="{{ $country->code }}"
-                                                    {{ old('content_country_code', $testimonial->country_code ?? 'US') == $country->code ? 'selected' : '' }}>
-                                                    {{ $country->name }}
-                                                </option>
-                                            @endforeach
-                                        </select>
-                                        @if ($errors->has('content_country_code'))
-                                            <div class="error" style="color:red;">
-                                                {{ $errors->first('content_country_code') }}
-                                            </div>
-                                        @endif
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="row justify-content-between">
-
-
-
-                            <div class="col-md-6">
-                                <div class="form-group-div">
-                                    <div class="form-group">
-                                        {{-- name --}}
-                                        <label for="floatingInputValue">Name*</label>
-                                        <input type="text" class="form-control" id="floatingInputValue" name="name"
-                                            value="{{ $testimonial->name }}" placeholder="Name*">
-                                        @if ($errors->has('name'))
-                                            <div class="error" style="color:red;">
-                                                {{ $errors->first('name') }}</div>
-                                        @endif
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-md-6">
-                                <div class="form-group-div">
-                                    <div class="form-group">
-                                        {{-- type --}}
-                                        <label for="floatingInputValue">Address*</label>
-                                        <input type="text" class="form-control" id="floatingInputValue" name="address"
-                                            value="{{ $testimonial->address }}" placeholder="Address*">
-                                        @if ($errors->has('type'))
-                                            <div class="error" style="color:red;">
-                                                {{ $errors->first('type') }}</div>
-                                        @endif
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div class="col-md-6">
-                                <div class="form-group-div">
-                                    <div class="form-group">
-                                        {{-- image --}}
-                                        <label for="floatingInputValue">Image</label>
-                                        <input type="file" class="form-control" id="image" name="image"
-                                            value="{{ old('image') }}" placeholder="Image*">
-                                        @if ($errors->has('image'))
-                                            <div class="error" style="color:red;">
-                                                {{ $errors->first('image') }}</div>
-                                        @endif
-                                    </div>
-                                </div>
-                            </div>
-
-                            <!-- image preview -->
-                            <div class="col-md-6">
-                                <div class="form-group-div">
-                                    <div class="form-group">
-                                        @if ($testimonial->image)
-                                            <img src="{{ Storage::url($testimonial->image) }}" id="image_preview"
-                                                style="width: 100px; height: 100px;">
-                                        @endif
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div class="col-md-12">
-                                <div class="form-group-div">
-                                    <div class="form-group">
-                                        {{-- description --}}
-                                        <label for="floatingInputValue">Description*</label>
-                                        <textarea name="description" id="description" cols="30" rows="10" placeholder="Description"
-                                            class="form-control">{{ $testimonial['description'] }}</textarea>
-                                        @if ($errors->has('description'))
-                                            <div class="error" style="color:red;">
-                                                {{ $errors->first('description') }}</div>
-                                        @endif
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-xl-12">
-                            <div class="btn-1">
-                                  <button type="submit" class="print_btn me-2 mt-2">Update Testimonial Details</button>
-                            </div>
-                        </div>
+    <div class="container-fluid">
+        <div class="bg_white_border">
+            <div class="d-flex justify-content-between align-items-center mb-3">
+                <div>
+                    <h3 class="mb-0">Edit Testimonial</h3>
+                    <p class="text-muted small mb-0">Update testimonial details</p>
                 </div>
-                </form>
             </div>
+
+            <div class="sales-report-card-wrap">
+                <div class="form-head">
+                    <h4>Testimonial Details</h4>
+                </div>
+                <form action="{{ route('testimonials.update', $testimonial->id) }}" method="post"
+                    enctype="multipart/form-data">
+                    @method('PUT')
+                    @csrf
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group-div">
+                                <div class="form-group">
+                                    <label for="content_country_code">Content Country*</label>
+                                    <select name="content_country_code" id="content_country_code" class="form-control">
+                                        @foreach (\App\Models\Country::all() as $country)
+                                            <option value="{{ $country->code }}"
+                                                {{ old('content_country_code', $testimonial->country_code ?? 'US') == $country->code ? 'selected' : '' }}>
+                                                {{ $country->name }}
+                                            </option>
+                                        @endforeach
+                                    </select>
+                                    @if ($errors->has('content_country_code'))
+                                        <div class="error" style="color:red;">
+                                            {{ $errors->first('content_country_code') }}
+                                        </div>
+                                    @endif
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row justify-content-between">
+
+
+
+                        <div class="col-md-6">
+                            <div class="form-group-div">
+                                <div class="form-group">
+                                    {{-- name --}}
+                                    <label for="floatingInputValue">Name*</label>
+                                    <input type="text" class="form-control" id="floatingInputValue" name="name"
+                                        value="{{ $testimonial->name }}" placeholder="Name*">
+                                    @if ($errors->has('name'))
+                                        <div class="error" style="color:red;">
+                                            {{ $errors->first('name') }}</div>
+                                    @endif
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group-div">
+                                <div class="form-group">
+                                    {{-- type --}}
+                                    <label for="floatingInputValue">Address*</label>
+                                    <input type="text" class="form-control" id="floatingInputValue" name="address"
+                                        value="{{ $testimonial->address }}" placeholder="Address*">
+                                    @if ($errors->has('type'))
+                                        <div class="error" style="color:red;">
+                                            {{ $errors->first('type') }}</div>
+                                    @endif
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-md-6">
+                            <div class="form-group-div">
+                                <div class="form-group">
+                                    {{-- image --}}
+                                    <label for="floatingInputValue">Image</label>
+                                    <input type="file" class="form-control" id="image" name="image"
+                                        value="{{ old('image') }}" placeholder="Image*">
+                                    @if ($errors->has('image'))
+                                        <div class="error" style="color:red;">
+                                            {{ $errors->first('image') }}</div>
+                                    @endif
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- image preview -->
+                        <div class="col-md-6">
+                            <div class="form-group-div">
+                                <div class="form-group">
+                                    @if ($testimonial->image)
+                                        <img src="{{ Storage::url($testimonial->image) }}" id="image_preview"
+                                            style="width: 100px; height: 100px;">
+                                    @endif
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-md-12">
+                            <div class="form-group-div">
+                                <div class="form-group">
+                                    {{-- description --}}
+                                    <label for="floatingInputValue">Description*</label>
+                                    <textarea name="description" id="description" cols="30" rows="10" placeholder="Description"
+                                        class="form-control">{{ $testimonial['description'] }}</textarea>
+                                    @if ($errors->has('description'))
+                                        <div class="error" style="color:red;">
+                                            {{ $errors->first('description') }}</div>
+                                    @endif
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-xl-12">
+                        <div class="btn-1">
+                            <button type="submit" class="print_btn me-2 mt-2">Update Testimonial Details</button>
+                        </div>
+                    </div>
+            </div>
+            </form>
+        </div>
 
 
     </div>

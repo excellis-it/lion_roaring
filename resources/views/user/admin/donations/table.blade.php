@@ -35,7 +35,7 @@
     </tr>
 @endforeach
 <tr class="toxic">
-    <td colspan="12" class="text-left">
+    <td colspan="13" class="text-left">
         <div class="d-flex justify-content-between">
             <div class="">
                  (Showing {{ $donations->firstItem() }} – {{ $donations->lastItem() }} Donation of
@@ -47,6 +47,6 @@
 </tr>
 @else
 <tr class="toxic">
-    <td colspan="12" class="text-center">No Donation Found</td>
+    <td colspan="13" class="text-center">No Donation Found</td>
 </tr>
 @endif

@@ -19,48 +19,53 @@
     <section id="loading">
         <div id="loading-content"></div>
     </section>
-     <div class="container-fluid">
-         <div class="bg_white_border">
-            <div class="card table_sec stuff-list-table">
-                <div class="row justify-content-end">
-                    <div class="col-md-6">
-                        <div class="row g-1 justify-content-end">
-                            <div class="col-md-12 pr-0">
-                                <div class="search-field">
-                                    <input type="text" name="search" id="search"
-                                        placeholder="search by name or code..." required class="form-control">
-                                     <button class="submit_search" id="search-button"> <span class=""><i
-                                                        class="fa fa-search"></i></span></button>
-                                </div>
+    <div class="container-fluid">
+        <div class="bg_white_border">
+            <div class="d-flex justify-content-between align-items-center mb-3">
+                <div>
+                    <h3 class="mb-0">Countries List</h3>
+                    <p class="text-muted small mb-0">Manage supported countries</p>
+                </div>
+            </div>
+
+            <div class="row justify-content-end">
+                <div class="col-md-6">
+                    <div class="row g-1 justify-content-end">
+                        <div class="col-md-12 pr-0">
+                            <div class="search-field">
+                                <input type="text" name="search" id="search" placeholder="search by name or code..."
+                                    required class="form-control">
+                                <button class="submit_search" id="search-button"> <span class=""><i
+                                            class="fa fa-search"></i></span></button>
                             </div>
                         </div>
                     </div>
                 </div>
-                <div class="table-responsive" id="countries-data">
-                    <table class="table align-middle bg-white color_body_text" class="display">
-                       <thead class="color_head">
-                                            <tr class="header-row">
-                                <th class="sorting" data-tippy-content="Sort by Id" data-sorting_type="asc"
-                                    data-column_name="id" style="cursor:pointer">#<span id="id_icon"></span></th>
-                                <th class="sorting" data-sorting_type="asc" data-column_name="name" style="cursor:pointer"
-                                    data-tippy-content="Sort by Name">Name<span id="name_icon"></span></th>
-                                <th class="sorting" data-sorting_type="asc" data-column_name="code" style="cursor:pointer"
-                                    data-tippy-content="Sort by Code">Code<span id="code_icon"></span></th>
-                                <th>Flag</th>
-                                <th>Languages</th>
-                                <th class="sorting" data-sorting_type="asc" data-column_name="status" style="cursor:pointer"
-                                    data-tippy-content="Sort by Status">Status<span id="status_icon"></span></th>
-                                <th class="text-right">Actions</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @include('user.admin.countries.table')
-                        </tbody>
-                    </table>
-                    <input type="hidden" name="hidden_page" id="hidden_page" value="1" />
-                    <input type="hidden" name="hidden_column_name" id="hidden_column_name" value="id" />
-                    <input type="hidden" name="hidden_sort_type" id="hidden_sort_type" value="desc" />
-                </div>
+            </div>
+            <div class="table-responsive" id="countries-data">
+                <table class="table align-middle bg-white color_body_text" class="display">
+                    <thead class="color_head">
+                        <tr class="header-row">
+                            <th class="sorting" data-tippy-content="Sort by Id" data-sorting_type="asc"
+                                data-column_name="id" style="cursor:pointer">#<span id="id_icon"></span></th>
+                            <th class="sorting" data-sorting_type="asc" data-column_name="name" style="cursor:pointer"
+                                data-tippy-content="Sort by Name">Name<span id="name_icon"></span></th>
+                            <th class="sorting" data-sorting_type="asc" data-column_name="code" style="cursor:pointer"
+                                data-tippy-content="Sort by Code">Code<span id="code_icon"></span></th>
+                            <th>Flag</th>
+                            <th>Languages</th>
+                            <th class="sorting" data-sorting_type="asc" data-column_name="status" style="cursor:pointer"
+                                data-tippy-content="Sort by Status">Status<span id="status_icon"></span></th>
+                            <th class="text-right">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @include('user.admin.countries.table')
+                    </tbody>
+                </table>
+                <input type="hidden" name="hidden_page" id="hidden_page" value="1" />
+                <input type="hidden" name="hidden_column_name" id="hidden_column_name" value="id" />
+                <input type="hidden" name="hidden_sort_type" id="hidden_sort_type" value="desc" />
             </div>
 
         </div>

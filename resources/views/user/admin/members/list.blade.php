@@ -19,7 +19,6 @@
      <div class="container-fluid">
          <div class="bg_white_border">
 
-            <div class="card table_sec stuff-list-table">
                 <div class="row justify-content-end">
                     <div class="col-md-6">
                         <div class="row g-1 justify-content-end">
@@ -76,7 +75,6 @@
                     <input type="hidden" name="hidden_column_name" id="hidden_column_name" value="id" />
                     <input type="hidden" name="hidden_sort_type" id="hidden_sort_type" value="desc" />
                 </div>
-            </div>
 
         </div>
     </div>

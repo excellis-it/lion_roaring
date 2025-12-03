@@ -19,70 +19,74 @@
     <section id="loading">
         <div id="loading-content"></div>
     </section>
-     <div class="container-fluid">
-         <div class="bg_white_border">
+    <div class="container-fluid">
+        <div class="bg_white_border">
+            <div class="d-flex justify-content-between align-items-center mb-3">
+                <div>
+                    <h3 class="mb-0">Testimonials List</h3>
+                    <p class="text-muted small mb-0">Manage all testimonials</p>
+                </div>
+            </div>
 
-            <div class="card table_sec stuff-list-table">
-                <div class="row justify-content-end">
-                    <div class="col-md-6">
-                        <div class="row g-1 justify-content-end">
+            <div class="row justify-content-end">
+                <div class="col-md-6">
+                    <div class="row g-1 justify-content-end">
 
-                            <div class="col-md-4">
+                        <div class="col-md-4">
 
-                                <select onchange="window.location.href='?content_country_code='+$(this).val()"
-                                    name="content_country_code" id="content_country_code" class="form-control">
-                                    @foreach (\App\Models\Country::all() as $country)
-                                        <option value="{{ $country->code }}"
-                                            {{ request()->get('content_country_code', 'US') == $country->code ? 'selected' : '' }}>
-                                            {{ $country->name }}
-                                        </option>
-                                    @endforeach
-                                </select>
-                                <label for="country_code">Content Country</label>
+                            <select onchange="window.location.href='?content_country_code='+$(this).val()"
+                                name="content_country_code" id="content_country_code" class="form-control">
+                                @foreach (\App\Models\Country::all() as $country)
+                                    <option value="{{ $country->code }}"
+                                        {{ request()->get('content_country_code', 'US') == $country->code ? 'selected' : '' }}>
+                                        {{ $country->name }}
+                                    </option>
+                                @endforeach
+                            </select>
+                            <label for="country_code">Content Country</label>
+                        </div>
+
+                        <div class="col-md-8 pr-0">
+                            <div class="search-field">
+                                <input type="text" name="search" id="search" placeholder="search..." required=""
+                                    class="form-control rounded_search">
+                                <button class="submit_search" id="search-button"> <span class=""><i
+                                            class="fa fa-search"></i></span></button>
                             </div>
-
-                            <div class="col-md-8 pr-0">
-                                <div class="search-field">
-                                     <input type="text" name="search" id="search" placeholder="search..."
-                                                required="" class="form-control rounded_search">
-                                     <button class="submit_search" id="search-button"> <span class=""><i
-                                                        class="fa fa-search"></i></span></button>
-                                </div>
-                            </div>
-                            {{-- <div class="col-md-3 pl-0 ml-2">
+                        </div>
+                        {{-- <div class="col-md-3 pl-0 ml-2">
                                 <button class="btn btn-primary button-search" id="search-button"> <span class=""><i
                                             class="fa fa-search"></i></span> Search</button>
                             </div> --}}
-                        </div>
                     </div>
                 </div>
-                <div class="table-responsive" id="testimonials-data">
-                    <table class="table align-middle bg-white color_body_text" >
-                       <thead class="color_head">
-                                            <tr class="header-row">
-                                <th class="sorting" data-tippy-content="Sort by Id" data-sorting_type="asc"
-                                    data-column_name="id" style="cursor: pointer">Id<span id="id_icon"></span>
-                                </th>
-                                <th class="sorting" data-sorting_type="asc" data-column_name="name" style="cursor: pointer"
-                                    data-tippy-content="Sort by Name">
-                                    Name<span id="name_icon"></span></th>
-                                <th class="sorting" data-sorting_type="asc" data-column_name="address"
-                                    style="cursor: pointer" data-tippy-content="Sort by address">
-                                    Address<span id="address_icon"></span></th>
-                                <th class="sorting" data-sorting_type="asc" data-column_name="description"
-                                    style="cursor: pointer" data-tippy-content="Sort by Description"><span
-                                        id="description_icon"></span>Description</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @include('user.admin.testimonials.table')
+            </div>
+            <div class="table-responsive" id="testimonials-data">
+                <table class="table align-middle bg-white color_body_text">
+                    <thead class="color_head">
+                        <tr class="header-row">
+                            <th class="sorting" data-tippy-content="Sort by Id" data-sorting_type="asc"
+                                data-column_name="id" style="cursor: pointer">Id<span id="id_icon"></span>
+                            </th>
+                            <th class="sorting" data-sorting_type="asc" data-column_name="name" style="cursor: pointer"
+                                data-tippy-content="Sort by Name">
+                                Name<span id="name_icon"></span></th>
+                            <th class="sorting" data-sorting_type="asc" data-column_name="address" style="cursor: pointer"
+                                data-tippy-content="Sort by address">
+                                Address<span id="address_icon"></span></th>
+                            <th class="sorting" data-sorting_type="asc" data-column_name="description"
+                                style="cursor: pointer" data-tippy-content="Sort by Description"><span
+                                    id="description_icon"></span>Description</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @include('user.admin.testimonials.table')
 
-                        </tbody>
-                    </table>
-                    <input type="hidden" name="hidden_page" id="hidden_page" value="1" />
-                    <input type="hidden" name="hidden_column_name" id="hidden_column_name" value="id" />
-                    <input type="hidden" name="hidden_sort_type" id="hidden_sort_type" value="desc" />
-                </div>
+                    </tbody>
+                </table>
+                <input type="hidden" name="hidden_page" id="hidden_page" value="1" />
+                <input type="hidden" name="hidden_column_name" id="hidden_column_name" value="id" />
+                <input type="hidden" name="hidden_sort_type" id="hidden_sort_type" value="desc" />
             </div>
 
         </div>

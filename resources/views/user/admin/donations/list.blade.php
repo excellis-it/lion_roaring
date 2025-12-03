@@ -2,7 +2,7 @@
 @section('title')
     All Donations Details - {{ env('APP_NAME') }}
 @endsection
-@push('styles') 
+@push('styles')
     <style>
         .dataTables_filter {
             margin-bottom: 10px !important;
@@ -16,88 +16,90 @@
     <section id="loading">
         <div id="loading-content"></div>
     </section>
-     <div class="container-fluid">
-         <div class="bg_white_border">
+    <div class="container-fluid">
+        <div class="bg_white_border">
+            <div class="d-flex justify-content-between align-items-center mb-3">
+                <div>
+                    <h3 class="mb-0">Donations List</h3>
+                    <p class="text-muted small mb-0">View and manage all donations</p>
+                </div>
+            </div>
 
-            <div class="card table_sec stuff-list-table">
-                <div class="row justify-content-end">
-                    <div class="col-md-6">
-                        <div class="row g-1 justify-content-end">
-                            <div class="col-md-8 pr-0">
-                                <div class="search-field">
-                                     <input type="text" name="search" id="search" placeholder="search..."
-                                                required="" class="form-control rounded_search">
-                                     <button class="submit_search" id="search-button"> <span class=""><i
-                                                        class="fa fa-search"></i></span></button>
-                                </div>
+            <div class="row justify-content-end">
+                <div class="col-md-6">
+                    <div class="row g-1 justify-content-end">
+                        <div class="col-md-8 pr-0">
+                            <div class="search-field">
+                                <input type="text" name="search" id="search" placeholder="search..." required=""
+                                    class="form-control rounded_search">
+                                <button class="submit_search" id="search-button"> <span class=""><i
+                                            class="fa fa-search"></i></span></button>
                             </div>
-                            {{-- <div class="col-md-3 pl-0 ml-2">
+                        </div>
+                        {{-- <div class="col-md-3 pl-0 ml-2">
                                 <button class="btn btn-primary button-search" id="search-button"> <span class=""><i
                                             class="fa fa-search"></i></span> Search</button>
                             </div> --}}
-                        </div>
                     </div>
                 </div>
-                <div class="table-responsive" id="contacts-data">
-                    <table class="table align-middle bg-white color_body_text" class="display">
-                       <thead class="color_head">
-                                            <tr class="header-row">
-                                <th>Id </th>
-                                {{-- transaction_id --}}
-                                <th class="sorting" data-sorting_type="asc" data-column_name="transaction_id"
-                                    style="cursor: pointer" data-tippy-content="Sort by transaction_id">Transaction ID<span
-                                        id="transaction_id_icon"></span></th>
-                                        {{-- amount --}}
-                                <th class="sorting" data-sorting_type="asc" data-column_name="donation_amount"
-                                style="cursor: pointer" data-tippy-content="Sort by donation amount">Donation Amount<span
-                                    id="amount_icon"></span></th>
+            </div>
+            <div class="table-responsive" id="contacts-data">
+                <table class="table align-middle bg-white color_body_text" class="display">
+                    <thead class="color_head">
+                        <tr class="header-row">
+                            <th>Id </th>
+                            {{-- transaction_id --}}
+                            <th class="sorting" data-sorting_type="asc" data-column_name="transaction_id"
+                                style="cursor: pointer" data-tippy-content="Sort by transaction_id">Transaction ID<span
+                                    id="transaction_id_icon"></span></th>
+                            {{-- amount --}}
+                            <th class="sorting" data-sorting_type="asc" data-column_name="donation_amount"
+                                style="cursor: pointer" data-tippy-content="Sort by donation amount">Donation
+                                Amount<span id="amount_icon"></span></th>
 
-                                <th class="sorting" data-sorting_type="asc" data-column_name="first_name"
-                                    style="cursor: pointer" data-tippy-content="Sort by Name">
-                                    Name<span id="first_name_icon"></span></th>
+                            <th class="sorting" data-sorting_type="asc" data-column_name="first_name"
+                                style="cursor: pointer" data-tippy-content="Sort by Name">
+                                Name<span id="first_name_icon"></span></th>
 
-                                <th class="sorting" data-sorting_type="asc" data-column_name="email" style="cursor: pointer"
-                                    data-tippy-content="Sort by email">
-                                    Email<span id="email_icon"></span></th>
-                                <th class="sorting" data-sorting_type="asc" data-column_name="address"
-                                    style="cursor: pointer" data-tippy-content="Sort by address">Address<span
-                                        id="address_icon"></span></th>
-                                {{-- city --}}
-                                <th class="sorting" data-sorting_type="asc" data-column_name="city" style="cursor: pointer"
-                                    data-tippy-content="Sort by city">City<span id="city_icon"></span></th>
-                                {{-- state --}}
+                            <th class="sorting" data-sorting_type="asc" data-column_name="email" style="cursor: pointer"
+                                data-tippy-content="Sort by email">
+                                Email<span id="email_icon"></span></th>
+                            <th class="sorting" data-sorting_type="asc" data-column_name="address" style="cursor: pointer"
+                                data-tippy-content="Sort by address">Address<span id="address_icon"></span></th>
+                            {{-- city --}}
+                            <th class="sorting" data-sorting_type="asc" data-column_name="city" style="cursor: pointer"
+                                data-tippy-content="Sort by city">City<span id="city_icon"></span></th>
+                            {{-- state --}}
 
-                                <th class="sorting" data-sorting_type="asc" data-column_name="state" style="cursor: pointer"
-                                    data-tippy-content="Sort by state">State<span id="state_icon"></span></th>
-                                {{-- postcode --}}
-                                <th class="sorting" data-sorting_type="asc" data-column_name="postcode"
-                                    style="cursor: pointer" data-tippy-content="Sort by postcode">Postcode<span
-                                        id="postcode_icon"></span></th>
-                                {{-- country --}}
-                                <th class="sorting" data-sorting_type="asc" data-column_name="country"
-                                    style="cursor: pointer" data-tippy-content="Sort by country">Country<span
-                                        id="country_icon"></span></th>
+                            <th class="sorting" data-sorting_type="asc" data-column_name="state" style="cursor: pointer"
+                                data-tippy-content="Sort by state">State<span id="state_icon"></span></th>
+                            {{-- postcode --}}
+                            <th class="sorting" data-sorting_type="asc" data-column_name="postcode" style="cursor: pointer"
+                                data-tippy-content="Sort by postcode">Postcode<span id="postcode_icon"></span></th>
+                            {{-- country --}}
+                            <th class="sorting" data-sorting_type="asc" data-column_name="country" style="cursor: pointer"
+                                data-tippy-content="Sort by country">Country<span id="country_icon"></span></th>
 
 
-                                {{-- payment_status --}}
-                                <th class="sorting" data-sorting_type="asc" data-column_name="payment_status"
-                                    style="cursor: pointer" data-tippy-content="Sort by payment_status">Payment Status<span
-                                        id="payment_status_icon"></span></th>
-                                {{-- created_at --}}
-                                <th class="sorting" data-sorting_type="asc" data-column_name="created_at"
-                                    style="cursor: pointer" data-tippy-content="Sort by created_at">Created At<span
-                                        id="created_at_icon"></span></th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @include('user.admin.donations.table')
+                            {{-- payment_status --}}
+                            <th class="sorting" data-sorting_type="asc" data-column_name="payment_status"
+                                style="cursor: pointer" data-tippy-content="Sort by payment_status">Payment Status<span
+                                    id="payment_status_icon"></span></th>
+                            {{-- created_at --}}
+                            <th class="sorting" data-sorting_type="asc" data-column_name="created_at"
+                                style="cursor: pointer" data-tippy-content="Sort by created_at">Created At<span
+                                    id="created_at_icon"></span></th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @include('user.admin.donations.table')
 
-                        </tbody>
-                    </table>
-                    <input type="hidden" name="hidden_page" id="hidden_page" value="1" />
-                    <input type="hidden" name="hidden_column_name" id="hidden_column_name" value="id" />
-                    <input type="hidden" name="hidden_sort_type" id="hidden_sort_type" value="desc" />
-                </div>
+                    </tbody>
+                </table>
+                <input type="hidden" name="hidden_page" id="hidden_page" value="1" />
+                <input type="hidden" name="hidden_column_name" id="hidden_column_name" value="id" />
+                <input type="hidden" name="hidden_sort_type" id="hidden_sort_type" value="desc" />
             </div>
 
         </div>

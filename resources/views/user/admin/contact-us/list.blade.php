@@ -16,59 +16,62 @@
     <section id="loading">
         <div id="loading-content"></div>
     </section>
-     <div class="container-fluid">
-         <div class="bg_white_border">
+    <div class="container-fluid">
+        <div class="bg_white_border">
+            <div class="d-flex justify-content-between align-items-center mb-3">
+                <div>
+                    <h3 class="mb-0">Contact Us Messages</h3>
+                    <p class="text-muted small mb-0">View all contact us messages</p>
+                </div>
+            </div>
 
-            <div class="card table_sec stuff-list-table">
-                <div class="row justify-content-end">
-                    <div class="col-md-6">
-                        <div class="row g-1 justify-content-end">
-                            <div class="col-md-8 pr-0">
-                                <div class="search-field">
-                                     <input type="text" name="search" id="search" placeholder="search..."
-                                                required="" class="form-control rounded_search">
-                                     <button class="submit_search" id="search-button"> <span class=""><i
-                                                        class="fa fa-search"></i></span></button>
-                                </div>
+            <div class="row justify-content-end">
+                <div class="col-md-6">
+                    <div class="row g-1 justify-content-end">
+                        <div class="col-md-8 pr-0">
+                            <div class="search-field">
+                                <input type="text" name="search" id="search" placeholder="search..." required=""
+                                    class="form-control rounded_search">
+                                <button class="submit_search" id="search-button"> <span class=""><i
+                                            class="fa fa-search"></i></span></button>
                             </div>
-                            {{-- <div class="col-md-3 pl-0 ml-2">
+                        </div>
+                        {{-- <div class="col-md-3 pl-0 ml-2">
                                 <button class="btn btn-primary button-search" id="search-button"> <span class=""><i
                                             class="fa fa-search"></i></span> Search</button>
                             </div> --}}
-                        </div>
                     </div>
                 </div>
-                <div class="table-responsive" id="contacts-data">
-                    <table class="table align-middle bg-white color_body_text" class="display">
-                       <thead class="color_head">
-                                            <tr class="header-row">
-                                <th>Id </th>
-                                <th class="sorting" data-sorting_type="asc" data-column_name="first_name" style="cursor: pointer"
-                                    data-tippy-content="Sort by Name">
-                                    Name<span id="first_name_icon"></span></th>
-                                    {{-- phone --}}
-                                <th class="sorting" data-sorting_type="asc" data-column_name="phone"
-                                    style="cursor: pointer" data-tippy-content="Sort by phone">
-                                    Phone<span id="phone_icon"></span></th>
+            </div>
+            <div class="table-responsive" id="contacts-data">
+                <table class="table align-middle bg-white color_body_text" class="display">
+                    <thead class="color_head">
+                        <tr class="header-row">
+                            <th>Id </th>
+                            <th class="sorting" data-sorting_type="asc" data-column_name="first_name"
+                                style="cursor: pointer" data-tippy-content="Sort by Name">
+                                Name<span id="first_name_icon"></span></th>
+                            {{-- phone --}}
+                            <th class="sorting" data-sorting_type="asc" data-column_name="phone" style="cursor: pointer"
+                                data-tippy-content="Sort by phone">
+                                Phone<span id="phone_icon"></span></th>
 
-                                <th class="sorting" data-sorting_type="asc" data-column_name="email"
-                                    style="cursor: pointer" data-tippy-content="Sort by email">
-                                    Email<span id="email_icon"></span></th>
-                                <th class="sorting" data-sorting_type="asc" data-column_name="message"
-                                    style="cursor: pointer" data-tippy-content="Sort by message">Message<span
-                                    id="message_icon"></span></th>
-                                    <th></th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @include('user.admin.contact-us.table')
+                            <th class="sorting" data-sorting_type="asc" data-column_name="email" style="cursor: pointer"
+                                data-tippy-content="Sort by email">
+                                Email<span id="email_icon"></span></th>
+                            <th class="sorting" data-sorting_type="asc" data-column_name="message" style="cursor: pointer"
+                                data-tippy-content="Sort by message">Message<span id="message_icon"></span></th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @include('user.admin.contact-us.table')
 
-                        </tbody>
-                    </table>
-                    <input type="hidden" name="hidden_page" id="hidden_page" value="1" />
-                    <input type="hidden" name="hidden_column_name" id="hidden_column_name" value="id" />
-                    <input type="hidden" name="hidden_sort_type" id="hidden_sort_type" value="desc" />
-                </div>
+                    </tbody>
+                </table>
+                <input type="hidden" name="hidden_page" id="hidden_page" value="1" />
+                <input type="hidden" name="hidden_column_name" id="hidden_column_name" value="id" />
+                <input type="hidden" name="hidden_sort_type" id="hidden_sort_type" value="desc" />
             </div>
 
         </div>

@@ -7,69 +7,36 @@
 
 
 @section('content')
-     <div class="container-fluid">
-         <div class="bg_white_border">
-          
-                <form action="{{ route('services.store') }}" method="post" enctype="multipart/form-data">
-                    @csrf
-                    @if (isset($services) && count($services) > 0)
-                        <input type="hidden" name="column_count" id="column_count" value="{{ count($services) }}">
-                    @else
-                        <input type="hidden" name="column_count" id="column_count" value="1">
-                    @endif
-                    <input type="hidden" name="our_organization_id" value="{{ $our_organization_id }}">
-                    <div class="sales-report-card-wrap mt-5">
-                        <div class="row count-class" id="add-more">
-                            @if (isset($services) && count($services) > 0)
-                                @foreach ($services as $key => $item)
-                                    <div class="col-xl-5 col-md-5 mt-4">
-                                        <div class="form-group-div">
-                                            <div class="form-group">
-                                                {{-- meta title --}}
-                                                <label for="floatingInputValue">Image</label>
-                                                <input type="file" class="form-control" id="floatingInputValue"
-                                                    accept="image/*" name="image[]" value="{{ $item->image }}"
-                                                    placeholder="Image">
-                                                <input type="hidden" name="image_id[]" value="{{ $item->id }}">
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-5 mt-4">
-                                        <div class="form-group-div">
-                                            <div class="form-group">
-                                                {{-- banner_title --}}
-                                                <label for="floatingInputValue">Content</label>
-                                                <textarea name="content[]" id="content_{{ $key }}" cols="30" rows="10" placeholder="Content"
-                                                    class="form-control content">{{ $item->content }}</textarea>
-                                                <span class="text-danger" id="job_opportunity_description_0"></span>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    @if ($key == 0)
-                                        <div class="col-xl-2 mt-4">
-                                            <div class="btn-1">
-                                                <button type="button" class="add-more"><i class="ph ph-plus"></i>
-                                                </button>
-                                            </div>
-                                        </div>
-                                    @else
-                                        <div class="col-xl-2 mt-4">
-                                            <div class="btn-1">
-                                                <button type="button" class="remove"><i class="ph ph-minus"></i>
-                                                </button>
-                                            </div>
-                                        </div>
-                                    @endif
-                                @endforeach
-                            @else
+    <div class="container-fluid">
+        <div class="bg_white_border">
+            <div class="d-flex justify-content-between align-items-center mb-3">
+                <div>
+                    <h3 class="mb-0">Update Service</h3>
+                    <p class="text-muted small mb-0">Manage service details</p>
+                </div>
+            </div>
+
+            <form action="{{ route('services.store') }}" method="post" enctype="multipart/form-data">
+                @csrf
+                @if (isset($services) && count($services) > 0)
+                    <input type="hidden" name="column_count" id="column_count" value="{{ count($services) }}">
+                @else
+                    <input type="hidden" name="column_count" id="column_count" value="1">
+                @endif
+                <input type="hidden" name="our_organization_id" value="{{ $our_organization_id }}">
+                <div class="sales-report-card-wrap mt-5">
+                    <div class="row count-class" id="add-more">
+                        @if (isset($services) && count($services) > 0)
+                            @foreach ($services as $key => $item)
                                 <div class="col-xl-5 col-md-5 mt-4">
                                     <div class="form-group-div">
                                         <div class="form-group">
                                             {{-- meta title --}}
-                                            <label for="floatingInputValue"> Image</label>
+                                            <label for="floatingInputValue">Image</label>
                                             <input type="file" class="form-control" id="floatingInputValue"
-                                                accept="image/*" name="image[]" value="" placeholder=" Title">
-                                            <input type="hidden" name="image_id[]" value="">
+                                                accept="image/*" name="image[]" value="{{ $item->image }}"
+                                                placeholder="Image">
+                                            <input type="hidden" name="image_id[]" value="{{ $item->id }}">
                                         </div>
                                     </div>
                                 </div>
@@ -77,28 +44,67 @@
                                     <div class="form-group-div">
                                         <div class="form-group">
                                             {{-- banner_title --}}
-                                            <label for="floatingInputValue"> Content</label>
-                                            <textarea name="content[]" id="content_0" cols="30" rows="10" placeholder="Content"
-                                                class="form-control content"></textarea>
+                                            <label for="floatingInputValue">Content</label>
+                                            <textarea name="content[]" id="content_{{ $key }}" cols="30" rows="10" placeholder="Content"
+                                                class="form-control content">{{ $item->content }}</textarea>
                                             <span class="text-danger" id="job_opportunity_description_0"></span>
                                         </div>
                                     </div>
                                 </div>
-                                <div class="col-xl-2 mt-4">
-                                    <div class="btn-1">
-                                        <button type="button" class="add-more"><i class="ph ph-plus"></i> </button>
+                                @if ($key == 0)
+                                    <div class="col-xl-2 mt-4">
+                                        <div class="btn-1">
+                                            <button type="button" class="add-more"><i class="ph ph-plus"></i>
+                                            </button>
+                                        </div>
+                                    </div>
+                                @else
+                                    <div class="col-xl-2 mt-4">
+                                        <div class="btn-1">
+                                            <button type="button" class="remove"><i class="ph ph-minus"></i>
+                                            </button>
+                                        </div>
+                                    </div>
+                                @endif
+                            @endforeach
+                        @else
+                            <div class="col-xl-5 col-md-5 mt-4">
+                                <div class="form-group-div">
+                                    <div class="form-group">
+                                        {{-- meta title --}}
+                                        <label for="floatingInputValue"> Image</label>
+                                        <input type="file" class="form-control" id="floatingInputValue" accept="image/*"
+                                            name="image[]" value="" placeholder=" Title">
+                                        <input type="hidden" name="image_id[]" value="">
                                     </div>
                                 </div>
-                            @endif
-                        </div>
-                        <div class="col-xl-12">
-                            <div class="btn-1">
-                                  <button type="submit" class="print_btn me-2 mt-2">Update</button>
                             </div>
+                            <div class="col-md-5 mt-4">
+                                <div class="form-group-div">
+                                    <div class="form-group">
+                                        {{-- banner_title --}}
+                                        <label for="floatingInputValue"> Content</label>
+                                        <textarea name="content[]" id="content_0" cols="30" rows="10" placeholder="Content"
+                                            class="form-control content"></textarea>
+                                        <span class="text-danger" id="job_opportunity_description_0"></span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-xl-2 mt-4">
+                                <div class="btn-1">
+                                    <button type="button" class="add-more"><i class="ph ph-plus"></i> </button>
+                                </div>
+                            </div>
+                        @endif
+                    </div>
+                    <div class="col-xl-12">
+                        <div class="btn-1">
+                            <button type="submit" class="print_btn me-2 mt-2">Update</button>
                         </div>
                     </div>
-                </form>
-            </div>
+                </div>
+            </form>
+        </div>
 
 
     </div>
