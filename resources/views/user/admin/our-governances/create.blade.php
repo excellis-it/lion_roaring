@@ -184,6 +184,7 @@
                         <div class="col-xl-12">
                             <div class="btn-1">
                                 <button type="submit" class="print_btn me-2 mt-2">Create</button>
+                                <a href="{{ route('our-governances.index') }}" class="print_btn print_btn_vv">Cancel</a>
                             </div>
                         </div>
                     </div>

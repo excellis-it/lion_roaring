@@ -6,7 +6,12 @@
 @section('content')
      <div class="container-fluid">
          <div class="bg_white_border">
-          
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                <div>
+                    <h3 class="mb-0">Menu Names</h3>
+                    <p class="text-muted small mb-0">Menu Names</p>
+                </div>
+            </div>
                 <form action="{{ route('admin.menu.update') }}" method="post">
                     @csrf
                     <div class="sales-report-card-wrap">

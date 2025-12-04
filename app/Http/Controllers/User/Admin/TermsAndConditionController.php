@@ -10,7 +10,7 @@ class TermsAndConditionController extends Controller
 {
     public function index(Request $request)
     {
-        if (auth()->user()->hasRole('SUPER ADMIN')) {
+        if (auth()->user()->can('Manage Terms and Conditions Page')) {
             $terms_and_condition = TermsAndCondition::where('country_code', $request->get('content_country_code', 'US'))->orderBy('id', 'desc')->first();
             return view('user.admin.terms.index')->with(compact('terms_and_condition'));
         } else {
@@ -21,6 +21,9 @@ class TermsAndConditionController extends Controller
 
     public function update(Request $request)
     {
+        if (!auth()->user()->can('Manage Terms and Conditions Page')) {
+            abort(403, 'You do not have permission to access this page.');
+        }
         $request->validate([
             'text' => 'required',
             'description' => 'required',

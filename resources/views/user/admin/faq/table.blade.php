@@ -4,22 +4,21 @@
             <td> {{ ($faqs->currentPage() - 1) * $faqs->perPage() + $loop->index + 1 }}</td>
             <td>{{ $faq->question }}</td>
             <td>
-                <td>
-                    @php
-                        $message = $faq->answer ?? 'N/A';
-                        $shortMessage = strlen($message) > 50 ? substr($message, 0, 50) . '...' : $message;
-                    @endphp
-                    <span class="short-message">{{ $shortMessage }}</span>
-                    <span class="full-message" style="display:none">{{ $message }}</span>
-                    @if(strlen($message) > 50)
-                        <a href="javascript:void(0)" class="toggle-message">Show More</a>
-                    @endif
-                </td></td>
+                @php
+                    $message = $faq->answer ?? 'N/A';
+                    $shortMessage = strlen($message) > 50 ? substr($message, 0, 50) . '...' : $message;
+                @endphp
+                <span class="short-message">{{ $shortMessage }}</span>
+                <span class="full-message" style="display:none">{{ $message }}</span>
+                @if (strlen($message) > 50)
+                    <a href="javascript:void(0)" class="toggle-message">Show More</a>
+                @endif
+            </td>
             <td>
                 <div class="edit-1 d-flex align-items-center justify-content-center">
                     @if (auth()->user()->can('Edit Faq'))
                         <a title="Edit" href="{{ route('faq.edit', $faq->id) }}">
-                            <span class="edit-icon"><i class="ph ph-pencil-simple"></i></span>
+                            <span class="edit-icon"><i class="fas fa-edit"></i></span>
                         </a>
                     @endif
                     @if (auth()->user()->can('Delete Faq'))

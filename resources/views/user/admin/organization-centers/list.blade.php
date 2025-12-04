@@ -26,6 +26,12 @@
                     <h3 class="mb-0">Organization Centers List</h3>
                     <p class="text-muted small mb-0">Manage organization centers</p>
                 </div>
+                <div>
+                    @if (auth()->user()->can('Create Organization Center'))
+                        <a href="{{ route('organization-centers.create') }}" class="print_btn">+ Create Organization
+                            Center</a>
+                    @endif
+                </div>
             </div>
 
             <div class="row justify-content-end">
@@ -62,7 +68,7 @@
                             </th>
                             <th class="sorting" data-sorting_type="asc" data-column_name="slug" style="cursor: pointer"
                                 data-tippy-content="Sort by Slug">Slug<span id="slug_icon"></span></th>
-
+                            <th></th>
                         </tr>
                     </thead>
                     <tbody>

@@ -9,7 +9,12 @@
 @section('content')
      <div class="container-fluid">
          <div class="bg_white_border">
-          
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                <div>
+                    <h3 class="mb-0">Update Terms Page</h3>
+                    <p class="text-muted small mb-0">Update terms page</p>
+                </div>
+            </div>
                 <form action="{{ route('terms-and-condition.update') }}" method="post" enctype="multipart/form-data">
                     @csrf
                     <input type="hidden" name="id" value="{{ $terms_and_condition->id ?? '' }}">

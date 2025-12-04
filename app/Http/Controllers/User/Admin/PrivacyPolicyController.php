@@ -10,7 +10,7 @@ class PrivacyPolicyController extends Controller
 {
     public function index(Request $request)
     {
-        if (auth()->user()->hasRole('SUPER ADMIN')) {
+        if (auth()->user()->can('Manage Privacy Policy Page')) {
             $privacy_policy = PrivacyPolicy::where('country_code', $request->get('content_country_code', 'US'))->orderBy('id', 'desc')->first();
             return view('user.admin.privacy-policy.index')->with(compact('privacy_policy'));
         } else {
@@ -21,6 +21,10 @@ class PrivacyPolicyController extends Controller
 
     public function update(Request $request)
     {
+        if (!auth()->user()->can('Manage Privacy Policy Page')) {
+            abort(403, 'You do not have permission to access this page.');
+        }
+
         $request->validate([
             'text' => 'required',
             'description' => 'required',

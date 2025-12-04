@@ -13,12 +13,18 @@ class SettingsController extends Controller
     //
     public function edit()
     {
+        if(!auth()->user()->can('Manage Site Settings')){
+            abort(403, 'You do not have permission to access this page.');
+        }
         $settings = SiteSetting::first();
         return view('user.admin.settings', compact('settings'));
     }
 
     public function update(Request $request)
     {
+        if(!auth()->user()->can('Manage Site Settings')){
+            abort(403, 'You do not have permission to access this page.');
+        }
         $request->validate([
             'SITE_NAME' => 'required|string|max:255',
             'SITE_LOGO' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg',  // Validate logo file

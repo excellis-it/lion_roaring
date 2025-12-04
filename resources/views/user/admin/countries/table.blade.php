@@ -37,7 +37,7 @@
                     </form>
 
                     <a title="Edit" href="{{ route('admin-countries.edit', $country->id) }}">
-                        <span class="edit-icon"><i class="ph ph-pencil-simple"></i></span>
+                        <span class="edit-icon"><i class="fas fa-edit"></i></span>
                     </a>
                     <a title="Delete" data-route="{{ route('admin-countries.delete', $country->id) }}"
                         href="javascript:void(0);" id="delete">

@@ -9,7 +9,12 @@
 @section('content')
      <div class="container-fluid">
          <div class="bg_white_border">
-          
+            <div class="d-flex justify-content-between align-items-center mb-3">
+                <div>
+                    <h3 class="mb-0">Create Plan</h3>
+                    <p class="text-muted small mb-0">Create new plan</p>
+                </div>
+            </div>
                 <div class="sales-report-card-wrap">
                     <form action="{{ route('plans.store') }}" method="post" enctype="multipart/form-data">
                         @csrf

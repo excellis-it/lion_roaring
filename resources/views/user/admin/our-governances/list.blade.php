@@ -26,6 +26,11 @@
                     <h3 class="mb-0">Our Governance List</h3>
                     <p class="text-muted small mb-0">Manage governance structures</p>
                 </div>
+                <div>
+                    @if (auth()->user()->can('Create Our Governance'))
+                        <a href="{{ route('our-governances.create') }}" class="print_btn">+ Create Our Governance</a>
+                    @endif
+                </div>
             </div>
 
             <div class="row justify-content-end">

@@ -12,7 +12,7 @@
                 <div class="edit-1 d-flex align-items-center justify-content-center">
                     @if (auth()->user()->can('Edit Organization Center'))
                         <a title="Edit" href="{{ route('organization-centers.edit', $organization_center->id) }}">
-                            <span class="edit-icon"><i class="ph ph-pencil-simple"></i></span>
+                            <span class="edit-icon"><i class="fas fa-edit"></i></span>
                         </a>
                     @endif
                     @if (auth()->user()->can('Delete Organization Center'))

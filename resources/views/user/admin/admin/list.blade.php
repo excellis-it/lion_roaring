@@ -184,7 +184,7 @@
                                                 <a class="edit-admins edit-icon" href="#" data-bs-toggle="modal"
                                                     data-bs-target="#edit_admin" data-id="{{ $admin->id }}"
                                                     data-route="{{ route('admin.edit', $admin->id) }}"> <span
-                                                        class="edit-icon"><i class="ph ph-pencil-simple"></i></span></a>
+                                                        class="edit-icon"><i class="fas fa-edit"></i></span></a>
                                             @endif
                                             @if (auth()->user()->can('Delete Admin List'))
                                                 <a href="{{ route('admin.delete', $admin->id) }}"

@@ -221,7 +221,7 @@
                                                 <a class="edit-admins edit-icon" href="#" data-bs-toggle="modal"
                                                     data-bs-target="#edit_admin" data-id="{{ $ecclessia->id }}"
                                                     data-route="{{ route('ecclessias.edit', $ecclessia->id) }}"> <span
-                                                        class="edit-icon"><i class="ph ph-pencil-simple"></i></span></a>
+                                                        class="edit-icon"><i class="fas fa-edit"></i></span></a>
                                             @endif
                                             @if (auth()->user()->can('Delete All Users'))
                                                 <a href="{{ route('ecclessias.delete', $ecclessia->id) }}"

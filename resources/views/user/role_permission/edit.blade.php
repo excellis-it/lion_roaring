@@ -122,7 +122,11 @@
                                                 'Register Page Agreement Page',
                                                 'Member Privacy Policy Page',
                                                 'PMA Terms Page',
+                                                'Privacy Policy Page',
+                                                'Terms and Conditions Page',
                                                 'Countries',
+                                                'Site Settings',
+                                                'Menu Settings',
                                         ]; @endphp
                                         <table class="table mb-0 table-center-align">
                                             <thead>

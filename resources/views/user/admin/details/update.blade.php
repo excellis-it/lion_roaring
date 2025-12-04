@@ -9,7 +9,12 @@
 @section('content')
      <div class="container-fluid">
          <div class="bg_white_border">
-          
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                <div>
+                    <h3 class="mb-0">Details Update</h3>
+                    <p class="text-muted small mb-0">Update details page</p>
+                </div>
+            </div>
                 <form action="{{ route('details.store') }}" method="post" enctype="multipart/form-data">
                     @csrf
                     <div class="row mb-4">

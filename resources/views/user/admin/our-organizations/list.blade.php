@@ -26,6 +26,11 @@
                     <h3 class="mb-0">Our Organizations List</h3>
                     <p class="text-muted small mb-0">Manage organization structures</p>
                 </div>
+                <div>
+                    @if (auth()->user()->can('Create Our Organization'))
+                        <a href="{{ route('our-organizations.create') }}" class="print_btn">+ Create Our Organization</a>
+                    @endif
+                </div>
             </div>
 
             <div class="row justify-content-end">
@@ -73,7 +78,7 @@
                                 Organization Name<span id="name_icon"></span></th>
                             <th class="sorting" data-sorting_type="asc" data-column_name="slug" style="cursor: pointer"
                                 data-tippy-content="Sort by Slug">Slug<span id="slug_icon"></span></th>
-
+                            <th></th>
                         </tr>
                     </thead>
                     <tbody>

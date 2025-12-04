@@ -9,7 +9,7 @@
             <div class="edit-1 d-flex align-items-center justify-content-center">
                 @if (auth()->user()->can('Delete Our Governance'))
                 <a title="Edit" href="{{ route('our-governances.edit', $our_governance->id) }}">
-                    <span class="edit-icon"><i class="ph ph-pencil-simple"></i></span>
+                    <span class="edit-icon"><i class="fas fa-edit"></i></span>
                 </a>
                 @endif
                 @if (auth()->user()->can('Create Our Governance'))

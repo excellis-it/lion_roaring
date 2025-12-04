@@ -95,7 +95,6 @@
                                                 'Email Template',
                                                 'User Activity',
 
-
                                                 'Donations',
                                                 'Contact Us Messages',
                                                 'Newsletters',
@@ -117,8 +116,13 @@
                                                 'Footer',
                                                 'Register Page Agreement Page',
                                                 'Member Privacy Policy Page',
+
                                                 'PMA Terms Page',
+                                                'Privacy Policy Page',
+                                                'Terms and Conditions Page',
                                                 'Countries',
+                                                'Site Settings',
+                                                'Menu Settings',
                                             ];
 
                                         @endphp

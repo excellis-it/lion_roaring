@@ -954,7 +954,9 @@
                          Gate::check('Manage Footer') ||
                          Gate::check('Manage Register Page Agreement Page') ||
                          Gate::check('Manage Member Privacy Policy Page') ||
-                         Gate::check('Manage PMA Terms Page'))
+                         Gate::check('Manage PMA Terms Page') ||
+                         Gate::check('Manage Privacy Policy Page') ||
+                         Gate::check('Manage Terms and Conditions Page'))
                      <li class="sidebar-item">
                          <a class="sidebar-link" href="#" aria-expanded="false" data-bs-toggle="collapse"
                              data-bs-target="#collapsePages">
@@ -1097,7 +1099,7 @@
                                      </a>
                                  @endif
 
-                                 @if (Auth::user()->hasRole('SUPER ADMIN'))
+                                 @if (Gate::check('Manage Privacy Policy Page'))
                                      <a href="{{ route('privacy-policy.index') }}">
                                          <span>
                                              <img src="{{ asset('user_assets/images/lion-roring-icon/lion-roring-icon/privacy-policy.png') }}"
@@ -1105,7 +1107,8 @@
                                          </span>
                                          <span>{{ Helper::getMenuName('pages_privacy_policy', 'Privacy Policy') }}</span>
                                      </a>
-
+                                 @endif
+                                 @if (Gate::check('Manage Terms and Conditions Page'))
                                      <a href="{{ route('terms-and-condition.index') }}">
                                          <span>
                                              <img src="{{ asset('user_assets/images/lion-roring-icon/lion-roring-icon/terms-and-condition.png') }}"
@@ -1132,7 +1135,7 @@
                      </li>
                  @endif
 
-                 @if (Auth::user()->getFirstRoleType() == 1)
+                 @if (Gate::check('Manage Site Settings') || Gate::check('Manage Menu Settings'))
                      <li class="sidebar-item">
                          <a class="sidebar-link" href="#" aria-expanded="false" data-bs-toggle="collapse"
                              data-bs-target="#collapseSiteSettings">
@@ -1146,20 +1149,24 @@
                          <div class="collapse {{ Request::is('user/admin/settings*') || Request::is('user/admin/menu*') ? 'show' : '' }}"
                              id="collapseSiteSettings">
                              <div class="menu_bb">
-                                 <a href="{{ route('admin.settings.edit') }}">
-                                     <span>
-                                         <img src="{{ asset('user_assets/images/lion-roring-icon/lion-roring-icon/setting.png') }}"
-                                             alt="Settings">
-                                     </span>
-                                     <span>{{ Helper::getMenuName('site_settings_settings', 'Settings') }}</span>
-                                 </a>
-                                 <a href="{{ route('admin.menu.index') }}">
-                                     <span>
-                                         <img src="{{ asset('user_assets/images/lion-roring-icon/lion-roring-icon/menu-names.png') }}"
-                                             alt="Menu Names">
-                                     </span>
-                                     <span>{{ Helper::getMenuName('site_settings_menu_names', 'Menu Names') }}</span>
-                                 </a>
+                                 @if (Gate::check('Manage Site Settings'))
+                                     <a href="{{ route('admin.settings.edit') }}">
+                                         <span>
+                                             <img src="{{ asset('user_assets/images/lion-roring-icon/lion-roring-icon/setting.png') }}"
+                                                 alt="Settings">
+                                         </span>
+                                         <span>{{ Helper::getMenuName('site_settings_settings', 'Settings') }}</span>
+                                     </a>
+                                 @endif
+                                 @if (Gate::check('Manage Menu Settings'))
+                                     <a href="{{ route('admin.menu.index') }}">
+                                         <span>
+                                             <img src="{{ asset('user_assets/images/lion-roring-icon/lion-roring-icon/menu-names.png') }}"
+                                                 alt="Menu Names">
+                                         </span>
+                                         <span>{{ Helper::getMenuName('site_settings_menu_names', 'Menu Names') }}</span>
+                                     </a>
+                                 @endif
                              </div>
                          </div>
                      </li>
