@@ -1025,7 +1025,7 @@
                                              <img src="{{ asset('user_assets/images/lion-roring-icon/lion-roring-icon/gallery.png') }}"
                                                  alt="Gallery">
                                          </span>
-                                         <span>{{ Helper::getMenuName('pages_gallery', 'GALLERY') }}</span>
+                                         <span>{{ Helper::getMenuName('pages_gallery', 'Gallery') }}</span>
                                      </a>
                                  @endif
 

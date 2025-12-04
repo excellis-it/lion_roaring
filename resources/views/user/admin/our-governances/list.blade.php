@@ -80,7 +80,7 @@
                                 Governance Name<span id="name_icon"></span></th>
                             <th class="sorting" data-sorting_type="asc" data-column_name="slug" style="cursor: pointer"
                                 data-tippy-content="Sort by Slug">Slug<span id="slug_icon"></span></th>
-
+                            <th></th>
                         </tr>
                     </thead>
                     <tbody>

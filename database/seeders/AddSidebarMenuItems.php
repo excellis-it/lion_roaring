@@ -54,14 +54,14 @@ class AddSidebarMenuItems extends Seeder
             ['key' => 'pages_organization', 'default_name' => 'Organization'],
             ['key' => 'pages_organization_cms', 'default_name' => 'Organization CMS'],
             ['key' => 'pages_about_us', 'default_name' => 'About Us'],
-            ['key' => 'pages_faqs', 'default_name' => 'FAQS'],
-            ['key' => 'pages_gallery', 'default_name' => 'GALLERY'],
-            ['key' => 'pages_ecclesia_association', 'default_name' => 'ECCLESIA ASSOCIATION'],
-            ['key' => 'pages_principle_and_business', 'default_name' => 'PRINCIPLE AND BUSINESS MODEL'],
-            ['key' => 'pages_contact_us', 'default_name' => 'CONTACT US'],
-            ['key' => 'pages_articles_of_association', 'default_name' => 'ARTICLES OF ASSOCIATION'],
+            ['key' => 'pages_faqs', 'default_name' => "FAQ's"],
+            ['key' => 'pages_gallery', 'default_name' => 'Gallery'],
+            ['key' => 'pages_ecclesia_association', 'default_name' => 'Ecclesia Association'],
+            ['key' => 'pages_principle_and_business', 'default_name' => 'Principle and Business Model'],
+            ['key' => 'pages_contact_us', 'default_name' => 'Contact US'],
+            ['key' => 'pages_articles_of_association', 'default_name' => 'Articles of Association'],
             ['key' => 'pages_footer', 'default_name' => 'Footer'],
-            ['key' => 'pages_register_agreements', 'default_name' => 'REGISTER PAGE AGREEMENTS'],
+            ['key' => 'pages_register_agreements', 'default_name' => 'Register Page Agreements'],
             ['key' => 'pages_pma_terms', 'default_name' => 'PMA Terms'],
             ['key' => 'pages_privacy_policy', 'default_name' => 'Privacy Policy'],
             ['key' => 'pages_terms_and_conditions', 'default_name' => 'Terms and Conditions'],
@@ -83,12 +83,22 @@ class AddSidebarMenuItems extends Seeder
                 DB::table('menu_items')->insert([
                     'key' => $menu['key'],
                     'default_name' => $menu['default_name'],
-                    'name' => null,
+                    'name' => $menu['default_name'],
                     'created_at' => now(),
                     'updated_at' => now()
                 ]);
+            } else {
+                // Update existing menu item
+                DB::table('menu_items')
+                    ->where('key', $menu['key'])
+                    ->update([
+                        'default_name' => $menu['default_name'],
+                        'name' => $menu['default_name'],
+                        'updated_at' => now()
+                    ]);
             }
         }
+
 
         $this->command->info('Sidebar menu items seeded successfully!');
     }
