@@ -10,11 +10,11 @@
     </style>
 @endpush
 
-@section('create_button')
+{{-- @section('create_button')
     @if (auth()->user()->can('Create Testimonials'))
         <a href="{{ route('testimonials.create') }}" class="btn btn-primary">+ Create New Testmonial</a>
     @endif
-@endsection
+@endsection --}}
 @section('content')
     <section id="loading">
         <div id="loading-content"></div>
@@ -25,6 +25,11 @@
                 <div>
                     <h3 class="mb-0">Testimonials List</h3>
                     <p class="text-muted small mb-0">Manage all testimonials</p>
+                </div>
+                <div>
+                    @if (auth()->user()->can('Create Testimonials'))
+                        <a href="{{ route('testimonials.create') }}" class="btn btn-primary">+ Create New Testmonial</a>
+                    @endif
                 </div>
             </div>
 
@@ -77,7 +82,7 @@
                             <th class="sorting" data-sorting_type="asc" data-column_name="description"
                                 style="cursor: pointer" data-tippy-content="Sort by Description"><span
                                     id="description_icon"></span>Description</th>
-                                    <th></th>
+                            <th></th>
                         </tr>
                     </thead>
                     <tbody>

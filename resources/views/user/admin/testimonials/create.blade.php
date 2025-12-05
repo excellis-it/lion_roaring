@@ -45,9 +45,6 @@
                                 </div>
                             </div>
                         </div>
-                    </div>
-
-                    <div class="row justify-content-between">
                         <div class="col-md-6">
                             <div class="form-group-div">
                                 <div class="form-group">
@@ -69,9 +66,9 @@
                                     <label for="floatingInputValue">Address*</label>
                                     <input type="text" class="form-control" id="floatingInputValue" name="address"
                                         value="{{ old('address') }}" placeholder="Address*">
-                                    @if ($errors->has('type'))
+                                    @if ($errors->has('address'))
                                         <div class="error" style="color:red;">
-                                            {{ $errors->first('type') }}</div>
+                                            {{ $errors->first('address') }}</div>
                                     @endif
                                 </div>
                             </div>
