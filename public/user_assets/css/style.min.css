@@ -23343,7 +23343,7 @@ select:disabled {
 }
 
 .bg_white_border {
-    background: #fff url(../../user_assets/images/banner_lion.png);
+    /* background: #fff url(../../user_assets/images/banner_lion.png); */
     border-radius: 6px;
     padding: 25px;
     min-height: 89vh;

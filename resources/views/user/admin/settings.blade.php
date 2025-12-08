@@ -46,6 +46,26 @@
                     </div>
 
                     <div class="mb-3">
+                        <label for="PANEL_WATERMARK_LOGO" class="form-label">Panel Watermark Logo</label><br>
+                        @if ($settings->PANEL_WATERMARK_LOGO)
+                            <img src="{{ asset($settings->PANEL_WATERMARK_LOGO) }}" class="mb-2" alt="Watermark Logo"
+                                style="height: 100px" />
+                        @else
+                            <p class="text-muted">No watermark logo uploaded</p>
+                        @endif
+
+                        <input type="file" class="form-control" id="PANEL_WATERMARK_LOGO" name="PANEL_WATERMARK_LOGO">
+                        <small class="form-text text-muted">Upload a watermark logo for the admin panel (Max 2MB, formats:
+                            jpeg, png, jpg, gif, svg)</small>
+                        @if ($settings->PANEL_WATERMARK_LOGO)
+                            <br><small class="form-text text-muted">Current: {{ $settings->PANEL_WATERMARK_LOGO }}</small>
+                        @endif
+                        @error('PANEL_WATERMARK_LOGO')
+                            <div class="text-danger">{{ $message }}</div>
+                        @enderror
+                    </div>
+
+                    <div class="mb-3">
                         <label for="SITE_CONTACT_EMAIL" class="form-label">Contact Email</label>
                         <input type="email" class="form-control" id="SITE_CONTACT_EMAIL" name="SITE_CONTACT_EMAIL"
                             value="{{ old('SITE_CONTACT_EMAIL', $settings->SITE_CONTACT_EMAIL) }}" required>

@@ -13,7 +13,7 @@ class SettingsController extends Controller
     //
     public function edit()
     {
-        if(!auth()->user()->can('Manage Site Settings')){
+        if (!auth()->user()->can('Manage Site Settings')) {
             abort(403, 'You do not have permission to access this page.');
         }
         $settings = SiteSetting::first();
@@ -22,12 +22,13 @@ class SettingsController extends Controller
 
     public function update(Request $request)
     {
-        if(!auth()->user()->can('Manage Site Settings')){
+        if (!auth()->user()->can('Manage Site Settings')) {
             abort(403, 'You do not have permission to access this page.');
         }
         $request->validate([
             'SITE_NAME' => 'required|string|max:255',
             'SITE_LOGO' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg',  // Validate logo file
+            'PANEL_WATERMARK_LOGO' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',  // Validate watermark logo
             'SITE_CONTACT_EMAIL' => 'required|email|max:255',
             'SITE_CONTACT_PHONE' => 'required|string',
             'DONATE_TEXT' => 'nullable|string',  // Validate donate text
@@ -55,6 +56,25 @@ class SettingsController extends Controller
             $settings->SITE_LOGO = 'user_assets/images/logo.png';
         }
 
+        // Handle file upload for PANEL_WATERMARK_LOGO
+        if ($request->hasFile('PANEL_WATERMARK_LOGO')) {
+            $watermarkLogo = $request->file('PANEL_WATERMARK_LOGO');
+
+            // If you want to remove the old watermark logo before uploading a new one:
+            if ($settings->PANEL_WATERMARK_LOGO && File::exists(public_path($settings->PANEL_WATERMARK_LOGO))) {
+                File::delete(public_path($settings->PANEL_WATERMARK_LOGO));
+            }
+
+            // Define the path to store the file
+            $destinationPath = public_path('user_assets/images');
+
+            // Move the uploaded watermark logo to the desired location
+            $watermarkLogo->move($destinationPath, 'watermark_logo.png');
+
+            // Update the path in the database
+            $settings->PANEL_WATERMARK_LOGO = 'user_assets/images/watermark_logo.png';
+        }
+
         // Update other settings values
         $settings->SITE_NAME = $request->SITE_NAME;
         $settings->SITE_CONTACT_EMAIL = $request->SITE_CONTACT_EMAIL;
@@ -64,6 +84,6 @@ class SettingsController extends Controller
 
         $settings->save();
 
-        return redirect()->route('admin.settings.edit')->with('success', 'Settings updated successfully');
+        return redirect()->route('admin.settings.edit')->with('message', 'Settings updated successfully');
     }
 }
