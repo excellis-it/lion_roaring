@@ -1789,7 +1789,7 @@ li.slick-active button {
 
 .quick_links_ul ul {
     display: flex;
-    justify-content: center;
+    /* justify-content: center; */
     padding-left: 0;
     list-style: none;
     margin-bottom: 0;
@@ -3914,3 +3914,32 @@ li.slick-active button {
             url("https://placeimg.com/300/300/any") no-repeat 90%; */
     }
 }
+
+
+.copy_text-bottom{
+    width: 100%;
+    height: auto;
+    background-color: #2a2a2a;
+}
+.copy_text-bottom p{
+        color: #fff;
+    text-align: center;
+    padding: 10px 0px;
+    margin-bottom: 0px;
+}
+.input-group{
+    justify-content: end;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+

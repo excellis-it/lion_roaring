@@ -147,8 +147,8 @@
         height: 74%;
     }
     .copy_1 .row{
-        flex-direction: column;
-        gap: 10px;
+        /* flex-direction: column; */
+        /* gap: 10px; */
         align-items: center;
     }
     .slide .slide__content--headings .title {
@@ -353,6 +353,13 @@
         height: 38px;
         background-color: #d98b1c;
     } */
+    .copy_1 .input-group {
+    justify-content: center;
+    margin-top: 15px;
+}
+.quick_links_ul ul{
+    justify-content: center;
+}
 }
 
 @media (max-width:768px){
