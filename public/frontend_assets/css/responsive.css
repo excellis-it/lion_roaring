@@ -353,9 +353,12 @@
         height: 38px;
         background-color: #d98b1c;
     } */
-     .input-group {
+    .copy_1 .input-group {
     justify-content: center;
     margin-top: 15px;
+}
+.quick_links_ul ul{
+    justify-content: center;
 }
 }
 
