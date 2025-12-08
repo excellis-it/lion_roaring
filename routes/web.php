@@ -151,12 +151,28 @@ Route::middleware(['userActivity'])->group(function () {
     // Country-code masked home (won't affect other routes due to tight constraint)
     Route::get('/{cc}', function (string $cc) {
         $row = Country::with('languages')->whereRaw('LOWER(code) = ?', [strtolower($cc)])->first();
+
         if ($row) {
+            $languages = $row->languages;
+
+            // Check if English language is available in the country's languages
+            $hasEnglish = $languages->contains(function ($lang) {
+                return strtolower($lang->code ?? '') === 'en';
+            });
+
+            // If English is not available, fetch and merge it
+            if (!$hasEnglish) {
+                $englishLanguage = \App\Models\TranslateLanguage::whereRaw('LOWER(code) = ?', ['en'])->first();
+                if ($englishLanguage) {
+                    $languages = $languages->push($englishLanguage);
+                }
+            }
+
             $ip = request()->ip();
             session([
                 'visitor_country_code_' . $ip => strtoupper($row->code),
                 'visitor_country_name_' . $ip => $row->name,
-                'visitor_country_languages' => $row->languages,
+                'visitor_country_languages' => $languages,
             ]);
         }
         return app(CmsController::class)->index();

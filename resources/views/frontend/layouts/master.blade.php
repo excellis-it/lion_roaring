@@ -867,7 +867,7 @@
         function googleTranslateElementInit() {
             const includedLanguages = buildIncludedLanguagesString(window.sessionLanguages || []);
             new google.translate.TranslateElement({
-                pageLanguage: 'en',
+                // pageLanguage: 'en',
                 includedLanguages: includedLanguages,
                 //   layout: google.translate.TranslateElement.InlineLayout.SIMPLE
             }, 'google_translate_element');
