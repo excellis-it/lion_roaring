@@ -25,7 +25,7 @@
     <!--Flag Popup -->
     <div class="popup-overlay" id="popupOverlay" style="{{ $showPopup ? '' : 'display:none;' }}">
         <div class="popup-box flag-popup-box">
-            <button onclick="closePopup()" class="xmark_btn"><i class="fa-solid fa-xmark"></i></button>
+            {{-- <button onclick="closePopup()" class="xmark_btn"><i class="fa-solid fa-xmark"></i></button> --}}
             <div class="top-box">
                 <div class="popup-logo">
                     <img src="https://excellis.co.in/lion-roaring-org/public/storage/footer/CEMnI3pjMdaatfmJwSA0cQqNjA6W4c8Fk8rRA08q.png"
@@ -59,7 +59,7 @@
             @endphp
 
             <div class="popup_countrySwitcher">
-                <select class="countrySwitcher form-select form-select-sm cst-select cst-select-bottom">
+                <select class="form-select form-select-sm cst-select cst-select-bottom" id="popupCountrySelect">
                     @foreach ($countries as $c)
                         <option value="{{ strtolower($c->code) }}"
                             {{ strtoupper($c->code) === $currentCode ? 'selected' : '' }}
@@ -68,6 +68,10 @@
                         </option>
                     @endforeach
                 </select>
+                <button type="button" class="red_btn mt-3 w-100" id="selectCountryBtn"
+                    onclick="handleCountrySelection()">
+                    Select Country
+                </button>
             </div>
         </div>
     </div>
@@ -81,14 +85,14 @@
                 <a href="{{ route('details') }}" tabindex="0">
                     <div class="slide__img">
                         <!-- <video autoplay="" muted="" loop="" class="video_part" playsInline>
-                                            <source
-                                                src="{{ isset($home['section_1_video']) ? Storage::url($home['section_1_video']) : 'https://via.placeholder.com/150' }}"
-                                                type="video/mp4">
-                                            Your browser does not support the video tag.
-                                        </video> -->
+                                                <source
+                                                    src="{{ isset($home['section_1_video']) ? Storage::url($home['section_1_video']) : 'https://via.placeholder.com/150' }}"
+                                                    type="video/mp4">
+                                                Your browser does not support the video tag.
+                                            </video> -->
                         <!-- <img src="" alt="" class="full-image d-block d-md-none" /> -->
                         <!-- <img src="{{ isset($home['banner_image']) ? Storage::url($home['banner_image']) : 'https://via.placeholder.com/150' }}"
-                                            class="full-image overlay-image"> -->
+                                                class="full-image overlay-image"> -->
 
                         <img src="{{ asset('frontend_assets/images/banner_img.png') }}" class="full-image overlay-image">
                     </div>
@@ -144,7 +148,8 @@
                     <div class="book">
                         <div class="left-book-sec">
                             <div class="left-sec-img">
-                                <img src="http://127.0.0.1:8000/storage/footer/CEMnI3pjMdaatfmJwSA0cQqNjA6W4c8Fk8rRA08q.png" class="full-image overlay-image">
+                                <img src="http://127.0.0.1:8000/storage/footer/CEMnI3pjMdaatfmJwSA0cQqNjA6W4c8Fk8rRA08q.png"
+                                    class="full-image overlay-image">
                             </div>
                         </div>
                         <div id="pages" class="pages">
@@ -179,19 +184,19 @@
                             @endif
                             <div class="page"></div>
                             <!-- <div class="page">
-                                                <img src="{{ isset($home['section_2_right_image']) ? Storage::url($home['section_2_right_image']) : 'https://via.placeholder.com/150' }}"
-                                                                alt="">
-                                                <h4 class="flex-fixed">{{ $home['section_2_right_title'] ?? 'title' }}</h4>
-                                            </div>
-                                            <div class="page">
-                                                <h4 class="flex-fixed">{{ $home['section_2_right_title'] ?? 'title' }}</h4>
-                                                <p>{!! $home['section_2_right_description'] ?? 'description' !!}</p>
-                                            </div>
-                                            <div class="page"></div>
-                                            <div class="page"></div>
-                                            <div class="page"></div>
-                                            <div class="page"></div>
-                                            <div class="page"></div> -->
+                                                    <img src="{{ isset($home['section_2_right_image']) ? Storage::url($home['section_2_right_image']) : 'https://via.placeholder.com/150' }}"
+                                                                    alt="">
+                                                    <h4 class="flex-fixed">{{ $home['section_2_right_title'] ?? 'title' }}</h4>
+                                                </div>
+                                                <div class="page">
+                                                    <h4 class="flex-fixed">{{ $home['section_2_right_title'] ?? 'title' }}</h4>
+                                                    <p>{!! $home['section_2_right_description'] ?? 'description' !!}</p>
+                                                </div>
+                                                <div class="page"></div>
+                                                <div class="page"></div>
+                                                <div class="page"></div>
+                                                <div class="page"></div>
+                                                <div class="page"></div> -->
                         </div>
                     </div>
                 </div>
@@ -500,14 +505,14 @@
 
     <!-- @if (count($galleries) > 0)
     <section class="gallery_sec margin_27">
-                            <div class="gallery_slider">
-                                @foreach ($galleries as $galary)
+                                <div class="gallery_slider">
+                                    @foreach ($galleries as $galary)
     <div class="gallery_box" style="width: 100%; display: inline-block;">
-                                        <img src="{{ Storage::url($galary->image) }}" alt="">
-                                    </div>
+                                            <img src="{{ Storage::url($galary->image) }}" alt="">
+                                        </div>
     @endforeach
-                            </div>
-                        </section>
+                                </div>
+                            </section>
     @endif -->
 @endsection
 
