@@ -23343,7 +23343,7 @@ select:disabled {
 }
 
 .bg_white_border {
-    /* background: #fff url(../../user_assets/images/banner_lion.png); */
+    background: #fff;
     border-radius: 6px;
     padding: 25px;
     min-height: 89vh;
@@ -24289,7 +24289,9 @@ fieldset:disabled .btn {
     --bs-btn-disabled-bg: #643271;
     --bs-btn-disabled-border-color: #643271;
 }
-
+.btn-primary:hover{
+    background-color: #643271;
+}
 .fade {
     transition: opacity 0.15s linear;
 }

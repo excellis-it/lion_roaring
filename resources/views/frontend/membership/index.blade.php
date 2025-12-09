@@ -47,7 +47,7 @@
                                             class="btn red_btn btn-upgrade w-100"><span>Become a Member</span></a>
                                     @else
                                         <a href="javascript:void(0);" data-bs-toggle="modal" data-bs-target="#loginModal"
-                                            class="btn red_btn btn-upgrade w-100">Login to Join</a>
+                                            class="btn red_btn btn-upgrade w-100"><span>Login to Join</span></a>
                                     @endauth
 
                                 </div>
