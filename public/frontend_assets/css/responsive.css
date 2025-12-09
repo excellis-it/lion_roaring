@@ -810,7 +810,23 @@
     clip-path: polygon(100% -100%, -100% 100%, 100% 100%);
     width: 100%;
 }
-
+.bank-details-box{
+    margin-top: 30px;
+    border-top: 1px solid #ccc;
+    padding-top: 20px;
+}
+.bank-details-box h5 {
+    font-size: 20px;
+}
+.bank-details-box h3 {
+    font-size: 18px;
+}
+.bank-details-box p{
+    font-size: 14px;
+}
+.pure-u-5-5.d-flex{
+    display: block !important;
+}
 }
 @media (max-width:480px){
     .header-flag-box .input-group div:nth-child(2){
