@@ -12,8 +12,9 @@
         </ul>
 
         <div class="d-block d-lg-none">
-            @if (isset(Helper::getFooter()['footer_logo']))
-                <img class="dark-logo" src="{{ Storage::url(Helper::getFooter()['footer_logo']) }}" alt="">
+
+            @if (isset(Helper::getSettings()->PMA_PANEL_LOGO))
+                <img class="dark-logo" src="{{ asset(Helper::getSettings()->PMA_PANEL_LOGO) }}" alt="">
             @else
                 <img class="dark-logo" src="{{ asset('user_assets/images/logo.png') }}" alt="">
             @endif

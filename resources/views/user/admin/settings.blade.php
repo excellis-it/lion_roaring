@@ -46,7 +46,7 @@
                     </div>
 
                     <div class="mb-3">
-                        <label for="PANEL_WATERMARK_LOGO" class="form-label">Panel Watermark Logo</label><br>
+                        <label for="PANEL_WATERMARK_LOGO" class="form-label">PMA Panel Watermark Logo</label><br>
                         @if ($settings->PANEL_WATERMARK_LOGO)
                             <img src="{{ asset($settings->PANEL_WATERMARK_LOGO) }}" class="mb-2" alt="Watermark Logo"
                                 style="height: 100px" />
@@ -61,6 +61,26 @@
                             <br><small class="form-text text-muted">Current: {{ $settings->PANEL_WATERMARK_LOGO }}</small>
                         @endif
                         @error('PANEL_WATERMARK_LOGO')
+                            <div class="text-danger">{{ $message }}</div>
+                        @enderror
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="PMA_PANEL_LOGO" class="form-label">PMA Panel Logo</label><br>
+                        @if ($settings->PMA_PANEL_LOGO)
+                            <img src="{{ asset($settings->PMA_PANEL_LOGO) }}" class="mb-2" alt="PMA Panel Logo"
+                                style="height: 100px" />
+                        @else
+                            <p class="text-muted">No PMA panel logo uploaded</p>
+                        @endif
+
+                        <input type="file" class="form-control" id="PMA_PANEL_LOGO" name="PMA_PANEL_LOGO">
+                        <small class="form-text text-muted">Upload a logo for the PMA panel (Max 2MB, formats:
+                            jpeg, png, jpg, gif, svg)</small>
+                        @if ($settings->PMA_PANEL_LOGO)
+                            <br><small class="form-text text-muted">Current: {{ $settings->PMA_PANEL_LOGO }}</small>
+                        @endif
+                        @error('PMA_PANEL_LOGO')
                             <div class="text-danger">{{ $message }}</div>
                         @enderror
                     </div>

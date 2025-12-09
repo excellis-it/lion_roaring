@@ -138,6 +138,7 @@
 
         // dd( $panel_watermark_logo);
     @endphp
+
     <script>
         $('.bg_white_border').css({
             "background": "#fff url('" +

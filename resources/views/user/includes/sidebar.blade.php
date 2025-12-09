@@ -6,11 +6,11 @@
          <div class="brand-logo d-flex align-items-center justify-content-between">
              <a href="javascript:void(0);" class="text-nowrap logo-img">
 
-                 @if (isset(Helper::getFooter()['footer_logo']))
-                     <img class="dark-logo" src="{{ Storage::url(Helper::getFooter()['footer_logo']) }}" alt="">
-                 @else
-                     <img class="dark-logo" src="{{ asset('user_assets/images/logo.png') }}" alt="">
-                 @endif
+                 @if (isset(Helper::getSettings()->PMA_PANEL_LOGO))
+                <img class="dark-logo" src="{{ asset(Helper::getSettings()->PMA_PANEL_LOGO) }}" alt="">
+            @else
+                <img class="dark-logo" src="{{ asset('user_assets/images/logo.png') }}" alt="">
+            @endif
              </a>
              <div class="close-btn d-lg-none d-block sidebartoggler cursor-pointer" id="sidebarCollapse">
                  <i class="ti ti-x fs-8 text-muted"></i>

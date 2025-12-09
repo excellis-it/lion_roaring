@@ -28,7 +28,8 @@ class SettingsController extends Controller
         $request->validate([
             'SITE_NAME' => 'required|string|max:255',
             'SITE_LOGO' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg',  // Validate logo file
-            'PANEL_WATERMARK_LOGO' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',  // Validate watermark logo
+            'PANEL_WATERMARK_LOGO' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg',  // Validate watermark logo
+            'PMA_PANEL_LOGO' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg',  // Validate PMA panel logo
             'SITE_CONTACT_EMAIL' => 'required|email|max:255',
             'SITE_CONTACT_PHONE' => 'required|string',
             'DONATE_TEXT' => 'nullable|string',  // Validate donate text
@@ -73,6 +74,25 @@ class SettingsController extends Controller
 
             // Update the path in the database
             $settings->PANEL_WATERMARK_LOGO = 'user_assets/images/watermark_logo.png';
+        }
+
+        // Handle file upload for PMA_PANEL_LOGO
+        if ($request->hasFile('PMA_PANEL_LOGO')) {
+            $pmaPanelLogo = $request->file('PMA_PANEL_LOGO');
+
+            // If you want to remove the old PMA panel logo before uploading a new one:
+            if ($settings->PMA_PANEL_LOGO && File::exists(public_path($settings->PMA_PANEL_LOGO))) {
+                File::delete(public_path($settings->PMA_PANEL_LOGO));
+            }
+
+            // Define the path to store the file
+            $destinationPath = public_path('user_assets/images');
+
+            // Move the uploaded PMA panel logo to the desired location
+            $pmaPanelLogo->move($destinationPath, 'pma_panel_logo.png');
+
+            // Update the path in the database
+            $settings->PMA_PANEL_LOGO = 'user_assets/images/pma_panel_logo.png';
         }
 
         // Update other settings values
