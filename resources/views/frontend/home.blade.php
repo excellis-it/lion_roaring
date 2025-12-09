@@ -68,10 +68,12 @@
                         </option>
                     @endforeach
                 </select>
-                <button type="button" class="red_btn mt-3 w-100" id="selectCountryBtn"
-                    onclick="handleCountrySelection()">
-                    Select Country
-                </button>
+                <div class="text-center">
+                    <button type="button" class="red_btn flag-btn mt-3 w-50" id="selectCountryBtn"
+                        onclick="handleCountrySelection()">
+                        <span>Select Country</span>
+                    </button>
+                </div>
             </div>
         </div>
     </div>
@@ -79,7 +81,7 @@
 
 
     <section class="banner__slider banner_sec"
-        style="background-image: url('{{ asset('frontend_assets/images/bg-wrap.jpg') }}');">
+        style="background-image: url('{{ asset('frontend_assets/images/bg-wrap.gif') }}');">
         <div class="slider">
             <div class="slide">
                 <a href="{{ route('details') }}" tabindex="0">

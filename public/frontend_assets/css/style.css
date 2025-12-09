@@ -872,9 +872,9 @@ p {
     margin-bottom: 25px;
 }
 
-.heading_hp.text_white p {
+/* .heading_hp.text_white p {
     color: var(--white-color);
-}
+} */
 
 .heading_hp.text_white h2 {
     color: var(--white-color);
@@ -3079,7 +3079,7 @@ li.slick-active button {
 }
 
 .goog-te-gadget .goog-te-combo {
-    padding: 9px 4px;
+    padding: 9px 15px;
     border-radius: 20px;
     border: none;
 }
@@ -3726,6 +3726,7 @@ li.slick-active button {
     min-width: auto !important;
     background-color: #fff !important;
     border-radius: 40px !important;
+    min-width:200px !important;
 }
 
 /* =======================mobile menu css========================= */
@@ -3930,14 +3931,36 @@ li.slick-active button {
 .input-group{
     justify-content: end;
 }
+/* =====================09-12-2026============================ */
+.red_btn.flag-btn{
+    padding: 8px 40px;
+}
+.popup_countrySwitcher img{
+    margin-right:5px;
+}
 
-
-
-
-
-
-
-
+.project_sec.project_sec_second{
+    background-color: #cacaca;
+}
+.heading_hp.heading_hp_modal h2{
+    font-size: 30px;
+}
+.heading_hp.heading_hp_modal h4{
+    font-size: 18px;
+    margin-bottom: 30px;
+}
+.login_bg_sec.login_bg_sec_modal{
+    background: #fff;
+    box-shadow: 0 0 38px rgb(0 0 0 / 10%);
+    padding: 20px;
+    border-radius: 15px;
+}
+.join_member.join_member_modal a{
+    color: var(--main-color);
+    font-size: 14px;
+    font-weight: 600;
+    padding: 0px 10px;
+}
 
 
 

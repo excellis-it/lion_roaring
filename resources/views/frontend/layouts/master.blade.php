@@ -99,12 +99,12 @@
             <div class="modal-dialog modal-dialog-centered modal-xl">
                 <div class="modal-content">
                     <div class="modal-header">
-                        <h5 class="modal-title" id="exampleModalToggleLabel2">Lion Roaring Donate</h5>
+                        <h5 class="modal-title text-center" id="exampleModalToggleLabel2">Lion Roaring Donate</h5>
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
                     <div class="modal-body">
                         <div class="row">
-                            <div class="col-md-8">
+                            <div class="col-md-12">
                                 <form role="form" action="{{ route('donation') }}" method="post"
                                     class="require-validation" data-cc-on-file="false"
                                     data-stripe-publishable-key="{{ env('STRIPE_KEY') }}" id="payment-form">
@@ -229,14 +229,14 @@
                                     </div>
                                 </form>
                             </div>
-                            <div class="col-md-4">
+                            <!-- <div class="col-md-4">
                                 <h5>Or,</h5>
                                 <h5>Bank Transfer Details</h5>
                                 <p>
                                     {!! Helper::getSettings()->DONATE_BANK_TRANSFER_DETAILS ?? '' !!}
                                 </p>
 
-                            </div>
+                            </div> -->
                         </div>
 
                     </div>
@@ -248,9 +248,9 @@
             aria-hidden="true">
             <div class="modal-dialog modal-dialog-centered">
                 <div class="modal-content">
-                    <div class="modal-body login_bg_sec border-top-0">
-                        <div class="heading_hp">
-                            <h2 id="greeting">
+                    <div class="modal-body login_bg_sec login_bg_sec_modal  border-top-0">
+                        <div class="heading_hp heading_hp_modal">
+                            <h2 class="text-center" id="greeting">
                                 <?php
                                 function getTimezoneFromIp($ip)
                                 {
@@ -293,6 +293,7 @@
                                 ?>
                             </h2>
                             <h4 class="text-center">Sign on to enter Lion Roaring PMA Private Member area.</h4>
+                            
                             <form name="login-form" id="sign-in-form" action="{{ route('login.check') }}"
                                 method="post">
                                 @csrf
@@ -305,6 +306,7 @@
                                 </p>
                                 <p class="login-password" style="position: relative;
                             ">
+                            
                                     <label for="user_password">Password</label>
                                     <input type="password" name="password" id="user_password"
                                         autocomplete="current-password" spellcheck="false" class="input"
@@ -330,7 +332,7 @@
                                 </p>
 
                             </form>
-                            <p class="text-center join_member">
+                            <p class="text-center join_member join_member_modal">
                                 <a href="javascrip:void(0);" data-bs-toggle="modal"
                                     data-bs-target="#registerModalFirst">Join
                                     Lion
@@ -410,7 +412,9 @@
                                     </div>
                                 </div>
                                 <div style="clear:both;"></div>
-                                <div class="asp_product_description">
+                                <div class="asp_product_description text-center">
+                                    <h2>Lion Roaring Donate</h2>
+                                    <p>Lion Roaring is a Private Member Agreement, thus any donations will not be eligible for tax deductible purposes under the IRS Code. Please consult with your tax advisor should there be any questions related to your donation.</p>
                                     @php
                                         $donate_text = Helper::getSettings()->DONATE_TEXT ?? '';
                                     @endphp
@@ -423,7 +427,7 @@
                                     <span class="asp_quantity"></span>
                                     <div class="asp_under_price_line"></div>
                                 </div>
-                                <div class="asp_product_buy_button">
+                                <div class="asp_product_buy_button text-center">
                                     <div class="asp-processing-cont" style="display:none;"><span
                                             class="asp-processing">Processing <i>.</i><i>.</i><i>.</i></span></div>
                                     <form id="asp_ng_form_065e81241e506b" class="asp-stripe-form" action=""
