@@ -213,7 +213,12 @@
         .heading_hp h2 {
         font-size: 36px;
     }
-
+    .right_top {
+        width: 55%;
+    }
+    .for-mobile-use {
+        width: 45%;
+    }
 }
 @media (max-width:1024px){
     .logo {
@@ -316,7 +321,10 @@
     justify-content: flex-end;
 }
     .right_top {
-        width: 60%;
+        width: 65%;
+    }
+    .for-mobile-use {
+        width: 35%;
     }
         .left_top {
         width: 30%;
