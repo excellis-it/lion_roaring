@@ -191,19 +191,19 @@
                             @endif
                             <div class="page"></div>
                             <!-- <div class="page">
-                                                            <img src="{{ isset($home['section_2_right_image']) ? Storage::url($home['section_2_right_image']) : 'https://via.placeholder.com/150' }}"
-                                                                            alt="">
-                                                            <h4 class="flex-fixed">{{ $home['section_2_right_title'] ?? 'title' }}</h4>
-                                                        </div>
-                                                        <div class="page">
-                                                            <h4 class="flex-fixed">{{ $home['section_2_right_title'] ?? 'title' }}</h4>
-                                                            <p>{!! $home['section_2_right_description'] ?? 'description' !!}</p>
-                                                        </div>
-                                                        <div class="page"></div>
-                                                        <div class="page"></div>
-                                                        <div class="page"></div>
-                                                        <div class="page"></div>
-                                                        <div class="page"></div> -->
+                                                                <img src="{{ isset($home['section_2_right_image']) ? Storage::url($home['section_2_right_image']) : 'https://via.placeholder.com/150' }}"
+                                                                                alt="">
+                                                                <h4 class="flex-fixed">{{ $home['section_2_right_title'] ?? 'title' }}</h4>
+                                                            </div>
+                                                            <div class="page">
+                                                                <h4 class="flex-fixed">{{ $home['section_2_right_title'] ?? 'title' }}</h4>
+                                                                <p>{!! $home['section_2_right_description'] ?? 'description' !!}</p>
+                                                            </div>
+                                                            <div class="page"></div>
+                                                            <div class="page"></div>
+                                                            <div class="page"></div>
+                                                            <div class="page"></div>
+                                                            <div class="page"></div> -->
                         </div>
                     </div>
                 </div>
@@ -380,7 +380,7 @@
                         <div class="article card-4 mb-5">
                             <div class="card-body">
                                 <div class="card-corner">
-                                    <a href="single-3.html" class="arrow-box">
+                                    <a href="{{ route('service', $our_organization->slug) }}" class="arrow-box">
                                         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
                                             viewBox="0 0 24 24" fill="none">
                                             <path d="M13.75 6.75L19.25 12L13.75 17.25" stroke="#0E0E0F" stroke-width="1.5"
@@ -404,7 +404,8 @@
                                             </div>
                                         </div>
                                     </div>
-                                    <div class="col-lg-5">
+                                    <div class="col-lg-5 card-text-box">
+
                                         <h4>
                                             <a
                                                 href="{{ route('service', $our_organization->slug) }}">{{ $our_organization->name }}</a>
@@ -512,14 +513,14 @@
 
     <!-- @if (count($galleries) > 0)
     <section class="gallery_sec margin_27">
-                                        <div class="gallery_slider">
-                                            @foreach ($galleries as $galary)
+                                            <div class="gallery_slider">
+                                                @foreach ($galleries as $galary)
     <div class="gallery_box" style="width: 100%; display: inline-block;">
-                                                    <img src="{{ Storage::url($galary->image) }}" alt="">
-                                                </div>
+                                                        <img src="{{ Storage::url($galary->image) }}" alt="">
+                                                    </div>
     @endforeach
-                                        </div>
-                                    </section>
+                                            </div>
+                                        </section>
     @endif -->
 @endsection
 

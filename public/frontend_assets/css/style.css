@@ -2833,7 +2833,13 @@ li.slick-active button {
 .join_member_box ul {
     list-style: auto;
 }
-
+.card-text-box p{
+     overflow: hidden;
+    text-overflow: ellipsis;
+    display: -webkit-box;
+    -webkit-line-clamp: 10;
+    -webkit-box-orient: vertical;
+}
 .word-litmit {
     overflow: hidden;
     text-overflow: ellipsis;
