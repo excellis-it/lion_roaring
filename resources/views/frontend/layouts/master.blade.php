@@ -169,7 +169,7 @@
                                         </div>
                                     </div>
                                     <div class="row">
-                                        <div class="col-md-12">
+                                        <div class="col-md-8">
                                             <label for="card-element">Credit or debit card</label>
                                         </div>
                                         <hr />
@@ -229,14 +229,14 @@
                                     </div>
                                 </form>
                             </div>
-                            <!-- <div class="col-md-4">
+                            <div class="col-md-4">
                                 <h5>Or,</h5>
                                 <h5>Bank Transfer Details</h5>
                                 <p>
                                     {!! Helper::getSettings()->DONATE_BANK_TRANSFER_DETAILS ?? '' !!}
                                 </p>
 
-                            </div> -->
+                            </div>
                         </div>
 
                     </div>
@@ -293,7 +293,7 @@
                                 ?>
                             </h2>
                             <h4 class="text-center">Sign on to enter Lion Roaring PMA Private Member area.</h4>
-                            
+
                             <form name="login-form" id="sign-in-form" action="{{ route('login.check') }}"
                                 method="post">
                                 @csrf
@@ -306,7 +306,7 @@
                                 </p>
                                 <p class="login-password" style="position: relative;
                             ">
-                            
+
                                     <label for="user_password">Password</label>
                                     <input type="password" name="password" id="user_password"
                                         autocomplete="current-password" spellcheck="false" class="input"
@@ -413,8 +413,7 @@
                                 </div>
                                 <div style="clear:both;"></div>
                                 <div class="asp_product_description text-center">
-                                    <h2>Lion Roaring Donate</h2>
-                                    <p>Lion Roaring is a Private Member Agreement, thus any donations will not be eligible for tax deductible purposes under the IRS Code. Please consult with your tax advisor should there be any questions related to your donation.</p>
+
                                     @php
                                         $donate_text = Helper::getSettings()->DONATE_TEXT ?? '';
                                     @endphp

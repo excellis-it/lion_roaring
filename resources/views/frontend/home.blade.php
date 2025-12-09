@@ -80,23 +80,22 @@
 
 
 
-    <section class="banner__slider banner_sec"
-        style="background-image: url('{{ asset('frontend_assets/images/bg-wrap.gif') }}');">
+    <section class="banner__slider banner_sec">
         <div class="slider">
             <div class="slide">
                 <a href="{{ route('details') }}" tabindex="0">
                     <div class="slide__img">
-                        <!-- <video autoplay="" muted="" loop="" class="video_part" playsInline>
+                        <video autoplay="" muted="" loop="" class="video_part" playsInline>
                                                 <source
-                                                    src="{{ isset($home['section_1_video']) ? Storage::url($home['section_1_video']) : 'https://via.placeholder.com/150' }}"
+                                                    src="{{ isset($home['banner_video']) ? Storage::url($home['banner_video']) : 'https://via.placeholder.com/150' }}"
                                                     type="video/mp4">
                                                 Your browser does not support the video tag.
-                                            </video> -->
+                                            </video>
                         <!-- <img src="" alt="" class="full-image d-block d-md-none" /> -->
-                        <!-- <img src="{{ isset($home['banner_image']) ? Storage::url($home['banner_image']) : 'https://via.placeholder.com/150' }}"
-                                                class="full-image overlay-image"> -->
+                        <img src="{{ isset($home['banner_image']) ? Storage::url($home['banner_image']) : 'https://via.placeholder.com/150' }}"
+                                                class="full-image overlay-image">
 
-                        <img src="{{ asset('frontend_assets/images/banner_img.png') }}" class="full-image overlay-image">
+                        {{-- <img src="{{ asset('frontend_assets/images/banner_img.png') }}" class="full-image overlay-image"> --}}
                     </div>
                 </a>
                 <div class="slide__content slide__content__left">
