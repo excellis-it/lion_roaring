@@ -837,6 +837,12 @@
     .heading_hp h2 {
         font-size: 22px;
     }
+    .promo-box-container .title{
+        top: 40%;
+        left: 50%;
+        margin-right: 0%;
+        width: 90%;
+    }
 }
 @media (max-width:480px){
     .header-flag-box .input-group div:nth-child(2){
@@ -987,5 +993,8 @@
     }
     .header-flag-box .input-group div:nth-child(2){
         padding: 2px 10px !important;
+    }
+        .header-flag-box .input-group div:nth-child(2) {
+        min-width: 50px !important;
     }
 }
