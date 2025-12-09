@@ -3967,7 +3967,12 @@ li.slick-active button {
     padding: 0px 10px;
 }
 
+.bank-details-box h5{
+    font-size: 26px;
+    font-weight: 700;
+}
 
-
-
+.bank-details-box h3{
+    font-size: 20px;
+}
 

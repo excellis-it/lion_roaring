@@ -104,7 +104,7 @@
                     </div>
                     <div class="modal-body">
                         <div class="row">
-                            <div class="col-md-12">
+                            <div class="col-md-8">
                                 <form role="form" action="{{ route('donation') }}" method="post"
                                     class="require-validation" data-cc-on-file="false"
                                     data-stripe-publishable-key="{{ env('STRIPE_KEY') }}" id="payment-form">
@@ -230,12 +230,13 @@
                                 </form>
                             </div>
                             <div class="col-md-4">
+                                <div class="bank-details-box">
                                 <h5>Or,</h5>
                                 <h5>Bank Transfer Details</h5>
                                 <p>
                                     {!! Helper::getSettings()->DONATE_BANK_TRANSFER_DETAILS ?? '' !!}
                                 </p>
-
+                            </div>
                             </div>
                         </div>
 
