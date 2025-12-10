@@ -67,7 +67,7 @@
                             <h4>Menu Section</h4>
                         </div>
 
-                        <div class="row mb-4">
+                        <div class="row mb-3">
                             <div class="col-md-4">
                                 <label for="country_code">Content Country</label>
                                 <select onchange="window.location.href='?content_country_code='+$(this).val()"
@@ -84,7 +84,7 @@
 
                         <div class="row justify-content-between">
                             {{-- courses --}}
-                            <div class="col-md-4">
+                            <div class="col-md-4 mb-3">
                                 <div class="form-group-div">
                                     <div class="form-group">
                                         {{-- banner_title --}}
@@ -98,7 +98,7 @@
                                     </div>
                                 </div>
                             </div>
-                            <div class="col-md-2">
+                            <div class="col-md-2 mb-3">
                                 <div class="form-group-div">
                                     <div class="form-group">
                                         @if (isset($organization->banner_image))
@@ -113,7 +113,7 @@
                                 </div>
                             </div>
                             {{-- our_organization_id --}}
-                            <div class="col-md-6">
+                            <div class="col-md-6 mb-3">
                                 <div class="form-group-div">
                                     <div class="form-group">
                                         <label for="floatingInputValue">Banner Title*</label>
@@ -183,7 +183,7 @@
 
                         <div class="row">
                             {{-- project_section_title --}}
-                            <div class="col-xl-6 col-md-6">
+                            <div class="col-xl-6 col-md-6 mb-3">
                                 <div class="form-group-div">
                                     <div class="form-group">
                                         <label for="floatingInputValue">Project Section Title*</label>
@@ -199,7 +199,7 @@
                                 </div>
                             </div>
                             {{-- project_section_sub_title --}}
-                            <div class="col-xl-6 col-md-6">
+                            <div class="col-xl-6 col-md-6 mb-3">
                                 <div class="form-group-div">
                                     <div class="form-group">
                                         <label for="floatingInputValue">Project Section Sub Title*</label>
@@ -215,7 +215,7 @@
                                 </div>
                             </div>
                             {{-- project_section_description --}}
-                            <div class="col-xl-12 col-md-12">
+                            <div class="col-xl-12 col-md-12 mb-2">
                                 <div class="form-group-div">
                                     <div class="form-group">
                                         <label for="floatingInputValue">Project Section Description*</label>
@@ -310,7 +310,7 @@
 
                         <div class="row">
                             {{-- project_section_two_title --}}
-                            <div class="col-xl-6 col-md-6">
+                            <div class="col-xl-6 col-md-6 mb-3">
                                 <div class="form-group-div">
                                     <div class="form-group">
                                         <label for="floatingInputValue">Project Section Two Title</label>
@@ -322,7 +322,7 @@
                                 </div>
                             </div>
                             {{-- project_section_two_sub_title --}}
-                            <div class="col-xl-6 col-md-6">
+                            <div class="col-xl-6 col-md-6 mb-3">
                                 <div class="form-group-div">
                                     <div class="form-group">
                                         <label for="floatingInputValue">Project Section Two Sub Title</label>
@@ -334,7 +334,7 @@
                                 </div>
                             </div>
                             {{-- project_section_two_description --}}
-                            <div class="col-xl-12 col-md-12">
+                            <div class="col-xl-12 col-md-12 mb-3">
                                 <div class="form-group-div">
                                     <div class="form-group">
                                         <label for="floatingInputValue">Project Section Two Description</label>
@@ -417,7 +417,7 @@
                         </div>
 
                         <div class="row">
-                            <div class="col-xl-6 col-md-6">
+                            <div class="col-xl-6 col-md-6 mb-3">
                                 <div class="form-group-div">
                                     <div class="form-group">
                                         {{-- meta title --}}
@@ -433,7 +433,7 @@
                                     </div>
                                 </div>
                             </div>
-                            <div class="col-xl-6 col-md-6">
+                            <div class="col-xl-6 col-md-6 mb-3">
                                 <div class="form-group-div">
                                     <div class="form-group">
                                         {{-- meta title --}}
@@ -466,7 +466,7 @@
                             {{-- button --}}
                             <div class="col-xl-12">
                                 <div class="btn-1">
-                                      <button type="submit" class="print_btn me-2 mt-2">Update</button>
+                                      <button type="submit" class="print_btn me-2 mt-2 mb-2">Update</button>
                                 </div>
                             </div>
                         </div>

@@ -24,7 +24,7 @@
                     <input type="hidden" name="column_count" id="column_count" value="1">
                 @endif
                 <input type="hidden" name="our_organization_id" value="{{ $our_organization_id }}">
-                <div class="sales-report-card-wrap mt-5">
+                <div class="sales-report-card-wrap mt-3">
                     <div class="row count-class" id="add-more">
                         @if (isset($services) && count($services) > 0)
                             @foreach ($services as $key => $item)

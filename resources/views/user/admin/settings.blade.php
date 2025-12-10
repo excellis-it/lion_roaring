@@ -25,7 +25,8 @@
 
                 <form action="{{ route('admin.settings.update') }}" method="POST" enctype="multipart/form-data">
                     @csrf
-                    <div class="mb-3">
+                    <div class="row">
+                    <div class="col-md-6 mb-3">
                         <label for="SITE_NAME" class="form-label">Site Name</label>
                         <input type="text" class="form-control" id="SITE_NAME" name="SITE_NAME"
                             value="{{ old('SITE_NAME', $settings->SITE_NAME) }}" required>
@@ -34,18 +35,18 @@
                         @enderror
                     </div>
 
-                    <div class="mb-3">
-                        <label for="SITE_LOGO" class="form-label">Site Logo</label><br>
-                        <img src="{{ asset($settings->SITE_LOGO) }}" class="" alt="" style="height: 100px" />
-
+                    <div class="col-md-6 mb-3 mt-2">
+                        <label for="SITE_NAME" class="form-label"></label>
                         <input type="file" class="form-control" id="SITE_LOGO" name="SITE_LOGO">
                         <small class="form-text text-muted">Current Logo: {{ $settings->SITE_LOGO }}</small>
+                            <label for="SITE_LOGO" class="form-label">Site Logo</label><br>
+                        <img src="{{ asset($settings->SITE_LOGO) }}" class="mb-3" alt="" style="height: 100px" />
                         @error('SITE_LOGO')
                             <div class="text-danger">{{ $message }}</div>
                         @enderror
                     </div>
 
-                    <div class="mb-3">
+                    <div class="col-md-6 mb-3">
                         <label for="PANEL_WATERMARK_LOGO" class="form-label">PMA Panel Watermark Logo</label><br>
                         @if ($settings->PANEL_WATERMARK_LOGO)
                             <img src="{{ asset($settings->PANEL_WATERMARK_LOGO) }}" class="mb-2" alt="Watermark Logo"
@@ -65,7 +66,7 @@
                         @enderror
                     </div>
 
-                    <div class="mb-3">
+                    <div class="col-md-6 mb-3">
                         <label for="PMA_PANEL_LOGO" class="form-label">PMA Panel Logo</label><br>
                         @if ($settings->PMA_PANEL_LOGO)
                             <img src="{{ asset($settings->PMA_PANEL_LOGO) }}" class="mb-2" alt="PMA Panel Logo"
@@ -85,7 +86,7 @@
                         @enderror
                     </div>
 
-                    <div class="mb-3">
+                    <div class="col-md-6 mb-3">
                         <label for="SITE_CONTACT_EMAIL" class="form-label">Contact Email</label>
                         <input type="email" class="form-control" id="SITE_CONTACT_EMAIL" name="SITE_CONTACT_EMAIL"
                             value="{{ old('SITE_CONTACT_EMAIL', $settings->SITE_CONTACT_EMAIL) }}" required>
@@ -94,7 +95,7 @@
                         @enderror
                     </div>
 
-                    <div class="mb-3">
+                    <div class="col-md-6 mb-3">
                         <label for="SITE_CONTACT_PHONE" class="form-label">Contact Phone</label>
                         <input type="text" class="form-control" id="SITE_CONTACT_PHONE" name="SITE_CONTACT_PHONE"
                             value="{{ old('SITE_CONTACT_PHONE', $settings->SITE_CONTACT_PHONE) }}" required>
@@ -103,7 +104,7 @@
                         @enderror
                     </div>
 
-                    <div class="mb-3">
+                    <div class="col-md-6 mb-3">
                         <label for="DONATE_TEXT" class="form-label">Donate Text</label>
                         <textarea class="form-control description" id="DONATE_TEXT" name="DONATE_TEXT">{{ old('DONATE_TEXT', $settings->DONATE_TEXT) }}</textarea>
                         @error('DONATE_TEXT')
@@ -111,14 +112,14 @@
                         @enderror
                     </div>
 
-                    <div class="mb-3">
+                    <div class="col-md-6 mb-3">
                         <label for="DONATE_BANK_TRANSFER_DETAILS" class="form-label">Donate Bank Transfer Details</label>
                         <textarea class="form-control description" id="DONATE_BANK_TRANSFER_DETAILS" name="DONATE_BANK_TRANSFER_DETAILS">{{ old('DONATE_BANK_TRANSFER_DETAILS', $settings->DONATE_BANK_TRANSFER_DETAILS) }}</textarea>
                         @error('DONATE_BANK_TRANSFER_DETAILS')
                             <div class="text-danger">{{ $message }}</div>
                         @enderror
                     </div>
-
+                        </div>
                     <button type="submit" class="btn btn-primary">Update Settings</button>
                 </form>
 

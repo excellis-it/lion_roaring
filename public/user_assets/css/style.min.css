@@ -47856,3 +47856,9 @@ input {
 .subs-list-box {
     margin-top: 30px;
 }
+.error{
+    font-size: 12px;
+}
+.note-btn-group .dropdown-toggle::after{
+    display: none !important;
+}

@@ -18,7 +18,7 @@
                 <form action="{{ route('register-agreements.store') }}" method="post" enctype="multipart/form-data">
                     @csrf
                     <input type="hidden" name="id" value="{{ $agreement->id ?? '' }}">
-                    <div class="sales-report-card-wrap mt-5">
+                    <div class="sales-report-card-wrap mt-3">
                         <div class="form-head">
                             <h4>Details</h4>
                         </div>
@@ -40,7 +40,7 @@
 
                         <div class="row">
                             {{-- Image --}}
-                            <div class="col-md-12">
+                            <div class="col-md-12 mb-3">
                                 <div class="form-group-div">
                                     <div class="form-group">
                                         {{-- banner_title --}}
@@ -56,7 +56,7 @@
                                     </div>
                                 </div>
                             </div>
-                            <div class="col-xl-12 col-md-12">
+                            <div class="col-xl-12 col-md-12 mb-3">
                                 <div class="form-group-div">
                                     <div class="form-group">
                                         {{-- meta description --}}

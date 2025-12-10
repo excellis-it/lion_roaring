@@ -19,7 +19,7 @@
                     enctype="multipart/form-data">
                     @csrf
                     <input type="hidden" name="id" value="{{$policy->id ?? ''}}">
-                    <div class="sales-report-card-wrap mt-5">
+                    <div class="sales-report-card-wrap mt-3">
                         <div class="row">
                             <div class="col-xl-12 col-md-12">
                                 <div class="form-group-div">
@@ -38,7 +38,7 @@
                             {{-- button --}}
                             <div class="col-xl-12">
                                 <div class="btn-1">
-                                      <button type="submit" class="print_btn me-2 mt-2">Update</button>
+                                      <button type="submit" class="print_btn me-2 mt-2 mb-2">Update</button>
                                 </div>
                             </div>
                         </div>

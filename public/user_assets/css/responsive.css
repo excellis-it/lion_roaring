@@ -600,6 +600,11 @@ input{
 .mail-body .sidebarOption h3{
     margin-left: 0px;
 }
+.dashboard-top-heading.d-flex{
+    flex-direction: column;
+    align-items: flex-start !important;
+    gap: 10px;
+}
 }
 @media (max-width:480px){
     

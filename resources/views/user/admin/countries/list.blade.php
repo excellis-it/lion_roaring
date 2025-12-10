@@ -29,7 +29,7 @@
             </div>
 
             <div class="row justify-content-end">
-                <div class="col-md-6">
+                <div class="col-md-6 mb-3">
                     <div class="row g-1 justify-content-end">
                         <div class="col-md-12 pr-0">
                             <div class="search-field">
