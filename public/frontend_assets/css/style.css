@@ -3982,10 +3982,31 @@ li.slick-active button {
 }
 
 .bank-details-box h5 {
-    font-size: 26px;
+    font-size: 24px;
     font-weight: 700;
+    color: var(--black-color);
 }
 
 .bank-details-box h3 {
-    font-size: 20px;
+    font-size: 16px;
+    color: #4b254f;
+}
+.bank-details-box p{
+    font-size: 14px;
+}
+.bank-details-box{
+    border: 1px solid #643271;
+    padding: 20px;
+    border-radius: 10px;
+}
+.payment-option-form{
+    border: 1px solid #643271;
+    padding: 20px;
+    border-radius: 10px;
+}
+.modal-body.modal-body-inter-code{
+    padding: 3rem;
+}
+.pure-u-1 legend{
+    border-bottom: 1px solid #643271;
 }

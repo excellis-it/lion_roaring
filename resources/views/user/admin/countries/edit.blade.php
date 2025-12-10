@@ -24,7 +24,7 @@
                     @method('PUT')
                     @csrf
                     <div class="row">
-                        <div class="col-md-6">
+                        <div class="col-md-6 mb-3">
                             <div class="form-group-div">
                                 <div class="form-group">
                                     <label>Name*</label>
@@ -36,7 +36,7 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="col-md-6">
+                        <div class="col-md-6 mb-3">
                             <div class="form-group-div">
                                 <div class="form-group">
                                     <label>ISO Code</label>
@@ -51,7 +51,7 @@
                     </div>
 
                     <div class="row">
-                        <div class="col-md-6">
+                        <div class="col-md-6 mb-3">
                             <div class="form-group-div">
                                 <div class="form-group">
                                     <label>Flag Image</label>
@@ -68,7 +68,7 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="col-md-6">
+                        <div class="col-md-6 mb-3">
                             <div class="form-group-div">
                                 <div class="form-group">
                                     <label>Status</label>
@@ -109,7 +109,7 @@
 
                     <div class="col-xl-12">
                         <div class="btn-1">
-                            <button type="submit" class="print_btn me-2 mt-2">Update Country</button>
+                            <button type="submit" class="print_btn me-2 mt-2 mb-2">Update Country</button>
                         </div>
                     </div>
             </div>

@@ -30,7 +30,7 @@
                     <div class="sales-report-card-wrap">
                         <div class="row justify-content-between">
                             {{-- courses --}}
-                            <div class="col-md-6">
+                            <div class="col-md-4">
                                 <div class="form-group-div">
                                     <div class="form-group">
                                         {{-- banner_title --}}
@@ -46,7 +46,7 @@
                             </div>
                             <div class="col-xl-12">
                                 <div class="btn-1">
-                                      <button type="submit" class="print_btn me-2 mt-2">Update</button>
+                                      <button type="submit" class="print_btn me-2 mt-2 mb-2">Update</button>
                                 </div>
                             </div>
                         </div>

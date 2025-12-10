@@ -2746,6 +2746,18 @@ section {
     margin-left: 3px;
     border: none;
 }
+.btn-1 button.add-more-two {
+    color: #fff;
+    background: #7851a9;
+    width: 30px;
+    height: 30px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 6px;
+    margin-left: 3px;
+    border: none;
+}
 .btn-1 button.remove {
     color: #fff;
     background: #ff4842;
@@ -2757,4 +2769,7 @@ section {
     border-radius: 6px;
     margin-left: 3px;
     border: none;
+}
+.form-group-div .dropzone{
+    min-height: auto !important;
 }

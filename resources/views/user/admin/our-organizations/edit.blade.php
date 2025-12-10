@@ -26,7 +26,7 @@
                     </div>
 
                     <div class="row">
-                        <div class="col-md-6">
+                        <div class="col-md-6 mb-3">
                             <div class="form-group-div">
                                 <div class="form-group">
                                     <label for="content_country_code">Content Country*</label>
@@ -50,7 +50,7 @@
 
 
                     <div class="row">
-                        <div class="col-xl-6 col-md-6">
+                        <div class="col-xl-6 col-md-6 mb-3">
                             <div class="form-group-div">
                                 <div class="form-group">
                                     {{-- meta title --}}
@@ -65,7 +65,7 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="col-md-4">
+                        <div class="col-md-4 mb-3">
                             <div class="form-group-div">
                                 <div class="form-group">
                                     {{-- banner_title --}}
@@ -79,7 +79,7 @@
                             </div>
                         </div>
 
-                        <div class="col-md-2">
+                        <div class="col-md-2 mb-3">
                             <div class="form-group-div">
                                 <div class="form-group">
                                     @if ($our_organization->image)
@@ -105,7 +105,7 @@
                         </div>
                         <div class="col-xl-12">
                             <div class="btn-1">
-                                <button type="submit" class="print_btn me-2 mt-2">Update</button>
+                                <button type="submit" class="print_btn me-2 mt-2 mb-2">Update</button>
                                 <a href="{{ route('our-organizations.index') }}" class="print_btn print_btn_vv">Cancel</a>
                             </div>
                         </div>

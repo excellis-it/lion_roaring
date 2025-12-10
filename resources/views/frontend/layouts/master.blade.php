@@ -105,129 +105,135 @@
                     <div class="modal-body">
                         <div class="row">
                             <div class="col-md-8">
-                                <form role="form" action="{{ route('donation') }}" method="post"
-                                    class="require-validation" data-cc-on-file="false"
-                                    data-stripe-publishable-key="{{ env('STRIPE_KEY') }}" id="payment-form">
-                                    @csrf
-                                    <div class="row">
-                                        <div class="col-12 mb-3">
-                                            <label for="amount">Enter amount(US$)</label>
-                                            <input class="form-control" id="amount" name="amount"
-                                                inputmode="decimal" value="">
-                                        </div>
-                                        <div class="col-lg-6 mb-3">
-                                            <label for="billing_name">First Name</label>
-                                            <input class="form-control has-icon" type="text" id="billing-fname"
-                                                name="first_name" value="">
-                                        </div>
-                                        <div class="col-lg-6 mb-3">
-                                            <label for="billing_name">Last Name</label>
-                                            <input class="form-control has-icon" type="text" id="billing-lname"
-                                                name="last_name" value="">
-                                        </div>
-                                        <div class="col-lg-6 mb-3">
-                                            <label for="email">Email</label>
-                                            <input class="form-control has-icon" type="text" id="email"
-                                                name="email" value="">
-                                        </div>
-                                        <div class="pure-u-1">
-                                            <legend>Billing info</legend>
-                                        </div>
-                                        <hr />
-                                        <div class="col-lg-6 mb-3">
-                                            <label for="address">Address</label>
-                                            <input class="form-control has-icon" type="text" id="address"
-                                                name="address">
-                                        </div>
-                                        <div class="col-lg-6 mb-3">
-                                            <label for="city">City</label>
-                                            <input class="form-control" type="text" id="city"
-                                                name="city">
-                                        </div>
-                                        <div class="col-lg-6 mb-3">
-                                            <label for="country">Country</label>
-                                            <select class="form-control" name="country_id" id="country">
-                                                <option value="">—</option>
-                                                @foreach (Helper::getCountries() as $item)
-                                                    <option value="{{ $item->id }}">{{ $item->name }}
-                                                    </option>
-                                                @endforeach
-                                            </select>
-                                        </div>
-                                        <div class="col-lg-6 mb-3">
-                                            <label for="state">State</label>
-                                            {{-- <input class="form-control" type="text" id="state" name="state"> --}}
-                                            <select class="form-control" name="state" id="state">
-                                                <option value="">—</option>
-                                            </select>
+                                <div class="payment-option-form">
+                                    <form role="form" action="{{ route('donation') }}" method="post"
+                                        class="require-validation" data-cc-on-file="false"
+                                        data-stripe-publishable-key="{{ env('STRIPE_KEY') }}" id="payment-form">
+                                        @csrf
+                                        <div class="row">
+                                            <div class="col-12 mb-3">
+                                                <label for="amount">Enter amount(US$)</label>
+                                                <input class="form-control" id="amount" name="amount"
+                                                    inputmode="decimal" value="">
+                                            </div>
+                                            <div class="col-lg-6 mb-3">
+                                                <label for="billing_name">First Name</label>
+                                                <input class="form-control has-icon" type="text" id="billing-fname"
+                                                    name="first_name" value="">
+                                            </div>
+                                            <div class="col-lg-6 mb-3">
+                                                <label for="billing_name">Last Name</label>
+                                                <input class="form-control has-icon" type="text" id="billing-lname"
+                                                    name="last_name" value="">
+                                            </div>
+                                            <div class="col-lg-6 mb-3">
+                                                <label for="email">Email</label>
+                                                <input class="form-control has-icon" type="text" id="email"
+                                                    name="email" value="">
+                                            </div>
+                                            <div class="col-12 mb-3">
+                                            <div class="pure-u-1">
+                                                <legend>Billing info</legend>
+                                            </div>
+                                            </div>
+                                            
+                                            <div class="col-lg-6 mb-3">
+                                                <label for="address">Address</label>
+                                                <input class="form-control has-icon" type="text" id="address"
+                                                    name="address">
+                                            </div>
+                                            <div class="col-lg-6 mb-3">
+                                                <label for="city">City</label>
+                                                <input class="form-control" type="text" id="city"
+                                                    name="city">
+                                            </div>
+                                            <div class="col-lg-6 mb-3">
+                                                <label for="country">Country</label>
+                                                <select class="form-control" name="country_id" id="country">
+                                                    <option value="">—</option>
+                                                    @foreach (Helper::getCountries() as $item)
+                                                        <option value="{{ $item->id }}">{{ $item->name }}
+                                                        </option>
+                                                    @endforeach
+                                                </select>
+                                            </div>
+                                            <div class="col-lg-6 mb-3">
+                                                <label for="state">State</label>
+                                                {{-- <input class="form-control" type="text" id="state" name="state"> --}}
+                                                <select class="form-control" name="state" id="state">
+                                                    <option value="">—</option>
+                                                </select>
 
-                                        </div>
-                                        <div class="col-lg-6 mb-3">
-                                            <label for="postcode">Postcode</label>
-                                            <input class="form-control" type="text" name="postcode"
-                                                id="postcode">
-                                        </div>
-                                    </div>
-                                    <div class="row">
-                                        <div class="col-md-8">
-                                            <label for="card-element">Credit or debit card</label>
-                                        </div>
-                                        <hr />
-                                        <div class="col-md-12">
-                                            <label for="card-element">Card Number</label>
-                                            <div style="position: relative;">
-                                                <input class="form-control card-number" aria-hidden="true"
-                                                    aria-label=" " name="card_number" id="card-number"
-                                                    autocomplete="off">
-                                                <img id="card-type-image"
-                                                    src="{{ asset('frontend_assets/images/unknown.webp') }}"
-                                                    alt="Card Type"
-                                                    style="position: absolute; right: 10px; top: 50%; transform: translateY(-50%); max-height: 24px;">
+                                            </div>
+                                            <div class="col-lg-6 mb-3">
+                                                <label for="postcode">Postcode</label>
+                                                <input class="form-control" type="text" name="postcode"
+                                                    id="postcode">
                                             </div>
                                         </div>
-                                        <div class="col-md-4">
-                                            <label for="card-element">Month</label>
-                                            <select
-                                                class="form-control form-control--sm card-expiry-month valid card-expiry-month"
-                                                name="card_expiry_month" id="card-expiry-month" aria-invalid="false">
-                                                <option selected="" value="1">January</option>
-                                                <option value="2">February</option>
-                                                <option value="3">March</option>
-                                                <option value="4">April</option>
-                                                <option value="5">May</option>
-                                                <option value="6">June</option>
-                                                <option value="7">July</option>
-                                                <option value="8">August</option>
-                                                <option value="9">September</option>
-                                                <option value="10">October</option>
-                                                <option value="11">November</option>
-                                                <option value="12">December</option>
-                                            </select>
-                                        </div>
-                                        <div class="col-md-4">
-                                            <label for="card-element">Year</label>
-                                            <input class="form-control" aria-hidden="true" aria-label=" "
-                                                id="card-expiry-year" name="card_expiry_year" autocomplete="false"
-                                                maxlength="5">
-                                        </div>
-                                        <div class="col-md-4">
-                                            <label for="card-element">CVV</label>
-                                            <input class="form-control" aria-hidden="true" aria-label=" "
-                                                name="card_cvc" id="card-cvc" autocomplete="false" maxlength="4">
+                                        <div class="row">
+                                            <div class="col-12 mb-3">
+                                            <div class="pure-u-1">
+                                                <legend>Credit or debit card</legend>
+                                            </div>
+                                            </div>
+                                            
+                                            <div class="col-md-12 mb-3">
+                                                <label for="card-element">Card Number</label>
+                                                <div style="position: relative;">
+                                                    <input class="form-control card-number" aria-hidden="true"
+                                                        aria-label=" " name="card_number" id="card-number"
+                                                        autocomplete="off">
+                                                    <img id="card-type-image"
+                                                        src="{{ asset('frontend_assets/images/unknown.webp') }}"
+                                                        alt="Card Type"
+                                                        style="position: absolute; right: 10px; top: 50%; transform: translateY(-50%); max-height: 24px;">
+                                                </div>
+                                            </div>
+                                            <div class="col-md-4 mb-3">
+                                                <label for="card-element">Month</label>
+                                                <select
+                                                    class="form-control form-control--sm card-expiry-month valid card-expiry-month"
+                                                    name="card_expiry_month" id="card-expiry-month" aria-invalid="false">
+                                                    <option selected="" value="1">January</option>
+                                                    <option value="2">February</option>
+                                                    <option value="3">March</option>
+                                                    <option value="4">April</option>
+                                                    <option value="5">May</option>
+                                                    <option value="6">June</option>
+                                                    <option value="7">July</option>
+                                                    <option value="8">August</option>
+                                                    <option value="9">September</option>
+                                                    <option value="10">October</option>
+                                                    <option value="11">November</option>
+                                                    <option value="12">December</option>
+                                                </select>
+                                            </div>
+                                            <div class="col-md-4 mb-3">
+                                                <label for="card-element">Year</label>
+                                                <input class="form-control" aria-hidden="true" aria-label=" "
+                                                    id="card-expiry-year" name="card_expiry_year" autocomplete="false"
+                                                    maxlength="5">
+                                            </div>
+                                            <div class="col-md-4 mb-3">
+                                                <label for="card-element">CVV</label>
+                                                <input class="form-control" aria-hidden="true" aria-label=" "
+                                                    name="card_cvc" id="card-cvc" autocomplete="false" maxlength="4">
+                                            </div>
+
                                         </div>
 
-                                    </div>
-
-                                    <div class="mt-4">
-                                        <div class="pure-u-5-5 centered d-flex">
-                                            <button type="submit" id="submit-btn"
-                                                class="pure-button pure-button-primary">Donate US $0.00</button>
-                                            <p style="margin-left: 5px;"><b>We Accept </b><img
-                                                    src="{{ asset('frontend_assets/images/cards.png') }}"
-                                                    alt="" height="35px"></p>
+                                        <div class="mt-4">
+                                            <div class="pure-u-5-5 centered d-flex">
+                                                <button type="submit" id="submit-btn"
+                                                    class="pure-button pure-button-primary">Donate US $0.00</button>
+                                                <p style="margin-left: 5px;"><b>We Accept </b><img
+                                                        src="{{ asset('frontend_assets/images/cards.png') }}"
+                                                        alt="" height="35px"></p>
+                                            </div>
                                         </div>
-                                    </div>
-                                </form>
+                                    </form>
+                                </div>
                             </div>
                             <div class="col-md-4">
                                 <div class="bank-details-box">
@@ -364,7 +370,7 @@
                     <div class="modal-header">
                         <h5 class="modal-title" id="otpModalLabel">Email Verification</h5>
                     </div>
-                    <div class="modal-body">
+                    <div class="modal-body modal-body-inter-code">
                         <form id="otp-form" action="{{ route('verify.otp') }}" method="post">
                             @csrf
                             <input type="hidden" name="time_zone" id="time_zone">

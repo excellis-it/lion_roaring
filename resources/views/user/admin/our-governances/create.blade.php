@@ -24,7 +24,7 @@
                     </div>
 
                     <div class="row">
-                        <div class="col-md-6">
+                        <div class="col-md-6 mb-3">
                             <div class="form-group-div">
                                 <div class="form-group">
                                     <label for="content_country_code">Select Country*</label>
@@ -48,7 +48,7 @@
 
                     <div class="row justify-content-between">
                         {{-- courses --}}
-                        <div class="col-md-6">
+                        <div class="col-md-6 mb-3">
                             <div class="form-group-div">
                                 <div class="form-group">
                                     {{-- banner_title --}}
@@ -62,7 +62,7 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="col-md-6">
+                        <div class="col-md-6 mb-3">
                             <div class="form-group-div">
                                 <div class="form-group">
                                     <img src="" id="banner_image_preview"
@@ -72,13 +72,13 @@
                         </div>
                     </div>
                 </div>
-                <div class="sales-report-card-wrap mt-5">
+                <div class="sales-report-card-wrap mt-3">
                     <div class="form-head">
                         <h4>Details</h4>
                     </div>
 
                     <div class="row">
-                        <div class="col-xl-6 col-md-6">
+                        <div class="col-xl-6 col-md-6 mb-3">
                             <div class="form-group-div">
                                 <div class="form-group">
                                     {{-- meta title --}}
@@ -92,7 +92,7 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="col-md-4">
+                        <div class="col-md-4 mb-3">
                             <div class="form-group-div">
                                 <div class="form-group">
                                     {{-- banner_title --}}
@@ -137,7 +137,7 @@
                     </div>
 
                     <div class="row">
-                        <div class="col-xl-6 col-md-6">
+                        <div class="col-xl-6 col-md-6 mb-3">
                             <div class="form-group-div">
                                 <div class="form-group">
                                     {{-- meta title --}}
@@ -151,7 +151,7 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="col-xl-6 col-md-6">
+                        <div class="col-xl-6 col-md-6 mb-3">
                             <div class="form-group-div">
                                 <div class="form-group">
                                     {{-- meta title --}}
@@ -166,7 +166,7 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="col-xl-12 col-md-12">
+                        <div class="col-xl-12 col-md-12 mb-3">
                             <div class="form-group-div">
                                 <div class="form-group">
                                     {{-- meta description --}}

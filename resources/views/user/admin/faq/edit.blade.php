@@ -18,7 +18,7 @@
                     @csrf
 
                     <div class="row">
-                        <div class="col-md-6">
+                        <div class="col-md-6 mb-3">
                             <div class="form-group-div">
                                 <div class="form-group">
                                     <label for="content_country_code">Content Country*</label>
@@ -44,7 +44,7 @@
 
 
 
-                        <div class="col-md-12">
+                        <div class="col-md-12 mb-3">
                             <div class="form-group-div">
                                 <div class="form-group">
                                     {{-- Question --}}

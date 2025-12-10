@@ -19,7 +19,7 @@
                 @csrf
                 <input type="hidden" name="id" value="{{ $home->id ?? '' }}">
                 <div class="row mb-4">
-                    <div class="col-md-4">
+                    <div class="col-md-4 mb-3">
                         <label for="country_code">Content Country</label>
                         <select onchange="window.location.href='?content_country_code='+$(this).val()"
                             name="content_country_code" id="content_country_code" class="form-control">
@@ -39,7 +39,7 @@
 
                     <div class="row justify-content-between">
                         {{-- courses --}}
-                        <div class="col-md-4">
+                        <div class="col-md-4 mb-3">
                             <div class="form-group-div">
                                 <div class="form-group">
                                     {{-- banner_title --}}
@@ -54,7 +54,7 @@
                             </div>
                         </div>
 
-                        <div class="col-md-2">
+                        <div class="col-md-2 mb-3">
                             <div class="form-group-div">
                                 <div class="form-group">
                                     @if (isset($home->banner_image))
@@ -69,7 +69,7 @@
                         </div>
 
                         {{-- banner_video --}}
-                        <div class="col-md-4">
+                        <div class="col-md-4 mb-3">
                             <div class="form-group-div">
                                 <div class="form-group">
                                     <label for="floatingInputValue">Banner Video</label>
@@ -83,7 +83,7 @@
                             </div>
                         </div>
 
-                        <div class="col-md-2">
+                        <div class="col-md-2 mb-3">
                             <div class="form-group-div">
                                 <div class="form-group">
                                     @if (isset($home->banner_video))
@@ -98,7 +98,7 @@
                         </div>
 
                         {{-- our_organization_id --}}
-                        <div class="col-md-12">
+                        <div class="col-md-12 mb-3">
                             <div class="form-group-div">
                                 <div class="form-group">
                                     <label for="floatingInputValue">Banner Title*</label>
@@ -121,7 +121,7 @@
 
                     <div class="row">
                         {{-- section_1_title --}}
-                        <div class="col-md-6">
+                        <div class="col-md-6 mb-3">
                             <div class="form-group-div">
                                 <div class="form-group">
                                     <label for="floatingInputValue">Section 1 Title*</label>
@@ -137,7 +137,7 @@
                             </div>
                         </div>
                         {{-- section_1_sub_title --}}
-                        <div class="col-md-6">
+                        <div class="col-md-6 mb-3">
                             <div class="form-group-div">
                                 <div class="form-group">
                                     <label for="floatingInputValue">Section 1 Sub Title*</label>
@@ -153,7 +153,7 @@
                             </div>
                         </div>
                         {{-- section_1_video --}}
-                        <div class="col-md-4">
+                        <div class="col-md-4 mb-3">
                             <div class="form-group-div">
                                 <div class="form-group">
                                     <label for="floatingInputValue">Section 1 Video</label>
@@ -167,7 +167,7 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="col-md-2">
+                        <div class="col-md-2 mb-3">
                             <div class="form-group-div">
                                 <div class="form-group">
                                     @if (isset($home->section_1_video))
@@ -183,7 +183,7 @@
 
 
                         {{-- section_1_description --}}
-                        <div class="col-md-6">
+                        <div class="col-md-6 mb-3">
                             <div class="form-group-div">
                                 <div class="form-group">
                                     <label for="floatingInputValue">Section 1 Description*</label>
@@ -198,14 +198,14 @@
                         </div>
                     </div>
                 </div>
-                <div class="sales-report-card-wrap mt-5">
+                <div class="sales-report-card-wrap mt-3">
                     <div class="form-head">
                         <h4>Book Section</h4>
                     </div>
 
                     <div class="row">
                         {{-- section_2_left_title --}}
-                        <div class="col-md-6">
+                        <div class="col-md-6 mb-3">
                             <div class="form-group-div">
                                 <div class="form-group">
                                     <label for="floatingInputValue">Section 2 Left Title*</label>
@@ -221,7 +221,7 @@
                             </div>
                         </div>
                         {{-- section_2_left_image --}}
-                        <div class="col-md-4">
+                        <div class="col-md-4 mb-3">
                             <div class="form-group-div">
                                 <div class="form-group">
                                     <label for="floatingInputValue">Section 2 Left Image</label>
@@ -235,7 +235,7 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="col-md-2">
+                        <div class="col-md-2 mb-3">
                             <div class="form-group-div">
                                 <div class="form-group">
                                     @if (isset($home->section_2_left_image))
@@ -251,7 +251,7 @@
                         </div>
 
                         {{-- section_2_left_description --}}
-                        <div class="col-md-12">
+                        <div class="col-md-12 mb-3">
                             <div class="form-group-div">
                                 <div class="form-group">
                                     <label for="floatingInputValue">Section 2 Left Description*</label>
@@ -265,7 +265,7 @@
                             </div>
                         </div>
                         {{-- section_2_right_title --}}
-                        <div class="col-md-6">
+                        <div class="col-md-6 mb-3">
                             <div class="form-group-div">
                                 <div class="form-group">
                                     <label for="floatingInputValue">Section 2 Right Title*</label>
@@ -281,7 +281,7 @@
                             </div>
                         </div>
                         {{-- section_2_right_image --}}
-                        <div class="col-md-4">
+                        <div class="col-md-4 mb-3">
                             <div class="form-group-div">
                                 <div class="form-group">
                                     <label for="floatingInputValue">Section 2 Right Image</label>
@@ -296,7 +296,7 @@
                             </div>
                         </div>
 
-                        <div class="col-md-2">
+                        <div class="col-md-2 mb-3">
                             <div class="form-group-div">
                                 <div class="form-group">
                                     @if (isset($home->section_2_right_image))
@@ -334,7 +334,7 @@
 
                     <div class="row">
                         {{-- section_3_title --}}
-                        <div class="col-md-6">
+                        <div class="col-md-6 mb-3">
                             <div class="form-group-div">
                                 <div class="form-group">
                                     <label for="floatingInputValue">Section 3 Title*</label>
@@ -350,7 +350,7 @@
                             </div>
                         </div>
                         {{-- section_3_description --}}
-                        <div class="col-md-6">
+                        <div class="col-md-6 mb-3">
                             <div class="form-group-div">
                                 <div class="form-group">
                                     <label for="floatingInputValue">Section 3 Description*</label>
@@ -372,7 +372,7 @@
 
                     <div class="row">
                         {{-- section_3_title --}}
-                        <div class="col-md-6">
+                        <div class="col-md-6 mb-3">
                             <div class="form-group-div">
                                 <div class="form-group">
                                     <label for="floatingInputValue">Section 4 Title*</label>
@@ -388,7 +388,7 @@
                             </div>
                         </div>
                         {{-- section_3_description --}}
-                        <div class="col-md-6">
+                        <div class="col-md-6 mb-3">
                             <div class="form-group-div">
                                 <div class="form-group">
                                     <label for="floatingInputValue">Section 4 Description*</label>
@@ -410,7 +410,7 @@
 
                     <div class="row">
                         {{-- section_3_title --}}
-                        <div class="col-md-12">
+                        <div class="col-md-12 mb-3">
                             <div class="form-group-div">
                                 <div class="form-group">
                                     <label for="floatingInputValue">Section 5 Title*</label>
@@ -427,13 +427,13 @@
                         </div>
                     </div>
                 </div>
-                <div class="sales-report-card-wrap mt-5">
+                <div class="sales-report-card-wrap mt-3">
                     <div class="form-head">
                         <h4>SEO Management</h4>
                     </div>
 
                     <div class="row">
-                        <div class="col-xl-6 col-md-6">
+                        <div class="col-xl-6 col-md-6 mb-3">
                             <div class="form-group-div">
                                 <div class="form-group">
                                     {{-- meta title --}}
@@ -448,7 +448,7 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="col-xl-6 col-md-6">
+                        <div class="col-xl-6 col-md-6 mb-3">
                             <div class="form-group-div">
                                 <div class="form-group">
                                     {{-- meta title --}}
@@ -464,7 +464,7 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="col-xl-12 col-md-12">
+                        <div class="col-xl-12 col-md-12 mb-3">
                             <div class="form-group-div">
                                 <div class="form-group">
                                     {{-- meta description --}}
@@ -481,7 +481,7 @@
                         {{-- button --}}
                         <div class="col-xl-12">
                             <div class="btn-1">
-                                <button type="submit" class="print_btn me-2 mt-2">Update</button>
+                                <button type="submit" class="print_btn me-2 mt-2 mb-2">Update</button>
                             </div>
                         </div>
                     </div>

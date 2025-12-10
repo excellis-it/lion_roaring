@@ -21,7 +21,7 @@
     </section>
     <div class="container-fluid">
         <div class="bg_white_border">
-            <div class="d-flex justify-content-between align-items-center mb-3">
+            <div class="dashboard-top-heading d-flex justify-content-between align-items-center mb-3">
                 <div>
                     <h3 class="mb-0">Gallery List</h3>
                     <p class="text-muted small mb-0">View and manage all gallery</p>
@@ -81,7 +81,7 @@
 
                                     <td><a href="{{ Storage::url($item->image) }}" target="_blank"><img
                                                 src="{{ Storage::url($item->image) }}" alt="gallery"
-                                                style="width: 30%; height: 100px; border-radius:50%"></a></td>
+                                                style="width: 30%; height: 100px;"></a></td>
                                     <td>{{ $item->country?->name ?? '' }}</td>
                                     <td>
                                         <div class="edit-1 d-flex align-items-center justify-content-center">
