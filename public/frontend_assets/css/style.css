@@ -2755,6 +2755,7 @@ li.slick-active button {
 
 .modal_checkbox {
     width: 100%;
+    text-align: center;
 }
 
 .modal_checkbox .form-group {
