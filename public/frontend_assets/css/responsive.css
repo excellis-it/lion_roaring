@@ -15,6 +15,14 @@
         max-width: 1500px;
     }
 }
+@media (max-width:1800px){
+.right_top {
+    width: 55%;
+}
+.for-mobile-use {
+    width: 45%;
+}
+}
 @media (max-width:1600px){
     .slide .slide__content--headings .title{
         font-size: 50px;
@@ -56,6 +64,7 @@
     padding: 25px 50px 25px 150px;
 }
 }
+
 @media (max-width:1440px){
       .after_about_hm .abt_text_white {
         padding: 0px 0;
@@ -170,9 +179,18 @@
 .about_text_new_p ol li {
     font-size: 20px;
 }
+    .right_top {
+        width: 50%;
+    }
+    .for-mobile-use {
+        width: 40%;
+    }
 }
 
 @media (max-width:1280px){
+    .login_prf a{
+                font-size: 14px;
+    }
 .slide__img img.overlay-image{
     bottom: 0px;
 }
@@ -199,7 +217,10 @@
         font-size: 30px;
     }
     .right_top {
-        width: 50%;
+        width: 52%;
+    }
+    .for-mobile-use {
+        width: 38%;
     }
     .left-book-sec {
         padding: 25px 0px 25px 0px;
@@ -214,10 +235,10 @@
         font-size: 36px;
     }
     .right_top {
-        width: 55%;
+        width: 60%;
     }
     .for-mobile-use {
-        width: 45%;
+        width: 40%;
     }
 }
 @media (max-width:1024px){
@@ -270,7 +291,7 @@
         width: 20%;
     }
     .right_top {
-        width: 60%;
+        width: 65%;
     }
     .book .page p {
         font-size: 12px;
@@ -279,7 +300,7 @@
         max-width: 850px;
     }
     .for-mobile-use {
-    width: 40%;
+    width: 35%;
 }
 .contact-left{
     margin-top: 30px;
@@ -321,10 +342,10 @@
     justify-content: flex-end;
 }
     .right_top {
-        width: 65%;
+        width: 70%;
     }
     .for-mobile-use {
-        width: 35%;
+        width: 30%;
     }
         .left_top {
         width: 30%;
