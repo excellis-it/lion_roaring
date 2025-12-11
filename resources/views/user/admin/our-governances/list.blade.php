@@ -12,7 +12,7 @@
 
 @section('create_button')
     @if (auth()->user()->can('Create Our Governance'))
-        <a href="{{ route('our-governances.create') }}" class="btn btn-primary">+ Create New Our Governance</a>
+        <a href="{{ route('user.admin.our-governances.create') }}" class="btn btn-primary">+ Create New Our Governance</a>
     @endif
 @endsection
 @section('content')
@@ -28,7 +28,7 @@
                 </div>
                 <div>
                     @if (auth()->user()->can('Create Our Governance'))
-                        <a href="{{ route('our-governances.create') }}" class="print_btn">+ Create Our Governance</a>
+                        <a href="{{ route('user.admin.our-governances.create') }}" class="print_btn">+ Create Our Governance</a>
                     @endif
                 </div>
             </div>
@@ -133,7 +133,7 @@
 
             function fetch_data(page, sort_type, sort_by, query) {
                 $.ajax({
-                    url: "{{ route('our-governances.fetch-data') }}",
+                    url: "{{ route('user.admin.our-governances.fetch-data') }}",
                     data: {
                         page: page,
                         sortby: sort_by,

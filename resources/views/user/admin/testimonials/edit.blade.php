@@ -19,7 +19,7 @@
                 <div class="form-head">
                     <h4>Testimonial Details</h4>
                 </div>
-                <form action="{{ route('testimonials.update', $testimonial->id) }}" method="post"
+                <form action="{{ route('user.admin.testimonials.update', $testimonial->id) }}" method="post"
                     enctype="multipart/form-data">
                     @method('PUT')
                     @csrf
@@ -123,7 +123,7 @@
                     <div class="col-xl-12">
                         <div class="btn-1">
                             <button type="submit" class="print_btn me-2 mt-2 mb-2">Update Testimonial Details</button>
-                            <a href="{{ route('testimonials.index') }}" class="print_btn print_btn_vv">Cancel</a>
+                            <a href="{{ route('user.admin.testimonials.index') }}" class="print_btn print_btn_vv">Cancel</a>
                         </div>
                     </div>
             </div>

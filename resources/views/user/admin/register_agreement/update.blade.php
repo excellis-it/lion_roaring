@@ -15,7 +15,7 @@
                     <p class="text-muted small mb-0">Update Register Page Agreement</p>
                 </div>
             </div>
-                <form action="{{ route('register-agreements.store') }}" method="post" enctype="multipart/form-data">
+                <form action="{{ route('user.admin.register-agreements.store') }}" method="post" enctype="multipart/form-data">
                     @csrf
                     <input type="hidden" name="id" value="{{ $agreement->id ?? '' }}">
                     <div class="sales-report-card-wrap mt-3">

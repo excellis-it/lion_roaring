@@ -11,13 +11,13 @@
             <td>
                 <div class="edit-1 d-flex align-items-center justify-content-center">
                     @if (auth()->user()->can('Edit Organization Center'))
-                        <a title="Edit" href="{{ route('organization-centers.edit', $organization_center->id) }}">
+                        <a title="Edit" href="{{ route('user.admin.organization-centers.edit', $organization_center->id) }}">
                             <span class="edit-icon"><i class="fas fa-edit"></i></span>
                         </a>
                     @endif
                     @if (auth()->user()->can('Delete Organization Center'))
                         <a title="Delete"
-                            data-route="{{ route('organization-centers.delete', $organization_center->id) }}"
+                            data-route="{{ route('user.admin.organization-centers.delete', $organization_center->id) }}"
                             href="javascript:void(0);" id="delete">
                             <span class="trash-icon"><i class="fas fa-trash"></i></span>
                         </a>

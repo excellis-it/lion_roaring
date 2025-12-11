@@ -12,7 +12,7 @@
 
 @section('create_button')
     @if (auth()->user()->can('Create Organization Center'))
-        <a href="{{ route('organization-centers.create') }}" class="btn btn-primary">+ Create New Organization Center</a>
+        <a href="{{ route('user.admin.organization-centers.create') }}" class="btn btn-primary">+ Create New Organization Center</a>
     @endif
 @endsection
 @section('content')
@@ -28,7 +28,7 @@
                 </div>
                 <div>
                     @if (auth()->user()->can('Create Organization Center'))
-                        <a href="{{ route('organization-centers.create') }}" class="print_btn">+ Create Organization
+                        <a href="{{ route('user.admin.organization-centers.create') }}" class="print_btn">+ Create Organization
                             Center</a>
                     @endif
                 </div>
@@ -121,7 +121,7 @@
 
             function fetch_data(page, sort_type, sort_by, query) {
                 $.ajax({
-                    url: "{{ route('organization-centers.fetch-data') }}",
+                    url: "{{ route('user.admin.organization-centers.fetch-data') }}",
                     data: {
                         page: page,
                         sortby: sort_by,

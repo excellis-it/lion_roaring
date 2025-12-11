@@ -114,9 +114,9 @@ class NewsletterController extends Controller
             $newsletter = Newsletter::find($id);
             if ($newsletter) {
                 $newsletter->delete();
-                return redirect()->route('newsletters.index')->with('message', 'Newsletter deleted successfully.');
+                return redirect()->route('user.admin.newsletters.index')->with('message', 'Newsletter deleted successfully.');
             } else {
-                return redirect()->route('newsletters.index')->with('error', 'Newsletter not found.');
+                return redirect()->route('user.admin.newsletters.index')->with('error', 'Newsletter not found.');
             }
         } else {
             abort(403, 'You do not have permission to access this page.');

@@ -104,6 +104,6 @@ class SettingsController extends Controller
 
         $settings->save();
 
-        return redirect()->route('admin.settings.edit')->with('message', 'Settings updated successfully');
+        return redirect()->route('user.admin.settings.edit')->with('message', 'Settings updated successfully');
     }
 }

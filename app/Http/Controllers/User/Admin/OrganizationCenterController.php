@@ -103,7 +103,7 @@ class OrganizationCenterController extends Controller
         $organization_center->image = $this->imageUpload($request->file('image'), 'organization_centers');
         $organization_center->save();
 
-        return redirect()->route('organization-centers.index')->with('message', 'Organization Center created successfully.');
+        return redirect()->route('user.admin.organization-centers.index')->with('message', 'Organization Center created successfully.');
     }
 
     /**
@@ -181,7 +181,7 @@ class OrganizationCenterController extends Controller
         }
         $organization_center->save();
 
-        return redirect()->route('organization-centers.index')->with('message', 'Organization Center updated successfully.');
+        return redirect()->route('user.admin.organization-centers.index')->with('message', 'Organization Center updated successfully.');
     }
 
     /**
@@ -200,7 +200,7 @@ class OrganizationCenterController extends Controller
         if (auth()->user()->can('Delete Organization Center')) {
             $organization_center = OrganizationCenter::findOrfail($request->id);
             $organization_center->delete();
-            return redirect()->route('organization-centers.index')->with('message', 'Organization Center deleted successfully.');
+            return redirect()->route('user.admin.organization-centers.index')->with('message', 'Organization Center deleted successfully.');
         } else {
             abort(403, 'You do not have permission to access this page.');
         }

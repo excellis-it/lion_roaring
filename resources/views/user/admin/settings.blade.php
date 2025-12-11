@@ -23,7 +23,7 @@
                     </div>
                 @endif
 
-                <form action="{{ route('admin.settings.update') }}" method="POST" enctype="multipart/form-data">
+                <form action="{{ route('user.admin.settings.update') }}" method="POST" enctype="multipart/form-data">
                     @csrf
                     <div class="row">
                     <div class="col-md-6 mb-3">

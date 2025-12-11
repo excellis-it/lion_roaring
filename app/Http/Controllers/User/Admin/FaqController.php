@@ -81,7 +81,7 @@ class FaqController extends Controller
         $faq->country_code = $request->content_country_code ?? 'US';
         $faq->save();
 
-        return redirect()->route('faq.index')->with('message', 'Faq created successfully.');
+        return redirect()->route('user.admin.faq.index')->with('message', 'Faq created successfully.');
     }
 
     /**
@@ -131,7 +131,7 @@ class FaqController extends Controller
         $faq->country_code = $request->content_country_code ?? 'US';
         $faq->save();
 
-        return redirect()->route('faq.index')->with('message', 'Faq updated successfully.');
+        return redirect()->route('user.admin.faq.index')->with('message', 'Faq updated successfully.');
     }
 
     /**
@@ -150,7 +150,7 @@ class FaqController extends Controller
         if (auth()->user()->can('Delete Faq')) {
             $faq = Faq::findOrFail($id);
             $faq->delete();
-            return redirect()->route('faq.index')->with('error', 'Faq has been deleted successfully.');
+            return redirect()->route('user.admin.faq.index')->with('error', 'Faq has been deleted successfully.');
         } else {
             abort(403, 'You do not have permission to access this page.');
         }

@@ -16,7 +16,7 @@
                     <p class="text-muted small mb-0">Update PMA Terms Page</p>
                 </div>
             </div>
-                <form action="{{ route('pma-terms.store') }}" method="post" enctype="multipart/form-data">
+                <form action="{{ route('user.admin.pma-terms.store') }}" method="post" enctype="multipart/form-data">
                     @csrf
                     <input type="hidden" name="id" value="{{ $term->id ?? '' }}">
                     <div class="sales-report-card-wrap mt-3">

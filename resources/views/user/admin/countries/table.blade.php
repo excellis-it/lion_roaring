@@ -27,7 +27,7 @@
             </td>
             <td>
                 <div class="edit-1 d-flex align-items-center gap-2 justify-content-end">
-                    <form action="{{ route('admin-countries.toggle-status', $country) }}" method="POST"
+                    <form action="{{ route('user.admin-countries.toggle-status', $country) }}" method="POST"
                         class="d-inline mr-4">
                         @csrf
                         <button class="btn btn-sm btn-outline-warning ms-2 toggle-status" title="Toggle Status"
@@ -36,10 +36,10 @@
                         </button>
                     </form>
 
-                    <a title="Edit" href="{{ route('admin-countries.edit', $country->id) }}">
+                    <a title="Edit" href="{{ route('user.admin.admin-countries.edit', $country->id) }}">
                         <span class="edit-icon"><i class="fas fa-edit"></i></span>
                     </a>
-                    <a title="Delete" data-route="{{ route('admin-countries.delete', $country->id) }}"
+                    <a title="Delete" data-route="{{ route('user.admin-countries.delete', $country->id) }}"
                         href="javascript:void(0);" id="delete">
                         <span class="trash-icon"><i class="fas fa-trash"></i></span>
                     </a>

@@ -1,38 +1,34 @@
 <?php
 
-use App\Http\Controllers\User\Admin\AboutUsController;
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\User\Admin\AdminController;
-use App\Http\Controllers\User\Admin\ArticleOfAssociationController;
-use App\Http\Controllers\User\Admin\ContactUsCmsController;
-use App\Http\Controllers\User\Admin\ContactusController;
-use App\Http\Controllers\User\Admin\CustomerController;
-use App\Http\Controllers\User\Admin\DetailsController;
-use App\Http\Controllers\User\Admin\DonationController as AdminDonationController;
-use App\Http\Controllers\User\Admin\EcclesiaAssociationController;
-use App\Http\Controllers\User\Admin\EcclessiaController;
-use App\Http\Controllers\User\Admin\FaqController;
-use App\Http\Controllers\User\Admin\FooterController;
-use App\Http\Controllers\User\Admin\GalleryController;
-use App\Http\Controllers\User\Admin\HomeCmsController;
-use App\Http\Controllers\User\Admin\MemberController;
-use App\Http\Controllers\User\Admin\MemberPrivacyPolicyContoller;
-use App\Http\Controllers\User\Admin\NewsletterController;
-use App\Http\Controllers\User\Admin\OrganizationCenterController;
-use App\Http\Controllers\User\Admin\OrganizationController;
-use App\Http\Controllers\User\Admin\OurGovernanceController;
-use App\Http\Controllers\User\Admin\OurOrganizationController;
-use App\Http\Controllers\User\Admin\PlanController;
-use App\Http\Controllers\User\Admin\PmaDisclaimerController;
-use App\Http\Controllers\User\Admin\PrincipleAndBusinessController;
-use App\Http\Controllers\User\Admin\PrivacyPolicyController;
-use App\Http\Controllers\User\Admin\RegisterAgreementController;
-use App\Http\Controllers\User\Admin\RolePermissionController;
-use App\Http\Controllers\User\Admin\ServiceContoller;
-use App\Http\Controllers\User\Admin\TestimonialController;
-use App\Http\Controllers\User\Admin\SettingsController;
-use App\Http\Controllers\User\Admin\TermsAndConditionController;
-use App\Http\Controllers\User\Admin\CountryController;
+
+use App\Http\Controllers\User\Admin\AboutUsController as UserAdminAboutUsController;
+use App\Http\Controllers\User\Admin\ArticleOfAssociationController as UserAdminArticleOfAssociationController;
+use App\Http\Controllers\User\Admin\ContactUsCmsController as UserAdminContactUsCmsController;
+use App\Http\Controllers\User\Admin\ContactusController as UserAdminContactusController;
+use App\Http\Controllers\User\Admin\DetailsController as UserAdminDetailsController;
+use App\Http\Controllers\User\Admin\DonationController as UserAdminDonationController;
+use App\Http\Controllers\User\Admin\EcclesiaAssociationController as UserAdminEcclesiaAssociationController;
+use App\Http\Controllers\User\Admin\FaqController as UserAdminFaqController;
+use App\Http\Controllers\User\Admin\FooterController as UserAdminFooterController;
+use App\Http\Controllers\User\Admin\GalleryController as UserAdminGalleryController;
+use App\Http\Controllers\User\Admin\HomeCmsController as UserAdminHomeCmsController;
+use App\Http\Controllers\User\Admin\MemberPrivacyPolicyContoller as UserAdminMemberPrivacyPolicyContoller;
+use App\Http\Controllers\User\Admin\NewsletterController as UserAdminNewsletterController;
+use App\Http\Controllers\User\Admin\OrganizationCenterController as UserAdminOrganizationCenterController;
+use App\Http\Controllers\User\Admin\OrganizationController as UserAdminOrganizationController;
+use App\Http\Controllers\User\Admin\OurGovernanceController as UserAdminOurGovernanceController;
+use App\Http\Controllers\User\Admin\OurOrganizationController as UserAdminOurOrganizationController;
+use App\Http\Controllers\User\Admin\PmaDisclaimerController as UserAdminPmaDisclaimerController;
+use App\Http\Controllers\User\Admin\PrincipleAndBusinessController as UserAdminPrincipleAndBusinessController;
+use App\Http\Controllers\User\Admin\PrivacyPolicyController as UserAdminPrivacyPolicyController;
+use App\Http\Controllers\User\Admin\RegisterAgreementController as UserAdminRegisterAgreementController;
+use App\Http\Controllers\User\Admin\ServiceContoller as UserAdminServiceContoller;
+use App\Http\Controllers\User\Admin\TestimonialController as UserAdminTestimonialController;
+use App\Http\Controllers\User\Admin\SettingsController as UserAdminSettingsController;
+use App\Http\Controllers\User\Admin\TermsAndConditionController as UserAdminTermsAndConditionController;
+use App\Http\Controllers\User\Admin\CountryController as UserAdminCountryController;
+use App\Http\Controllers\User\Admin\MenuController as UserAdminMenuController;
 
 use App\Http\Controllers\Estore\HomeController;
 use App\Http\Controllers\Estore\ProductController as EstoreProductController;
@@ -72,6 +68,47 @@ use App\Http\Controllers\User\TeamController;
 use App\Http\Controllers\User\TopicController;
 use App\Http\Controllers\User\ElearningTopicController;
 
+
+use App\Http\Controllers\Admin\AboutUsController;
+use App\Http\Controllers\Admin\AuthController;
+use App\Http\Controllers\Admin\ForgetPasswordController;
+use App\Http\Controllers\Admin\DashboardController;
+use App\Http\Controllers\Admin\AdminController;
+use App\Http\Controllers\Admin\ArticleOfAssociationController;
+use App\Http\Controllers\Admin\ContactUsCmsController;
+use App\Http\Controllers\Admin\ContactusController;
+use App\Http\Controllers\Admin\ProfileController;
+use App\Http\Controllers\Admin\CustomerController;
+use App\Http\Controllers\Admin\DetailsController;
+use App\Http\Controllers\Admin\DonationController as AdminDonationController;
+use App\Http\Controllers\Admin\EcclesiaAssociationController;
+use App\Http\Controllers\Admin\EcclessiaController;
+use App\Http\Controllers\Admin\FaqController;
+use App\Http\Controllers\Admin\FooterController;
+use App\Http\Controllers\Admin\GalleryController;
+use App\Http\Controllers\Admin\HomeCmsController;
+use App\Http\Controllers\Admin\MemberController;
+use App\Http\Controllers\Admin\MemberPrivacyPolicyContoller;
+use App\Http\Controllers\Admin\NewsletterController;
+use App\Http\Controllers\Admin\OrganizationCenterController;
+use App\Http\Controllers\Admin\OrganizationController;
+use App\Http\Controllers\Admin\OurGovernanceController;
+use App\Http\Controllers\Admin\OurOrganizationController;
+use App\Http\Controllers\Admin\PlanController;
+use App\Http\Controllers\Admin\PmaDisclaimerController;
+use App\Http\Controllers\Admin\PrincipleAndBusinessController;
+use App\Http\Controllers\Admin\PrivacyPolicyController;
+use App\Http\Controllers\Admin\RegisterAgreementController;
+use App\Http\Controllers\Admin\RolePermissionController;
+use App\Http\Controllers\Admin\SellerController;
+use App\Http\Controllers\Admin\ServiceContoller;
+use App\Http\Controllers\Admin\TestimonialController;
+use App\Http\Controllers\Admin\SettingsController;
+use App\Http\Controllers\Admin\TermsAndConditionController;
+use App\Http\Controllers\Admin\CountryController;
+use App\Http\Controllers\Admin\MenuController;
+
+
 use App\Models\Category;
 use App\Models\ElearningCategory;
 use App\Models\EcomCmsPage;
@@ -94,7 +131,6 @@ use App\Models\Country;
 use Illuminate\Support\Str;
 use App\Http\Controllers\VisitorController;
 use App\Http\Controllers\User\UserActivityController;
-use App\Http\Controllers\Admin\MenuController;
 use App\Http\Controllers\User\MembershipController as UserMembershipController;
 
 
@@ -126,6 +162,178 @@ Route::get('clear', function () {
 //     Artisan::call('db:seed AddMembershipMenuItems');
 //     return "Database seeding has been successfully";
 // });
+
+
+Route::get('/admin', [AuthController::class, 'redirectAdminLogin']);
+Route::get('/admin/login', [AuthController::class, 'login'])->name('admin.login');
+Route::post('/admin-login-check', [AuthController::class, 'loginCheck'])->name('admin.login.check');  //login check
+Route::post('admin-forget-password', [ForgetPasswordController::class, 'forgetPassword'])->name('admin.forget.password');
+Route::post('admin-change-password', [ForgetPasswordController::class, 'changePassword'])->name('admin.change.password');
+Route::get('admin-forget-password/show', [ForgetPasswordController::class, 'forgetPasswordShow'])->name('admin.forget.password.show');
+Route::get('admin-reset-password/{id}/{token}', [ForgetPasswordController::class, 'resetPassword'])->name('admin.reset.password');
+Route::post('admin-change-password', [ForgetPasswordController::class, 'changePassword'])->name('admin.change.password');
+
+Route::group(['middleware' => ['admin'], 'prefix' => 'admin'], function () {
+    Route::get('dashboard', [DashboardController::class, 'index'])->name('admin.dashboard');
+    Route::get('profile', [ProfileController::class, 'index'])->name('admin.profile');
+    Route::post('profile/update', [ProfileController::class, 'profileUpdate'])->name('admin.profile.update');
+    Route::get('logout', [AuthController::class, 'logout'])->name('admin.logout');
+
+    Route::prefix('password')->group(function () {
+        Route::get('/', [ProfileController::class, 'password'])->name('admin.password'); // password change
+        Route::post('/update', [ProfileController::class, 'passwordUpdate'])->name('admin.password.update'); // password update
+    });
+
+    Route::get('settings', [SettingsController::class, 'edit'])->name('admin.settings.edit');
+    Route::post('settings', [SettingsController::class, 'update'])->name('admin.settings.update');
+
+    // admin index
+    Route::prefix('detail')->group(function () {
+        Route::get('/', [AdminController::class, 'index'])->name('admin.index');
+        Route::get('/add', [AdminController::class, 'add'])->name('admin.add');
+        Route::post('/store', [AdminController::class, 'store'])->name('admin.store');
+        Route::post('/edit/{id}', [AdminController::class, 'edit'])->name('admin.edit');
+        Route::get('/delete/{id}', [AdminController::class, 'delete'])->name('admin.delete');
+        Route::post('/update', [AdminController::class, 'update'])->name('admin.update');
+    });
+
+    // admin index
+    Route::prefix('ecclessias')->group(function () {
+        Route::get('/', [EcclessiaController::class, 'index'])->name('ecclessias.index');
+        Route::post('/store', [EcclessiaController::class, 'store'])->name('ecclessias.store');
+        Route::post('/edit/{id}', [EcclessiaController::class, 'edit'])->name('ecclessias.edit');
+        Route::get('/delete/{id}', [EcclessiaController::class, 'delete'])->name('ecclessias.delete');
+        Route::post('/update', [EcclessiaController::class, 'update'])->name('ecclessias.update');
+    });
+
+    Route::prefix('members')->group(function () {
+        Route::get('/', [MemberController::class, 'index'])->name('members.index');
+        Route::put('/accept/{id}', [MemberController::class, 'accept'])->name('members.accept');
+        Route::put('/rejected/{id}', [MemberController::class, 'rejected'])->name('members.reject');
+        Route::get('/rejected-view/{id}', [MemberController::class, 'rejectedView'])->name('members.reject-view');
+        Route::get('/fetch-data', [MemberController::class, 'fetchData'])->name('members.fetch-data');
+    });
+
+    Route::resources([
+        'customers' => CustomerController::class,
+        'testimonials' => TestimonialController::class,
+        'our-governances' => OurGovernanceController::class,
+        'our-organizations' => OurOrganizationController::class,
+        'organization-centers' => OrganizationCenterController::class,
+        'services' => ServiceContoller::class,
+        'donations' => AdminDonationController::class,
+        'plans' => PlanController::class,
+        'admin-countries' => CountryController::class,
+    ]);
+
+    // toggle country status
+    Route::post('/admin-countries/{country}/toggle-status', [CountryController::class, 'toggleStatus'])->name('admin-countries.toggle-status');
+    // ajax table fetch for countries
+    Route::get('/admin-countries-fetch-data', [CountryController::class, 'fetchData'])->name('admin-countries.fetch-data');
+    // optional GET delete route for countries
+    Route::get('/admin-countries-delete/{id}', [CountryController::class, 'delete'])->name('admin-countries.delete');
+
+    Route::name('admin.')->group(function () {
+        Route::resource('roles', RolePermissionController::class);
+    });
+
+    Route::prefix('roles')->group(function () {
+        Route::get('/role-delete/{id}', [RolePermissionsController::class, 'delete'])->name('admin.roles.delete');
+    });
+
+    Route::prefix('plans')->group(function () {
+        Route::get('/plan-delete/{id}', [PlanController::class, 'delete'])->name('plans.delete');
+    });
+    Route::get('/changePlanStatus', [PlanController::class, 'changePlansStatus'])->name('plans.change-status');
+    Route::get('/plan-fetch-data', [PlanController::class, 'fetchData'])->name('plans.fetch-data');
+
+    Route::get('/donations-fetch-data', [AdminDonationController::class, 'fetchData'])->name('donations.fetch-data');
+    Route::get('/donations-delete/{id}', [AdminDonationController::class, 'delete'])->name('donations.delete');
+
+    Route::prefix('organization-centers')->group(function () {
+        Route::get('/organization-center-delete/{id}', [OrganizationCenterController::class, 'delete'])->name('organization-centers.delete');
+    });
+    Route::get('/organization-centers-fetch-data', [OrganizationCenterController::class, 'fetchData'])->name('organization-centers.fetch-data');
+
+    Route::prefix('our-organizations')->group(function () {
+        Route::get('/our-organization-delete/{id}', [OurOrganizationController::class, 'delete'])->name('our-organizations.delete');
+    });
+    Route::get('/our-organizations-fetch-data', [OurOrganizationController::class, 'fetchData'])->name('our-organizations.fetch-data');
+
+    Route::prefix('our-governances')->group(function () {
+        Route::get('/our-governance-delete/{id}', [OurGovernanceController::class, 'delete'])->name('our-governances.delete');
+    });
+    Route::get('/our-governances-fetch-data', [OurGovernanceController::class, 'fetchData'])->name('our-governances.fetch-data');
+
+    Route::prefix('testimonials')->group(function () {
+        Route::get('/testimonials-delete/{id}', [TestimonialController::class, 'delete'])->name('testimonials.delete');
+    });
+    Route::get('/testimonials-fetch-data', [TestimonialController::class, 'fetchData'])->name('testimonials.fetch-data');
+
+    //  Customer Routes
+    Route::prefix('customers')->group(function () {
+        Route::get('/customer-delete/{id}', [CustomerController::class, 'delete'])->name('customers.delete');
+    });
+    Route::get('/changeCustomerStatus', [CustomerController::class, 'changeCustomersStatus'])->name('customers.change-status');
+    Route::get('/customer-fetch-data', [CustomerController::class, 'fetchData'])->name('customers.fetch-data');
+
+    Route::prefix('pages')->group(function () {
+        Route::resources([
+            'faq' => FaqController::class,
+            'gallery' => GalleryController::class,
+            'ecclesia-associations' => EcclesiaAssociationController::class,
+            'principle-and-business' => PrincipleAndBusinessController::class,
+            'contact-us-cms' => ContactUsCmsController::class,
+            'organizations' => OrganizationController::class,
+            'about-us' => AboutUsController::class,
+            'home-cms' => HomeCmsController::class,
+            'details' => DetailsController::class,
+            'contact-us' => ContactusController::class,
+            'newsletters' => NewsletterController::class,
+            'articles-of-association' => ArticleOfAssociationController::class,
+            'register-agreements' => RegisterAgreementController::class,
+            'members-privacy-policies' => MemberPrivacyPolicyContoller::class,
+            'pma-terms' => PmaDisclaimerController::class,
+
+        ]);
+
+        // privacy-policy
+        Route::get('/privacy-policy', [PrivacyPolicyController::class, 'index'])->name('privacy-policy.index');
+        Route::post('/privacy-policy/update', [PrivacyPolicyController::class, 'update'])->name('privacy-policy.update');
+        // terms-and-conditions
+        Route::get('/terms-and-condition', [TermsAndConditionController::class, 'index'])->name('terms-and-condition.index');
+        Route::post('/terms-and-condition/update', [TermsAndConditionController::class, 'update'])->name('terms-and-condition.update');
+
+        // principle-and-business.image.delete
+        Route::get('/principle-and-business-image-delete', [PrincipleAndBusinessController::class, 'imageDelete'])->name('principle-and-business.image.delete');
+        Route::get('/newsletter-fetch-data', [NewsletterController::class, 'fetchData'])->name('newsletters.fetch-data');
+        // delete newsletter
+        Route::get('/newsletter-delete/{id}', [NewsletterController::class, 'delete'])->name('newsletters.delete');
+        Route::get('/contact-us-fetch-data', [ContactusController::class, 'fetchData'])->name('contact-us.fetch-data');
+        Route::get('/contact-us-delete/{id}', [ContactusController::class, 'delete'])->name('contact-us.delete');
+
+        Route::get('/organizations-image-delete', [OrganizationController::class, 'imageDelete'])->name('organization.image.delete');
+
+        Route::prefix('faq')->group(function () {
+            Route::get('/faq-delete/{id}', [FaqController::class, 'delete'])->name('faq.delete');
+        });
+        Route::get('/faq-fetch-data', [FaqController::class, 'fetchData'])->name('faq.fetch-data');
+
+        Route::prefix('gallery')->group(function () {
+            Route::get('/gallery-delete/{id}', [GalleryController::class, 'delete'])->name('gallery.delete');
+        });
+
+        Route::prefix('footer')->name('footer.')->group(function () {
+            Route::get('/', [FooterController::class, 'index'])->name('index');
+            Route::post('/update', [FooterController::class, 'update'])->name('update');
+        });
+    });
+    // manage menu names
+    Route::prefix('menu')->group(function () {
+        Route::get('/', [MenuController::class, 'index'])->name('admin.menu.index');
+        Route::post('/update', [MenuController::class, 'update'])->name('admin.menu.update');
+    });
+});
 
 
 
@@ -713,156 +921,119 @@ Route::prefix('user')->middleware(['user', 'preventBackHistory', 'userActivity']
 
     Route::group(['prefix' => 'admin'], function () {
 
-        Route::get('settings', [SettingsController::class, 'edit'])->name('admin.settings.edit');
-        Route::post('settings', [SettingsController::class, 'update'])->name('admin.settings.update');
+        Route::get('settings', [UserAdminSettingsController::class, 'edit'])->name('user.admin.settings.edit');
+        Route::post('settings', [UserAdminSettingsController::class, 'update'])->name('user.admin.settings.update');
 
-        // admin index
-        Route::prefix('detail')->group(function () {
-            Route::get('/', [AdminController::class, 'index'])->name('admin.index');
-            Route::get('/add', [AdminController::class, 'add'])->name('admin.add');
-            Route::post('/store', [AdminController::class, 'store'])->name('admin.store');
-            Route::post('/edit/{id}', [AdminController::class, 'edit'])->name('admin.edit');
-            Route::get('/delete/{id}', [AdminController::class, 'delete'])->name('admin.delete');
-            Route::post('/update', [AdminController::class, 'update'])->name('admin.update');
-        });
 
-        // admin index
-        Route::prefix('ecclessias')->group(function () {
-            Route::get('/', [EcclessiaController::class, 'index'])->name('ecclessias.index');
-            Route::post('/store', [EcclessiaController::class, 'store'])->name('ecclessias.store');
-            Route::post('/edit/{id}', [EcclessiaController::class, 'edit'])->name('ecclessias.edit');
-            Route::get('/delete/{id}', [EcclessiaController::class, 'delete'])->name('ecclessias.delete');
-            Route::post('/update', [EcclessiaController::class, 'update'])->name('ecclessias.update');
-        });
 
-        Route::prefix('members')->group(function () {
-            Route::get('/', [MemberController::class, 'index'])->name('members.index');
-            Route::put('/accept/{id}', [MemberController::class, 'accept'])->name('members.accept');
-            Route::put('/rejected/{id}', [MemberController::class, 'rejected'])->name('members.reject');
-            Route::get('/rejected-view/{id}', [MemberController::class, 'rejectedView'])->name('members.reject-view');
-            Route::get('/fetch-data', [MemberController::class, 'fetchData'])->name('members.fetch-data');
-        });
 
-        Route::resources([
-            'customers' => CustomerController::class,
-            'testimonials' => TestimonialController::class,
-            'our-governances' => OurGovernanceController::class,
-            'our-organizations' => OurOrganizationController::class,
-            'organization-centers' => OrganizationCenterController::class,
-            'services' => ServiceContoller::class,
-            'donations' => AdminDonationController::class,
-            'plans' => PlanController::class,
-            'admin-countries' => CountryController::class,
-        ]);
+        Route::name('user.admin.')
+            ->group(function () {
+                Route::resources([
+                    'testimonials'          => UserAdminTestimonialController::class,
+                    'our-governances'       => UserAdminOurGovernanceController::class,
+                    'our-organizations'     => UserAdminOurOrganizationController::class,
+                    'organization-centers'  => UserAdminOrganizationCenterController::class,
+                    'services'              => UserAdminServiceContoller::class,
+                    'donations'             => UserAdminDonationController::class,
+                    'admin-countries'       => UserAdminCountryController::class,
+                ]);
+            });
+
 
         // toggle country status
-        Route::post('/admin-countries/{country}/toggle-status', [CountryController::class, 'toggleStatus'])->name('admin-countries.toggle-status');
+        Route::post('/admin-countries/{country}/toggle-status', [UserAdminCountryController::class, 'toggleStatus'])->name('user.admin-countries.toggle-status');
         // ajax table fetch for countries
-        Route::get('/admin-countries-fetch-data', [CountryController::class, 'fetchData'])->name('admin-countries.fetch-data');
+        Route::get('/admin-countries-fetch-data', [UserAdminCountryController::class, 'fetchData'])->name('user.admin-countries.fetch-data');
         // optional GET delete route for countries
-        Route::get('/admin-countries-delete/{id}', [CountryController::class, 'delete'])->name('admin-countries.delete');
+        Route::get('/admin-countries-delete/{id}', [UserAdminCountryController::class, 'delete'])->name('user.admin-countries.delete');
 
-        Route::name('admin.')->group(function () {
-            Route::resource('roles', RolePermissionController::class);
-        });
 
-        Route::prefix('roles')->group(function () {
-            Route::get('/role-delete/{id}', [RolePermissionsController::class, 'delete'])->name('admin.roles.delete');
-        });
 
-        Route::prefix('plans')->group(function () {
-            Route::get('/plan-delete/{id}', [PlanController::class, 'delete'])->name('plans.delete');
-        });
-        Route::get('/changePlanStatus', [PlanController::class, 'changePlansStatus'])->name('plans.change-status');
-        Route::get('/plan-fetch-data', [PlanController::class, 'fetchData'])->name('plans.fetch-data');
 
-        Route::get('/donations-fetch-data', [AdminDonationController::class, 'fetchData'])->name('donations.fetch-data');
-        Route::get('/donations-delete/{id}', [AdminDonationController::class, 'delete'])->name('donations.delete');
+        Route::get('/donations-fetch-data', [UserAdminDonationController::class, 'fetchData'])->name('user.admin.donations.fetch-data');
+        Route::get('/donations-delete/{id}', [UserAdminDonationController::class, 'delete'])->name('user.admin.donations.delete');
 
         Route::prefix('organization-centers')->group(function () {
-            Route::get('/organization-center-delete/{id}', [OrganizationCenterController::class, 'delete'])->name('organization-centers.delete');
+            Route::get('/organization-center-delete/{id}', [UserAdminOrganizationCenterController::class, 'delete'])->name('user.admin.organization-centers.delete');
         });
-        Route::get('/organization-centers-fetch-data', [OrganizationCenterController::class, 'fetchData'])->name('organization-centers.fetch-data');
+        Route::get('/organization-centers-fetch-data', [UserAdminOrganizationCenterController::class, 'fetchData'])->name('user.admin.organization-centers.fetch-data');
 
         Route::prefix('our-organizations')->group(function () {
-            Route::get('/our-organization-delete/{id}', [OurOrganizationController::class, 'delete'])->name('our-organizations.delete');
+            Route::get('/our-organization-delete/{id}', [UserAdminOurOrganizationController::class, 'delete'])->name('user.admin.our-organizations.delete');
         });
-        Route::get('/our-organizations-fetch-data', [OurOrganizationController::class, 'fetchData'])->name('our-organizations.fetch-data');
+        Route::get('/our-organizations-fetch-data', [UserAdminOurOrganizationController::class, 'fetchData'])->name('user.admin.our-organizations.fetch-data');
 
         Route::prefix('our-governances')->group(function () {
-            Route::get('/our-governance-delete/{id}', [OurGovernanceController::class, 'delete'])->name('our-governances.delete');
+            Route::get('/our-governance-delete/{id}', [UserAdminOurGovernanceController::class, 'delete'])->name('user.admin.our-governances.delete');
         });
-        Route::get('/our-governances-fetch-data', [OurGovernanceController::class, 'fetchData'])->name('our-governances.fetch-data');
+        Route::get('/our-governances-fetch-data', [UserAdminOurGovernanceController::class, 'fetchData'])->name('user.admin.our-governances.fetch-data');
 
         Route::prefix('testimonials')->group(function () {
-            Route::get('/testimonials-delete/{id}', [TestimonialController::class, 'delete'])->name('testimonials.delete');
+            Route::get('/testimonials-delete/{id}', [UserAdminTestimonialController::class, 'delete'])->name('user.admin.testimonials.delete');
         });
-        Route::get('/testimonials-fetch-data', [TestimonialController::class, 'fetchData'])->name('testimonials.fetch-data');
+        Route::get('/testimonials-fetch-data', [UserAdminTestimonialController::class, 'fetchData'])->name('user.admin.testimonials.fetch-data');
 
-        //  Customer Routes
-        Route::prefix('customers')->group(function () {
-            Route::get('/customer-delete/{id}', [CustomerController::class, 'delete'])->name('customers.delete');
-        });
-        Route::get('/changeCustomerStatus', [CustomerController::class, 'changeCustomersStatus'])->name('customers.change-status');
-        Route::get('/customer-fetch-data', [CustomerController::class, 'fetchData'])->name('customers.fetch-data');
-        Route::resources([
-            'contact-us' => ContactusController::class,
-            'newsletters' => NewsletterController::class,
-        ]);
-        Route::prefix('pages')->group(function () {
+        Route::name('user.admin.')->group(function () {
             Route::resources([
-                'faq' => FaqController::class,
-                'gallery' => GalleryController::class,
-                'ecclesia-associations' => EcclesiaAssociationController::class,
-                'principle-and-business' => PrincipleAndBusinessController::class,
-                'contact-us-cms' => ContactUsCmsController::class,
-                'organizations' => OrganizationController::class,
-                'about-us' => AboutUsController::class,
-                'home-cms' => HomeCmsController::class,
-                'details' => DetailsController::class,
+                'contact-us' => UserAdminContactusController::class,
+                'newsletters' => UserAdminNewsletterController::class,
+            ]);
+        });
+        Route::name('user.admin.')->prefix('pages')->group(function () {
+            Route::resources([
+                'faq' => UserAdminFaqController::class,
+                'gallery' => UserAdminGalleryController::class,
+                'ecclesia-associations' => UserAdminEcclesiaAssociationController::class,
+                'principle-and-business' => UserAdminPrincipleAndBusinessController::class,
+                'contact-us-cms' => UserAdminContactUsCmsController::class,
+                'organizations' => UserAdminOrganizationController::class,
+                'about-us' => UserAdminAboutUsController::class,
+                'home-cms' => UserAdminHomeCmsController::class,
+                'details' => UserAdminDetailsController::class,
 
-                'articles-of-association' => ArticleOfAssociationController::class,
-                'register-agreements' => RegisterAgreementController::class,
-                'members-privacy-policies' => MemberPrivacyPolicyContoller::class,
-                'pma-terms' => PmaDisclaimerController::class,
+                'articles-of-association' => UserAdminArticleOfAssociationController::class,
+                'register-agreements' => UserAdminRegisterAgreementController::class,
+                'members-privacy-policies' => UserAdminMemberPrivacyPolicyContoller::class,
+                'pma-terms' => UserAdminPmaDisclaimerController::class,
 
             ]);
 
             // privacy-policy
-            Route::get('/privacy-policy', [PrivacyPolicyController::class, 'index'])->name('privacy-policy.index');
-            Route::post('/privacy-policy/update', [PrivacyPolicyController::class, 'update'])->name('privacy-policy.update');
+            Route::get('/privacy-policy', [UserAdminPrivacyPolicyController::class, 'index'])->name('privacy-policy.index');
+            Route::post('/privacy-policy/update', [UserAdminPrivacyPolicyController::class, 'update'])->name('privacy-policy.update');
             // terms-and-conditions
-            Route::get('/terms-and-condition', [TermsAndConditionController::class, 'index'])->name('terms-and-condition.index');
-            Route::post('/terms-and-condition/update', [TermsAndConditionController::class, 'update'])->name('terms-and-condition.update');
+            Route::get('/terms-and-condition', [UserAdminTermsAndConditionController::class, 'index'])->name('terms-and-condition.index');
+            Route::post('/terms-and-condition/update', [UserAdminTermsAndConditionController::class, 'update'])->name('terms-and-condition.update');
 
             // principle-and-business.image.delete
-            Route::get('/principle-and-business-image-delete', [PrincipleAndBusinessController::class, 'imageDelete'])->name('principle-and-business.image.delete');
-            Route::get('/newsletter-fetch-data', [NewsletterController::class, 'fetchData'])->name('newsletters.fetch-data');
+            Route::get('/principle-and-business-image-delete', [UserAdminPrincipleAndBusinessController::class, 'imageDelete'])->name('principle-and-business.image.delete');
+            Route::get('/newsletter-fetch-data', [UserAdminNewsletterController::class, 'fetchData'])->name('newsletters.fetch-data');
             // delete newsletter
-            Route::get('/newsletter-delete/{id}', [NewsletterController::class, 'delete'])->name('newsletters.delete');
-            Route::get('/contact-us-fetch-data', [ContactusController::class, 'fetchData'])->name('contact-us.fetch-data');
-            Route::get('/contact-us-delete/{id}', [ContactusController::class, 'delete'])->name('contact-us.delete');
+            Route::get('/newsletter-delete/{id}', [UserAdminNewsletterController::class, 'delete'])->name('newsletters.delete');
+            Route::get('/contact-us-fetch-data', [UserAdminContactusController::class, 'fetchData'])->name('contact-us.fetch-data');
+            Route::get('/contact-us-delete/{id}', [UserAdminContactusController::class, 'delete'])->name('contact-us.delete');
 
-            Route::get('/organizations-image-delete', [OrganizationController::class, 'imageDelete'])->name('organization.image.delete');
+            Route::get('/organizations-image-delete', [UserAdminOrganizationController::class, 'imageDelete'])->name('organization.image.delete');
 
             Route::prefix('faq')->group(function () {
-                Route::get('/faq-delete/{id}', [FaqController::class, 'delete'])->name('faq.delete');
+                Route::get('/faq-delete/{id}', [UserAdminFaqController::class, 'delete'])->name('faq.delete');
             });
-            Route::get('/faq-fetch-data', [FaqController::class, 'fetchData'])->name('faq.fetch-data');
+            Route::get('/faq-fetch-data', [UserAdminFaqController::class, 'fetchData'])->name('faq.fetch-data');
 
             Route::prefix('gallery')->group(function () {
-                Route::get('/gallery-delete/{id}', [GalleryController::class, 'delete'])->name('gallery.delete');
+                Route::get('/gallery-delete/{id}', [UserAdminGalleryController::class, 'delete'])->name('gallery.delete');
             });
 
-            Route::prefix('footer')->name('footer.')->group(function () {
-                Route::get('/', [FooterController::class, 'index'])->name('index');
-                Route::post('/update', [FooterController::class, 'update'])->name('update');
+            Route::name('footer.')->prefix('footer')->group(function () {
+                Route::get('/', [UserAdminFooterController::class, 'index'])->name('index');
+                Route::post('/update', [UserAdminFooterController::class, 'update'])->name('update');
             });
         });
         // manage menu names
         Route::prefix('menu')->group(function () {
-            Route::get('/', [MenuController::class, 'index'])->name('admin.menu.index');
-            Route::post('/update', [MenuController::class, 'update'])->name('admin.menu.update');
+            Route::get('/', [UserAdminMenuController::class, 'index'])->name('user.admin.menu.index');
+            Route::post('/update', [UserAdminMenuController::class, 'update'])->name('user.admin.menu.update');
         });
     });
 });

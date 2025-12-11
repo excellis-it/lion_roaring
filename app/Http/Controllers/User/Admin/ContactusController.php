@@ -117,9 +117,9 @@ class ContactusController extends Controller
             $contact = ContactUs::find($id);
             if ($contact) {
                 $contact->delete();
-                return redirect()->route('contact-us.index')->with('message', 'Contact deleted successfully.');
+                return redirect()->route('user.admin.contact-us.index')->with('message', 'Contact deleted successfully.');
             } else {
-                return redirect()->route('contact-us.index')->with('error', 'Contact not found.');
+                return redirect()->route('user.admin.contact-us.index')->with('error', 'Contact not found.');
             }
         } else {
             abort(403, 'You do not have permission to access this page.');

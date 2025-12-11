@@ -59,7 +59,7 @@
                     <p class="text-muted small mb-0">Update Organization</p>
                 </div>
             </div>
-                <form action="{{ route('organizations.store') }}" method="post" enctype="multipart/form-data">
+                <form action="{{ route('user.admin.organizations.store') }}" method="post" enctype="multipart/form-data">
                     @csrf
                     <input type="hidden" name="id" value="{{ $organization->id ?? '' }}">
                     <div class="sales-report-card-wrap">
@@ -498,7 +498,7 @@
                     return false;
                 } else {
                     $.ajax({
-                        url: "{{ route('organization.image.delete') }}",
+                        url: "{{ route('user.admin.organization.image.delete') }}",
                         type: 'GET',
                         data: {
                             "id": id,

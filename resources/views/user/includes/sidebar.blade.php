@@ -736,7 +736,7 @@
                  @if (Gate::check('Manage Donations'))
                      <li class="sidebar-item">
                          <a class="sidebar-link {{ Request::is('user/admin/donations*') ? 'active' : '' }}"
-                             href="{{ route('donations.index') }}" aria-expanded="false">
+                             href="{{ route('user.admin.donations.index') }}" aria-expanded="false">
                              <span>
                                  <img src="{{ asset('user_assets/images/lion-roring-icon/lion-roring-icon/donation.png') }}"
                                      alt="Donations">
@@ -749,7 +749,7 @@
                  @if (Gate::check('Manage Contact Us Messages'))
                      <li class="sidebar-item">
                          <a class="sidebar-link {{ Request::is('user/admin/contact-us*') ? 'active' : '' }}"
-                             href="{{ route('contact-us.index') }}" aria-expanded="false">
+                             href="{{ route('user.admin.contact-us.index') }}" aria-expanded="false">
                              <span>
                                  <img src="{{ asset('user_assets/images/lion-roring-icon/lion-roring-icon/contact-massage.png') }}"
                                      alt="Contact Us Messages">
@@ -763,7 +763,7 @@
                  @if (Gate::check('Manage Newsletters'))
                      <li class="sidebar-item">
                          <a class="sidebar-link {{ Request::is('user/admin/newsletters*') ? 'active' : '' }}"
-                             href="{{ route('newsletters.index') }}" aria-expanded="false">
+                             href="{{ route('user.admin.newsletters.index') }}" aria-expanded="false">
                              <span>
                                  <img src="{{ asset('user_assets/images/lion-roring-icon/lion-roring-icon/news-letters.png') }}"
                                      alt="Newsletters">
@@ -786,7 +786,7 @@
                          <div class="collapse {{ Request::is('user/admin/testimonials*') ? 'show' : '' }}"
                              id="collapseTestimonials">
                              <div class="menu_bb">
-                                 <a href="{{ route('testimonials.index') }}">
+                                 <a href="{{ route('user.admin.testimonials.index') }}">
                                      <span>
                                          <img src="{{ asset('user_assets/images/lion-roring-icon/lion-roring-icon/testimonial-list.png') }}"
                                              alt="Testimonials List">
@@ -794,7 +794,7 @@
                                      <span>{{ Helper::getMenuName('testimonials_list', 'Testimonials List') }}</span>
                                  </a>
                                  @if (Gate::check('Create Testimonials'))
-                                     <a href="{{ route('testimonials.create') }}">
+                                     <a href="{{ route('user.admin.testimonials.create') }}">
                                          <span>
                                              <img src="{{ asset('user_assets/images/lion-roring-icon/lion-roring-icon/create-testimonials.png') }}"
                                                  alt="Create Testimonial">
@@ -821,7 +821,7 @@
                          <div class="collapse {{ Request::is('user/admin/our-governances*') ? 'show' : '' }}"
                              id="collapseOurGovernance">
                              <div class="menu_bb">
-                                 <a href="{{ route('our-governances.index') }}">
+                                 <a href="{{ route('user.admin.our-governances.index') }}">
                                      <span>
                                          <img src="{{ asset('user_assets/images/lion-roring-icon/lion-roring-icon/our-governance-list.png') }}"
                                              alt="Our Governance List">
@@ -829,7 +829,7 @@
                                      <span>{{ Helper::getMenuName('our_governance_list', 'Our Governance List') }}</span>
                                  </a>
                                  @if (Gate::check('Create Our Governance'))
-                                     <a href="{{ route('our-governances.create') }}">
+                                     <a href="{{ route('user.admin.our-governances.create') }}">
                                          <span>
                                              <img src="{{ asset('user_assets/images/lion-roring-icon/lion-roring-icon/our-governance-create.png') }}"
                                                  alt="Our Governance Create">
@@ -856,7 +856,7 @@
                          <div class="collapse {{ Request::is('user/admin/our-organizations*') ? 'show' : '' }}"
                              id="collapseOurOrganizations">
                              <div class="menu_bb">
-                                 <a href="{{ route('our-organizations.index') }}">
+                                 <a href="{{ route('user.admin.our-organizations.index') }}">
                                      <span>
                                          <img src="{{ asset('user_assets/images/lion-roring-icon/lion-roring-icon/our-organisation-list.png') }}"
                                              alt="Our Organizations List">
@@ -864,7 +864,7 @@
                                      <span>{{ Helper::getMenuName('our_organizations_list', 'Our Organizations List') }}</span>
                                  </a>
                                  @if (Gate::check('Create Our Organization'))
-                                     <a href="{{ route('our-organizations.create') }}">
+                                     <a href="{{ route('user.admin.our-organizations.create') }}">
                                          <span>
                                              <img src="{{ asset('user_assets/images/lion-roring-icon/lion-roring-icon/our-organisation-list.png') }}"
                                                  alt="Plus">
@@ -891,7 +891,7 @@
                          <div class="collapse {{ Request::is('user/admin/organization-centers*') ? 'show' : '' }}"
                              id="collapseOrganizationCenter">
                              <div class="menu_bb">
-                                 <a href="{{ route('organization-centers.index') }}">
+                                 <a href="{{ route('user.admin.organization-centers.index') }}">
                                      <span>
                                          <img src="{{ asset('user_assets/images/lion-roring-icon/lion-roring-icon/organisation-center-list.png') }}"
                                              alt="Organization Center List">
@@ -899,7 +899,7 @@
                                      <span>{{ Helper::getMenuName('organization_center_list', 'Organization Center List') }}</span>
                                  </a>
                                  @if (Gate::check('Create Organization Center'))
-                                     <a href="{{ route('organization-centers.create') }}">
+                                     <a href="{{ route('user.admin.organization-centers.create') }}">
                                          <span>
                                              <img src="{{ asset('user_assets/images/lion-roring-icon/lion-roring-icon/organisation-center-list.png') }}"
                                                  alt="Plus">
@@ -927,7 +927,7 @@
                              <div class="menu_bb">
                                  @if (count(Helper::getOrganzations()) > 0)
                                      @foreach (Helper::getOrganzations() as $key => $organization)
-                                         <a href="{{ route('services.index', ['slug' => $organization->slug]) }}">
+                                         <a href="{{ route('user.admin.services.index', ['slug' => $organization->slug]) }}">
                                              <span>
                                                  <img src="{{ asset('user_assets/images/lion-roring-icon/lion-roring-icon/education-center.png') }}"
                                                      alt="Service">
@@ -970,7 +970,7 @@
                              id="collapsePages">
                              <div class="menu_bb">
                                  @if (Gate::check('Manage Home Page'))
-                                     <a href="{{ route('home-cms.index') }}">
+                                     <a href="{{ route('user.admin.home-cms.index') }}">
                                          <span>
                                              <img src="{{ asset('user_assets/images/lion-roring-icon/lion-roring-icon/home.png') }}"
                                                  alt="Home">
@@ -980,7 +980,7 @@
                                  @endif
 
                                  @if (Gate::check('Manage Details Page'))
-                                     <a href="{{ route('details.index') }}">
+                                     <a href="{{ route('user.admin.details.index') }}">
                                          <span>
                                              <img src="{{ asset('user_assets/images/lion-roring-icon/lion-roring-icon/details.png') }}"
                                                  alt="Details">
@@ -990,7 +990,7 @@
                                  @endif
 
                                  @if (Gate::check('Manage Organizations Page'))
-                                     <a href="{{ route('organizations.index') }}">
+                                     <a href="{{ route('user.admin.organizations.index') }}">
                                          <span>
                                              <img src="{{ asset('user_assets/images/lion-roring-icon/lion-roring-icon/organisation-cms.png') }}"
                                                  alt="Organization CMS">
@@ -1000,7 +1000,7 @@
                                  @endif
 
                                  @if (Gate::check('Manage About Us Page'))
-                                     <a href="{{ route('about-us.index') }}">
+                                     <a href="{{ route('user.admin.about-us.index') }}">
                                          <span>
                                              <img src="{{ asset('user_assets/images/lion-roring-icon/lion-roring-icon/about-us.png') }}"
                                                  alt="About Us">
@@ -1010,7 +1010,7 @@
                                  @endif
 
                                  @if (Gate::check('Manage Faq'))
-                                     <a href="{{ route('faq.index') }}">
+                                     <a href="{{ route('user.admin.faq.index') }}">
                                          <span>
                                              <img src="{{ asset('user_assets/images/lion-roring-icon/lion-roring-icon/faqs.png') }}"
                                                  alt="FAQ">
@@ -1020,7 +1020,7 @@
                                  @endif
 
                                  @if (Gate::check('Manage Gallery'))
-                                     <a href="{{ route('gallery.index') }}">
+                                     <a href="{{ route('user.admin.gallery.index') }}">
                                          <span>
                                              <img src="{{ asset('user_assets/images/lion-roring-icon/lion-roring-icon/gallery.png') }}"
                                                  alt="Gallery">
@@ -1030,7 +1030,7 @@
                                  @endif
 
                                  @if (Gate::check('Manage Ecclesia Association Page'))
-                                     <a href="{{ route('ecclesia-associations.index') }}">
+                                     <a href="{{ route('user.admin.ecclesia-associations.index') }}">
                                          <span>
                                              <img src="{{ asset('user_assets/images/lion-roring-icon/lion-roring-icon/principle-and-business-modal.png') }}"
                                                  alt="Ecclesia Association">
@@ -1040,7 +1040,7 @@
                                  @endif
 
                                  @if (Gate::check('Manage Principle and Business Page'))
-                                     <a href="{{ route('principle-and-business.index') }}">
+                                     <a href="{{ route('user.admin.principle-and-business.index') }}">
                                          <span>
                                              <img src="{{ asset('user_assets/images/lion-roring-icon/lion-roring-icon/principle-and-business-modal.png') }}"
                                                  alt="Principle and Business">
@@ -1050,7 +1050,7 @@
                                  @endif
 
                                  @if (Gate::check('Manage Contact Us Page'))
-                                     <a href="{{ route('contact-us-cms.index') }}">
+                                     <a href="{{ route('user.admin.contact-us-cms.index') }}">
                                          <span>
                                              <img src="{{ asset('user_assets/images/lion-roring-icon/lion-roring-icon/contact-us.png') }}"
                                                  alt="Contact Us">
@@ -1060,7 +1060,7 @@
                                  @endif
 
                                  @if (Gate::check('Manage Article of Association Page'))
-                                     <a href="{{ route('articles-of-association.index') }}">
+                                     <a href="{{ route('user.admin.articles-of-association.index') }}">
                                          <span>
                                              <img src="{{ asset('user_assets/images/lion-roring-icon/lion-roring-icon/artailes-of-assosiations.png') }}"
                                                  alt="Article of Association">
@@ -1070,7 +1070,7 @@
                                  @endif
 
                                  @if (Gate::check('Manage Footer'))
-                                     <a href="{{ route('footer.index') }}">
+                                     <a href="{{ route('user.admin.footer.index') }}">
                                          <span>
                                              <img src="{{ asset('user_assets/images/lion-roring-icon/lion-roring-icon/footer.png') }}"
                                                  alt="Footer">
@@ -1080,7 +1080,7 @@
                                  @endif
 
                                  @if (Gate::check('Manage Register Page Agreement Page'))
-                                     <a href="{{ route('register-agreements.index') }}">
+                                     <a href="{{ route('user.admin.register-agreements.index') }}">
                                          <span>
                                              <img src="{{ asset('user_assets/images/lion-roring-icon/lion-roring-icon/register-page-agreement.png') }}"
                                                  alt="Register Page Agreement">
@@ -1090,7 +1090,7 @@
                                  @endif
 
                                  @if (Gate::check('Manage PMA Terms Page'))
-                                     <a href="{{ route('pma-terms.index') }}">
+                                     <a href="{{ route('user.admin.pma-terms.index') }}">
                                          <span>
                                              <img src="{{ asset('user_assets/images/lion-roring-icon/lion-roring-icon/pma-terms.png') }}"
                                                  alt="PMA Terms">
@@ -1100,7 +1100,7 @@
                                  @endif
 
                                  @if (Gate::check('Manage Privacy Policy Page'))
-                                     <a href="{{ route('privacy-policy.index') }}">
+                                     <a href="{{ route('user.admin.privacy-policy.index') }}">
                                          <span>
                                              <img src="{{ asset('user_assets/images/lion-roring-icon/lion-roring-icon/privacy-policy.png') }}"
                                                  alt="Privacy Policy">
@@ -1109,7 +1109,7 @@
                                      </a>
                                  @endif
                                  @if (Gate::check('Manage Terms and Conditions Page'))
-                                     <a href="{{ route('terms-and-condition.index') }}">
+                                     <a href="{{ route('user.admin.terms-and-condition.index') }}">
                                          <span>
                                              <img src="{{ asset('user_assets/images/lion-roring-icon/lion-roring-icon/terms-and-condition.png') }}"
                                                  alt="Terms and Condition">
@@ -1125,7 +1125,7 @@
                  @if (Gate::check('Manage Countries'))
                      <li class="sidebar-item">
                          <a class="sidebar-link {{ Request::is('user/admin/admin-countries*') ? 'active' : '' }}"
-                             href="{{ route('admin-countries.index') }}" aria-expanded="false">
+                             href="{{ route('user.admin.admin-countries.index') }}" aria-expanded="false">
                              <span>
                                  <img src="{{ asset('user_assets/images/lion-roring-icon/lion-roring-icon/countries.png') }}"
                                      alt="Countries">
@@ -1150,7 +1150,7 @@
                              id="collapseSiteSettings">
                              <div class="menu_bb">
                                  @if (Gate::check('Manage Site Settings'))
-                                     <a href="{{ route('admin.settings.edit') }}">
+                                     <a href="{{ route('user.admin.settings.edit') }}">
                                          <span>
                                              <img src="{{ asset('user_assets/images/lion-roring-icon/lion-roring-icon/setting.png') }}"
                                                  alt="Settings">
@@ -1159,7 +1159,7 @@
                                      </a>
                                  @endif
                                  @if (Gate::check('Manage Menu Settings'))
-                                     <a href="{{ route('admin.menu.index') }}">
+                                     <a href="{{ route('user.admin.menu.index') }}">
                                          <span>
                                              <img src="{{ asset('user_assets/images/lion-roring-icon/lion-roring-icon/menu-names.png') }}"
                                                  alt="Menu Names">

@@ -16,7 +16,7 @@
                 </div>
             </div>
 
-            <form action="{{ route('services.store') }}" method="post" enctype="multipart/form-data">
+            <form action="{{ route('user.admin.services.store') }}" method="post" enctype="multipart/form-data">
                 @csrf
                 @if (isset($services) && count($services) > 0)
                     <input type="hidden" name="column_count" id="column_count" value="{{ count($services) }}">
@@ -123,7 +123,7 @@
                     return false;
                 } else {
                     $.ajax({
-                        url: "{{ route('organization.image.delete') }}",
+                        url: "{{ route('user.admin.organization.image.delete') }}",
                         type: 'GET',
                         data: {
                             "id": id,

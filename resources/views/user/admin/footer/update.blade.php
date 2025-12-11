@@ -10,7 +10,7 @@
      <div class="container-fluid">
          <div class="bg_white_border">
           
-                <form action="{{ route('footer.update') }}" method="post" enctype="multipart/form-data">
+                <form action="{{ route('user.admin.footer.update') }}" method="post" enctype="multipart/form-data">
                     @csrf
                     <input type="hidden" name="id" value="{{ $footer->id ?? '' }}">
                     <div class="row mb-4">

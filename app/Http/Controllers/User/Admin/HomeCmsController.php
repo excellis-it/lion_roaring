@@ -20,12 +20,12 @@ class HomeCmsController extends Controller
     public function index(Request $request)
     {
         if (auth()->user()->can('Manage Home Page')) {
-           // $home = HomeCms::orderBy('id', 'desc')->first();
+            // $home = HomeCms::orderBy('id', 'desc')->first();
             $home = HomeCms::where('country_code', $request->get('content_country_code', 'US'))->orderBy('id', 'desc')->first();
 
             return view('user.admin.home.update')->with('home', $home);
         } else {
-            return redirect()->route('admin.dashboard')->with('error', 'You do not have the permission to access this page.');
+            return redirect()->route('user.profile')->with('error', 'You do not have the permission to access this page.');
         }
     }
 

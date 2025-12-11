@@ -16,7 +16,7 @@
                 </div>
             </div>
 
-            <form action="{{ route('about-us.store') }}" method="post" enctype="multipart/form-data">
+            <form action="{{ route('user.admin.about-us.store') }}" method="post" enctype="multipart/form-data">
                 @csrf
                 <input type="hidden" name="id" value="{{ $about_us->id ?? '' }}">
                 <div class="sales-report-card-wrap">

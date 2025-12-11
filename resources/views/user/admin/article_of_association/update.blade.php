@@ -10,7 +10,7 @@
      <div class="container-fluid">
          <div class="bg_white_border">
           
-                <form action="{{ route('articles-of-association.store') }}" method="post" enctype="multipart/form-data">
+                <form action="{{ route('user.admin.articles-of-association.store') }}" method="post" enctype="multipart/form-data">
                     @csrf
                     <input type="hidden" name="id" value="{{ $article->id ?? '' }}">
                     <div class="row mb-4">

@@ -90,7 +90,7 @@ class TestimonialController extends Controller
         $testimonials->country_code = $request->content_country_code ?? 'US';
         $testimonials->save();
 
-        return redirect()->route('testimonials.index')->with('message', 'Testimonial created successfully.');
+        return redirect()->route('user.admin.testimonials.index')->with('message', 'Testimonial created successfully.');
     }
 
     /**
@@ -148,7 +148,7 @@ class TestimonialController extends Controller
         $testimonials->country_code = $request->content_country_code ?? 'US';
         $testimonials->save();
 
-        return redirect()->route('testimonials.index')->with('message', 'Testimonial updated successfully.');
+        return redirect()->route('user.admin.testimonials.index')->with('message', 'Testimonial updated successfully.');
     }
 
     /**
@@ -168,7 +168,7 @@ class TestimonialController extends Controller
         if (auth()->user()->can('Delete Testimonials')) {
             $testimonials = Testimonial::findOrFail($id);
             $testimonials->delete();
-            return redirect()->route('testimonials.index')->with('error', 'Testimonial has been deleted successfully.');
+            return redirect()->route('user.admin.testimonials.index')->with('error', 'Testimonial has been deleted successfully.');
         } else {
             abort(403, 'You do not have permission to access this page.');
         }

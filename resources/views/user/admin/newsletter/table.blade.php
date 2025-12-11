@@ -9,7 +9,7 @@
             <td>
                 <div class="edit-1 d-flex align-items-center justify-content-center">
                     @if (auth()->user()->can('Delete Newsletters'))
-                        <a title="Delete" data-route="{{ route('newsletters.delete', $newsletter->id) }}"
+                        <a title="Delete" data-route="{{ route('user.admin.newsletters.delete', $newsletter->id) }}"
                             href="javascript:void(0);" id="delete">
                             <span class="trash-icon"><i class="fas fa-trash"></i></span>
                         </a>
