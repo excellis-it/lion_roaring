@@ -61,7 +61,7 @@ p {
 }
 
 .right_top {
-    width: 35%;
+    width: 50%;
 }
 
 .main_menu {
@@ -3075,9 +3075,11 @@ li.slick-active button {
 /*    margin-top: -3rem;*/
 /*}*/
 
-.right-site-btns {
+/* .right-site-btns {
     align-items: center;
-}
+    justify-content: space-between;
+    width: 100%;
+} */
 
 .goog-te-gadget img {
     display: none;
@@ -4010,4 +4012,11 @@ li.slick-active button {
 }
 .pure-u-1 legend{
     border-bottom: 1px solid #643271;
+}
+
+.for-mobile-use .desktop-use-menu{
+    display: none;
+}
+.view-only-mobile{
+    display: none;
 }

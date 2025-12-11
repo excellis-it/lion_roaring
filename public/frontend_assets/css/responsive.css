@@ -96,8 +96,11 @@
     .left_top{
         width: 45%;
     }
+        .for-mobile-use {
+        width: 40%;
+    }
     .right_top {
-    width: 45%;
+    width: 55%;
 }
 .slider, .slide {
     height: 750px;
@@ -180,10 +183,10 @@
     font-size: 20px;
 }
     .right_top {
-        width: 50%;
+        width: 60%;
     }
     .for-mobile-use {
-        width: 40%;
+        width: 35%;
     }
 }
 
@@ -208,22 +211,22 @@
         font-size: 40px;
     }
     .book .pages{
-        height: 76vw;
+        height: 95vw;
     }
     .book .page{
-        height: 76vw;
+        height: 95vw;
     }
     .real_solution_sec h4 a{
         font-size: 30px;
     }
     .right_top {
-        width: 52%;
+        width: 60%;
     }
     .for-mobile-use {
-        width: 38%;
+        width: 30%;
     }
     .left-book-sec {
-        padding: 25px 0px 25px 0px;
+        padding: 25px 0px 25px 40px;
     }
 }
 @media (max-width:1200px){
@@ -235,12 +238,18 @@
         font-size: 36px;
     }
     .right_top {
-        width: 60%;
+        width: 65%;
     }
     .for-mobile-use {
-        width: 40%;
+        width: 30%;
     }
 }
+@media (max-width:1170px){
+.left-book-sec .left-sec-img{
+    width: 400px;
+}
+}
+
 @media (max-width:1024px){
     .logo {
         width: auto;
@@ -295,6 +304,7 @@
     }
     .book .page p {
         font-size: 12px;
+        line-height:16px;
     }
     .promo-box-container{
         max-width: 850px;
@@ -306,10 +316,17 @@
     margin-top: 30px;
 }
 .left-book-sec .left-sec-img{
-    width: 410px;
+    width: 350px;
 }
+    
 }
 @media (max-width:991px){
+    .hidden-for-mobile{
+        display: none !important;
+    }
+    .right-site-btns{
+        flex-direction: row-reverse;
+    }
     .our_mis{
         width: 700px;
     }
@@ -339,13 +356,16 @@
         width: 90px;
     }
     .navbar{
-    justify-content: flex-end;
-}
-    .right_top {
-        width: 70%;
+        justify-content: flex-end;
     }
-    .for-mobile-use {
+    .right_top {
+        width: 100%;
+    }
+    /* .for-mobile-use {
         width: 30%;
+    } */
+         .for-mobile-use {
+        width: 100%;
     }
         .left_top {
         width: 30%;
@@ -354,10 +374,10 @@
         font-size: 34px;
     }
         .book .pages {
-        height: 80vw;
+        height: 90vw;
     }
     .book .page {
-        height: 80vw;
+        height: 90vw;
     }
     .promo-box-container{
         min-height: 170px;
@@ -366,7 +386,10 @@
         margin-bottom: 20px;
     }
     .heading_hp h2 {
-        font-size: 24px;
+        font-size: 18px;
+    }
+    .about_text.heading_hp h4 {
+        font-size: 14px;
     }
     /* .login_prf a{
         font-size: 0px;
@@ -389,6 +412,25 @@
 .quick_links_ul ul{
     justify-content: center;
 }
+    .main_menu .navigation.navbar{
+        flex-direction: column-reverse;
+        align-items: end;
+    }
+    .payment-option-form{
+        margin-bottom: 10px;
+    }
+        .left-book-sec .left-sec-img {
+        width: 300px;
+    }
+        .promo-box-container {
+        max-width: 690px;
+    }
+    .details-about_text{
+        margin-top: 20px;
+    }
+    .about_sec_details .row:nth-child(even) {
+        flex-direction: column-reverse;
+    }
 }
 
 @media (max-width:768px){
@@ -498,15 +540,11 @@
     .right_top {
         width: 100%;
     }
-    .for-mobile-use {
-        width: 100%;
-    }
-    .main_menu .navigation.navbar{
-        flex-direction: column-reverse;
-        align-items: end;
-    }
     .left-book-sec .left-sec-img {
-        width: 320px;
+        width: 250px;
+    }
+    .slide__img img.overlay-image {
+        height: 45%;
     }
 }
 
@@ -662,7 +700,9 @@
     .heading_hp h4 {
         font-size: 14px;
     }
-    
+    .goog-te-gadget .goog-te-combo{
+        padding: 9px 3px;
+    }
 }
 
 @media (max-width:576px){
@@ -794,6 +834,7 @@
     }
     .header-flag-box .input-group div:nth-child(2){
             min-width: 70px !important;
+            padding: 8px 10px;
     }
     .footer_sec{
         padding: 50px 0 0px;
@@ -865,6 +906,9 @@
         left: 50%;
         margin-right: 0%;
         width: 90%;
+    }
+    .header-flag-box span {
+        font-size: 0px !important;
     }
 }
 @media (max-width:480px){
