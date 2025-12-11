@@ -974,6 +974,9 @@
         font-size: 16px;
         letter-spacing: normal;
     }
+    .slide__img img.overlay-image{
+        height: 55%;
+    }
 }
 
 @media (max-width:380px){
@@ -985,7 +988,7 @@
         font-size: 32px;
     }
     .slide__img img.overlay-image{
-        height: 50%;
+        height: 37%;
     }
     .about_text.heading_hp h4, h3{
         font-size: 18px;
@@ -1028,6 +1031,9 @@
         padding: 8px 2px;
         font-size: 12px;
     }
+    .slider, .slide {
+        height: 65vh;
+    }
 }
 
 @media (max-width:360px){
@@ -1067,5 +1073,11 @@
     }
         .header-flag-box .input-group div:nth-child(2) {
         min-width: 50px !important;
+    }
+}
+@media (max-width: 320px) {
+    .login_prf a {
+        padding: 5px 4px;
+        font-size: 10px;
     }
 }
