@@ -20,7 +20,7 @@
             </div>
         </div>
     </section>
-    <section class="about_sec">
+    <section class="about_sec about_sec_details">
         <div class="container">
             @if (count($details) > 0)
                 @php
@@ -30,7 +30,7 @@
                     <div class="row align-items-center justify-content-center mb-5">
                         <div class="col-xl-7 col-lg-7 {{ $count % 2 == 0 ? 'order-2 order-lg-1' : '' }}" data-aos="fade-up"
                             data-aos-duration="500">
-                            <div class="about_text heading_hp text_white">
+                            <div class="details-about_text about_text heading_hp text_white">
                                 <p>{!! $item->description !!}
 
                                 </p>

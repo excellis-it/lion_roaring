@@ -645,5 +645,7 @@ input{
     .count {
         font-size: 32px;
     }
-
+.box_slae {
+        width: 310px;
+    }
 }
