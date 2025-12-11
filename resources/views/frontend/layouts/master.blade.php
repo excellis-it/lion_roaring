@@ -73,10 +73,6 @@
         </section>
         @php
             use App\Helpers\Helper;
-            // dd(date('H'))
-            $ip = request()->ip();
-            $sessionKey = 'visitor_country_flag_code_' . $ip;
-            $afterCountryCheck = session()->has($sessionKey);
         @endphp
 
 
@@ -1740,7 +1736,7 @@
                 $('#onload_popup').modal('hide');
                 $('#exampleModalToggle2').modal('show');
             @else
-                @if (!Session::has('agree') && $afterCountryCheck)
+                @if (!Session::has('agree'))
 
                     $('#onload_popup').modal('show');
                 @endif
