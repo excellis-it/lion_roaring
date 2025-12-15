@@ -10,7 +10,7 @@
 
             <div class="row">
                 <div class="col-md-12">
-                    <h4 class="title">Edit Color</h4>
+                    <h4 class="title mb-5">Edit Color</h4>
                     <form action="{{ route('colors.update', $color->id) }}" method="POST" id="edit-color-form">
                         @csrf
                         @method('PUT')

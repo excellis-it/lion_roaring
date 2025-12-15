@@ -26,9 +26,9 @@
                         <!-- Statistics Cards -->
                         <div class="row">
                             <div class="col-md-6">
-                                <div class="card">
+                                <div class="card store-card">
                                     <div class="card-body">
-                                        <div class="d-flex justify-content-between">
+                                        <div class="flex-one d-flex justify-content-between">
                                             <div class="d-flex align-items-center">
                                                 <i class="fas fa-file-alt fa-2x text-primary"></i>
                                                 <div class="ms-3">
@@ -36,7 +36,7 @@
                                                     <p class="mb-0">{{ $count['pages'] }}</p>
                                                 </div>
                                             </div>
-                                            <div class="ms-3">
+                                            <div class="view-btn ms-3">
                                                 <a href="{{ route('user.store-cms.list') }}" class="btn btn-primary">View All</a>
                                             </div>
                                         </div>
@@ -44,9 +44,9 @@
                                 </div>
                             </div>
                             <div class="col-md-6">
-                                <div class="card">
+                                <div class="card store-card">
                                     <div class="card-body">
-                                        <div class="d-flex justify-content-between">
+                                        <div class="flex-one d-flex justify-content-between">
                                             <div class="d-flex align-items-center">
                                                 <i class="fas fa-users fa-2x text-success"></i>
                                                 <div class="ms-3">
@@ -54,7 +54,7 @@
                                                     <p class="mb-0">{{ $count['newsletter'] }}</p>
                                                 </div>
                                             </div>
-                                            <div class="ms-3">
+                                            <div class="view-btn ms-3">
                                                 <a href="{{ route('user.newsletters.index') }}" class="btn btn-primary">View
                                                     All</a>
                                             </div>

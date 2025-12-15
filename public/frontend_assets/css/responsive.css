@@ -928,8 +928,8 @@
     font-size: 11px;
 }
     .login_prf a {
-        padding: 6px 9px;
-        font-size: 14px;
+        padding: 7px 9px;
+        font-size: 12px;
     }
     .login_prf a span {
         left: -3%;
@@ -994,7 +994,7 @@
         height: 37%;
     }
     .about_text.heading_hp h4, h3{
-        font-size: 18px;
+        font-size: 16px;
     }
     .overlay ul li a{
         font-size: 20px;
@@ -1047,7 +1047,7 @@
     }
         .login_prf a {
         padding: 5px 4px;
-        font-size: 12px;
+        font-size: 10px;
     }
     .login_prf a span i {
         font-size: 10px;
@@ -1076,6 +1076,9 @@
     }
         .header-flag-box .input-group div:nth-child(2) {
         min-width: 50px !important;
+    }
+        .promo-box-container {
+        max-width: 280px;
     }
 }
 @media (max-width: 320px) {
