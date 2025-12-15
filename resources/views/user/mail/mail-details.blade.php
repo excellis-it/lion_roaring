@@ -369,7 +369,7 @@
                             <span class="material-symbols-outlined">reply</span> Reply
                         </a>
                         <a href="javascript:void(0);" class="open_mail_forward_box">
-                            <span class="material-symbols-outlined">forward</span> Forward
+                             Forward <span class="material-symbols-outlined">forward</span>
                         </a>
                     </div>
 

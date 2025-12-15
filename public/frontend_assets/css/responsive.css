@@ -431,6 +431,9 @@
     .about_sec_details .row:nth-child(even) {
         flex-direction: column-reverse;
     }
+    .payment-option-form{
+        margin-bottom: 20px;
+    }
 }
 
 @media (max-width:768px){

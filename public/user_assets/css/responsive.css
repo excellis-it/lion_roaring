@@ -620,6 +620,9 @@ input{
     .GroupName{
         padding: 0px;
     }
+        .box_slae {
+        width: 320px;
+    }
 }
 @media (max-width:415px){
         .app-header .navbar{
