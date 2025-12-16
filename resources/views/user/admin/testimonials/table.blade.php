@@ -1,0 +1,40 @@
+@if (count($testimonials) > 0)
+    @foreach ($testimonials as $key => $testimonial)
+        <tr>
+            <td> {{ ($testimonials->currentPage() - 1) * $testimonials->perPage() + $loop->index + 1 }}</td>
+            <td>{{ $testimonial->name }}</td>
+            <td>{{ $testimonial->address }}</td>
+            <td>
+                <div style="max-width: 300px; word-wrap: break-word; white-space: normal;">
+                    {{ (Str::words(strip_tags($testimonial->description), 20, '...')) }}
+                </div>
+            </td>
+            <td>
+                <div class="edit-1 d-flex align-items-center justify-content-center">
+                    @if (auth()->user()->can('Edit Testimonials'))
+                        <a title="Edit" href="{{ route('user.admin.testimonials.edit', $testimonial->id) }}">
+                            <span class="edit-icon"><i class="fas fa-edit"></i></span>
+                        </a>
+                    @endif
+                    @if (auth()->user()->can('Delete Testimonials'))
+                        <a title="Delete" data-route="{{ route('user.admin.testimonials.delete', $testimonial->id) }}"
+                            href="javascript:void(0);" id="delete">
+                            <span class="trash-icon"><i class="fas fa-trash"></i></span>
+                        </a>
+                    @endif
+                </div>
+            </td>
+        </tr>
+    @endforeach
+    <tr style="box-shadow: none;">
+        <td colspan="8">
+            <div class="d-flex justify-content-center">
+                {!! $testimonials->links() !!}
+            </div>
+        </td>
+    </tr>
+@else
+    <tr>
+        <td colspan="8" class="text-center">No Testimonial Found</td>
+    </tr>
+@endif

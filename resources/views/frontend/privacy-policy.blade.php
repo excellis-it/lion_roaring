@@ -26,7 +26,7 @@
             <div class="row align-items-center justify-content-center">
                 <div class="col-xl-10 col-lg-12 aos-init aos-animate" data-aos="fade-up" data-aos-duration="1000">
                     <div class="about_text heading_hp">
-                        {!!  $privacy_policy['description'] ?? 'No centers available' !!}
+                        {!!  $privacy_policy['description'] ?? '' !!}
                     </div>
                 </div>
 

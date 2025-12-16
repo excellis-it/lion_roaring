@@ -2,7 +2,16 @@
 <td>{{ $meeting->title ? $meeting->title : '-' }}</td>
 <td>{{ $meeting->start_time ? date('d M Y h:i A', strtotime($meeting->start_time)) : '-' }}</td>
 <td>{{ $meeting->end_time ? date('d M Y h:i A', strtotime($meeting->end_time)) : '-' }}</td>
-<td>{{ $meeting->meeting_link ? $meeting->meeting_link : '-' }}</td>
+<td>
+    {{-- meeting link clickable with a good design --}}
+    @if ($meeting->meeting_link)
+        <a href="{{ $meeting->meeting_link }}" target="_blank" class="edit_icon">
+            {{ $meeting->meeting_link }}
+        </a>
+    @else
+        -
+    @endif
+</td>
 <td>
     {{-- added time human --}}
     {{ $meeting->created_at ? $meeting->created_at->diffForHumans() : '-' }}

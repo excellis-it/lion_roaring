@@ -24,6 +24,6 @@ class MenuController extends Controller
                 $item->save();
             }
         }
-        return redirect()->route('admin.menu.index')->with('success', 'Menu names updated');
+        return redirect()->route('admin.menu.index')->with('message', 'Menu names updated');
     }
 }

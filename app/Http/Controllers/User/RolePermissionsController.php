@@ -111,7 +111,7 @@ class RolePermissionsController extends Controller
             // foreach ($user->roles as $role1) {
             //     $permissions = $permissions->merge($role1->permissions);
             // }
-            $rolePermissions = Permission::where('type', 1)->get();
+            $rolePermissions = Permission::get();
             $permissions = $permissions->merge($rolePermissions);
             $permissions = $permissions->pluck('name', 'id')->toArray();
 
@@ -147,7 +147,7 @@ class RolePermissionsController extends Controller
         $permissions = $request['permissions'];
         $role->save();
 
-        $p_all = Permission::where('type', 1)->get();
+        $p_all = Permission::get();
 
         foreach ($p_all as $p) {
             $role->revokePermissionTo($p);

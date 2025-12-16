@@ -135,8 +135,10 @@ class AuthController extends Controller
             'email_confirmation' => 'required|same:email',
             'password' => ['required', 'string', 'regex:/^(?=.*[@$%&])[^\s]{8,}$/'],
             'password_confirmation' => 'required|same:password',
+            'signature' => 'required|string',
         ], [
             'password.regex' => 'The password must be at least 8 characters long and include at least one special character from @$%&.',
+            'signature.required' => 'Please provide your signature before submitting the form.',
         ]);
 
 
@@ -174,6 +176,7 @@ class AuthController extends Controller
         $user->country = $request->country;
         $user->zip = $request->zip;
         $user->password = bcrypt($request->password);
+        $user->signature = $request->signature;
         $user->email_verified_at = now();
         $user->status = 0;
         $user->save();

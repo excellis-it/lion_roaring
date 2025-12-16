@@ -34,9 +34,9 @@
                         <p>
                             {!! Helper::getFooter()['footer_title'] ??
                                 'Our main focus is to restore our various communities, villages, cities, states,
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        and
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        our nation by restoring the condition of a person in both the spiritual and the
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        physical.' !!}
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    and
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    our nation by restoring the condition of a person in both the spiritual and the
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    physical.' !!}
                         </p>
                         <div class="col-lg-12">
                             <div class="d-flex align-items-center">
@@ -107,9 +107,9 @@
         </div>
     </div>
     <div class="copy_1">
-        <div class="container-fluid">
+        <div class="container">
             <div class="row align-items-center">
-                <div class="col-md-12 col-xxl-4">
+                <div class="col-md-12 col-lg-9">
                     <div class="quick_links_ul">
                         <ul class="menu" style="white-space: nowrap">
                             <li class="active">
@@ -133,11 +133,8 @@
                         </ul>
                     </div>
                 </div>
-                <div class="col-md-12 col-xxl-6">
-                    <p>{!! Helper::getFooter()['footer_copywrite_text'] ??
-                        'Copyright © ' . date('Y') . ' Daud Santosa. All Rights Reserved' !!}</p>
-                </div>
-                <div class="col-md-3 col-xl-2 col-xxl-2">
+                
+                <div class="col-md-12 col-lg-3">
                     {{-- <span class="badge bg-dark"> <i class="fa fa-globe"></i>
                         {{ Helper::getVisitorCountryName() }}</span> --}}
 
@@ -168,9 +165,18 @@
                 </div>
             </div>
         </div>
-
     </div>
 </footer>
+<section class="copy_text-bottom">
+    <div class="container">
+            <div class="row">
+                <div class="col-md-12 col-xxl-12">
+                    <p>{!! Helper::getFooter()['footer_copywrite_text'] ??
+                        'Copyright © ' . date('Y') . ' Daud Santosa. All Rights Reserved' !!}</p>
+                </div>
+            </div>
+        </div>
+</section>
 
 <script>
     const popup = document.getElementById("popupOverlay");
@@ -233,6 +239,17 @@
         }).catch(function() {
             closePopup();
         });
+    }
+
+    // Handle country selection button click
+    function handleCountrySelection() {
+        var selectElement = document.getElementById('popupCountrySelect');
+        if (selectElement) {
+            var selectedCountry = selectElement.value;
+            if (selectedCountry) {
+                selectFlag(selectedCountry);
+            }
+        }
     }
 
     document.addEventListener('DOMContentLoaded', function() {

@@ -1,0 +1,155 @@
+@extends('user.layouts.master')
+@section('title')
+    All Gallery Details - {{ env('APP_NAME') }}
+@endsection
+@push('styles')
+    <style>
+        .dataTables_filter {
+            margin-bottom: 10px !important;
+        }
+    </style>
+@endpush
+
+@section('create_button')
+    @if (auth()->user()->can('Create Gallery'))
+        <a href="{{ route('user.admin.gallery.create') }}" class="btn btn-primary">+ Create New Gallery</a>
+    @endif
+@endsection
+@section('content')
+    <section id="loading">
+        <div id="loading-content"></div>
+    </section>
+    <div class="container-fluid">
+        <div class="bg_white_border">
+            <div class="dashboard-top-heading d-flex justify-content-between align-items-center mb-3">
+                <div>
+                    <h3 class="mb-0">Gallery List</h3>
+                    <p class="text-muted small mb-0">View and manage all gallery</p>
+                </div>
+                <div>
+                    @if (auth()->user()->can('Create Gallery'))
+                        <a href="{{ route('user.admin.gallery.create') }}" class="print_btn">+ Create Gallery</a>
+                    @endif
+                </div>
+            </div>
+
+            <div class="row justify-content-end">
+                <div class="col-md-6">
+                    <div class="row g-1 justify-content-end">
+                        {{-- <div class="col-md-8 pr-0">
+                                <div class="search-field">
+                                     <input type="text" name="search" id="search" placeholder="search..."
+                                                required="" class="form-control rounded_search">
+                                     <button class="submit_search" id="search-button"> <span class=""><i
+                                                        class="fa fa-search"></i></span></button>
+                                </div>
+                            </div> --}}
+                        <div class="col-md-4">
+                            {{--
+                                <select name="content_country_code" id="content_country_code" class="form-control">
+                                    @foreach (\App\Models\Country::all() as $country)
+                                        <option value="{{ $country->code }}"
+                                            {{ request()->get('content_country_code', 'US') == $country->code ? 'selected' : '' }}>
+                                            {{ $country->name }}
+                                        </option>
+                                    @endforeach
+                                </select>
+                                <label for="country_code">Content Country</label> --}}
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="table-responsive" id="gallery-data">
+                <table class="table align-middle bg-white color_body_text" class="display">
+                    <thead class="color_head">
+                        <tr class="header-row">
+                            <th class="sorting" data-tippy-content="Sort by Id" data-sorting_type="asc"
+                                data-column_name="id" style="cursor: pointer">Id<span id="id_icon"></span>
+                            </th>
+                            <th>
+                                Image</th>
+                            <th>Content Country</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @if (count($gallery) > 0)
+                            @foreach ($gallery as $key => $item)
+                                <tr>
+                                    <td> {{ ($gallery->currentPage() - 1) * $gallery->perPage() + $loop->index + 1 }}
+                                    </td>
+
+                                    <td><a href="{{ Storage::url($item->image) }}" target="_blank"><img
+                                                src="{{ Storage::url($item->image) }}" alt="gallery"
+                                                style="width: 30%; height: 100px;"></a></td>
+                                    <td>{{ $item->country?->name ?? '' }}</td>
+                                    <td>
+                                        <div class="edit-1 d-flex align-items-center justify-content-center">
+                                            @if (auth()->user()->can('Edit Gallery'))
+                                                <a title="Edit " href="{{ route('user.admin.gallery.edit', $item->id) }}">
+                                                    <span class="edit-icon"><i class="fas fa-edit"></i></span>
+                                                </a>
+                                            @endif
+                                            @if (auth()->user()->can('Delete Gallery'))
+                                                <a title="Delete " data-route="{{ route('user.admin.gallery.delete', $item->id) }}"
+                                                    href="javascript:void(0);" id="delete">
+                                                    <span class="trash-icon"><i class="fas fa-trash"></i></span>
+                                                </a>
+                                            @endif
+                                        </div>
+                                    </td>
+                                </tr>
+                            @endforeach
+                            <tr style="box-shadow: none;">
+                                <td colspan="3">
+                                    <div class="d-flex justify-content-center">
+                                        {!! $gallery->links() !!}
+                                    </div>
+                                </td>
+                            </tr>
+                        @else
+                            <tr>
+                                <td colspan="3" class="text-center">No Gallery Found</td>
+                            </tr>
+                        @endif
+                    </tbody>
+                </table>
+            </div>
+
+        </div>
+    </div>
+@endsection
+
+@push('scripts')
+    <script>
+        $(document).on('click', '#delete', function(e) {
+            swal({
+                    title: "Are you sure?",
+                    text: "To delete this gallery.",
+                    type: "warning",
+                    confirmButtonText: "Yes",
+                    showCancelButton: true
+                })
+                .then((result) => {
+                    if (result.value) {
+                        window.location = $(this).data('route');
+                    } else if (result.dismiss === 'cancel') {
+                        swal(
+                            'Cancelled',
+                            'Your stay here :)',
+                            'error'
+                        )
+                    }
+                })
+        });
+
+        $(document).ready(function() {
+            // on change content_country_code should reload the page with the selected country code as query param
+            $('#content_country_code').on('change', function() {
+                var country_code = $(this).val();
+                window.location.href = "{{ route('user.admin.gallery.index') }}" + "?content_country_code=" +
+                    country_code;
+            });
+        });
+    </script>
+@endpush

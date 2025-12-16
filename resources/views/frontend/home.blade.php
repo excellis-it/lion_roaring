@@ -14,22 +14,26 @@
 @section('content')
 
     @php
-        $currentCode = strtoupper(\App\Helpers\Helper::getVisitorCountryCode());
-        $countries = \App\Helpers\Helper::getCountries();
+        use App\Helpers\Helper;
+        $currentCode = strtoupper(Helper::getVisitorCountryCode());
+        $countries = Helper::getCountries();
         // show popup only if session key not set for this IP
         $ip = request()->ip();
         $sessionKey = 'visitor_country_flag_code_' . $ip;
-        $showPopup = !session()->has($sessionKey);
+        $showPopup = !session()->has($sessionKey) && Session::has('agree');
     @endphp
 
     <!--Flag Popup -->
     <div class="popup-overlay" id="popupOverlay" style="{{ $showPopup ? '' : 'display:none;' }}">
         <div class="popup-box flag-popup-box">
-            <button onclick="closePopup()" class="xmark_btn"><i class="fa-solid fa-xmark"></i></button>
+            {{-- <button onclick="closePopup()" class="xmark_btn"><i class="fa-solid fa-xmark"></i></button> --}}
             <div class="top-box">
                 <div class="popup-logo">
-                    <img src="https://excellis.co.in/lion-roaring-org/public/storage/footer/CEMnI3pjMdaatfmJwSA0cQqNjA6W4c8Fk8rRA08q.png"
-                        alt="">
+                    @if (isset(Helper::getFooter()['footer_logo']))
+                        <img src="{{ Storage::url(Helper::getFooter()['footer_logo']) }}" alt="">
+                    @else
+                        <img src="{{ asset('frontend_assets/uploads/2024/02/Group-2029.png') }}" alt="">
+                    @endif
                 </div>
                 <!--<div class="popup-text-box">-->
                 <!--    <h2>Lion Roaring</h2>-->
@@ -54,12 +58,12 @@
             </div>
 
             @php
-                $currentCode = strtoupper(\App\Helpers\Helper::getVisitorCountryCode());
-                $countries = \App\Helpers\Helper::getCountries();
+                $currentCode = strtoupper(Helper::getVisitorCountryCode());
+                $countries = Helper::getCountries();
             @endphp
 
             <div class="popup_countrySwitcher">
-                <select class="countrySwitcher form-select form-select-sm cst-select cst-select-bottom">
+                <select class="form-select form-select-sm cst-select cst-select-bottom" id="popupCountrySelect">
                     @foreach ($countries as $c)
                         <option value="{{ strtolower($c->code) }}"
                             {{ strtoupper($c->code) === $currentCode ? 'selected' : '' }}
@@ -68,29 +72,34 @@
                         </option>
                     @endforeach
                 </select>
+                <div class="text-center">
+                    <button type="button" class="red_btn flag-btn mt-3 w-50" id="selectCountryBtn"
+                        onclick="handleCountrySelection()">
+                        <span>Select Country</span>
+                    </button>
+                </div>
             </div>
         </div>
     </div>
 
 
 
-    <section class="banner__slider banner_sec"
-        style="background-image: url('{{ asset('frontend_assets/images/bg-wrap.jpg') }}');">
+    <section class="banner__slider banner_sec">
         <div class="slider">
             <div class="slide">
                 <a href="{{ route('details') }}" tabindex="0">
                     <div class="slide__img">
-                        <!-- <video autoplay="" muted="" loop="" class="video_part" playsInline>
-                                            <source
-                                                src="{{ isset($home['section_1_video']) ? Storage::url($home['section_1_video']) : 'https://via.placeholder.com/150' }}"
-                                                type="video/mp4">
-                                            Your browser does not support the video tag.
-                                        </video> -->
+                        <video autoplay="" muted="" loop="" class="video_part" playsInline>
+                            <source
+                                src="{{ isset($home['banner_video']) ? Storage::url($home['banner_video']) : 'https://via.placeholder.com/150' }}"
+                                type="video/mp4">
+                            Your browser does not support the video tag.
+                        </video>
                         <!-- <img src="" alt="" class="full-image d-block d-md-none" /> -->
-                        <!-- <img src="{{ isset($home['banner_image']) ? Storage::url($home['banner_image']) : 'https://via.placeholder.com/150' }}"
-                                            class="full-image overlay-image"> -->
+                        <img src="{{ isset($home['banner_image']) ? Storage::url($home['banner_image']) : 'https://via.placeholder.com/150' }}"
+                            class="full-image overlay-image">
 
-                        <img src="{{ asset('frontend_assets/images/banner_img.png') }}" class="full-image overlay-image">
+                        {{-- <img src="{{ asset('frontend_assets/images/banner_img.png') }}" class="full-image overlay-image"> --}}
                     </div>
                 </a>
                 <div class="slide__content slide__content__left">
@@ -144,7 +153,13 @@
                     <div class="book">
                         <div class="left-book-sec">
                             <div class="left-sec-img">
-                                <img src="http://127.0.0.1:8000/storage/footer/CEMnI3pjMdaatfmJwSA0cQqNjA6W4c8Fk8rRA08q.png" class="full-image overlay-image">
+                                @if (isset(Helper::getFooter()['footer_logo']))
+                                    <img src="{{ Storage::url(Helper::getFooter()['footer_logo']) }}" alt=""
+                                        class="full-image overlay-image">
+                                @else
+                                    <img src="{{ asset('frontend_assets/uploads/2024/02/Group-2029.png') }}"
+                                        class="full-image overlay-image" alt="">
+                                @endif
                             </div>
                         </div>
                         <div id="pages" class="pages">
@@ -178,20 +193,6 @@
                                 @endforeach
                             @endif
                             <div class="page"></div>
-                            <!-- <div class="page">
-                                                <img src="{{ isset($home['section_2_right_image']) ? Storage::url($home['section_2_right_image']) : 'https://via.placeholder.com/150' }}"
-                                                                alt="">
-                                                <h4 class="flex-fixed">{{ $home['section_2_right_title'] ?? 'title' }}</h4>
-                                            </div>
-                                            <div class="page">
-                                                <h4 class="flex-fixed">{{ $home['section_2_right_title'] ?? 'title' }}</h4>
-                                                <p>{!! $home['section_2_right_description'] ?? 'description' !!}</p>
-                                            </div>
-                                            <div class="page"></div>
-                                            <div class="page"></div>
-                                            <div class="page"></div>
-                                            <div class="page"></div>
-                                            <div class="page"></div> -->
                         </div>
                     </div>
                 </div>
@@ -205,10 +206,9 @@
             <div class="row justify-content-center">
                 <div class="col-lg-8">
                     <div class="about_text heading_hp text-center">
-                        <!-- <h6>{{ $home['section_1_title'] ?? 'title' }}</h6> -->
-                        <h2 class="text-center"> {{ $home['section_1_sub_title'] ?? 'title' }}</h2>
+                        <h2 class="text-center"> {{ $home['section_3_title'] ?? 'title' }}</h2>
                         <p style="font-weight: 400;">
-                            <strong>{!! $home['section_1_description'] ?? 'description' !!}</strong>
+                            <strong>{!! $home['section_3_description'] ?? 'descripiton' !!}</strong>
                         </p>
                     </div>
                 </div>
@@ -216,120 +216,25 @@
 
 
             <div class="reviews_slider">
-                <div>
-                    <div class="book-text-mobile-slider">
-                        <div class="img-box">
-                            <img src="{{ asset('frontend_assets/images/banner_img.png') }}" alt=""
-                                class="user-img">
+                @if (count($our_governances) > 0)
+                    @foreach ($our_governances as $key => $our_governance)
+                        <div>
+                            <div class="book-text-mobile-slider">
+                                <div class="img-box">
+                                    <img src="{{ isset($our_governance->image) ? Storage::url($our_governance->image) : 'https://via.placeholder.com/150' }}"
+                                        alt="" class="user-img">
+                                </div>
+                                <div class="client-reviews">
+                                    @php
+                                        $description = $our_governance->description ?? 'description';
+                                    @endphp
+                                    <h3>{{ $our_governance->name ?? '' }} </h3>
+                                    <p>{!! $description !!}</p>
+                                </div>
+                            </div>
                         </div>
-                        <div class="client-reviews">
-                            <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Maxime excepturi aperiam tempore
-                                quis itaque ut repellendus unde error, eligendi ratione soluta ea labore, reiciendis quos
-                                est? Quasi alias voluptatibus mollitia quibusdam eveniet saepe officiis iure suscipit quis
-                                vitae vel cum impedit dolorem ullam, asperiores accusantium facilis. Praesentium debitis
-                                suscipit distinctio! Lorem ipsum dolor sit amet consectetur adipisicing elit. Maxime
-                                excepturi aperiam tempore quis itaque ut repellendus unde error, eligendi ratione soluta ea
-                                labore, reiciendis quos est? Quasi alias voluptatibus mollitia quibusdam eveniet saepe
-                                officiis iure suscipit quis vitae vel cum impedit dolorem ullam, asperiores accusantium
-                                facilis. Praesentium debitis suscipit distinctio!</p>
-                        </div>
-                    </div>
-                </div>
-                <div>
-                    <div class="book-text-mobile-slider">
-                        <div class="img-box">
-                            <img src="{{ asset('frontend_assets/images/banner_img.png') }}" alt=""
-                                class="user-img">
-                        </div>
-                        <div class="client-reviews">
-                            <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Maxime excepturi aperiam tempore
-                                quis itaque ut repellendus unde error, eligendi ratione soluta ea labore, reiciendis quos
-                                est? Quasi alias voluptatibus mollitia quibusdam eveniet saepe officiis iure suscipit quis
-                                vitae vel cum impedit dolorem ullam, asperiores accusantium facilis. Praesentium debitis
-                                suscipit distinctio! Lorem ipsum dolor sit amet consectetur adipisicing elit. Maxime
-                                excepturi aperiam tempore quis itaque ut repellendus unde error, eligendi ratione soluta ea
-                                labore, reiciendis quos est? Quasi alias voluptatibus mollitia quibusdam eveniet saepe
-                                officiis iure suscipit quis vitae vel cum impedit dolorem ullam, asperiores accusantium
-                                facilis. Praesentium debitis suscipit distinctio!</p>
-                        </div>
-                    </div>
-                </div>
-                <div>
-                    <div class="book-text-mobile-slider">
-                        <div class="img-box">
-                            <img src="{{ asset('frontend_assets/images/banner_img.png') }}" alt=""
-                                class="user-img">
-                        </div>
-                        <div class="client-reviews">
-                            <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Maxime excepturi aperiam tempore
-                                quis itaque ut repellendus unde error, eligendi ratione soluta ea labore, reiciendis quos
-                                est? Quasi alias voluptatibus mollitia quibusdam eveniet saepe officiis iure suscipit quis
-                                vitae vel cum impedit dolorem ullam, asperiores accusantium facilis. Praesentium debitis
-                                suscipit distinctio! Lorem ipsum dolor sit amet consectetur adipisicing elit. Maxime
-                                excepturi aperiam tempore quis itaque ut repellendus unde error, eligendi ratione soluta ea
-                                labore, reiciendis quos est? Quasi alias voluptatibus mollitia quibusdam eveniet saepe
-                                officiis iure suscipit quis vitae vel cum impedit dolorem ullam, asperiores accusantium
-                                facilis. Praesentium debitis suscipit distinctio!</p>
-                        </div>
-                    </div>
-                </div>
-                <div>
-                    <div class="book-text-mobile-slider">
-                        <div class="img-box">
-                            <img src="{{ asset('frontend_assets/images/banner_img.png') }}" alt=""
-                                class="user-img">
-                        </div>
-                        <div class="client-reviews">
-                            <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Maxime excepturi aperiam tempore
-                                quis itaque ut repellendus unde error, eligendi ratione soluta ea labore, reiciendis quos
-                                est? Quasi alias voluptatibus mollitia quibusdam eveniet saepe officiis iure suscipit quis
-                                vitae vel cum impedit dolorem ullam, asperiores accusantium facilis. Praesentium debitis
-                                suscipit distinctio! Lorem ipsum dolor sit amet consectetur adipisicing elit. Maxime
-                                excepturi aperiam tempore quis itaque ut repellendus unde error, eligendi ratione soluta ea
-                                labore, reiciendis quos est? Quasi alias voluptatibus mollitia quibusdam eveniet saepe
-                                officiis iure suscipit quis vitae vel cum impedit dolorem ullam, asperiores accusantium
-                                facilis. Praesentium debitis suscipit distinctio!</p>
-                        </div>
-                    </div>
-                </div>
-                <div>
-                    <div class="book-text-mobile-slider">
-                        <div class="img-box">
-                            <img src="{{ asset('frontend_assets/images/banner_img.png') }}" alt=""
-                                class="user-img">
-                        </div>
-                        <div class="client-reviews">
-                            <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Maxime excepturi aperiam tempore
-                                quis itaque ut repellendus unde error, eligendi ratione soluta ea labore, reiciendis quos
-                                est? Quasi alias voluptatibus mollitia quibusdam eveniet saepe officiis iure suscipit quis
-                                vitae vel cum impedit dolorem ullam, asperiores accusantium facilis. Praesentium debitis
-                                suscipit distinctio! Lorem ipsum dolor sit amet consectetur adipisicing elit. Maxime
-                                excepturi aperiam tempore quis itaque ut repellendus unde error, eligendi ratione soluta ea
-                                labore, reiciendis quos est? Quasi alias voluptatibus mollitia quibusdam eveniet saepe
-                                officiis iure suscipit quis vitae vel cum impedit dolorem ullam, asperiores accusantium
-                                facilis. Praesentium debitis suscipit distinctio!</p>
-                        </div>
-                    </div>
-                </div>
-                <div>
-                    <div class="book-text-mobile-slider">
-                        <div class="img-box">
-                            <img src="{{ asset('frontend_assets/images/banner_img.png') }}" alt=""
-                                class="user-img">
-                        </div>
-                        <div class="client-reviews">
-                            <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Maxime excepturi aperiam tempore
-                                quis itaque ut repellendus unde error, eligendi ratione soluta ea labore, reiciendis quos
-                                est? Quasi alias voluptatibus mollitia quibusdam eveniet saepe officiis iure suscipit quis
-                                vitae vel cum impedit dolorem ullam, asperiores accusantium facilis. Praesentium debitis
-                                suscipit distinctio! Lorem ipsum dolor sit amet consectetur adipisicing elit. Maxime
-                                excepturi aperiam tempore quis itaque ut repellendus unde error, eligendi ratione soluta ea
-                                labore, reiciendis quos est? Quasi alias voluptatibus mollitia quibusdam eveniet saepe
-                                officiis iure suscipit quis vitae vel cum impedit dolorem ullam, asperiores accusantium
-                                facilis. Praesentium debitis suscipit distinctio!</p>
-                        </div>
-                    </div>
-                </div>
+                    @endforeach
+                @endif
 
             </div>
         </div>
@@ -368,7 +273,7 @@
                         <div class="article card-4 mb-5">
                             <div class="card-body">
                                 <div class="card-corner">
-                                    <a href="single-3.html" class="arrow-box">
+                                    <a href="{{ route('service', $our_organization->slug) }}" class="arrow-box">
                                         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
                                             viewBox="0 0 24 24" fill="none">
                                             <path d="M13.75 6.75L19.25 12L13.75 17.25" stroke="#0E0E0F" stroke-width="1.5"
@@ -392,7 +297,8 @@
                                             </div>
                                         </div>
                                     </div>
-                                    <div class="col-lg-5">
+                                    <div class="col-lg-5 card-text-box">
+
                                         <h4>
                                             <a
                                                 href="{{ route('service', $our_organization->slug) }}">{{ $our_organization->name }}</a>
@@ -500,14 +406,14 @@
 
     <!-- @if (count($galleries) > 0)
     <section class="gallery_sec margin_27">
-                            <div class="gallery_slider">
-                                @foreach ($galleries as $galary)
+                                                        <div class="gallery_slider">
+                                                            @foreach ($galleries as $galary)
     <div class="gallery_box" style="width: 100%; display: inline-block;">
-                                        <img src="{{ Storage::url($galary->image) }}" alt="">
-                                    </div>
+                                                                    <img src="{{ Storage::url($galary->image) }}" alt="">
+                                                                </div>
     @endforeach
-                            </div>
-                        </section>
+                                                        </div>
+                                                    </section>
     @endif -->
 @endsection
 

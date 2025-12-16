@@ -6,11 +6,11 @@
          <div class="brand-logo d-flex align-items-center justify-content-between">
              <a href="javascript:void(0);" class="text-nowrap logo-img">
 
-                 @if (isset(Helper::getFooter()['footer_logo']))
-                     <img class="dark-logo" src="{{ Storage::url(Helper::getFooter()['footer_logo']) }}" alt="">
-                 @else
-                     <img class="dark-logo" src="{{ asset('user_assets/images/logo.png') }}" alt="">
-                 @endif
+                 @if (isset(Helper::getSettings()->PMA_PANEL_LOGO))
+                <img class="dark-logo" src="{{ asset(Helper::getSettings()->PMA_PANEL_LOGO) }}" alt="">
+            @else
+                <img class="dark-logo" src="{{ asset('user_assets/images/logo.png') }}" alt="">
+            @endif
              </a>
              <div class="close-btn d-lg-none d-block sidebartoggler cursor-pointer" id="sidebarCollapse">
                  <i class="ti ti-x fs-8 text-muted"></i>
@@ -96,7 +96,7 @@
                                  @endif
 
 
-                               
+
                                  @if (Gate::check('Manage Email'))
                                      <a href="{{ route('mail.index') }}">
                                          <div class="count_chat_sidebar count_chat_sidebar_count_mail"
@@ -728,6 +728,449 @@
                          <span class="hide-menu">{{ Helper::getMenuName('membership', 'Membership') }}</span>
                      </a>
                  </li>
+
+
+                 {{-- //*********************************************** Admin Portal menu --}}
+
+
+                 @if (Gate::check('Manage Donations'))
+                     <li class="sidebar-item">
+                         <a class="sidebar-link {{ Request::is('user/admin/donations*') ? 'active' : '' }}"
+                             href="{{ route('user.admin.donations.index') }}" aria-expanded="false">
+                             <span>
+                                 <img src="{{ asset('user_assets/images/lion-roring-icon/lion-roring-icon/donation.png') }}"
+                                     alt="Donations">
+                             </span>
+                             <span class="hide-menu">{{ Helper::getMenuName('donations', 'Donations') }}</span>
+                         </a>
+                     </li>
+                 @endif
+
+                 @if (Gate::check('Manage Contact Us Messages'))
+                     <li class="sidebar-item">
+                         <a class="sidebar-link {{ Request::is('user/admin/contact-us*') ? 'active' : '' }}"
+                             href="{{ route('user.admin.contact-us.index') }}" aria-expanded="false">
+                             <span>
+                                 <img src="{{ asset('user_assets/images/lion-roring-icon/lion-roring-icon/contact-massage.png') }}"
+                                     alt="Contact Us Messages">
+                             </span>
+                             <span
+                                 class="hide-menu">{{ Helper::getMenuName('contact_us_messages', 'Contact Us Messages') }}</span>
+                         </a>
+                     </li>
+                 @endif
+
+                 @if (Gate::check('Manage Newsletters'))
+                     <li class="sidebar-item">
+                         <a class="sidebar-link {{ Request::is('user/admin/newsletters*') ? 'active' : '' }}"
+                             href="{{ route('user.admin.newsletters.index') }}" aria-expanded="false">
+                             <span>
+                                 <img src="{{ asset('user_assets/images/lion-roring-icon/lion-roring-icon/news-letters.png') }}"
+                                     alt="Newsletters">
+                             </span>
+                             <span class="hide-menu">{{ Helper::getMenuName('newsletters', 'Newsletters') }}</span>
+                         </a>
+                     </li>
+                 @endif
+
+                 @if (Gate::check('Manage Testimonials'))
+                     <li class="sidebar-item">
+                         <a class="sidebar-link" href="#" aria-expanded="false" data-bs-toggle="collapse"
+                             data-bs-target="#collapseTestimonials">
+                             <span>
+                                 <img src="{{ asset('user_assets/images/lion-roring-icon/lion-roring-icon/testimonials.png') }}"
+                                     alt="Testimonials">
+                             </span>
+                             <span class="hide-menu">{{ Helper::getMenuName('testimonials', 'Testimonials') }}</span>
+                         </a>
+                         <div class="collapse {{ Request::is('user/admin/testimonials*') ? 'show' : '' }}"
+                             id="collapseTestimonials">
+                             <div class="menu_bb">
+                                 <a href="{{ route('user.admin.testimonials.index') }}">
+                                     <span>
+                                         <img src="{{ asset('user_assets/images/lion-roring-icon/lion-roring-icon/testimonial-list.png') }}"
+                                             alt="Testimonials List">
+                                     </span>
+                                     <span>{{ Helper::getMenuName('testimonials_list', 'Testimonials List') }}</span>
+                                 </a>
+                                 @if (Gate::check('Create Testimonials'))
+                                     <a href="{{ route('user.admin.testimonials.create') }}">
+                                         <span>
+                                             <img src="{{ asset('user_assets/images/lion-roring-icon/lion-roring-icon/create-testimonials.png') }}"
+                                                 alt="Create Testimonial">
+                                         </span>
+                                         <span>{{ Helper::getMenuName('testimonials_create', 'Testimonials Create') }}</span>
+                                     </a>
+                                 @endif
+                             </div>
+                         </div>
+                     </li>
+                 @endif
+
+                 @if (Gate::check('Manage Our Governance'))
+                     <li class="sidebar-item">
+                         <a class="sidebar-link" href="#" aria-expanded="false" data-bs-toggle="collapse"
+                             data-bs-target="#collapseOurGovernance">
+                             <span>
+                                 <img src="{{ asset('user_assets/images/lion-roring-icon/lion-roring-icon/our-governance.png') }}"
+                                     alt="Our Governance">
+                             </span>
+                             <span
+                                 class="hide-menu">{{ Helper::getMenuName('our_governance', 'Our Governance') }}</span>
+                         </a>
+                         <div class="collapse {{ Request::is('user/admin/our-governances*') ? 'show' : '' }}"
+                             id="collapseOurGovernance">
+                             <div class="menu_bb">
+                                 <a href="{{ route('user.admin.our-governances.index') }}">
+                                     <span>
+                                         <img src="{{ asset('user_assets/images/lion-roring-icon/lion-roring-icon/our-governance-list.png') }}"
+                                             alt="Our Governance List">
+                                     </span>
+                                     <span>{{ Helper::getMenuName('our_governance_list', 'Our Governance List') }}</span>
+                                 </a>
+                                 @if (Gate::check('Create Our Governance'))
+                                     <a href="{{ route('user.admin.our-governances.create') }}">
+                                         <span>
+                                             <img src="{{ asset('user_assets/images/lion-roring-icon/lion-roring-icon/our-governance-create.png') }}"
+                                                 alt="Our Governance Create">
+                                         </span>
+                                         <span>{{ Helper::getMenuName('our_governance_create', 'Our Governance Create') }}</span>
+                                     </a>
+                                 @endif
+                             </div>
+                         </div>
+                     </li>
+                 @endif
+
+                 @if (Gate::check('Manage Our Organization'))
+                     <li class="sidebar-item">
+                         <a class="sidebar-link" href="#" aria-expanded="false" data-bs-toggle="collapse"
+                             data-bs-target="#collapseOurOrganizations">
+                             <span>
+                                 <img src="{{ asset('user_assets/images/lion-roring-icon/lion-roring-icon/our-organisations.png') }}"
+                                     alt="Our Organizations">
+                             </span>
+                             <span
+                                 class="hide-menu">{{ Helper::getMenuName('our_organizations', 'Our Organizations') }}</span>
+                         </a>
+                         <div class="collapse {{ Request::is('user/admin/our-organizations*') ? 'show' : '' }}"
+                             id="collapseOurOrganizations">
+                             <div class="menu_bb">
+                                 <a href="{{ route('user.admin.our-organizations.index') }}">
+                                     <span>
+                                         <img src="{{ asset('user_assets/images/lion-roring-icon/lion-roring-icon/our-organisation-list.png') }}"
+                                             alt="Our Organizations List">
+                                     </span>
+                                     <span>{{ Helper::getMenuName('our_organizations_list', 'Our Organizations List') }}</span>
+                                 </a>
+                                 @if (Gate::check('Create Our Organization'))
+                                     <a href="{{ route('user.admin.our-organizations.create') }}">
+                                         <span>
+                                             <img src="{{ asset('user_assets/images/lion-roring-icon/lion-roring-icon/our-organisation-list.png') }}"
+                                                 alt="Plus">
+                                         </span>
+                                         <span>{{ Helper::getMenuName('our_organizations_create', 'Our Organizations Create') }}</span>
+                                     </a>
+                                 @endif
+                             </div>
+                         </div>
+                     </li>
+                 @endif
+
+                 @if (Gate::check('Manage Organization Center'))
+                     <li class="sidebar-item">
+                         <a class="sidebar-link" href="#" aria-expanded="false" data-bs-toggle="collapse"
+                             data-bs-target="#collapseOrganizationCenter">
+                             <span>
+                                 <img src="{{ asset('user_assets/images/lion-roring-icon/lion-roring-icon/organisation-center.png') }}"
+                                     alt="Organization Center">
+                             </span>
+                             <span
+                                 class="hide-menu">{{ Helper::getMenuName('organization_center', 'Organization Center') }}</span>
+                         </a>
+                         <div class="collapse {{ Request::is('user/admin/organization-centers*') ? 'show' : '' }}"
+                             id="collapseOrganizationCenter">
+                             <div class="menu_bb">
+                                 <a href="{{ route('user.admin.organization-centers.index') }}">
+                                     <span>
+                                         <img src="{{ asset('user_assets/images/lion-roring-icon/lion-roring-icon/organisation-center-list.png') }}"
+                                             alt="Organization Center List">
+                                     </span>
+                                     <span>{{ Helper::getMenuName('organization_center_list', 'Organization Center List') }}</span>
+                                 </a>
+                                 @if (Gate::check('Create Organization Center'))
+                                     <a href="{{ route('user.admin.organization-centers.create') }}">
+                                         <span>
+                                             <img src="{{ asset('user_assets/images/lion-roring-icon/lion-roring-icon/organisation-center-list.png') }}"
+                                                 alt="Plus">
+                                         </span>
+                                         <span>{{ Helper::getMenuName('organization_center_create', 'Organization Center Create') }}</span>
+                                     </a>
+                                 @endif
+                             </div>
+                         </div>
+                     </li>
+                 @endif
+
+                 @if (Gate::check('Manage Services'))
+                     <li class="sidebar-item">
+                         <a class="sidebar-link" href="#" aria-expanded="false" data-bs-toggle="collapse"
+                             data-bs-target="#collapseServices">
+                             <span>
+                                 <img src="{{ asset('user_assets/images/lion-roring-icon/lion-roring-icon/services.png') }}"
+                                     alt="Services">
+                             </span>
+                             <span class="hide-menu">{{ Helper::getMenuName('services', 'Services') }}</span>
+                         </a>
+                         <div class="collapse {{ Request::is('user/admin/services*') ? 'show' : '' }}"
+                             id="collapseServices">
+                             <div class="menu_bb">
+                                 @if (count(Helper::getOrganzations()) > 0)
+                                     @foreach (Helper::getOrganzations() as $key => $organization)
+                                         <a href="{{ route('user.admin.services.index', ['slug' => $organization->slug]) }}">
+                                             <span>
+                                                 <img src="{{ asset('user_assets/images/lion-roring-icon/lion-roring-icon/education-center.png') }}"
+                                                     alt="Service">
+                                             </span>
+                                             <span>{{ $organization->name }}</span>
+                                         </a>
+                                     @endforeach
+                                 @endif
+                             </div>
+                         </div>
+                     </li>
+                 @endif
+
+                 @if (Gate::check('Manage Home Page') ||
+                         Gate::check('Manage Details Page') ||
+                         Gate::check('Manage Organizations Page') ||
+                         Gate::check('Manage About Us Page') ||
+                         Gate::check('Manage Faq') ||
+                         Gate::check('Manage Gallery') ||
+                         Gate::check('Manage Ecclesia Association Page') ||
+                         Gate::check('Manage Principle and Business Page') ||
+                         Gate::check('Manage Contact Us Page') ||
+                         Gate::check('Manage Article of Association Page') ||
+                         Gate::check('Manage Footer') ||
+                         Gate::check('Manage Register Page Agreement Page') ||
+                         Gate::check('Manage Member Privacy Policy Page') ||
+                         Gate::check('Manage PMA Terms Page') ||
+                         Gate::check('Manage Privacy Policy Page') ||
+                         Gate::check('Manage Terms and Conditions Page'))
+                     <li class="sidebar-item">
+                         <a class="sidebar-link" href="#" aria-expanded="false" data-bs-toggle="collapse"
+                             data-bs-target="#collapsePages">
+                             <span>
+                                 <img src="{{ asset('user_assets/images/lion-roring-icon/lion-roring-icon/pages.png') }}"
+                                     alt="Pages">
+                             </span>
+                             <span class="hide-menu">{{ Helper::getMenuName('pages', 'Pages') }}</span>
+                         </a>
+                         <div class="collapse {{ Request::is('user/admin/pages*') ? 'show' : '' }}"
+                             id="collapsePages">
+                             <div class="menu_bb">
+                                 @if (Gate::check('Manage Home Page'))
+                                     <a href="{{ route('user.admin.home-cms.index') }}">
+                                         <span>
+                                             <img src="{{ asset('user_assets/images/lion-roring-icon/lion-roring-icon/home.png') }}"
+                                                 alt="Home">
+                                         </span>
+                                         <span>{{ Helper::getMenuName('pages_home', 'Home') }}</span>
+                                     </a>
+                                 @endif
+
+                                 @if (Gate::check('Manage Details Page'))
+                                     <a href="{{ route('user.admin.details.index') }}">
+                                         <span>
+                                             <img src="{{ asset('user_assets/images/lion-roring-icon/lion-roring-icon/details.png') }}"
+                                                 alt="Details">
+                                         </span>
+                                         <span>{{ Helper::getMenuName('pages_details', 'Details') }}</span>
+                                     </a>
+                                 @endif
+
+                                 @if (Gate::check('Manage Organizations Page'))
+                                     <a href="{{ route('user.admin.organizations.index') }}">
+                                         <span>
+                                             <img src="{{ asset('user_assets/images/lion-roring-icon/lion-roring-icon/organisation-cms.png') }}"
+                                                 alt="Organization CMS">
+                                         </span>
+                                         <span>{{ Helper::getMenuName('pages_organization_cms', 'Organization CMS') }}</span>
+                                     </a>
+                                 @endif
+
+                                 @if (Gate::check('Manage About Us Page'))
+                                     <a href="{{ route('user.admin.about-us.index') }}">
+                                         <span>
+                                             <img src="{{ asset('user_assets/images/lion-roring-icon/lion-roring-icon/about-us.png') }}"
+                                                 alt="About Us">
+                                         </span>
+                                         <span>{{ Helper::getMenuName('pages_about_us', 'About Us') }}</span>
+                                     </a>
+                                 @endif
+
+                                 @if (Gate::check('Manage Faq'))
+                                     <a href="{{ route('user.admin.faq.index') }}">
+                                         <span>
+                                             <img src="{{ asset('user_assets/images/lion-roring-icon/lion-roring-icon/faqs.png') }}"
+                                                 alt="FAQ">
+                                         </span>
+                                         <span>{{ Helper::getMenuName('pages_faqs', 'FAQS') }}</span>
+                                     </a>
+                                 @endif
+
+                                 @if (Gate::check('Manage Gallery'))
+                                     <a href="{{ route('user.admin.gallery.index') }}">
+                                         <span>
+                                             <img src="{{ asset('user_assets/images/lion-roring-icon/lion-roring-icon/gallery.png') }}"
+                                                 alt="Gallery">
+                                         </span>
+                                         <span>{{ Helper::getMenuName('pages_gallery', 'Gallery') }}</span>
+                                     </a>
+                                 @endif
+
+                                 @if (Gate::check('Manage Ecclesia Association Page'))
+                                     <a href="{{ route('user.admin.ecclesia-associations.index') }}">
+                                         <span>
+                                             <img src="{{ asset('user_assets/images/lion-roring-icon/lion-roring-icon/principle-and-business-modal.png') }}"
+                                                 alt="Ecclesia Association">
+                                         </span>
+                                         <span>{{ Helper::getMenuName('pages_ecclesia_association', 'ECCLESIA ASSOCIATION') }}</span>
+                                     </a>
+                                 @endif
+
+                                 @if (Gate::check('Manage Principle and Business Page'))
+                                     <a href="{{ route('user.admin.principle-and-business.index') }}">
+                                         <span>
+                                             <img src="{{ asset('user_assets/images/lion-roring-icon/lion-roring-icon/principle-and-business-modal.png') }}"
+                                                 alt="Principle and Business">
+                                         </span>
+                                         <span>{{ Helper::getMenuName('pages_principle_and_business', 'PRINCIPLE AND BUSINESS MODEL') }}</span>
+                                     </a>
+                                 @endif
+
+                                 @if (Gate::check('Manage Contact Us Page'))
+                                     <a href="{{ route('user.admin.contact-us-cms.index') }}">
+                                         <span>
+                                             <img src="{{ asset('user_assets/images/lion-roring-icon/lion-roring-icon/contact-us.png') }}"
+                                                 alt="Contact Us">
+                                         </span>
+                                         <span>{{ Helper::getMenuName('pages_contact_us', 'CONTACT US') }}</span>
+                                     </a>
+                                 @endif
+
+                                 @if (Gate::check('Manage Article of Association Page'))
+                                     <a href="{{ route('user.admin.articles-of-association.index') }}">
+                                         <span>
+                                             <img src="{{ asset('user_assets/images/lion-roring-icon/lion-roring-icon/artailes-of-assosiations.png') }}"
+                                                 alt="Article of Association">
+                                         </span>
+                                         <span>{{ Helper::getMenuName('pages_articles_of_association', 'ARTICLES OF ASSOCIATION') }}</span>
+                                     </a>
+                                 @endif
+
+                                 @if (Gate::check('Manage Footer'))
+                                     <a href="{{ route('user.admin.footer.index') }}">
+                                         <span>
+                                             <img src="{{ asset('user_assets/images/lion-roring-icon/lion-roring-icon/footer.png') }}"
+                                                 alt="Footer">
+                                         </span>
+                                         <span>{{ Helper::getMenuName('pages_footer', 'Footer') }}</span>
+                                     </a>
+                                 @endif
+
+                                 @if (Gate::check('Manage Register Page Agreement Page'))
+                                     <a href="{{ route('user.admin.register-agreements.index') }}">
+                                         <span>
+                                             <img src="{{ asset('user_assets/images/lion-roring-icon/lion-roring-icon/register-page-agreement.png') }}"
+                                                 alt="Register Page Agreement">
+                                         </span>
+                                         <span>{{ Helper::getMenuName('pages_register_agreements', 'REGISTER PAGE AGREEMENTS') }}</span>
+                                     </a>
+                                 @endif
+
+                                 @if (Gate::check('Manage PMA Terms Page'))
+                                     <a href="{{ route('user.admin.pma-terms.index') }}">
+                                         <span>
+                                             <img src="{{ asset('user_assets/images/lion-roring-icon/lion-roring-icon/pma-terms.png') }}"
+                                                 alt="PMA Terms">
+                                         </span>
+                                         <span>{{ Helper::getMenuName('pages_pma_terms', 'PMA Terms') }}</span>
+                                     </a>
+                                 @endif
+
+                                 @if (Gate::check('Manage Privacy Policy Page'))
+                                     <a href="{{ route('user.admin.privacy-policy.index') }}">
+                                         <span>
+                                             <img src="{{ asset('user_assets/images/lion-roring-icon/lion-roring-icon/privacy-policy.png') }}"
+                                                 alt="Privacy Policy">
+                                         </span>
+                                         <span>{{ Helper::getMenuName('pages_privacy_policy', 'Privacy Policy') }}</span>
+                                     </a>
+                                 @endif
+                                 @if (Gate::check('Manage Terms and Conditions Page'))
+                                     <a href="{{ route('user.admin.terms-and-condition.index') }}">
+                                         <span>
+                                             <img src="{{ asset('user_assets/images/lion-roring-icon/lion-roring-icon/terms-and-condition.png') }}"
+                                                 alt="Terms and Condition">
+                                         </span>
+                                         <span>{{ Helper::getMenuName('pages_terms_and_conditions', 'Terms and Conditions') }}</span>
+                                     </a>
+                                 @endif
+                             </div>
+                         </div>
+                     </li>
+                 @endif
+
+                 @if (Gate::check('Manage Countries'))
+                     <li class="sidebar-item">
+                         <a class="sidebar-link {{ Request::is('user/admin/admin-countries*') ? 'active' : '' }}"
+                             href="{{ route('user.admin.admin-countries.index') }}" aria-expanded="false">
+                             <span>
+                                 <img src="{{ asset('user_assets/images/lion-roring-icon/lion-roring-icon/countries.png') }}"
+                                     alt="Countries">
+                             </span>
+                             <span class="hide-menu">{{ Helper::getMenuName('countries', 'Countries') }}</span>
+                         </a>
+                     </li>
+                 @endif
+
+                 @if (Gate::check('Manage Site Settings') || Gate::check('Manage Menu Settings'))
+                     <li class="sidebar-item">
+                         <a class="sidebar-link" href="#" aria-expanded="false" data-bs-toggle="collapse"
+                             data-bs-target="#collapseSiteSettings">
+                             <span>
+                                 <img src="{{ asset('user_assets/images/lion-roring-icon/lion-roring-icon/site-setting.png') }}"
+                                     alt="Site Settings">
+                             </span>
+                             <span
+                                 class="hide-menu">{{ Helper::getMenuName('site_settings', 'Site Settings') }}</span>
+                         </a>
+                         <div class="collapse {{ Request::is('user/admin/settings*') || Request::is('user/admin/menu*') ? 'show' : '' }}"
+                             id="collapseSiteSettings">
+                             <div class="menu_bb">
+                                 @if (Gate::check('Manage Site Settings'))
+                                     <a href="{{ route('user.admin.settings.edit') }}">
+                                         <span>
+                                             <img src="{{ asset('user_assets/images/lion-roring-icon/lion-roring-icon/setting.png') }}"
+                                                 alt="Settings">
+                                         </span>
+                                         <span>{{ Helper::getMenuName('site_settings_settings', 'Settings') }}</span>
+                                     </a>
+                                 @endif
+                                 @if (Gate::check('Manage Menu Settings'))
+                                     <a href="{{ route('user.admin.menu.index') }}">
+                                         <span>
+                                             <img src="{{ asset('user_assets/images/lion-roring-icon/lion-roring-icon/menu-names.png') }}"
+                                                 alt="Menu Names">
+                                         </span>
+                                         <span>{{ Helper::getMenuName('site_settings_menu_names', 'Menu Names') }}</span>
+                                     </a>
+                                 @endif
+                             </div>
+                         </div>
+                     </li>
+                 @endif
 
                  <br>
                  <br>
