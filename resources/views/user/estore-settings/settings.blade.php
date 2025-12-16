@@ -10,7 +10,7 @@
 
             <div class="row">
                 <div class="col-md-12">
-                    <h4 class="mb-4">E-Store Settings</h4>
+                    <h4 class="title mb-5">E-Store Settings</h4>
                     <form action="{{ route('store-settings.update', $storeSetting->id) }}" method="POST">
                         @csrf
                         @method('PUT')

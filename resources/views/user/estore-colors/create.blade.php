@@ -14,7 +14,7 @@
                     <form action="{{ route('colors.store') }}" method="POST" id="create-color-form">
                         @csrf
                         <div class="row">
-                            <div class="col-md-4 mb-2">
+                            <div class="col-md-6 mb-2">
                                 <div class="box_label">
                                     <label for="name">Color Name *</label>
                                     <input type="text" name="color_name" id="name" class="form-control">
@@ -28,7 +28,7 @@
 
 
 
-                            {{-- <div class="col-md-4 mb-2">
+                            {{-- <div class="col-md-6 mb-2">
                                 <div class="box_label">
                                     <label for="color">Color</label>
                                     <input type="color" name="color" id="color" class="form-control" style="min-height: 42px">
@@ -40,7 +40,7 @@
 
                             </div> --}}
 
-                            <div class="col-md-4 mb-2">
+                            <div class="col-md-6 mb-2">
                                 <div class="box_label">
                                     <label for="status">Status</label>
                                     <select name="status" id="status" class="form-control">
