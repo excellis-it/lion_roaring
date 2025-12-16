@@ -1863,7 +1863,7 @@ section {
 }
 
 .bulletion_board_left.bulletion_board_right .bulle_left {
-    text-align: right;
+    /* text-align: right; */
 }
 
 .bulletion_board_left.bulletion_board_right .name_bull {
@@ -2709,7 +2709,7 @@ section {
     letter-spacing: 0.3px;
     border-radius: 30px;
     font-size: 12px;
-    color: #fff !important;
+    color: #222 !important;
 }
 
 .edit-icon i {

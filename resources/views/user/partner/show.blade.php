@@ -178,7 +178,7 @@
     <div class="container-fluid">
         <div class="bg_white_border">
             {{-- Header Section --}}
-            <div class="d-flex justify-content-between align-items-center mb-4 pb-3 page-header">
+            <div class="member-details-header d-flex justify-content-between align-items-center mb-4 pb-3 page-header">
                 <div>
                     <h3 class="mb-1 page-title">
                         <i class="fa fa-user-circle"></i> Member Details

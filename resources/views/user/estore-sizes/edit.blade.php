@@ -10,7 +10,7 @@
 
             <div class="row">
                 <div class="col-md-12">
-                    <h4 class="title">Edit Size</h4>
+                    <h4 class="title mb-5">Edit Size</h4>
                     <form action="{{ route('sizes.update', $size->id) }}" method="POST">
                         @csrf
                         @method('PUT')
