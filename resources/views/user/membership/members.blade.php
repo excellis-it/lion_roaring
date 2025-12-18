@@ -15,6 +15,7 @@
                             <th>#</th>
                             <th>User</th>
                             <th>Subscription</th>
+                            <th>Method</th>
                             <th>Price</th>
                             <th>Total Paid</th>
                             <th>Start Date</th>
@@ -35,8 +36,28 @@
                                     @endif
                                 </td>
                                 <td>{{ $m->subscription_name }}</td>
-                                <td>${{ number_format($m->subscription_price, 2) }}</td>
-                                <td>${{ number_format($m->payments->sum('payment_amount'), 2) }}</td>
+                                <td>
+                                    @if (($m->subscription_method ?? 'amount') === 'token')
+                                        <span class="badge bg-info">Token</span>
+                                    @else
+                                        <span class="badge bg-success">Amount</span>
+                                    @endif
+                                </td>
+                                <td>
+                                    @if (($m->subscription_method ?? 'amount') === 'token')
+                                        {{ $m->life_force_energy_tokens ?? $m->subscription_price }}
+                                        {{ $measurement->label ?? 'Life Force Energy' }}
+                                    @else
+                                        ${{ number_format((float) $m->subscription_price, 2) }}
+                                    @endif
+                                </td>
+                                <td>
+                                    @if (($m->subscription_method ?? 'amount') === 'token')
+                                        -
+                                    @else
+                                        ${{ number_format((float) $m->payments->sum('payment_amount'), 2) }}
+                                    @endif
+                                </td>
                                 <td>{{ \Carbon\Carbon::parse($m->subscription_start_date)->format('M d, Y') }}</td>
                                 <td>{{ \Carbon\Carbon::parse($m->subscription_expire_date)->format('M d, Y') }}</td>
                                 <td>
@@ -50,13 +71,13 @@
                             </tr>
                         @empty
                             <tr>
-                                <td colspan="8" class="text-center text-muted py-4">No members found</td>
+                                <td colspan="9" class="text-center text-muted py-4">No members found</td>
                             </tr>
                         @endforelse
                     </tbody>
                     <tfoot>
                         <tr>
-                            <td colspan="5">
+                            <td colspan="6">
                                 <div class="d-flex justify-content-center">
                                     {!! $members->links() !!}
                                 </div>

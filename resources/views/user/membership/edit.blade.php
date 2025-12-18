@@ -35,9 +35,35 @@
                     </div>
                     <div class="col-md-6 mb-3">
                         <div class="box_label">
-                            <label>Cost</label>
+                            <label>Plan Type *</label>
+                            <select name="pricing_type" class="form-control" id="pricing_type" required>
+                                <option value="amount"
+                                    {{ ($tier->pricing_type ?? 'amount') === 'amount' ? 'selected' : '' }}>Amount (USD)
+                                </option>
+                                <option value="token"
+                                    {{ ($tier->pricing_type ?? 'amount') === 'token' ? 'selected' : '' }}>Life Force Energy
+                                    (Token)</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-md-6 mb-3" id="amount_cost_wrap">
+                        <div class="box_label">
+                            <label>Amount (USD) *</label>
                             <input name="cost" class="form-control" value="{{ $tier->cost }}" type="number"
-                                step="0.01">
+                                step="0.01" min="0">
+                        </div>
+                    </div>
+                    <div class="col-md-6 mb-3 d-none" id="token_value_wrap">
+                        <div class="box_label">
+                            <label>Life Force Energy Tokens *</label>
+                            <input name="life_force_energy_tokens" class="form-control"
+                                value="{{ $tier->life_force_energy_tokens }}" type="number" step="0.01" min="0">
+                        </div>
+                    </div>
+                    <div class="col-md-12 mb-3 d-none" id="agree_desc_wrap">
+                        <div class="box_label">
+                            <label>Agree Description *</label>
+                            <textarea name="agree_description" class="form-control" rows="5">{{ $tier->agree_description }}</textarea>
                         </div>
                     </div>
                     <div class="col-md-6 mb-3">
@@ -46,7 +72,8 @@
                             <select name="role_id" class="form-control">
                                 <option value="">-- select a role --</option>
                                 @foreach ($roles as $role)
-                                    <option value="{{ $role->id }}" {{ $tier->role_id == $role->id ? 'selected' : '' }}>
+                                    <option value="{{ $role->id }}"
+                                        {{ $tier->role_id == $role->id ? 'selected' : '' }}>
                                         {{ $role->name }}</option>
                                 @endforeach
                             </select>
@@ -81,6 +108,22 @@
 
 @push('scripts')
     <script>
+        function syncMembershipPricingFields() {
+            var type = ($('#pricing_type').val() || 'amount');
+            if (type === 'token') {
+                $('#amount_cost_wrap').addClass('d-none');
+                $('#token_value_wrap').removeClass('d-none');
+                $('#agree_desc_wrap').removeClass('d-none');
+            } else {
+                $('#amount_cost_wrap').removeClass('d-none');
+                $('#token_value_wrap').addClass('d-none');
+                $('#agree_desc_wrap').addClass('d-none');
+            }
+        }
+
+        $(document).on('change', '#pricing_type', syncMembershipPricingFields);
+        $(document).ready(syncMembershipPricingFields);
+
         $(document).on('click', '.add-benefit', function() {
             $('#benefits').append(
                 '<div class="input-group mb-2"><input type="text" name="benefits[]" class="form-control"><button type="button" class="btn btn-danger remove-benefit">-</button></div>'

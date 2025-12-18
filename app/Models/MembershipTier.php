@@ -14,6 +14,9 @@ class MembershipTier extends Model
         'slug',
         'description',
         'cost',
+        'pricing_type',
+        'life_force_energy_tokens',
+        'agree_description',
         'role_id'
     ];
 
