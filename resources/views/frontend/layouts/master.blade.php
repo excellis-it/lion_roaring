@@ -76,7 +76,7 @@
             // dd(date('H'))
             $ip = request()->ip();
             $sessionKey = 'visitor_country_flag_code_' . $ip;
-            $afterCountryCheck = session()->has($sessionKey);
+            $afterCountryCheck = session()->has($sessionKey);  
         @endphp
 
 
