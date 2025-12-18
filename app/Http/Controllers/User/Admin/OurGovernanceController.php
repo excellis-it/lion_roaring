@@ -110,7 +110,7 @@ class OurGovernanceController extends Controller
 
 
 
-        return redirect()->route('our-governances.index')->with('message', 'Our Governance created successfully.');
+        return redirect()->route('user.admin.our-governances.index')->with('message', 'Our Governance created successfully.');
     }
 
     /**
@@ -189,7 +189,7 @@ class OurGovernanceController extends Controller
 
         $our_governance->save();
 
-        return redirect()->route('our-governances.index')->with('message', 'Our Governance updated successfully.');
+        return redirect()->route('user.admin.our-governances.index')->with('message', 'Our Governance updated successfully.');
     }
 
     /**
@@ -208,7 +208,7 @@ class OurGovernanceController extends Controller
         if (auth()->user()->can('Delete Our Governance')) {
             $our_governance = OurGovernance::findOrfail($request->id);
             $our_governance->delete();
-            return redirect()->route('our-governances.index')->with('message', 'Our Governance deleted successfully.');
+            return redirect()->route('user.admin.our-governances.index')->with('message', 'Our Governance deleted successfully.');
         } else {
             abort(403, 'You do not have permission to access this page.');
         }

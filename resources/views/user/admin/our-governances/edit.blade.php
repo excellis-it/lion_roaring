@@ -16,7 +16,7 @@
                 </div>
             </div>
 
-            <form action="{{ route('our-governances.update', $our_governance->id) }}" method="post"
+            <form action="{{ route('user.admin.our-governances.update', $our_governance->id) }}" method="post"
                 enctype="multipart/form-data">
                 @method('PUT')
                 @csrf
@@ -195,7 +195,7 @@
                         <div class="col-xl-12">
                             <div class="btn-1">
                                 <button type="submit" class="print_btn me-2 mt-2 mb-2">Update</button>
-                                <a href="{{ route('our-governances.index') }}" class="print_btn print_btn_vv">Cancel</a>
+                                <a href="{{ route('user.admin.our-governances.index') }}" class="print_btn print_btn_vv">Cancel</a>
                             </div>
                         </div>
                     </div>

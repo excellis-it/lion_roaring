@@ -1,0 +1,190 @@
+name: FCM
+description: ''
+endpoints:
+  -
+    httpMethods:
+      - POST
+    uri: api/v3/user/fcm/update-token
+    metadata:
+      groupName: FCM
+      groupDescription: ''
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'Update FCM Token'
+      description: "Updates the FCM token for the authenticated user's device."
+      authenticated: true
+      custom: []
+    headers:
+      Authorization: 'Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJhdWQiOiIxIiwianRpIjoiYzkzNjcyNzVkMDdlMGY5ZTc5N2Y3NzdiMzFkZGFjZmFiMDAzOWI1Y2E1ZGJjZTQ3ZWY3MjIxMjQ3YTNlMTVlOTQ0YjJlNGY2Nzk2Yjc5MDQiLCJpYXQiOjE3NjQwNzcyMjguMDQyOTgyLCJuYmYiOjE3NjQwNzcyMjguMDQyOTgzLCJleHAiOjE3OTU2MTMyMjguMDM1OTI0LCJzdWIiOiIxIiwic2NvcGVzIjpbXX0.d3N3fp6pTh1JxrRcDMwG0gLBsS0qyH4TWMsTpjbf_piH3rdfBj-04fL3inKHvOEGcZeFIFUr23DnEKVxNiHsiRYHpJz55K9Y0v-CRi4x8QxW9TIx9L63A0RaHGK044HKEq01mKy3_0ho-n2y2-s12umW92piu9A40h77UxhBMqfqHcIwwr3g77_lGtE530jLEFTSavVPHNiL2UtPIzjllRhXJO9LqALirv4txTkGiNs-3QfU4Q_suzKeU1esVJS6cOQ_lojFTeB26zq0ulDlVPYwx_ruWGyvqc4HbTwhUtCddXK-4IbXCyCWhqNqtPTRmBgtMyEy8atM6hbVFjYHDjlefUP0i6ejKmVaiEiIjTbgL2HotoGsRob1awoP5p9uYsixd0-G1OEGlPPL_wv9tlXwFBiU0M4iJnqaYZt6Cdf_MP79bd3ZcDrOaqF0ALTj6sopGau6Ml2zWr6PqChHl7G9ApnDPY_sVqSjovoDeKUhMVgNwogQCqdnbP508CYoKQtrHItBewCDmjMfekZllaMeWpU_3bnsPhfRQaL6R53uAFz5P2I_CtPcdY9W_HCBHHvTNnyrrPQhjBD_WEeT6-pm681nPKckz2qJCuHelQvb_T55SEIpq2QXw-hkMXGrXLF7imLsodNlURRKgIQLpXqdHv9EU2V5A7alUTbdDRQ'
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters: []
+    cleanUrlParameters: []
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters:
+      fcm_token:
+        name: fcm_token
+        description: 'The FCM token from the client device.'
+        required: true
+        example: '"dGhpcyBpcyBhIGZha2UgdG9rZW4"'
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+    cleanBodyParameters:
+      fcm_token: '"dGhpcyBpcyBhIGZha2UgdG9rZW4"'
+    fileParameters: []
+    responses:
+      -
+        status: 200
+        content: |-
+          {
+            "message": "FCM token updated successfully.",
+            "status": true
+          }
+        headers: []
+        description: ''
+        custom: []
+      -
+        status: 422
+        content: |-
+          {
+            "message": "Validation error.",
+            "errors": {
+              "fcm_token": ["The fcm token field is required."]
+            }
+          }
+        headers: []
+        description: ''
+        custom: []
+    responseFields: []
+    auth:
+      - headers
+      - Authorization
+      - 'Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJhdWQiOiIxIiwianRpIjoiYzkzNjcyNzVkMDdlMGY5ZTc5N2Y3NzdiMzFkZGFjZmFiMDAzOWI1Y2E1ZGJjZTQ3ZWY3MjIxMjQ3YTNlMTVlOTQ0YjJlNGY2Nzk2Yjc5MDQiLCJpYXQiOjE3NjQwNzcyMjguMDQyOTgyLCJuYmYiOjE3NjQwNzcyMjguMDQyOTgzLCJleHAiOjE3OTU2MTMyMjguMDM1OTI0LCJzdWIiOiIxIiwic2NvcGVzIjpbXX0.d3N3fp6pTh1JxrRcDMwG0gLBsS0qyH4TWMsTpjbf_piH3rdfBj-04fL3inKHvOEGcZeFIFUr23DnEKVxNiHsiRYHpJz55K9Y0v-CRi4x8QxW9TIx9L63A0RaHGK044HKEq01mKy3_0ho-n2y2-s12umW92piu9A40h77UxhBMqfqHcIwwr3g77_lGtE530jLEFTSavVPHNiL2UtPIzjllRhXJO9LqALirv4txTkGiNs-3QfU4Q_suzKeU1esVJS6cOQ_lojFTeB26zq0ulDlVPYwx_ruWGyvqc4HbTwhUtCddXK-4IbXCyCWhqNqtPTRmBgtMyEy8atM6hbVFjYHDjlefUP0i6ejKmVaiEiIjTbgL2HotoGsRob1awoP5p9uYsixd0-G1OEGlPPL_wv9tlXwFBiU0M4iJnqaYZt6Cdf_MP79bd3ZcDrOaqF0ALTj6sopGau6Ml2zWr6PqChHl7G9ApnDPY_sVqSjovoDeKUhMVgNwogQCqdnbP508CYoKQtrHItBewCDmjMfekZllaMeWpU_3bnsPhfRQaL6R53uAFz5P2I_CtPcdY9W_HCBHHvTNnyrrPQhjBD_WEeT6-pm681nPKckz2qJCuHelQvb_T55SEIpq2QXw-hkMXGrXLF7imLsodNlURRKgIQLpXqdHv9EU2V5A7alUTbdDRQ'
+    controller: null
+    method: null
+    route: null
+    custom: []
+  -
+    httpMethods:
+      - POST
+    uri: api/v3/user/fcm/remove-token
+    metadata:
+      groupName: FCM
+      groupDescription: ''
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'Remove FCM Token'
+      description: 'Removes the FCM token for the authenticated user (useful for logout).'
+      authenticated: true
+      custom: []
+    headers:
+      Authorization: 'Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJhdWQiOiIxIiwianRpIjoiYzkzNjcyNzVkMDdlMGY5ZTc5N2Y3NzdiMzFkZGFjZmFiMDAzOWI1Y2E1ZGJjZTQ3ZWY3MjIxMjQ3YTNlMTVlOTQ0YjJlNGY2Nzk2Yjc5MDQiLCJpYXQiOjE3NjQwNzcyMjguMDQyOTgyLCJuYmYiOjE3NjQwNzcyMjguMDQyOTgzLCJleHAiOjE3OTU2MTMyMjguMDM1OTI0LCJzdWIiOiIxIiwic2NvcGVzIjpbXX0.d3N3fp6pTh1JxrRcDMwG0gLBsS0qyH4TWMsTpjbf_piH3rdfBj-04fL3inKHvOEGcZeFIFUr23DnEKVxNiHsiRYHpJz55K9Y0v-CRi4x8QxW9TIx9L63A0RaHGK044HKEq01mKy3_0ho-n2y2-s12umW92piu9A40h77UxhBMqfqHcIwwr3g77_lGtE530jLEFTSavVPHNiL2UtPIzjllRhXJO9LqALirv4txTkGiNs-3QfU4Q_suzKeU1esVJS6cOQ_lojFTeB26zq0ulDlVPYwx_ruWGyvqc4HbTwhUtCddXK-4IbXCyCWhqNqtPTRmBgtMyEy8atM6hbVFjYHDjlefUP0i6ejKmVaiEiIjTbgL2HotoGsRob1awoP5p9uYsixd0-G1OEGlPPL_wv9tlXwFBiU0M4iJnqaYZt6Cdf_MP79bd3ZcDrOaqF0ALTj6sopGau6Ml2zWr6PqChHl7G9ApnDPY_sVqSjovoDeKUhMVgNwogQCqdnbP508CYoKQtrHItBewCDmjMfekZllaMeWpU_3bnsPhfRQaL6R53uAFz5P2I_CtPcdY9W_HCBHHvTNnyrrPQhjBD_WEeT6-pm681nPKckz2qJCuHelQvb_T55SEIpq2QXw-hkMXGrXLF7imLsodNlURRKgIQLpXqdHv9EU2V5A7alUTbdDRQ'
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters: []
+    cleanUrlParameters: []
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters: []
+    cleanBodyParameters: []
+    fileParameters: []
+    responses:
+      -
+        status: 200
+        content: |-
+          {
+            "message": "FCM token removed successfully.",
+            "status": true
+          }
+        headers: []
+        description: ''
+        custom: []
+    responseFields: []
+    auth:
+      - headers
+      - Authorization
+      - 'Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJhdWQiOiIxIiwianRpIjoiYzkzNjcyNzVkMDdlMGY5ZTc5N2Y3NzdiMzFkZGFjZmFiMDAzOWI1Y2E1ZGJjZTQ3ZWY3MjIxMjQ3YTNlMTVlOTQ0YjJlNGY2Nzk2Yjc5MDQiLCJpYXQiOjE3NjQwNzcyMjguMDQyOTgyLCJuYmYiOjE3NjQwNzcyMjguMDQyOTgzLCJleHAiOjE3OTU2MTMyMjguMDM1OTI0LCJzdWIiOiIxIiwic2NvcGVzIjpbXX0.d3N3fp6pTh1JxrRcDMwG0gLBsS0qyH4TWMsTpjbf_piH3rdfBj-04fL3inKHvOEGcZeFIFUr23DnEKVxNiHsiRYHpJz55K9Y0v-CRi4x8QxW9TIx9L63A0RaHGK044HKEq01mKy3_0ho-n2y2-s12umW92piu9A40h77UxhBMqfqHcIwwr3g77_lGtE530jLEFTSavVPHNiL2UtPIzjllRhXJO9LqALirv4txTkGiNs-3QfU4Q_suzKeU1esVJS6cOQ_lojFTeB26zq0ulDlVPYwx_ruWGyvqc4HbTwhUtCddXK-4IbXCyCWhqNqtPTRmBgtMyEy8atM6hbVFjYHDjlefUP0i6ejKmVaiEiIjTbgL2HotoGsRob1awoP5p9uYsixd0-G1OEGlPPL_wv9tlXwFBiU0M4iJnqaYZt6Cdf_MP79bd3ZcDrOaqF0ALTj6sopGau6Ml2zWr6PqChHl7G9ApnDPY_sVqSjovoDeKUhMVgNwogQCqdnbP508CYoKQtrHItBewCDmjMfekZllaMeWpU_3bnsPhfRQaL6R53uAFz5P2I_CtPcdY9W_HCBHHvTNnyrrPQhjBD_WEeT6-pm681nPKckz2qJCuHelQvb_T55SEIpq2QXw-hkMXGrXLF7imLsodNlURRKgIQLpXqdHv9EU2V5A7alUTbdDRQ'
+    controller: null
+    method: null
+    route: null
+    custom: []
+  -
+    httpMethods:
+      - POST
+    uri: api/v3/user/fcm/test-notification
+    metadata:
+      groupName: FCM
+      groupDescription: ''
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'Send Test Notification'
+      description: "Sends a test notification to the authenticated user's device."
+      authenticated: true
+      custom: []
+    headers:
+      Authorization: 'Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJhdWQiOiIxIiwianRpIjoiYzkzNjcyNzVkMDdlMGY5ZTc5N2Y3NzdiMzFkZGFjZmFiMDAzOWI1Y2E1ZGJjZTQ3ZWY3MjIxMjQ3YTNlMTVlOTQ0YjJlNGY2Nzk2Yjc5MDQiLCJpYXQiOjE3NjQwNzcyMjguMDQyOTgyLCJuYmYiOjE3NjQwNzcyMjguMDQyOTgzLCJleHAiOjE3OTU2MTMyMjguMDM1OTI0LCJzdWIiOiIxIiwic2NvcGVzIjpbXX0.d3N3fp6pTh1JxrRcDMwG0gLBsS0qyH4TWMsTpjbf_piH3rdfBj-04fL3inKHvOEGcZeFIFUr23DnEKVxNiHsiRYHpJz55K9Y0v-CRi4x8QxW9TIx9L63A0RaHGK044HKEq01mKy3_0ho-n2y2-s12umW92piu9A40h77UxhBMqfqHcIwwr3g77_lGtE530jLEFTSavVPHNiL2UtPIzjllRhXJO9LqALirv4txTkGiNs-3QfU4Q_suzKeU1esVJS6cOQ_lojFTeB26zq0ulDlVPYwx_ruWGyvqc4HbTwhUtCddXK-4IbXCyCWhqNqtPTRmBgtMyEy8atM6hbVFjYHDjlefUP0i6ejKmVaiEiIjTbgL2HotoGsRob1awoP5p9uYsixd0-G1OEGlPPL_wv9tlXwFBiU0M4iJnqaYZt6Cdf_MP79bd3ZcDrOaqF0ALTj6sopGau6Ml2zWr6PqChHl7G9ApnDPY_sVqSjovoDeKUhMVgNwogQCqdnbP508CYoKQtrHItBewCDmjMfekZllaMeWpU_3bnsPhfRQaL6R53uAFz5P2I_CtPcdY9W_HCBHHvTNnyrrPQhjBD_WEeT6-pm681nPKckz2qJCuHelQvb_T55SEIpq2QXw-hkMXGrXLF7imLsodNlURRKgIQLpXqdHv9EU2V5A7alUTbdDRQ'
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters: []
+    cleanUrlParameters: []
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters:
+      title:
+        name: title
+        description: 'The notification title.'
+        required: true
+        example: '"Test Notification"'
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+      body:
+        name: body
+        description: 'The notification body.'
+        required: true
+        example: '"This is a test message"'
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+    cleanBodyParameters:
+      title: '"Test Notification"'
+      body: '"This is a test message"'
+    fileParameters: []
+    responses:
+      -
+        status: 200
+        content: |-
+          {
+            "message": "Test notification sent successfully.",
+            "status": true
+          }
+        headers: []
+        description: ''
+        custom: []
+      -
+        status: 400
+        content: |-
+          {
+            "message": "No FCM token found for user.",
+            "status": false
+          }
+        headers: []
+        description: ''
+        custom: []
+    responseFields: []
+    auth:
+      - headers
+      - Authorization
+      - 'Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJhdWQiOiIxIiwianRpIjoiYzkzNjcyNzVkMDdlMGY5ZTc5N2Y3NzdiMzFkZGFjZmFiMDAzOWI1Y2E1ZGJjZTQ3ZWY3MjIxMjQ3YTNlMTVlOTQ0YjJlNGY2Nzk2Yjc5MDQiLCJpYXQiOjE3NjQwNzcyMjguMDQyOTgyLCJuYmYiOjE3NjQwNzcyMjguMDQyOTgzLCJleHAiOjE3OTU2MTMyMjguMDM1OTI0LCJzdWIiOiIxIiwic2NvcGVzIjpbXX0.d3N3fp6pTh1JxrRcDMwG0gLBsS0qyH4TWMsTpjbf_piH3rdfBj-04fL3inKHvOEGcZeFIFUr23DnEKVxNiHsiRYHpJz55K9Y0v-CRi4x8QxW9TIx9L63A0RaHGK044HKEq01mKy3_0ho-n2y2-s12umW92piu9A40h77UxhBMqfqHcIwwr3g77_lGtE530jLEFTSavVPHNiL2UtPIzjllRhXJO9LqALirv4txTkGiNs-3QfU4Q_suzKeU1esVJS6cOQ_lojFTeB26zq0ulDlVPYwx_ruWGyvqc4HbTwhUtCddXK-4IbXCyCWhqNqtPTRmBgtMyEy8atM6hbVFjYHDjlefUP0i6ejKmVaiEiIjTbgL2HotoGsRob1awoP5p9uYsixd0-G1OEGlPPL_wv9tlXwFBiU0M4iJnqaYZt6Cdf_MP79bd3ZcDrOaqF0ALTj6sopGau6Ml2zWr6PqChHl7G9ApnDPY_sVqSjovoDeKUhMVgNwogQCqdnbP508CYoKQtrHItBewCDmjMfekZllaMeWpU_3bnsPhfRQaL6R53uAFz5P2I_CtPcdY9W_HCBHHvTNnyrrPQhjBD_WEeT6-pm681nPKckz2qJCuHelQvb_T55SEIpq2QXw-hkMXGrXLF7imLsodNlURRKgIQLpXqdHv9EU2V5A7alUTbdDRQ'
+    controller: null
+    method: null
+    route: null
+    custom: []

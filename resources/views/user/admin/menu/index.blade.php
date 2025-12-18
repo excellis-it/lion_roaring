@@ -12,7 +12,7 @@
                     <p class="text-muted small mb-0">Menu Names</p>
                 </div>
             </div>
-            <form action="{{ route('admin.menu.update') }}" method="post">
+            <form action="{{ route('user.admin.menu.update') }}" method="post">
                 @csrf
 
                 <div class="card shadow-sm border-0 mb-4">

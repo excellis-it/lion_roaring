@@ -5,7 +5,12 @@
 
 
     <div class="container-fluid">
-        @php $currentPrice = isset($user_subscription->subscription_price) ? floatval($user_subscription->subscription_price) : 0; @endphp
+        @php
+            $currentMethod = $user_subscription->subscription_method ?? 'amount';
+            $currentPrice = isset($user_subscription->subscription_price)
+                ? floatval($user_subscription->subscription_price)
+                : 0;
+        @endphp
         <div class="bg_white_border py-4">
             <div class="d-flex justify-content-between align-items-center mb-3">
                 <div>
@@ -36,9 +41,14 @@
                                     <strong>{{ Helper::expireTo($user_subscription->subscription_expire_date) }}
                                         days</strong>
                                 </div>
-                                <div class="mt-3"><strong
-                                        class="text-primary">{{ $user_subscription->subscription_price }}
-                                        {{ $measurement->label ?? '' }}</strong></div>
+                                <div class="mt-3"><strong class="text-primary">
+                                        @if (($user_subscription->subscription_method ?? 'amount') === 'token')
+                                            {{ $user_subscription->life_force_energy_tokens ?? $user_subscription->subscription_price }}
+                                            {{ $measurement->label ?? 'Life Force Energy' }}
+                                        @else
+                                            ${{ number_format((float) $user_subscription->subscription_price, 2) }}
+                                        @endif
+                                    </strong></div>
                                 <div class="mt-3">
                                     <form action="{{ route('user.membership.renew') }}" method="POST"
                                         style="display:inline">
@@ -67,8 +77,15 @@
                                     <div class="d-flex justify-content-between align-items-center mb-2">
                                         <h5 class="mb-0">{{ $tier->name }}</h5>
                                         <div class="text-primary fw-bold">
-                                            <span class="badge badge-price bg-light text-dark">{{ $tier->cost }}
-                                                {{ $measurement->label ?? '' }}</span>
+                                            @if (($tier->pricing_type ?? 'amount') === 'token')
+                                                <span class="badge badge-price bg-light text-dark">
+                                                    {{ $tier->life_force_energy_tokens }}
+                                                    {{ $measurement->label ?? 'Life Force Energy' }}
+                                                </span>
+                                            @else
+                                                <span
+                                                    class="badge badge-price bg-light text-dark">${{ number_format((float) $tier->cost, 2) }}</span>
+                                            @endif
                                         </div>
                                     </div>
                                     <div class="mb-3 text-dark">{{ $tier->description }}</div>
@@ -80,23 +97,66 @@
                                     </ul>
                                     <div class="mt-auto text-center">
                                         @if ($user_subscription)
-                                            @if ($tier->cost > $currentPrice)
-                                                <a href="{{ route('user.membership.checkout', $tier->id) }}"
-                                                    class="btn btn-upgrade btn-primary">Upgrade to {{ $tier->name }}</a>
-                                            @elseif ($tier->id == $user_subscription->plan_id)
+                                            @if ($tier->id == $user_subscription->plan_id)
                                                 <span class="btn btn-sm btn-outline-primary disabled">Current Plan</span>
+                                            @elseif (($tier->pricing_type ?? 'amount') === 'token')
+                                                <button type="button"
+                                                    class="btn btn-upgrade btn-primary js-token-subscribe"
+                                                    data-tier-id="{{ $tier->id }}"
+                                                    data-tier-name="{{ $tier->name }}"
+                                                    data-agree-description="{{ e($tier->agree_description) }}">
+                                                    Subscribe to {{ $tier->name }}
+                                                </button>
                                             @else
-                                                <span class="btn btn-sm btn-outline-primary disabled">Lower Tier</span>
+                                                @if (($currentMethod ?? 'amount') === 'amount' && floatval($tier->cost) > $currentPrice)
+                                                    <a href="{{ route('user.membership.checkout', $tier->id) }}"
+                                                        class="btn btn-upgrade btn-primary">Upgrade to
+                                                        {{ $tier->name }}</a>
+                                                @else
+                                                    <span class="btn btn-sm btn-outline-primary disabled">Lower Tier</span>
+                                                @endif
                                             @endif
                                         @else
-                                            <a href="{{ route('user.membership.checkout', $tier->id) }}"
-                                                class="btn btn-primary">Subscribe to {{ $tier->name }}</a>
+                                            @if (($tier->pricing_type ?? 'amount') === 'token')
+                                                <button type="button" class="btn btn-primary js-token-subscribe"
+                                                    data-tier-id="{{ $tier->id }}"
+                                                    data-tier-name="{{ $tier->name }}"
+                                                    data-agree-description="{{ e($tier->agree_description) }}">
+                                                    Subscribe to {{ $tier->name }}
+                                                </button>
+                                            @else
+                                                <a href="{{ route('user.membership.checkout', $tier->id) }}"
+                                                    class="btn btn-primary">Subscribe to {{ $tier->name }}</a>
+                                            @endif
                                         @endif
                                     </div>
                                 </div>
                             </div>
                         @endforeach
                     </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Token agree description modal -->
+    <div class="modal fade" id="tokenAgreeModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="tokenAgreeModalTitle">Agreement</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="mb-2 text-muted small">Please review and accept to subscribe.</div>
+                    <div class="border rounded p-3" style="white-space: pre-wrap;" id="tokenAgreeModalBody"></div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Reject</button>
+                    <form method="POST" id="tokenAgreeForm">
+                        @csrf
+                        <button type="submit" class="btn btn-primary">Accept</button>
+                    </form>
                 </div>
             </div>
         </div>
@@ -183,6 +243,23 @@
             var el = $(this).prev('.benefits-list');
             el.toggleClass('expanded');
             $(this).text(el.hasClass('expanded') ? 'Show less' : 'Show more');
+        });
+
+        $(document).on('click', '.js-token-subscribe', function() {
+            var tierId = $(this).data('tier-id');
+            var tierName = $(this).data('tier-name');
+            var agree = $(this).data('agree-description') || '';
+
+            $('#tokenAgreeModalTitle').text(tierName + ' Agreement');
+            $('#tokenAgreeModalBody').text(agree);
+            $('#tokenAgreeForm').attr('action', '{{ url('user/membership/token-subscribe') }}/' + tierId);
+
+            if (window.bootstrap && bootstrap.Modal) {
+                var modal = new bootstrap.Modal(document.getElementById('tokenAgreeModal'));
+                modal.show();
+            } else {
+                $('#tokenAgreeModal').modal('show');
+            }
         });
     </script>
 @endpush

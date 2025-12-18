@@ -16,7 +16,7 @@
                 </div>
             </div>
 
-            <form action="{{ route('our-governances.store') }}" method="post" enctype="multipart/form-data">
+            <form action="{{ route('user.admin.our-governances.store') }}" method="post" enctype="multipart/form-data">
                 @csrf
                 <div class="sales-report-card-wrap">
                     <div class="form-head">
@@ -184,7 +184,7 @@
                         <div class="col-xl-12">
                             <div class="btn-1">
                                 <button type="submit" class="print_btn me-2 mt-2">Create</button>
-                                <a href="{{ route('our-governances.index') }}" class="print_btn print_btn_vv">Cancel</a>
+                                <a href="{{ route('user.admin.our-governances.index') }}" class="print_btn print_btn_vv">Cancel</a>
                             </div>
                         </div>
                     </div>

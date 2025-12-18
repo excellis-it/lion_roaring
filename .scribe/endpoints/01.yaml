@@ -139,14 +139,14 @@ endpoints:
         name: slug
         description: 'The slug of the product.'
         required: true
-        example: animi
+        example: provident
         type: string
         enumValues: []
         exampleWasSpecified: false
         nullable: false
         custom: []
     cleanUrlParameters:
-      slug: animi
+      slug: provident
     queryParameters: []
     cleanQueryParameters: []
     bodyParameters: []
@@ -198,8 +198,29 @@ endpoints:
         description: 'Optional. Array of category IDs.'
         required: false
         example:
-          - facilis
+          - laborum
         type: 'string[]'
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: false
+        custom: []
+      'elearning_topic_id[]':
+        name: 'elearning_topic_id[]'
+        description: 'Optional. Array of ElearningTopic IDs.'
+        required: false
+        example:
+          - quaerat
+        type: 'string[]'
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: false
+        custom: []
+      elearning_topic_search:
+        name: elearning_topic_search
+        description: 'Optional. Search by ElearningTopic text.'
+        required: false
+        example: excepturi
+        type: string
         enumValues: []
         exampleWasSpecified: false
         nullable: false
@@ -208,7 +229,7 @@ endpoints:
         name: latestFilter
         description: 'Optional. Filter by latest, A-Z, Z-A.'
         required: false
-        example: occaecati
+        example: corporis
         type: string
         enumValues: []
         exampleWasSpecified: false
@@ -218,7 +239,7 @@ endpoints:
         name: search
         description: 'Optional. Search by product name.'
         required: false
-        example: tempora
+        example: ipsa
         type: string
         enumValues: []
         exampleWasSpecified: false
@@ -228,7 +249,7 @@ endpoints:
         name: page
         description: 'Optional. Page number.'
         required: false
-        example: 6
+        example: 1
         type: integer
         enumValues: []
         exampleWasSpecified: false
@@ -236,10 +257,13 @@ endpoints:
         custom: []
     cleanQueryParameters:
       'category_id[]':
-        - facilis
-      latestFilter: occaecati
-      search: tempora
-      page: 6
+        - laborum
+      'elearning_topic_id[]':
+        - quaerat
+      elearning_topic_search: excepturi
+      latestFilter: corporis
+      search: ipsa
+      page: 1
     bodyParameters: []
     cleanBodyParameters: []
     fileParameters: []

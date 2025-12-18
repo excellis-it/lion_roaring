@@ -120,7 +120,7 @@ class DonationController extends Controller
     {
         if (auth()->user()->can('Manage Donations')) {
             Donation::where('id', $id)->delete();
-            return redirect()->route('donations.index')->with('message', 'Donation has been deleted successfully');
+            return redirect()->route('user.admin.donations.index')->with('message', 'Donation has been deleted successfully');
         } else {
             abort(403, 'You do not have permission to access this page.');
         }

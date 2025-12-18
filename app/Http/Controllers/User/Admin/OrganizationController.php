@@ -25,7 +25,7 @@ class OrganizationController extends Controller
             $organization = Organization::where('country_code', $request->get('content_country_code', 'US'))->orderBy('id', 'desc')->first();
             return view('user.admin.organization.update')->with(compact('organization'));
         } else {
-            return redirect()->route('admin.dashboard')->with('error', 'You do not have permission to access this page.');
+            return redirect()->route('user.profile')->with('error', 'You do not have permission to access this page.');
         }
     }
 

@@ -151,7 +151,7 @@
 
             function fetch_data(page, sort_type, sort_by, query) {
                 $.ajax({
-                    url: "{{ route('donations.fetch-data') }}",
+                    url: "{{ route('user.admin.donations.fetch-data') }}",
                     data: {
                         page: page,
                         sortby: sort_by,

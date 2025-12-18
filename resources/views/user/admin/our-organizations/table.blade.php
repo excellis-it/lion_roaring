@@ -8,12 +8,12 @@
             <td>
                 <div class="edit-1 d-flex align-items-center justify-content-center">
                     @if (auth()->user()->can('Edit Our Organization'))
-                        <a title="Edit" href="{{ route('our-organizations.edit', $our_organizatio->id) }}">
+                        <a title="Edit" href="{{ route('user.admin.our-organizations.edit', $our_organizatio->id) }}">
                             <span class="edit-icon"><i class="fas fa-edit"></i></span>
                         </a>
                     @endif
                     @if (auth()->user()->can('Delete Our Organization'))
-                        <a title="Delete" data-route="{{ route('our-organizations.delete', $our_organizatio->id) }}"
+                        <a title="Delete" data-route="{{ route('user.admin.our-organizations.delete', $our_organizatio->id) }}"
                             href="javascript:void(0);" id="delete">
                             <span class="trash-icon"><i class="fas fa-trash"></i></span>
                         </a>

@@ -12,7 +12,7 @@
 
 @section('create_button')
     @if (auth()->user()->can('Manage Countries'))
-        <a href="{{ route('admin-countries.create') }}" class="btn btn-primary">+ Create Country</a>
+        <a href="{{ route('user.admin.admin-countries.create') }}" class="btn btn-primary">+ Create Country</a>
     @endif
 @endsection
 @section('content')
@@ -84,7 +84,7 @@
 
             function fetch_data(page, sort_type, sort_by, query) {
                 $.ajax({
-                    url: "{{ route('admin-countries.fetch-data') }}",
+                    url: "{{ route('user.admin-countries.fetch-data') }}",
                     data: {
                         page: page,
                         sortby: sort_by,

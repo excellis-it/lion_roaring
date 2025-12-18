@@ -93,7 +93,7 @@ class OurOrganizationController extends Controller
 
         $our_organization->save();
 
-        return redirect()->route('our-organizations.index')->with('message', 'Our Organization created successfully.');
+        return redirect()->route('user.admin.our-organizations.index')->with('message', 'Our Organization created successfully.');
     }
 
     /**
@@ -158,7 +158,7 @@ class OurOrganizationController extends Controller
         $our_organization->country_code = $request->content_country_code ?? 'US';
         $our_organization->save();
 
-        return redirect()->route('our-organizations.index')->with('message', 'Our Organization updated successfully.');
+        return redirect()->route('user.admin.our-organizations.index')->with('message', 'Our Organization updated successfully.');
     }
 
     /**
@@ -177,7 +177,7 @@ class OurOrganizationController extends Controller
         if (auth()->user()->can('Delete Our Organization')) {
             $our_organization = OurOrganization::findOrfail($request->id);
             $our_organization->delete();
-            return redirect()->route('our-organizations.index')->with('message', 'Our Organization deleted successfully.');
+            return redirect()->route('user.admin.our-organizations.index')->with('message', 'Our Organization deleted successfully.');
         } else {
             abort(403, 'You do not have permission to access this page.');
         }

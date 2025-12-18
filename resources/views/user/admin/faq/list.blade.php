@@ -12,7 +12,7 @@
 
 @section('create_button')
     @if (auth()->user()->can('Create Faq'))
-        <a href="{{ route('faq.create') }}" class="btn btn-primary">+ Create New FAQ</a>
+        <a href="{{ route('user.admin.faq.create') }}" class="btn btn-primary">+ Create New FAQ</a>
     @endif
 @endsection
 @section('content')
@@ -28,7 +28,7 @@
                 </div>
                 <div>
                     @if (auth()->user()->can('Create Faq'))
-                        <a href="{{ route('faq.create') }}" class="print_btn">+ Create FAQ</a>
+                        <a href="{{ route('user.admin.faq.create') }}" class="print_btn">+ Create FAQ</a>
                     @endif
                 </div>
             </div>
@@ -130,7 +130,7 @@
 
             function fetch_data(page, sort_type, sort_by, query) {
                 $.ajax({
-                    url: "{{ route('faq.fetch-data') }}",
+                    url: "{{ route('user.admin.faq.fetch-data') }}",
                     data: {
                         page: page,
                         sortby: sort_by,

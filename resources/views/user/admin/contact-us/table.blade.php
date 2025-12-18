@@ -10,7 +10,7 @@
             <td>
                 <div class="edit-1 d-flex align-items-center justify-content-center">
                     @if (auth()->user()->can('Delete Contact Us Messages'))
-                        <a title="Delete" data-route="{{ route('contact-us.delete', $contact->id) }}"
+                        <a title="Delete" data-route="{{ route('user.admin.contact-us.delete', $contact->id) }}"
                             href="javascript:void(0);" id="delete">
                             <span class="trash-icon"><i class="fas fa-trash"></i></span>
                         </a>

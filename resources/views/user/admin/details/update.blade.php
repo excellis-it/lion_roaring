@@ -15,7 +15,7 @@
                     <p class="text-muted small mb-0">Update details page</p>
                 </div>
             </div>
-                <form action="{{ route('details.store') }}" method="post" enctype="multipart/form-data">
+                <form action="{{ route('user.admin.details.store') }}" method="post" enctype="multipart/form-data">
                     @csrf
                     <div class="row mb-4">
                         <div class="col-md-4">
@@ -127,7 +127,7 @@
                     return false;
                 } else {
                     $.ajax({
-                        url: "{{ route('organization.image.delete') }}",
+                        url: "{{ route('user.admin.organization.image.delete') }}",
                         type: 'GET',
                         data: {
                             "id": id,

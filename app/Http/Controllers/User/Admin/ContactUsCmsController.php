@@ -21,7 +21,7 @@ class ContactUsCmsController extends Controller
             $contact_us = ContactUsCms::where('country_code', $request->get('content_country_code', 'US'))->orderBy('id', 'desc')->first();
             return view('user.admin.contact-us-cms.update')->with(compact('contact_us'));
         } else {
-            return redirect()->route('admin.dashboard')->with('error', 'Unauthorized Access');
+            return redirect()->route('user.profile')->with('error', 'Unauthorized Access');
         }
     }
 
@@ -71,7 +71,7 @@ class ContactUsCmsController extends Controller
         $country = $request->content_country_code ?? 'US';
         $contact_us = ContactUsCms::updateOrCreate(['country_code' => $country], array_merge($contact_us->getAttributes(), ['country_code' => $country]));
 
-        return redirect()->route('contact-us-cms.index')->with('message', 'Contact Us created successfully.');
+        return redirect()->route('user.admin.contact-us-cms.index')->with('message', 'Contact Us created successfully.');
     }
 
     /**

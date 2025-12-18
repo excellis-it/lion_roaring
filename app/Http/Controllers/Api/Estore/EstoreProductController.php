@@ -13,6 +13,7 @@ use App\Models\Color;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use App\Helpers\Helper;
+use App\Models\WareHouse;
 use Illuminate\Support\Facades\Storage;
 
 /**
@@ -48,7 +49,7 @@ class EstoreProductController extends Controller
             $limit = (int)$request->get('limit', 12);
             $offset = ($page - 1) * $limit;
 
-            $nearbyWareHouseId = \App\Models\WareHouse::first()->id;
+            $nearbyWareHouseId = WareHouse::first()->id;
             $originLat = null;
             $originLng = null;
             $isUser = auth()->user();
@@ -134,10 +135,16 @@ class EstoreProductController extends Controller
      *  "data": {"product": {"id": 1, "name": "..."}}
      * }
      */
-    public function productDetails(Request $request, $slug)
+    public function productDetails(Request $request)
     {
+        $validator = Validator::make($request->all(), [
+            'slug' => 'required|string',
+        ]);
+        if ($validator->fails()) {
+            return response()->json(['message' => 'Validation failed', 'errors' => $validator->errors()->first(), 'status' => false], 201);
+        }
         try {
-            $product = Product::where('slug', $slug)->with('image', 'color', 'size', 'reviews')->first();
+            $product = Product::where('slug', $request->slug)->with('image', 'color', 'size', 'reviews')->first();
             if (!$product) {
                 return response()->json(['message' => 'Product not found', 'status' => false], 201);
             }
@@ -149,7 +156,7 @@ class EstoreProductController extends Controller
             $cartItem = $isAuth ? EstoreCart::where('user_id', auth()->id())->where('product_id', $product->id)->first() : EstoreCart::where('session_id', $userSessionId)->where('product_id', $product->id)->first();
 
             // Related products (limited)
-            $nearbyWareHouseId = \App\Models\WareHouse::first()->id;
+            $nearbyWareHouseId = WareHouse::first()->id;
             $nearest = Helper::getNearestWarehouse(session('location_lat'), session('location_lng'));
             if (!empty($nearest['warehouse']->id)) $nearbyWareHouseId = $nearest['warehouse']->id;
             $wareHouseProducts = Product::whereHas('warehouseProducts', function ($q) use ($nearbyWareHouseId) {
@@ -296,7 +303,7 @@ class EstoreProductController extends Controller
             'quantity' => 'required|integer|min:1'
         ]);
         if ($validator->fails()) {
-            return response()->json(['message' => 'Validation failed', 'errors' => $validator->errors(), 'status' => false], 201);
+            return response()->json(['message' => 'Validation failed', 'errors' => $validator->errors()->first(), 'status' => false], 201);
         }
         try {
             $product = Product::find($request->product_id);
@@ -304,14 +311,10 @@ class EstoreProductController extends Controller
                 return response()->json(['message' => 'Product not found', 'status' => false], 201);
             }
 
-            $isAuth = auth()->check();
-            $userId = $isAuth ? auth()->id() : null;
-            $sessionId = session()->getId();
 
             // find existing cart item
             $cartQuery = EstoreCart::where('product_id', $product->id);
-            if ($userId) $cartQuery->where('user_id', $userId);
-            else $cartQuery->where('session_id', $sessionId);
+            $cartQuery->where('user_id', auth()->id());
             $cartItem = $cartQuery->first();
 
             if ($cartItem) {
@@ -321,11 +324,7 @@ class EstoreProductController extends Controller
                 $item = new EstoreCart();
                 $item->product_id = $product->id;
                 $item->quantity = $request->quantity;
-                if ($userId) {
-                    $item->user_id = $userId;
-                } else {
-                    $item->session_id = $sessionId;
-                }
+                $item->user_id = auth()->id();
                 $item->price = $product->price;
                 $item->warehouse_id = $request->warehouse_id ?? null;
                 $item->size_id = $request->size_id ?? null;
@@ -334,7 +333,7 @@ class EstoreProductController extends Controller
                 $item->save();
             }
 
-            $cartCount = $isAuth ? EstoreCart::where('user_id', $userId)->count() : EstoreCart::where('session_id', $sessionId)->count();
+            $cartCount = EstoreCart::where('user_id', auth()->id())->count();
 
             return response()->json(['message' => 'Added to cart', 'status' => true, 'data' => ['cart_count' => $cartCount]], 200);
         } catch (\Exception $e) {
@@ -348,13 +347,8 @@ class EstoreProductController extends Controller
     public function cartList(Request $request)
     {
         try {
-            $isAuth = auth()->check();
-            $userId = $isAuth ? auth()->id() : null;
-            $sessionId = session()->getId();
-
             $cartQuery = EstoreCart::with('product');
-            if ($userId) $cartQuery->where('user_id', $userId);
-            else $cartQuery->where('session_id', $sessionId);
+            $cartQuery->where('user_id', auth()->id());
             $items = $cartQuery->get();
 
             $total = $items->sum(function ($i) {
@@ -373,15 +367,17 @@ class EstoreProductController extends Controller
     public function removeFromCart(Request $request)
     {
         try {
-            $request->validate(['cart_id' => 'required|integer']);
+            $validator = Validator::make($request->all(), [
+                'cart_id' => 'required|integer',
+            ]);
+            if ($validator->fails()) {
+                return response()->json(['message' => 'Validation failed', 'errors' => $validator->errors()->first(), 'status' => false], 201);
+            }
             $cartItem = EstoreCart::find($request->cart_id);
             if (!$cartItem) return response()->json(['message' => 'Cart item not found', 'status' => false], 201);
             $cartItem->delete();
 
-            $isAuth = auth()->check();
-            $userId = $isAuth ? auth()->id() : null;
-            $sessionId = session()->getId();
-            $cartCount = $isAuth ? EstoreCart::where('user_id', $userId)->count() : EstoreCart::where('session_id', $sessionId)->count();
+            $cartCount = EstoreCart::where('user_id', auth()->id())->count();
 
             return response()->json(['message' => 'Removed from cart', 'status' => true, 'data' => ['cart_count' => $cartCount]], 200);
         } catch (\Exception $e) {
@@ -395,7 +391,13 @@ class EstoreProductController extends Controller
     public function updateCart(Request $request)
     {
         try {
-            $request->validate(['cart_id' => 'required|integer', 'quantity' => 'required|integer|min:1']);
+            $validator = Validator::make($request->all(), [
+                'cart_id' => 'required|integer',
+                'quantity' => 'required|integer|min:1',
+            ]);
+            if ($validator->fails()) {
+                return response()->json(['message' => 'Validation failed', 'errors' => $validator->errors()->first(), 'status' => false], 201);
+            }
             $cartItem = EstoreCart::find($request->cart_id);
             if (!$cartItem) return response()->json(['message' => 'Cart item not found', 'status' => false], 201);
             $cartItem->quantity = $request->quantity;
@@ -413,10 +415,7 @@ class EstoreProductController extends Controller
     public function cartCount(Request $request)
     {
         try {
-            $isAuth = auth()->check();
-            $userId = $isAuth ? auth()->id() : null;
-            $sessionId = session()->getId();
-            $cartCount = $isAuth ? EstoreCart::where('user_id', $userId)->count() : EstoreCart::where('session_id', $sessionId)->count();
+            $cartCount = EstoreCart::where('user_id', auth()->id())->count();
             return response()->json(['data' => ['cart_count' => $cartCount], 'status' => true], 200);
         } catch (\Exception $e) {
             return response()->json(['message' => 'Something went wrong. ' . $e->getMessage(), 'status' => false], 201);
@@ -429,12 +428,7 @@ class EstoreProductController extends Controller
     public function clearCart(Request $request)
     {
         try {
-            $isAuth = auth()->check();
-            $userId = $isAuth ? auth()->id() : null;
-            $sessionId = session()->getId();
-            if ($userId) EstoreCart::where('user_id', $userId)->delete();
-            else EstoreCart::where('session_id', $sessionId)->delete();
-
+            EstoreCart::where('user_id', auth()->id())->delete();
             return response()->json(['message' => 'Cart cleared', 'status' => true], 200);
         } catch (\Exception $e) {
             return response()->json(['message' => 'Something went wrong. ' . $e->getMessage(), 'status' => false], 201);
@@ -447,14 +441,15 @@ class EstoreProductController extends Controller
     public function checkProductInCart(Request $request)
     {
         try {
-            $request->validate(['product_id' => 'required|integer']);
-            $isAuth = auth()->check();
-            $userId = $isAuth ? auth()->id() : null;
-            $sessionId = session()->getId();
+            $validator = Validator::make($request->all(), [
+                'product_id' => 'required|integer',
+            ]);
+            if ($validator->fails()) {
+                return response()->json(['message' => 'Validation failed', 'errors' => $validator->errors()->first(), 'status' => false], 201);
+            }
 
             $cartQuery = EstoreCart::where('product_id', $request->product_id);
-            if ($userId) $cartQuery->where('user_id', $userId);
-            else $cartQuery->where('session_id', $sessionId);
+            $cartQuery->where('user_id', auth()->id());
             $cartItem = $cartQuery->first();
 
             return response()->json(['data' => ['exists' => (bool)$cartItem, 'cart_item' => $cartItem], 'status' => true], 200);

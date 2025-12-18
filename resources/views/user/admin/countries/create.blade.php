@@ -16,7 +16,7 @@
                 </div>
             </div>
 
-            <form action="{{ route('admin-countries.store') }}" method="post" enctype="multipart/form-data">
+            <form action="{{ route('user.admin.admin-countries.store') }}" method="post" enctype="multipart/form-data">
                 @csrf
                 <div class="sales-report-card-wrap">
                     <div class="form-head">

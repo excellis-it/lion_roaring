@@ -115,7 +115,7 @@
 
             function fetch_data(page, sort_type, sort_by, query) {
                 $.ajax({
-                    url: "{{ route('contact-us.fetch-data') }}",
+                    url: "{{ route('user.admin.contact-us.fetch-data') }}",
                     data: {
                         page: page,
                         sortby: sort_by,

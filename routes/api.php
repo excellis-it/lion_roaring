@@ -32,8 +32,11 @@ use App\Http\Controllers\Api\FileController;
 use App\Http\Controllers\Api\PolicyGuidenceController;
 use App\Http\Controllers\Api\RolePermissionController;
 use App\Http\Controllers\Api\EcclesiaController;
+use App\Http\Controllers\Api\Estore\CheckoutController;
 use App\Http\Controllers\Api\EstoreCmsController;
 use App\Http\Controllers\Api\Estore\EstoreController;
+use App\Http\Controllers\Api\Estore\ProfileController as EstoreProfileController;
+use App\Http\Controllers\Api\Estore\WishlitController;
 use App\Http\Controllers\Api\FCMController;
 use App\Http\Controllers\Api\SizeController;
 use App\Http\Controllers\Api\PrivateCollaborationController;
@@ -67,7 +70,7 @@ Route::prefix('v3')->middleware(['userActivity'])->group(function () {
 
 
     // Public E-Store (Ecom) APIs — Home, header/footer, menu, newsletter
-    Route::prefix('e-store')->group(function () {
+    Route::group(['prefix' => 'e-store'], function () {
         // Public home endpoint that returns home CMS content and featured/new products
         Route::get('/store-home', [EstoreController::class, 'storeHome']);
         // Header (logo & menu categories)
@@ -81,22 +84,45 @@ Route::prefix('v3')->middleware(['userActivity'])->group(function () {
         // Products list (all-products)
         Route::get('/all-products', [EstoreProductController::class, 'products']);
         // Product details
-        Route::get('/product/{slug}', [EstoreProductController::class, 'productDetails']);
+        Route::post('/product', [EstoreProductController::class, 'productDetails']);
         // Products filter
         Route::get('/products-filter', [EstoreProductController::class, 'productsFilter']);
         // Live search
         Route::get('/live-search', [EstoreProductController::class, 'liveSearch']);
 
-        // Cart related (public via session or authenticated via token)
-        Route::get('/cart-count', [EstoreProductController::class, 'cartCount']);
-        Route::get('/cart-list', [EstoreProductController::class, 'cartList']);
-        Route::post('/add-to-cart', [EstoreProductController::class, 'addToCart']);
-        Route::post('/remove-from-cart', [EstoreProductController::class, 'removeFromCart']);
-        Route::post('/update-cart', [EstoreProductController::class, 'updateCart']);
-        Route::post('/clear-cart', [EstoreProductController::class, 'clearCart']);
-        Route::get('/check-product-in-cart', [EstoreProductController::class, 'checkProductInCart']);
-    });
+        Route::group(['middleware' => ['auth:api', 'user']], function () {
 
+            // Cart related (public via session or authenticated via token)
+            Route::get('/cart-count', [EstoreProductController::class, 'cartCount']);
+            Route::get('/cart-list', [EstoreProductController::class, 'cartList']);
+            Route::post('/add-to-cart', [EstoreProductController::class, 'addToCart']);
+            Route::post('/remove-from-cart', [EstoreProductController::class, 'removeFromCart']);
+            Route::post('/update-cart', [EstoreProductController::class, 'updateCart']);
+            Route::post('/clear-cart', [EstoreProductController::class, 'clearCart']);
+            Route::get('/check-product-in-cart', [EstoreProductController::class, 'checkProductInCart']);
+
+            //wishlist
+            Route::post('/add-to-wishlist', [WishlitController::class, 'addToWishlist']);
+            Route::get('/wishlist', [WishlitController::class, 'wishlist']);
+            Route::post('/remove-from-wishlist', [WishlitController::class, 'removeFromWishlist']);
+
+            // checkout
+            Route::post('/process-checkout', [CheckoutController::class, 'processCheckout']);
+            Route::post('/order-success', [CheckoutController::class, 'orderSuccess']);
+            Route::post('/my-orders', [CheckoutController::class, 'myOrders']);
+            Route::post('/order-details', [CheckoutController::class, 'orderDetails']);
+            Route::post('/cancel-order', [CheckoutController::class, 'cancelOrder']);
+
+            // profile
+            Route::post('/profile', [EstoreProfileController::class, 'profile']);
+            Route::post('/update-profile', [EstoreProfileController::class, 'updateProfile']);
+            Route::post('/change-password', [EstoreProfileController::class, 'updatePassword']);
+
+
+            //order tracking
+            Route::post('/order-tracking', [EstoreProfileController::class, 'orderTracking']);
+        }); // end e-store
+    });
 
     Route::prefix('cms')->group(function () {
         Route::post('home', [CmsController::class, 'home']);

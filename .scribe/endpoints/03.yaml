@@ -91,8 +91,8 @@ endpoints:
     custom: []
   -
     httpMethods:
-      - GET
-    uri: 'api/v3/e-store/product/{slug}'
+      - POST
+    uri: api/v3/e-store/product
     metadata:
       groupName: 'E-Store Product APIs'
       groupDescription: ''
@@ -105,19 +105,8 @@ endpoints:
     headers:
       Content-Type: application/json
       Accept: application/json
-    urlParameters:
-      slug:
-        name: slug
-        description: 'The slug of the product.'
-        required: true
-        example: 8
-        type: integer
-        enumValues: []
-        exampleWasSpecified: false
-        nullable: false
-        custom: []
-    cleanUrlParameters:
-      slug: 8
+    urlParameters: []
+    cleanUrlParameters: []
     queryParameters:
       slug:
         name: slug
@@ -131,8 +120,19 @@ endpoints:
         custom: []
     cleanQueryParameters:
       slug: product-slug
-    bodyParameters: []
-    cleanBodyParameters: []
+    bodyParameters:
+      slug:
+        name: slug
+        description: ''
+        required: true
+        example: possimus
+        type: string
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: false
+        custom: []
+    cleanBodyParameters:
+      slug: possimus
     fileParameters: []
     responses:
       -
@@ -206,7 +206,7 @@ endpoints:
         name: latestFilter
         description: "optional Sorting filter: 'A to Z'|'Z to A'."
         required: false
-        example: dignissimos
+        example: nobis
         type: string
         enumValues: []
         exampleWasSpecified: false
@@ -228,7 +228,7 @@ endpoints:
       category_id:
         - 1
         - 2
-      latestFilter: dignissimos
+      latestFilter: nobis
       search: book
     bodyParameters: []
     cleanBodyParameters: []
@@ -328,13 +328,11 @@ endpoints:
     fileParameters: []
     responses:
       -
-        status: 200
-        content: '{"data":{"cart_count":0},"status":true}'
+        status: 401
+        content: '{"status":false,"code":401,"message":"UnAuthenticated"}'
         headers:
           cache-control: 'no-cache, private'
           content-type: application/json
-          x-ratelimit-limit: '60'
-          x-ratelimit-remaining: '54'
           access-control-allow-origin: '*'
         description: null
         custom: []
@@ -369,13 +367,11 @@ endpoints:
     fileParameters: []
     responses:
       -
-        status: 200
-        content: '{"data":{"items":[],"total":0},"status":true}'
+        status: 401
+        content: '{"status":false,"code":401,"message":"UnAuthenticated"}'
         headers:
           cache-control: 'no-cache, private'
           content-type: application/json
-          x-ratelimit-limit: '60'
-          x-ratelimit-remaining: '53'
           access-control-allow-origin: '*'
         description: null
         custom: []
@@ -574,13 +570,11 @@ endpoints:
     fileParameters: []
     responses:
       -
-        status: 201
-        content: '{"message":"Something went wrong. The given data was invalid.","status":false}'
+        status: 401
+        content: '{"status":false,"code":401,"message":"UnAuthenticated"}'
         headers:
           cache-control: 'no-cache, private'
           content-type: application/json
-          x-ratelimit-limit: '60'
-          x-ratelimit-remaining: '52'
           access-control-allow-origin: '*'
         description: null
         custom: []

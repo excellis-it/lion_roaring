@@ -97,7 +97,7 @@ class CountryController extends Controller
             $country->languages()->sync($request->input('languages'));
         }
 
-        return redirect()->route('admin-countries.index')->with('message', 'Country created successfully.');
+        return redirect()->route('user.admin.admin-countries.index')->with('message', 'Country created successfully.');
     }
 
     // Update a country
@@ -140,7 +140,7 @@ class CountryController extends Controller
             $country->languages()->sync([]);
         }
 
-        return redirect()->route('admin-countries.index')->with('message', 'Country updated successfully.');
+        return redirect()->route('user.admin.admin-countries.index')->with('message', 'Country updated successfully.');
     }
 
     // Show edit form
@@ -164,7 +164,7 @@ class CountryController extends Controller
             Storage::disk('public')->delete($country->flag_image);
         }
         $country->delete();
-        return redirect()->route('admin-countries.index')->with('error', 'Country deleted successfully.');
+        return redirect()->route('user.admin.admin-countries.index')->with('error', 'Country deleted successfully.');
     }
 
     // Toggle active/inactive

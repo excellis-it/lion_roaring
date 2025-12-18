@@ -17,7 +17,7 @@ class ArticleOfAssociationController extends Controller
             $article = Article::where('country_code', $request->get('content_country_code', 'US'))->orderBy('id', 'desc')->first();
             return view('user.admin.article_of_association.update', compact('article'));
         } else {
-            return redirect()->route('admin.dashboard')->with('error', 'Unauthorized Access');
+            return redirect()->route('user.profile')->with('error', 'Unauthorized Access');
         }
     }
 
