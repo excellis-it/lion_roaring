@@ -78,7 +78,7 @@
 
     <!-- Token agree description modal -->
     <div class="modal fade" id="tokenAgreeModal" tabindex="-1" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title" id="tokenAgreeModalTitle">Agreement</h5>
@@ -89,10 +89,10 @@
                     <div class="border rounded p-3" style="white-space: pre-wrap;" id="tokenAgreeModalBody"></div>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Reject</button>
+                    <button type="button" class="btn btn-sm red_btn" data-bs-dismiss="modal"><span>Reject</span></button>
                     <form method="POST" id="tokenAgreeForm" action="#">
                         @csrf
-                        <button type="submit" class="btn btn-primary">Accept</button>
+                        <button type="submit" class="btn btn-sm red_btn"><span>Accept</span></button>
                     </form>
                 </div>
             </div>
