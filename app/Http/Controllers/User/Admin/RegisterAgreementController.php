@@ -19,7 +19,7 @@ class RegisterAgreementController extends Controller
             $agreement = RegisterAgreement::where('country_code', $request->get('content_country_code', 'US'))->orderBy('id', 'desc')->first();
             return view('user.admin.register_agreement.update', compact('agreement'));
         } else {
-            return redirect()->route('admin.dashboard')->with('error', 'Unauthorized Access');
+            return redirect()->route('user.profile')->with('error', 'Unauthorized Access');
         }
     }
 
@@ -56,7 +56,7 @@ class RegisterAgreementController extends Controller
         $agreement->agreement_title = $request->agreement_title;
         $agreement->agreement_description = $request->agreement_description;
         $agreement->checkbox_text = $request->checkbox_text;
-       // $agreement->save();
+        // $agreement->save();
         $country = $request->content_country_code ?? 'US';
         $agreement = RegisterAgreement::updateOrCreate(['country_code' => $country], array_merge($agreement->getAttributes(), ['country_code' => $country]));
 

@@ -59,7 +59,7 @@
                     <p class="text-muted small mb-0">Update Principle and Business</p>
                 </div>
             </div>
-                <form action="{{ route('principle-and-business.store') }}" method="post" enctype="multipart/form-data">
+                <form action="{{ route('user.admin.principle-and-business.store') }}" method="post" enctype="multipart/form-data">
                     @csrf
                     <input type="hidden" name="id" value="{{ $business->id ?? '' }}">
                     <div class="sales-report-card-wrap">
@@ -382,7 +382,7 @@
                     return false;
                 } else {
                     $.ajax({
-                        url: "{{ route('principle-and-business.image.delete') }}",
+                        url: "{{ route('user.admin.principle-and-business.image.delete') }}",
                         type: 'GET',
                         data: {
                             "id": id,

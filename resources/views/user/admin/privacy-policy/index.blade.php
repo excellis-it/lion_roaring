@@ -15,7 +15,7 @@
                     <p class="text-muted small mb-0">Update Privacy Policy</p>
                 </div>
             </div>
-                <form action="{{ route('privacy-policy.update') }}" method="post" enctype="multipart/form-data">
+                <form action="{{ route('user.admin.privacy-policy.update') }}" method="post" enctype="multipart/form-data">
                     @csrf
                     <input type="hidden" name="id" value="{{ $privacy_policy->id ?? '' }}">
                     <div class="row mb-4">

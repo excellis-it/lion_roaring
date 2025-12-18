@@ -17,12 +17,12 @@
             <td>
                 <div class="edit-1 d-flex align-items-center justify-content-center">
                     @if (auth()->user()->can('Edit Faq'))
-                        <a title="Edit" href="{{ route('faq.edit', $faq->id) }}">
+                        <a title="Edit" href="{{ route('user.admin.faq.edit', $faq->id) }}">
                             <span class="edit-icon"><i class="fas fa-edit"></i></span>
                         </a>
                     @endif
                     @if (auth()->user()->can('Delete Faq'))
-                        <a title="Delete" data-route="{{ route('faq.delete', $faq->id) }}" href="javascript:void(0);"
+                        <a title="Delete" data-route="{{ route('user.admin.faq.delete', $faq->id) }}" href="javascript:void(0);"
                             id="delete">
                             <span class="trash-icon"><i class="fas fa-trash"></i></span>
                         </a>

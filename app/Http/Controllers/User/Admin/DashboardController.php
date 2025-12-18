@@ -15,7 +15,6 @@ class DashboardController extends Controller
         $count['total_donation_this_month'] = Donation::whereMonth('created_at', date('m'))->sum('donation_amount');
         $count['total_donation'] = Donation::sum('donation_amount');
         $count['total_donation_this_year'] = Donation::whereYear('created_at', date('Y'))->sum('donation_amount');
-        return view('user.admin.dashboard')->with(compact('count'));
+        return view('user.user.profile')->with(compact('count'));
     }
-
 }

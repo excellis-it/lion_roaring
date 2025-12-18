@@ -21,7 +21,7 @@ class EcclesiaAssociationController extends Controller
             $ecclesia_association = EcclesiaAssociation::where('country_code', $request->get('content_country_code', 'US'))->orderBy('id', 'desc')->first();
             return view('user.admin.ecclesia-associations.update')->with(compact('ecclesia_association'));
         } else {
-            return redirect()->route('admin.dashboard')->with('error', 'Unauthorized Access');
+            return redirect()->route('user.profile')->with('error', 'Unauthorized Access');
         }
     }
 

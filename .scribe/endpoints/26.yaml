@@ -1,16 +1,449 @@
-name: 'Role Permission'
+name: Events
 description: ''
 endpoints:
   -
     httpMethods:
       - GET
-    uri: api/v3/user/roles/list
+    uri: api/v3/user/events/load
     metadata:
-      groupName: 'Role Permission'
+      groupName: Events
       groupDescription: ''
       subgroup: ''
       subgroupDescription: ''
-      title: 'All roles with permissions'
+      title: 'List All events'
+      description: ''
+      authenticated: true
+      custom: []
+    headers:
+      Authorization: 'Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJhdWQiOiIxIiwianRpIjoiYzkzNjcyNzVkMDdlMGY5ZTc5N2Y3NzdiMzFkZGFjZmFiMDAzOWI1Y2E1ZGJjZTQ3ZWY3MjIxMjQ3YTNlMTVlOTQ0YjJlNGY2Nzk2Yjc5MDQiLCJpYXQiOjE3NjQwNzcyMjguMDQyOTgyLCJuYmYiOjE3NjQwNzcyMjguMDQyOTgzLCJleHAiOjE3OTU2MTMyMjguMDM1OTI0LCJzdWIiOiIxIiwic2NvcGVzIjpbXX0.d3N3fp6pTh1JxrRcDMwG0gLBsS0qyH4TWMsTpjbf_piH3rdfBj-04fL3inKHvOEGcZeFIFUr23DnEKVxNiHsiRYHpJz55K9Y0v-CRi4x8QxW9TIx9L63A0RaHGK044HKEq01mKy3_0ho-n2y2-s12umW92piu9A40h77UxhBMqfqHcIwwr3g77_lGtE530jLEFTSavVPHNiL2UtPIzjllRhXJO9LqALirv4txTkGiNs-3QfU4Q_suzKeU1esVJS6cOQ_lojFTeB26zq0ulDlVPYwx_ruWGyvqc4HbTwhUtCddXK-4IbXCyCWhqNqtPTRmBgtMyEy8atM6hbVFjYHDjlefUP0i6ejKmVaiEiIjTbgL2HotoGsRob1awoP5p9uYsixd0-G1OEGlPPL_wv9tlXwFBiU0M4iJnqaYZt6Cdf_MP79bd3ZcDrOaqF0ALTj6sopGau6Ml2zWr6PqChHl7G9ApnDPY_sVqSjovoDeKUhMVgNwogQCqdnbP508CYoKQtrHItBewCDmjMfekZllaMeWpU_3bnsPhfRQaL6R53uAFz5P2I_CtPcdY9W_HCBHHvTNnyrrPQhjBD_WEeT6-pm681nPKckz2qJCuHelQvb_T55SEIpq2QXw-hkMXGrXLF7imLsodNlURRKgIQLpXqdHv9EU2V5A7alUTbdDRQ'
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters: []
+    cleanUrlParameters: []
+    queryParameters:
+      search:
+        name: search
+        description: 'optional for search.'
+        required: false
+        example: '"abc"'
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+    cleanQueryParameters:
+      search: '"abc"'
+    bodyParameters: []
+    cleanBodyParameters: []
+    fileParameters: []
+    responses:
+      -
+        status: 200
+        content: |-
+          {
+              "data": [
+                  {
+                      "id": 1,
+                      "user_id": 2,
+                      "title": "Project Sync",
+                      "description": "Weekly project sync event.",
+                      "start": "2024-11-10T09:00:00.000000Z",
+                      "end": "2024-11-10T10:00:00.000000Z",
+                      "created_at": "2024-11-08T12:00:00.000000Z",
+                      "updated_at": "2024-11-08T12:00:00.000000Z",
+                      "user": {
+                          "id": 2,
+                          "name": "John Doe",
+                          "email": "john@example.com"
+                      }
+                  }
+              ]
+          }
+        headers: []
+        description: ''
+        custom: []
+      -
+        status: 201
+        content: |-
+          {
+              "error": "Failed to load events."
+          }
+        headers: []
+        description: ''
+        custom: []
+    responseFields: []
+    auth:
+      - headers
+      - Authorization
+      - 'Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJhdWQiOiIxIiwianRpIjoiYzkzNjcyNzVkMDdlMGY5ZTc5N2Y3NzdiMzFkZGFjZmFiMDAzOWI1Y2E1ZGJjZTQ3ZWY3MjIxMjQ3YTNlMTVlOTQ0YjJlNGY2Nzk2Yjc5MDQiLCJpYXQiOjE3NjQwNzcyMjguMDQyOTgyLCJuYmYiOjE3NjQwNzcyMjguMDQyOTgzLCJleHAiOjE3OTU2MTMyMjguMDM1OTI0LCJzdWIiOiIxIiwic2NvcGVzIjpbXX0.d3N3fp6pTh1JxrRcDMwG0gLBsS0qyH4TWMsTpjbf_piH3rdfBj-04fL3inKHvOEGcZeFIFUr23DnEKVxNiHsiRYHpJz55K9Y0v-CRi4x8QxW9TIx9L63A0RaHGK044HKEq01mKy3_0ho-n2y2-s12umW92piu9A40h77UxhBMqfqHcIwwr3g77_lGtE530jLEFTSavVPHNiL2UtPIzjllRhXJO9LqALirv4txTkGiNs-3QfU4Q_suzKeU1esVJS6cOQ_lojFTeB26zq0ulDlVPYwx_ruWGyvqc4HbTwhUtCddXK-4IbXCyCWhqNqtPTRmBgtMyEy8atM6hbVFjYHDjlefUP0i6ejKmVaiEiIjTbgL2HotoGsRob1awoP5p9uYsixd0-G1OEGlPPL_wv9tlXwFBiU0M4iJnqaYZt6Cdf_MP79bd3ZcDrOaqF0ALTj6sopGau6Ml2zWr6PqChHl7G9ApnDPY_sVqSjovoDeKUhMVgNwogQCqdnbP508CYoKQtrHItBewCDmjMfekZllaMeWpU_3bnsPhfRQaL6R53uAFz5P2I_CtPcdY9W_HCBHHvTNnyrrPQhjBD_WEeT6-pm681nPKckz2qJCuHelQvb_T55SEIpq2QXw-hkMXGrXLF7imLsodNlURRKgIQLpXqdHv9EU2V5A7alUTbdDRQ'
+    controller: null
+    method: null
+    route: null
+    custom: []
+  -
+    httpMethods:
+      - POST
+    uri: api/v3/user/events/store
+    metadata:
+      groupName: Events
+      groupDescription: ''
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'Create event'
+      description: ''
+      authenticated: true
+      custom: []
+    headers:
+      Authorization: 'Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJhdWQiOiIxIiwianRpIjoiYzkzNjcyNzVkMDdlMGY5ZTc5N2Y3NzdiMzFkZGFjZmFiMDAzOWI1Y2E1ZGJjZTQ3ZWY3MjIxMjQ3YTNlMTVlOTQ0YjJlNGY2Nzk2Yjc5MDQiLCJpYXQiOjE3NjQwNzcyMjguMDQyOTgyLCJuYmYiOjE3NjQwNzcyMjguMDQyOTgzLCJleHAiOjE3OTU2MTMyMjguMDM1OTI0LCJzdWIiOiIxIiwic2NvcGVzIjpbXX0.d3N3fp6pTh1JxrRcDMwG0gLBsS0qyH4TWMsTpjbf_piH3rdfBj-04fL3inKHvOEGcZeFIFUr23DnEKVxNiHsiRYHpJz55K9Y0v-CRi4x8QxW9TIx9L63A0RaHGK044HKEq01mKy3_0ho-n2y2-s12umW92piu9A40h77UxhBMqfqHcIwwr3g77_lGtE530jLEFTSavVPHNiL2UtPIzjllRhXJO9LqALirv4txTkGiNs-3QfU4Q_suzKeU1esVJS6cOQ_lojFTeB26zq0ulDlVPYwx_ruWGyvqc4HbTwhUtCddXK-4IbXCyCWhqNqtPTRmBgtMyEy8atM6hbVFjYHDjlefUP0i6ejKmVaiEiIjTbgL2HotoGsRob1awoP5p9uYsixd0-G1OEGlPPL_wv9tlXwFBiU0M4iJnqaYZt6Cdf_MP79bd3ZcDrOaqF0ALTj6sopGau6Ml2zWr6PqChHl7G9ApnDPY_sVqSjovoDeKUhMVgNwogQCqdnbP508CYoKQtrHItBewCDmjMfekZllaMeWpU_3bnsPhfRQaL6R53uAFz5P2I_CtPcdY9W_HCBHHvTNnyrrPQhjBD_WEeT6-pm681nPKckz2qJCuHelQvb_T55SEIpq2QXw-hkMXGrXLF7imLsodNlURRKgIQLpXqdHv9EU2V5A7alUTbdDRQ'
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters: []
+    cleanUrlParameters: []
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters:
+      title:
+        name: title
+        description: 'The title of the event.'
+        required: true
+        example: 'Project Sync'
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+      description:
+        name: description
+        description: 'The description of the event.'
+        required: false
+        example: 'Weekly project sync event.'
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: true
+        custom: []
+      start:
+        name: start
+        description: 'The start time of the event in ISO 8601 format.'
+        required: true
+        example: '2024-11-22T01:25'
+        type: datetime
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+      end:
+        name: end
+        description: 'The end time of the event in ISO 8601 format.'
+        required: true
+        example: '2024-11-23T01:25'
+        type: datetime
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+    cleanBodyParameters:
+      title: 'Project Sync'
+      description: 'Weekly project sync event.'
+      start: '2024-11-22T01:25'
+      end: '2024-11-23T01:25'
+    fileParameters: []
+    responses:
+      -
+        status: 200
+        content: |-
+          {
+              "message": "event created successfully.",
+              "data": {
+                  "id": 1,
+                  "user_id": 2,
+                  "title": "Project Sync",
+                  "description": "Weekly project sync event.",
+                  "start": "2024-11-22T01:25",
+                  "end": "2024-11-23T01:25",
+                  "created_at": "2024-11-22T01:25",
+                  "updated_at": "2024-11-22T01:25"
+              }
+          }
+        headers: []
+        description: ''
+        custom: []
+      -
+        status: 201
+        content: |-
+          {
+              "error": "Failed to create event."
+          }
+        headers: []
+        description: ''
+        custom: []
+    responseFields: []
+    auth:
+      - headers
+      - Authorization
+      - 'Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJhdWQiOiIxIiwianRpIjoiYzkzNjcyNzVkMDdlMGY5ZTc5N2Y3NzdiMzFkZGFjZmFiMDAzOWI1Y2E1ZGJjZTQ3ZWY3MjIxMjQ3YTNlMTVlOTQ0YjJlNGY2Nzk2Yjc5MDQiLCJpYXQiOjE3NjQwNzcyMjguMDQyOTgyLCJuYmYiOjE3NjQwNzcyMjguMDQyOTgzLCJleHAiOjE3OTU2MTMyMjguMDM1OTI0LCJzdWIiOiIxIiwic2NvcGVzIjpbXX0.d3N3fp6pTh1JxrRcDMwG0gLBsS0qyH4TWMsTpjbf_piH3rdfBj-04fL3inKHvOEGcZeFIFUr23DnEKVxNiHsiRYHpJz55K9Y0v-CRi4x8QxW9TIx9L63A0RaHGK044HKEq01mKy3_0ho-n2y2-s12umW92piu9A40h77UxhBMqfqHcIwwr3g77_lGtE530jLEFTSavVPHNiL2UtPIzjllRhXJO9LqALirv4txTkGiNs-3QfU4Q_suzKeU1esVJS6cOQ_lojFTeB26zq0ulDlVPYwx_ruWGyvqc4HbTwhUtCddXK-4IbXCyCWhqNqtPTRmBgtMyEy8atM6hbVFjYHDjlefUP0i6ejKmVaiEiIjTbgL2HotoGsRob1awoP5p9uYsixd0-G1OEGlPPL_wv9tlXwFBiU0M4iJnqaYZt6Cdf_MP79bd3ZcDrOaqF0ALTj6sopGau6Ml2zWr6PqChHl7G9ApnDPY_sVqSjovoDeKUhMVgNwogQCqdnbP508CYoKQtrHItBewCDmjMfekZllaMeWpU_3bnsPhfRQaL6R53uAFz5P2I_CtPcdY9W_HCBHHvTNnyrrPQhjBD_WEeT6-pm681nPKckz2qJCuHelQvb_T55SEIpq2QXw-hkMXGrXLF7imLsodNlURRKgIQLpXqdHv9EU2V5A7alUTbdDRQ'
+    controller: null
+    method: null
+    route: null
+    custom: []
+  -
+    httpMethods:
+      - GET
+    uri: 'api/v3/user/events/view/{id}'
+    metadata:
+      groupName: Events
+      groupDescription: ''
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'Single event Details'
+      description: ''
+      authenticated: true
+      custom: []
+    headers:
+      Authorization: 'Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJhdWQiOiIxIiwianRpIjoiYzkzNjcyNzVkMDdlMGY5ZTc5N2Y3NzdiMzFkZGFjZmFiMDAzOWI1Y2E1ZGJjZTQ3ZWY3MjIxMjQ3YTNlMTVlOTQ0YjJlNGY2Nzk2Yjc5MDQiLCJpYXQiOjE3NjQwNzcyMjguMDQyOTgyLCJuYmYiOjE3NjQwNzcyMjguMDQyOTgzLCJleHAiOjE3OTU2MTMyMjguMDM1OTI0LCJzdWIiOiIxIiwic2NvcGVzIjpbXX0.d3N3fp6pTh1JxrRcDMwG0gLBsS0qyH4TWMsTpjbf_piH3rdfBj-04fL3inKHvOEGcZeFIFUr23DnEKVxNiHsiRYHpJz55K9Y0v-CRi4x8QxW9TIx9L63A0RaHGK044HKEq01mKy3_0ho-n2y2-s12umW92piu9A40h77UxhBMqfqHcIwwr3g77_lGtE530jLEFTSavVPHNiL2UtPIzjllRhXJO9LqALirv4txTkGiNs-3QfU4Q_suzKeU1esVJS6cOQ_lojFTeB26zq0ulDlVPYwx_ruWGyvqc4HbTwhUtCddXK-4IbXCyCWhqNqtPTRmBgtMyEy8atM6hbVFjYHDjlefUP0i6ejKmVaiEiIjTbgL2HotoGsRob1awoP5p9uYsixd0-G1OEGlPPL_wv9tlXwFBiU0M4iJnqaYZt6Cdf_MP79bd3ZcDrOaqF0ALTj6sopGau6Ml2zWr6PqChHl7G9ApnDPY_sVqSjovoDeKUhMVgNwogQCqdnbP508CYoKQtrHItBewCDmjMfekZllaMeWpU_3bnsPhfRQaL6R53uAFz5P2I_CtPcdY9W_HCBHHvTNnyrrPQhjBD_WEeT6-pm681nPKckz2qJCuHelQvb_T55SEIpq2QXw-hkMXGrXLF7imLsodNlURRKgIQLpXqdHv9EU2V5A7alUTbdDRQ'
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters:
+      id:
+        name: id
+        description: 'The ID of the event.'
+        required: true
+        example: 1
+        type: integer
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+    cleanUrlParameters:
+      id: 1
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters: []
+    cleanBodyParameters: []
+    fileParameters: []
+    responses:
+      -
+        status: 200
+        content: |-
+          {
+              "data": {
+                  "id": 1,
+                  "user_id": 2,
+                  "title": "Project Sync",
+                  "description": "Weekly project sync event.",
+                  "start": "2024-11-10T09:00:00.000000Z",
+                  "end": "2024-11-10T10:00:00.000000Z",
+                  "created_at": "2024-11-08T12:00:00.000000Z",
+                  "updated_at": "2024-11-08T12:00:00.000000Z",
+                  "user": {
+                         "id": 12,
+                         "ecclesia_id": 2,
+                         "created_id": "1",
+                         "user_name": "swarnadwip_nath",
+                         "first_name": "Swarnadwip",
+                         "middle_name": null,
+                         "last_name": "Nath",
+                         "email": "swarnadwip@excellisit.net",
+                         "phone": "+1 0741202022",
+                         "email_verified_at": null,
+                         "profile_picture": "profile_picture/yCvplMhdpjc0kIeKG63tfkZwhKNYbcF1ZhfQdDFO.jpg",
+                         "address": "Kokata",
+                         "city": "Kolkata",
+                         "state": "41",
+                         "address2": null,
+                         "country": "101",
+                         "zip": "700001",
+                         "status": 1,
+                         "created_at": "2024-06-21T11:31:27.000000Z",
+                         "updated_at": "2024-09-09T11:02:59.000000Z"
+                  }
+              }
+          }
+        headers: []
+        description: ''
+        custom: []
+      -
+        status: 404
+        content: |-
+          {
+              "error": "event not found."
+          }
+        headers: []
+        description: ''
+        custom: []
+    responseFields: []
+    auth:
+      - headers
+      - Authorization
+      - 'Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJhdWQiOiIxIiwianRpIjoiYzkzNjcyNzVkMDdlMGY5ZTc5N2Y3NzdiMzFkZGFjZmFiMDAzOWI1Y2E1ZGJjZTQ3ZWY3MjIxMjQ3YTNlMTVlOTQ0YjJlNGY2Nzk2Yjc5MDQiLCJpYXQiOjE3NjQwNzcyMjguMDQyOTgyLCJuYmYiOjE3NjQwNzcyMjguMDQyOTgzLCJleHAiOjE3OTU2MTMyMjguMDM1OTI0LCJzdWIiOiIxIiwic2NvcGVzIjpbXX0.d3N3fp6pTh1JxrRcDMwG0gLBsS0qyH4TWMsTpjbf_piH3rdfBj-04fL3inKHvOEGcZeFIFUr23DnEKVxNiHsiRYHpJz55K9Y0v-CRi4x8QxW9TIx9L63A0RaHGK044HKEq01mKy3_0ho-n2y2-s12umW92piu9A40h77UxhBMqfqHcIwwr3g77_lGtE530jLEFTSavVPHNiL2UtPIzjllRhXJO9LqALirv4txTkGiNs-3QfU4Q_suzKeU1esVJS6cOQ_lojFTeB26zq0ulDlVPYwx_ruWGyvqc4HbTwhUtCddXK-4IbXCyCWhqNqtPTRmBgtMyEy8atM6hbVFjYHDjlefUP0i6ejKmVaiEiIjTbgL2HotoGsRob1awoP5p9uYsixd0-G1OEGlPPL_wv9tlXwFBiU0M4iJnqaYZt6Cdf_MP79bd3ZcDrOaqF0ALTj6sopGau6Ml2zWr6PqChHl7G9ApnDPY_sVqSjovoDeKUhMVgNwogQCqdnbP508CYoKQtrHItBewCDmjMfekZllaMeWpU_3bnsPhfRQaL6R53uAFz5P2I_CtPcdY9W_HCBHHvTNnyrrPQhjBD_WEeT6-pm681nPKckz2qJCuHelQvb_T55SEIpq2QXw-hkMXGrXLF7imLsodNlURRKgIQLpXqdHv9EU2V5A7alUTbdDRQ'
+    controller: null
+    method: null
+    route: null
+    custom: []
+  -
+    httpMethods:
+      - POST
+    uri: 'api/v3/user/events/edit/{id}'
+    metadata:
+      groupName: Events
+      groupDescription: ''
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'Update event'
+      description: ''
+      authenticated: true
+      custom: []
+    headers:
+      Authorization: 'Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJhdWQiOiIxIiwianRpIjoiYzkzNjcyNzVkMDdlMGY5ZTc5N2Y3NzdiMzFkZGFjZmFiMDAzOWI1Y2E1ZGJjZTQ3ZWY3MjIxMjQ3YTNlMTVlOTQ0YjJlNGY2Nzk2Yjc5MDQiLCJpYXQiOjE3NjQwNzcyMjguMDQyOTgyLCJuYmYiOjE3NjQwNzcyMjguMDQyOTgzLCJleHAiOjE3OTU2MTMyMjguMDM1OTI0LCJzdWIiOiIxIiwic2NvcGVzIjpbXX0.d3N3fp6pTh1JxrRcDMwG0gLBsS0qyH4TWMsTpjbf_piH3rdfBj-04fL3inKHvOEGcZeFIFUr23DnEKVxNiHsiRYHpJz55K9Y0v-CRi4x8QxW9TIx9L63A0RaHGK044HKEq01mKy3_0ho-n2y2-s12umW92piu9A40h77UxhBMqfqHcIwwr3g77_lGtE530jLEFTSavVPHNiL2UtPIzjllRhXJO9LqALirv4txTkGiNs-3QfU4Q_suzKeU1esVJS6cOQ_lojFTeB26zq0ulDlVPYwx_ruWGyvqc4HbTwhUtCddXK-4IbXCyCWhqNqtPTRmBgtMyEy8atM6hbVFjYHDjlefUP0i6ejKmVaiEiIjTbgL2HotoGsRob1awoP5p9uYsixd0-G1OEGlPPL_wv9tlXwFBiU0M4iJnqaYZt6Cdf_MP79bd3ZcDrOaqF0ALTj6sopGau6Ml2zWr6PqChHl7G9ApnDPY_sVqSjovoDeKUhMVgNwogQCqdnbP508CYoKQtrHItBewCDmjMfekZllaMeWpU_3bnsPhfRQaL6R53uAFz5P2I_CtPcdY9W_HCBHHvTNnyrrPQhjBD_WEeT6-pm681nPKckz2qJCuHelQvb_T55SEIpq2QXw-hkMXGrXLF7imLsodNlURRKgIQLpXqdHv9EU2V5A7alUTbdDRQ'
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters:
+      id:
+        name: id
+        description: 'The ID of the event.'
+        required: true
+        example: 1
+        type: integer
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+    cleanUrlParameters:
+      id: 1
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters:
+      title:
+        name: title
+        description: 'The title of the event.'
+        required: true
+        example: 'Project Sync Update'
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+      description:
+        name: description
+        description: 'The description of the event.'
+        required: false
+        example: 'Updated project sync event.'
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: true
+        custom: []
+      start:
+        name: start
+        description: 'The updated start time in ISO 8601 format.'
+        required: true
+        example: '2024-11-22T01:25'
+        type: datetime
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+      end:
+        name: end
+        description: 'The updated end time in ISO 8601 format.'
+        required: true
+        example: '2024-11-23T01:25'
+        type: datetime
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+    cleanBodyParameters:
+      title: 'Project Sync Update'
+      description: 'Updated project sync event.'
+      start: '2024-11-22T01:25'
+      end: '2024-11-23T01:25'
+    fileParameters: []
+    responses:
+      -
+        status: 200
+        content: |-
+          {
+            "message": "event updated successfully.",
+            "status": true
+          }
+        headers: []
+        description: ''
+        custom: []
+    responseFields: []
+    auth:
+      - headers
+      - Authorization
+      - 'Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJhdWQiOiIxIiwianRpIjoiYzkzNjcyNzVkMDdlMGY5ZTc5N2Y3NzdiMzFkZGFjZmFiMDAzOWI1Y2E1ZGJjZTQ3ZWY3MjIxMjQ3YTNlMTVlOTQ0YjJlNGY2Nzk2Yjc5MDQiLCJpYXQiOjE3NjQwNzcyMjguMDQyOTgyLCJuYmYiOjE3NjQwNzcyMjguMDQyOTgzLCJleHAiOjE3OTU2MTMyMjguMDM1OTI0LCJzdWIiOiIxIiwic2NvcGVzIjpbXX0.d3N3fp6pTh1JxrRcDMwG0gLBsS0qyH4TWMsTpjbf_piH3rdfBj-04fL3inKHvOEGcZeFIFUr23DnEKVxNiHsiRYHpJz55K9Y0v-CRi4x8QxW9TIx9L63A0RaHGK044HKEq01mKy3_0ho-n2y2-s12umW92piu9A40h77UxhBMqfqHcIwwr3g77_lGtE530jLEFTSavVPHNiL2UtPIzjllRhXJO9LqALirv4txTkGiNs-3QfU4Q_suzKeU1esVJS6cOQ_lojFTeB26zq0ulDlVPYwx_ruWGyvqc4HbTwhUtCddXK-4IbXCyCWhqNqtPTRmBgtMyEy8atM6hbVFjYHDjlefUP0i6ejKmVaiEiIjTbgL2HotoGsRob1awoP5p9uYsixd0-G1OEGlPPL_wv9tlXwFBiU0M4iJnqaYZt6Cdf_MP79bd3ZcDrOaqF0ALTj6sopGau6Ml2zWr6PqChHl7G9ApnDPY_sVqSjovoDeKUhMVgNwogQCqdnbP508CYoKQtrHItBewCDmjMfekZllaMeWpU_3bnsPhfRQaL6R53uAFz5P2I_CtPcdY9W_HCBHHvTNnyrrPQhjBD_WEeT6-pm681nPKckz2qJCuHelQvb_T55SEIpq2QXw-hkMXGrXLF7imLsodNlURRKgIQLpXqdHv9EU2V5A7alUTbdDRQ'
+    controller: null
+    method: null
+    route: null
+    custom: []
+  -
+    httpMethods:
+      - POST
+    uri: 'api/v3/user/events/delete/{id}'
+    metadata:
+      groupName: Events
+      groupDescription: ''
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'Delete event'
+      description: ''
+      authenticated: true
+      custom: []
+    headers:
+      Authorization: 'Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJhdWQiOiIxIiwianRpIjoiYzkzNjcyNzVkMDdlMGY5ZTc5N2Y3NzdiMzFkZGFjZmFiMDAzOWI1Y2E1ZGJjZTQ3ZWY3MjIxMjQ3YTNlMTVlOTQ0YjJlNGY2Nzk2Yjc5MDQiLCJpYXQiOjE3NjQwNzcyMjguMDQyOTgyLCJuYmYiOjE3NjQwNzcyMjguMDQyOTgzLCJleHAiOjE3OTU2MTMyMjguMDM1OTI0LCJzdWIiOiIxIiwic2NvcGVzIjpbXX0.d3N3fp6pTh1JxrRcDMwG0gLBsS0qyH4TWMsTpjbf_piH3rdfBj-04fL3inKHvOEGcZeFIFUr23DnEKVxNiHsiRYHpJz55K9Y0v-CRi4x8QxW9TIx9L63A0RaHGK044HKEq01mKy3_0ho-n2y2-s12umW92piu9A40h77UxhBMqfqHcIwwr3g77_lGtE530jLEFTSavVPHNiL2UtPIzjllRhXJO9LqALirv4txTkGiNs-3QfU4Q_suzKeU1esVJS6cOQ_lojFTeB26zq0ulDlVPYwx_ruWGyvqc4HbTwhUtCddXK-4IbXCyCWhqNqtPTRmBgtMyEy8atM6hbVFjYHDjlefUP0i6ejKmVaiEiIjTbgL2HotoGsRob1awoP5p9uYsixd0-G1OEGlPPL_wv9tlXwFBiU0M4iJnqaYZt6Cdf_MP79bd3ZcDrOaqF0ALTj6sopGau6Ml2zWr6PqChHl7G9ApnDPY_sVqSjovoDeKUhMVgNwogQCqdnbP508CYoKQtrHItBewCDmjMfekZllaMeWpU_3bnsPhfRQaL6R53uAFz5P2I_CtPcdY9W_HCBHHvTNnyrrPQhjBD_WEeT6-pm681nPKckz2qJCuHelQvb_T55SEIpq2QXw-hkMXGrXLF7imLsodNlURRKgIQLpXqdHv9EU2V5A7alUTbdDRQ'
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters:
+      id:
+        name: id
+        description: 'The ID of the event.'
+        required: true
+        example: 1
+        type: integer
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+    cleanUrlParameters:
+      id: 1
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters: []
+    cleanBodyParameters: []
+    fileParameters: []
+    responses:
+      -
+        status: 200
+        content: |-
+          {
+            "message": "event deleted successfully",
+            "status": true
+          }
+        headers: []
+        description: ''
+        custom: []
+    responseFields: []
+    auth:
+      - headers
+      - Authorization
+      - 'Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJhdWQiOiIxIiwianRpIjoiYzkzNjcyNzVkMDdlMGY5ZTc5N2Y3NzdiMzFkZGFjZmFiMDAzOWI1Y2E1ZGJjZTQ3ZWY3MjIxMjQ3YTNlMTVlOTQ0YjJlNGY2Nzk2Yjc5MDQiLCJpYXQiOjE3NjQwNzcyMjguMDQyOTgyLCJuYmYiOjE3NjQwNzcyMjguMDQyOTgzLCJleHAiOjE3OTU2MTMyMjguMDM1OTI0LCJzdWIiOiIxIiwic2NvcGVzIjpbXX0.d3N3fp6pTh1JxrRcDMwG0gLBsS0qyH4TWMsTpjbf_piH3rdfBj-04fL3inKHvOEGcZeFIFUr23DnEKVxNiHsiRYHpJz55K9Y0v-CRi4x8QxW9TIx9L63A0RaHGK044HKEq01mKy3_0ho-n2y2-s12umW92piu9A40h77UxhBMqfqHcIwwr3g77_lGtE530jLEFTSavVPHNiL2UtPIzjllRhXJO9LqALirv4txTkGiNs-3QfU4Q_suzKeU1esVJS6cOQ_lojFTeB26zq0ulDlVPYwx_ruWGyvqc4HbTwhUtCddXK-4IbXCyCWhqNqtPTRmBgtMyEy8atM6hbVFjYHDjlefUP0i6ejKmVaiEiIjTbgL2HotoGsRob1awoP5p9uYsixd0-G1OEGlPPL_wv9tlXwFBiU0M4iJnqaYZt6Cdf_MP79bd3ZcDrOaqF0ALTj6sopGau6Ml2zWr6PqChHl7G9ApnDPY_sVqSjovoDeKUhMVgNwogQCqdnbP508CYoKQtrHItBewCDmjMfekZllaMeWpU_3bnsPhfRQaL6R53uAFz5P2I_CtPcdY9W_HCBHHvTNnyrrPQhjBD_WEeT6-pm681nPKckz2qJCuHelQvb_T55SEIpq2QXw-hkMXGrXLF7imLsodNlURRKgIQLpXqdHv9EU2V5A7alUTbdDRQ'
+    controller: null
+    method: null
+    route: null
+    custom: []
+  -
+    httpMethods:
+      - GET
+    uri: api/v3/user/events/event-calender-fetch-data
+    metadata:
+      groupName: Events
+      groupDescription: ''
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'Events Calender Data'
       description: ''
       authenticated: true
       custom: []
@@ -30,334 +463,35 @@ endpoints:
         status: 200
         content: |-
           {
+             "message": "Calender data fetched successfully.",
              "data": [
                  {
-                     "id": 2,
-                     "name": "MEMBER_NON_SOVEREIGN",
-                     "guard_name": "web",
-                     "created_at": "2024-03-05T15:36:13.000000Z",
-                     "updated_at": "2024-03-05T15:36:13.000000Z",
-                     "permissions": [
-                         {
-                             "id": 1,
-                             "name": "Manage Profile",
-                             "guard_name": "web",
-                             "created_at": "2024-08-05T12:25:46.000000Z",
-                             "updated_at": "2024-08-05T12:25:46.000000Z",
-                             "pivot": {
-                                 "role_id": 2,
-                                 "permission_id": 1
-                             }
-                         },
-                         {
-                             "id": 2,
-                             "name": "Manage Password",
-                             "guard_name": "web",
-                             "created_at": "2024-08-05T12:25:46.000000Z",
-                             "updated_at": "2024-08-05T12:25:46.000000Z",
-                             "pivot": {
-                                 "role_id": 2,
-                                 "permission_id": 2
-                             }
-                         },
-                         {
-                             "id": 3,
-                             "name": "Manage Chat",
-                             "guard_name": "web",
-                             "created_at": "2024-08-05T12:25:46.000000Z",
-                             "updated_at": "2024-08-05T12:25:46.000000Z",
-                             "pivot": {
-                                 "role_id": 2,
-                                 "permission_id": 3
-                             }
-                         },
-                         {
-                             "id": 4,
-                             "name": "Create Team",
-                             "guard_name": "web",
-                             "created_at": "2024-08-05T12:25:46.000000Z",
-                             "updated_at": "2024-08-05T12:25:46.000000Z",
-                             "pivot": {
-                                 "role_id": 2,
-                                 "permission_id": 4
-                             }
-                         },
-                         {
-                             "id": 6,
-                             "name": "Delete Team",
-                             "guard_name": "web",
-                             "created_at": "2024-08-05T12:25:46.000000Z",
-                             "updated_at": "2024-08-05T12:25:46.000000Z",
-                             "pivot": {
-                                 "role_id": 2,
-                                 "permission_id": 6
-                             }
-                         },
-                         {
-                             "id": 7,
-                             "name": "Manage Team",
-                             "guard_name": "web",
-                             "created_at": "2024-08-05T12:25:46.000000Z",
-                             "updated_at": "2024-08-05T12:25:46.000000Z",
-                             "pivot": {
-                                 "role_id": 2,
-                                 "permission_id": 7
-                             }
-                         },
-                         {
-                             "id": 9,
-                             "name": "Manage Email",
-                             "guard_name": "web",
-                             "created_at": "2024-08-05T12:25:46.000000Z",
-                             "updated_at": "2024-08-05T12:25:46.000000Z",
-                             "pivot": {
-                                 "role_id": 2,
-                                 "permission_id": 9
-                             }
-                         },
-                         {
-                             "id": 10,
-                             "name": "Manage Becoming Sovereigns",
-                             "guard_name": "web",
-                             "created_at": "2024-08-05T12:25:46.000000Z",
-                             "updated_at": "2024-08-05T12:25:46.000000Z",
-                             "pivot": {
-                                 "role_id": 2,
-                                 "permission_id": 10
-                             }
-                         },
-                         {
-                             "id": 11,
-                             "name": "View Becoming Sovereigns",
-                             "guard_name": "web",
-                             "created_at": "2024-08-05T12:25:46.000000Z",
-                             "updated_at": "2024-08-05T12:25:46.000000Z",
-                             "pivot": {
-                                 "role_id": 2,
-                                 "permission_id": 11
-                             }
-                         },
-                         {
-                             "id": 12,
-                             "name": "Upload Becoming Sovereigns",
-                             "guard_name": "web",
-                             "created_at": "2024-08-05T12:25:46.000000Z",
-                             "updated_at": "2024-08-05T12:25:46.000000Z",
-                             "pivot": {
-                                 "role_id": 2,
-                                 "permission_id": 12
-                             }
-                         },
-                         {
-                             "id": 13,
-                             "name": "Edit Becoming Sovereigns",
-                             "guard_name": "web",
-                             "created_at": "2024-08-05T12:25:46.000000Z",
-                             "updated_at": "2024-08-05T12:25:46.000000Z",
-                             "pivot": {
-                                 "role_id": 2,
-                                 "permission_id": 13
-                             }
-                         },
-                         {
-                             "id": 14,
-                             "name": "Delete Becoming Sovereigns",
-                             "guard_name": "web",
-                             "created_at": "2024-08-05T12:25:46.000000Z",
-                             "updated_at": "2024-08-05T12:25:46.000000Z",
-                             "pivot": {
-                                 "role_id": 2,
-                                 "permission_id": 14
-                             }
-                         },
-                         {
-                             "id": 15,
-                             "name": "Download Becoming Sovereigns",
-                             "guard_name": "web",
-                             "created_at": "2024-08-05T12:25:46.000000Z",
-                             "updated_at": "2024-08-05T12:25:46.000000Z",
-                             "pivot": {
-                                 "role_id": 2,
-                                 "permission_id": 15
-                             }
-                         },
-                         {
-                             "id": 16,
-                             "name": "Manage Becoming Christ Like",
-                             "guard_name": "web",
-                             "created_at": "2024-08-05T12:25:46.000000Z",
-                             "updated_at": "2024-08-05T12:25:46.000000Z",
-                             "pivot": {
-                                 "role_id": 2,
-                                 "permission_id": 16
-                             }
-                         },
-                         {
-                             "id": 17,
-                             "name": "View Becoming Christ Like",
-                             "guard_name": "web",
-                             "created_at": "2024-08-05T12:25:46.000000Z",
-                             "updated_at": "2024-08-05T12:25:46.000000Z",
-                             "pivot": {
-                                 "role_id": 2,
-                                 "permission_id": 17
-                             }
-                         },
-                         {
-                             "id": 22,
-                             "name": "Manage Becoming a Leader",
-                             "guard_name": "web",
-                             "created_at": "2024-08-05T12:25:46.000000Z",
-                             "updated_at": "2024-08-05T12:25:46.000000Z",
-                             "pivot": {
-                                 "role_id": 2,
-                                 "permission_id": 22
-                             }
-                         },
-                         {
-                             "id": 23,
-                             "name": "View Becoming a Leader",
-                             "guard_name": "web",
-                             "created_at": "2024-08-05T12:25:46.000000Z",
-                             "updated_at": "2024-08-05T12:25:46.000000Z",
-                             "pivot": {
-                                 "role_id": 2,
-                                 "permission_id": 23
-                             }
-                         },
-                         {
-                             "id": 33,
-                             "name": "Manage Bulletin",
-                             "guard_name": "web",
-                             "created_at": "2024-08-05T12:25:46.000000Z",
-                             "updated_at": "2024-08-05T12:25:46.000000Z",
-                             "pivot": {
-                                 "role_id": 2,
-                                 "permission_id": 33
-                             }
-                         },
-                         {
-                             "id": 34,
-                             "name": "Edit Bulletin",
-                             "guard_name": "web",
-                             "created_at": "2024-08-05T12:25:46.000000Z",
-                             "updated_at": "2024-08-05T12:25:46.000000Z",
-                             "pivot": {
-                                 "role_id": 2,
-                                 "permission_id": 34
-                             }
-                         },
-                         {
-                             "id": 35,
-                             "name": "Create Bulletin",
-                             "guard_name": "web",
-                             "created_at": "2024-08-05T12:25:46.000000Z",
-                             "updated_at": "2024-08-05T12:25:46.000000Z",
-                             "pivot": {
-                                 "role_id": 2,
-                                 "permission_id": 35
-                             }
-                         },
-                         {
-                             "id": 36,
-                             "name": "Delete Bulletin",
-                             "guard_name": "web",
-                             "created_at": "2024-08-05T12:25:46.000000Z",
-                             "updated_at": "2024-08-05T12:25:46.000000Z",
-                             "pivot": {
-                                 "role_id": 2,
-                                 "permission_id": 36
-                             }
-                         },
-                         {
-                             "id": 37,
-                             "name": "Manage Job Postings",
-                             "guard_name": "web",
-                             "created_at": "2024-08-05T12:25:46.000000Z",
-                             "updated_at": "2024-08-05T12:25:46.000000Z",
-                             "pivot": {
-                                 "role_id": 2,
-                                 "permission_id": 37
-                             }
-                         },
-                         {
-                             "id": 38,
-                             "name": "View Job Postings",
-                             "guard_name": "web",
-                             "created_at": "2024-08-05T12:25:46.000000Z",
-                             "updated_at": "2024-08-05T12:25:46.000000Z",
-                             "pivot": {
-                                 "role_id": 2,
-                                 "permission_id": 38
-                             }
-                         },
-                         {
-                             "id": 42,
-                             "name": "Manage Meeting Schedule",
-                             "guard_name": "web",
-                             "created_at": "2024-08-05T12:25:46.000000Z",
-                             "updated_at": "2024-08-05T12:25:46.000000Z",
-                             "pivot": {
-                                 "role_id": 2,
-                                 "permission_id": 42
-                             }
-                         },
-                         {
-                             "id": 43,
-                             "name": "View Meeting Schedule",
-                             "guard_name": "web",
-                             "created_at": "2024-08-05T12:25:46.000000Z",
-                             "updated_at": "2024-08-05T12:25:46.000000Z",
-                             "pivot": {
-                                 "role_id": 2,
-                                 "permission_id": 43
-                             }
-                         },
-                         {
-                             "id": 47,
-                             "name": "Manage Event",
-                             "guard_name": "web",
-                             "created_at": "2024-08-05T12:25:46.000000Z",
-                             "updated_at": "2024-08-05T12:25:46.000000Z",
-                             "pivot": {
-                                 "role_id": 2,
-                                 "permission_id": 47
-                             }
-                         },
-                         {
-                             "id": 48,
-                             "name": "Create Event",
-                             "guard_name": "web",
-                             "created_at": "2024-08-05T12:25:46.000000Z",
-                             "updated_at": "2024-08-05T12:25:46.000000Z",
-                             "pivot": {
-                                 "role_id": 2,
-                                 "permission_id": 48
-                             }
-                         },
-                         {
-                             "id": 49,
-                             "name": "Edit Event",
-                             "guard_name": "web",
-                             "created_at": "2024-08-05T12:25:46.000000Z",
-                             "updated_at": "2024-08-05T12:25:46.000000Z",
-                             "pivot": {
-                                 "role_id": 2,
-                                 "permission_id": 49
-                             }
-                         },
-                         {
-                             "id": 55,
-                             "name": "Manage Help",
-                             "guard_name": "web",
-                             "created_at": "2024-08-05T12:25:46.000000Z",
-                             "updated_at": "2024-08-05T12:25:46.000000Z",
-                             "pivot": {
-                                 "role_id": 2,
-                                 "permission_id": 55
-                             }
-                         }
-                     ]
+                     "id": 15,
+                     "title": "Project Sync",
+                     "description": "Weekly project sync event.",
+                     "start": "2024-11-10T09:00:00.000000Z",
+                     "end": "2024-11-10T10:00:00.000000Z",
+                 },
+                 {
+                     "id": 13,
+                     "title": "fourth event",
+                     "description": "afd",
+                     "start": "2024-10-01T18:57",
+                     "end": "2024-10-01T18:58",
+                 },
+                 {
+                     "id": 12,
+                     "title": "Third event",
+                     "description": "fd",
+                     "start": "2024-10-01T18:57",
+                     "end": "2024-10-01T18:58",
+                 },
+                 {
+                     "id": 11,
+                     "title": "Second event",
+                     "description": "adsf",
+                     "start": "2024-10-01T18:56",
+                     "end": "2024-10-01T18:57",
                  }
              ]
           }
@@ -365,278 +499,10 @@ endpoints:
         description: ''
         custom: []
       -
-        status: 201
+        status: 404
         content: |-
           {
-             "message": "You do not have permission to access this page."
-          }
-        headers: []
-        description: ''
-        custom: []
-    responseFields: []
-    auth:
-      - headers
-      - Authorization
-      - 'Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJhdWQiOiIxIiwianRpIjoiYzkzNjcyNzVkMDdlMGY5ZTc5N2Y3NzdiMzFkZGFjZmFiMDAzOWI1Y2E1ZGJjZTQ3ZWY3MjIxMjQ3YTNlMTVlOTQ0YjJlNGY2Nzk2Yjc5MDQiLCJpYXQiOjE3NjQwNzcyMjguMDQyOTgyLCJuYmYiOjE3NjQwNzcyMjguMDQyOTgzLCJleHAiOjE3OTU2MTMyMjguMDM1OTI0LCJzdWIiOiIxIiwic2NvcGVzIjpbXX0.d3N3fp6pTh1JxrRcDMwG0gLBsS0qyH4TWMsTpjbf_piH3rdfBj-04fL3inKHvOEGcZeFIFUr23DnEKVxNiHsiRYHpJz55K9Y0v-CRi4x8QxW9TIx9L63A0RaHGK044HKEq01mKy3_0ho-n2y2-s12umW92piu9A40h77UxhBMqfqHcIwwr3g77_lGtE530jLEFTSavVPHNiL2UtPIzjllRhXJO9LqALirv4txTkGiNs-3QfU4Q_suzKeU1esVJS6cOQ_lojFTeB26zq0ulDlVPYwx_ruWGyvqc4HbTwhUtCddXK-4IbXCyCWhqNqtPTRmBgtMyEy8atM6hbVFjYHDjlefUP0i6ejKmVaiEiIjTbgL2HotoGsRob1awoP5p9uYsixd0-G1OEGlPPL_wv9tlXwFBiU0M4iJnqaYZt6Cdf_MP79bd3ZcDrOaqF0ALTj6sopGau6Ml2zWr6PqChHl7G9ApnDPY_sVqSjovoDeKUhMVgNwogQCqdnbP508CYoKQtrHItBewCDmjMfekZllaMeWpU_3bnsPhfRQaL6R53uAFz5P2I_CtPcdY9W_HCBHHvTNnyrrPQhjBD_WEeT6-pm681nPKckz2qJCuHelQvb_T55SEIpq2QXw-hkMXGrXLF7imLsodNlURRKgIQLpXqdHv9EU2V5A7alUTbdDRQ'
-    controller: null
-    method: null
-    route: null
-    custom: []
-  -
-    httpMethods:
-      - POST
-    uri: 'api/v3/user/roles/edit/{id}'
-    metadata:
-      groupName: 'Role Permission'
-      groupDescription: ''
-      subgroup: ''
-      subgroupDescription: ''
-      title: 'Role permissions status'
-      description: ''
-      authenticated: true
-      custom: []
-    headers:
-      Authorization: 'Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJhdWQiOiIxIiwianRpIjoiYzkzNjcyNzVkMDdlMGY5ZTc5N2Y3NzdiMzFkZGFjZmFiMDAzOWI1Y2E1ZGJjZTQ3ZWY3MjIxMjQ3YTNlMTVlOTQ0YjJlNGY2Nzk2Yjc5MDQiLCJpYXQiOjE3NjQwNzcyMjguMDQyOTgyLCJuYmYiOjE3NjQwNzcyMjguMDQyOTgzLCJleHAiOjE3OTU2MTMyMjguMDM1OTI0LCJzdWIiOiIxIiwic2NvcGVzIjpbXX0.d3N3fp6pTh1JxrRcDMwG0gLBsS0qyH4TWMsTpjbf_piH3rdfBj-04fL3inKHvOEGcZeFIFUr23DnEKVxNiHsiRYHpJz55K9Y0v-CRi4x8QxW9TIx9L63A0RaHGK044HKEq01mKy3_0ho-n2y2-s12umW92piu9A40h77UxhBMqfqHcIwwr3g77_lGtE530jLEFTSavVPHNiL2UtPIzjllRhXJO9LqALirv4txTkGiNs-3QfU4Q_suzKeU1esVJS6cOQ_lojFTeB26zq0ulDlVPYwx_ruWGyvqc4HbTwhUtCddXK-4IbXCyCWhqNqtPTRmBgtMyEy8atM6hbVFjYHDjlefUP0i6ejKmVaiEiIjTbgL2HotoGsRob1awoP5p9uYsixd0-G1OEGlPPL_wv9tlXwFBiU0M4iJnqaYZt6Cdf_MP79bd3ZcDrOaqF0ALTj6sopGau6Ml2zWr6PqChHl7G9ApnDPY_sVqSjovoDeKUhMVgNwogQCqdnbP508CYoKQtrHItBewCDmjMfekZllaMeWpU_3bnsPhfRQaL6R53uAFz5P2I_CtPcdY9W_HCBHHvTNnyrrPQhjBD_WEeT6-pm681nPKckz2qJCuHelQvb_T55SEIpq2QXw-hkMXGrXLF7imLsodNlURRKgIQLpXqdHv9EU2V5A7alUTbdDRQ'
-      Content-Type: application/json
-      Accept: application/json
-    urlParameters:
-      id:
-        name: id
-        description: 'The ID of the edit.'
-        required: true
-        example: et
-        type: string
-        enumValues: []
-        exampleWasSpecified: false
-        nullable: false
-        custom: []
-    cleanUrlParameters:
-      id: et
-    queryParameters: []
-    cleanQueryParameters: []
-    bodyParameters: []
-    cleanBodyParameters: []
-    fileParameters: []
-    responses:
-      -
-        status: 200
-        content: |-
-          {
-             "modules": [
-                 {
-                     "module": "Profile",
-                     "permissions": {
-                         "manage": 1,
-                         "view": 0,
-                         "create": 0,
-                         "edit": 0,
-                         "delete": 0,
-                         "upload": 0,
-                         "download": 0
-                     }
-                 },
-                 {
-                     "module": "Password",
-                     "permissions": {
-                         "manage": 1,
-                         "view": 0,
-                         "create": 0,
-                         "edit": 0,
-                         "delete": 0,
-                         "upload": 0,
-                         "download": 0
-                     }
-                 },
-                 {
-                     "module": "Chat",
-                     "permissions": {
-                         "manage": 1,
-                         "view": 0,
-                         "create": 0,
-                         "edit": 0,
-                         "delete": 0,
-                         "upload": 0,
-                         "download": 0
-                     }
-                 },
-                 {
-                     "module": "Team",
-                     "permissions": {
-                         "manage": 1,
-                         "view": 0,
-                         "create": 1,
-                         "edit": 0,
-                         "delete": 1,
-                         "upload": 0,
-                         "download": 0
-                     }
-                 },
-                 {
-                     "module": "Email",
-                     "permissions": {
-                         "manage": 1,
-                         "view": 0,
-                         "create": 0,
-                         "edit": 0,
-                         "delete": 0,
-                         "upload": 0,
-                         "download": 0
-                     }
-                 },
-                 {
-                     "module": "Topic",
-                     "permissions": {
-                         "manage": 0,
-                         "view": 0,
-                         "create": 0,
-                         "edit": 0,
-                         "delete": 0,
-                         "upload": 0,
-                         "download": 0
-                     }
-                 },
-                 {
-                     "module": "Becoming Sovereigns",
-                     "permissions": {
-                         "manage": 1,
-                         "view": 1,
-                         "create": 0,
-                         "edit": 1,
-                         "delete": 1,
-                         "upload": 1,
-                         "download": 1
-                     }
-                 },
-                 {
-                     "module": "Becoming Christ Like",
-                     "permissions": {
-                         "manage": 1,
-                         "view": 1,
-                         "create": 0,
-                         "edit": 0,
-                         "delete": 0,
-                         "upload": 0,
-                         "download": 0
-                     }
-                 },
-                 {
-                     "module": "Becoming a Leader",
-                     "permissions": {
-                         "manage": 1,
-                         "view": 1,
-                         "create": 0,
-                         "edit": 0,
-                         "delete": 0,
-                         "upload": 0,
-                         "download": 0
-                     }
-                 },
-                 {
-                     "module": "File",
-                     "permissions": {
-                         "manage": 0,
-                         "view": 0,
-                         "create": 0,
-                         "edit": 0,
-                         "delete": 0,
-                         "upload": 0,
-                         "download": 0
-                     }
-                 },
-                 {
-                     "module": "Bulletin",
-                     "permissions": {
-                         "manage": 1,
-                         "view": 0,
-                         "create": 1,
-                         "edit": 1,
-                         "delete": 1,
-                         "upload": 0,
-                         "download": 0
-                     }
-                 },
-                 {
-                     "module": "Job Postings",
-                     "permissions": {
-                         "manage": 1,
-                         "view": 1,
-                         "create": 0,
-                         "edit": 0,
-                         "delete": 0,
-                         "upload": 0,
-                         "download": 0
-                     }
-                 },
-                 {
-                     "module": "Meeting Schedule",
-                     "permissions": {
-                         "manage": 1,
-                         "view": 1,
-                         "create": 0,
-                         "edit": 0,
-                         "delete": 0,
-                         "upload": 0,
-                         "download": 0
-                     }
-                 },
-                 {
-                     "module": "Event",
-                     "permissions": {
-                         "manage": 1,
-                         "view": 0,
-                         "create": 1,
-                         "edit": 1,
-                         "delete": 0,
-                         "upload": 0,
-                         "download": 0
-                     }
-                 },
-                 {
-                     "module": "Partners",
-                     "permissions": {
-                         "manage": 0,
-                         "view": 0,
-                         "create": 0,
-                         "edit": 0,
-                         "delete": 0,
-                         "upload": 0,
-                         "download": 0
-                     }
-                 },
-                 {
-                     "module": "Strategy",
-                     "permissions": {
-                         "manage": 0,
-                         "view": 0,
-                         "create": 0,
-                         "edit": 0,
-                         "delete": 0,
-                         "upload": 0,
-                         "download": 0
-                     }
-                 },
-                 {
-                     "module": "Help",
-                     "permissions": {
-                         "manage": 1,
-                         "view": 0,
-                         "create": 0,
-                         "edit": 0,
-                         "delete": 0,
-                         "upload": 0,
-                         "download": 0
-                     }
-                 }
-             ]
-          }
-        headers: []
-        description: ''
-        custom: []
-      -
-        status: 201
-        content: |-
-          {
-            "message": "You do not have permission to access this page."
+              "error": "events not found."
           }
         headers: []
         description: ''

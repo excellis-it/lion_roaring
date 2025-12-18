@@ -78,14 +78,14 @@ endpoints:
         name: country_code
         description: "optional Two-letter country code to localize content. Default is 'US'."
         required: false
-        example: in
+        example: minus
         type: string
         enumValues: []
         exampleWasSpecified: false
         nullable: false
         custom: []
     cleanQueryParameters:
-      country_code: in
+      country_code: minus
     bodyParameters: []
     cleanBodyParameters: []
     fileParameters: []
@@ -130,14 +130,14 @@ endpoints:
         name: country_code
         description: "optional Two-letter country code to localize content. Default is 'US'."
         required: false
-        example: sequi
+        example: temporibus
         type: string
         enumValues: []
         exampleWasSpecified: false
         nullable: false
         custom: []
     cleanQueryParameters:
-      country_code: sequi
+      country_code: temporibus
     bodyParameters: []
     cleanBodyParameters: []
     fileParameters: []
@@ -233,7 +233,7 @@ endpoints:
         name: newsletter_name
         description: 'Must not be greater than 255 characters.'
         required: false
-        example: hqubeciutbekxfd
+        example: ikjicdplwgnc
         type: string
         enumValues: []
         exampleWasSpecified: false
@@ -243,7 +243,7 @@ endpoints:
         name: newsletter_email
         description: 'Must be a valid email address.'
         required: true
-        example: pcrooks@example.net
+        example: forest.zemlak@example.org
         type: string
         enumValues: []
         exampleWasSpecified: false
@@ -253,16 +253,16 @@ endpoints:
         name: newsletter_message
         description: 'Must not be greater than 1000 characters.'
         required: false
-        example: kpjy
+        example: jbza
         type: string
         enumValues: []
         exampleWasSpecified: false
         nullable: true
         custom: []
     cleanBodyParameters:
-      newsletter_name: hqubeciutbekxfd
-      newsletter_email: pcrooks@example.net
-      newsletter_message: kpjy
+      newsletter_name: ikjicdplwgnc
+      newsletter_email: forest.zemlak@example.org
+      newsletter_message: jbza
     fileParameters: []
     responses: []
     responseFields: []

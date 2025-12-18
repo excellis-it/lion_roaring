@@ -15,7 +15,7 @@
                     <p class="text-muted small mb-0">Update Gallery</p>
                 </div>
             </div>
-            <form action="{{ route('gallery.update', $gallery->id) }}" method="post" enctype="multipart/form-data">
+            <form action="{{ route('user.admin.gallery.update', $gallery->id) }}" method="post" enctype="multipart/form-data">
                 @method('PUT')
                 @csrf
                 <div class="sales-report-card-wrap">
@@ -81,7 +81,7 @@
                         <div class="col-xl-6">
                             <div class="btn-1">
                                 <button type="submit" class="print_btn me-2 mt-2 mb-2">Update Gallery</button>
-                                <a href="{{ route('gallery.index') }}" class="print_btn print_btn_vv">Cancel</a>
+                                <a href="{{ route('user.admin.gallery.index') }}" class="print_btn print_btn_vv">Cancel</a>
                             </div>
                         </div>
                     </div>

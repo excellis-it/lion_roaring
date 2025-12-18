@@ -15,7 +15,7 @@
                     <p class="text-muted small mb-0">Update Ecclesia Association Page</p>
                 </div>
             </div>
-                <form action="{{ route('ecclesia-associations.store') }}" method="post" enctype="multipart/form-data">
+                <form action="{{ route('user.admin.ecclesia-associations.store') }}" method="post" enctype="multipart/form-data">
                     @csrf
                     <input type="hidden" name="id" value="{{ $ecclesia_association->id ?? '' }}">
                     <div class="sales-report-card-wrap">

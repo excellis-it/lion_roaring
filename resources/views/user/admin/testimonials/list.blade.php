@@ -12,7 +12,7 @@
 
 {{-- @section('create_button')
     @if (auth()->user()->can('Create Testimonials'))
-        <a href="{{ route('testimonials.create') }}" class="btn btn-primary">+ Create New Testmonial</a>
+        <a href="{{ route('user.admin.testimonials.create') }}" class="btn btn-primary">+ Create New Testmonial</a>
     @endif
 @endsection --}}
 @section('content')
@@ -28,7 +28,7 @@
                 </div>
                 <div>
                     @if (auth()->user()->can('Create Testimonials'))
-                        <a href="{{ route('testimonials.create') }}" class="btn btn-primary">+ Create New Testmonial</a>
+                        <a href="{{ route('user.admin.testimonials.create') }}" class="btn btn-primary">+ Create New Testmonial</a>
                     @endif
                 </div>
             </div>
@@ -137,7 +137,7 @@
 
             function fetch_data(page, sort_type, sort_by, query) {
                 $.ajax({
-                    url: "{{ route('testimonials.fetch-data') }}",
+                    url: "{{ route('user.admin.testimonials.fetch-data') }}",
                     data: {
                         page: page,
                         sortby: sort_by,

@@ -12,7 +12,7 @@
 
 @section('create_button')
     @if (auth()->user()->can('Create Gallery'))
-        <a href="{{ route('gallery.create') }}" class="btn btn-primary">+ Create New Gallery</a>
+        <a href="{{ route('user.admin.gallery.create') }}" class="btn btn-primary">+ Create New Gallery</a>
     @endif
 @endsection
 @section('content')
@@ -28,7 +28,7 @@
                 </div>
                 <div>
                     @if (auth()->user()->can('Create Gallery'))
-                        <a href="{{ route('gallery.create') }}" class="print_btn">+ Create Gallery</a>
+                        <a href="{{ route('user.admin.gallery.create') }}" class="print_btn">+ Create Gallery</a>
                     @endif
                 </div>
             </div>
@@ -86,12 +86,12 @@
                                     <td>
                                         <div class="edit-1 d-flex align-items-center justify-content-center">
                                             @if (auth()->user()->can('Edit Gallery'))
-                                                <a title="Edit " href="{{ route('gallery.edit', $item->id) }}">
+                                                <a title="Edit " href="{{ route('user.admin.gallery.edit', $item->id) }}">
                                                     <span class="edit-icon"><i class="fas fa-edit"></i></span>
                                                 </a>
                                             @endif
                                             @if (auth()->user()->can('Delete Gallery'))
-                                                <a title="Delete " data-route="{{ route('gallery.delete', $item->id) }}"
+                                                <a title="Delete " data-route="{{ route('user.admin.gallery.delete', $item->id) }}"
                                                     href="javascript:void(0);" id="delete">
                                                     <span class="trash-icon"><i class="fas fa-trash"></i></span>
                                                 </a>
@@ -147,7 +147,7 @@
             // on change content_country_code should reload the page with the selected country code as query param
             $('#content_country_code').on('change', function() {
                 var country_code = $(this).val();
-                window.location.href = "{{ route('gallery.index') }}" + "?content_country_code=" +
+                window.location.href = "{{ route('user.admin.gallery.index') }}" + "?content_country_code=" +
                     country_code;
             });
         });

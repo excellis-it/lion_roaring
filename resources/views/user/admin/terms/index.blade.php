@@ -15,7 +15,7 @@
                     <p class="text-muted small mb-0">Update terms page</p>
                 </div>
             </div>
-                <form action="{{ route('terms-and-condition.update') }}" method="post" enctype="multipart/form-data">
+                <form action="{{ route('user.admin.terms-and-condition.update') }}" method="post" enctype="multipart/form-data">
                     @csrf
                     <input type="hidden" name="id" value="{{ $terms_and_condition->id ?? '' }}">
                     <div class="row mb-4">

@@ -64,7 +64,7 @@ class GalleryController extends Controller
             $gallery->country_code = $request->content_country_code ?? 'US';
             $gallery->save();
         }
-        return redirect()->route('gallery.index')->with('message', 'Gallery created successfully.');
+        return redirect()->route('user.admin.gallery.index')->with('message', 'Gallery created successfully.');
     }
 
     /**
@@ -114,7 +114,7 @@ class GalleryController extends Controller
         $gallery->country_code = $request->content_country_code ?? 'US';
         $gallery->save();
 
-        return redirect()->route('gallery.index')->with('message', 'Gallery updated successfully.');
+        return redirect()->route('user.admin.gallery.index')->with('message', 'Gallery updated successfully.');
     }
 
     /**
@@ -133,7 +133,7 @@ class GalleryController extends Controller
         if (auth()->user()->can('Delete Gallery')) {
             $gallery = Gallery::findOrFail($id);
             $gallery->delete();
-            return redirect()->route('gallery.index')->with('error', 'Gallery has been deleted successfully.');
+            return redirect()->route('user.admin.gallery.index')->with('error', 'Gallery has been deleted successfully.');
         } else {
             abort(403, 'You do not have permission to access this page.');
         }

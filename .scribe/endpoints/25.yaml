@@ -1,16 +1,20 @@
-name: Policy
-description: ''
+name: 'Private Collaborations'
+description: |-
+
+  APIs to manage private collaborations (create, list, invite, accept)
 endpoints:
   -
     httpMethods:
       - GET
-    uri: api/v3/user/policy/load
+    uri: api/v3/user/private-collaborations/load
     metadata:
-      groupName: Policy
-      groupDescription: ''
+      groupName: 'Private Collaborations'
+      groupDescription: |-
+
+        APIs to manage private collaborations (create, list, invite, accept)
       subgroup: ''
       subgroupDescription: ''
-      title: 'Policies List'
+      title: 'List All Private Collaborations'
       description: ''
       authenticated: true
       custom: []
@@ -23,16 +27,16 @@ endpoints:
     queryParameters:
       search:
         name: search
-        description: 'optional for search.'
+        description: 'optional for search filter.'
         required: false
-        example: '"abc"'
+        example: '"project"'
         type: string
         enumValues: []
         exampleWasSpecified: true
         nullable: false
         custom: []
     cleanQueryParameters:
-      search: '"abc"'
+      search: '"project"'
     bodyParameters: []
     cleanBodyParameters: []
     fileParameters: []
@@ -41,74 +45,31 @@ endpoints:
         status: 200
         content: |-
           {
-             "data": {
-                 "current_page": 1,
-                 "data": [
-                     {
-                         "id": 7,
-                         "user_id": 37,
-                         "file_name": "dummy (1).pdf",
-                         "file_extension": "pdf",
-                         "file": "policies/06C4cc8uACENraZzOjILXIY5QIg4QQrDESsT5Kqv.pdf",
-                         "created_at": "2024-11-11T07:02:33.000000Z",
-                         "updated_at": "2024-11-11T07:02:33.000000Z"
-                     },
-                     {
-                         "id": 6,
-                         "user_id": 1,
-                         "file_name": "partner-Photoroom.jpg",
-                         "file_extension": "jpg",
-                         "file": "policies/L4u3mwqeGc8BuCuHXR5X9ZYOPbV2SYgQcvqDIiIN.jpg",
-                         "created_at": "2024-08-27T06:34:46.000000Z",
-                         "updated_at": "2024-08-27T06:34:46.000000Z"
-                     },
-                     {
-                         "id": 5,
-                         "user_id": 1,
-                         "file_name": "A2ncCVFTo7T9zg1wjM9BPyX9u1PctUGVsPi8oEXb.jpg",
-                         "file_extension": "jpg",
-                         "file": "policies/1sk1WN3iEFUA3ztNYNCApyqR5jKg2RyLSBXHk1oP.jpg",
-                         "created_at": "2024-08-27T06:34:46.000000Z",
-                         "updated_at": "2024-08-27T06:34:46.000000Z"
-                     }
-                 ],
-                 "first_page_url": "http://127.0.0.1:8000/api/v3/user/policy/load?page=1",
-                 "from": 1,
-                 "last_page": 1,
-                 "last_page_url": "http://127.0.0.1:8000/api/v3/user/policy/load?page=1",
-                 "links": [
-                     {
-                         "url": null,
-                         "label": "&laquo; Previous",
-                         "active": false
-                     },
-                     {
-                         "url": "http://127.0.0.1:8000/api/v3/user/policy/load?page=1",
-                         "label": "1",
-                         "active": true
-                     },
-                     {
-                         "url": null,
-                         "label": "Next &raquo;",
-                         "active": false
-                     }
-                 ],
-                 "next_page_url": null,
-                 "path": "http://127.0.0.1:8000/api/v3/user/policy/load",
-                 "per_page": 15,
-                 "prev_page_url": null,
-                 "to": 3,
-                 "total": 3
-             }
+            "data": [
+                {
+                    "id": 1,
+                    "user_id": 2,
+                    "title": "Project Sync",
+                    "description": "Weekly sync",
+                    "start_time": "2024-11-10T09:00:00",
+                    "end_time": "2024-11-10T10:00:00",
+                    "meeting_link": "https://zoom.us/j/123456789",
+                    "is_zoom": true,
+                    "user": { "id": 2, "full_name": "John Doe", "email": "john@example.com" }
+                }
+            ]
           }
         headers: []
         description: ''
         custom: []
       -
         status: 201
-        content: '{"error": "Failed to fetch policies."}'
+        content: |-
+          {
+            "error": "Failed to load collaborations."
+          }
         headers: []
-        description: error
+        description: ''
         custom: []
     responseFields: []
     auth:
@@ -122,50 +83,114 @@ endpoints:
   -
     httpMethods:
       - POST
-    uri: api/v3/user/policy/store
+    uri: api/v3/user/private-collaborations/store
     metadata:
-      groupName: Policy
-      groupDescription: ''
+      groupName: 'Private Collaborations'
+      groupDescription: |-
+
+        APIs to manage private collaborations (create, list, invite, accept)
       subgroup: ''
       subgroupDescription: ''
-      title: 'Create policies'
+      title: 'Create a private collaboration'
       description: ''
       authenticated: true
       custom: []
     headers:
       Authorization: 'Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJhdWQiOiIxIiwianRpIjoiYzkzNjcyNzVkMDdlMGY5ZTc5N2Y3NzdiMzFkZGFjZmFiMDAzOWI1Y2E1ZGJjZTQ3ZWY3MjIxMjQ3YTNlMTVlOTQ0YjJlNGY2Nzk2Yjc5MDQiLCJpYXQiOjE3NjQwNzcyMjguMDQyOTgyLCJuYmYiOjE3NjQwNzcyMjguMDQyOTgzLCJleHAiOjE3OTU2MTMyMjguMDM1OTI0LCJzdWIiOiIxIiwic2NvcGVzIjpbXX0.d3N3fp6pTh1JxrRcDMwG0gLBsS0qyH4TWMsTpjbf_piH3rdfBj-04fL3inKHvOEGcZeFIFUr23DnEKVxNiHsiRYHpJz55K9Y0v-CRi4x8QxW9TIx9L63A0RaHGK044HKEq01mKy3_0ho-n2y2-s12umW92piu9A40h77UxhBMqfqHcIwwr3g77_lGtE530jLEFTSavVPHNiL2UtPIzjllRhXJO9LqALirv4txTkGiNs-3QfU4Q_suzKeU1esVJS6cOQ_lojFTeB26zq0ulDlVPYwx_ruWGyvqc4HbTwhUtCddXK-4IbXCyCWhqNqtPTRmBgtMyEy8atM6hbVFjYHDjlefUP0i6ejKmVaiEiIjTbgL2HotoGsRob1awoP5p9uYsixd0-G1OEGlPPL_wv9tlXwFBiU0M4iJnqaYZt6Cdf_MP79bd3ZcDrOaqF0ALTj6sopGau6Ml2zWr6PqChHl7G9ApnDPY_sVqSjovoDeKUhMVgNwogQCqdnbP508CYoKQtrHItBewCDmjMfekZllaMeWpU_3bnsPhfRQaL6R53uAFz5P2I_CtPcdY9W_HCBHHvTNnyrrPQhjBD_WEeT6-pm681nPKckz2qJCuHelQvb_T55SEIpq2QXw-hkMXGrXLF7imLsodNlURRKgIQLpXqdHv9EU2V5A7alUTbdDRQ'
-      Content-Type: multipart/form-data
+      Content-Type: application/json
       Accept: application/json
     urlParameters: []
     cleanUrlParameters: []
     queryParameters: []
     cleanQueryParameters: []
     bodyParameters:
-      file:
-        name: file
-        description: 'files to upload.'
+      title:
+        name: title
+        description: 'The title of the collaboration.'
         required: true
-        example: null
-        type: file
+        example: '"Team for Project Z"'
+        type: string
         enumValues: []
-        exampleWasSpecified: false
+        exampleWasSpecified: true
         nullable: false
         custom: []
-    cleanBodyParameters: []
-    fileParameters:
-      file: null
+      description:
+        name: description
+        description: 'optional The description.'
+        required: false
+        example: '"Meeting to discuss project Z"'
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: true
+        custom: []
+      start_time:
+        name: start_time
+        description: 'The start time in ISO 8601 format.'
+        required: true
+        example: '2024-11-22T10:00:00'
+        type: datetime
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+      end_time:
+        name: end_time
+        description: 'The end time in ISO 8601 format.'
+        required: true
+        example: '2024-11-22T11:00:00'
+        type: datetime
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+      meeting_link:
+        name: meeting_link
+        description: 'optional Meeting link (if not creating Zoom meeting).'
+        required: false
+        example: 'https://meet.example.com/abc'
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: true
+        custom: []
+      create_zoom:
+        name: create_zoom
+        description: 'optional Create a Zoom meeting automatically.'
+        required: false
+        example: true
+        type: boolean
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: true
+        custom: []
+    cleanBodyParameters:
+      title: '"Team for Project Z"'
+      description: '"Meeting to discuss project Z"'
+      start_time: '2024-11-22T10:00:00'
+      end_time: '2024-11-22T11:00:00'
+      meeting_link: 'https://meet.example.com/abc'
+      create_zoom: true
+    fileParameters: []
     responses:
       -
         status: 200
-        content: '{"message": "Policy(s) uploaded successfully."}'
+        content: |-
+          {
+              "message": "Private collaboration created successfully.",
+              "data": {"id": 1, "title": "Team for Project Z"}
+          }
         headers: []
-        description: success
+        description: ''
         custom: []
       -
         status: 201
-        content: '{"error": "Validation failed or duplicate policy found."}'
+        content: |-
+          {
+              "error": "Failed to create collaboration."
+          }
         headers: []
-        description: error
+        description: ''
         custom: []
     responseFields: []
     auth:
@@ -179,13 +204,15 @@ endpoints:
   -
     httpMethods:
       - GET
-    uri: 'api/v3/user/policy/delete/{id}'
+    uri: 'api/v3/user/private-collaborations/view/{id}'
     metadata:
-      groupName: Policy
-      groupDescription: ''
+      groupName: 'Private Collaborations'
+      groupDescription: |-
+
+        APIs to manage private collaborations (create, list, invite, accept)
       subgroup: ''
       subgroupDescription: ''
-      title: 'Delete policy'
+      title: 'Get a single collaboration'
       description: ''
       authenticated: true
       custom: []
@@ -196,12 +223,12 @@ endpoints:
     urlParameters:
       id:
         name: id
-        description: 'The ID of the policy to delete.'
+        description: 'The ID of the collaboration.'
         required: true
         example: 1
         type: integer
         enumValues: []
-        exampleWasSpecified: false
+        exampleWasSpecified: true
         nullable: false
         custom: []
     cleanUrlParameters:
@@ -214,15 +241,20 @@ endpoints:
     responses:
       -
         status: 200
-        content: '{"message": "Policy deleted successfully."}'
+        content: |-
+          {
+             "data": {"id": 1, "title": "Project Sync", "invitations": []},
+             "is_creator": true,
+             "has_accepted": true
+          }
         headers: []
-        description: success
+        description: ''
         custom: []
       -
-        status: 201
-        content: '{"error": "Policy not found or permission denied."}'
+        status: 404
+        content: '{ "error": "Collaboration not found." }'
         headers: []
-        description: error
+        description: ''
         custom: []
     responseFields: []
     auth:
@@ -235,14 +267,16 @@ endpoints:
     custom: []
   -
     httpMethods:
-      - GET
-    uri: 'api/v3/user/policy/download/{id}'
+      - POST
+    uri: 'api/v3/user/private-collaborations/edit/{id}'
     metadata:
-      groupName: Policy
-      groupDescription: ''
+      groupName: 'Private Collaborations'
+      groupDescription: |-
+
+        APIs to manage private collaborations (create, list, invite, accept)
       subgroup: ''
       subgroupDescription: ''
-      title: 'Download policy file'
+      title: 'Update a collaboration'
       description: ''
       authenticated: true
       custom: []
@@ -253,33 +287,99 @@ endpoints:
     urlParameters:
       id:
         name: id
-        description: 'The ID of the download.'
+        description: 'The ID of the collaboration.'
         required: true
-        example: laudantium
+        example: 1
+        type: integer
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+    cleanUrlParameters:
+      id: 1
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters:
+      title:
+        name: title
+        description: ''
+        required: true
+        example: dolore
         type: string
         enumValues: []
         exampleWasSpecified: false
         nullable: false
         custom: []
-    cleanUrlParameters:
-      id: laudantium
-    queryParameters: []
-    cleanQueryParameters: []
-    bodyParameters: []
-    cleanBodyParameters: []
+      description:
+        name: description
+        description: ''
+        required: false
+        example: 'Tempore facilis dolorem fugit et sapiente veniam quo.'
+        type: string
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: true
+        custom: []
+      start_time:
+        name: start_time
+        description: ''
+        required: true
+        example: et
+        type: datetime
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: false
+        custom: []
+      end_time:
+        name: end_time
+        description: ''
+        required: true
+        example: nisi
+        type: datetime
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: false
+        custom: []
+      meeting_link:
+        name: meeting_link
+        description: ''
+        required: false
+        example: ad
+        type: string
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: true
+        custom: []
+      create_zoom:
+        name: create_zoom
+        description: ''
+        required: false
+        example: true
+        type: boolean
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: true
+        custom: []
+    cleanBodyParameters:
+      title: dolore
+      description: 'Tempore facilis dolorem fugit et sapiente veniam quo.'
+      start_time: et
+      end_time: nisi
+      meeting_link: ad
+      create_zoom: true
     fileParameters: []
     responses:
       -
         status: 200
-        content: 'The file download response.'
+        content: '{"message": "Private collaboration updated successfully."}'
         headers: []
-        description: success
+        description: ''
         custom: []
       -
-        status: 201
-        content: '{"error": "Policy not found or permission denied."}'
+        status: 404
+        content: '{"error": "Collaboration not found."}'
         headers: []
-        description: error
+        description: ''
         custom: []
     responseFields: []
     auth:
@@ -292,14 +392,16 @@ endpoints:
     custom: []
   -
     httpMethods:
-      - GET
-    uri: 'api/v3/user/policy/view/{id}'
+      - POST
+    uri: 'api/v3/user/private-collaborations/delete/{id}'
     metadata:
-      groupName: Policy
-      groupDescription: ''
+      groupName: 'Private Collaborations'
+      groupDescription: |-
+
+        APIs to manage private collaborations (create, list, invite, accept)
       subgroup: ''
       subgroupDescription: ''
-      title: 'Single Policy details'
+      title: 'Delete a collaboration'
       description: ''
       authenticated: true
       custom: []
@@ -310,16 +412,16 @@ endpoints:
     urlParameters:
       id:
         name: id
-        description: 'The ID of the policy to view.'
+        description: 'The ID of the collaboration.'
         required: true
-        example: 16
+        example: 2
         type: integer
         enumValues: []
         exampleWasSpecified: false
         nullable: false
         custom: []
     cleanUrlParameters:
-      id: 16
+      id: 2
     queryParameters: []
     cleanQueryParameters: []
     bodyParameters: []
@@ -328,15 +430,189 @@ endpoints:
     responses:
       -
         status: 200
-        content: '{"data": {"id": 1, "file_name": "strategy1.pdf", "file_extension": "pdf", "user_id": 1, "file": "policies/strategy1.pdf"}}'
+        content: '{"message": "Private collaboration deleted successfully.", "status": true}'
         headers: []
-        description: success
+        description: ''
         custom: []
       -
         status: 201
-        content: '{"error": "Policy not found or permission denied."}'
+        content: '{"error": "Failed to delete collaboration."}'
         headers: []
-        description: error
+        description: ''
+        custom: []
+    responseFields: []
+    auth:
+      - headers
+      - Authorization
+      - 'Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJhdWQiOiIxIiwianRpIjoiYzkzNjcyNzVkMDdlMGY5ZTc5N2Y3NzdiMzFkZGFjZmFiMDAzOWI1Y2E1ZGJjZTQ3ZWY3MjIxMjQ3YTNlMTVlOTQ0YjJlNGY2Nzk2Yjc5MDQiLCJpYXQiOjE3NjQwNzcyMjguMDQyOTgyLCJuYmYiOjE3NjQwNzcyMjguMDQyOTgzLCJleHAiOjE3OTU2MTMyMjguMDM1OTI0LCJzdWIiOiIxIiwic2NvcGVzIjpbXX0.d3N3fp6pTh1JxrRcDMwG0gLBsS0qyH4TWMsTpjbf_piH3rdfBj-04fL3inKHvOEGcZeFIFUr23DnEKVxNiHsiRYHpJz55K9Y0v-CRi4x8QxW9TIx9L63A0RaHGK044HKEq01mKy3_0ho-n2y2-s12umW92piu9A40h77UxhBMqfqHcIwwr3g77_lGtE530jLEFTSavVPHNiL2UtPIzjllRhXJO9LqALirv4txTkGiNs-3QfU4Q_suzKeU1esVJS6cOQ_lojFTeB26zq0ulDlVPYwx_ruWGyvqc4HbTwhUtCddXK-4IbXCyCWhqNqtPTRmBgtMyEy8atM6hbVFjYHDjlefUP0i6ejKmVaiEiIjTbgL2HotoGsRob1awoP5p9uYsixd0-G1OEGlPPL_wv9tlXwFBiU0M4iJnqaYZt6Cdf_MP79bd3ZcDrOaqF0ALTj6sopGau6Ml2zWr6PqChHl7G9ApnDPY_sVqSjovoDeKUhMVgNwogQCqdnbP508CYoKQtrHItBewCDmjMfekZllaMeWpU_3bnsPhfRQaL6R53uAFz5P2I_CtPcdY9W_HCBHHvTNnyrrPQhjBD_WEeT6-pm681nPKckz2qJCuHelQvb_T55SEIpq2QXw-hkMXGrXLF7imLsodNlURRKgIQLpXqdHv9EU2V5A7alUTbdDRQ'
+    controller: null
+    method: null
+    route: null
+    custom: []
+  -
+    httpMethods:
+      - POST
+    uri: 'api/v3/user/private-collaborations/accept-invitation/{id}'
+    metadata:
+      groupName: 'Private Collaborations'
+      groupDescription: |-
+
+        APIs to manage private collaborations (create, list, invite, accept)
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'Accept invitation for a collaboration'
+      description: ''
+      authenticated: true
+      custom: []
+    headers:
+      Authorization: 'Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJhdWQiOiIxIiwianRpIjoiYzkzNjcyNzVkMDdlMGY5ZTc5N2Y3NzdiMzFkZGFjZmFiMDAzOWI1Y2E1ZGJjZTQ3ZWY3MjIxMjQ3YTNlMTVlOTQ0YjJlNGY2Nzk2Yjc5MDQiLCJpYXQiOjE3NjQwNzcyMjguMDQyOTgyLCJuYmYiOjE3NjQwNzcyMjguMDQyOTgzLCJleHAiOjE3OTU2MTMyMjguMDM1OTI0LCJzdWIiOiIxIiwic2NvcGVzIjpbXX0.d3N3fp6pTh1JxrRcDMwG0gLBsS0qyH4TWMsTpjbf_piH3rdfBj-04fL3inKHvOEGcZeFIFUr23DnEKVxNiHsiRYHpJz55K9Y0v-CRi4x8QxW9TIx9L63A0RaHGK044HKEq01mKy3_0ho-n2y2-s12umW92piu9A40h77UxhBMqfqHcIwwr3g77_lGtE530jLEFTSavVPHNiL2UtPIzjllRhXJO9LqALirv4txTkGiNs-3QfU4Q_suzKeU1esVJS6cOQ_lojFTeB26zq0ulDlVPYwx_ruWGyvqc4HbTwhUtCddXK-4IbXCyCWhqNqtPTRmBgtMyEy8atM6hbVFjYHDjlefUP0i6ejKmVaiEiIjTbgL2HotoGsRob1awoP5p9uYsixd0-G1OEGlPPL_wv9tlXwFBiU0M4iJnqaYZt6Cdf_MP79bd3ZcDrOaqF0ALTj6sopGau6Ml2zWr6PqChHl7G9ApnDPY_sVqSjovoDeKUhMVgNwogQCqdnbP508CYoKQtrHItBewCDmjMfekZllaMeWpU_3bnsPhfRQaL6R53uAFz5P2I_CtPcdY9W_HCBHHvTNnyrrPQhjBD_WEeT6-pm681nPKckz2qJCuHelQvb_T55SEIpq2QXw-hkMXGrXLF7imLsodNlURRKgIQLpXqdHv9EU2V5A7alUTbdDRQ'
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters:
+      id:
+        name: id
+        description: 'The ID of the collaboration to accept.'
+        required: true
+        example: 15
+        type: integer
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: false
+        custom: []
+    cleanUrlParameters:
+      id: 15
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters: []
+    cleanBodyParameters: []
+    fileParameters: []
+    responses:
+      -
+        status: 200
+        content: '{"status": true, "message": "Invitation accepted successfully."}'
+        headers: []
+        description: ''
+        custom: []
+      -
+        status: 403
+        content: '{"status": false, "message": "You have not been invited to this collaboration."}'
+        headers: []
+        description: ''
+        custom: []
+    responseFields: []
+    auth:
+      - headers
+      - Authorization
+      - 'Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJhdWQiOiIxIiwianRpIjoiYzkzNjcyNzVkMDdlMGY5ZTc5N2Y3NzdiMzFkZGFjZmFiMDAzOWI1Y2E1ZGJjZTQ3ZWY3MjIxMjQ3YTNlMTVlOTQ0YjJlNGY2Nzk2Yjc5MDQiLCJpYXQiOjE3NjQwNzcyMjguMDQyOTgyLCJuYmYiOjE3NjQwNzcyMjguMDQyOTgzLCJleHAiOjE3OTU2MTMyMjguMDM1OTI0LCJzdWIiOiIxIiwic2NvcGVzIjpbXX0.d3N3fp6pTh1JxrRcDMwG0gLBsS0qyH4TWMsTpjbf_piH3rdfBj-04fL3inKHvOEGcZeFIFUr23DnEKVxNiHsiRYHpJz55K9Y0v-CRi4x8QxW9TIx9L63A0RaHGK044HKEq01mKy3_0ho-n2y2-s12umW92piu9A40h77UxhBMqfqHcIwwr3g77_lGtE530jLEFTSavVPHNiL2UtPIzjllRhXJO9LqALirv4txTkGiNs-3QfU4Q_suzKeU1esVJS6cOQ_lojFTeB26zq0ulDlVPYwx_ruWGyvqc4HbTwhUtCddXK-4IbXCyCWhqNqtPTRmBgtMyEy8atM6hbVFjYHDjlefUP0i6ejKmVaiEiIjTbgL2HotoGsRob1awoP5p9uYsixd0-G1OEGlPPL_wv9tlXwFBiU0M4iJnqaYZt6Cdf_MP79bd3ZcDrOaqF0ALTj6sopGau6Ml2zWr6PqChHl7G9ApnDPY_sVqSjovoDeKUhMVgNwogQCqdnbP508CYoKQtrHItBewCDmjMfekZllaMeWpU_3bnsPhfRQaL6R53uAFz5P2I_CtPcdY9W_HCBHHvTNnyrrPQhjBD_WEeT6-pm681nPKckz2qJCuHelQvb_T55SEIpq2QXw-hkMXGrXLF7imLsodNlURRKgIQLpXqdHv9EU2V5A7alUTbdDRQ'
+    controller: null
+    method: null
+    route: null
+    custom: []
+  -
+    httpMethods:
+      - POST
+    uri: api/v3/user/private-collaborations/zoom-signature
+    metadata:
+      groupName: 'Private Collaborations'
+      groupDescription: |-
+
+        APIs to manage private collaborations (create, list, invite, accept)
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'Generate Zoom Web SDK signature for collaboration meeting'
+      description: ''
+      authenticated: true
+      custom: []
+    headers:
+      Authorization: 'Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJhdWQiOiIxIiwianRpIjoiYzkzNjcyNzVkMDdlMGY5ZTc5N2Y3NzdiMzFkZGFjZmFiMDAzOWI1Y2E1ZGJjZTQ3ZWY3MjIxMjQ3YTNlMTVlOTQ0YjJlNGY2Nzk2Yjc5MDQiLCJpYXQiOjE3NjQwNzcyMjguMDQyOTgyLCJuYmYiOjE3NjQwNzcyMjguMDQyOTgzLCJleHAiOjE3OTU2MTMyMjguMDM1OTI0LCJzdWIiOiIxIiwic2NvcGVzIjpbXX0.d3N3fp6pTh1JxrRcDMwG0gLBsS0qyH4TWMsTpjbf_piH3rdfBj-04fL3inKHvOEGcZeFIFUr23DnEKVxNiHsiRYHpJz55K9Y0v-CRi4x8QxW9TIx9L63A0RaHGK044HKEq01mKy3_0ho-n2y2-s12umW92piu9A40h77UxhBMqfqHcIwwr3g77_lGtE530jLEFTSavVPHNiL2UtPIzjllRhXJO9LqALirv4txTkGiNs-3QfU4Q_suzKeU1esVJS6cOQ_lojFTeB26zq0ulDlVPYwx_ruWGyvqc4HbTwhUtCddXK-4IbXCyCWhqNqtPTRmBgtMyEy8atM6hbVFjYHDjlefUP0i6ejKmVaiEiIjTbgL2HotoGsRob1awoP5p9uYsixd0-G1OEGlPPL_wv9tlXwFBiU0M4iJnqaYZt6Cdf_MP79bd3ZcDrOaqF0ALTj6sopGau6Ml2zWr6PqChHl7G9ApnDPY_sVqSjovoDeKUhMVgNwogQCqdnbP508CYoKQtrHItBewCDmjMfekZllaMeWpU_3bnsPhfRQaL6R53uAFz5P2I_CtPcdY9W_HCBHHvTNnyrrPQhjBD_WEeT6-pm681nPKckz2qJCuHelQvb_T55SEIpq2QXw-hkMXGrXLF7imLsodNlURRKgIQLpXqdHv9EU2V5A7alUTbdDRQ'
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters: []
+    cleanUrlParameters: []
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters:
+      collaboration_id:
+        name: collaboration_id
+        description: 'The id of the collaboration.'
+        required: true
+        example: 1
+        type: integer
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+    cleanBodyParameters:
+      collaboration_id: 1
+    fileParameters: []
+    responses:
+      -
+        status: 200
+        content: |-
+          {
+              "status": true,
+              "signature": "...",
+              "sdkKey": "ABC",
+              "meetingNumber": "123456789",
+              "userName": "John Doe",
+              "userEmail": "john@example.com"
+          }
+        headers: []
+        description: ''
+        custom: []
+      -
+        status: 201
+        content: '{"status": false, "message": "This meeting is not a Zoom meeting."}'
+        headers: []
+        description: ''
+        custom: []
+    responseFields: []
+    auth:
+      - headers
+      - Authorization
+      - 'Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJhdWQiOiIxIiwianRpIjoiYzkzNjcyNzVkMDdlMGY5ZTc5N2Y3NzdiMzFkZGFjZmFiMDAzOWI1Y2E1ZGJjZTQ3ZWY3MjIxMjQ3YTNlMTVlOTQ0YjJlNGY2Nzk2Yjc5MDQiLCJpYXQiOjE3NjQwNzcyMjguMDQyOTgyLCJuYmYiOjE3NjQwNzcyMjguMDQyOTgzLCJleHAiOjE3OTU2MTMyMjguMDM1OTI0LCJzdWIiOiIxIiwic2NvcGVzIjpbXX0.d3N3fp6pTh1JxrRcDMwG0gLBsS0qyH4TWMsTpjbf_piH3rdfBj-04fL3inKHvOEGcZeFIFUr23DnEKVxNiHsiRYHpJz55K9Y0v-CRi4x8QxW9TIx9L63A0RaHGK044HKEq01mKy3_0ho-n2y2-s12umW92piu9A40h77UxhBMqfqHcIwwr3g77_lGtE530jLEFTSavVPHNiL2UtPIzjllRhXJO9LqALirv4txTkGiNs-3QfU4Q_suzKeU1esVJS6cOQ_lojFTeB26zq0ulDlVPYwx_ruWGyvqc4HbTwhUtCddXK-4IbXCyCWhqNqtPTRmBgtMyEy8atM6hbVFjYHDjlefUP0i6ejKmVaiEiIjTbgL2HotoGsRob1awoP5p9uYsixd0-G1OEGlPPL_wv9tlXwFBiU0M4iJnqaYZt6Cdf_MP79bd3ZcDrOaqF0ALTj6sopGau6Ml2zWr6PqChHl7G9ApnDPY_sVqSjovoDeKUhMVgNwogQCqdnbP508CYoKQtrHItBewCDmjMfekZllaMeWpU_3bnsPhfRQaL6R53uAFz5P2I_CtPcdY9W_HCBHHvTNnyrrPQhjBD_WEeT6-pm681nPKckz2qJCuHelQvb_T55SEIpq2QXw-hkMXGrXLF7imLsodNlURRKgIQLpXqdHv9EU2V5A7alUTbdDRQ'
+    controller: null
+    method: null
+    route: null
+    custom: []
+  -
+    httpMethods:
+      - GET
+    uri: api/v3/user/private-collaborations/private-collaborations-calender-fetch-data
+    metadata:
+      groupName: 'Private Collaborations'
+      groupDescription: |-
+
+        APIs to manage private collaborations (create, list, invite, accept)
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'Fetch calendar data for private collaborations'
+      description: ''
+      authenticated: true
+      custom: []
+    headers:
+      Authorization: 'Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJhdWQiOiIxIiwianRpIjoiYzkzNjcyNzVkMDdlMGY5ZTc5N2Y3NzdiMzFkZGFjZmFiMDAzOWI1Y2E1ZGJjZTQ3ZWY3MjIxMjQ3YTNlMTVlOTQ0YjJlNGY2Nzk2Yjc5MDQiLCJpYXQiOjE3NjQwNzcyMjguMDQyOTgyLCJuYmYiOjE3NjQwNzcyMjguMDQyOTgzLCJleHAiOjE3OTU2MTMyMjguMDM1OTI0LCJzdWIiOiIxIiwic2NvcGVzIjpbXX0.d3N3fp6pTh1JxrRcDMwG0gLBsS0qyH4TWMsTpjbf_piH3rdfBj-04fL3inKHvOEGcZeFIFUr23DnEKVxNiHsiRYHpJz55K9Y0v-CRi4x8QxW9TIx9L63A0RaHGK044HKEq01mKy3_0ho-n2y2-s12umW92piu9A40h77UxhBMqfqHcIwwr3g77_lGtE530jLEFTSavVPHNiL2UtPIzjllRhXJO9LqALirv4txTkGiNs-3QfU4Q_suzKeU1esVJS6cOQ_lojFTeB26zq0ulDlVPYwx_ruWGyvqc4HbTwhUtCddXK-4IbXCyCWhqNqtPTRmBgtMyEy8atM6hbVFjYHDjlefUP0i6ejKmVaiEiIjTbgL2HotoGsRob1awoP5p9uYsixd0-G1OEGlPPL_wv9tlXwFBiU0M4iJnqaYZt6Cdf_MP79bd3ZcDrOaqF0ALTj6sopGau6Ml2zWr6PqChHl7G9ApnDPY_sVqSjovoDeKUhMVgNwogQCqdnbP508CYoKQtrHItBewCDmjMfekZllaMeWpU_3bnsPhfRQaL6R53uAFz5P2I_CtPcdY9W_HCBHHvTNnyrrPQhjBD_WEeT6-pm681nPKckz2qJCuHelQvb_T55SEIpq2QXw-hkMXGrXLF7imLsodNlURRKgIQLpXqdHv9EU2V5A7alUTbdDRQ'
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters: []
+    cleanUrlParameters: []
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters: []
+    cleanBodyParameters: []
+    fileParameters: []
+    responses:
+      -
+        status: 200
+        content: '{"message": "Calender data fetched successfully.", "data": []}'
+        headers: []
+        description: ''
+        custom: []
+      -
+        status: 201
+        content: '{"error": "Failed to load collaboration calender data."}'
+        headers: []
+        description: ''
         custom: []
     responseFields: []
     auth:

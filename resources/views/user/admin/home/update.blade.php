@@ -15,7 +15,7 @@
                 </div>
             </div>
 
-            <form action="{{ route('home-cms.store') }}" method="post" enctype="multipart/form-data">
+            <form action="{{ route('user.admin.home-cms.store') }}" method="post" enctype="multipart/form-data">
                 @csrf
                 <input type="hidden" name="id" value="{{ $home->id ?? '' }}">
                 <div class="row mb-4">

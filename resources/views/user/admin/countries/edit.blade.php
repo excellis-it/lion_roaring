@@ -19,7 +19,7 @@
                 <div class="form-head">
                     <h4>Country Details</h4>
                 </div>
-                <form action="{{ route('admin-countries.update', $country->id) }}" method="post"
+                <form action="{{ route('user.admin.admin-countries.update', $country->id) }}" method="post"
                     enctype="multipart/form-data">
                     @method('PUT')
                     @csrf

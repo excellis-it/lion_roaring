@@ -1,17 +1,17 @@
-name: Chats
+name: 'Estore Sizes'
 description: ''
 endpoints:
   -
     httpMethods:
-      - POST
-    uri: api/v3/user/chats/list
+      - GET
+    uri: api/v3/user/sizes
     metadata:
-      groupName: Chats
+      groupName: 'Estore Sizes'
       groupDescription: ''
       subgroup: ''
       subgroupDescription: ''
-      title: 'List of Chat Users'
-      description: 'Retrieves a list of users with whom the authenticated user has chatted, sorted by the most recent message.'
+      title: 'Size List'
+      description: 'This endpoint retrieves a paginated list of all active sizes.'
       authenticated: true
       custom: []
     headers:
@@ -20,8 +20,30 @@ endpoints:
       Accept: application/json
     urlParameters: []
     cleanUrlParameters: []
-    queryParameters: []
-    cleanQueryParameters: []
+    queryParameters:
+      page:
+        name: page
+        description: 'optional The page number for pagination.'
+        required: false
+        example: 1
+        type: integer
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+      per_page:
+        name: per_page
+        description: 'optional Number of records per page. Defaults to 10.'
+        required: false
+        example: 10
+        type: integer
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+    cleanQueryParameters:
+      page: 1
+      per_page: 10
     bodyParameters: []
     cleanBodyParameters: []
     fileParameters: []
@@ -29,218 +51,54 @@ endpoints:
       -
         status: 200
         content: |-
-          [
-           {
-               "id": 12,
-               "ecclesia_id": 2,
-               "created_id": "1",
-               "user_name": "swarnadwip_nath",
-               "first_name": "Swarnadwip",
-               "middle_name": null,
-               "last_name": "Nath",
-               "email": "swarnadwip@excellisit.net",
-               "phone": "+1 0741202022",
-               "email_verified_at": null,
-               "profile_picture": "profile_picture/yCvplMhdpjc0kIeKG63tfkZwhKNYbcF1ZhfQdDFO.jpg",
-               "address": "Kokata",
-               "city": "Kolkata",
-               "state": "41",
-               "address2": null,
-               "country": "101",
-               "zip": "700001",
-               "status": 1,
-               "created_at": "2024-06-21T11:31:27.000000Z",
-               "updated_at": "2024-09-09T11:02:59.000000Z",
-               "last_message": {
-                   "id": 551,
-                   "sender_id": 12,
-                   "reciver_id": 37,
-                   "message": "hello",
-                   "deleted_for_sender": 0,
-                   "deleted_for_reciver": 0,
-                   "attachment": null,
-                   "seen": 1,
-                   "created_at": "2024-11-05T11:08:58.000000Z",
-                   "updated_at": "2024-11-05T11:08:58.000000Z",
-                   "delete_from_sender_id": 0,
-                   "delete_from_receiver_id": 0
-               }
-           },
-           {
-               "id": 26,
-               "ecclesia_id": null,
-               "created_id": null,
-               "user_name": "ss011",
-               "first_name": "TEST",
-               "middle_name": null,
-               "last_name": "1",
-               "email": "ss011@yopmail.com",
-               "phone": "+1 849-804-8085",
-               "email_verified_at": "2024-08-03T05:53:38.000000Z",
-               "profile_picture": null,
-               "address": "123, Main street",
-               "city": "santa Ana",
-               "state": "165",
-               "address2": "TEST",
-               "country": "4",
-               "zip": "98377",
-               "status": 1,
-               "created_at": "2024-08-03T05:53:38.000000Z",
-               "updated_at": "2024-09-09T06:27:33.000000Z",
-               "last_message": {
-                   "id": 548,
-                   "sender_id": 26,
-                   "reciver_id": 37,
-                   "message": "dafad",
-                   "deleted_for_sender": 0,
-                   "deleted_for_reciver": 0,
-                   "attachment": null,
-                   "seen": 1,
-                   "created_at": "2024-10-28T09:48:47.000000Z",
-                   "updated_at": "2024-10-28T09:48:50.000000Z",
-                   "delete_from_sender_id": 0,
-                   "delete_from_receiver_id": 0
-               }
-           },
-           {
-               "id": 30,
-               "ecclesia_id": null,
-               "created_id": null,
-               "user_name": "kalyan",
-               "first_name": "Kalyan",
-               "middle_name": null,
-               "last_name": "Vaduri",
-               "email": "kalyan@yopmail.com",
-               "phone": "+1 (444) 444-4444",
-               "email_verified_at": "2024-08-14T11:30:31.000000Z",
-               "profile_picture": null,
-               "address": "51 DN Block Merlin Infinite Building, 9th Floor, Unit, 907, Sector V, Bidhannagar, Kolkata, West Bengal 700091",
-               "city": "Kolkata",
-               "state": "3983",
-               "address2": "East Riding Of Yorkshire",
-               "country": "233",
-               "zip": "700091",
-               "status": 1,
-               "created_at": "2024-08-14T11:30:31.000000Z",
-               "updated_at": "2024-08-26T15:06:47.000000Z",
-               "last_message": null
-           }
-          ]
-        headers: []
-        description: ''
-        custom: []
-    responseFields: []
-    auth:
-      - headers
-      - Authorization
-      - 'Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJhdWQiOiIxIiwianRpIjoiYzkzNjcyNzVkMDdlMGY5ZTc5N2Y3NzdiMzFkZGFjZmFiMDAzOWI1Y2E1ZGJjZTQ3ZWY3MjIxMjQ3YTNlMTVlOTQ0YjJlNGY2Nzk2Yjc5MDQiLCJpYXQiOjE3NjQwNzcyMjguMDQyOTgyLCJuYmYiOjE3NjQwNzcyMjguMDQyOTgzLCJleHAiOjE3OTU2MTMyMjguMDM1OTI0LCJzdWIiOiIxIiwic2NvcGVzIjpbXX0.d3N3fp6pTh1JxrRcDMwG0gLBsS0qyH4TWMsTpjbf_piH3rdfBj-04fL3inKHvOEGcZeFIFUr23DnEKVxNiHsiRYHpJz55K9Y0v-CRi4x8QxW9TIx9L63A0RaHGK044HKEq01mKy3_0ho-n2y2-s12umW92piu9A40h77UxhBMqfqHcIwwr3g77_lGtE530jLEFTSavVPHNiL2UtPIzjllRhXJO9LqALirv4txTkGiNs-3QfU4Q_suzKeU1esVJS6cOQ_lojFTeB26zq0ulDlVPYwx_ruWGyvqc4HbTwhUtCddXK-4IbXCyCWhqNqtPTRmBgtMyEy8atM6hbVFjYHDjlefUP0i6ejKmVaiEiIjTbgL2HotoGsRob1awoP5p9uYsixd0-G1OEGlPPL_wv9tlXwFBiU0M4iJnqaYZt6Cdf_MP79bd3ZcDrOaqF0ALTj6sopGau6Ml2zWr6PqChHl7G9ApnDPY_sVqSjovoDeKUhMVgNwogQCqdnbP508CYoKQtrHItBewCDmjMfekZllaMeWpU_3bnsPhfRQaL6R53uAFz5P2I_CtPcdY9W_HCBHHvTNnyrrPQhjBD_WEeT6-pm681nPKckz2qJCuHelQvb_T55SEIpq2QXw-hkMXGrXLF7imLsodNlURRKgIQLpXqdHv9EU2V5A7alUTbdDRQ'
-    controller: null
-    method: null
-    route: null
-    custom: []
-  -
-    httpMethods:
-      - POST
-    uri: api/v3/user/chats/load
-    metadata:
-      groupName: Chats
-      groupDescription: ''
-      subgroup: ''
-      subgroupDescription: ''
-      title: 'Chats with a specific user'
-      description: 'Retrieves the chat history between the authenticated user and a specified recipient, marking unseen messages as seen.'
-      authenticated: true
-      custom: []
-    headers:
-      Authorization: 'Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJhdWQiOiIxIiwianRpIjoiYzkzNjcyNzVkMDdlMGY5ZTc5N2Y3NzdiMzFkZGFjZmFiMDAzOWI1Y2E1ZGJjZTQ3ZWY3MjIxMjQ3YTNlMTVlOTQ0YjJlNGY2Nzk2Yjc5MDQiLCJpYXQiOjE3NjQwNzcyMjguMDQyOTgyLCJuYmYiOjE3NjQwNzcyMjguMDQyOTgzLCJleHAiOjE3OTU2MTMyMjguMDM1OTI0LCJzdWIiOiIxIiwic2NvcGVzIjpbXX0.d3N3fp6pTh1JxrRcDMwG0gLBsS0qyH4TWMsTpjbf_piH3rdfBj-04fL3inKHvOEGcZeFIFUr23DnEKVxNiHsiRYHpJz55K9Y0v-CRi4x8QxW9TIx9L63A0RaHGK044HKEq01mKy3_0ho-n2y2-s12umW92piu9A40h77UxhBMqfqHcIwwr3g77_lGtE530jLEFTSavVPHNiL2UtPIzjllRhXJO9LqALirv4txTkGiNs-3QfU4Q_suzKeU1esVJS6cOQ_lojFTeB26zq0ulDlVPYwx_ruWGyvqc4HbTwhUtCddXK-4IbXCyCWhqNqtPTRmBgtMyEy8atM6hbVFjYHDjlefUP0i6ejKmVaiEiIjTbgL2HotoGsRob1awoP5p9uYsixd0-G1OEGlPPL_wv9tlXwFBiU0M4iJnqaYZt6Cdf_MP79bd3ZcDrOaqF0ALTj6sopGau6Ml2zWr6PqChHl7G9ApnDPY_sVqSjovoDeKUhMVgNwogQCqdnbP508CYoKQtrHItBewCDmjMfekZllaMeWpU_3bnsPhfRQaL6R53uAFz5P2I_CtPcdY9W_HCBHHvTNnyrrPQhjBD_WEeT6-pm681nPKckz2qJCuHelQvb_T55SEIpq2QXw-hkMXGrXLF7imLsodNlURRKgIQLpXqdHv9EU2V5A7alUTbdDRQ'
-      Content-Type: application/json
-      Accept: application/json
-    urlParameters: []
-    cleanUrlParameters: []
-    queryParameters: []
-    cleanQueryParameters: []
-    bodyParameters:
-      sender_receiver_id:
-        name: sender_receiver_id
-        description: 'ID of the sender (the another user).'
-        required: true
-        example: 1
-        type: integer
-        enumValues: []
-        exampleWasSpecified: true
-        nullable: false
-        custom: []
-    cleanBodyParameters:
-      sender_receiver_id: 1
-    fileParameters: []
-    responses:
-      -
-        status: 200
-        content: |-
           {
-             "message": "Show Chat",
-             "status": true,
-             "chat_count": 3,
-             "unseen_chat": [
-                 {
-                     "id": 277,
-                     "sender_id": null,
-                     "reciver_id": null,
-                     "message": null,
-                     "deleted_for_sender": 0,
-                     "deleted_for_reciver": 0,
-                     "attachment": "chat/M74Omwgv7inwepyRBswxsKeCPuKjp2jnypqeoTL5.jpg",
-                     "seen": 0,
-                     "created_at": "2024-08-20T13:00:18.000000Z",
-                     "updated_at": "2024-08-20T13:00:18.000000Z",
-                     "delete_from_sender_id": 0,
-                     "delete_from_receiver_id": 0
-                 }
-             ],
-             "chats": [
-                 {
-                     "id": 549,
-                     "sender_id": 37,
-                     "reciver_id": 12,
-                     "message": "hii",
-                     "deleted_for_sender": 0,
-                     "deleted_for_reciver": 0,
-                     "attachment": null,
-                     "seen": 1,
-                     "created_at": "2024-11-05T11:08:36.000000Z",
-                     "updated_at": "2024-11-05T11:08:42.000000Z",
-                     "delete_from_sender_id": 0,
-                     "delete_from_receiver_id": 0
-                 },
-                 {
-                     "id": 550,
-                     "sender_id": 12,
-                     "reciver_id": 37,
-                     "message": null,
-                     "deleted_for_sender": 0,
-                     "deleted_for_reciver": 0,
-                     "attachment": "chat/wTFuaiG3kyE7DVDZVcQ8q3eB06Zlb5Mp0VlMeCe6.pdf",
-                     "seen": 1,
-                     "created_at": "2024-11-05T11:08:52.000000Z",
-                     "updated_at": "2024-11-05T11:08:53.000000Z",
-                     "delete_from_sender_id": 0,
-                     "delete_from_receiver_id": 0
-                 },
-                 {
-                     "id": 551,
-                     "sender_id": 12,
-                     "reciver_id": 37,
-                     "message": "hello",
-                     "deleted_for_sender": 0,
-                     "deleted_for_reciver": 0,
-                     "attachment": null,
-                     "seen": 1,
-                     "created_at": "2024-11-05T11:08:58.000000Z",
-                     "updated_at": "2024-11-05T11:08:58.000000Z",
-                     "delete_from_sender_id": 0,
-                     "delete_from_receiver_id": 0
-                 }
-             ]
+              "data": {
+                  "current_page": 1,
+                  "data": [
+                      {
+                          "id": 1,
+                          "size": "Small - US",
+                          "status": 1,
+                          "created_at": "2025-08-28T14:23:32.000000Z",
+                          "updated_at": "2025-09-04T16:08:26.000000Z"
+                      },
+                      {
+                          "id": 2,
+                          "size": "M",
+                          "status": 1,
+                          "created_at": "2025-08-28T14:23:36.000000Z",
+                          "updated_at": "2025-08-28T14:23:36.000000Z"
+                      },
+                  ],
+                  "first_page_url": "http:*127.0.0.1:8000/api/v3/user/sizes?page=1",
+                  "from": 1,
+                  "last_page": 1,
+                  "last_page_url": "http:*127.0.0.1:8000/api/v3/user/sizes?page=1",
+                  "links": [
+                      {
+                          "url": null,
+                          "label": "&laquo; Previous",
+                          "active": false
+                      },
+                      {
+                          "url": "http:*127.0.0.1:8000/api/v3/user/sizes?page=1",
+                          "label": "1",
+                          "active": true
+                      },
+                      {
+                          "url": null,
+                          "label": "Next &raquo;",
+                          "active": false
+                      }
+                  ],
+                  "next_page_url": null,
+                  "path": "http:*127.0.0.1:8000/api/v3/user/sizes",
+                  "per_page": 10,
+                  "prev_page_url": null,
+                  "to": 4,
+                  "total": 4
+              },
+              "status": true
           }
         headers: []
         description: ''
@@ -249,7 +107,7 @@ endpoints:
         status: 201
         content: |-
           {
-            "msg": "An error occurred while loading chats.",
+            "message": "Failed to fetch files. Please try again later.",
             "status": false
           }
         headers: []
@@ -267,127 +125,63 @@ endpoints:
   -
     httpMethods:
       - POST
-    uri: api/v3/user/chats/send
+    uri: api/v3/user/sizes/store
     metadata:
-      groupName: Chats
+      groupName: 'Estore Sizes'
       groupDescription: ''
       subgroup: ''
       subgroupDescription: ''
-      title: 'Send a chat message'
-      description: 'Allows the authenticated user to send a message or attachment to a specified receiver. Returns the latest message and message counts.'
+      title: 'Size Store'
+      description: 'Create a new size.'
       authenticated: true
       custom: []
     headers:
       Authorization: 'Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJhdWQiOiIxIiwianRpIjoiYzkzNjcyNzVkMDdlMGY5ZTc5N2Y3NzdiMzFkZGFjZmFiMDAzOWI1Y2E1ZGJjZTQ3ZWY3MjIxMjQ3YTNlMTVlOTQ0YjJlNGY2Nzk2Yjc5MDQiLCJpYXQiOjE3NjQwNzcyMjguMDQyOTgyLCJuYmYiOjE3NjQwNzcyMjguMDQyOTgzLCJleHAiOjE3OTU2MTMyMjguMDM1OTI0LCJzdWIiOiIxIiwic2NvcGVzIjpbXX0.d3N3fp6pTh1JxrRcDMwG0gLBsS0qyH4TWMsTpjbf_piH3rdfBj-04fL3inKHvOEGcZeFIFUr23DnEKVxNiHsiRYHpJz55K9Y0v-CRi4x8QxW9TIx9L63A0RaHGK044HKEq01mKy3_0ho-n2y2-s12umW92piu9A40h77UxhBMqfqHcIwwr3g77_lGtE530jLEFTSavVPHNiL2UtPIzjllRhXJO9LqALirv4txTkGiNs-3QfU4Q_suzKeU1esVJS6cOQ_lojFTeB26zq0ulDlVPYwx_ruWGyvqc4HbTwhUtCddXK-4IbXCyCWhqNqtPTRmBgtMyEy8atM6hbVFjYHDjlefUP0i6ejKmVaiEiIjTbgL2HotoGsRob1awoP5p9uYsixd0-G1OEGlPPL_wv9tlXwFBiU0M4iJnqaYZt6Cdf_MP79bd3ZcDrOaqF0ALTj6sopGau6Ml2zWr6PqChHl7G9ApnDPY_sVqSjovoDeKUhMVgNwogQCqdnbP508CYoKQtrHItBewCDmjMfekZllaMeWpU_3bnsPhfRQaL6R53uAFz5P2I_CtPcdY9W_HCBHHvTNnyrrPQhjBD_WEeT6-pm681nPKckz2qJCuHelQvb_T55SEIpq2QXw-hkMXGrXLF7imLsodNlURRKgIQLpXqdHv9EU2V5A7alUTbdDRQ'
-      Content-Type: multipart/form-data
+      Content-Type: application/json
       Accept: application/json
     urlParameters: []
     cleanUrlParameters: []
     queryParameters: []
     cleanQueryParameters: []
     bodyParameters:
-      reciver_id:
-        name: reciver_id
-        description: 'ID of the receiver (chat partner).'
+      name:
+        name: name
+        description: 'The size name.'
         required: true
-        example: 2
-        type: integer
-        enumValues: []
-        exampleWasSpecified: true
-        nullable: false
-        custom: []
-      message:
-        name: message
-        description: 'Optional message text if sending a text message.'
-        required: false
-        example: 'Hello there!'
+        example: '"Medium"'
         type: string
         enumValues: []
         exampleWasSpecified: true
         nullable: false
         custom: []
-      file:
-        name: file
-        description: 'Optional file attachment for the chat message.'
-        required: false
-        example: null
-        type: file
+      status:
+        name: status
+        description: 'Status of the size (1 = active, 0 = inactive).'
+        required: true
+        example: true
+        type: boolean
         enumValues: []
-        exampleWasSpecified: false
+        exampleWasSpecified: true
         nullable: false
         custom: []
     cleanBodyParameters:
-      reciver_id: 2
-      message: 'Hello there!'
-    fileParameters:
-      file: null
+      name: '"Medium"'
+      status: true
+    fileParameters: []
     responses:
       -
         status: 200
         content: |-
           {
-             "msg": "Message sent successfully",
-             "chat": {
-                 "id": 564,
-                 "sender_id": 37,
-                 "reciver_id": 12,
-                 "message": "hello testing",
-                 "deleted_for_sender": 0,
-                 "deleted_for_reciver": 0,
-                 "attachment": "chat/wXKPA5V0cft8m66c3nR1QWdHnmxgZWv4NBj07zhL.pdf",
-                 "seen": 0,
-                 "created_at": "2024-11-07T07:25:54.000000Z",
-                 "updated_at": "2024-11-07T07:25:54.000000Z",
-                 "delete_from_sender_id": 0,
-                 "delete_from_receiver_id": 0,
-                 "created_at_formatted": "2024-11-07 02:25:54",
-                 "sender": {
-                     "id": 37,
-                     "ecclesia_id": 4,
-                     "created_id": null,
-                     "user_name": "masum1",
-                     "first_name": "masum",
-                     "middle_name": null,
-                     "last_name": "ali",
-                     "email": "masum@excellisit.net",
-                     "phone": "+91 96470 38098",
-                     "email_verified_at": "2024-10-28T08:35:17.000000Z",
-                     "profile_picture": "profile_picture/sLWWnksqS6PHYMdZeBQ4OK3SnbVA0oMc9oykPbCn.webp",
-                     "address": "kolkata",
-                     "city": "kolkata",
-                     "state": "41",
-                     "address2": "kolkata",
-                     "country": "101",
-                     "zip": "700001",
-                     "status": 1,
-                     "created_at": "2024-10-28T08:35:17.000000Z",
-                     "updated_at": "2024-11-06T07:42:16.000000Z"
-                 },
-                 "reciver": {
-                     "id": 12,
-                     "ecclesia_id": 2,
-                     "created_id": "1",
-                     "user_name": "swarnadwip_nath",
-                     "first_name": "Swarnadwip",
-                     "middle_name": null,
-                     "last_name": "Nath",
-                     "email": "swarnadwip@excellisit.net",
-                     "phone": "+1 0741202022",
-                     "email_verified_at": null,
-                     "profile_picture": "profile_picture/yCvplMhdpjc0kIeKG63tfkZwhKNYbcF1ZhfQdDFO.jpg",
-                     "address": "Kokata",
-                     "city": "Kolkata",
-                     "state": "41",
-                     "address2": null,
-                     "country": "101",
-                     "zip": "700001",
-                     "status": 1,
-                     "created_at": "2024-06-21T11:31:27.000000Z",
-                     "updated_at": "2024-09-09T11:02:59.000000Z"
-                 }
-             },
-             "chat_count": 14,
-             "success": true
+            "data": {
+              "id": 12,
+              "size": "Medium",
+              "status": 1,
+              "created_at": "2025-10-17T10:00:00Z",
+              "updated_at": "2025-10-17T10:00:00Z"
+            },
+            "message": "Size created successfully.",
+            "status": true
           }
         headers: []
         description: ''
@@ -396,63 +190,22 @@ endpoints:
         status: 201
         content: |-
           {
-            "msg": "An error occurred while sending the message.",
-            "success": false
+            "message": "Validation failed.",
+            "errors": {
+              "name": ["The name field is required."],
+              "status": ["The status field must be true or false."]
+            },
+            "status": false
           }
         headers: []
         description: ''
         custom: []
-    responseFields: []
-    auth:
-      - headers
-      - Authorization
-      - 'Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJhdWQiOiIxIiwianRpIjoiYzkzNjcyNzVkMDdlMGY5ZTc5N2Y3NzdiMzFkZGFjZmFiMDAzOWI1Y2E1ZGJjZTQ3ZWY3MjIxMjQ3YTNlMTVlOTQ0YjJlNGY2Nzk2Yjc5MDQiLCJpYXQiOjE3NjQwNzcyMjguMDQyOTgyLCJuYmYiOjE3NjQwNzcyMjguMDQyOTgzLCJleHAiOjE3OTU2MTMyMjguMDM1OTI0LCJzdWIiOiIxIiwic2NvcGVzIjpbXX0.d3N3fp6pTh1JxrRcDMwG0gLBsS0qyH4TWMsTpjbf_piH3rdfBj-04fL3inKHvOEGcZeFIFUr23DnEKVxNiHsiRYHpJz55K9Y0v-CRi4x8QxW9TIx9L63A0RaHGK044HKEq01mKy3_0ho-n2y2-s12umW92piu9A40h77UxhBMqfqHcIwwr3g77_lGtE530jLEFTSavVPHNiL2UtPIzjllRhXJO9LqALirv4txTkGiNs-3QfU4Q_suzKeU1esVJS6cOQ_lojFTeB26zq0ulDlVPYwx_ruWGyvqc4HbTwhUtCddXK-4IbXCyCWhqNqtPTRmBgtMyEy8atM6hbVFjYHDjlefUP0i6ejKmVaiEiIjTbgL2HotoGsRob1awoP5p9uYsixd0-G1OEGlPPL_wv9tlXwFBiU0M4iJnqaYZt6Cdf_MP79bd3ZcDrOaqF0ALTj6sopGau6Ml2zWr6PqChHl7G9ApnDPY_sVqSjovoDeKUhMVgNwogQCqdnbP508CYoKQtrHItBewCDmjMfekZllaMeWpU_3bnsPhfRQaL6R53uAFz5P2I_CtPcdY9W_HCBHHvTNnyrrPQhjBD_WEeT6-pm681nPKckz2qJCuHelQvb_T55SEIpq2QXw-hkMXGrXLF7imLsodNlURRKgIQLpXqdHv9EU2V5A7alUTbdDRQ'
-    controller: null
-    method: null
-    route: null
-    custom: []
-  -
-    httpMethods:
-      - POST
-    uri: api/v3/user/chats/clear
-    metadata:
-      groupName: Chats
-      groupDescription: ''
-      subgroup: ''
-      subgroupDescription: ''
-      title: 'Clear Chat Messages'
-      description: 'Clears chat messages between the authenticated user and a specified receiver by marking messages as deleted from each side.'
-      authenticated: true
-      custom: []
-    headers:
-      Authorization: 'Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJhdWQiOiIxIiwianRpIjoiYzkzNjcyNzVkMDdlMGY5ZTc5N2Y3NzdiMzFkZGFjZmFiMDAzOWI1Y2E1ZGJjZTQ3ZWY3MjIxMjQ3YTNlMTVlOTQ0YjJlNGY2Nzk2Yjc5MDQiLCJpYXQiOjE3NjQwNzcyMjguMDQyOTgyLCJuYmYiOjE3NjQwNzcyMjguMDQyOTgzLCJleHAiOjE3OTU2MTMyMjguMDM1OTI0LCJzdWIiOiIxIiwic2NvcGVzIjpbXX0.d3N3fp6pTh1JxrRcDMwG0gLBsS0qyH4TWMsTpjbf_piH3rdfBj-04fL3inKHvOEGcZeFIFUr23DnEKVxNiHsiRYHpJz55K9Y0v-CRi4x8QxW9TIx9L63A0RaHGK044HKEq01mKy3_0ho-n2y2-s12umW92piu9A40h77UxhBMqfqHcIwwr3g77_lGtE530jLEFTSavVPHNiL2UtPIzjllRhXJO9LqALirv4txTkGiNs-3QfU4Q_suzKeU1esVJS6cOQ_lojFTeB26zq0ulDlVPYwx_ruWGyvqc4HbTwhUtCddXK-4IbXCyCWhqNqtPTRmBgtMyEy8atM6hbVFjYHDjlefUP0i6ejKmVaiEiIjTbgL2HotoGsRob1awoP5p9uYsixd0-G1OEGlPPL_wv9tlXwFBiU0M4iJnqaYZt6Cdf_MP79bd3ZcDrOaqF0ALTj6sopGau6Ml2zWr6PqChHl7G9ApnDPY_sVqSjovoDeKUhMVgNwogQCqdnbP508CYoKQtrHItBewCDmjMfekZllaMeWpU_3bnsPhfRQaL6R53uAFz5P2I_CtPcdY9W_HCBHHvTNnyrrPQhjBD_WEeT6-pm681nPKckz2qJCuHelQvb_T55SEIpq2QXw-hkMXGrXLF7imLsodNlURRKgIQLpXqdHv9EU2V5A7alUTbdDRQ'
-      Content-Type: application/json
-      Accept: application/json
-    urlParameters: []
-    cleanUrlParameters: []
-    queryParameters: []
-    cleanQueryParameters: []
-    bodyParameters:
-      reciver_id:
-        name: reciver_id
-        description: 'The ID of the user to clear chat with.'
-        required: true
-        example: 2
-        type: integer
-        enumValues: []
-        exampleWasSpecified: true
-        nullable: false
-        custom: []
-    cleanBodyParameters:
-      reciver_id: 2
-    fileParameters: []
-    responses:
       -
-        status: 200
+        status: 201
         content: |-
           {
-             "msg": "Chat cleared successfully",
-             "success": true
+            "message": "Something went wrong. Please try again later.",
+            "status": false
           }
         headers: []
         description: ''
@@ -469,14 +222,14 @@ endpoints:
   -
     httpMethods:
       - POST
-    uri: api/v3/user/chats/seen
+    uri: api/v3/user/sizes/edit
     metadata:
-      groupName: Chats
+      groupName: 'Estore Sizes'
       groupDescription: ''
       subgroup: ''
       subgroupDescription: ''
-      title: 'Mark Chat as Seen'
-      description: 'Marks a specific chat message as seen by updating its `seen` status.'
+      title: 'Size Edit'
+      description: 'Get details of a specific size by ID for editing.'
       authenticated: true
       custom: []
     headers:
@@ -488,168 +241,9 @@ endpoints:
     queryParameters: []
     cleanQueryParameters: []
     bodyParameters:
-      chat_id:
-        name: chat_id
-        description: 'The ID of the chat message to mark as seen.'
-        required: true
-        example: 10
-        type: integer
-        enumValues: []
-        exampleWasSpecified: true
-        nullable: false
-        custom: []
-      reciver_id:
-        name: reciver_id
-        description: 'The ID of the receiver user.'
-        required: true
-        example: 2
-        type: integer
-        enumValues: []
-        exampleWasSpecified: true
-        nullable: false
-        custom: []
-    cleanBodyParameters:
-      chat_id: 10
-      reciver_id: 2
-    fileParameters: []
-    responses:
-      -
-        status: 200
-        content: |-
-          {
-             "msg": "Chat seen successfully",
-             "status": true,
-             "last_chat": {
-                 "id": 10,
-                 "sender_id": 1,
-                 "reciver_id": 2,
-                 "message": "Hello!",
-                 "seen": 1,
-                 "created_at": "2024-11-07T14:52:36.000000Z",
-                 "updated_at": "2024-11-07T15:05:12.000000Z"
-             }
-          }
-        headers: []
-        description: ''
-        custom: []
-    responseFields: []
-    auth:
-      - headers
-      - Authorization
-      - 'Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJhdWQiOiIxIiwianRpIjoiYzkzNjcyNzVkMDdlMGY5ZTc5N2Y3NzdiMzFkZGFjZmFiMDAzOWI1Y2E1ZGJjZTQ3ZWY3MjIxMjQ3YTNlMTVlOTQ0YjJlNGY2Nzk2Yjc5MDQiLCJpYXQiOjE3NjQwNzcyMjguMDQyOTgyLCJuYmYiOjE3NjQwNzcyMjguMDQyOTgzLCJleHAiOjE3OTU2MTMyMjguMDM1OTI0LCJzdWIiOiIxIiwic2NvcGVzIjpbXX0.d3N3fp6pTh1JxrRcDMwG0gLBsS0qyH4TWMsTpjbf_piH3rdfBj-04fL3inKHvOEGcZeFIFUr23DnEKVxNiHsiRYHpJz55K9Y0v-CRi4x8QxW9TIx9L63A0RaHGK044HKEq01mKy3_0ho-n2y2-s12umW92piu9A40h77UxhBMqfqHcIwwr3g77_lGtE530jLEFTSavVPHNiL2UtPIzjllRhXJO9LqALirv4txTkGiNs-3QfU4Q_suzKeU1esVJS6cOQ_lojFTeB26zq0ulDlVPYwx_ruWGyvqc4HbTwhUtCddXK-4IbXCyCWhqNqtPTRmBgtMyEy8atM6hbVFjYHDjlefUP0i6ejKmVaiEiIjTbgL2HotoGsRob1awoP5p9uYsixd0-G1OEGlPPL_wv9tlXwFBiU0M4iJnqaYZt6Cdf_MP79bd3ZcDrOaqF0ALTj6sopGau6Ml2zWr6PqChHl7G9ApnDPY_sVqSjovoDeKUhMVgNwogQCqdnbP508CYoKQtrHItBewCDmjMfekZllaMeWpU_3bnsPhfRQaL6R53uAFz5P2I_CtPcdY9W_HCBHHvTNnyrrPQhjBD_WEeT6-pm681nPKckz2qJCuHelQvb_T55SEIpq2QXw-hkMXGrXLF7imLsodNlURRKgIQLpXqdHv9EU2V5A7alUTbdDRQ'
-    controller: null
-    method: null
-    route: null
-    custom: []
-  -
-    httpMethods:
-      - POST
-    uri: api/v3/user/chats/remove
-    metadata:
-      groupName: Chats
-      groupDescription: ''
-      subgroup: ''
-      subgroupDescription: ''
-      title: 'Remove Chat Message'
-      description: 'Removes a specific chat message for the authenticated user. The message can be removed for "everyone" or marked as deleted for the sender only.'
-      authenticated: true
-      custom: []
-    headers:
-      Authorization: 'Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJhdWQiOiIxIiwianRpIjoiYzkzNjcyNzVkMDdlMGY5ZTc5N2Y3NzdiMzFkZGFjZmFiMDAzOWI1Y2E1ZGJjZTQ3ZWY3MjIxMjQ3YTNlMTVlOTQ0YjJlNGY2Nzk2Yjc5MDQiLCJpYXQiOjE3NjQwNzcyMjguMDQyOTgyLCJuYmYiOjE3NjQwNzcyMjguMDQyOTgzLCJleHAiOjE3OTU2MTMyMjguMDM1OTI0LCJzdWIiOiIxIiwic2NvcGVzIjpbXX0.d3N3fp6pTh1JxrRcDMwG0gLBsS0qyH4TWMsTpjbf_piH3rdfBj-04fL3inKHvOEGcZeFIFUr23DnEKVxNiHsiRYHpJz55K9Y0v-CRi4x8QxW9TIx9L63A0RaHGK044HKEq01mKy3_0ho-n2y2-s12umW92piu9A40h77UxhBMqfqHcIwwr3g77_lGtE530jLEFTSavVPHNiL2UtPIzjllRhXJO9LqALirv4txTkGiNs-3QfU4Q_suzKeU1esVJS6cOQ_lojFTeB26zq0ulDlVPYwx_ruWGyvqc4HbTwhUtCddXK-4IbXCyCWhqNqtPTRmBgtMyEy8atM6hbVFjYHDjlefUP0i6ejKmVaiEiIjTbgL2HotoGsRob1awoP5p9uYsixd0-G1OEGlPPL_wv9tlXwFBiU0M4iJnqaYZt6Cdf_MP79bd3ZcDrOaqF0ALTj6sopGau6Ml2zWr6PqChHl7G9ApnDPY_sVqSjovoDeKUhMVgNwogQCqdnbP508CYoKQtrHItBewCDmjMfekZllaMeWpU_3bnsPhfRQaL6R53uAFz5P2I_CtPcdY9W_HCBHHvTNnyrrPQhjBD_WEeT6-pm681nPKckz2qJCuHelQvb_T55SEIpq2QXw-hkMXGrXLF7imLsodNlURRKgIQLpXqdHv9EU2V5A7alUTbdDRQ'
-      Content-Type: application/json
-      Accept: application/json
-    urlParameters: []
-    cleanUrlParameters: []
-    queryParameters: []
-    cleanQueryParameters: []
-    bodyParameters:
-      chat_id:
-        name: chat_id
-        description: 'The ID of the chat message to be removed.'
-        required: true
-        example: 10
-        type: integer
-        enumValues: []
-        exampleWasSpecified: true
-        nullable: false
-        custom: []
-      del_from:
-        name: del_from
-        description: 'Specifies if the message should be deleted for "everyone" or only for the sender ("me").'
-        required: true
-        example: '"me"'
-        type: string
-        enumValues: []
-        exampleWasSpecified: true
-        nullable: false
-        custom: []
-    cleanBodyParameters:
-      chat_id: 10
-      del_from: '"me"'
-    fileParameters: []
-    responses:
-      -
-        status: 200
-        content: |-
-          {
-             "msg": "Chat removed successfully",
-             "status": true,
-             "chat": {
-                 "id": 10,
-                 "sender_id": 1,
-                 "reciver_id": 2,
-                 "message": "Hello!",
-                 "created_at": "2024-11-07T14:52:36.000000Z",
-                 "updated_at": "2024-11-07T15:05:12.000000Z"
-             }
-          }
-        headers: []
-        description: ''
-        custom: []
-    responseFields: []
-    auth:
-      - headers
-      - Authorization
-      - 'Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJhdWQiOiIxIiwianRpIjoiYzkzNjcyNzVkMDdlMGY5ZTc5N2Y3NzdiMzFkZGFjZmFiMDAzOWI1Y2E1ZGJjZTQ3ZWY3MjIxMjQ3YTNlMTVlOTQ0YjJlNGY2Nzk2Yjc5MDQiLCJpYXQiOjE3NjQwNzcyMjguMDQyOTgyLCJuYmYiOjE3NjQwNzcyMjguMDQyOTgzLCJleHAiOjE3OTU2MTMyMjguMDM1OTI0LCJzdWIiOiIxIiwic2NvcGVzIjpbXX0.d3N3fp6pTh1JxrRcDMwG0gLBsS0qyH4TWMsTpjbf_piH3rdfBj-04fL3inKHvOEGcZeFIFUr23DnEKVxNiHsiRYHpJz55K9Y0v-CRi4x8QxW9TIx9L63A0RaHGK044HKEq01mKy3_0ho-n2y2-s12umW92piu9A40h77UxhBMqfqHcIwwr3g77_lGtE530jLEFTSavVPHNiL2UtPIzjllRhXJO9LqALirv4txTkGiNs-3QfU4Q_suzKeU1esVJS6cOQ_lojFTeB26zq0ulDlVPYwx_ruWGyvqc4HbTwhUtCddXK-4IbXCyCWhqNqtPTRmBgtMyEy8atM6hbVFjYHDjlefUP0i6ejKmVaiEiIjTbgL2HotoGsRob1awoP5p9uYsixd0-G1OEGlPPL_wv9tlXwFBiU0M4iJnqaYZt6Cdf_MP79bd3ZcDrOaqF0ALTj6sopGau6Ml2zWr6PqChHl7G9ApnDPY_sVqSjovoDeKUhMVgNwogQCqdnbP508CYoKQtrHItBewCDmjMfekZllaMeWpU_3bnsPhfRQaL6R53uAFz5P2I_CtPcdY9W_HCBHHvTNnyrrPQhjBD_WEeT6-pm681nPKckz2qJCuHelQvb_T55SEIpq2QXw-hkMXGrXLF7imLsodNlURRKgIQLpXqdHv9EU2V5A7alUTbdDRQ'
-    controller: null
-    method: null
-    route: null
-    custom: []
-  -
-    httpMethods:
-      - POST
-    uri: api/v3/user/chats/notification
-    metadata:
-      groupName: Chats
-      groupDescription: ''
-      subgroup: ''
-      subgroupDescription: ''
-      title: 'Manage Chat Notifications'
-      description: 'Sends a notification to the receiver when they receive a new chat message. If `is_delete` is set, it marks the specified notification as deleted.'
-      authenticated: true
-      custom: []
-    headers:
-      Authorization: 'Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJhdWQiOiIxIiwianRpIjoiYzkzNjcyNzVkMDdlMGY5ZTc5N2Y3NzdiMzFkZGFjZmFiMDAzOWI1Y2E1ZGJjZTQ3ZWY3MjIxMjQ3YTNlMTVlOTQ0YjJlNGY2Nzk2Yjc5MDQiLCJpYXQiOjE3NjQwNzcyMjguMDQyOTgyLCJuYmYiOjE3NjQwNzcyMjguMDQyOTgzLCJleHAiOjE3OTU2MTMyMjguMDM1OTI0LCJzdWIiOiIxIiwic2NvcGVzIjpbXX0.d3N3fp6pTh1JxrRcDMwG0gLBsS0qyH4TWMsTpjbf_piH3rdfBj-04fL3inKHvOEGcZeFIFUr23DnEKVxNiHsiRYHpJz55K9Y0v-CRi4x8QxW9TIx9L63A0RaHGK044HKEq01mKy3_0ho-n2y2-s12umW92piu9A40h77UxhBMqfqHcIwwr3g77_lGtE530jLEFTSavVPHNiL2UtPIzjllRhXJO9LqALirv4txTkGiNs-3QfU4Q_suzKeU1esVJS6cOQ_lojFTeB26zq0ulDlVPYwx_ruWGyvqc4HbTwhUtCddXK-4IbXCyCWhqNqtPTRmBgtMyEy8atM6hbVFjYHDjlefUP0i6ejKmVaiEiIjTbgL2HotoGsRob1awoP5p9uYsixd0-G1OEGlPPL_wv9tlXwFBiU0M4iJnqaYZt6Cdf_MP79bd3ZcDrOaqF0ALTj6sopGau6Ml2zWr6PqChHl7G9ApnDPY_sVqSjovoDeKUhMVgNwogQCqdnbP508CYoKQtrHItBewCDmjMfekZllaMeWpU_3bnsPhfRQaL6R53uAFz5P2I_CtPcdY9W_HCBHHvTNnyrrPQhjBD_WEeT6-pm681nPKckz2qJCuHelQvb_T55SEIpq2QXw-hkMXGrXLF7imLsodNlURRKgIQLpXqdHv9EU2V5A7alUTbdDRQ'
-      Content-Type: application/json
-      Accept: application/json
-    urlParameters: []
-    cleanUrlParameters: []
-    queryParameters: []
-    cleanQueryParameters: []
-    bodyParameters:
-      chat_id:
-        name: chat_id
-        description: 'The ID of the chat message related to the notification.'
-        required: true
-        example: 15
-        type: integer
-        enumValues: []
-        exampleWasSpecified: true
-        nullable: false
-        custom: []
-      user_id:
-        name: user_id
-        description: 'The ID of the receiver of the chat message.'
+      id:
+        name: id
+        description: 'The ID of the size.'
         required: true
         example: 5
         type: integer
@@ -657,68 +251,32 @@ endpoints:
         exampleWasSpecified: true
         nullable: false
         custom: []
-      is_delete:
-        name: is_delete
-        description: 'optional Set to 1 to mark the notification as deleted.'
-        required: false
-        example: 1
-        type: integer
-        enumValues: []
-        exampleWasSpecified: true
-        nullable: false
-        custom: []
     cleanBodyParameters:
-      chat_id: 15
-      user_id: 5
-      is_delete: 1
+      id: 5
     fileParameters: []
     responses:
       -
         status: 200
         content: |-
           {
-             "msg": "Notification deleted successfully",
-             "status": true
+            "data": {
+              "id": 5,
+              "size": "Medium",
+              "status": 1,
+              "created_at": "2025-10-17T10:00:00Z",
+              "updated_at": "2025-10-17T12:00:00Z"
+            },
+            "status": true
           }
         headers: []
         description: ''
         custom: []
       -
-        status: 200
+        status: 201
         content: |-
           {
-             "msg": "Notification already sent",
-             "status": true,
-             "notification_count": 3,
-             "notification" : {
-                 "id": 45,
-                 "user_id": 3,
-                 "chat_id": 15,
-                 "message": "You have a <b>new message</b> from John Doe",
-                 "type": "Chat",
-                 "created_at": "2024-11-07T14:35:29.000000Z",
-                 "updated_at": "2024-11-07T14:35:29.000000Z"
-             }
-          }
-        headers: []
-        description: ''
-        custom: []
-      -
-        status: 200
-        content: |-
-          {
-             "msg": "Notification sent successfully",
-             "status": true,
-             "notification_count": 4,
-             "notification": {
-                 "id": 46,
-                 "user_id": 3,
-                 "chat_id": 15,
-                 "message": "You have a <b>new message</b> from John Doe",
-                 "type": "Chat",
-                 "created_at": "2024-11-07T14:35:29.000000Z",
-                 "updated_at": "2024-11-07T14:35:29.000000Z"
-             }
+            "message": "Size not found.",
+            "status": false
           }
         headers: []
         description: ''
@@ -735,14 +293,229 @@ endpoints:
   -
     httpMethods:
       - POST
-    uri: api/v3/user/chats/search
+    uri: api/v3/user/sizes/update
     metadata:
-      groupName: Chats
+      groupName: 'Estore Sizes'
       groupDescription: ''
       subgroup: ''
       subgroupDescription: ''
-      title: 'Search Chat Users'
-      description: 'Searches for chat users based on a query string. Returns a list of users whose names or usernames match the query.'
+      title: 'Size Update'
+      description: 'Update an existing size by ID.'
+      authenticated: true
+      custom: []
+    headers:
+      Authorization: 'Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJhdWQiOiIxIiwianRpIjoiYzkzNjcyNzVkMDdlMGY5ZTc5N2Y3NzdiMzFkZGFjZmFiMDAzOWI1Y2E1ZGJjZTQ3ZWY3MjIxMjQ3YTNlMTVlOTQ0YjJlNGY2Nzk2Yjc5MDQiLCJpYXQiOjE3NjQwNzcyMjguMDQyOTgyLCJuYmYiOjE3NjQwNzcyMjguMDQyOTgzLCJleHAiOjE3OTU2MTMyMjguMDM1OTI0LCJzdWIiOiIxIiwic2NvcGVzIjpbXX0.d3N3fp6pTh1JxrRcDMwG0gLBsS0qyH4TWMsTpjbf_piH3rdfBj-04fL3inKHvOEGcZeFIFUr23DnEKVxNiHsiRYHpJz55K9Y0v-CRi4x8QxW9TIx9L63A0RaHGK044HKEq01mKy3_0ho-n2y2-s12umW92piu9A40h77UxhBMqfqHcIwwr3g77_lGtE530jLEFTSavVPHNiL2UtPIzjllRhXJO9LqALirv4txTkGiNs-3QfU4Q_suzKeU1esVJS6cOQ_lojFTeB26zq0ulDlVPYwx_ruWGyvqc4HbTwhUtCddXK-4IbXCyCWhqNqtPTRmBgtMyEy8atM6hbVFjYHDjlefUP0i6ejKmVaiEiIjTbgL2HotoGsRob1awoP5p9uYsixd0-G1OEGlPPL_wv9tlXwFBiU0M4iJnqaYZt6Cdf_MP79bd3ZcDrOaqF0ALTj6sopGau6Ml2zWr6PqChHl7G9ApnDPY_sVqSjovoDeKUhMVgNwogQCqdnbP508CYoKQtrHItBewCDmjMfekZllaMeWpU_3bnsPhfRQaL6R53uAFz5P2I_CtPcdY9W_HCBHHvTNnyrrPQhjBD_WEeT6-pm681nPKckz2qJCuHelQvb_T55SEIpq2QXw-hkMXGrXLF7imLsodNlURRKgIQLpXqdHv9EU2V5A7alUTbdDRQ'
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters:
+      id:
+        name: id
+        description: 'The ID of the size.'
+        required: true
+        example: 5
+        type: integer
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+    cleanUrlParameters:
+      id: 5
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters:
+      id:
+        name: id
+        description: 'The <code>id</code> of an existing record in the sizes table.'
+        required: true
+        example: occaecati
+        type: string
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: false
+        custom: []
+      name:
+        name: name
+        description: 'The size name.'
+        required: true
+        example: '"Large"'
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+      status:
+        name: status
+        description: 'Status of the size (1 = active, 0 = inactive).'
+        required: true
+        example: true
+        type: boolean
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+    cleanBodyParameters:
+      id: occaecati
+      name: '"Large"'
+      status: true
+    fileParameters: []
+    responses:
+      -
+        status: 200
+        content: |-
+          {
+            "data": {
+              "id": 5,
+              "size": "Large",
+              "status": 1,
+              "created_at": "2025-10-17T10:00:00Z",
+              "updated_at": "2025-10-17T12:00:00Z"
+            },
+            "message": "Size updated successfully.",
+            "status": true
+          }
+        headers: []
+        description: ''
+        custom: []
+      -
+        status: 201
+        content: |-
+          {
+            "message": "Size not found.",
+            "status": false
+          }
+        headers: []
+        description: ''
+        custom: []
+      -
+        status: 201
+        content: |-
+          {
+            "message": "Validation failed.",
+            "errors": {
+              "name": ["The name field is required."],
+              "status": ["The status field must be true or false."]
+            },
+            "status": false
+          }
+        headers: []
+        description: ''
+        custom: []
+      -
+        status: 201
+        content: |-
+          {
+            "message": "Something went wrong. Please try again later.",
+            "status": false
+          }
+        headers: []
+        description: ''
+        custom: []
+    responseFields: []
+    auth:
+      - headers
+      - Authorization
+      - 'Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJhdWQiOiIxIiwianRpIjoiYzkzNjcyNzVkMDdlMGY5ZTc5N2Y3NzdiMzFkZGFjZmFiMDAzOWI1Y2E1ZGJjZTQ3ZWY3MjIxMjQ3YTNlMTVlOTQ0YjJlNGY2Nzk2Yjc5MDQiLCJpYXQiOjE3NjQwNzcyMjguMDQyOTgyLCJuYmYiOjE3NjQwNzcyMjguMDQyOTgzLCJleHAiOjE3OTU2MTMyMjguMDM1OTI0LCJzdWIiOiIxIiwic2NvcGVzIjpbXX0.d3N3fp6pTh1JxrRcDMwG0gLBsS0qyH4TWMsTpjbf_piH3rdfBj-04fL3inKHvOEGcZeFIFUr23DnEKVxNiHsiRYHpJz55K9Y0v-CRi4x8QxW9TIx9L63A0RaHGK044HKEq01mKy3_0ho-n2y2-s12umW92piu9A40h77UxhBMqfqHcIwwr3g77_lGtE530jLEFTSavVPHNiL2UtPIzjllRhXJO9LqALirv4txTkGiNs-3QfU4Q_suzKeU1esVJS6cOQ_lojFTeB26zq0ulDlVPYwx_ruWGyvqc4HbTwhUtCddXK-4IbXCyCWhqNqtPTRmBgtMyEy8atM6hbVFjYHDjlefUP0i6ejKmVaiEiIjTbgL2HotoGsRob1awoP5p9uYsixd0-G1OEGlPPL_wv9tlXwFBiU0M4iJnqaYZt6Cdf_MP79bd3ZcDrOaqF0ALTj6sopGau6Ml2zWr6PqChHl7G9ApnDPY_sVqSjovoDeKUhMVgNwogQCqdnbP508CYoKQtrHItBewCDmjMfekZllaMeWpU_3bnsPhfRQaL6R53uAFz5P2I_CtPcdY9W_HCBHHvTNnyrrPQhjBD_WEeT6-pm681nPKckz2qJCuHelQvb_T55SEIpq2QXw-hkMXGrXLF7imLsodNlURRKgIQLpXqdHv9EU2V5A7alUTbdDRQ'
+    controller: null
+    method: null
+    route: null
+    custom: []
+  -
+    httpMethods:
+      - POST
+    uri: api/v3/user/sizes/delete
+    metadata:
+      groupName: 'Estore Sizes'
+      groupDescription: ''
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'Size Delete'
+      description: 'Delete a size by ID.'
+      authenticated: true
+      custom: []
+    headers:
+      Authorization: 'Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJhdWQiOiIxIiwianRpIjoiYzkzNjcyNzVkMDdlMGY5ZTc5N2Y3NzdiMzFkZGFjZmFiMDAzOWI1Y2E1ZGJjZTQ3ZWY3MjIxMjQ3YTNlMTVlOTQ0YjJlNGY2Nzk2Yjc5MDQiLCJpYXQiOjE3NjQwNzcyMjguMDQyOTgyLCJuYmYiOjE3NjQwNzcyMjguMDQyOTgzLCJleHAiOjE3OTU2MTMyMjguMDM1OTI0LCJzdWIiOiIxIiwic2NvcGVzIjpbXX0.d3N3fp6pTh1JxrRcDMwG0gLBsS0qyH4TWMsTpjbf_piH3rdfBj-04fL3inKHvOEGcZeFIFUr23DnEKVxNiHsiRYHpJz55K9Y0v-CRi4x8QxW9TIx9L63A0RaHGK044HKEq01mKy3_0ho-n2y2-s12umW92piu9A40h77UxhBMqfqHcIwwr3g77_lGtE530jLEFTSavVPHNiL2UtPIzjllRhXJO9LqALirv4txTkGiNs-3QfU4Q_suzKeU1esVJS6cOQ_lojFTeB26zq0ulDlVPYwx_ruWGyvqc4HbTwhUtCddXK-4IbXCyCWhqNqtPTRmBgtMyEy8atM6hbVFjYHDjlefUP0i6ejKmVaiEiIjTbgL2HotoGsRob1awoP5p9uYsixd0-G1OEGlPPL_wv9tlXwFBiU0M4iJnqaYZt6Cdf_MP79bd3ZcDrOaqF0ALTj6sopGau6Ml2zWr6PqChHl7G9ApnDPY_sVqSjovoDeKUhMVgNwogQCqdnbP508CYoKQtrHItBewCDmjMfekZllaMeWpU_3bnsPhfRQaL6R53uAFz5P2I_CtPcdY9W_HCBHHvTNnyrrPQhjBD_WEeT6-pm681nPKckz2qJCuHelQvb_T55SEIpq2QXw-hkMXGrXLF7imLsodNlURRKgIQLpXqdHv9EU2V5A7alUTbdDRQ'
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters:
+      id:
+        name: id
+        description: 'The ID of the size to delete.'
+        required: true
+        example: 5
+        type: integer
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+    cleanUrlParameters:
+      id: 5
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters:
+      id:
+        name: id
+        description: 'The <code>id</code> of an existing record in the sizes table.'
+        required: true
+        example: sunt
+        type: string
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: false
+        custom: []
+    cleanBodyParameters:
+      id: sunt
+    fileParameters: []
+    responses:
+      -
+        status: 200
+        content: |-
+          {
+            "message": "Size deleted successfully.",
+            "status": true
+          }
+        headers: []
+        description: ''
+        custom: []
+      -
+        status: 201
+        content: |-
+          {
+            "message": "Size not found.",
+            "status": false
+          }
+        headers: []
+        description: ''
+        custom: []
+      -
+        status: 201
+        content: |-
+          {
+            "message": "Something went wrong. Please try again later.",
+            "status": false
+          }
+        headers: []
+        description: ''
+        custom: []
+    responseFields: []
+    auth:
+      - headers
+      - Authorization
+      - 'Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJhdWQiOiIxIiwianRpIjoiYzkzNjcyNzVkMDdlMGY5ZTc5N2Y3NzdiMzFkZGFjZmFiMDAzOWI1Y2E1ZGJjZTQ3ZWY3MjIxMjQ3YTNlMTVlOTQ0YjJlNGY2Nzk2Yjc5MDQiLCJpYXQiOjE3NjQwNzcyMjguMDQyOTgyLCJuYmYiOjE3NjQwNzcyMjguMDQyOTgzLCJleHAiOjE3OTU2MTMyMjguMDM1OTI0LCJzdWIiOiIxIiwic2NvcGVzIjpbXX0.d3N3fp6pTh1JxrRcDMwG0gLBsS0qyH4TWMsTpjbf_piH3rdfBj-04fL3inKHvOEGcZeFIFUr23DnEKVxNiHsiRYHpJz55K9Y0v-CRi4x8QxW9TIx9L63A0RaHGK044HKEq01mKy3_0ho-n2y2-s12umW92piu9A40h77UxhBMqfqHcIwwr3g77_lGtE530jLEFTSavVPHNiL2UtPIzjllRhXJO9LqALirv4txTkGiNs-3QfU4Q_suzKeU1esVJS6cOQ_lojFTeB26zq0ulDlVPYwx_ruWGyvqc4HbTwhUtCddXK-4IbXCyCWhqNqtPTRmBgtMyEy8atM6hbVFjYHDjlefUP0i6ejKmVaiEiIjTbgL2HotoGsRob1awoP5p9uYsixd0-G1OEGlPPL_wv9tlXwFBiU0M4iJnqaYZt6Cdf_MP79bd3ZcDrOaqF0ALTj6sopGau6Ml2zWr6PqChHl7G9ApnDPY_sVqSjovoDeKUhMVgNwogQCqdnbP508CYoKQtrHItBewCDmjMfekZllaMeWpU_3bnsPhfRQaL6R53uAFz5P2I_CtPcdY9W_HCBHHvTNnyrrPQhjBD_WEeT6-pm681nPKckz2qJCuHelQvb_T55SEIpq2QXw-hkMXGrXLF7imLsodNlURRKgIQLpXqdHv9EU2V5A7alUTbdDRQ'
+    controller: null
+    method: null
+    route: null
+    custom: []
+  -
+    httpMethods:
+      - POST
+    uri: api/v3/user/colors/edit
+    metadata:
+      groupName: 'Estore Sizes'
+      groupDescription: ''
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'Size Edit'
+      description: 'Get details of a specific size by ID for editing.'
       authenticated: true
       custom: []
     headers:
@@ -754,33 +527,42 @@ endpoints:
     queryParameters: []
     cleanQueryParameters: []
     bodyParameters:
-      query:
-        name: query
-        description: 'The search query string.'
+      id:
+        name: id
+        description: 'The ID of the size.'
         required: true
-        example: '"john"'
-        type: string
+        example: 5
+        type: integer
         enumValues: []
         exampleWasSpecified: true
         nullable: false
         custom: []
     cleanBodyParameters:
-      query: '"john"'
+      id: 5
     fileParameters: []
     responses:
       -
         status: 200
         content: |-
           {
-             "users": [
-                 {
-                     "id": 1,
-                     "user_name": "john_doe",
-                     "first_name": "John",
-                     "last_name": "Doe",
-                     "email": "john@example.com"
-                 }
-             ]
+            "data": {
+              "id": 5,
+              "size": "Medium",
+              "status": 1,
+              "created_at": "2025-10-17T10:00:00Z",
+              "updated_at": "2025-10-17T12:00:00Z"
+            },
+            "status": true
+          }
+        headers: []
+        description: ''
+        custom: []
+      -
+        status: 201
+        content: |-
+          {
+            "message": "Size not found.",
+            "status": false
           }
         headers: []
         description: ''
