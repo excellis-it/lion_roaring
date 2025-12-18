@@ -32,7 +32,7 @@
                                         <div>{{ $m->user->first_name }} {{ $m->user->last_name }}</div>
                                         <small class="text-muted">{{ $m->user->email }}</small>
                                     @else
-                                        <span class="text-muted">Unknown User (ID: {{ $m->user_id }})</span>
+                                        <span class="text-muted">User (ID: {{ $m->user_id }})</span>
                                     @endif
                                 </td>
                                 <td>{{ $m->subscription_name }}</td>
