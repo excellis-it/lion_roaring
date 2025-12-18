@@ -1734,18 +1734,29 @@
     </script>
 
     <script>
-        $(document).ready(function() {
-            @if (isset($_GET['is_donation']) && $_GET['is_donation'] == 'yes' )
+$(document).ready(function () {
 
-                $('#onload_popup').modal('hide');
-                $('#exampleModalToggle2').modal('show');
-            @else
-                @if (!Session::has('agree') && $afterCountryCheck)
+    // delay time in milliseconds (3000 = 3 seconds)
+    var delayTime = 3000;
 
-                    $('#onload_popup').modal('show');
-                @endif
-            @endif
-        });
+    @if (isset($_GET['is_donation']) && $_GET['is_donation'] == 'yes')
+
+        setTimeout(function () {
+            $('#onload_popup').modal('hide');
+            $('#exampleModalToggle2').modal('show');
+        }, delayTime);
+
+    @else
+        @if (!Session::has('agree') && $afterCountryCheck)
+
+            setTimeout(function () {
+                $('#onload_popup').modal('show');
+            }, delayTime);
+
+        @endif
+    @endif
+
+});
     </script>
 
 
