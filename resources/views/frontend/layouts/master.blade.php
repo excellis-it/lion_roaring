@@ -1746,8 +1746,13 @@
                     $('#onload_popup').modal('hide');
                     $('#exampleModalToggle2').modal('show');
                 @else
-                    @if (!Session::has('agree'))
+                    @php
+                        $ip = request()->ip();
+                        $visitorCountrySessionKey = 'visitor_country_flag_code_' . $ip;
+                    @endphp
 
+                    // Show agreement only AFTER country selection popup has been completed.
+                    @if (!Session::has('agree') && session()->has($visitorCountrySessionKey))
                         $('#onload_popup').modal('show');
                     @endif
                 @endif
