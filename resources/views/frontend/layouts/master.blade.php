@@ -73,6 +73,10 @@
         </section>
         @php
             use App\Helpers\Helper;
+            // dd(date('H'))
+            $ip = request()->ip();
+            $sessionKey = 'visitor_country_flag_code_' . $ip;
+            $afterCountryCheck = session()->has($sessionKey);
         @endphp
 
 
@@ -132,7 +136,7 @@
                                                 <legend>Billing info</legend>
                                             </div>
                                             </div>
-                                            
+
                                             <div class="col-lg-6 mb-3">
                                                 <label for="address">Address</label>
                                                 <input class="form-control has-icon" type="text" id="address"
@@ -173,7 +177,7 @@
                                                 <legend>Credit or debit card</legend>
                                             </div>
                                             </div>
-                                            
+
                                             <div class="col-md-12 mb-3">
                                                 <label for="card-element">Card Number</label>
                                                 <div style="position: relative;">
