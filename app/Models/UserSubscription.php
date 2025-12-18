@@ -12,8 +12,12 @@ class UserSubscription extends Model
     protected $fillable = [
         'user_id',
         'plan_id',
+        'subscription_method',
         'subscription_name',
         'subscription_price',
+        'life_force_energy_tokens',
+        'agree_accepted_at',
+        'agree_description_snapshot',
         'subscription_validity',
         'subscription_start_date',
         'subscription_expire_date',

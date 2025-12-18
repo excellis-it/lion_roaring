@@ -24,7 +24,14 @@
                         <div class="card p-3 h-100">
                             <h5>{{ $tier->name }}</h5>
                             <p class="text-muted">{{ $tier->description }}</p>
-                            <p><strong>Cost:</strong> {{ $tier->cost }} {{ $measurement->label ?? '' }}</p>
+                            @if (($tier->pricing_type ?? 'amount') === 'token')
+                                <p><strong>Plan Type:</strong> Token</p>
+                                <p><strong>Life Force Energy:</strong> {{ $tier->life_force_energy_tokens }}
+                                    {{ $measurement->label ?? 'Life Force Energy' }}</p>
+                            @else
+                                <p><strong>Plan Type:</strong> Amount</p>
+                                <p><strong>Amount:</strong> ${{ number_format((float) $tier->cost, 2) }}</p>
+                            @endif
                             <ul class="mb-3">
                                 @foreach ($tier->benefits as $b)
                                     <li>{{ $b->benefit }}</li>
@@ -36,7 +43,8 @@
                                         class="btn btn-sm btn-warning">Edit</a>
                                 @endif
                                 @if (auth()->user()->can('Delete Membership'))
-                                    <a href="{{ route('user.membership.delete', $tier->id) }}" class="btn btn-sm btn-danger"
+                                    <a href="{{ route('user.membership.delete', $tier->id) }}"
+                                        class="btn btn-sm btn-danger"
                                         onclick="return confirm('Are you sure you want to delete this membership tier? This action cannot be undone.')">Delete</a>
                                 @endif
                             </div>
