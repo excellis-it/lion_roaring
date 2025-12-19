@@ -36,6 +36,8 @@ class EstoreController extends Controller
             $homeCms = EcomHomeCms::where('country_code', $countryCode)->orderBy('id', 'desc')->first();
             $content = $homeCms ? $homeCms : [];
 
+            
+
             return response()->json([
                 'data' => [
                     'content' => $content,
