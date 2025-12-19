@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\User;
 
 use App\Http\Controllers\Controller;
+use App\Models\Country;
 use App\Models\Topic;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -21,7 +22,14 @@ class TopicController extends Controller
     public function index()
     {
         if (Auth::user()->can('Manage Topic')) {
-            $topics = Topic::orderBy('id', 'desc')->paginate(15);
+            $user = Auth::user();
+
+            if ($user->user_type == 'Global') {
+                $topics = Topic::orderBy('id', 'desc')->paginate(15);
+            } else {
+                $topics = Topic::where('country_id', $user->country)->orderBy('id', 'desc')->paginate(15);
+            }
+
             return view('user.topics.list')->with('topics', $topics);
         } else {
             abort(403, 'You do not have permission to access this page.');
@@ -36,7 +44,8 @@ class TopicController extends Controller
     public function create()
     {
         if (Auth::user()->can('Create Topic')) {
-            return view('user.topics.create');
+            $countries = Country::orderBy('name', 'asc')->get();
+            return view('user.topics.create')->with('countries', $countries);
         } else {
             abort(403, 'You do not have permission to access this page.');
         }
@@ -50,21 +59,32 @@ class TopicController extends Controller
      */
     public function store(Request $request)
     {
+        $country_id = auth()->user()->user_type === 'Global'
+            ? $request->country_id
+            : auth()->user()->country;
+
+        $request->merge(['country_id' => $country_id]);
+
         $request->validate([
             'topic_name' => [
                 'required',
                 'string',
                 'max:255',
-                Rule::unique('topics')->where(function ($query) use ($request) {
-                    return $query->where('education_type', $request->education_type);
-                }),
+                Rule::unique('topics')
+                    ->where(function ($query) use ($request) {
+                        return $query
+                            ->where('education_type', $request->education_type)
+                            ->where('country_id', $request->country_id);
+                    }),
             ],
             'education_type' => 'required|string|max:255',
+            'country_id' => 'required|exists:countries,id',
         ]);
 
         $topic = new Topic();
         $topic->topic_name = $request->topic_name;
         $topic->education_type = $request->education_type;
+        $topic->country_id = $country_id;
         $topic->save();
 
         $userName = Auth::user()->getFullNameAttribute();
@@ -96,7 +116,11 @@ class TopicController extends Controller
     {
         if (Auth::user()->can('Edit Topic')) {
             $topic = Topic::findOrFail(Crypt::decrypt($id));
-            return view('user.topics.edit')->with('topic', $topic);
+            $countries = Country::orderBy('name', 'asc')->get();
+            return view('user.topics.edit', [
+                'topic' => $topic,
+                'countries' => $countries
+            ]);
         } else {
             abort(403, 'You do not have permission to access this page.');
         }
@@ -113,21 +137,32 @@ class TopicController extends Controller
     {
         if (Auth::user()->can('Edit Topic')) {
             $id = Crypt::decrypt($id);
+            $country_id = auth()->user()->user_type === 'Global'
+                ? $request->country_id
+                : auth()->user()->country;
+
+            $request->merge(['country_id' => $country_id]);
+
             $request->validate([
                 'topic_name' => [
                     'required',
                     'string',
                     'max:255',
                     Rule::unique('topics')->ignore($id)->where(function ($query) use ($request) {
-                        return $query->where('education_type', $request->education_type);
+                        return $query->where('education_type', $request->education_type)
+                            ->where('country_id', $request->country_id);
                     }),
                 ],
                 'education_type' => 'required|string|max:255',
+                'country_id' => 'required|exists:countries,id',
             ]);
+
+
 
             $topic = Topic::findOrFail($id);
             $topic->topic_name = $request->topic_name;
             $topic->education_type = $request->education_type;
+            $topic->country_id = $country_id;
             $topic->save();
 
             return redirect()->route('topics.index')->with('message', 'Topic updated successfully.');

@@ -14,7 +14,7 @@
                             <div class="col-md-12">
 
                                 <div class="row mb-3">
-                                    <div class="col-md-10">                                        
+                                    <div class="col-md-10">
                                     </div>
                                     <div class="col-md-2 float-right">
                                         @if (Auth::user()->can('Create Topic'))
@@ -46,6 +46,9 @@
                                                 <th>
                                                     Education Type
                                                 </th>
+                                                <th>
+                                                    Country
+                                                </th>
                                                 <th></th>
                                             </tr>
                                         </thead>
@@ -58,6 +61,7 @@
                                                         </td>
                                                         <td>{{ $topic->topic_name }}</td>
                                                         <td>{{ $topic->education_type }}</td>
+                                                        <td>{{ $topic->country->name ?? '' }}</td>
                                                         <td>
                                                             <div class="d-flex">
                                                                 @if (Auth::user()->can('Edit Topic'))
@@ -80,7 +84,7 @@
                                                 @endforeach
                                                 {{-- pagination --}}
                                                 <tr class="toxic">
-                                                    <td colspan="4">
+                                                    <td colspan="5">
                                                         <div class="d-flex justify-content-center">
                                                             {!! $topics->links() !!}
                                                         </div>
@@ -88,7 +92,7 @@
                                                 </tr>
                                             @else
                                                 <tr class="toxic">
-                                                    <td colspan="4" class="text-center">No Data Found</td>
+                                                    <td colspan="5" class="text-center">No Data Found</td>
                                                 </tr>
                                             @endif
 

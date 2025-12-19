@@ -5,16 +5,17 @@
 @push('styles')
 @endpush
 @section('content')
-<section id="loading">
-    <div id="loading-content"></div>
-</section>
+    <section id="loading">
+        <div id="loading-content"></div>
+    </section>
     <div class="container-fluid">
         <div class="bg_white_border">
 
             <!--  Row 1 -->
             <div class="row">
                 <div class="col-lg-12">
-                    <form action="{{ route('topics.update', Crypt::encrypt($topic->id)) }}" method="POST" enctype="multipart/form-data" id="uploadForm">
+                    <form action="{{ route('topics.update', Crypt::encrypt($topic->id)) }}" method="POST"
+                        enctype="multipart/form-data" id="uploadForm">
                         @method('PUT')
                         @csrf
                         <div class="row">
@@ -25,7 +26,27 @@
                             </div>
                         </div>
                         <div class="row">
-                            <div class="col-md-6 mb-2">
+                            {{-- country --}}
+                            @if (auth()->user()->user_type == 'Global')
+                                <div class="col-md-4 mb-2">
+                                    <div class="box_label">
+                                        <label for="country">Country</label>
+
+                                        <select name="country_id" id="country" class="form-control">
+                                            <option value="">Select Country</option>
+                                            @foreach ($countries as $country)
+                                                <option value="{{ $country->id }}"
+                                                    {{ $topic->country_id == $country->id ? 'selected' : '' }}>
+                                                    {{ $country->name }}</option>
+                                            @endforeach
+                                        </select>
+                                        @if ($errors->has('country_id'))
+                                            <span class="error">{{ $errors->first('country_id') }}</span>
+                                        @endif
+                                    </div>
+                                </div>
+                            @endif
+                            <div class="col-md-4 mb-2">
                                 <div class="box_label">
                                     <label>Topic Name *</label>
                                     <input type="text" class="form-control" name="topic_name"
@@ -37,31 +58,34 @@
                                     @endif
                                 </div>
                             </div>
-                            <div class="col-md-6 mb-2">
+
+                            <div class="col-md-4 mb-2">
                                 <div class="box_label">
                                     <label for="type">Type</label>
 
-                                <select name="education_type" id="type" class="form-control">
-                                    <option value="">Select Type</option>
-                                    <option value="Becoming Sovereign"
-                                        {{ $topic->education_type == 'Becoming Sovereign' ? 'selected' : '' }}>Becoming Sovereign
-                                    </option>
-                                    <option value="Becoming Christ Like"
-                                        {{ $topic->education_type == 'Becoming Christ Like' ? 'selected' : '' }}>Becoming Christ Like
-                                    </option>
-                                    <option value="Becoming a Leader"
-                                        {{ $topic->education_type == 'Becoming a Leader' ? 'selected' : '' }}>Becoming a Leader</option>
-                                </select>
-                                @if ($errors->has('education_type'))
-                                    <span class="error">{{ $errors->first('education_type') }}</span>
-                                @endif
+                                    <select name="education_type" id="type" class="form-control">
+                                        <option value="">Select Type</option>
+                                        <option value="Becoming Sovereign"
+                                            {{ $topic->education_type == 'Becoming Sovereign' ? 'selected' : '' }}>Becoming
+                                            Sovereign
+                                        </option>
+                                        <option value="Becoming Christ Like"
+                                            {{ $topic->education_type == 'Becoming Christ Like' ? 'selected' : '' }}>
+                                            Becoming Christ Like
+                                        </option>
+                                        <option value="Becoming a Leader"
+                                            {{ $topic->education_type == 'Becoming a Leader' ? 'selected' : '' }}>Becoming
+                                            a Leader</option>
+                                    </select>
+                                    @if ($errors->has('education_type'))
+                                        <span class="error">{{ $errors->first('education_type') }}</span>
+                                    @endif
+                                </div>
+                                <div class="w-100 text-end d-flex align-items-center justify-content-end mt-3">
+                                    <button type="submit" class="print_btn me-2">Change Name</button>
+                                    <a href="{{ route('topics.index') }}" class="print_btn print_btn_vv">Cancel</a>
+                                </div>
                             </div>
-                            <div class="w-100 text-end d-flex align-items-center justify-content-end mt-3">
-                                <button type="submit" class="print_btn me-2">Change Name</button>
-                                <a href="{{ route('topics.index') }}" class="print_btn print_btn_vv"
-                                    >Cancel</a>
-                            </div>
-                        </div>
                     </form>
                 </div>
             </div>
@@ -69,13 +93,13 @@
     @endsection
 
     @push('scripts')
-    <script>
-        $(document).ready(function() {
-            $("#uploadForm").on("submit", function(e) {
-                // e.preventDefault();
-                $('#loading').addClass('loading');
-                $('#loading-content').addClass('loading-content');
+        <script>
+            $(document).ready(function() {
+                $("#uploadForm").on("submit", function(e) {
+                    // e.preventDefault();
+                    $('#loading').addClass('loading');
+                    $('#loading-content').addClass('loading-content');
+                });
             });
-        });
-    </script>
+        </script>
     @endpush

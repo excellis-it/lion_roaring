@@ -56,6 +56,16 @@
                                                     {{-- <span id="name_icon"><i
                                                             class="fa fa-arrow-down"></i></span> --}}
                                                 </th>
+                                                <th class="sorting p-3" data-tippy-content="Sort by User Type"
+                                                    data-sorting_type="desc" data-column_name="user_type"
+                                                    style="cursor: pointer"> User Type
+                                                    {{-- <span id="name_icon"><i
+                                                            class="fa fa-arrow-down"></i></span> --}}
+                                                </th>
+                                                <th class="sorting p-3" data-tippy-content="Sort by Country"
+                                                    data-sorting_type="desc" data-column_name="country"
+                                                    style="cursor: pointer"> Country
+                                                </th>
                                                 <th class="p-3">Role</th>
                                                 <th class="p-3">House Of Ecclesia</th>
                                                 <th class="p-3">Manage Warehouses</th>

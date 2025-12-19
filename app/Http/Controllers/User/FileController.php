@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\User;
 
 use App\Http\Controllers\Controller;
+use App\Models\Country;
 use App\Models\File;
 use App\Models\Topic;
 use App\Traits\ImageTrait;
@@ -21,8 +22,17 @@ class FileController extends Controller
     public function index()
     {
         if (auth()->user()->can('Manage File')) {
-            $files = File::orderBy('id', 'desc')->paginate(15);
-            $topics = Topic::orderBy('topic_name', 'asc')->get();
+            $user_type = auth()->user()->user_type;
+            $user_country = auth()->user()->country;
+
+            if ($user_type == 'Global') {
+                $files = File::orderBy('id', 'desc')->paginate(15);
+                $topics = Topic::orderBy('topic_name', 'asc')->get();
+            } else {
+                $files = File::orderBy('id', 'desc')->where('country_id', $user_country)->paginate(15);
+                $topics = Topic::orderBy('topic_name', 'asc')->get();
+            }
+
             return view('user.file.list')->with(compact('files', 'topics'));
         } else {
             abort(403, 'You do not have permission to access this page.');
@@ -32,8 +42,16 @@ class FileController extends Controller
     public function upload()
     {
         if (auth()->user()->can('Upload File')) {
-            $topics = Topic::orderBy('topic_name', 'asc')->get();
-            return view('user.file.upload')->with('topics', $topics);
+            $user_type = auth()->user()->user_type;
+            $user_country = auth()->user()->country;
+
+            if ($user_type == 'Global') {
+                $topics = Topic::orderBy('topic_name', 'asc')->get();
+            } else {
+                $topics = Topic::orderBy('topic_name', 'asc')->where('country_id', $user_country)->get();
+            }
+            $countries = Country::orderBy('name', 'asc')->get();
+            return view('user.file.upload')->with(compact('topics', 'countries'));
         } else {
             abort(403, 'You do not have permission to access this page.');
         }
@@ -41,12 +59,18 @@ class FileController extends Controller
 
     public function store(Request $request)
     {
+        $country_id = auth()->user()->user_type === 'Global'
+            ? $request->country_id
+            : auth()->user()->country;
+
+        $request->merge(['country_id' => $country_id]);
         // return $request->type;
         $validated = FacadesValidator::make($request->all(), [
             'topic_id' => 'required|exists:topics,id', // 'exists' checks if the value exists in the 'topics' table 'id' column
             'file' => 'required|array', // Ensure file is an array
             'file.*' => 'required|file', // Ensure each file is valid
             'type' => 'required',
+            'country_id' => 'required|exists:countries,id',
         ]);
 
         // Check if validation fails
@@ -61,9 +85,18 @@ class FileController extends Controller
             $file_path = $this->imageUpload($file, 'files');
 
             // Check if a file with the same name and extension already exists for the user
-            $check = File::where('file_name', $file_name)
-                ->where('file_extension', $file_extension)
-                ->first();
+            $user_type = auth()->user()->user_type;
+            $user_country = auth()->user()->country;
+            if ($user_type == 'Global') {
+                $check = File::where('file_name', $file_name)
+                    ->where('file_extension', $file_extension)
+                    ->first();
+            } else {
+                $check = File::where('file_name', $file_name)
+                    ->where('file_extension', $file_extension)
+                    ->where('country_id', $user_country)
+                    ->first();
+            }
 
             // Return validation error if file already exists
             if ($check) {
@@ -77,6 +110,7 @@ class FileController extends Controller
             $file_upload->file_extension = $file_extension;
             $file_upload->topic_id = $request->topic_id;
             $file_upload->type = $request->type;
+            $file_upload->country_id = $request->country_id;
             $file_upload->file = $file_path;
             $file_upload->save();
         }
@@ -133,7 +167,10 @@ class FileController extends Controller
                 ->where(function ($q) use ($query) {
                     $q->where('id', 'like', '%' . $query . '%')
                         ->orWhere('file_name', 'like', '%' . $query . '%')
-                        ->orWhere('file_extension', 'like', '%' . $query . '%');
+                        ->orWhere('file_extension', 'like', '%' . $query . '%')
+                        ->orWhereHas('country', function ($q) use ($query) {
+                            $q->where('name', 'like', '%' . $query . '%');
+                        });
                 });
             if ($request->topic_id) {
                 $files->whereHas('topic', function ($q) use ($request) {
@@ -143,6 +180,14 @@ class FileController extends Controller
             if ($request->type) {
                 $files->where('type', $request->type);
             }
+
+            $user_type = auth()->user()->user_type;
+            $user_country = auth()->user()->country;
+
+            if ($user_type == 'Regional') {
+                $files->where('country_id', $user_country);
+            }
+
             $files = $files->orderBy($sort_by, $sort_type)
                 ->paginate(15);
 
@@ -153,10 +198,25 @@ class FileController extends Controller
     public function edit($id)
     {
         if (auth()->user()->can('Edit File')) {
-            $file = File::findOrFail($id);
+            $user_type = auth()->user()->user_type;
+            $user_country = auth()->user()->country;
+
+            if ($user_type == 'Global') {
+                $file = File::findOrFail($id);
+            } else {
+                $file = File::where('country_id', $user_country)->findOrFail($id);
+            }
+
             if ($file) {
-                $topics = Topic::orderBy('topic_name', 'asc')->get();
-                return view('user.file.edit')->with(compact('file', 'topics'));
+                if ($user_type == 'Global') {
+                    $countries = Country::orderBy('name', 'asc')->get();
+                    $topics = Topic::orderBy('topic_name', 'asc')->get();
+                } else {
+                    $countries = Country::orderBy('name', 'asc')->where('id', $user_country)->get();
+                    $topics = Topic::orderBy('topic_name', 'asc')->where('country_id', $user_country)->get();
+                }
+
+                return view('user.file.edit')->with(compact('file', 'topics', 'countries'));
             } else {
                 return redirect()->route('file.index')->with('error', 'File not found.');
             }
@@ -167,6 +227,15 @@ class FileController extends Controller
 
     public function update(Request $request, $id)
     {
+        $user_type = auth()->user()->user_type;
+        $user_country = auth()->user()->country;
+
+        $country_id = auth()->user()->user_type === 'Global'
+            ? $request->country_id
+            : auth()->user()->country;
+
+        $request->merge(['country_id' => $country_id]);
+
         // Validate the request
         $validated = FacadesValidator::make($request->all(), [
             'topic_id' => 'required|exists:topics,id', // 'exists' checks if the value exists in the 'topics' table 'id' column
@@ -189,9 +258,16 @@ class FileController extends Controller
             $file_upload = $this->imageUpload($request->file('file'), 'files');
 
             // Check if a file with the same name and extension already exists for the current user
-            $check = File::where('file_name', $file_name)
-                ->where('file_extension', $file_extension)
-                ->first();
+            if ($user_type == 'Global') {
+                $check = File::where('file_name', $file_name)
+                    ->where('file_extension', $file_extension)
+                    ->first();
+            } else {
+                $check = File::where('file_name', $file_name)
+                    ->where('file_extension', $file_extension)
+                    ->where('country_id', $user_country)
+                    ->first();
+            }
 
             // Return validation error if file already exists
             if ($check) {
@@ -213,9 +289,20 @@ class FileController extends Controller
         return redirect()->route('file.index')->with('message', 'File updated successfully.');
     }
 
-    public function getTopics($type)
+    public function getTopics(Request $request, $type)
     {
-        $topics = Topic::where('education_type', $type)->orderBy('topic_name', 'asc')->get();
+        $user_type = auth()->user()->user_type;
+        $user_country = auth()->user()->country;
+        if ($user_type == 'Global') {
+            $country_id = $request->country_id;
+        } else {
+            $country_id = $user_country;
+        }
+        $topics = Topic::where('education_type', $type)
+            ->when($country_id, function ($q) use ($country_id, $user_type) {
+                return $q->where('country_id', $country_id);
+            })
+            ->orderBy('topic_name', 'asc')->get();
         return response()->json(['data' => $topics]);
     }
 }

@@ -19,4 +19,9 @@ class File extends Model
     {
         return $this->belongsTo(User::class, 'user_id');
     }
+
+    public function country()
+    {
+        return $this->belongsTo(Country::class, 'country_id');
+    }
 }
