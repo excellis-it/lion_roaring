@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\User;
 
 use App\Http\Controllers\Controller;
+use App\Models\Country;
 use App\Models\Event;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -14,8 +15,15 @@ class LiveEventController extends Controller
     public function list()
     {
         if (Auth::user()->can('Manage Event')) {
-            $events = Event::orderBy('id', 'desc')->get();
-            return view('user.events.list', compact('events'));
+            $user_type = auth()->user()->user_type;
+            $user_country = auth()->user()->country;
+            if ($user_type == 'Global') {
+                $events = Event::orderBy('id', 'desc')->get();
+            } else {
+                $events = Event::where('country_id', $user_country)->orderBy('id', 'desc')->get();
+            }
+            $country = Country::orderBy('name', 'asc')->get();
+            return view('user.events.list', compact('events', 'country'));
         } else {
             abort(403, 'You do not have permission to access this page.');
         }
@@ -24,17 +32,29 @@ class LiveEventController extends Controller
 
     public function calender(Request $request)
     {
-        $events = Event::orderBy('id', 'desc')->get(['id', 'user_id', 'title', 'description', 'start', 'end']);
+        $user_type = auth()->user()->user_type;
+        $user_country = auth()->user()->country;
+        if ($user_type == 'Global') {
+            $events = Event::orderBy('id', 'desc')->get(['id', 'user_id', 'title', 'description', 'start', 'end', 'country_id']);
+        } else {
+            $events = Event::where('country_id', $user_country)->orderBy('id', 'desc')->get(['id', 'user_id', 'title', 'description', 'start', 'end', 'country_id']);
+        }
         return response()->json($events);
     }
 
     public function store(Request $request)
     {
+        $country_id = auth()->user()->user_type === 'Global'
+            ? $request->country_id
+            : auth()->user()->country;
+
+        $request->merge(['country_id' => $country_id]);
         $request->validate([
             'title' => 'required',
             'description' => 'required',
             'start' => 'required',
             'end' => 'required',
+            'country_id' => 'required',
         ]);
 
         $event = new Event();
@@ -44,6 +64,7 @@ class LiveEventController extends Controller
         $event->description = $request->description;
         $event->start = $request->start;
         $event->end = $request->end;
+        $event->country_id = $request->country_id;
         $event->save();
 
         // notify users
@@ -55,11 +76,17 @@ class LiveEventController extends Controller
 
     public function update(Request $request, $id)
     {
+        $country_id = auth()->user()->user_type === 'Global'
+            ? $request->country_id
+            : auth()->user()->country;
+
+        $request->merge(['country_id' => $country_id]);
         $request->validate([
             'title' => 'required',
             'description' => 'required',
             'start' => 'required',
             'end' => 'required',
+            'country_id' => 'required',
         ]);
 
         $event = Event::find($id);
@@ -68,6 +95,7 @@ class LiveEventController extends Controller
         $event->description = $request->description;
         $event->start = $request->start;
         $event->end = $request->end;
+        $event->country_id = $request->country_id;
         $event->update();
 
         return response()->json(['message' => 'Event updated successfully.', 'event' => $event, 'status' => true]);

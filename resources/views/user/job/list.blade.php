@@ -63,18 +63,21 @@
                                                     data-sorting_type="desc" data-column_name="job_experience"
                                                     style="cursor: pointer">Job Experience <span id="job_experience_icon"><i
                                                             class="fa fa-arrow-down"></i></span></th>
-                                                            {{-- contact_person --}}
+                                                {{-- contact_person --}}
                                                 <th class="sorting" data-tippy-content="Sort by Contact Person"
                                                     data-sorting_type="desc" data-column_name="contact_person"
                                                     style="cursor: pointer">Contact Person <span id="contact_person_icon"><i
                                                             class="fa fa-arrow-down"></i></span></th>
-                                                            {{-- contact_email --}}
+                                                {{-- contact_email --}}
                                                 <th class="sorting" data-tippy-content="Sort by Contact Email"
                                                     data-sorting_type="desc" data-column_name="contact_email"
                                                     style="cursor: pointer">Contact Email <span id="contact_email_icon"><i
                                                             class="fa fa-arrow-down"></i></span></th>
-                                                            {{-- post date --}}
-                                                <th >Post Date </th>
+                                                {{-- post date --}}
+                                                <th>Post Date </th>
+                                                <th>
+                                                    Country
+                                                </th>
                                                 <th></th>
                                             </tr>
                                         </thead>
@@ -86,8 +89,7 @@
                                     <input type="hidden" name="hidden_page" id="hidden_page" value="1" />
                                     <input type="hidden" name="hidden_column_name" id="hidden_column_name"
                                         value="id" />
-                                    <input type="hidden" name="hidden_sort_type" id="hidden_sort_type"
-                                        value="desc" />
+                                    <input type="hidden" name="hidden_sort_type" id="hidden_sort_type" value="desc" />
                                 </div>
                             </div>
                         </div>

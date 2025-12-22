@@ -11,6 +11,7 @@ class Job extends Model
 
     protected $fillable = [
         'created_by',
+        'country_id',
         'job_title',
         'job_description',
         'job_type',
@@ -25,5 +26,10 @@ class Job extends Model
     public function user()
     {
         return $this->belongsTo(User::class, 'created_by', 'id');
+    }
+
+    public function country()
+    {
+        return $this->belongsTo(Country::class, 'country_id', 'id');
     }
 }

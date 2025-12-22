@@ -29,9 +29,43 @@ class ChatController extends Controller
     public function chats()
     {
         if (auth()->user()->can('Manage Chat')) {
-            $users = User::with('roles', 'chatSender')->where('id', '!=', auth()->id())->where('status', 1)->whereHas('roles', function ($query) {
-                $query->whereIn('type', [1, 2, 3]);
-            })->get()->toArray();
+            $user_type = auth()->user()->user_type;
+            $country_name = auth()->user()->country;
+            if ($user_type == 'Global') {
+
+                $users = User::with('roles', 'chatSender')
+                    ->where('id', '!=', auth()->id())
+                    ->where('status', 1)
+                    ->whereHas('roles', function ($query) {
+                        $query->whereIn('type', [1, 2, 3]);
+                    })
+                    ->get()
+                    ->toArray();
+            } else {
+
+                $users = User::with('roles', 'chatSender')
+                    ->where('id', '!=', auth()->id())
+                    ->where('status', 1)
+                    ->whereHas('roles', function ($query) {
+                        $query->whereIn('type', [1, 2, 3]);
+                    })
+                    ->where(function ($query) use ($country_name) {
+
+                        // Same country users
+                        $query->where('country', $country_name)
+
+                            // OR Global users who already messaged me
+                            ->orWhere(function ($q) {
+                                $q->where('user_type', 'Global')
+                                    ->whereHas('chatSender', function ($chat) {
+                                        $chat->where('reciver_id', auth()->id());
+                                    });
+                            });
+                    })
+                    ->get()
+                    ->toArray();
+            }
+
             // return user orderBy latest message
             $users = array_map(function ($user) {
                 $user['last_message'] = Chat::where(function ($query) use ($user) {

@@ -12,6 +12,7 @@
         -
     @endif
 </td>
+<td>{{ $meeting->country->name ?? '-' }}</td>
 <td>
     {{-- added time human --}}
     {{ $meeting->created_at ? $meeting->created_at->diffForHumans() : '-' }}

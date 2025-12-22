@@ -10,6 +10,7 @@ class PrivateCollaboration extends Model
     use HasFactory;
 
     protected $fillable = [
+        'country_id',
         'title',
         'description',
         'meeting_link',
@@ -30,6 +31,11 @@ class PrivateCollaboration extends Model
     /**
      * Get the user who created this collaboration
      */
+
+    public function country()
+    {
+        return $this->belongsTo(Country::class);
+    }
     public function user()
     {
         return $this->belongsTo(User::class);

@@ -24,7 +24,21 @@
                             </div>
                         </div>
                         <div class="row">
-                            <div class="col-md-12 mb-2">
+                            <div class="col-md-6 mb-2">
+                                <div class="box_label">
+                                    <label for="country">Country</label>
+                                    <select name="country" id="country" class="form-control">
+                                        <option value="">Select Country</option>
+                                        @foreach ($countries as $country)
+                                            <option value="{{ $country->id }}">{{ $country->name }}</option>
+                                        @endforeach
+                                    </select>
+                                    @if ($errors->has('country'))
+                                        <span class="error">{{ $errors->first('country') }}</span>
+                                    @endif
+                                </div>
+                            </div>
+                            <div class="col-md-6 mb-2">
                                 <div class="box_label">
                                     <label for="file">Choose File</label>
                                     <input type="file" name="file[]" id="file" class="form-control" multiple>

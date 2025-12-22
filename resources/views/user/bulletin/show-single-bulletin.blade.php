@@ -9,6 +9,9 @@
 <td id="bulletin-title-{{ $bulletin->id }}"> {{ $bulletin->title }}</td>
 <td id="bulletin-description-{{ $bulletin->id }}"> {{ $bulletin->description }}</td>
 <td>
+    {{ $bulletin->country->name ?? ''}}
+</td>
+<td>
     <div class="d-flex">
         @if (auth()->user()->can('Edit Bulletin'))
             <a href="{{ route('bulletins.edit', $bulletin->id) }}" class="delete_icon">

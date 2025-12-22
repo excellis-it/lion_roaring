@@ -73,6 +73,18 @@
                     @csrf
                     @method('PUT')
                     <div class="modal-body">
+                        {{-- country --}}
+                        @if (auth()->user()->user_type == 'Global')
+                            <div class="mb-3">
+                                <label for="modalCountryEdit" class="col-form-label">Country:</label>
+                                <select class="form-control" id="modalCountryEdit" name="country_id">
+                                    <option value="">Select Country</option>
+                                    @foreach ($country as $item)
+                                        <option value="{{ $item->id }}">{{ $item->name }}</option>
+                                    @endforeach
+                                </select>
+                            </div>
+                        @endif
                         <div class="mb-3">
                             <label for="modalTitleEdit" class="col-form-label">Title:</label>
                             <input type="text" class="form-control" id="modalTitleEdit" name="title">
@@ -89,6 +101,7 @@
                             <label for="modalDescriptionEdit" class="col-form-label">Description:</label>
                             <textarea class="form-control" id="modalDescriptionEdit" name="description"></textarea>
                         </div>
+
                         <!-- Links detected (Edit modal) -->
                         <div class="mb-3">
                             <label class="col-form-label">Links:</label>
@@ -149,7 +162,18 @@
                     <form method="POST" action="{{ route('events.store') }}" id="event-store">
                         @csrf
                         <div class="modal-body">
-
+                            {{-- country --}}
+                            @if (auth()->user()->user_type == 'Global')
+                                <div class="mb-3">
+                                    <label for="modalCountry" class="col-form-label">Country:</label>
+                                    <select class="form-control" id="modalCountry" name="country_id">
+                                        <option value="">Select Country</option>
+                                        @foreach ($country as $item)
+                                            <option value="{{ $item->id }}">{{ $item->name }}</option>
+                                        @endforeach
+                                    </select>
+                                </div>
+                            @endif
                             <div class="mb-3">
                                 <label for="modalTitle" class="col-form-label">Title:</label>
                                 <input type="text" class="form-control" id="modalTitle" name="title">
@@ -167,6 +191,7 @@
                                 <label for="modalDescription" class="col-form-label">Description:</label>
                                 <textarea class="form-control" id="modalDescription" name="description"></textarea>
                             </div>
+
                             <!-- Links detected (Add modal) -->
                             <div class="mb-3">
                                 <label class="col-form-label">Links detected:</label>
@@ -287,7 +312,8 @@
                                         title: event.title,
                                         start: event.start,
                                         end: event.end,
-                                        description: event.description
+                                        description: event.description,
+                                        country_id: event.country_id
                                     };
                                 });
                                 successCallback(events);
@@ -316,6 +342,7 @@
                             $('#modalStartEdit').val(formatDateForInput(event.start));
                             $('#modalEndEdit').val(formatDateForInput(event.end));
                             $('#modalDescriptionEdit').val(event.extendedProps.description);
+                            $('#modalCountryEdit').val(event.extendedProps.country_id);
                             // Render detected links for Edit modal
                             renderLinks(extractLinks(event.extendedProps.description), $(
                                 '#modalDescriptionEditLinks'));
@@ -402,6 +429,9 @@
                     description: {
                         required: true,
                     },
+                    country_id: {
+                        required: true,
+                    },
                 },
                 messages: {
                     title: {
@@ -415,6 +445,9 @@
                     },
                     description: {
                         required: "Please enter description",
+                    },
+                    country_id: {
+                        required: "Please select country",
                     },
                 },
                 submitHandler: function(form) {
@@ -471,6 +504,11 @@
                     description: {
                         required: true,
                     },
+                    @if (auth()->user()->user_type == 'Global')
+                        country_id: {
+                            required: true,
+                        },
+                    @endif
                 },
                 messages: {
                     title: {
@@ -485,6 +523,11 @@
                     description: {
                         required: "Please enter description",
                     },
+                    @if (auth()->user()->user_type == 'Global')
+                        country_id: {
+                            required: "Please select country",
+                        },
+                    @endif
                 },
                 submitHandler: function(form) {
                     // Submit form data via AJAX

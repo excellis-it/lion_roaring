@@ -68,6 +68,9 @@
                                                     data-sorting_type="desc" data-column_name="description"
                                                     style="cursor: pointer">Bulletin Description <span
                                                         id="description_icon"><i class="fa fa-arrow-down"></i></span></th>
+                                                        <th>
+                                                            Country
+                                                        </th>
                                                 <th></th>
                                             </tr>
                                         </thead>

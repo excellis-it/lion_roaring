@@ -20,6 +20,9 @@
 </td>
 <td>{{ $collaboration->user ? $collaboration->user->full_name : '-' }}</td>
 <td>
+    {{ $collaboration->country->name ?? '-' }}
+</td>
+<td>
     <div class="d-flex">
         @php
             $isCreator = $collaboration->user_id == auth()->id();

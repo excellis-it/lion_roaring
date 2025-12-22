@@ -3,12 +3,11 @@
     Job - {{ env('APP_NAME') }}
 @endsection
 @push('styles')
-
 @endpush
 @section('content')
-<section id="loading">
-    <div id="loading-content"></div>
-</section>
+    <section id="loading">
+        <div id="loading-content"></div>
+    </section>
     <div class="container-fluid">
         <div class="bg_white_border">
 
@@ -25,7 +24,26 @@
                             </div>
                         </div>
                         <div class="row">
+                            @if (auth()->user()->user_type == 'Global')
+                                <div class="col-md-6 mb-2">
+                                    <div class="box_label">
+                                        <label for="country_id">Country*</label>
 
+                                        <select name="country_id" id="country_id" class="form-control">
+                                            <option value="">Select Country</option>
+                                            @foreach ($countries as $country)
+                                                <option value="{{ $country->id }}"
+                                                    {{ old('country_id') == $country->id ? 'selected' : '' }}>
+                                                    {{ $country->name }}
+                                                </option>
+                                            @endforeach
+                                        </select>
+                                        @if ($errors->has('country_id'))
+                                            <span class="error">{{ $errors->first('country_id') }}</span>
+                                        @endif
+                                    </div>
+                                </div>
+                            @endif
                             <div class="col-md-6 mb-2">
                                 <div class="box_label">
                                     <label for="name"> Job Title* </label>
@@ -230,15 +248,15 @@
     @endsection
 
     @push('scripts')
-    <script>
-        $(document).ready(function() {
-            $("#uploadForm").on("submit", function(e) {
-                // e.preventDefault();
-                $('#loading').addClass('loading');
-                $('#loading-content').addClass('loading-content');
+        <script>
+            $(document).ready(function() {
+                $("#uploadForm").on("submit", function(e) {
+                    // e.preventDefault();
+                    $('#loading').addClass('loading');
+                    $('#loading-content').addClass('loading-content');
+                });
             });
-        });
-    </script>
+        </script>
         <script src='https://cdn.ckeditor.com/ckeditor5/28.0.0/classic/ckeditor.js'></script>
 
         <script>

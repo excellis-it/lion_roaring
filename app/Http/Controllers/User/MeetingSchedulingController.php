@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\User;
 
 use App\Http\Controllers\Controller;
+use App\Models\Country;
 use App\Models\Meeting;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -22,7 +23,14 @@ class MeetingSchedulingController extends Controller
     public function index()
     {
         if (auth()->user()->can('Manage Meeting Schedule')) {
-            $meetings = Meeting::orderBy('id', 'desc')->paginate(15);
+            $user_type = auth()->user()->user_type;
+            $user_country = auth()->user()->country;
+
+            if ($user_type == 'Global') {
+                $meetings = Meeting::orderBy('id', 'desc')->paginate(15);
+            } else {
+                $meetings = Meeting::orderBy('id', 'desc')->where('country_id', $user_country)->paginate(15);
+            }
             return view('user.meeting.list')->with(compact('meetings'));
         } else {
             abort(403, 'You do not have permission to access this page.');
@@ -37,7 +45,8 @@ class MeetingSchedulingController extends Controller
     public function create()
     {
         if (auth()->user()->can('Create Meeting Schedule')) {
-            return view('user.meeting.create');
+            $countries = Country::orderBy('name', 'asc')->get();
+            return view('user.meeting.create')->with(compact('countries'));
         } else {
             abort(403, 'You do not have permission to access this page.');
         }
@@ -52,12 +61,19 @@ class MeetingSchedulingController extends Controller
     public function store(Request $request)
     {
         if (auth()->user()->can('Create Meeting Schedule')) {
+            $country_id = auth()->user()->user_type === 'Global'
+                ? $request->country_id
+                : auth()->user()->country;
+
+            $request->merge(['country_id' => $country_id]);
+
             $request->validate([
                 'title' => 'required',
                 'description' => 'required',
                 'start_time' => 'required',
                 'end_time' => 'required|after:start_time',
                 'meeting_link' => 'nullable',
+                'country_id' => 'required',
                 // link_source will be 'external' or 'zoom'; create_zoom hidden flag for JS simplicity
             ]);
 
@@ -68,6 +84,7 @@ class MeetingSchedulingController extends Controller
             $meeting->description = $request->description;
             $meeting->start_time = $request->start_time;
             $meeting->end_time = $request->end_time;
+            $meeting->country_id = $request->country_id;
 
             // Create Zoom meeting if requested
             $createZoom = (bool)$request->input('create_zoom', false);
@@ -126,7 +143,13 @@ class MeetingSchedulingController extends Controller
     public function joinMeeting($id)
     {
         if (auth()->user()->can('View Meeting Schedule')) {
-            $meeting = Meeting::find($id);
+            $user_type = auth()->user()->user_type;
+            $user_country = auth()->user()->country;
+            if ($user_type == 'Global') {
+                $meeting = Meeting::findOrFail($id);
+            } else {
+                $meeting = Meeting::where('country_id', $user_country)->findOrFail($id);
+            }
             $isZoom = $this->isZoomLink($meeting->meeting_link ?? '');
             $zoomMeetingId = $isZoom ? $this->parseZoomMeetingIdFromUrl($meeting->meeting_link) : null;
             return view('user.meeting.zoom_meet')->with('meeting', $meeting)->with('isZoom', $isZoom)->with('zoomMeetingId', $zoomMeetingId);
@@ -144,8 +167,15 @@ class MeetingSchedulingController extends Controller
     public function edit($id)
     {
         if (auth()->user()->can('Edit Meeting Schedule') && auth()->user()->id == Meeting::find($id)->user_id || auth()->user()->hasRole('SUPER ADMIN')) {
-            $meeting = Meeting::find($id);
-            return view('user.meeting.edit')->with('meeting', $meeting);
+            $countries = Country::orderBy('name', 'asc')->get();
+            $user_type = auth()->user()->user_type;
+            $user_country = auth()->user()->country;
+            if ($user_type == 'Global') {
+                $meeting = Meeting::findOrFail($id);
+            } else {
+                $meeting = Meeting::where('country_id', $user_country)->findOrFail($id);
+            }
+            return view('user.meeting.edit')->with(compact('meeting', 'countries'));
         } else {
             abort(403, 'You do not have permission to access this page.');
         }
@@ -161,12 +191,19 @@ class MeetingSchedulingController extends Controller
     public function update(Request $request, $id)
     {
         if (auth()->user()->can('Edit Meeting Schedule')) {
+            $country_id = auth()->user()->user_type === 'Global'
+                ? $request->country_id
+                : auth()->user()->country;
+
+            $request->merge(['country_id' => $country_id]);
+
             $request->validate([
                 'title' => 'required',
                 'description' => 'required',
                 'start_time' => 'required',
                 'end_time' => 'required|after:start_time',
                 'meeting_link' => 'nullable',
+                'country_id' => 'required',
             ]);
 
             $meeting = Meeting::find($id);
@@ -175,6 +212,7 @@ class MeetingSchedulingController extends Controller
             $meeting->description = $request->description;
             $meeting->start_time = $request->start_time;
             $meeting->end_time = $request->end_time;
+            $meeting->country_id = $request->country_id;
 
             // Optionally create a Zoom link on update
             $createZoom = (bool)$request->input('create_zoom', false);
@@ -231,12 +269,17 @@ class MeetingSchedulingController extends Controller
                         ->orWhere('description', 'like', '%' . $query . '%')
                         ->orWhere('start_time', 'like', '%' . $query . '%')
                         ->orWhere('end_time', 'like', '%' . $query . '%')
+                        ->orWhereHas('country', function ($q) use ($query) {
+                            $q->where('name', 'like', '%' . $query . '%');
+                        })
                         ->orWhere('meeting_link', 'like', '%' . $query . '%');
                 });
 
-
-            $meetings->orderBy($sort_by, $sort_type);
-            $meetings = $meetings->paginate(15);
+            if (auth()->user()->user_type == 'Global') {
+                $meetings = $meetings->orderBy($sort_by, $sort_type)->paginate(15);
+            } else {
+                $meetings = $meetings->where('country_id', auth()->user()->country)->orderBy($sort_by, $sort_type)->paginate(15);
+            }
 
             return response()->json(['data' => view('user.meeting.table', compact('meetings'))->render()]);
         }
@@ -255,7 +298,13 @@ class MeetingSchedulingController extends Controller
     public function viewCalender()
     {
         if (auth()->user()->can('Manage Meeting Schedule')) {
-            $meetings = Meeting::orderBy('id', 'desc')->get();
+            $user_type = auth()->user()->user_type;
+            $user_country = auth()->user()->country;
+            if ($user_type == 'Global') {
+                $meetings = Meeting::orderBy('id', 'desc')->get();
+            } else {
+                $meetings = Meeting::where('country_id', $user_country)->orderBy('id', 'desc')->get();
+            }
             return view('user.meeting.calender')->with(compact('meetings'));
         } else {
             abort(403, 'You do not have permission to access this page.');
@@ -265,7 +314,13 @@ class MeetingSchedulingController extends Controller
     public function fetchCalenderData()
     {
         if (auth()->user()->can('Manage Meeting Schedule')) {
-            $meetings = Meeting::orderBy('id', 'desc')->get(['id', 'title', 'description', 'start_time as start', 'end_time as end', 'meeting_link']);
+            $user_type = auth()->user()->user_type;
+            $user_country = auth()->user()->country;
+            if ($user_type == 'Global') {
+                $meetings = Meeting::orderBy('id', 'desc')->get(['id', 'title', 'description', 'start_time as start', 'end_time as end', 'meeting_link']);
+            } else {
+                $meetings = Meeting::where('country_id', $user_country)->orderBy('id', 'desc')->get(['id', 'title', 'description', 'start_time as start', 'end_time as end', 'meeting_link']);
+            }
             return response()->json($meetings);
         } else {
             abort(403, 'You do not have permission to access this page.');
@@ -274,7 +329,13 @@ class MeetingSchedulingController extends Controller
 
     public function showSingleMeeting(Request $request)
     {
-        $meeting = Meeting::find($request->meeting_id);
+        $user_type = auth()->user()->user_type;
+        $user_country = auth()->user()->country;
+        if ($user_type == 'Global') {
+            $meeting = Meeting::find($request->meeting_id);
+        } else {
+            $meeting = Meeting::where('country_id', $user_country)->find($request->meeting_id);
+        }
         return response()->json(['status' => true, 'view' => view('user.meeting.show-single-meeting', compact('meeting'))->render()]);
     }
 
@@ -291,7 +352,13 @@ class MeetingSchedulingController extends Controller
             'meeting_id' => 'required|integer|exists:meetings,id',
         ]);
 
-        $meeting = Meeting::findOrFail($request->meeting_id);
+        $user_type = auth()->user()->user_type;
+        $user_country = auth()->user()->country;
+        if ($user_type == 'Global') {
+            $meeting = Meeting::findOrFail($request->meeting_id);
+        } else {
+            $meeting = Meeting::where('country_id', $user_country)->findOrFail($request->meeting_id);
+        }
 
         if (!auth()->user()->can('View Meeting Schedule')) {
             abort(403, 'You do not have permission to access this page.');

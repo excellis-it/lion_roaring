@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\User;
 
 use App\Http\Controllers\Controller;
+use App\Models\Country;
 use App\Models\Policy;
 use App\Services\NotificationService;
 use App\Traits\ImageTrait;
@@ -19,7 +20,13 @@ class PolicyGuidenceController extends Controller
     public function index()
     {
         if (auth()->user()->can('Manage Policy')) {
-            $policies = Policy::orderBy('id', 'desc')->paginate(15);
+            $user_type = auth()->user()->user_type;
+            $user_country = auth()->user()->country;
+            if ($user_type == 'Global') {
+                $policies = Policy::orderBy('id', 'desc')->paginate(15);
+            } else {
+                $policies = Policy::where('country_id', $user_country)->orderBy('id', 'desc')->paginate(15);
+            }
             return view('user.policy.list')->with(compact('policies'));
         } else {
             abort(403, 'You do not have permission to access this page.');
@@ -29,7 +36,8 @@ class PolicyGuidenceController extends Controller
     public function upload()
     {
         if (auth()->user()->can('Upload Policy')) {
-            return view('user.policy.upload');
+            $countries = Country::orderBy('name', 'asc')->get();
+            return view('user.policy.upload')->with(compact('countries'));
         } else {
             abort(403, 'You do not have permission to access this page.');
         }
@@ -37,9 +45,15 @@ class PolicyGuidenceController extends Controller
 
     public function store(Request $request)
     {
+        $country_id = auth()->user()->user_type === 'Global'
+            ? $request->country_id
+            : auth()->user()->country;
+
+        $request->merge(['country_id' => $country_id]);
         $validated = Validator::make($request->all(), [
             'file' => 'required|array', // Ensure policy is an array
             'file.*' => 'required', // Ensure each policy is valid
+            'country_id' => 'required',
         ]);
 
         // Check if validation fails
@@ -69,6 +83,7 @@ class PolicyGuidenceController extends Controller
             $file_upload->file_name = $file_name;
             $file_upload->file_extension = $file_extension;
             $file_upload->file = $file_path;
+            $file_upload->country_id = $country_id;
             $file_upload->save();
         }
 
@@ -110,7 +125,15 @@ class PolicyGuidenceController extends Controller
     public function download($id)
     {
         if (auth()->user()->can('Download Policy')) {
-            $policy = Policy::where('id', $id)->first();
+            $user_type = auth()->user()->user_type;
+            $country_name = auth()->user()->country;
+
+            if ($user_type == 'Global') {
+                $policy = Policy::where('id', $id)->first();
+            } else {
+                $policy = Policy::where('country_id', $country_name)->where('id', $id)->first();
+            }
+
             if ($policy) {
                 $filePath = Storage::disk('public')->path($policy->file); // ensure using 'public' disk
                 if (file_exists($filePath)) {
@@ -129,7 +152,13 @@ class PolicyGuidenceController extends Controller
     public function view($id)
     {
         if (auth()->user()->can('View Policy')) {
-            $policy = Policy::findOrFail($id);
+            $user_type = auth()->user()->user_type;
+            $country_name = auth()->user()->country;
+            if ($user_type == 'Global') {
+                $policy = Policy::where('id', $id)->first();
+            } else {
+                $policy = Policy::where('country_id', $country_name)->where('id', $id)->first();
+            }
             if ($policy) {
                 return view('user.policy.view')->with('policy', $policy);
             } else {
@@ -162,6 +191,13 @@ class PolicyGuidenceController extends Controller
             if ($request->type) {
                 $policies->where('type', $request->type);
             }
+
+            $user_type = auth()->user()->user_type;
+            $country_name = auth()->user()->country;
+            if ($user_type == 'Regional') {
+                $policies->where('country_name', $country_name);
+            }
+
             $policies = $policies->orderBy($sort_by, $sort_type)
                 ->paginate(15);
 

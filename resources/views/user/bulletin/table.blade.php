@@ -8,7 +8,7 @@
         </tr>
     @endforeach
     <tr class="toxic">
-        <td colspan="5">
+        <td colspan="6">
             <div class="d-flex justify-content-center">
                 {!! $bulletins->links() !!}
             </div>
@@ -16,6 +16,6 @@
     </tr>
 @else
     <tr>
-        <td colspan="5" class="text-center">No data found</td>
+        <td colspan="6" class="text-center">No data found</td>
     </tr>
 @endif

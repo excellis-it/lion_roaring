@@ -47,7 +47,8 @@
                                                     data-sorting_type="desc" data-column_name="file_extension"
                                                     style="cursor: pointer">File Extension <span id="file_extension_icon"><i
                                                             class="fa fa-arrow-down"></i></span></th>
-                                                            <th>Created By</th>
+                                                <th>Created By</th>
+                                                <th>Country</th>
                                                 <th></th>
                                             </tr>
                                         </thead>

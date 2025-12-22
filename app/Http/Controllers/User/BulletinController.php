@@ -4,6 +4,7 @@ namespace App\Http\Controllers\User;
 
 use App\Http\Controllers\Controller;
 use App\Models\Bulletin;
+use App\Models\Country;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
@@ -20,10 +21,17 @@ class BulletinController extends Controller
     public function index()
     {
         if (Auth::user()->can('Manage Bulletin')) {
+            $user_type = auth()->user()->user_type;
+            $user_country = auth()->user()->country;
+
             if (Auth::user()->hasRole('SUPER ADMIN')) {
                 $bulletins = Bulletin::orderBy('id', 'desc')->paginate(15);
             } else {
-                $bulletins = Bulletin::where('user_id', Auth::user()->id)->orderBy('id', 'desc')->paginate(15);
+                if ($user_type == 'Global') {
+                    $bulletins = Bulletin::where('user_id', Auth::user()->id)->orderBy('id', 'desc')->paginate(15);
+                } else {
+                    $bulletins = Bulletin::where('user_id', Auth::user()->id)->where('country_id', $user_country)->orderBy('id', 'desc')->paginate(15);
+                }
             }
 
             return view('user.bulletin.list')->with(compact('bulletins'));
@@ -40,7 +48,8 @@ class BulletinController extends Controller
     public function create()
     {
         if (Auth::user()->can('Create Bulletin')) {
-            return view('user.bulletin.create');
+            $countries = Country::orderBy('name', 'asc')->get();
+            return view('user.bulletin.create')->with(compact('countries'));
         } else {
             abort(403, 'You do not have permission to access this page.');
         }
@@ -55,19 +64,28 @@ class BulletinController extends Controller
     public function store(Request $request)
     {
         if (Auth::user()->can('Create Bulletin')) {
+            $country_id = auth()->user()->user_type === 'Global'
+                ? $request->country_id
+                : auth()->user()->country;
+
+            $request->merge(['country_id' => $country_id]);
+
+
             $request->validate([
                 'title' => 'required',
                 'description' => 'required',
+                'country_id' => 'required',
             ], [
                 'title.required' => 'The title field is required.',
                 'description.required' => 'The message field is required.',
-
+                'country_id.required' => 'The country field is required.',
             ]);
 
             $bulletin = new Bulletin();
             $bulletin->user_id = Auth::user()->id;
             $bulletin->title = $request->title;
             $bulletin->description = $request->description;
+            $bulletin->country_id = $request->country_id;
             $bulletin->save();
 
 
@@ -101,13 +119,21 @@ class BulletinController extends Controller
     public function edit($id)
     {
         if (Auth::user()->can('Edit Bulletin')) {
+            $user_type = auth()->user()->user_type;
+            $user_country = auth()->user()->country;
+
             if (auth()->user()->hasRole('SUPER ADMIN')) {
                 $bulletin = Bulletin::find($id);
             } else {
-                $bulletin = Bulletin::where('user_id', Auth::user()->id)->find($id);
+                if ($user_type == 'Global') {
+                    $bulletin = Bulletin::where('user_id', Auth::user()->id)->find($id);
+                } else {
+                    $bulletin = Bulletin::where('user_id', Auth::user()->id)->where('country_id', $user_country)->find($id);
+                }
             }
+            $countries = Country::orderBy('name', 'asc')->get();
             if ($bulletin) {
-                return view('user.bulletin.edit')->with('bulletin', $bulletin);
+                return view('user.bulletin.edit')->with('bulletin', $bulletin)->with('countries', $countries);
             }
             return redirect()->back()->with('error', 'Bulletin not found');
         } else {
@@ -125,22 +151,35 @@ class BulletinController extends Controller
     public function update(Request $request, $id)
     {
         if (Auth::user()->can('Edit Bulletin')) {
+            $country_id = auth()->user()->user_type === 'Global'
+                ? $request->country_id
+                : auth()->user()->country;
+
+            $request->merge(['country_id' => $country_id]);
+
             if (auth()->user()->hasRole('SUPER ADMIN')) {
                 $bulletin = Bulletin::find($id);
             } else {
-                $bulletin = Bulletin::where('user_id', Auth::user()->id)->find($id);
+                if (auth()->user()->user_type == 'Global') {
+                    $bulletin = Bulletin::where('user_id', Auth::user()->id)->find($id);
+                } else {
+                    $bulletin = Bulletin::where('user_id', Auth::user()->id)->where('country_id', auth()->user()->country)->find($id);
+                }
             }
             if ($bulletin) {
                 $request->validate([
                     'title' => 'required',
                     'description' => 'required',
+                    'country_id' => 'required',
                 ], [
                     'title.required' => 'The title field is required.',
                     'description.required' => 'The message field is required.',
+                    'country_id.required' => 'The country field is required.',
                 ]);
 
                 $bulletin->title = $request->title;
                 $bulletin->description = $request->description;
+                $bulletin->country_id = $request->country_id;
                 $bulletin->save();
 
                 session()->flash('message', 'Bulletin updated successfully');
@@ -215,7 +254,11 @@ class BulletinController extends Controller
                         });
                 }
 
-                $bulletins = $bulletins->orderBy($sort_by, $sort_type)->paginate(15);
+                if (auth()->user()->user_type == 'Global') {
+                    $bulletins = $bulletins->orderBy($sort_by, $sort_type)->paginate(15);
+                } else {
+                    $bulletins = $bulletins->where('country_id', auth()->user()->country)->orderBy($sort_by, $sort_type)->paginate(15);
+                }
             }
 
 

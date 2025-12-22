@@ -20,6 +20,9 @@
                 {{ date('d M, Y', strtotime($job->created_at)) }}
             </td>
             <td>
+                {{ $job->country->name ?? '-' }}
+            </td>
+            <td>
                 <div class="d-flex">
                     @if (auth()->user()->can('Edit Job Postings'))
                         <a href="{{ route('jobs.edit', $job->id) }}" class="delete_icon">
@@ -42,7 +45,7 @@
         </tr>
     @endforeach
     <tr class="toxic">
-        <td colspan="10">
+        <td colspan="11">
             <div class="d-flex justify-content-center">
                 {!! $jobs->links() !!}
             </div>
@@ -50,6 +53,6 @@
     </tr>
 @else
     <tr>
-        <td colspan="10" class="text-center">No data found</td>
+        <td colspan="11" class="text-center">No data found</td>
     </tr>
 @endif
