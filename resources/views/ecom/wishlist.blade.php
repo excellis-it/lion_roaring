@@ -57,55 +57,54 @@
 
                         @foreach ($wishlistItems as $item)
                             <div class="cart_product wishlist-item">
-                                    <div class="img-with-name">
-                                        <div class="cart_images">
-                                            <img src="{{ Storage::url($item->product->main_image) }}" alt="" />
-                                        </div>
-                                        <div>
+                                <div class="img-with-name">
+                                    <div class="cart_images">
+                                        <img src="{{ Storage::url($item->product->main_image) }}" alt="" />
+                                    </div>
+                                    <div>
                                         <h4>{{ $item->product->name }}</h4>
                                         <ul class="star_ul">
-                                                        @if (Helper::getTotalProductRating($item->product->id))
-                                                            @for ($i = 1; $i <= 5; $i++)
-                                                                <li><i
-                                                                        class="fa-{{ $i <= Helper::getTotalProductRating($item->product->id) ? 'solid' : 'regular' }} fa-star"></i>
-                                                                </li>
-                                                            @endfor
-                                                        @else
-                                                            <li><i class="fa-regular fa-star"></i></li>
-                                                            <li><i class="fa-regular fa-star"></i></li>
-                                                            <li><i class="fa-regular fa-star"></i></li>
-                                                            <li><i class="fa-regular fa-star"></i></li>
-                                                            <li><i class="fa-regular fa-star"></i></li>
-                                                        @endif
+                                            @if (Helper::getTotalProductRating($item->product->id))
+                                                @for ($i = 1; $i <= 5; $i++)
+                                                    <li><i
+                                                            class="fa-{{ $i <= Helper::getTotalProductRating($item->product->id) ? 'solid' : 'regular' }} fa-star"></i>
+                                                    </li>
+                                                @endfor
+                                            @else
+                                                <li><i class="fa-regular fa-star"></i></li>
+                                                <li><i class="fa-regular fa-star"></i></li>
+                                                <li><i class="fa-regular fa-star"></i></li>
+                                                <li><i class="fa-regular fa-star"></i></li>
+                                                <li><i class="fa-regular fa-star"></i></li>
+                                            @endif
 
-                                                        <li>({{ Helper::getRatingCount($item->product->id) ? Helper::getRatingCount($item->product->id) : 0 }})
-                                                        </li>
-                                                    </ul>
-                                                    <p class="expeted stock">In Stock</p>
-                                                    </div>
+                                            <li>({{ Helper::getRatingCount($item->product->id) ? Helper::getRatingCount($item->product->id) : 0 }})
+                                            </li>
+                                        </ul>
+                                        {{-- <p class="expeted stock">In Stock</p> --}}
+                                    </div>
                                     <div class="right_p_text">
-                                                    <h4><span>Price : </span>$ {{ $item->product->price }}</h4>
-                                                </div>
-                                                
+                                        <h4><span>Price : </span>$ {{ $item->product->price }}</h4>
                                     </div>
 
+                                </div>
 
-                                        <div class="cart_text">
-                                            <div class="wish_head">
-                                                <!-- <div class=""> -->
-                                                    <a href="{{ route('e-store.product-details', $item->product->slug) }}"
-                                                        class="red_btn red_btn_wish"><span>View
-                                                            Details</span></a>
-                                                <!-- </div> -->
-                                                <!-- <div class=""> -->
-                                                    <a href="" class="add_wishlist remove-from-wishlist"
-                                                        data-id="{{ $item->product->id }}"><i
-                                                            class="fa-solid fa-trash"></i></a>
-                                                <!-- </div> -->
-                                            </div>
 
-                                        </div>
+                                <div class="cart_text">
+                                    <div class="wish_head">
+                                        <!-- <div class=""> -->
+                                        <a href="{{ route('e-store.product-details', $item->product->slug) }}"
+                                            class="red_btn red_btn_wish"><span>View
+                                                Details</span></a>
+                                        <!-- </div> -->
+                                        <!-- <div class=""> -->
+                                        <a href="" class="add_wishlist remove-from-wishlist"
+                                            data-id="{{ $item->product->id }}"><i class="fa-solid fa-trash"></i></a>
+                                        <!-- </div> -->
                                     </div>
+
+                                </div>
+                            </div>
                         @endforeach
 
                     </div>
