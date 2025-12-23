@@ -16,7 +16,7 @@ class AddCountryIdToEventsTable extends Migration
     {
         Schema::table('events', function (Blueprint $table) {
             $table->unsignedBigInteger('country_id')->nullable()->after('user_id');
-            $table->foreign('country_id')->references('id')->on('countries')->onDelete('cascade');
+            $table->foreign('country_id')->references('id')->on('countries')->onDelete('set null');
         });
 
          $usa = DB::table('countries')->where('name', 'United States')->first();

@@ -16,7 +16,14 @@ class NewsletterController extends Controller
     public function index()
     {
         if (auth()->user()->can('Manage Newsletters')) {
-            $newsletters = Newsletter::orderBy('id', 'desc')->paginate(10);
+            $user_type = auth()->user()->user_type;
+            $country_name = auth()->user()->country;
+
+            if ($user_type == 'Global') {
+                $newsletters = Newsletter::orderBy('id', 'desc')->paginate(10);
+            } else {
+                $newsletters = Newsletter::where('country_id', $country_name)->orderBy('id', 'desc')->paginate(10);
+            }
             return view('user.admin.newsletter.list')->with('newsletters', $newsletters);
         } else {
             abort(403, 'You do not have permission to access this page.');
@@ -31,12 +38,32 @@ class NewsletterController extends Controller
             $sort_type = $request->get('sorttype');
             $query = $request->get('query');
             $query = str_replace(" ", "%", $query);
-            $newsletters = Newsletter::where('id', 'like', '%' . $query . '%')
-                ->orWhere('full_name', 'like', '%' . $query . '%')
-                ->orWhere('email', 'like', '%' . $query . '%')
-                ->orWhere('message', 'like', '%' . $query . '%')
-                ->orderBy($sort_by, $sort_type)
-                ->paginate(10);
+            $user_type = auth()->user()->user_type;
+            $country_name = auth()->user()->country;
+
+            if ($user_type == 'Global') {
+
+                $newsletters = Newsletter::where(function ($q) use ($query) {
+                    $q->where('id', 'like', "%{$query}%")
+                        ->orWhere('full_name', 'like', "%{$query}%")
+                        ->orWhere('email', 'like', "%{$query}%")
+                        ->orWhere('message', 'like', "%{$query}%");
+                })
+                    ->orderBy($sort_by, $sort_type)
+                    ->paginate(10);
+            } else {
+
+                $newsletters = Newsletter::where('country_id', $country_name)
+                    ->where(function ($q) use ($query) {
+                        $q->where('id', 'like', "%{$query}%")
+                            ->orWhere('full_name', 'like', "%{$query}%")
+                            ->orWhere('email', 'like', "%{$query}%")
+                            ->orWhere('message', 'like', "%{$query}%");
+                    })
+                    ->orderBy($sort_by, $sort_type)
+                    ->paginate(10);
+            }
+
 
             return response()->json(['data' => view('user.admin.newsletter.table', compact('newsletters'))->render()]);
         }

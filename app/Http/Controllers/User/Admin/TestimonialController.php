@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\User\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Models\Country;
 use App\Models\Testimonial;
 use App\Traits\CreateSlug;
 use App\Traits\ImageTrait;
@@ -22,7 +23,17 @@ class TestimonialController extends Controller
     {
         if (auth()->user()->can('Manage Testimonials')) {
             // $testimonials = Testimonial::orderByDesc('id')->paginate(15);
-            $testimonials = Testimonial::where('country_code', $request->get('content_country_code', 'US'))->orderBy('id', 'desc')->paginate(10);
+            $user_type = auth()->user()->user_type;
+            $user_country = auth()->user()->country;
+
+            $country = Country::where('id', $user_country)->first();
+
+            if ($user_type == 'Global') {
+                $testimonials = Testimonial::where('country_code', $request->get('content_country_code', 'US'))->orderBy('id', 'desc')->paginate(10);
+            } else {
+                $testimonials = Testimonial::where('country_code', $country->code)->orderBy('id', 'desc')->paginate(10);
+            }
+
             return view('user.admin.testimonials.list', compact('testimonials'));
         } else {
             abort(403, 'You do not have permission to access this page.');
@@ -37,15 +48,33 @@ class TestimonialController extends Controller
             $sort_type = $request->get('sorttype');
             $query = $request->get('query');
             $query = str_replace(" ", "%", $query);
-            $testimonials = Testimonial::where('country_code', $request->get('content_country_code', 'US'))
-                ->where(function ($q) use ($query) {
-                    $q->where('id', 'like', '%' . $query . '%')
-                        ->orWhere('name', 'like', '%' . $query . '%')
-                        ->orWhere('description', 'like', '%' . $query . '%')
-                        ->orWhere('address', 'like', '%' . $query . '%');
-                })
-                ->orderBy($sort_by, $sort_type)
-                ->paginate(15);
+
+            $user_type = auth()->user()->user_type;
+            $user_country = auth()->user()->country;
+
+            $country = Country::where('id', $user_country)->first();
+
+            if ($user_type == 'Global') {
+                $testimonials = Testimonial::where('country_code', $request->get('content_country_code', 'US'))
+                    ->where(function ($q) use ($query) {
+                        $q->where('id', 'like', '%' . $query . '%')
+                            ->orWhere('name', 'like', '%' . $query . '%')
+                            ->orWhere('description', 'like', '%' . $query . '%')
+                            ->orWhere('address', 'like', '%' . $query . '%');
+                    })
+                    ->orderBy($sort_by, $sort_type)
+                    ->paginate(15);
+            } else {
+                $testimonials = Testimonial::where('country_code', $country->code)
+                    ->where(function ($q) use ($query) {
+                        $q->where('id', 'like', '%' . $query . '%')
+                            ->orWhere('name', 'like', '%' . $query . '%')
+                            ->orWhere('description', 'like', '%' . $query . '%')
+                            ->orWhere('address', 'like', '%' . $query . '%');
+                    })
+                    ->orderBy($sort_by, $sort_type)
+                    ->paginate(15);
+            }
 
             return response()->json(['data' => view('user.admin.testimonials.table', compact('testimonials'))->render()]);
         }
@@ -82,12 +111,17 @@ class TestimonialController extends Controller
             'address' => 'required',
         ]);
 
+        $user_type = auth()->user()->user_type;
+        $user_country = auth()->user()->country;
+
+        $country = Country::where('id', $user_country)->first();
+
         $testimonials = new Testimonial();
         $testimonials->name = $request->name;
         $testimonials->address = $request->address;
         $testimonials->description = $request->description;
         $testimonials->image = $this->imageUpload($request->file('image'), 'testimonials');
-        $testimonials->country_code = $request->content_country_code ?? 'US';
+        $testimonials->country_code = $user_type == 'Global' ? $request->content_country_code : $country->code ?? 'US';
         $testimonials->save();
 
         return redirect()->route('user.admin.testimonials.index')->with('message', 'Testimonial created successfully.');
@@ -145,7 +179,7 @@ class TestimonialController extends Controller
             ]);
             $testimonials->image = $this->imageUpload($request->file('image'), 'testimonials');
         }
-        $testimonials->country_code = $request->content_country_code ?? 'US';
+        $testimonials->country_code = $request->content_country_code ?? $testimonials->country_code;
         $testimonials->save();
 
         return redirect()->route('user.admin.testimonials.index')->with('message', 'Testimonial updated successfully.');

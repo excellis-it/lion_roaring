@@ -5,7 +5,7 @@ use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
 
-class AddCountryIdColoumnToStrategiesTable extends Migration
+class AddCountryIdColoumnToNewslettersTable extends Migration
 {
     /**
      * Run the migrations.
@@ -14,15 +14,15 @@ class AddCountryIdColoumnToStrategiesTable extends Migration
      */
     public function up()
     {
-        Schema::table('strategies', function (Blueprint $table) {
-            $table->unsignedBigInteger('country_id')->nullable()->after('user_id');
+        Schema::table('newsletters', function (Blueprint $table) {
+            $table->unsignedBigInteger('country_id')->nullable()->after('id');
             $table->foreign('country_id')->references('id')->on('countries')->onDelete('set null');
         });
 
         $usa = DB::table('countries')->where('name', 'United States')->first();
 
         if ($usa) {
-            DB::table('strategies')->update([
+            DB::table('newsletters')->update([
                 'country_id' => $usa->id
             ]);
         }
@@ -35,7 +35,7 @@ class AddCountryIdColoumnToStrategiesTable extends Migration
      */
     public function down()
     {
-        Schema::table('strategies', function (Blueprint $table) {
+        Schema::table('newsletters', function (Blueprint $table) {
             $table->dropForeign(['country_id']);
             $table->dropColumn('country_id');
         });

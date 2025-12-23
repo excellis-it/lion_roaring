@@ -25,6 +25,7 @@
                     </div>
 
                     <div class="row">
+                         @if (auth()->user()->user_type == 'Global')
                         <div class="col-md-6 mb-3">
                             <div class="form-group-div">
                                 <div class="form-group">
@@ -45,6 +46,7 @@
                                 </div>
                             </div>
                         </div>
+                        @endif
                         <div class="col-md-6 mb-3">
                             <div class="form-group-div">
                                 <div class="form-group">

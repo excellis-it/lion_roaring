@@ -30,7 +30,7 @@ use App\Models\SiteSetting;
 use App\Models\TermsAndCondition;
 use Illuminate\Support\Facades\Http;
 use App\Helpers\Helper;
-
+use App\Models\Country;
 
 class CmsController extends Controller
 {
@@ -160,11 +160,15 @@ class CmsController extends Controller
             'newsletter_message' => 'required',
         ]);
 
+         $currentCode = strtoupper(Helper::getVisitorCountryCode());
+         $country = Country::where('code', $currentCode)->first();
+
         if ($request->ajax()) {
             $newsletter = new Newsletter();
             $newsletter->full_name = $request->newsletter_name;
             $newsletter->email = $request->newsletter_email;
             $newsletter->message = $request->newsletter_message;
+            $newsletter->country_id = $country->id ?? null;
             $newsletter->save();
 
             $adminEmail = SiteSetting::first()->SITE_CONTACT_EMAIL;
