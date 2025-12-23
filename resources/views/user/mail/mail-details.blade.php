@@ -200,7 +200,9 @@
 
 
 
-                    @include('user.mail.partials.reply-mails')
+                   <div id="mail-details-reply-mails-list">
+                        @include('user.mail.partials.reply-mails')
+                    </div>
 
 
 
