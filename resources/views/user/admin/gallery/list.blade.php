@@ -101,7 +101,7 @@
                                 </tr>
                             @endforeach
                             <tr style="box-shadow: none;">
-                                <td colspan="3">
+                                <td colspan="4">
                                     <div class="d-flex justify-content-center">
                                         {!! $gallery->links() !!}
                                     </div>
@@ -109,7 +109,7 @@
                             </tr>
                         @else
                             <tr>
-                                <td colspan="3" class="text-center">No Gallery Found</td>
+                                <td colspan="4" class="text-center">No Gallery Found</td>
                             </tr>
                         @endif
                     </tbody>

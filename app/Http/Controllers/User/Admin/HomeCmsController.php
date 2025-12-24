@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\User\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Models\Country;
 use App\Models\HomeCms;
 use App\Traits\ImageTrait;
 use Illuminate\Http\Request;
@@ -17,12 +18,31 @@ class HomeCmsController extends Controller
      */
     use ImageTrait;
 
+    public $user_type;
+    public $user_country;
+    public $country;
+
+    // use consructor
+    public function __construct()
+    {
+        $this->middleware(function ($request, $next) {
+            $this->user_type = auth()->user()->user_type;
+            $this->user_country = auth()->user()->country;
+            $this->country = Country::where('id', $this->user_country)->first();
+
+            return $next($request);
+        });
+    }
+
     public function index(Request $request)
     {
         if (auth()->user()->can('Manage Home Page')) {
             // $home = HomeCms::orderBy('id', 'desc')->first();
-            $home = HomeCms::where('country_code', $request->get('content_country_code', 'US'))->orderBy('id', 'desc')->first();
-
+            if ($this->user_type == 'Global') {
+                $home = HomeCms::where('country_code', $request->get('content_country_code', 'US'))->orderBy('id', 'desc')->first();
+            } else {
+                $home = HomeCms::where('country_code', $this->country->code)->orderBy('id', 'desc')->first();
+            }
             return view('user.admin.home.update')->with('home', $home);
         } else {
             return redirect()->route('user.profile')->with('error', 'You do not have the permission to access this page.');
@@ -131,7 +151,12 @@ class HomeCmsController extends Controller
             $home->section_2_right_image = $this->imageUpload($request->file('section_2_right_image'), 'home');
         }
 
-        $country = $request->content_country_code ?? 'US';
+
+        if ($this->user_type == 'Global') {
+            $country = $request->content_country_code ?? 'US';
+        } else {
+            $country = $this->country->code;
+        }
         $home = HomeCms::updateOrCreate(['country_code' => $country], array_merge($home->getAttributes(), ['country_code' => $country]));
 
 

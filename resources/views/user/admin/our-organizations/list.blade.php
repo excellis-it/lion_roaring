@@ -28,7 +28,8 @@
                 </div>
                 <div>
                     @if (auth()->user()->can('Create Our Organization'))
-                        <a href="{{ route('user.admin.our-organizations.create') }}" class="print_btn">+ Create Our Organization</a>
+                        <a href="{{ route('user.admin.our-organizations.create') }}" class="print_btn">+ Create Our
+                            Organization</a>
                     @endif
                 </div>
             </div>
@@ -38,17 +39,18 @@
                     <div class="row g-1 justify-content-end">
 
                         <div class="col-md-4">
-                            <label for="country_code">Content Country</label>
-                            <select onchange="window.location.href='?content_country_code='+$(this).val()"
-                                name="content_country_code" id="content_country_code" class="form-control">
-                                @foreach (\App\Models\Country::all() as $country)
-                                    <option value="{{ $country->code }}"
-                                        {{ request()->get('content_country_code', 'US') == $country->code ? 'selected' : '' }}>
-                                        {{ $country->name }}
-                                    </option>
-                                @endforeach
-                            </select>
-                            
+                            @if (auth()->user()->user_type == 'Global')
+                                <label for="country_code">Content Country</label>
+                                <select onchange="window.location.href='?content_country_code='+$(this).val()"
+                                    name="content_country_code" id="content_country_code" class="form-control">
+                                    @foreach (\App\Models\Country::all() as $country)
+                                        <option value="{{ $country->code }}"
+                                            {{ request()->get('content_country_code', 'US') == $country->code ? 'selected' : '' }}>
+                                            {{ $country->name }}
+                                        </option>
+                                    @endforeach
+                                </select>
+                            @endif
                         </div>
 
                         <div class="col-md-8 pr-0">

@@ -22,7 +22,7 @@
                         <div class="form-head">
                             <h4>Details</h4>
                         </div>
-
+                           @if (auth()->user()->user_type == 'Global')
                         <div class="row mb-4">
                             <div class="col-md-4">
                                 <label for="country_code">Content Country</label>
@@ -37,7 +37,7 @@
                                 </select>
                             </div>
                         </div>
-
+                        @endif
                         <div class="row">
                             {{-- Image --}}
                             <div class="col-md-12 mb-3">

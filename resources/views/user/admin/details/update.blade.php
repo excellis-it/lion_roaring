@@ -7,16 +7,17 @@
 
 
 @section('content')
-     <div class="container-fluid">
-         <div class="bg_white_border">
-                <div class="d-flex justify-content-between align-items-center mb-3">
+    <div class="container-fluid">
+        <div class="bg_white_border">
+            <div class="d-flex justify-content-between align-items-center mb-3">
                 <div>
                     <h3 class="mb-0">Details Update</h3>
                     <p class="text-muted small mb-0">Update details page</p>
                 </div>
             </div>
-                <form action="{{ route('user.admin.details.store') }}" method="post" enctype="multipart/form-data">
-                    @csrf
+            <form action="{{ route('user.admin.details.store') }}" method="post" enctype="multipart/form-data">
+                @csrf
+                @if (auth()->user()->user_type == 'Global')
                     <div class="row mb-4">
                         <div class="col-md-4">
                             <label for="country_code">Content Country</label>
@@ -31,56 +32,21 @@
                             </select>
                         </div>
                     </div>
-                    <div class="sales-report-card-wrap mt-5">
-                        <div class="row count-class" id="add-more">
-                            @if (isset($details) && count($details) > 0)
-                                @foreach ($details as $key => $item)
-                                    <div class="col-xl-5 col-md-5 mt-4">
-                                        <div class="form-group-div">
-                                            <div class="form-group">
-                                                <label for="floatingInputValue">Image</label>
-                                                <input type="file" class="form-control" id="floatingInputValue"
-                                                    accept="image/*" name="image[]" value="{{ $item->image }}"
-                                                    placeholder="Image">
-                                                <input type="hidden" name="image_id[]" value="{{ $item->id }}">
-                                                <img src="{{ Storage::url($item->image) }}" alt="Image"
-                                                    style="width: 100px; height: auto; margin-top:10px;">
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-5 mt-4">
-                                        <div class="form-group-div">
-                                            <div class="form-group">
-                                                <label for="floatingInputValue">Description*</label>
-                                                <textarea name="description[]" id="content_{{ $key }}" cols="30" rows="10" required
-                                                    placeholder="Description" class="form-control description">{{ $item->description }}</textarea>
-                                                <span class="text-danger"
-                                                    id="job_opportunity_description_{{ $key }}"></span>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    @if ($key == 0)
-                                        <div class="col-xl-2 mt-4">
-                                            <div class="btn-1">
-                                                <button type="button" class="add-more"><i class="fas fa-plus"></i></button>
-                                            </div>
-                                        </div>
-                                    @else
-                                        <div class="col-xl-2 mt-4">
-                                            <div class="btn-1">
-                                                <button type="button" class="remove"><i class="fas fa-minus"></i></button>
-                                            </div>
-                                        </div>
-                                    @endif
-                                @endforeach
-                            @else
+                @endif
+                <div class="sales-report-card-wrap mt-5">
+                    <div class="row count-class" id="add-more">
+                        @if (isset($details) && count($details) > 0)
+                            @foreach ($details as $key => $item)
                                 <div class="col-xl-5 col-md-5 mt-4">
                                     <div class="form-group-div">
                                         <div class="form-group">
-                                            <label for="floatingInputValue">Image*</label>
-                                            <input type="file" class="form-control" id="floatingInputValue" required
-                                                accept="image/*" name="image[]" value="" placeholder="Title">
-                                            <input type="hidden" name="image_id[]" value="">
+                                            <label for="floatingInputValue">Image</label>
+                                            <input type="file" class="form-control" id="floatingInputValue"
+                                                accept="image/*" name="image[]" value="{{ $item->image }}"
+                                                placeholder="Image">
+                                            <input type="hidden" name="image_id[]" value="{{ $item->id }}">
+                                            <img src="{{ Storage::url($item->image) }}" alt="Image"
+                                                style="width: 100px; height: auto; margin-top:10px;">
                                         </div>
                                     </div>
                                 </div>
@@ -88,27 +54,63 @@
                                     <div class="form-group-div">
                                         <div class="form-group">
                                             <label for="floatingInputValue">Description*</label>
-                                            <textarea name="description[]" id="card_description_0" cols="30" rows="10" placeholder="Description" required
-                                                class="form-control description"></textarea>
-                                            <span class="text-danger" id="job_opportunity_description_0"></span>
+                                            <textarea name="description[]" id="content_{{ $key }}" cols="30" rows="10" required
+                                                placeholder="Description" class="form-control description">{{ $item->description }}</textarea>
+                                            <span class="text-danger"
+                                                id="job_opportunity_description_{{ $key }}"></span>
                                         </div>
                                     </div>
                                 </div>
-                                <div class="col-xl-2 mt-4">
-                                    <div class="btn-1">
-                                        <button type="button" class="add-more"><i class="fas fa-plus"></i></button>
+                                @if ($key == 0)
+                                    <div class="col-xl-2 mt-4">
+                                        <div class="btn-1">
+                                            <button type="button" class="add-more"><i class="fas fa-plus"></i></button>
+                                        </div>
+                                    </div>
+                                @else
+                                    <div class="col-xl-2 mt-4">
+                                        <div class="btn-1">
+                                            <button type="button" class="remove"><i class="fas fa-minus"></i></button>
+                                        </div>
+                                    </div>
+                                @endif
+                            @endforeach
+                        @else
+                            <div class="col-xl-5 col-md-5 mt-4">
+                                <div class="form-group-div">
+                                    <div class="form-group">
+                                        <label for="floatingInputValue">Image*</label>
+                                        <input type="file" class="form-control" id="floatingInputValue" required
+                                            accept="image/*" name="image[]" value="" placeholder="Title">
+                                        <input type="hidden" name="image_id[]" value="">
                                     </div>
                                 </div>
-                            @endif
-                        </div>
-                        <div class="col-xl-12">
-                            <div class="btn-1">
-                                  <button type="submit" class="print_btn me-2 mt-2">Update</button>
                             </div>
+                            <div class="col-md-5 mt-4">
+                                <div class="form-group-div">
+                                    <div class="form-group">
+                                        <label for="floatingInputValue">Description*</label>
+                                        <textarea name="description[]" id="card_description_0" cols="30" rows="10" placeholder="Description" required
+                                            class="form-control description"></textarea>
+                                        <span class="text-danger" id="job_opportunity_description_0"></span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-xl-2 mt-4">
+                                <div class="btn-1">
+                                    <button type="button" class="add-more"><i class="fas fa-plus"></i></button>
+                                </div>
+                            </div>
+                        @endif
+                    </div>
+                    <div class="col-xl-12">
+                        <div class="btn-1">
+                            <button type="submit" class="print_btn me-2 mt-2">Update</button>
                         </div>
                     </div>
-                </form>
-            </div>
+                </div>
+            </form>
+        </div>
 
 
     </div>

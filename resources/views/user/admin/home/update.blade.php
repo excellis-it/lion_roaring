@@ -18,20 +18,23 @@
             <form action="{{ route('user.admin.home-cms.store') }}" method="post" enctype="multipart/form-data">
                 @csrf
                 <input type="hidden" name="id" value="{{ $home->id ?? '' }}">
-                <div class="row mb-4">
-                    <div class="col-md-4 mb-3">
-                        <label for="country_code">Content Country</label>
-                        <select onchange="window.location.href='?content_country_code='+$(this).val()"
-                            name="content_country_code" id="content_country_code" class="form-control">
-                            @foreach (\App\Models\Country::all() as $country)
-                                <option value="{{ $country->code }}"
-                                    {{ request()->get('content_country_code', 'US') == $country->code ? 'selected' : '' }}>
-                                    {{ $country->name }}
-                                </option>
-                            @endforeach
-                        </select>
+                
+                @if (auth()->user()->user_type == 'Global')
+                    <div class="row mb-4">
+                        <div class="col-md-4 mb-3">
+                            <label for="country_code">Content Country</label>
+                            <select onchange="window.location.href='?content_country_code='+$(this).val()"
+                                name="content_country_code" id="content_country_code" class="form-control">
+                                @foreach (\App\Models\Country::all() as $country)
+                                    <option value="{{ $country->code }}"
+                                        {{ request()->get('content_country_code', 'US') == $country->code ? 'selected' : '' }}>
+                                        {{ $country->name }}
+                                    </option>
+                                @endforeach
+                            </select>
+                        </div>
                     </div>
-                </div>
+                @endif
                 <div class="sales-report-card-wrap">
                     <div class="form-head">
                         <h4>Menu Section</h4>

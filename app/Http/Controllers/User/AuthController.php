@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\User;
 
+use App\Helpers\Helper;
 use App\Http\Controllers\Controller;
 use App\Mail\AccountPendingApprovalMail;
 use App\Mail\RegistrationMail;
@@ -48,8 +49,17 @@ class AuthController extends Controller
 
         $user = User::where($fieldType, $request->user_name)->first();
 
+        $currentCode = strtoupper(Helper::getVisitorCountryCode());
+        $country = Country::where('code', $currentCode)->first();
+
         if ($user && \Hash::check($request->password, $user->password)) {
             if ($user->status == 1 && $user->is_accept == 1) {
+
+                // dd($country->id, $user->country);   
+                if ($country->id != $user->country) {
+                    return response()->json(['message' => 'You are not from ' . $country->name . '! Please change the country from dropdown.', 'status' => false]);
+                }
+
                 $otp = rand(1000, 9999);
                 // $otp = 1234;
                 $otp_verify = new VerifyOTP();

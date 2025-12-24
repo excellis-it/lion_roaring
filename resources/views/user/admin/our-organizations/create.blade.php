@@ -22,7 +22,7 @@
                     <div class="form-head">
                         <h4>Details</h4>
                     </div>
-
+                       @if (auth()->user()->user_type == 'Global')
                     <div class="row">
                         <div class="col-md-6 mb-3">
                             <div class="form-group-div">
@@ -45,7 +45,7 @@
                             </div>
                         </div>
                     </div>
-
+                    @endif
                     <div class="row">
                         <div class="col-xl-6 col-md-6 mb-3">
                             <div class="form-group-div">

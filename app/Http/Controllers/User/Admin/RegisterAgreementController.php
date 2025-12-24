@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\User\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Models\Country;
 use App\Models\RegisterAgreement;
 use Illuminate\Http\Request;
 
@@ -13,10 +14,30 @@ class RegisterAgreementController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
+    public $user_type;
+    public $user_country;
+    public $country;
+
+    // use consructor
+    public function __construct()
+    {
+        $this->middleware(function ($request, $next) {
+            $this->user_type = auth()->user()->user_type;
+            $this->user_country = auth()->user()->country;
+            $this->country = Country::where('id', $this->user_country)->first();
+
+            return $next($request);
+        });
+    }
+
     public function index(Request $request)
     {
         if (auth()->user()->can('Manage Register Page Agreement Page')) {
-            $agreement = RegisterAgreement::where('country_code', $request->get('content_country_code', 'US'))->orderBy('id', 'desc')->first();
+            if ($this->user_type == 'Global') {
+                $agreement = RegisterAgreement::where('country_code', $request->get('content_country_code', 'US'))->orderBy('id', 'desc')->first();
+            } else {
+                $agreement = RegisterAgreement::where('country_code', $this->country->code)->orderBy('id', 'desc')->first();
+            }
             return view('user.admin.register_agreement.update', compact('agreement'));
         } else {
             return redirect()->route('user.profile')->with('error', 'Unauthorized Access');
@@ -57,7 +78,11 @@ class RegisterAgreementController extends Controller
         $agreement->agreement_description = $request->agreement_description;
         $agreement->checkbox_text = $request->checkbox_text;
         // $agreement->save();
-        $country = $request->content_country_code ?? 'US';
+        if ($this->user_type == 'Global') {
+            $country = $request->content_country_code ?? 'US';
+        } else {
+            $country = $this->country->code;
+        }
         $agreement = RegisterAgreement::updateOrCreate(['country_code' => $country], array_merge($agreement->getAttributes(), ['country_code' => $country]));
 
         return redirect()->back()->with('message', 'Register agreement updated successfully');

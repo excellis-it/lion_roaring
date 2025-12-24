@@ -9,6 +9,7 @@ use App\Traits\ImageTrait;
 use Illuminate\Http\Request;
 
 use App\Helpers\Helper;
+use App\Models\Country;
 
 class OurGovernanceController extends Controller
 {
@@ -24,7 +25,14 @@ class OurGovernanceController extends Controller
         //  return $request->get('content_country_code', 'US');
         if (auth()->user()->can('Manage Our Governance')) {
             // $our_governances = OurGovernance::orderBy('id', 'desc')->paginate(10);
-            $our_governances = OurGovernance::where('country_code', $request->get('content_country_code', 'US'))->orderBy('id', 'desc')->paginate(10);
+            $user_type = auth()->user()->user_type;
+            $user_country = auth()->user()->country;
+            $country = Country::where('id', $user_country)->first();
+            if ($user_type == 'Global') {
+                $our_governances = OurGovernance::where('country_code', $request->get('content_country_code', 'US'))->orderBy('id', 'desc')->paginate(10);
+            } else {
+                $our_governances = OurGovernance::where('country_code', $country->code)->orderBy('id', 'desc')->paginate(10);
+            }
             //   return $our_governances;
             return view('user.admin.our-governances.list')->with(compact('our_governances'));
         } else {
@@ -40,15 +48,28 @@ class OurGovernanceController extends Controller
             $sort_type = $request->get('sorttype');
             $query = $request->get('query');
             $query = str_replace(" ", "%", $query);
-            $our_governances = OurGovernance::where('country_code', $request->get('content_country_code', 'US'))
-                ->where(function ($q) use ($query) {
-                    $q->where('id', 'like', '%' . $query . '%')
-                        ->orWhere('name', 'like', '%' . $query . '%')
-                        ->orWhere('slug', 'like', '%' . $query . '%');
+            $user_type = auth()->user()->user_type;
+            $user_country = auth()->user()->country;
+            $country = Country::where('id', $user_country)->first();
+            if ($user_type == 'Global') {
+                $our_governances = OurGovernance::where('country_code', $request->get('content_country_code', 'US'))
+                    ->where(function ($q) use ($query) {
+                        $q->where('id', 'like', '%' . $query . '%')
+                            ->orWhere('name', 'like', '%' . $query . '%')
+                            ->orWhere('slug', 'like', '%' . $query . '%');
                 })
                 ->orderBy($sort_by, $sort_type)
                 ->paginate(10);
-
+            } else {
+                $our_governances = OurGovernance::where('country_code', $country->code)
+                    ->where(function ($q) use ($query) {
+                        $q->where('id', 'like', '%' . $query . '%')
+                            ->orWhere('name', 'like', '%' . $query . '%')
+                            ->orWhere('slug', 'like', '%' . $query . '%');
+                })
+                ->orderBy($sort_by, $sort_type)
+                ->paginate(10);
+            }
             return response()->json(['data' => view('user.admin.our-governances.table', compact('our_governances'))->render()]);
         }
     }
@@ -93,6 +114,11 @@ class OurGovernanceController extends Controller
             $slug = $slug . '-' . time();
         }
 
+          $user_type = auth()->user()->user_type;
+        $user_country = auth()->user()->country;
+
+        $country = Country::where('id', $user_country)->first();
+
         $our_governance = new OurGovernance();
         $our_governance->name = $request->name;
         $our_governance->slug = $slug;
@@ -103,7 +129,7 @@ class OurGovernanceController extends Controller
         $our_governance->banner_image = $this->imageUpload($request->file('banner_image'), 'our_governances');
         $our_governance->image = $this->imageUpload($request->file('image'), 'our_governances');
 
-        $our_governance->country_code = $request->content_country_code ?? 'US';
+        $our_governance->country_code = $user_type == 'Global' ? $request->content_country_code : $country->code ?? 'US';
 
         $our_governance->save();
 
@@ -185,7 +211,7 @@ class OurGovernanceController extends Controller
             $our_governance->image = $this->imageUpload($request->file('image'), 'our_governances');
         }
 
-        $our_governance->country_code = $request->content_country_code ?? 'US';
+        $our_governance->country_code = $request->content_country_code ?? $our_governance->country_code ?? 'US';
 
         $our_governance->save();
 

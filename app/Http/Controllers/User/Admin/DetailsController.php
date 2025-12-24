@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\User\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Models\Country;
 use App\Models\Detail;
 use App\Traits\ImageTrait;
 use Illuminate\Http\Request;
@@ -15,10 +16,33 @@ class DetailsController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
+
+
+    public $user_type;
+    public $user_country;
+    public $country;
+
+    // use consructor
+    public function __construct()
+    {
+        $this->middleware(function ($request, $next) {
+            $this->user_type = auth()->user()->user_type;
+            $this->user_country = auth()->user()->country;
+            $this->country = Country::where('id', $this->user_country)->first();
+
+            return $next($request);
+        });
+    }
+
+
     public function index(Request $request)
     {
         if (auth()->user()->can('Manage Details Page')) {
-            $details = Detail::where('country_code', $request->get('content_country_code', 'US'))->orderBy('id', 'asc')->get();
+            if ($this->user_type == 'Global') {
+                $details = Detail::where('country_code', $request->get('content_country_code', 'US'))->orderBy('id', 'asc')->get();
+            } else {
+                $details = Detail::where('country_code', $this->country->code)->orderBy('id', 'asc')->get();
+            }
             return view('user.admin.details.update')->with('details', $details);
         } else {
             abort(403, 'You do not have permission to access this page.');
@@ -44,7 +68,11 @@ class DetailsController extends Controller
     public function store(Request $request)
     {
 
-        $country = $request->content_country_code ?? 'US';
+      if ($this->user_type == 'Global') {
+            $country = $request->content_country_code ?? 'US';
+        } else {
+            $country = $this->country->code;
+        }
 
         // Determine submitted IDs (if any) and remove only records for this country that aren't submitted
         $submittedIds = $request->image_id ?? [];

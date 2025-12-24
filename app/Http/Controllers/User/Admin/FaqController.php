@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\User\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Models\Country;
 use App\Models\Faq;
 use Illuminate\Http\Request;
 
@@ -15,10 +16,31 @@ class FaqController extends Controller
      */
 
 
+    public $user_type;
+    public $user_country;
+    public $country;
+
+    // use consructor
+    public function __construct()
+    {
+        $this->middleware(function ($request, $next) {
+            $this->user_type = auth()->user()->user_type;
+            $this->user_country = auth()->user()->country;
+            $this->country = Country::where('id', $this->user_country)->first();
+
+            return $next($request);
+        });
+    }
+
+
     public function index(Request $request)
     {
         if (auth()->user()->can('Manage Faq')) {
-            $faqs = Faq::where('country_code', $request->get('content_country_code', 'US'))->orderBy('id', 'ASC')->paginate(15);
+            if ($this->user_type == 'Global') {
+                $faqs = Faq::where('country_code', $request->get('content_country_code', 'US'))->orderBy('id', 'ASC')->paginate(15);
+            } else {
+                $faqs = Faq::where('country_code', $this->country->code)->orderBy('id', 'ASC')->paginate(15);
+            }
             return view('user.admin.faq.list', compact('faqs'));
         } else {
             abort(403, 'You do not have permission to access this page.');
@@ -33,15 +55,25 @@ class FaqController extends Controller
             $sort_type = $request->get('sorttype');
             $query = $request->get('query');
             $query = str_replace(" ", "%", $query);
-            $faqs = Faq::where('country_code', $request->get('content_country_code', 'US'))
-                ->where(function ($q) use ($query) {
-                    $q->where('id', 'like', '%' . $query . '%')
-                        ->orWhere('question', 'like', '%' . $query . '%')
-                        ->orWhere('answer', 'like', '%' . $query . '%');
-                })
+            if ($this->user_type == 'Global') {
+                $faqs = Faq::where('country_code', $request->get('content_country_code', 'US'))
+                    ->where(function ($q) use ($query) {
+                        $q->where('id', 'like', '%' . $query . '%')
+                            ->orWhere('question', 'like', '%' . $query . '%')
+                            ->orWhere('answer', 'like', '%' . $query . '%');
+                    })
+                    ->orderBy($sort_by, $sort_type)
+                    ->paginate(15);
+            } else {
+                $faqs = Faq::where('country_code', $this->country->code)
+                    ->where(function ($q) use ($query) {
+                        $q->where('id', 'like', '%' . $query . '%')
+                            ->orWhere('question', 'like', '%' . $query . '%')
+                            ->orWhere('answer', 'like', '%' . $query . '%');
+                    })
                 ->orderBy($sort_by, $sort_type)
                 ->paginate(15);
-
+            }
             return response()->json(['data' => view('user.admin.faq.table', compact('faqs'))->render()]);
         }
     }
@@ -75,10 +107,16 @@ class FaqController extends Controller
             'answer' => "required",
         ]);
 
+        if ($this->user_type == 'Global') {
+            $country = $request->content_country_code ?? 'US';
+        } else {
+            $country = $this->country->code;
+        }
+
         $faq = new Faq();
         $faq->question = $request->question;
         $faq->answer = $request->answer;
-        $faq->country_code = $request->content_country_code ?? 'US';
+        $faq->country_code = $country;
         $faq->save();
 
         return redirect()->route('user.admin.faq.index')->with('message', 'Faq created successfully.');
@@ -125,10 +163,15 @@ class FaqController extends Controller
             'answer' => "required",
         ]);
 
+        if ($this->user_type == 'Global') {
+            $country = $request->content_country_code ?? 'US';
+        } else {
+            $country = $this->country->code;
+        }
         $faq = Faq::findOrFail($id);
         $faq->question = $request->question;
         $faq->answer = $request->answer;
-        $faq->country_code = $request->content_country_code ?? 'US';
+        $faq->country_code = $country;
         $faq->save();
 
         return redirect()->route('user.admin.faq.index')->with('message', 'Faq updated successfully.');

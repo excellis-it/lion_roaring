@@ -7,17 +7,18 @@
 
 
 @section('content')
-     <div class="container-fluid">
-         <div class="bg_white_border">
-                <div class="d-flex justify-content-between align-items-center mb-3">
+    <div class="container-fluid">
+        <div class="bg_white_border">
+            <div class="d-flex justify-content-between align-items-center mb-3">
                 <div>
                     <h3 class="mb-0">Update Terms Page</h3>
                     <p class="text-muted small mb-0">Update terms page</p>
                 </div>
             </div>
-                <form action="{{ route('user.admin.terms-and-condition.update') }}" method="post" enctype="multipart/form-data">
-                    @csrf
-                    <input type="hidden" name="id" value="{{ $terms_and_condition->id ?? '' }}">
+            <form action="{{ route('user.admin.terms-and-condition.update') }}" method="post" enctype="multipart/form-data">
+                @csrf
+                <input type="hidden" name="id" value="{{ $terms_and_condition->id ?? '' }}">
+                @if (auth()->user()->user_type == 'Global')
                     <div class="row mb-4">
                         <div class="col-md-4">
                             <label for="country_code">Content Country</label>
@@ -32,45 +33,46 @@
                             </select>
                         </div>
                     </div>
-                    <div class="sales-report-card-wrap mt-5">
-                        <div class="row">
-                            <div class="col-xl-12 col-md-12 mb-3">
-                                <div class="form-group-div">
-                                    <div class="form-group">
-                                        {{-- meta description --}}
-                                        <label for="floatingInputValue">Title*</label>
-                                        <textarea name="text" id="text" cols="30" rows="10" placeholder="Title" class="form-control">{{ isset($terms_and_condition->text) ? $terms_and_condition->text : old('text') }}</textarea>
-                                        @if ($errors->has('text'))
-                                            <div class="error" style="color:red;">
-                                                {{ $errors->first('text') }}</div>
-                                        @endif
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-xl-12 col-md-12">
-                                <div class="form-group-div">
-                                    <div class="form-group">
-                                        {{-- meta description --}}
-                                        <label for="floatingInputValue">Description*</label>
-                                        <textarea name="description" id="description" cols="30" rows="10" placeholder="Description"
-                                            class="form-control">{{ isset($terms_and_condition->description) ? $terms_and_condition->description : old('description') }}</textarea>
-                                        @if ($errors->has('description'))
-                                            <div class="error" style="color:red;">
-                                                {{ $errors->first('description') }}</div>
-                                        @endif
-                                    </div>
-                                </div>
-                            </div>
-                            {{-- button --}}
-                            <div class="col-xl-12">
-                                <div class="btn-1">
-                                      <button type="submit" class="print_btn me-2 mt-2 mb-2">Update</button>
+                @endif
+                <div class="sales-report-card-wrap mt-5">
+                    <div class="row">
+                        <div class="col-xl-12 col-md-12 mb-3">
+                            <div class="form-group-div">
+                                <div class="form-group">
+                                    {{-- meta description --}}
+                                    <label for="floatingInputValue">Title*</label>
+                                    <textarea name="text" id="text" cols="30" rows="10" placeholder="Title" class="form-control">{{ isset($terms_and_condition->text) ? $terms_and_condition->text : old('text') }}</textarea>
+                                    @if ($errors->has('text'))
+                                        <div class="error" style="color:red;">
+                                            {{ $errors->first('text') }}</div>
+                                    @endif
                                 </div>
                             </div>
                         </div>
+                        <div class="col-xl-12 col-md-12">
+                            <div class="form-group-div">
+                                <div class="form-group">
+                                    {{-- meta description --}}
+                                    <label for="floatingInputValue">Description*</label>
+                                    <textarea name="description" id="description" cols="30" rows="10" placeholder="Description"
+                                        class="form-control">{{ isset($terms_and_condition->description) ? $terms_and_condition->description : old('description') }}</textarea>
+                                    @if ($errors->has('description'))
+                                        <div class="error" style="color:red;">
+                                            {{ $errors->first('description') }}</div>
+                                    @endif
+                                </div>
+                            </div>
+                        </div>
+                        {{-- button --}}
+                        <div class="col-xl-12">
+                            <div class="btn-1">
+                                <button type="submit" class="print_btn me-2 mt-2 mb-2">Update</button>
+                            </div>
+                        </div>
                     </div>
-                </form>
-            </div>
+                </div>
+            </form>
+        </div>
 
 
     </div>

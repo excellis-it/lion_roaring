@@ -273,7 +273,7 @@
                         <div class="article card-4 mb-5">
                             <div class="card-body">
                                 <div class="card-corner">
-                                    <a href="{{ route('service', $our_organization->slug) }}" class="arrow-box">
+                                    <a href="{{ route('our-organization', $our_organization->slug) }}" class="arrow-box">
                                         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
                                             viewBox="0 0 24 24" fill="none">
                                             <path d="M13.75 6.75L19.25 12L13.75 17.25" stroke="#0E0E0F" stroke-width="1.5"
