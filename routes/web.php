@@ -152,10 +152,10 @@ Route::get('clear', function () {
 });
 
 // make migration
-// Route::get('dbmigrate', function () {
-//     Artisan::call('migrate');
-//     return "Migration has been successfully";
-// });
+Route::get('dbmigrate', function () {
+    Artisan::call('migrate');
+    return "Migration has been successfully";
+});
 
 // // db seed
 // Route::get('dbseed', function () {
@@ -451,6 +451,7 @@ Route::prefix('user')->middleware(['user', 'preventBackHistory', 'userActivity']
         Route::post('/upgrade/{tier}', [UserMembershipController::class, 'upgrade'])->name('user.membership.upgrade');
         Route::get('/checkout/{tier}', [UserMembershipController::class, 'checkout'])->name('user.membership.checkout');
         Route::get('/checkout/success', [UserMembershipController::class, 'checkoutSuccess'])->name('user.membership.checkout.success');
+        Route::post('/token-subscribe/{tier}', [UserMembershipController::class, 'tokenSubscribe'])->name('user.membership.token-subscribe');
         Route::post('/renew', [UserMembershipController::class, 'renew'])->name('user.membership.renew');
 
         // Management routes

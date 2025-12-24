@@ -52,8 +52,22 @@ class MembershipController extends Controller
         $request->validate([
             'name' => 'required|string|max:255',
             'slug' => 'required|string|max:255|unique:membership_tiers,slug',
+            'pricing_type' => 'required|in:amount,token',
+            'cost' => 'nullable|required_if:pricing_type,amount|numeric|min:0',
+            'life_force_energy_tokens' => 'nullable|required_if:pricing_type,token|numeric|min:0',
+            'agree_description' => 'nullable|required_if:pricing_type,token|string',
         ]);
-        $tier = MembershipTier::create($request->only(['name', 'slug', 'description', 'cost', 'role_id']));
+
+        $tier = MembershipTier::create($request->only([
+            'name',
+            'slug',
+            'description',
+            'cost',
+            'pricing_type',
+            'life_force_energy_tokens',
+            'agree_description',
+            'role_id',
+        ]));
         $benefits = $request->input('benefits', []);
         foreach ($benefits as $i => $b) {
             if (!empty($b)) {
@@ -78,8 +92,25 @@ class MembershipController extends Controller
         if (!auth()->user()->can('Edit Membership')) {
             abort(403, 'Unauthorized');
         }
-        $request->validate(['name' => 'required|string|max:255']);
-        $membership->update($request->only(['name', 'slug', 'description', 'cost', 'role_id']));
+        $request->validate([
+            'name' => 'required|string|max:255',
+            'slug' => 'required|string|max:255|unique:membership_tiers,slug,' . $membership->id,
+            'pricing_type' => 'required|in:amount,token',
+            'cost' => 'nullable|required_if:pricing_type,amount|numeric|min:0',
+            'life_force_energy_tokens' => 'nullable|required_if:pricing_type,token|numeric|min:0',
+            'agree_description' => 'nullable|required_if:pricing_type,token|string',
+        ]);
+
+        $membership->update($request->only([
+            'name',
+            'slug',
+            'description',
+            'cost',
+            'pricing_type',
+            'life_force_energy_tokens',
+            'agree_description',
+            'role_id',
+        ]));
         // update benefits
         MembershipBenefit::where('tier_id', $membership->id)->delete();
         $benefits = $request->input('benefits', []);
@@ -137,7 +168,8 @@ class MembershipController extends Controller
         }
         $date_after =  '2025-11-01';
         $members = UserSubscription::where('created_at', '>', $date_after)->with(['user', 'payments'])->orderBy('subscription_start_date', 'desc')->paginate(20);
-        return view('user.membership.members', compact('members'));
+        $measurement = MembershipMeasurement::first();
+        return view('user.membership.members', compact('members', 'measurement'));
     }
 
     public function memberPayments(User $user)
@@ -163,10 +195,29 @@ class MembershipController extends Controller
     public function upgrade(Request $request, MembershipTier $tier)
     {
         $user = Auth::user();
+        if (($tier->pricing_type ?? 'amount') === 'token') {
+            $user_subscription = new UserSubscription();
+            $user_subscription->user_id = $user->id;
+            $user_subscription->plan_id = $tier->id;
+            $user_subscription->subscription_method = 'token';
+            $user_subscription->subscription_name = $tier->name;
+            $user_subscription->subscription_price = $tier->life_force_energy_tokens;
+            $user_subscription->life_force_energy_tokens = $tier->life_force_energy_tokens;
+            $user_subscription->agree_accepted_at = now();
+            $user_subscription->agree_description_snapshot = $tier->agree_description;
+            $user_subscription->subscription_validity = 12;
+            $user_subscription->subscription_start_date = now();
+            $user_subscription->subscription_expire_date = now()->addYear();
+            $user_subscription->save();
+
+            return redirect()->route('user.membership.index')->with('success', 'Membership upgraded');
+        }
+
         // create a new subscription — for now, make a simple record (no payment gateway integrated)
         $user_subscription = new UserSubscription();
         $user_subscription->user_id = $user->id;
         $user_subscription->plan_id = $tier->id;
+        $user_subscription->subscription_method = 'amount';
         $user_subscription->subscription_name = $tier->name;
         $user_subscription->subscription_price = $tier->cost;
         $user_subscription->subscription_validity = 12; // 12 months
@@ -191,7 +242,10 @@ class MembershipController extends Controller
     {
         $user = Auth::user();
         $userSub = $user->userLastSubscription ?? null;
-        if ($userSub && $tier->cost <= $userSub->subscription_price) {
+        if (($tier->pricing_type ?? 'amount') === 'token') {
+            return redirect()->route('user.membership.index')->with('error', 'This plan uses Life Force Energy tokens and does not require payment.');
+        }
+        if ($userSub && ($userSub->subscription_method ?? 'amount') === 'amount' && floatval($tier->cost) <= floatval($userSub->subscription_price)) {
             return redirect()->route('user.membership.index')->with('error', 'You can only upgrade to a higher tier.');
         }
         try {
@@ -248,6 +302,7 @@ class MembershipController extends Controller
                 // extend existing subscription
                 $sub = $user->userLastSubscription;
                 $sub->subscription_expire_date = now()->max($sub->subscription_expire_date)->addYear();
+                $sub->subscription_method = 'amount';
                 $sub->save();
                 $user_subscription = $sub;
             } else {
@@ -255,8 +310,12 @@ class MembershipController extends Controller
                 $user_subscription = new UserSubscription();
                 $user_subscription->user_id = $user->id;
                 $user_subscription->plan_id = $tier->id;
+                $user_subscription->subscription_method = 'amount';
                 $user_subscription->subscription_name = $tier->name;
                 $user_subscription->subscription_price = $tier->cost;
+                $user_subscription->life_force_energy_tokens = null;
+                $user_subscription->agree_accepted_at = null;
+                $user_subscription->agree_description_snapshot = null;
                 $user_subscription->subscription_validity = 12; // 12 months by default
                 $user_subscription->subscription_start_date = now();
                 $user_subscription->subscription_expire_date = now()->addYear();
@@ -295,12 +354,20 @@ class MembershipController extends Controller
             return redirect()->route('user.membership.index')->with('error', 'No subscription to renew');
         }
 
+        $tier = MembershipTier::find($sub->plan_id);
+        if (!$tier) {
+            return redirect()->route('user.membership.index')->with('error', 'Invalid membership tier');
+        }
+
+        if (($tier->pricing_type ?? 'amount') === 'token') {
+            $sub->subscription_expire_date = now()->max($sub->subscription_expire_date)->addYear();
+            $sub->subscription_method = 'token';
+            $sub->save();
+            return redirect()->route('user.membership.index')->with('success', 'Membership renewed successfully.');
+        }
+
         // Use Stripe checkout for renewals to collect payment
         try {
-            $tier = MembershipTier::find($sub->plan_id);
-            if (!$tier) {
-                return redirect()->route('user.membership.index')->with('error', 'Invalid membership tier');
-            }
             $stripe = new StripeClient(env('STRIPE_SECRET'));
             $successUrl = route('membership.checkout.success') . '?session_id={CHECKOUT_SESSION_ID}&tier_id=' . $tier->id . '&renew=1';
             $session = $stripe->checkout->sessions->create([
@@ -324,5 +391,36 @@ class MembershipController extends Controller
         } catch (\Throwable $th) {
             return redirect()->route('user.membership.index')->with('error', $th->getMessage());
         }
+    }
+
+    public function tokenSubscribe(Request $request, MembershipTier $tier)
+    {
+        $user = Auth::user();
+        if (($tier->pricing_type ?? 'amount') !== 'token') {
+            return redirect()->route('user.membership.index')->with('error', 'Invalid plan type.');
+        }
+
+        $user_subscription = new UserSubscription();
+        $user_subscription->user_id = $user->id;
+        $user_subscription->plan_id = $tier->id;
+        $user_subscription->subscription_method = 'token';
+        $user_subscription->subscription_name = $tier->name;
+        $user_subscription->subscription_price = $tier->life_force_energy_tokens;
+        $user_subscription->life_force_energy_tokens = $tier->life_force_energy_tokens;
+        $user_subscription->agree_accepted_at = now();
+        $user_subscription->agree_description_snapshot = $tier->agree_description;
+        $user_subscription->subscription_validity = 12;
+        $user_subscription->subscription_start_date = now();
+        $user_subscription->subscription_expire_date = now()->addYear();
+        $user_subscription->save();
+
+        if ($tier->role_id) {
+            $role = Role::find($tier->role_id);
+            if ($role) {
+                $user->assignRole($role->name);
+            }
+        }
+
+        return redirect()->route('user.membership.index')->with('success', 'Membership subscribed successfully.');
     }
 }

@@ -32,6 +32,13 @@ class Product extends Model
         'quantity',
     ];
 
+    protected $appends = [
+        'main_image',
+        'average_rating',
+        'review_count',
+    ];
+
+
     public function category()
     {
         return $this->belongsTo(Category::class);
@@ -99,6 +106,19 @@ class Product extends Model
     public function reviews()
     {
         return $this->hasMany(Review::class);
+    }
+    // review count of approved reviews
+    public function getReviewCountAttribute()
+    {
+        return $this->reviews()->approved()->count();
+    }
+
+    // average rating of approved reviews
+    public function getAverageRatingAttribute()
+    {
+        $avg_rating = $this->reviews()->approved()->avg('rating');
+        // round to one decimal place and return 0 if null
+        return $avg_rating ? round($avg_rating, 1) : 0;
     }
 
 
@@ -207,6 +227,8 @@ class Product extends Model
 
         return $this->images->first()->image;
     }
+
+    // in products map main image, to get in api response
 
 
 

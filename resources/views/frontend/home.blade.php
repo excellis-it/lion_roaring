@@ -20,7 +20,10 @@
         // show popup only if session key not set for this IP
         $ip = request()->ip();
         $sessionKey = 'visitor_country_flag_code_' . $ip;
-        $showPopup = !session()->has($sessionKey) && Session::has('agree');
+        // New visitor flow:
+        // 1) If user hasn't selected a country yet -> show country popup first
+// 2) After selecting a country and reload -> show agreement modal (handled in master)
+$showPopup = !session()->has($sessionKey) && !Session::has('agree');
     @endphp
 
     <!--Flag Popup -->
@@ -406,14 +409,14 @@
 
     <!-- @if (count($galleries) > 0)
     <section class="gallery_sec margin_27">
-                                                        <div class="gallery_slider">
-                                                            @foreach ($galleries as $galary)
+                                                                    <div class="gallery_slider">
+                                                                        @foreach ($galleries as $galary)
     <div class="gallery_box" style="width: 100%; display: inline-block;">
-                                                                    <img src="{{ Storage::url($galary->image) }}" alt="">
-                                                                </div>
+                                                                                <img src="{{ Storage::url($galary->image) }}" alt="">
+                                                                            </div>
     @endforeach
-                                                        </div>
-                                                    </section>
+                                                                    </div>
+                                                                </section>
     @endif -->
 @endsection
 
