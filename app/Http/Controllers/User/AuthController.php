@@ -55,8 +55,8 @@ class AuthController extends Controller
         if ($user && \Hash::check($request->password, $user->password)) {
             if ($user->status == 1 && $user->is_accept == 1) {
 
-                // dd($country->id, $user->country);   
-                if ($country->id != $user->country) {
+                // dd($country->id, $user->country);
+                if ( ($user->user_type == 'Regional') && ($country->id != $user->country)) {
                     return response()->json(['message' => 'You are not from ' . $country->name . '! Please change the country from dropdown.', 'status' => false]);
                 }
 
