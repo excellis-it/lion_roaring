@@ -327,7 +327,7 @@ endpoints:
         name: id
         description: 'The <code>id</code> of an existing record in the sizes table.'
         required: true
-        example: occaecati
+        example: et
         type: string
         enumValues: []
         exampleWasSpecified: false
@@ -354,7 +354,7 @@ endpoints:
         nullable: false
         custom: []
     cleanBodyParameters:
-      id: occaecati
+      id: et
       name: '"Large"'
       status: true
     fileParameters: []
@@ -456,14 +456,14 @@ endpoints:
         name: id
         description: 'The <code>id</code> of an existing record in the sizes table.'
         required: true
-        example: sunt
+        example: iure
         type: string
         enumValues: []
         exampleWasSpecified: false
         nullable: false
         custom: []
     cleanBodyParameters:
-      id: sunt
+      id: iure
     fileParameters: []
     responses:
       -

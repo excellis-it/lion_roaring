@@ -29,7 +29,7 @@ endpoints:
         name: first_name
         description: 'First name'
         required: true
-        example: consequuntur
+        example: architecto
         type: string
         enumValues: []
         exampleWasSpecified: false
@@ -39,7 +39,7 @@ endpoints:
         name: last_name
         description: 'Last name'
         required: true
-        example: aut
+        example: eum
         type: string
         enumValues: []
         exampleWasSpecified: false
@@ -49,7 +49,7 @@ endpoints:
         name: email
         description: Email
         required: true
-        example: bkuhn@example.com
+        example: carol06@example.com
         type: string
         enumValues: []
         exampleWasSpecified: false
@@ -59,7 +59,7 @@ endpoints:
         name: phone
         description: 'Phone number'
         required: true
-        example: laborum
+        example: ut
         type: string
         enumValues: []
         exampleWasSpecified: false
@@ -69,7 +69,7 @@ endpoints:
         name: address_line_1
         description: 'Address line 1'
         required: true
-        example: consequatur
+        example: delectus
         type: string
         enumValues: []
         exampleWasSpecified: false
@@ -79,7 +79,7 @@ endpoints:
         name: address_line_2
         description: 'nullable Address line 2'
         required: false
-        example: et
+        example: corrupti
         type: string
         enumValues: []
         exampleWasSpecified: false
@@ -89,7 +89,7 @@ endpoints:
         name: city
         description: City
         required: true
-        example: debitis
+        example: libero
         type: string
         enumValues: []
         exampleWasSpecified: false
@@ -99,7 +99,7 @@ endpoints:
         name: state
         description: State
         required: true
-        example: fuga
+        example: et
         type: string
         enumValues: []
         exampleWasSpecified: false
@@ -109,7 +109,7 @@ endpoints:
         name: pincode
         description: Pincode
         required: true
-        example: et
+        example: nulla
         type: string
         enumValues: []
         exampleWasSpecified: false
@@ -119,7 +119,7 @@ endpoints:
         name: country
         description: Country
         required: true
-        example: qui
+        example: dolorum
         type: string
         enumValues: []
         exampleWasSpecified: false
@@ -129,7 +129,7 @@ endpoints:
         name: payment_method_id
         description: 'Stripe payment method ID'
         required: true
-        example: maiores
+        example: rerum
         type: string
         enumValues: []
         exampleWasSpecified: false
@@ -139,7 +139,7 @@ endpoints:
         name: payment_type
         description: 'Payment type (credit/debit)'
         required: true
-        example: rerum
+        example: aut
         type: string
         enumValues: []
         exampleWasSpecified: false
@@ -149,7 +149,7 @@ endpoints:
         name: order_method
         description: 'nullable Is pickup (0 or 1)'
         required: false
-        example: 12
+        example: 10
         type: integer
         enumValues: []
         exampleWasSpecified: false
@@ -159,27 +159,27 @@ endpoints:
         name: promo_code
         description: 'nullable Promo code'
         required: false
-        example: eius
+        example: aliquid
         type: string
         enumValues: []
         exampleWasSpecified: false
         nullable: true
         custom: []
     cleanBodyParameters:
-      first_name: consequuntur
-      last_name: aut
-      email: bkuhn@example.com
-      phone: laborum
-      address_line_1: consequatur
-      address_line_2: et
-      city: debitis
-      state: fuga
-      pincode: et
-      country: qui
-      payment_method_id: maiores
-      payment_type: rerum
-      order_method: 12
-      promo_code: eius
+      first_name: architecto
+      last_name: eum
+      email: carol06@example.com
+      phone: ut
+      address_line_1: delectus
+      address_line_2: corrupti
+      city: libero
+      state: et
+      pincode: nulla
+      country: dolorum
+      payment_method_id: rerum
+      payment_type: aut
+      order_method: 10
+      promo_code: aliquid
     fileParameters: []
     responses: []
     responseFields: []
@@ -217,14 +217,14 @@ endpoints:
         name: order_id
         description: ''
         required: true
-        example: 15
+        example: 5
         type: integer
         enumValues: []
         exampleWasSpecified: false
         nullable: false
         custom: []
     cleanBodyParameters:
-      order_id: 15
+      order_id: 5
     fileParameters: []
     responses: []
     responseFields: []
@@ -296,14 +296,14 @@ endpoints:
         name: order_id
         description: 'Order ID'
         required: true
-        example: 8
+        example: 7
         type: integer
         enumValues: []
         exampleWasSpecified: false
         nullable: false
         custom: []
     cleanBodyParameters:
-      order_id: 8
+      order_id: 7
     fileParameters: []
     responses: []
     responseFields: []
@@ -341,7 +341,7 @@ endpoints:
         name: order_id
         description: 'Order ID'
         required: true
-        example: 13
+        example: 4
         type: integer
         enumValues: []
         exampleWasSpecified: false
@@ -351,15 +351,15 @@ endpoints:
         name: cancellation_reason
         description: 'nullable Reason for cancellation'
         required: false
-        example: quo
+        example: expedita
         type: string
         enumValues: []
         exampleWasSpecified: false
         nullable: true
         custom: []
     cleanBodyParameters:
-      order_id: 13
-      cancellation_reason: quo
+      order_id: 4
+      cancellation_reason: expedita
     fileParameters: []
     responses: []
     responseFields: []

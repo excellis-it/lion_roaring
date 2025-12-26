@@ -404,14 +404,14 @@ endpoints:
         name: id
         description: 'The ID of the edit.'
         required: true
-        example: autem
+        example: voluptates
         type: string
         enumValues: []
         exampleWasSpecified: false
         nullable: false
         custom: []
     cleanUrlParameters:
-      id: autem
+      id: voluptates
     queryParameters: []
     cleanQueryParameters: []
     bodyParameters: []
