@@ -251,9 +251,18 @@ $showPopup = !session()->has($sessionKey) && !Session::has('agree');
 
 
     <div class="promo-box-container">
-        <p class="title"><a href="#" target="_blank" rel="noopener">Want to create an impact? <span
-                    class="lighter">Gift/Seed to help us grow!!!</span></a></p>
-        <p><a class="cta-button red_btn" href="#" target="_blank" rel="noopener"> <span>Gift/Seed</span></a></p>
+        <p class="title">
+            <a href="{{ $home['section_6_button_link'] ?? '#' }}" target="_blank" rel="noopener">
+                {{ $home['section_6_title'] ?? 'Want to create an impact?' }}
+                <span class="lighter">{{ $home['section_6_subtitle'] ?? 'Gift/Seed to help us grow!!!' }}</span>
+            </a>
+        </p>
+        <p>
+            <a class="cta-button red_btn" href="" target="_blank"
+                rel="noopener">
+                <span>{{ $home['section_6_button_text'] ?? 'Gift/Seed' }}</span>
+            </a>
+        </p>
         <div class="right-triangle"> </div>
     </div>
 
@@ -408,14 +417,14 @@ $showPopup = !session()->has($sessionKey) && !Session::has('agree');
 
     <!-- @if (count($galleries) > 0)
     <section class="gallery_sec margin_27">
-                                                                        <div class="gallery_slider">
-                                                                            @foreach ($galleries as $galary)
+                                                                            <div class="gallery_slider">
+                                                                                @foreach ($galleries as $galary)
     <div class="gallery_box" style="width: 100%; display: inline-block;">
-                                                                                    <img src="{{ Storage::url($galary->image) }}" alt="">
-                                                                                </div>
+                                                                                        <img src="{{ Storage::url($galary->image) }}" alt="">
+                                                                                    </div>
     @endforeach
-                                                                        </div>
-                                                                    </section>
+                                                                            </div>
+                                                                        </section>
     @endif -->
 @endsection
 

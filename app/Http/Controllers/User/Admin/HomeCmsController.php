@@ -108,6 +108,9 @@ class HomeCmsController extends Controller
             'section_4_title' => 'required',
             'section_4_description' => 'required',
             'section_5_title' => 'required',
+            'section_6_title' => 'required',
+            'section_6_subtitle' => 'required',
+            'section_6_button_text' => 'required',
             'meta_title' => 'nullable',
             'meta_description' => 'nullable',
             'meta_keywords' => 'nullable',
@@ -132,6 +135,9 @@ class HomeCmsController extends Controller
         $home->section_4_title = $request->section_4_title;
         $home->section_4_description = $request->section_4_description;
         $home->section_5_title = $request->section_5_title;
+        $home->section_6_title = $request->section_6_title;
+        $home->section_6_subtitle = $request->section_6_subtitle;
+        $home->section_6_button_text = $request->section_6_button_text;
         $home->meta_title = $request->meta_title;
         $home->meta_description = $request->meta_description;
         $home->meta_keywords = $request->meta_keywords;

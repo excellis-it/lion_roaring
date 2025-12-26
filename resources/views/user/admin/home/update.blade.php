@@ -18,7 +18,7 @@
             <form action="{{ route('user.admin.home-cms.store') }}" method="post" enctype="multipart/form-data">
                 @csrf
                 <input type="hidden" name="id" value="{{ $home->id ?? '' }}">
-                
+
                 @if (auth()->user()->user_type == 'Global')
                     <div class="row mb-4">
                         <div class="col-md-4 mb-3">
@@ -424,6 +424,57 @@
                                     @if ($errors->has('section_5_title'))
                                         <div class="error" style="color:red;">
                                             {{ $errors->first('section_5_title') }}</div>
+                                    @endif
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="sales-report-card-wrap mt-5">
+                    <div class="form-head">
+                        <h4>Promo Box Section</h4>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <div class="form-group-div">
+                                <div class="form-group">
+                                    <label for="floatingInputValue">Promo Title*</label>
+                                    <input type="text" class="form-control" name="section_6_title"
+                                        value="{{ isset($home->section_6_title) ? $home->section_6_title : old('section_6_title') }}"
+                                        placeholder="Promo Title">
+                                    @if ($errors->has('section_6_title'))
+                                        <div class="error" style="color:red;">
+                                            {{ $errors->first('section_6_title') }}</div>
+                                    @endif
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <div class="form-group-div">
+                                <div class="form-group">
+                                    <label for="floatingInputValue">Promo Subtitle*</label>
+                                    <input type="text" class="form-control" name="section_6_subtitle"
+                                        value="{{ isset($home->section_6_subtitle) ? $home->section_6_subtitle : old('section_6_subtitle') }}"
+                                        placeholder="Promo Subtitle">
+                                    @if ($errors->has('section_6_subtitle'))
+                                        <div class="error" style="color:red;">
+                                            {{ $errors->first('section_6_subtitle') }}</div>
+                                    @endif
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <div class="form-group-div">
+                                <div class="form-group">
+                                    <label for="floatingInputValue">Promo Button Text*</label>
+                                    <input type="text" class="form-control" name="section_6_button_text"
+                                        value="{{ isset($home->section_6_button_text) ? $home->section_6_button_text : old('section_6_button_text') }}"
+                                        placeholder="Promo Button Text">
+                                    @if ($errors->has('section_6_button_text'))
+                                        <div class="error" style="color:red;">
+                                            {{ $errors->first('section_6_button_text') }}</div>
                                     @endif
                                 </div>
                             </div>
