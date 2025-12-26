@@ -90,6 +90,8 @@ Route::prefix('v3')->middleware(['userActivity'])->group(function () {
         // Live search
         Route::get('/live-search', [EstoreProductController::class, 'liveSearch']);
 
+
+
         Route::group(['middleware' => ['auth:api', 'user']], function () {
 
             // Cart related (public via session or authenticated via token)
@@ -117,6 +119,18 @@ Route::prefix('v3')->middleware(['userActivity'])->group(function () {
             Route::post('/profile', [EstoreProfileController::class, 'profile']);
             Route::post('/update-profile', [EstoreProfileController::class, 'updateProfile']);
             Route::post('/change-password', [EstoreProfileController::class, 'updatePassword']);
+
+            // Warehouse product details (used to update images/price/stock when selecting size/color) — public (supports guest)
+            Route::post('/get-warehouse-product-details', [EstoreProductController::class, 'getWarehouseProductDetails']);
+
+            // Cart related endpoints — public to support guest session carts, and will also work for authenticated users
+            Route::get('/cart-count', [EstoreProductController::class, 'cartCount']);
+            Route::get('/cart-list', [EstoreProductController::class, 'cartList']);
+            Route::post('/add-to-cart', [EstoreProductController::class, 'addToCart']);
+            Route::post('/remove-from-cart', [EstoreProductController::class, 'removeFromCart']);
+            Route::post('/update-cart', [EstoreProductController::class, 'updateCart']);
+            Route::post('/clear-cart', [EstoreProductController::class, 'clearCart']);
+            Route::get('/check-product-in-cart', [EstoreProductController::class, 'checkProductInCart']);
 
 
             //order tracking

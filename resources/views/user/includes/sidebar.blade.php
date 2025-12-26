@@ -746,7 +746,7 @@
                      </li>
                  @endif
 
-                 @if (Gate::check('Manage Contact Us Messages'))
+                 {{-- @if (Gate::check('Manage Contact Us Messages'))
                      <li class="sidebar-item">
                          <a class="sidebar-link {{ Request::is('user/admin/contact-us*') ? 'active' : '' }}"
                              href="{{ route('user.admin.contact-us.index') }}" aria-expanded="false">
@@ -758,7 +758,7 @@
                                  class="hide-menu">{{ Helper::getMenuName('contact_us_messages', 'Contact Us Messages') }}</span>
                          </a>
                      </li>
-                 @endif
+                 @endif --}}
 
                  @if (Gate::check('Manage Newsletters'))
                      <li class="sidebar-item">
@@ -949,7 +949,7 @@
                          Gate::check('Manage Gallery') ||
                          Gate::check('Manage Ecclesia Association Page') ||
                          Gate::check('Manage Principle and Business Page') ||
-                         Gate::check('Manage Contact Us Page') ||
+                        //  Gate::check('Manage Contact Us Page') ||
                          Gate::check('Manage Article of Association Page') ||
                          Gate::check('Manage Footer') ||
                          Gate::check('Manage Register Page Agreement Page') ||
@@ -1049,7 +1049,7 @@
                                      </a>
                                  @endif
 
-                                 @if (Gate::check('Manage Contact Us Page'))
+                                 {{-- @if (Gate::check('Manage Contact Us Page'))
                                      <a href="{{ route('user.admin.contact-us-cms.index') }}">
                                          <span>
                                              <img src="{{ asset('user_assets/images/lion-roring-icon/lion-roring-icon/contact-us.png') }}"
@@ -1057,7 +1057,7 @@
                                          </span>
                                          <span>{{ Helper::getMenuName('pages_contact_us', 'CONTACT US') }}</span>
                                      </a>
-                                 @endif
+                                 @endif --}}
 
                                  @if (Gate::check('Manage Article of Association Page'))
                                      <a href="{{ route('user.admin.articles-of-association.index') }}">

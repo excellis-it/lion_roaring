@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\User\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Models\Country;
 use App\Models\Gallery;
 use App\Traits\ImageTrait;
 use Illuminate\Http\Request;
@@ -15,11 +16,30 @@ class GalleryController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
+    public $user_type;
+    public $user_country;
+    public $country;
+
+    // use consructor
+    public function __construct()
+    {
+        $this->middleware(function ($request, $next) {
+            $this->user_type = auth()->user()->user_type;
+            $this->user_country = auth()->user()->country;
+            $this->country = Country::where('id', $this->user_country)->first();
+
+            return $next($request);
+        });
+    }
     public function index()
     {
         if (auth()->user()->can('Manage Gallery')) {
-             $gallery = Gallery::orderByDesc('id')->paginate(15);
-           // $gallery = Gallery::where('country_code', request()->get('content_country_code', 'US'))->orderBy('id', 'desc')->paginate(10);
+            if ($this->user_type == 'Global') {
+                $gallery = Gallery::orderByDesc('id')->paginate(15);
+            } else {
+                $gallery = Gallery::where('country_code', $this->country->code)->orderByDesc('id')->paginate(15);
+            }
+            // $gallery = Gallery::where('country_code', request()->get('content_country_code', 'US'))->orderBy('id', 'desc')->paginate(10);
             return view('user.admin.gallery.list', compact('gallery'));
         } else {
             abort(403, 'You do not have permission to access this page.');
@@ -52,7 +72,7 @@ class GalleryController extends Controller
     {
         // return $request;
         $request->validate([
-            'image.*' => "required|image|mimes:jpeg,png,jpg,gif,svg",
+            'image.*' => "required|image|mimes:jpeg,png,jpg,gif,svg,webp",
         ], [
             'image.*.required' => 'Please select an image.',
             'image.*.image' => 'Please select an image.',
@@ -61,7 +81,11 @@ class GalleryController extends Controller
         foreach ($request->image as $key => $value) {
             $gallery = new Gallery();
             $gallery->image = $this->imageUpload($request->file('image')[$key], 'gallery');
-            $gallery->country_code = $request->content_country_code ?? 'US';
+            if ($this->user_type == 'Global') {
+                $gallery->country_code = $request->content_country_code ?? 'US';
+            } else {
+                $gallery->country_code = $this->country->code;
+            }
             $gallery->save();
         }
         return redirect()->route('user.admin.gallery.index')->with('message', 'Gallery created successfully.');
@@ -104,14 +128,18 @@ class GalleryController extends Controller
     public function update(Request $request, $id)
     {
         $request->validate([
-            'image' => "required|image|mimes:jpeg,png,jpg,gif,svg",
+            'image' => "required|image|mimes:jpeg,png,jpg,gif,svg,webp",
         ]);
 
         $gallery = Gallery::findOrFail($id);
         if ($request->hasFile('image')) {
             $gallery->image = $this->imageUpload($request->file('image'), 'gallery');
         }
-        $gallery->country_code = $request->content_country_code ?? 'US';
+        if ($this->user_type == 'Global') {
+            $gallery->country_code = $request->content_country_code ?? 'US';
+        } else {
+            $gallery->country_code = $this->country->code;
+        }
         $gallery->save();
 
         return redirect()->route('user.admin.gallery.index')->with('message', 'Gallery updated successfully.');

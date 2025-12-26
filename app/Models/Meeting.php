@@ -13,6 +13,7 @@ class Meeting extends Model
 
     protected $fillable = [
         'user_id',
+        'country_id',
         'title',
         'description',
         'start_time',
@@ -79,5 +80,10 @@ class Meeting extends Model
     public function user()
     {
         return $this->belongsTo(User::class, 'user_id', 'id');
+    }
+
+    public function country()
+    {
+        return $this->belongsTo(Country::class, 'country_id', 'id');
     }
 }

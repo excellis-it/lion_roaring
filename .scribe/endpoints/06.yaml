@@ -86,7 +86,7 @@ endpoints:
         name: first_name
         description: 'optional First name'
         required: false
-        example: dolorem
+        example: eaque
         type: string
         enumValues: []
         exampleWasSpecified: false
@@ -96,7 +96,7 @@ endpoints:
         name: last_name
         description: 'optional Last name'
         required: false
-        example: sed
+        example: iure
         type: string
         enumValues: []
         exampleWasSpecified: false
@@ -106,7 +106,7 @@ endpoints:
         name: phone
         description: 'optional Phone number'
         required: false
-        example: quo
+        example: perspiciatis
         type: string
         enumValues: []
         exampleWasSpecified: false
@@ -116,7 +116,7 @@ endpoints:
         name: address
         description: 'optional Address'
         required: false
-        example: mollitia
+        example: similique
         type: string
         enumValues: []
         exampleWasSpecified: false
@@ -133,10 +133,10 @@ endpoints:
         nullable: false
         custom: []
     cleanBodyParameters:
-      first_name: dolorem
-      last_name: sed
-      phone: quo
-      address: mollitia
+      first_name: eaque
+      last_name: iure
+      phone: perspiciatis
+      address: similique
     fileParameters:
       profile_picture: null
     responses:
@@ -193,7 +193,7 @@ endpoints:
         name: current_password
         description: 'Current password'
         required: true
-        example: est
+        example: vitae
         type: string
         enumValues: []
         exampleWasSpecified: false
@@ -203,7 +203,7 @@ endpoints:
         name: new_password
         description: 'New password'
         required: true
-        example: qui
+        example: maxime
         type: string
         enumValues: []
         exampleWasSpecified: false
@@ -213,16 +213,16 @@ endpoints:
         name: confirm_password
         description: 'Confirm new password'
         required: true
-        example: tempore
+        example: veniam
         type: string
         enumValues: []
         exampleWasSpecified: false
         nullable: false
         custom: []
     cleanBodyParameters:
-      current_password: est
-      new_password: qui
-      confirm_password: tempore
+      current_password: vitae
+      new_password: maxime
+      confirm_password: veniam
     fileParameters: []
     responses:
       -
@@ -270,14 +270,14 @@ endpoints:
         name: order_number
         description: 'Order number'
         required: true
-        example: aliquam
+        example: saepe
         type: string
         enumValues: []
         exampleWasSpecified: false
         nullable: false
         custom: []
     cleanBodyParameters:
-      order_number: aliquam
+      order_number: saepe
     fileParameters: []
     responses: []
     responseFields: []

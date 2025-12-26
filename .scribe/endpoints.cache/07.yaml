@@ -1225,7 +1225,7 @@ endpoints:
     responses:
       -
         status: 200
-        content: '{"message":"Site Settings","status":true,"settings":{"id":1,"SITE_NAME":"Lion Roaring","SITE_LOGO":"user_assets\/images\/logo.png","SITE_CONTACT_EMAIL":"admin@lionroaring.us","SITE_CONTACT_PHONE":"1 (240)-982-0054","DONATE_TEXT":null,"DONATE_BANK_TRANSFER_DETAILS":null,"created_at":"2025-01-13T14:45:56.000000Z","updated_at":"2025-01-13T14:45:56.000000Z"}}'
+        content: '{"message":"Site Settings","status":true,"settings":{"id":1,"SITE_NAME":"Lion Roaring","SITE_LOGO":"user_assets\/images\/logo.png","PANEL_WATERMARK_LOGO":null,"PMA_PANEL_LOGO":null,"SITE_CONTACT_EMAIL":"admin@lionroaring.us","SITE_CONTACT_PHONE":"1 (240)-982-0054","DONATE_TEXT":null,"DONATE_BANK_TRANSFER_DETAILS":null,"created_at":"2025-01-13T14:45:56.000000Z","updated_at":"2025-01-13T14:45:56.000000Z"}}'
         headers:
           cache-control: 'no-cache, private'
           content-type: application/json

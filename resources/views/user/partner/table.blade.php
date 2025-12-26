@@ -6,6 +6,8 @@
             </td>
             <td>{{ $partner->email }}</td>
             <td>{{ $partner->full_name }}</td>
+            <td>{{ $partner->user_type }}</td>
+            <td>{{ $partner->countries->name ?? '-' }}</td>
             <td>
                 <span>{{ $partner->getRoleNames()->first() }}</span>
 
@@ -148,7 +150,7 @@
     @endforeach
     {{-- pagination --}}
     <tr class="toxic">
-        <td colspan="10">
+        <td colspan="11">
             <div class="d-flex justify-content-center">
                 {!! $partners->links() !!}
             </div>
@@ -156,6 +158,6 @@
     </tr>
 @else
     <tr class="toxic">
-        <td colspan="10" class="text-center">No Data Found</td>
+        <td colspan="11" class="text-center">No Data Found</td>
     </tr>
 @endif

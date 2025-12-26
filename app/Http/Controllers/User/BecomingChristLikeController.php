@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\User;
 
 use App\Http\Controllers\Controller;
+use App\Models\Country;
 use App\Models\File;
 use App\Models\Topic;
 use App\Traits\ImageTrait;
@@ -19,15 +20,29 @@ class BecomingChristLikeController extends Controller
     public function index(Request $request)
     {
         if (auth()->user()->can('Manage Becoming Christ Like')) {
-            if (isset($request->topic)) {
-                $new_topic = $request->topic;
-                $files = File::orderBy('id', 'desc')->where('type', 'Becoming Christ Like')->where('topic_id', $request->topic)->paginate(15);
+            $user_type = auth()->user()->user_type;
+            $user_country = auth()->user()->country;
+
+            if ($user_type == 'Global') {
+                if (isset($request->topic)) {
+                    $new_topic = $request->topic;
+                    $files = File::orderBy('id', 'desc')->where('type', 'Becoming Christ Like')->where('topic_id', $request->topic)->paginate(15);
+                } else {
+                    $files = File::orderBy('id', 'desc')->where('type', 'Becoming Christ Like')->paginate(15);
+                    $new_topic = '';
+                }
+                $topics = Topic::orderBy('topic_name', 'asc')->where('education_type', 'Becoming Christ Like')->get();
             } else {
-                $files = File::orderBy('id', 'desc')->where('type', 'Becoming Christ Like')->paginate(15);
-                $new_topic = '';
+                if (isset($request->topic)) {
+                    $new_topic = $request->topic;
+                    $files = File::orderBy('id', 'desc')->where('type', 'Becoming Christ Like')->where('topic_id', $request->topic)->where('country_id', $user_country)->paginate(15);
+                } else {
+                    $files = File::orderBy('id', 'desc')->where('type', 'Becoming Christ Like')->where('country_id', $user_country)->paginate(15);
+                    $new_topic = '';
+                }
+                $topics = Topic::orderBy('topic_name', 'asc')->where('education_type', 'Becoming Christ Like')->where('country_id', $user_country)->get();
             }
 
-            $topics = Topic::orderBy('topic_name', 'asc')->where('education_type', 'Becoming Christ Like')->get();
             return view('user.becoming-christ-link.list')->with(compact('files', 'topics', 'new_topic'));
         } else {
             abort(403, 'You do not have permission to access this page.');
@@ -37,8 +52,15 @@ class BecomingChristLikeController extends Controller
     public function upload()
     {
         if (auth()->user()->can('Upload Becoming Christ Like')) {
-            $topics = Topic::orderBy('topic_name', 'asc')->where('education_type', 'Becoming Christ Like')->get();
-            return view('user.becoming-christ-link.upload')->with('topics', $topics);
+            $user_type = auth()->user()->user_type;
+            $user_country = auth()->user()->country;
+            if ($user_type == 'Global') {
+                $topics = Topic::orderBy('topic_name', 'asc')->where('education_type', 'Becoming Christ Like')->get();
+            } else {
+                $topics = Topic::orderBy('topic_name', 'asc')->where('education_type', 'Becoming Christ Like')->where('country_id', $user_country)->get();
+            }
+            $countries = Country::orderBy('name', 'asc')->get();
+            return view('user.becoming-christ-link.upload')->with(compact('topics', 'countries'));
         } else {
             abort(403, 'You do not have permission to access this page.');
         }
@@ -46,10 +68,17 @@ class BecomingChristLikeController extends Controller
 
     public function store(Request $request)
     {
+        $country_id = auth()->user()->user_type === 'Global'
+            ? $request->country_id
+            : auth()->user()->country;
+
+        $request->merge(['country_id' => $country_id]);
+
         // Validate the request
         $validated = $request->validate([
             'file' => 'required|file', // Ensure file validation
             'topic_id' => 'required|exists:topics,id', // 'exists' checks if the value exists in the 'topics' table 'id' column
+            'country_id' => 'required|exists:countries,id',
         ]);
 
         // Get file details
@@ -59,7 +88,11 @@ class BecomingChristLikeController extends Controller
         $file_upload = $this->imageUpload($file, 'files');
 
         // Check if a file with the same name and extension already exists
-        $check = File::where('file_name', $file_name)->where('file_extension', $file_extension)->first();
+        if (auth()->user()->user_type == 'Global') {
+            $check = File::where('file_name', $file_name)->where('file_extension', $file_extension)->first();
+        } else {
+            $check = File::where('file_name', $file_name)->where('file_extension', $file_extension)->where('country_id', $country_id)->first();
+        }
 
         // Return validation error if file already exists
         if ($check) {
@@ -72,6 +105,7 @@ class BecomingChristLikeController extends Controller
         $fileModel->file_name = $file_name;
         $fileModel->file_extension = $file_extension;
         $fileModel->topic_id = $request->topic_id;
+        $fileModel->country_id = $country_id;
         $fileModel->type = 'Becoming Christ Like';
         $fileModel->file = $file_upload;
         $fileModel->save();
@@ -97,7 +131,6 @@ class BecomingChristLikeController extends Controller
                 $file->delete();
                 // delete file from storage
                 Storage::disk('public')->delete($file->file);
-
                 return redirect()->route('becoming-christ-link.index', ['topic' =>  $new_topic])->with('message', 'File deleted successfully.');
             } else {
                 return redirect()->route('becoming-christ-link.index', ['topic' =>  $new_topic])->with('error', 'File not found.');
@@ -134,7 +167,10 @@ class BecomingChristLikeController extends Controller
                 ->where(function ($q) use ($query) {
                     $q->where('id', 'like', '%' . $query . '%')
                         ->orWhere('file_name', 'like', '%' . $query . '%')
-                        ->orWhere('file_extension', 'like', '%' . $query . '%');
+                        ->orWhere('file_extension', 'like', '%' . $query . '%')
+                        ->orWhereHas('country', function ($q) use ($query) {
+                            $q->where('name', 'like', '%' . $query . '%');
+                        });
                 });
 
             if ($request->topic_id) {
@@ -144,6 +180,13 @@ class BecomingChristLikeController extends Controller
                 $new_topic = $request->topic_id;
             } else {
                 $new_topic = '';
+            }
+
+            $user_type = auth()->user()->user_type;
+            $user_country = auth()->user()->country;
+
+            if ($user_type == 'Regional') {
+                $files->where('country_id', $user_country);
             }
 
             $files = $files->where('type', 'Becoming Christ Like')
@@ -157,15 +200,31 @@ class BecomingChristLikeController extends Controller
     public function edit(Request $request, $id)
     {
         if (auth()->user()->can('Edit Becoming Christ Like')) {
-            $file = File::find($id);
+            $user_type = auth()->user()->user_type;
+            $user_country = auth()->user()->country;
+
+            if ($user_type == 'Global') {
+                $file = File::findOrFail($id);
+            } else {
+                $file = File::where('country_id', $user_country)->findOrFail($id);
+            }
+
             if (isset($request->topic)) {
                 $new_topic = $request->topic;
             } else {
                 $new_topic = '';
             }
             if ($file) {
-                $topics = Topic::orderBy('topic_name', 'asc')->where('education_type', 'Becoming Christ Like')->get();
-                return view('user.becoming-christ-link.edit')->with(compact('file', 'topics', 'new_topic'));
+                if ($user_type == 'Global') {
+                    $topics = Topic::orderBy(
+                        'topic_name',
+                        'asc'
+                    )->where('education_type', 'Becoming Christ Like')->get();
+                } else {
+                    $topics = Topic::orderBy('topic_name', 'asc')->where('education_type', 'Becoming Christ Like')->where('country_id', $user_country)->get();
+                }
+                $countries = Country::orderBy('name', 'asc')->get();
+                return view('user.becoming-christ-link.edit', compact('file', 'topics', 'new_topic', 'countries'));
             } else {
                 return redirect()->route('becoming-christ-link.index', ['topic' =>  $new_topic])->with('error', 'File not found.');
             }
@@ -176,15 +235,26 @@ class BecomingChristLikeController extends Controller
 
     public function update(Request $request, $id)
     {
+        $country_id = auth()->user()->user_type === 'Global'
+            ? $request->country_id
+            : auth()->user()->country;
+
+        $request->merge(['country_id' => $country_id]);
 
         // Validate the request
         $validated = $request->validate([
             'topic_id' => 'required|exists:topics,id',
-            'file' => 'sometimes|file' // Validate the file only if it is present
+            'file' => 'sometimes|file', // Validate the file only if it is present
+            'country_id' => 'required|exists:countries,id',
         ]);
 
-        // Find the file by ID
-        $file = File::findOrFail($id);
+        $user_type = auth()->user()->user_type;
+
+        if ($user_type == 'Global') {
+            $file = File::findOrFail($id);
+        } else {
+            $file = File::where('country_id', $country_id)->findOrFail($id);
+        }
 
         // Handle file upload if a file is present in the request
         if ($request->hasFile('file')) {
@@ -193,9 +263,11 @@ class BecomingChristLikeController extends Controller
             $file_extension = $uploadedFile->getClientOriginalExtension();
 
             // Check for file name and extension duplication
-            $check = File::where('file_name', $file_name)
-                ->where('file_extension', $file_extension)
-                ->first();
+            if (auth()->user()->user_type == 'Global') {
+                $check = File::where('file_name', $file_name)->where('file_extension', $file_extension)->first();
+            } else {
+                $check = File::where('file_name', $file_name)->where('file_extension', $file_extension)->where('country_id', $country_id)->first();
+            }
 
             // If a file with the same name and extension already exists, return an error
             if ($check) {
@@ -211,8 +283,9 @@ class BecomingChristLikeController extends Controller
             $file->file = $file_upload;
         }
 
-        // Update topic ID
+        // Update topic ID and country ID
         $file->topic_id = $request->topic_id;
+        $file->country_id = $country_id;
 
         // Save the file details
         $file->save();

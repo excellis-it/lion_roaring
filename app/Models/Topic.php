@@ -8,4 +8,15 @@ use Illuminate\Database\Eloquent\Model;
 class Topic extends Model
 {
     use HasFactory;
+
+    protected $fillable = [
+        'topic_name',
+        'education_type',
+        'country_id',
+    ];
+
+    public function country()
+    {
+        return $this->belongsTo(Country::class);
+    }
 }

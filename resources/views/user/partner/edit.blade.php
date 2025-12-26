@@ -25,6 +25,18 @@
                                     </div>
                                 </div>
                                 <div class="row">
+                                    <div class="col-md-6 mb-2">
+                                        <div class="box_label">
+                                            <label>User Name *</label>
+                                            <input type="text" class="form-control" name="user_name" readonly
+                                                value="{{ $partner->user_name }}" placeholder="">
+                                            @if ($errors->has('user_name'))
+                                                <div class="error" style="color:red !important;">
+                                                    {{ $errors->first('user_name') }}
+                                                </div>
+                                            @endif
+                                        </div>
+                                    </div>
 
                                     <div class="col-md-6 mb-2">
                                         <div class="box_label">
@@ -34,6 +46,25 @@
                                             @if ($errors->has('email'))
                                                 <div class="error" style="color:red !important;">
                                                     {{ $errors->first('email') }}
+                                                </div>
+                                            @endif
+                                        </div>
+                                    </div>
+                                    {{-- user_type --}}
+                                    <div class="col-md-6 mb-2">
+                                        <div class="box_label">
+                                            <label>User Type *</label>
+                                            <select class="form-control" name="user_type">
+                                                <option value="">Select User Type</option>
+                                                <option value="Regional"
+                                                    {{ $partner->user_type == 'Regional' ? 'selected' : '' }}>Regional
+                                                </option>
+                                                <option value="Global"
+                                                    {{ $partner->user_type == 'Global' ? 'selected' : '' }}>Global</option>
+                                            </select>
+                                            @if ($errors->has('user_type'))
+                                                <div class="error" style="color:red !important;">
+                                                    {{ $errors->first('user_type') }}
                                                 </div>
                                             @endif
                                         </div>
@@ -96,18 +127,7 @@
                                 </div>
                                 <div class="row">
                                     {{-- user_name --}}
-                                    <div class="col-md-4 mb-2">
-                                        <div class="box_label">
-                                            <label>User Name *</label>
-                                            <input type="text" class="form-control" name="user_name" readonly
-                                                value="{{ $partner->user_name }}" placeholder="">
-                                            @if ($errors->has('user_name'))
-                                                <div class="error" style="color:red !important;">
-                                                    {{ $errors->first('user_name') }}
-                                                </div>
-                                            @endif
-                                        </div>
-                                    </div>
+
                                     {{-- <div class="col-md-4 mb-2">
                                         <div class="box_label">
                                             <label>Roles *</label>
@@ -210,7 +230,7 @@
                                     {{-- country --}}
                                     <div class="col-md-6 mb-2">
                                         <div class="box_label">
-                                            <label>Country</label>
+                                            <label>Country *</label>
                                             <select name="country" id="country" class="form-control">
                                                 <option value="">Select Country</option>
                                                 @foreach ($countries as $country)

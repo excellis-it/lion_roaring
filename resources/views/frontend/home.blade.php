@@ -121,17 +121,17 @@ $showPopup = !session()->has($sessionKey) && !Session::has('agree');
                 <div class="col-xxl-5 col-lg-6 mb-4" data-aos="fade-up" data-aos-duration="1000">
                     <div class="four_image">
                         <div class="row align-items-center justify-content-center">
-                            <div class="col-xl-5 col-lg-6 col-md-6 col-sm-6 col-6 mb-4 top-imgs" data-aos="fade-right"
-                                data-aos-duration="800">
-                                <img src="{{ asset('frontend_assets/images/abt_one.png') }}" class="about_four_ii mb-3">
-                                <img src="{{ asset('frontend_assets/images/abt_one1.png') }}" class="about_four_ii mb-3">
-                            </div>
-                            <div class="col-xl-5 col-lg-6 col-md-6 col-sm-6 col-6 mb-4 bottom-img" data-aos="fade-up"
-                                data-aos-duration="1600">
-                                <img src="{{ asset('frontend_assets/images/abt_one2.png') }}"
-                                    class="about_four_ii mb-3 mt-5">
-                                <img src="{{ asset('frontend_assets/images/abt_one3.jpg') }}" class="about_four_ii mb-3">
-                            </div>
+                            @foreach ($details as $key => $chunk)
+                                <div class="{{ $key % 2 == 0 ? 'col-xl-5 col-lg-6 col-md-6 col-sm-6 col-6 mb-4 top-imgs' : 'col-xl-5 col-lg-6 col-md-6 col-sm-6 col-6 mb-4 bottom-img mt-5' }} " data-aos="fade-right"
+                                    data-aos-duration="{{ $key % 2 == 0 ? '800' : '1600' }}">
+                                    @foreach ($chunk as $detail)
+                                       <a href="{{ route('details') }}" tabindex="0">
+                                        <img src="{{ Storage::url($detail->image) }}"
+                                            class=" {{ $key % 2 == 0 ? 'about_four_ii mb-3' : 'about_four_ii mb-3' }}">
+                                       </a>
+                                    @endforeach
+                                </div>
+                            @endforeach
                         </div>
                     </div>
                 </div>
@@ -253,11 +253,20 @@ $showPopup = !session()->has($sessionKey) && !Session::has('agree');
 
 
     <div class="promo-box-container">
-        <p class="title"><a href="#" target="_blank" rel="noopener">Want to create an impact? <span
-                    class="lighter">Gift/Seed to help us grow!!!</span></a></p>
-        <p><a class="cta-button red_btn" href="#" target="_blank" rel="noopener"> <span>Gift/Seed</span></a></p>
+        <p class="title">
+            <a href="{{ $home['section_6_button_link'] ?? '#' }}" target="_blank" rel="noopener">
+                {{ $home['section_6_title'] ?? 'Want to create an impact?' }}
+                <span class="lighter">{{ $home['section_6_subtitle'] ?? 'Gift/Seed to help us grow!!!' }}</span>
+            </a>
+        </p>
+        <p>
+            <a href="javascript:void(0);" data-bs-toggle="modal" data-bs-target="#exampleModal1" class="cta-button red_btn">
+                <span>{{ $home['section_6_button_text'] ?? 'Gift/Seed' }}</span>
+            </a>
+        </p>
         <div class="right-triangle"> </div>
     </div>
+
     @if (count($our_organizations) > 0)
         <section class="real_solution_sec">
             <div class="container">
@@ -276,7 +285,7 @@ $showPopup = !session()->has($sessionKey) && !Session::has('agree');
                         <div class="article card-4 mb-5">
                             <div class="card-body">
                                 <div class="card-corner">
-                                    <a href="{{ route('service', $our_organization->slug) }}" class="arrow-box">
+                                    <a href="{{ route('our-organization', $our_organization->slug) }}" class="arrow-box">
                                         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
                                             viewBox="0 0 24 24" fill="none">
                                             <path d="M13.75 6.75L19.25 12L13.75 17.25" stroke="#0E0E0F" stroke-width="1.5"
@@ -409,14 +418,14 @@ $showPopup = !session()->has($sessionKey) && !Session::has('agree');
 
     <!-- @if (count($galleries) > 0)
     <section class="gallery_sec margin_27">
-                                                                    <div class="gallery_slider">
-                                                                        @foreach ($galleries as $galary)
+                                                                            <div class="gallery_slider">
+                                                                                @foreach ($galleries as $galary)
     <div class="gallery_box" style="width: 100%; display: inline-block;">
-                                                                                <img src="{{ Storage::url($galary->image) }}" alt="">
-                                                                            </div>
+                                                                                        <img src="{{ Storage::url($galary->image) }}" alt="">
+                                                                                    </div>
     @endforeach
-                                                                    </div>
-                                                                </section>
+                                                                            </div>
+                                                                        </section>
     @endif -->
 @endsection
 

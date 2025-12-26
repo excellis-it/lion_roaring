@@ -16,7 +16,14 @@ class DonationController extends Controller
     public function index()
     {
         if (auth()->user()->can('Manage Donations')) {
-            $donations = Donation::orderBy('id', 'desc')->paginate(15);
+            $user_type = auth()->user()->user_type;
+            $country_name = auth()->user()->country;
+
+            if ($user_type == 'Global') {
+                $donations = Donation::orderBy('id', 'desc')->paginate(15);
+            } else {
+                $donations = Donation::where('country_id', $country_name)->orderBy('id', 'desc')->paginate(15);
+            }
             return view('user.admin.donations.list')->with(compact('donations'));
         } else {
             abort(403, 'You do not have permission to access this page.');
@@ -31,24 +38,57 @@ class DonationController extends Controller
             $sort_type = $request->get('sorttype');
             $query = $request->get('query');
             $query = str_replace(" ", "%", $query);
-            $donations = Donation::where('id', 'like', '%' . $query . '%')
-                ->orWhereRaw("CONCAT(first_name, ' ', last_name) like '%" . $query . "%'")
-                ->orWhere('email', 'like', '%' . $query . '%')
-                ->orWhere('address', 'like', '%' . $query . '%')
-                ->orWhere('city', 'like', '%' . $query . '%')
-                ->orWhere('postcode', 'like', '%' . $query . '%')
-                ->orWhere('phone', 'like', '%' . $query . '%')
-                ->orWhere('transaction_id', 'like', '%' . $query . '%')
-                ->orWhere('donation_amount', 'like', '%' . $query . '%')
-                ->orWhere('payment_status', 'like', '%' . $query . '%')
-                ->orWhereHas('country', function ($q) use ($query) {
-                    $q->where('name', 'like', '%' . $query . '%');
-                })
-                ->orWhereHas('states', function ($q) use ($query) {
-                    $q->where('name', 'like', '%' . $query . '%');
-                })
-                ->orderBy($sort_by, $sort_type)
-                ->paginate(15);
+            $user_type = auth()->user()->user_type;
+            $country_name = auth()->user()->country;
+
+            if ($user_type == 'Global') {
+                $donations = Donation::where('id', 'like', '%' . $query . '%')
+                    ->orWhereRaw("CONCAT(first_name, ' ', last_name) like '%" . $query . "%'")
+                    ->orWhere('email', 'like', '%' . $query . '%')
+                    ->orWhere('address', 'like', '%' . $query . '%')
+                    ->orWhere('city', 'like', '%' . $query . '%')
+                    ->orWhere('postcode', 'like', '%' . $query . '%')
+                    ->orWhere('phone', 'like', '%' . $query . '%')
+                    ->orWhere('transaction_id', 'like', '%' . $query . '%')
+                    ->orWhere('donation_amount', 'like', '%' . $query . '%')
+                    ->orWhere('payment_status', 'like', '%' . $query . '%')
+                    ->orWhereHas('country', function ($q) use ($query) {
+                        $q->where('name', 'like', '%' . $query . '%');
+                    })
+                    ->orWhereHas('states', function ($q) use ($query) {
+                        $q->where('name', 'like', '%' . $query . '%');
+                    })
+                    ->orderBy($sort_by, $sort_type)
+                    ->paginate(15);
+            } else {
+                $donations = Donation::where('country_id', $country_name)
+                    ->where(function ($q) use ($query) {
+
+                        $q->where('id', 'like', "%{$query}%")
+                            ->orWhereRaw(
+                                "CONCAT(first_name, ' ', last_name) LIKE ?",
+                                ["%{$query}%"]
+                            )
+                            ->orWhere('email', 'like', "%{$query}%")
+                            ->orWhere('address', 'like', "%{$query}%")
+                            ->orWhere('city', 'like', "%{$query}%")
+                            ->orWhere('postcode', 'like', "%{$query}%")
+                            ->orWhere('phone', 'like', "%{$query}%")
+                            ->orWhere('transaction_id', 'like', "%{$query}%")
+                            ->orWhere('donation_amount', 'like', "%{$query}%")
+                            ->orWhere('payment_status', 'like', "%{$query}%")
+
+                            ->orWhereHas('country', function ($q) use ($query) {
+                                $q->where('name', 'like', "%{$query}%");
+                            })
+
+                            ->orWhereHas('states', function ($q) use ($query) {
+                                $q->where('name', 'like', "%{$query}%");
+                            });
+                    })
+                    ->orderBy($sort_by, $sort_type)
+                    ->paginate(15);
+            }
 
             return response()->json(['data' => view('user.admin.donations.table', compact('donations'))->render()]);
         }

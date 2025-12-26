@@ -24,30 +24,30 @@
                     <div class="form-head">
                         {{-- <h4>Menu Section</h4> --}}
                     </div>
-
-                    <div class="row">
-                        <div class="col-md-6 mb-3">
-                            <div class="form-group-div">
-                                <div class="form-group">
-                                    <label for="content_country_code">Country</label>
-                                    <select name="content_country_code" id="content_country_code" class="form-control">
-                                        @foreach (\App\Models\Country::all() as $country)
-                                            <option value="{{ $country->code }}"
-                                                {{ old('content_country_code', $our_governance->country_code ?? 'US') == $country->code ? 'selected' : '' }}>
-                                                {{ $country->name }}
-                                            </option>
-                                        @endforeach
-                                    </select>
-                                    @if ($errors->has('content_country_code'))
-                                        <div class="error" style="color:red;">
-                                            {{ $errors->first('content_country_code') }}
-                                        </div>
-                                    @endif
+                    @if (auth()->user()->user_type == 'Global')
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <div class="form-group-div">
+                                    <div class="form-group">
+                                        <label for="content_country_code">Country</label>
+                                        <select name="content_country_code" id="content_country_code" class="form-control">
+                                            @foreach (\App\Models\Country::all() as $country)
+                                                <option value="{{ $country->code }}"
+                                                    {{ old('content_country_code', $our_governance->country_code ?? 'US') == $country->code ? 'selected' : '' }}>
+                                                    {{ $country->name }}
+                                                </option>
+                                            @endforeach
+                                        </select>
+                                        @if ($errors->has('content_country_code'))
+                                            <div class="error" style="color:red;">
+                                                {{ $errors->first('content_country_code') }}
+                                            </div>
+                                        @endif
+                                    </div>
                                 </div>
                             </div>
                         </div>
-                    </div>
-
+                    @endif
                     <div class="row justify-content-between">
                         {{-- courses --}}
                         <div class="col-md-6 mb-3">
@@ -195,7 +195,8 @@
                         <div class="col-xl-12">
                             <div class="btn-1">
                                 <button type="submit" class="print_btn me-2 mt-2 mb-2">Update</button>
-                                <a href="{{ route('user.admin.our-governances.index') }}" class="print_btn print_btn_vv">Cancel</a>
+                                <a href="{{ route('user.admin.our-governances.index') }}"
+                                    class="print_btn print_btn_vv">Cancel</a>
                             </div>
                         </div>
                     </div>

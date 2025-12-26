@@ -2785,3 +2785,7 @@ section {
 .form-group-div .dropzone{
     min-height: auto !important;
 }
+
+.ck-content ul{
+    list-style: inside !important;
+}

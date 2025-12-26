@@ -23,11 +23,6 @@ use Spatie\Permission\Models\Role;
 
 class PartnerController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
     public function index()
     {
         if (Auth::user()->can('Manage Partners')) {
@@ -42,7 +37,18 @@ class PartnerController extends Controller
                     $q->where('name', '!=', 'SUPER ADMIN')->where('name', '!=', 'ESTORE_USER');
                 });
 
-            if ($is_user_ecclesia_admin == 1) {
+            if ($user->user_type == 'Global' || $user->hasRole('SUPER ADMIN')) {
+                $partners->whereHas('roles', function ($q) {
+                    $q->whereIn('type', [2, 3]);
+                })
+                    ->where('id', '!=', $user->id);
+            } elseif ($user->user_type == 'Regional') {
+                $partners->where('country', $user->country)
+                    ->whereHas('roles', function ($q) {
+                        $q->whereIn('type', [2, 3]);
+                    })
+                    ->where('id', '!=', $user->id);
+            } elseif ($is_user_ecclesia_admin == 1) {
                 $manage_ecclesia_ids = is_array($user->manage_ecclesia)
                     ? $user->manage_ecclesia
                     : explode(',', $user->manage_ecclesia);
@@ -54,11 +60,6 @@ class PartnerController extends Controller
                         $q->whereIn('ecclesia_id', $manage_ecclesia_ids)->whereNotNull('ecclesia_id')
                             ->orWhere('created_id', $user->id)->orWhere('id', auth()->id());
                     });
-            } elseif ($user->hasRole('SUPER ADMIN')) {
-                $partners->whereHas('roles', function ($q) {
-                    $q->whereIn('type', [2, 3]);
-                })
-                    ->where('id', '!=', $user->id);
             } else {
                 $partners->where(function ($q) use ($user_ecclesia_id, $user) {
                     $q->where('ecclesia_id', $user_ecclesia_id)->whereNotNull('ecclesia_id')
@@ -136,6 +137,8 @@ class PartnerController extends Controller
             'zip' => 'required',
             'address2' => 'nullable',
             'phone' => 'required',
+            'user_type' => 'required',
+
             // 'manage_ecclesia' => 'nullable|array'
         ], [
             'password.regex' => 'The password must be at least 8 characters long and include at least one special character from @$%&.',
@@ -175,6 +178,7 @@ class PartnerController extends Controller
         $data->middle_name = $request->middle_name;
         $data->personal_email = $lr_email ? str_replace(' ', '', $lr_email) : null;
         $data->email = $request->email;
+        $data->user_type = $request->user_type;
         $data->password = bcrypt($request->password);
         $data->address = $request->address;
         $data->country = $request->country;
@@ -286,6 +290,7 @@ class PartnerController extends Controller
                 'last_name' => 'required',
                 'middle_name' => 'nullable',
                 'email' => 'required|regex:/^([a-z0-9\+_\-]+)(\.[a-z0-9\+_\-]+)*@([a-z0-9\-]+\.)+[a-z]{2,6}$/ix|unique:users,email,' . $id,
+                'user_type' => 'required',
                 'address' => 'required',
                 'phone' => 'required',
                 'ecclesia_id' => 'nullable|exists:ecclesias,id',
@@ -324,6 +329,7 @@ class PartnerController extends Controller
             $data->last_name = $request->last_name;
             $data->middle_name = $request->middle_name;
             $data->email = $request->email;
+            $data->user_type = $request->user_type;
             $data->address = $request->address;
             $data->country = $request->country;
             $data->state = $request->state;
@@ -384,15 +390,28 @@ class PartnerController extends Controller
                             ->orWhere('email', 'like', "%{$query}%")
                             ->orWhere('phone', 'like', "%{$query}%")
                             //  ->orWhere('address', 'like', "%{$query}%")
-                            ->orWhere('user_name', 'like', "%{$query}%");
-                        //   ->orWhere('city', 'like', "%{$query}%")
-                        //   ->orWhere('state', 'like', "%{$query}%")
-                        //   ->orWhere('country', 'like', "%{$query}%");
+                            ->orWhere('user_name', 'like', "%{$query}%")
+                            ->orWhere('user_type', 'like', "%{$query}%")
+                            //   ->orWhere('state', 'like', "%{$query}%")
+                            ->orWhereHas('countries', function ($q) use ($query) {
+                                $q->where('name', 'like', "%{$query}%");
+                            });
                     });
                 });
 
-            // Apply role and ecclesia filters
-            if ($is_user_ecclesia_admin == 1) {
+            // Apply role, user_type and ecclesia filters
+            if ($user->user_type == 'Global' || $user->hasRole('SUPER ADMIN')) {
+                $partners->whereHas('roles', function ($q) {
+                    $q->whereIn('type', [2, 3]);
+                })
+                    ->where('id', '!=', $user->id);
+            } elseif ($user->user_type == 'Regional') {
+                $partners->where('country', $user->country)
+                    ->whereHas('roles', function ($q) {
+                        $q->whereIn('type', [2, 3]);
+                    })
+                    ->where('id', '!=', $user->id);
+            } elseif ($is_user_ecclesia_admin == 1) {
                 $manage_ecclesia_ids = is_array($user->manage_ecclesia)
                     ? $user->manage_ecclesia
                     : explode(',', $user->manage_ecclesia);
@@ -404,11 +423,6 @@ class PartnerController extends Controller
                         $q->whereIn('ecclesia_id', $manage_ecclesia_ids)->whereNotNull('ecclesia_id')
                             ->orWhere('created_id', $user->id)->orWhere('id', auth()->id());
                     });
-            } elseif ($user->hasRole('SUPER ADMIN')) {
-                $partners->whereHas('roles', function ($q) {
-                    $q->whereIn('type', [2, 3]);
-                })
-                    ->where('id', '!=', $user->id);
             } else {
                 $partners->where(function ($q) use ($user_ecclesia_id, $user) {
                     $q->where('ecclesia_id', $user_ecclesia_id)->whereNotNull('ecclesia_id')

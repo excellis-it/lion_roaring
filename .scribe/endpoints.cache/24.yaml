@@ -49,7 +49,7 @@ endpoints:
         name: device_mac
         description: 'optional Device mac if available'
         required: false
-        example: dolore
+        example: molestiae
         type: string
         enumValues: []
         exampleWasSpecified: false
@@ -59,7 +59,7 @@ endpoints:
         name: user_id
         description: 'optional User id if logging on behalf of another user'
         required: false
-        example: 10
+        example: 18
         type: integer
         enumValues: []
         exampleWasSpecified: false
@@ -68,8 +68,8 @@ endpoints:
     cleanBodyParameters:
       activity_description: 'Clicked view button'
       permission_access: 'Manage Bulletin'
-      device_mac: dolore
-      user_id: 10
+      device_mac: molestiae
+      user_id: 18
     fileParameters: []
     responses:
       -
@@ -128,7 +128,7 @@ endpoints:
         name: user_name
         description: 'optional Filter by user name'
         required: false
-        example: incidunt
+        example: odio
         type: string
         enumValues: []
         exampleWasSpecified: false
@@ -138,7 +138,7 @@ endpoints:
         name: email
         description: 'optional Filter by email'
         required: false
-        example: oma64@example.net
+        example: luisa92@example.net
         type: string
         enumValues: []
         exampleWasSpecified: false
@@ -148,7 +148,7 @@ endpoints:
         name: user_roles
         description: 'optional Filter by roles'
         required: false
-        example: aliquid
+        example: sequi
         type: string
         enumValues: []
         exampleWasSpecified: false
@@ -158,7 +158,7 @@ endpoints:
         name: country_name
         description: 'optional Filter by country'
         required: false
-        example: aut
+        example: molestiae
         type: string
         enumValues: []
         exampleWasSpecified: false
@@ -168,7 +168,7 @@ endpoints:
         name: activity_type
         description: 'optional Filter by activity type'
         required: false
-        example: sint
+        example: nisi
         type: string
         enumValues: []
         exampleWasSpecified: false
@@ -178,7 +178,7 @@ endpoints:
         name: date_from
         description: 'optional Filter activities from date'
         required: false
-        example: ducimus
+        example: mollitia
         type: date
         enumValues: []
         exampleWasSpecified: false
@@ -188,7 +188,7 @@ endpoints:
         name: date_to
         description: 'optional Filter activities to date'
         required: false
-        example: laborum
+        example: deserunt
         type: date
         enumValues: []
         exampleWasSpecified: false
@@ -198,21 +198,21 @@ endpoints:
         name: per_page
         description: 'optional Number of results per page. Default 10'
         required: false
-        example: 3
+        example: 2
         type: integer
         enumValues: []
         exampleWasSpecified: false
         nullable: false
         custom: []
     cleanBodyParameters:
-      user_name: incidunt
-      email: oma64@example.net
-      user_roles: aliquid
-      country_name: aut
-      activity_type: sint
-      date_from: ducimus
-      date_to: laborum
-      per_page: 3
+      user_name: odio
+      email: luisa92@example.net
+      user_roles: sequi
+      country_name: molestiae
+      activity_type: nisi
+      date_from: mollitia
+      date_to: deserunt
+      per_page: 2
     fileParameters: []
     responses:
       -
@@ -271,14 +271,14 @@ endpoints:
         name: per_page
         description: 'optional Number of results per page. Default 10'
         required: false
-        example: 10
+        example: 20
         type: integer
         enumValues: []
         exampleWasSpecified: false
         nullable: false
         custom: []
     cleanBodyParameters:
-      per_page: 10
+      per_page: 20
     fileParameters: []
     responses:
       -
@@ -327,14 +327,14 @@ endpoints:
         name: per_page
         description: 'optional Number of results per page. Default 10'
         required: false
-        example: 16
+        example: 17
         type: integer
         enumValues: []
         exampleWasSpecified: false
         nullable: false
         custom: []
     cleanBodyParameters:
-      per_page: 16
+      per_page: 17
     fileParameters: []
     responses:
       -
@@ -383,14 +383,14 @@ endpoints:
         name: per_page
         description: 'optional Number of results per page. Default 10'
         required: false
-        example: 9
+        example: 4
         type: integer
         enumValues: []
         exampleWasSpecified: false
         nullable: false
         custom: []
     cleanBodyParameters:
-      per_page: 9
+      per_page: 4
     fileParameters: []
     responses:
       -

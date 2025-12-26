@@ -53,6 +53,9 @@
                                                 <th>End Time</th>
                                                 <th>Status</th>
                                                 <th>Created By</th>
+                                                <th>
+                                                    Country
+                                                </th>
                                                 <th>Actions</th>
                                             </tr>
                                         </thead>

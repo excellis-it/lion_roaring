@@ -141,14 +141,14 @@ endpoints:
         name: slug
         description: 'The slug of the product.'
         required: true
-        example: provident
+        example: temporibus
         type: string
         enumValues: []
         exampleWasSpecified: false
         nullable: false
         custom: []
     cleanUrlParameters:
-      slug: provident
+      slug: temporibus
     queryParameters: []
     cleanQueryParameters: []
     bodyParameters: []
@@ -200,7 +200,7 @@ endpoints:
         description: 'Optional. Array of category IDs.'
         required: false
         example:
-          - laborum
+          - aperiam
         type: 'string[]'
         enumValues: []
         exampleWasSpecified: false
@@ -211,7 +211,7 @@ endpoints:
         description: 'Optional. Array of ElearningTopic IDs.'
         required: false
         example:
-          - quaerat
+          - veritatis
         type: 'string[]'
         enumValues: []
         exampleWasSpecified: false
@@ -221,7 +221,7 @@ endpoints:
         name: elearning_topic_search
         description: 'Optional. Search by ElearningTopic text.'
         required: false
-        example: excepturi
+        example: expedita
         type: string
         enumValues: []
         exampleWasSpecified: false
@@ -231,7 +231,7 @@ endpoints:
         name: latestFilter
         description: 'Optional. Filter by latest, A-Z, Z-A.'
         required: false
-        example: corporis
+        example: et
         type: string
         enumValues: []
         exampleWasSpecified: false
@@ -241,7 +241,7 @@ endpoints:
         name: search
         description: 'Optional. Search by product name.'
         required: false
-        example: ipsa
+        example: quasi
         type: string
         enumValues: []
         exampleWasSpecified: false
@@ -251,7 +251,7 @@ endpoints:
         name: page
         description: 'Optional. Page number.'
         required: false
-        example: 1
+        example: 17
         type: integer
         enumValues: []
         exampleWasSpecified: false
@@ -259,13 +259,13 @@ endpoints:
         custom: []
     cleanQueryParameters:
       'category_id[]':
-        - laborum
+        - aperiam
       'elearning_topic_id[]':
-        - quaerat
-      elearning_topic_search: excepturi
-      latestFilter: corporis
-      search: ipsa
-      page: 1
+        - veritatis
+      elearning_topic_search: expedita
+      latestFilter: et
+      search: quasi
+      page: 17
     bodyParameters: []
     cleanBodyParameters: []
     fileParameters: []

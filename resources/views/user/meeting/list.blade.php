@@ -83,6 +83,9 @@
                                                     style="cursor: pointer">Meeting Link <span id="meeting_link_icon"><i
                                                             class="fa fa-arrow-down"></i></span></th>
                                                 <th>
+                                                    Country
+                                                </th>
+                                                <th>
                                                     Created Time
                                                 </th>
                                                 <th></th>

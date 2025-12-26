@@ -30,7 +30,7 @@ use App\Models\SiteSetting;
 use App\Models\TermsAndCondition;
 use Illuminate\Support\Facades\Http;
 use App\Helpers\Helper;
-
+use App\Models\Country;
 
 class CmsController extends Controller
 {
@@ -47,8 +47,16 @@ class CmsController extends Controller
         $testimonials = Helper::getVisitorCmsContent('Testimonial', false, true, 'id', 'desc', null);
         $our_organizations = Helper::getVisitorCmsContent('OurOrganization', false, true, 'id', 'desc', null);
         $our_governances = Helper::getVisitorCmsContent('OurGovernance', false, true, 'id', 'asc', null);
+        $details = Helper::getVisitorCmsContent('Detail', false, true, 'id', 'asc', null)->chunk(2);
 
-        return view('frontend.home')->with(compact('galleries', 'testimonials', 'our_organizations', 'our_governances', 'home'));
+        return view('frontend.home')->with([
+            'galleries' => $galleries,
+            'testimonials' => $testimonials,
+            'our_organizations' => $our_organizations,
+            'our_governances' => $our_governances,
+            'home' => $home,
+            'details' => $details,
+        ]);
     }
 
     public function gallery()
@@ -59,7 +67,7 @@ class CmsController extends Controller
 
     public function contactUs()
     {
-       // $contact = ContactUsCms::first();
+        // $contact = ContactUsCms::first();
         $contact = Helper::getVisitorCmsContent('ContactUsCms', true, false, 'id', 'desc', null);
         return view('frontend.contact-us')->with('contact', $contact);
     }
@@ -160,11 +168,15 @@ class CmsController extends Controller
             'newsletter_message' => 'required',
         ]);
 
+        $currentCode = strtoupper(Helper::getVisitorCountryCode());
+        $country = Country::where('code', $currentCode)->first();
+
         if ($request->ajax()) {
             $newsletter = new Newsletter();
             $newsletter->full_name = $request->newsletter_name;
             $newsletter->email = $request->newsletter_email;
             $newsletter->message = $request->newsletter_message;
+            $newsletter->country_id = $country->id ?? null;
             $newsletter->save();
 
             $adminEmail = SiteSetting::first()->SITE_CONTACT_EMAIL;

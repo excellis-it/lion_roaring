@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\User;
 
 use App\Http\Controllers\Controller;
+use App\Models\Country;
 use App\Models\Strategy;
 use App\Traits\ImageTrait;
 use Illuminate\Http\Request;
@@ -19,7 +20,14 @@ class StrategyController extends Controller
     public function index()
     {
         if (auth()->user()->can('Manage Strategy')) {
-            $strategies = Strategy::orderBy('id', 'desc')->paginate(15);
+            $user_type = auth()->user()->user_type;
+            $user_country = auth()->user()->country;
+
+            if ($user_type == 'Global') {
+                $strategies = Strategy::orderBy('id', 'desc')->paginate(15);
+            } else {
+                $strategies = Strategy::where('country_id', $user_country->id)->orderBy('id', 'desc')->paginate(15);
+            }
             return view('user.strategy.list')->with(compact('strategies'));
         } else {
             abort(403, 'You do not have permission to access this page.');
@@ -29,7 +37,8 @@ class StrategyController extends Controller
     public function upload()
     {
         if (auth()->user()->can('Upload Strategy')) {
-            return view('user.strategy.upload');
+            $countries = Country::orderBy('name', 'asc')->get();
+            return view('user.strategy.upload')->with(compact('countries'));
         } else {
             abort(403, 'You do not have permission to access this page.');
         }
@@ -37,9 +46,15 @@ class StrategyController extends Controller
 
     public function store(Request $request)
     {
+        $country_id = auth()->user()->user_type === 'Global'
+            ? $request->country_id
+            : auth()->user()->country;
+
+        $request->merge(['country_id' => $country_id]);
         $validated = Validator::make($request->all(), [
             'file' => 'required|array', // Ensure strategy is an array
             'file.*' => 'required', // Ensure each strategy is valid
+            'country_id' => 'required',
         ]);
 
         // Check if validation fails
@@ -69,6 +84,7 @@ class StrategyController extends Controller
             $file_upload->file_name = $file_name;
             $file_upload->file_extension = $file_extension;
             $file_upload->file = $file_path;
+            $file_upload->country_id = $country_id;
             $file_upload->save();
         }
 
@@ -129,7 +145,15 @@ class StrategyController extends Controller
     public function view($id)
     {
         if (auth()->user()->can('View Strategy')) {
-            $strategy = Strategy::findOrFail($id);
+            $user_type = auth()->user()->user_type;
+            $user_country = auth()->user()->country;
+
+            if ($user_type == 'Global') {
+                $strategy = Strategy::findOrFail($id);
+            } else {
+                $strategy = Strategy::where('country_id', $user_country)->findOrFail($id);
+            }
+
             if ($strategy) {
                 return view('user.strategy.view')->with('strategy', $strategy);
             } else {
@@ -152,8 +176,11 @@ class StrategyController extends Controller
                 ->where(function ($q) use ($query) {
                     $q->where('id', 'like', '%' . $query . '%')
                         ->orWhere('file_name', 'like', '%' . $query . '%')
-                        ->orWhere('file_extension', 'like', '%' . $query . '%');
-                });
+                        ->orWhere('file_extension', 'like', '%' . $query . '%')
+                        ->orWhereHas('country', function ($q) use ($query) {
+                            $q->where('name', 'like', '%' . $query . '%');
+                        });
+                });                                                                                                                                                                                                                                                                                                                                    
             if ($request->topic_id) {
                 $strategies->whereHas('topic', function ($q) use ($request) {
                     $q->where('id', $request->topic_id);
@@ -162,6 +189,12 @@ class StrategyController extends Controller
             if ($request->type) {
                 $strategies->where('type', $request->type);
             }
+            $user_type = auth()->user()->user_type;
+            $country_name = auth()->user()->country;
+            if ($user_type == 'Regional') {
+                $strategies->where('country_name', $country_name);
+            }
+
             $strategies = $strategies->orderBy($sort_by, $sort_type)
                 ->paginate(15);
 

@@ -13,6 +13,7 @@
                 <form action="{{ route('user.admin.footer.update') }}" method="post" enctype="multipart/form-data">
                     @csrf
                     <input type="hidden" name="id" value="{{ $footer->id ?? '' }}">
+                       @if (auth()->user()->user_type == 'Global')
                     <div class="row mb-4">
                         <div class="col-md-4 mb-3">
                             <label for="country_code">Content Country</label>
@@ -27,6 +28,7 @@
                             </select>
                         </div>
                     </div>
+                    @endif
                     <div class="sales-report-card-wrap">
                         <div class="form-head">
                             <h4>Footer Section</h4>

@@ -261,18 +261,18 @@
                                                     </p>
                                                     <div class="signature-container"
                                                         style="
-                                                        border: 2px dashed #643271; 
-                                                        border-radius: 12px; 
-                                                        background: linear-gradient(to bottom, #ffffff 0%, #f9f9f9 100%); 
+                                                        border: 2px dashed #643271;
+                                                        border-radius: 12px;
+                                                        background: linear-gradient(to bottom, #ffffff 0%, #f9f9f9 100%);
                                                         position: relative;
                                                         box-shadow: 0 2px 8px rgba(100, 50, 113, 0.1);
                                                         padding: 10px;
                                                     ">
                                                         <canvas id="signature-pad"
                                                             style="
-                                                            width: 100%; 
-                                                            height: 200px; 
-                                                            cursor: crosshair; 
+                                                            width: 100%;
+                                                            height: 200px;
+                                                            cursor: crosshair;
                                                             touch-action: none;
                                                             border-radius: 8px;
                                                             background: white;

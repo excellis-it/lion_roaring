@@ -137,12 +137,13 @@
         $panel_watermark_logo = Helper::getSettings()->PANEL_WATERMARK_LOGO ?? '';
 
         // dd( $panel_watermark_logo);
+
     @endphp
 
     <script>
         $('.bg_white_border').css({
             "background": "#fff url('" +
-                "{{ $panel_watermark_logo ? asset($panel_watermark_logo) : asset('user_assets/images/banner_lion.png')  }}' ) no-repeat center / 400px"
+                "{{ $panel_watermark_logo ? asset($panel_watermark_logo) : asset('user_assets/images/banner_lion.png') }}' ) no-repeat center / 400px"
         });
     </script>
 
@@ -588,6 +589,18 @@
                 });
             }
 
+            function refreshMailList() {
+                // The URL should point to a route that returns 'user.mail.partials.reply-mails'
+                console.log('Refreshing mail list...');
+                try {
+                    $('#mail-details-reply-mails-list').load(window.location.href +
+                        ' #mail-details-reply-mails-list > *');
+                } catch (error) {
+                    console.error('Error refreshing mail list:', error);
+
+                }
+            }
+
             // showBulletin
             socket.on('showBulletin', function(data) {
                 loadBulletin();
@@ -629,6 +642,15 @@
                     count += 1;
                     countElement.text(count);
                     fetchLatestEmails();
+
+                    var viewMatch = window.location.pathname.match(/\/user\/mail\/view\/([^\/]+)/);
+                    if (viewMatch && viewMatch[1]) {
+                        console.log('viewMatch', viewMatch);
+                        var encodedId = viewMatch[1];
+                        // var mailId = atob(encodedId);
+                        // Refresh the mail details and reply mails section
+                        refreshMailList();
+                    }
                 }
 
             });
@@ -1299,6 +1321,64 @@
             goBottom.scrollTop = goBottom.scrollHeight;
         }
     </script>
+
+
+    <script>
+        // Reusable init function
+        function initSummernote(selector = '.summernote') {
+            $(selector).each(function() {
+                var $el = $(this);
+
+                // Skip if already initialized (prevents duplicate editors)
+                if ($el.next('.note-editor').length) return;
+
+                var height = $el.data('height') || 220;
+                var placeholder = $el.attr('placeholder') || 'Write something nice...';
+
+                $el.summernote({
+                    placeholder: placeholder,
+                    tabsize: 2,
+                    height: height,
+                    toolbar: [
+                        ['style', ['style']],
+                        ['font', ['bold', 'italic', 'underline', 'clear']],
+                        ['fontname', ['fontname']],
+                        ['fontsize', ['fontsize']],
+                        ['para', ['ul', 'ol', 'paragraph']],
+                        ['insert', ['link', 'picture', 'video']],
+                        ['view', ['codeview']]
+                    ],
+                    fontNames: ['Inter', 'Arial', 'Helvetica', 'Times New Roman'],
+                    fontSizes: ['12', '14', '16', '18', '20', '24'],
+                    callbacks: {
+                        onInit: function() {
+                            // make sure editor area inherits site font if needed
+                            $(this).siblings('.note-editor').find('.note-editable').css('font-family',
+                                '"Inter", Arial, sans-serif');
+                        }
+                    }
+                });
+            });
+        }
+
+        // Initialize on page load for all .summernote elements
+        $(document).ready(function() {
+            initSummernote('.summernote');
+        });
+
+        // Example: call this after you append new textarea(s) via AJAX/DOM
+        // appendHtmlContainingTextareas(); // your code that adds new textarea
+        // initSummernote('.summernote'); // re-run to initialize new ones
+
+        // Optional: initialize a specific element only
+        // initSummernote('#specific-textarea');
+
+        // Destroy example (if you need to remove editor and revert to textarea)
+        // $('#some-textarea').each(function(){
+        //   if ($(this).next('.note-editor').length) $(this).summernote('destroy');
+        // });
+    </script>
+
 
 
 

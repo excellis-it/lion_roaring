@@ -18,20 +18,23 @@
             <form action="{{ route('user.admin.home-cms.store') }}" method="post" enctype="multipart/form-data">
                 @csrf
                 <input type="hidden" name="id" value="{{ $home->id ?? '' }}">
-                <div class="row mb-4">
-                    <div class="col-md-4 mb-3">
-                        <label for="country_code">Content Country</label>
-                        <select onchange="window.location.href='?content_country_code='+$(this).val()"
-                            name="content_country_code" id="content_country_code" class="form-control">
-                            @foreach (\App\Models\Country::all() as $country)
-                                <option value="{{ $country->code }}"
-                                    {{ request()->get('content_country_code', 'US') == $country->code ? 'selected' : '' }}>
-                                    {{ $country->name }}
-                                </option>
-                            @endforeach
-                        </select>
+
+                @if (auth()->user()->user_type == 'Global')
+                    <div class="row mb-4">
+                        <div class="col-md-4 mb-3">
+                            <label for="country_code">Content Country</label>
+                            <select onchange="window.location.href='?content_country_code='+$(this).val()"
+                                name="content_country_code" id="content_country_code" class="form-control">
+                                @foreach (\App\Models\Country::all() as $country)
+                                    <option value="{{ $country->code }}"
+                                        {{ request()->get('content_country_code', 'US') == $country->code ? 'selected' : '' }}>
+                                        {{ $country->name }}
+                                    </option>
+                                @endforeach
+                            </select>
+                        </div>
                     </div>
-                </div>
+                @endif
                 <div class="sales-report-card-wrap">
                     <div class="form-head">
                         <h4>Menu Section</h4>
@@ -427,6 +430,57 @@
                         </div>
                     </div>
                 </div>
+
+                <div class="sales-report-card-wrap mt-5">
+                    <div class="form-head">
+                        <h4>Promo Box Section</h4>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <div class="form-group-div">
+                                <div class="form-group">
+                                    <label for="floatingInputValue">Promo Title*</label>
+                                    <input type="text" class="form-control" name="section_6_title"
+                                        value="{{ isset($home->section_6_title) ? $home->section_6_title : old('section_6_title') }}"
+                                        placeholder="Promo Title">
+                                    @if ($errors->has('section_6_title'))
+                                        <div class="error" style="color:red;">
+                                            {{ $errors->first('section_6_title') }}</div>
+                                    @endif
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <div class="form-group-div">
+                                <div class="form-group">
+                                    <label for="floatingInputValue">Promo Subtitle*</label>
+                                    <input type="text" class="form-control" name="section_6_subtitle"
+                                        value="{{ isset($home->section_6_subtitle) ? $home->section_6_subtitle : old('section_6_subtitle') }}"
+                                        placeholder="Promo Subtitle">
+                                    @if ($errors->has('section_6_subtitle'))
+                                        <div class="error" style="color:red;">
+                                            {{ $errors->first('section_6_subtitle') }}</div>
+                                    @endif
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <div class="form-group-div">
+                                <div class="form-group">
+                                    <label for="floatingInputValue">Promo Button Text*</label>
+                                    <input type="text" class="form-control" name="section_6_button_text"
+                                        value="{{ isset($home->section_6_button_text) ? $home->section_6_button_text : old('section_6_button_text') }}"
+                                        placeholder="Promo Button Text">
+                                    @if ($errors->has('section_6_button_text'))
+                                        <div class="error" style="color:red;">
+                                            {{ $errors->first('section_6_button_text') }}</div>
+                                    @endif
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
                 <div class="sales-report-card-wrap mt-3">
                     <div class="form-head">
                         <h4>SEO Management</h4>
@@ -495,46 +549,24 @@
 @endsection
 
 @push('scripts')
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote-lite.min.css">
-    <script src="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote-lite.min.js"></script>
     <script>
         $(document).ready(function() {
-            // ClassicEditor.create(document.querySelector("#section1_des"));
-            // ClassicEditor.create(document.querySelector("#section2_left_des"));
-            // ClassicEditor.create(document.querySelector("#section2_right_des"));
-            // ClassicEditor.create(document.querySelector("#section3_des"));
-            // ClassicEditor.create(document.querySelector("#section4_des"));
+            function initCKEditor(selector) {
+                ClassicEditor
+                    .create(document.querySelector(selector))
+                    .then(editor => {
+                        editor.ui.view.editable.element.style.height = '250px';
+                    })
+                    .catch(error => {
+                        console.error(error);
+                    });
+            }
 
-            $('#section1_des').summernote({
-                placeholder: 'Section 1 Description*',
-                tabsize: 2,
-                height: 400
-            });
-
-            $('#section2_left_des').summernote({
-                placeholder: 'Section 2 Left Description*',
-                tabsize: 2,
-                height: 400
-            });
-
-            $('#section2_right_des').summernote({
-                placeholder: 'Section 2 Right Description*',
-                tabsize: 2,
-                height: 400
-            });
-
-            $('#section3_des').summernote({
-                placeholder: 'Section 3 Description*',
-                tabsize: 2,
-                height: 400
-            });
-
-            $('#section4_des').summernote({
-                placeholder: 'Section 4 Description*',
-                tabsize: 2,
-                height: 400
-            });
-
+            initCKEditor('#section1_des');
+            initCKEditor('#section2_left_des');
+            initCKEditor('#section2_right_des');
+            initCKEditor('#section3_des');
+            initCKEditor('#section4_des');
         });
     </script>
 
@@ -548,10 +580,7 @@
                 }
                 reader.readAsDataURL(this.files[0]);
             });
-        });
-    </script>
-    <script>
-        $(document).ready(function() {
+
             $('#section_2_left').change(function() {
                 let reader = new FileReader();
                 reader.onload = (e) => {
@@ -560,22 +589,7 @@
                 }
                 reader.readAsDataURL(this.files[0]);
             });
-        });
-    </script>
-    <script>
-        $(document).ready(function() {
-            $('#section_2_left').change(function() {
-                let reader = new FileReader();
-                reader.onload = (e) => {
-                    $('#section_2_left_preview').show();
-                    $('#section_2_left_preview').attr('src', e.target.result);
-                }
-                reader.readAsDataURL(this.files[0]);
-            });
-        });
-    </script>
-    <script>
-        $(document).ready(function() {
+
             $('#section_2_right_image').change(function() {
                 let reader = new FileReader();
                 reader.onload = (e) => {

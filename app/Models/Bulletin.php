@@ -13,6 +13,7 @@ class Bulletin extends Model
 
     protected $fillable = [
         'user_id',
+        'country_id',
         'title',
         'description',
         'created_at',
@@ -58,5 +59,10 @@ class Bulletin extends Model
     public function user()
     {
         return $this->belongsTo(User::class);
+    }
+
+    public function country()
+    {
+        return $this->belongsTo(Country::class);
     }
 }

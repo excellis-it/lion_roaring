@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\User;
 
+use App\Helpers\Helper;
 use App\Http\Controllers\Controller;
 use App\Mail\AccountPendingApprovalMail;
 use App\Mail\RegistrationMail;
@@ -48,8 +49,17 @@ class AuthController extends Controller
 
         $user = User::where($fieldType, $request->user_name)->first();
 
+        $currentCode = strtoupper(Helper::getVisitorCountryCode());
+        $country = Country::where('code', $currentCode)->first();
+
         if ($user && \Hash::check($request->password, $user->password)) {
             if ($user->status == 1 && $user->is_accept == 1) {
+
+                // dd($country->id, $user->country);
+                if (($user->user_type == 'Regional') && ($country->id != $user->country)) {
+                    return response()->json(['message' => 'You are not from ' . $country->name . '! Please change the country from dropdown.', 'status' => false]);
+                }
+
                 $otp = rand(1000, 9999);
                 // $otp = 1234;
                 $otp_verify = new VerifyOTP();
@@ -158,6 +168,15 @@ class AuthController extends Controller
 
         $uniqueNumber = rand(1000, 9999);
         $lr_email = strtolower(trim($request->first_name)) . strtolower(trim($request->middle_name)) . strtolower(trim($request->last_name)) . $uniqueNumber . '@lionroaring.us';
+
+        $currentCode = strtoupper(Helper::getVisitorCountryCode());
+        $country = Country::where('code', $currentCode)->first();
+        if ($country->id != $request->country) {
+            // return response()->json(['message' => 'You are not from ' . $country->name . '! Please change the country from dropdown.', 'status' => false]);
+            // merge as a validation error
+            $validator->errors()->add('country', 'Now you are registered from ' . $country->name . '! Please change the country from dropdown.');
+            return redirect()->back()->withErrors($validator)->withInput();
+        }
 
         $user = new User();
         $user->user_name = $request->user_name;

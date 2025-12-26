@@ -63,17 +63,225 @@
             }
         </style>
 
-        @stack('styles')
-    </head>
+    <!-- Page Loader Styles -->
+    <style>
+        /* Prevent body scroll while loading */
+        body.loading {
+            overflow: hidden;
+        }
 
-    <body>
-        <main>
-            <section id="loading">
-                <div id="loading-content"></div>
-            </section>
-            @php
-                use App\Helpers\Helper;
-            @endphp
+        #loading {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, #643271 0%, #4a2454 50%, #643271 100%);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 99999;
+            opacity: 1;
+            visibility: visible;
+            transition: opacity 0.5s ease-out, visibility 0.5s ease-out;
+        }
+
+        #loading.fade-out {
+            opacity: 0;
+            visibility: hidden;
+        }
+
+        #loading-content {
+            position: relative;
+            width: 150px;
+            height: 150px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        /* Golden rotating circle */
+        #loading-content::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            border: 6px solid transparent;
+            border-top: 6px solid #d98b1c;
+            border-right: 6px solid #d98b1c;
+            border-radius: 50%;
+            animation: spin 1.2s linear infinite;
+            box-shadow: 0 0 20px rgba(217, 139, 28, 0.3);
+        }
+
+        /* Inner purple pulsing circle */
+        #loading-content::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 100px;
+            height: 100px;
+            background: linear-gradient(135deg, rgba(217, 139, 28, 0.2) 0%, rgba(100, 50, 113, 0.3) 100%);
+            border: 3px solid rgba(217, 139, 28, 0.4);
+            border-radius: 50%;
+            animation: pulse 1.8s ease-in-out infinite;
+        }
+
+        /* Lion icon in center */
+        .loader-icon {
+            position: relative;
+            z-index: 10;
+            font-size: 50px;
+            color: #d98b1c;
+            animation: roar 2s ease-in-out infinite;
+            text-shadow: 0 0 20px rgba(217, 139, 28, 0.5);
+        }
+
+        @keyframes spin {
+            0% {
+                transform: rotate(0deg);
+            }
+
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+
+        @keyframes pulse {
+
+            0%,
+            100% {
+                transform: translate(-50%, -50%) scale(0.85);
+                opacity: 0.6;
+                border-color: rgba(217, 139, 28, 0.4);
+            }
+
+            50% {
+                transform: translate(-50%, -50%) scale(1.1);
+                opacity: 1;
+                border-color: rgba(217, 139, 28, 0.8);
+            }
+        }
+
+        @keyframes roar {
+
+            0%,
+            100% {
+                transform: scale(1);
+                filter: brightness(1);
+            }
+
+            50% {
+                transform: scale(1.15);
+                filter: brightness(1.3);
+            }
+        }
+
+        /* Loading text */
+        .loading-text {
+            position: absolute;
+            top: 180px;
+            left: 50%;
+            transform: translateX(-50%);
+            color: #d98b1c;
+            font-size: 20px;
+            font-weight: 600;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            white-space: nowrap;
+            font-family: 'EB Garamond', serif;
+            animation: fadeInOut 2s ease-in-out infinite;
+            text-shadow: 0 2px 10px rgba(217, 139, 28, 0.3);
+        }
+
+        @keyframes fadeInOut {
+
+            0%,
+            100% {
+                opacity: 0.6;
+            }
+
+            50% {
+                opacity: 1;
+            }
+        }
+
+        /* Decorative particles */
+        .particle {
+            position: absolute;
+            width: 4px;
+            height: 4px;
+            background: #d98b1c;
+            border-radius: 50%;
+            opacity: 0;
+            animation: float 3s ease-in-out infinite;
+        }
+
+        .particle:nth-child(1) {
+            top: 20%;
+            left: 20%;
+            animation-delay: 0s;
+        }
+
+        .particle:nth-child(2) {
+            top: 30%;
+            right: 20%;
+            animation-delay: 0.5s;
+        }
+
+        .particle:nth-child(3) {
+            bottom: 30%;
+            left: 25%;
+            animation-delay: 1s;
+        }
+
+        .particle:nth-child(4) {
+            bottom: 25%;
+            right: 25%;
+            animation-delay: 1.5s;
+        }
+
+        @keyframes float {
+
+            0%,
+            100% {
+                opacity: 0;
+                transform: translateY(0) scale(0);
+            }
+
+            50% {
+                opacity: 0.8;
+                transform: translateY(-20px) scale(1.5);
+            }
+        }
+    </style>
+
+    @stack('styles')
+</head>
+
+<body class="loading">
+    <script>
+        // Ensure loader is visible immediately
+        document.body.classList.add('loading');
+    </script>
+    <main>
+        <section id="loading">
+            <div id="loading-content">
+                <i class="fas fa-crown loader-icon"></i>
+            </div>
+            <div class="loading-text">Lion Roaring</div>
+            <div class="particle"></div>
+            <div class="particle"></div>
+            <div class="particle"></div>
+            <div class="particle"></div>
+        </section>
+        @php
+            use App\Helpers\Helper;
+        @endphp
 
 
             @include('frontend.includes.header')
@@ -271,11 +479,11 @@
                                         }
                                         return null;
                                     }
-                                    
+
                                     // Get user's timezone based on IP address
                                     $ip = $_SERVER['REMOTE_ADDR'];
                                     $timezone = getTimezoneFromIp($ip);
-                                    
+
                                     if ($timezone) {
                                         // Set the default timezone
                                         date_default_timezone_set($timezone);
@@ -283,10 +491,10 @@
                                         // Fallback timezone
                                         date_default_timezone_set('UTC');
                                     }
-                                    
+
                                     // Get the current hour in 24-hour format
                                     $time = date('H');
-                                    
+
                                     // Determine greeting based on time
                                     if ($time < '12') {
                                         echo 'Perfect morning';
@@ -1758,6 +1966,41 @@
                 @endif
             });
         </script>
+
+    <script>
+        // Hide loader when page is fully loaded
+        window.addEventListener('load', function() {
+            const loader = document.getElementById('loading');
+            const body = document.body;
+
+            if (loader) {
+                // Remove loading class from body
+                body.classList.remove('loading');
+
+                // Add fade-out class to loader
+                loader.classList.add('fade-out');
+
+                // Remove from DOM after transition completes
+                setTimeout(function() {
+                    loader.style.display = 'none';
+                }, 500);
+            }
+        });
+
+        // Fallback: Hide loader after 5 seconds if page hasn't fully loaded
+        setTimeout(function() {
+            const loader = document.getElementById('loading');
+            const body = document.body;
+
+            if (loader && !loader.classList.contains('fade-out')) {
+                body.classList.remove('loading');
+                loader.classList.add('fade-out');
+                setTimeout(function() {
+                    loader.style.display = 'none';
+                }, 500);
+            }
+        }, 5000);
+    </script>
 
 
         @stack('scripts')

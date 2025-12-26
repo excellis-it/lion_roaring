@@ -26,6 +26,25 @@
                             </div>
                         </div>
                         <div class="row">
+                            @if (auth()->user()->user_type == 'Global')
+                                {{-- country --}}
+                                <div class="col-md-6 mb-2">
+                                    <div class="box_label">
+                                        <label>Country *</label>
+                                        <select name="country_id" id="countries" class="form-control">
+                                            <option value="">Select Country</option>
+                                            @foreach ($countries as $country)
+                                                <option value="{{ $country->id }}"
+                                                    {{ $file->country_id == $country->id ? 'selected' : '' }}>
+                                                    {{ $country->name }}</option>
+                                            @endforeach
+                                        </select>
+                                        @if ($errors->has('country_id'))
+                                            <span class="error">{{ $errors->first('country_id') }}</span>
+                                        @endif
+                                    </div>
+                                </div>
+                            @endif
                             <div class="col-md-6 mb-2">
                                 <div class="box_label">
                                     <label for="file">Choose File</label>
@@ -73,6 +92,33 @@
                     // e.preventDefault();
                     $('#loading').addClass('loading');
                     $('#loading-content').addClass('loading-content');
+                });
+
+                $('#countries').on('change', function() {
+                    var country_id = $(this).val();
+                    var education_type = 'Becoming Christ Like';
+                    if (country_id) {
+                        $.ajax({
+                            url: "{{ route('topics.getTopics', ':type') }}".replace(':type',
+                                education_type),
+                            type: "GET",
+                            data: {
+                                country_id: country_id
+                            },
+                            success: function(data) {
+                                $('#topics').empty();
+                                $('#topics').append('<option value="">Select Topics</option>');
+                                $.each(data.data, function(key, value) {
+                                    $('#topics').append('<option value="' + value.id +
+                                        '">' +
+                                        value.topic_name + '</option>');
+                                });
+                            }
+                        });
+                    } else {
+                        $('#topics').empty();
+                        $('#topics').append('<option value="">Select Topics</option>');
+                    }
                 });
             });
         </script>

@@ -4,6 +4,7 @@
             <td>{{ $policies->firstItem() + $key }}</td>
             <td> {{ $policy->file_name }}</td>
             <td> {{ $policy->file_extension }}</td>
+            <td> {{ $policy->country->name ?? ''}}</td>
             <td>
                 <div class="d-flex">
                     @if (auth()->user()->can('View Policy'))
@@ -30,7 +31,7 @@
         </tr>
     @endforeach
     <tr class="toxic">
-        <td colspan="4">
+        <td colspan="5">
             <div class="d-flex justify-content-center">
                 {!! $policies->links() !!}
             </div>
@@ -38,6 +39,6 @@
     </tr>
 @else
     <tr>
-        <td colspan="4" class="text-center">No data found</td>
+        <td colspan="5" class="text-center">No data found</td>
     </tr>
 @endif

@@ -41,6 +41,7 @@
                 <div class="col-md-6">
                     <div class="row g-1 justify-content-end">
                         <div class="col-md-4">
+                            @if (auth()->user()->user_type == 'Global')
                             <label for="country_code">Content Country</label>
                             <select onchange="window.location.href='?content_country_code='+$(this).val()"
                                 name="content_country_code" id="content_country_code" class="form-control">
@@ -51,7 +52,7 @@
                                     </option>
                                 @endforeach
                             </select>
-                            
+                            @endif
                         </div>
                         <div class="col-md-8 pr-0">
                             <label for="country_code"></label>

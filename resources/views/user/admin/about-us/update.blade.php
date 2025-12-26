@@ -23,7 +23,7 @@
                     <div class="form-head">
                         <h4>Menu Section</h4>
                     </div>
-
+                      @if (auth()->user()->user_type == 'Global')
                     <div class="row mb-4">
                         <div class="col-md-4 mb-3">
                             <label for="country_code">Content Country</label>
@@ -38,7 +38,7 @@
                             </select>
                         </div>
                     </div>
-
+                    @endif
                     <div class="row justify-content-between">
                         {{-- courses --}}
                         <div class="col-md-4 mb-3">

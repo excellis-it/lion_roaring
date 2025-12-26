@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\User;
 
 use App\Http\Controllers\Controller;
+use App\Models\Country;
 use App\Models\UserActivity;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -23,63 +24,128 @@ class UserActivityController extends Controller
     {
         if (Auth::user()->can('Manage User Activity')) {
             // Calculate statistics for dashboard
-            $stats = [
-                'total_activities' => UserActivity::count(),
-                'activities_by_country_count' => UserActivity::selectRaw('country_name, COUNT(*) as count')
-                    ->groupBy('country_name')
-                    ->having('count', '>', 0)
-                    ->count(),
-                'activities_by_user_count' => UserActivity::selectRaw('user_name, email, COUNT(*) as count')
-                    ->whereNotNull('user_id')
-                    ->groupBy('user_name', 'email')
-                    ->having('count', '>', 0)
-                    ->count(),
-                'activities_by_type_count' => UserActivity::selectRaw('activity_type, COUNT(*) as count')
-                    ->groupBy('activity_type')
-                    ->having('count', '>', 0)
-                    ->count(),
-                // Visit counts (assuming activity_description contains 'Visited')
-                'visits_today' => UserActivity::where('activity_description', 'LIKE', 'Visited%')
-                    ->whereDate('activity_date', now())
-                    ->count(),
-                'visits_month' => UserActivity::where('activity_description', 'LIKE', 'Visited%')
-                    ->whereYear('activity_date', now()->year)
-                    ->whereMonth('activity_date', now()->month)
-                    ->count(),
-                'visits_year' => UserActivity::where('activity_description', 'LIKE', 'Visited%')
-                    ->whereYear('activity_date', now()->year)
-                    ->count(),
-                // Login counts
-                'logins_today' => UserActivity::where('activity_type', 'LIKE', 'LOGIN%')
-                    ->whereDate('activity_date', now())
-                    ->count(),
-                'logins_month' => UserActivity::where('activity_type', 'LIKE', 'LOGIN%')
-                    ->whereYear('activity_date', now()->year)
-                    ->whereMonth('activity_date', now()->month)
-                    ->count(),
-                'logins_year' => UserActivity::where('activity_type', 'LIKE', 'LOGIN%')
-                    ->whereYear('activity_date', now()->year)
-                    ->count(),
-            ];
+            $user_type = auth()->user()->user_type;
+            $user_country = auth()->user()->country;
+            $country_name = Country::where('id', $user_country)->value('name');
 
-            // Get unique values for filters (dashboard may show filter counts, but filters are used by list page)
-            $filters = [
-                'countries' => UserActivity::selectRaw('DISTINCT country_name')
-                    ->whereNotNull('country_name')
-                    ->where('country_name', '!=', '')
-                    ->orderBy('country_name')
-                    ->pluck('country_name'),
-                'activity_types' => UserActivity::selectRaw('DISTINCT activity_type')
-                    ->whereNotNull('activity_type')
-                    ->where('activity_type', '!=', '')
-                    ->orderBy('activity_type')
-                    ->pluck('activity_type'),
-                'roles' => UserActivity::selectRaw('DISTINCT user_roles')
-                    ->whereNotNull('user_roles')
-                    ->where('user_roles', '!=', '-')
-                    ->orderBy('user_roles')
-                    ->pluck('user_roles'),
-            ];
+            if ($user_type == 'Global') {
+                $stats = [
+                    'total_activities' => UserActivity::count(),
+                    'activities_by_country_count' => UserActivity::selectRaw('country_name, COUNT(*) as count')
+                        ->groupBy('country_name')
+                        ->having('count', '>', 0)
+                        ->count(),
+                    'activities_by_user_count' => UserActivity::selectRaw('user_name, email, COUNT(*) as count')
+                        ->whereNotNull('user_id')
+                        ->groupBy('user_name', 'email')
+                        ->having('count', '>', 0)
+                        ->count(),
+                    'activities_by_type_count' => UserActivity::selectRaw('activity_type, COUNT(*) as count')
+                        ->groupBy('activity_type')
+                        ->having('count', '>', 0)
+                        ->count(),
+                    // Visit counts (assuming activity_description contains 'Visited')
+                    'visits_today' => UserActivity::where('activity_description', 'LIKE', 'Visited%')
+                        ->whereDate('activity_date', now())
+                        ->count(),
+                    'visits_month' => UserActivity::where('activity_description', 'LIKE', 'Visited%')
+                        ->whereYear('activity_date', now()->year)
+                        ->whereMonth('activity_date', now()->month)
+                        ->count(),
+                    'visits_year' => UserActivity::where('activity_description', 'LIKE', 'Visited%')
+                        ->whereYear('activity_date', now()->year)
+                        ->count(),
+                    // Login counts
+                    'logins_today' => UserActivity::where('activity_type', 'LIKE', 'LOGIN%')
+                        ->whereDate('activity_date', now())
+                        ->count(),
+                    'logins_month' => UserActivity::where('activity_type', 'LIKE', 'LOGIN%')
+                        ->whereYear('activity_date', now()->year)
+                        ->whereMonth('activity_date', now()->month)
+                        ->count(),
+                    'logins_year' => UserActivity::where('activity_type', 'LIKE', 'LOGIN%')
+                        ->whereYear('activity_date', now()->year)
+                        ->count(),
+                ];
+
+                // Get unique values for filters (dashboard may show filter counts, but filters are used by list page)
+                $filters = [
+                    'countries' => UserActivity::selectRaw('DISTINCT country_name')
+                        ->whereNotNull('country_name')
+                        ->where('country_name', '!=', '')
+                        ->orderBy('country_name')
+                        ->pluck('country_name'),
+                    'activity_types' => UserActivity::selectRaw('DISTINCT activity_type')
+                        ->whereNotNull('activity_type')
+                        ->where('activity_type', '!=', '')
+                        ->orderBy('activity_type')
+                        ->pluck('activity_type'),
+                    'roles' => UserActivity::selectRaw('DISTINCT user_roles')
+                        ->whereNotNull('user_roles')
+                        ->where('user_roles', '!=', '-')
+                        ->orderBy('user_roles')
+                        ->pluck('user_roles'),
+                ];
+            } else {
+                $stats = [
+                    'total_activities' => UserActivity::where('country_name', $country_name)->count(),
+                    'activities_by_country_count' => UserActivity::where('country_name', $country_name)->selectRaw('country_name, COUNT(*) as count')
+                        ->groupBy('country_name')
+                        ->having('count', '>', 0)
+                        ->count(),
+                    'activities_by_user_count' => UserActivity::where('country_name', $country_name)->selectRaw('user_name, email, COUNT(*) as count')
+                        ->whereNotNull('user_id')
+                        ->groupBy('user_name', 'email')
+                        ->having('count', '>', 0)
+                        ->count(),
+                    'activities_by_type_count' => UserActivity::where('country_name', $country_name)->selectRaw('activity_type, COUNT(*) as count')
+                        ->groupBy('activity_type')
+                        ->having('count', '>', 0)
+                        ->count(),
+                    // Visit counts (assuming activity_description contains 'Visited')
+                    'visits_today' => UserActivity::where('activity_description', 'LIKE', 'Visited%')->where('country_name', $country_name)
+                        ->whereDate('activity_date', now())
+                        ->count(),
+                    'visits_month' => UserActivity::where('activity_description', 'LIKE', 'Visited%')->where('country_name', $country_name)
+                        ->whereYear('activity_date', now()->year)
+                        ->whereMonth('activity_date', now()->month)
+                        ->count(),
+                    'visits_year' => UserActivity::where('activity_description', 'LIKE', 'Visited%')->where('country_name', $country_name)
+                        ->whereYear('activity_date', now()->year)
+                        ->count(),
+                    // Login counts
+                    'logins_today' => UserActivity::where('activity_type', 'LIKE', 'LOGIN%')->where('country_name', $country_name)
+                        ->whereDate('activity_date', now())
+                        ->count(),
+                    'logins_month' => UserActivity::where('activity_type', 'LIKE', 'LOGIN%')->where('country_name', $country_name)
+                        ->whereYear('activity_date', now()->year)
+                        ->whereMonth('activity_date', now()->month)
+                        ->count(),
+                    'logins_year' => UserActivity::where('activity_type', 'LIKE', 'LOGIN%')->where('country_name', $country_name)
+                        ->whereYear('activity_date', now()->year)
+                        ->count(),
+                ];
+                $filters = [
+                    'countries' => UserActivity::selectRaw('DISTINCT country_name')
+                        ->where('country_name', $country_name)
+                        ->whereNotNull('country_name')
+                        ->where('country_name', '!=', '')
+                        ->orderBy('country_name')
+                        ->pluck('country_name'),
+                    'activity_types' => UserActivity::selectRaw('DISTINCT activity_type')
+                        ->whereNotNull('activity_type')
+                        ->where('country_name', $country_name)
+                        ->where('activity_type', '!=', '')
+                        ->orderBy('activity_type')
+                        ->pluck('activity_type'),
+                    'roles' => UserActivity::selectRaw('DISTINCT user_roles')
+                        ->whereNotNull('user_roles')
+                        ->where('country_name', $country_name)
+                        ->where('user_roles', '!=', '-')
+                        ->orderBy('user_roles')
+                        ->pluck('user_roles'),
+                ];
+            }
 
             return view('user.user-activity.dashboard', compact('stats', 'filters'));
         } else {
@@ -94,23 +160,51 @@ class UserActivityController extends Controller
     {
         if (Auth::user()->can('Manage User Activity')) {
             // Provide filters for the list page dropdowns
-            $filters = [
-                'countries' => UserActivity::selectRaw('DISTINCT country_name')
-                    ->whereNotNull('country_name')
-                    ->where('country_name', '!=', '')
-                    ->orderBy('country_name')
-                    ->pluck('country_name'),
-                'activity_types' => UserActivity::selectRaw('DISTINCT activity_type')
-                    ->whereNotNull('activity_type')
-                    ->where('activity_type', '!=', '')
-                    ->orderBy('activity_type')
-                    ->pluck('activity_type'),
-                'roles' => UserActivity::selectRaw('DISTINCT user_roles')
-                    ->whereNotNull('user_roles')
-                    ->where('user_roles', '!=', '-')
-                    ->orderBy('user_roles')
-                    ->pluck('user_roles'),
-            ];
+            $user_type = auth()->user()->user_type;
+            $user_country = auth()->user()->country;
+            $country_name = Country::where('id', $user_country)->value('name');
+
+            if ($user_type == 'Global') {
+                $filters = [
+                    'countries' => UserActivity::selectRaw('DISTINCT country_name')
+                        ->whereNotNull('country_name')
+                        ->where('country_name', '!=', '')
+                        ->orderBy('country_name')
+                        ->pluck('country_name'),
+                    'activity_types' => UserActivity::selectRaw('DISTINCT activity_type')
+                        ->whereNotNull('activity_type')
+                        ->where('activity_type', '!=', '')
+                        ->orderBy('activity_type')
+                        ->pluck('activity_type'),
+                    'roles' => UserActivity::selectRaw('DISTINCT user_roles')
+                        ->whereNotNull('user_roles')
+                        ->where('user_roles', '!=', '-')
+                        ->orderBy('user_roles')
+                        ->pluck('user_roles'),
+                ];
+            } else {
+                $filters = [
+                    'countries' => UserActivity::selectRaw('DISTINCT country_name')
+                        ->whereNotNull('country_name')
+                        ->where('country_name', '!=', '')
+                        ->where('country_name', $country_name)
+                        ->orderBy('country_name')
+                        ->where('country_name', $country_name)
+                        ->pluck('country_name'),
+                    'activity_types' => UserActivity::selectRaw('DISTINCT activity_type')
+                        ->whereNotNull('activity_type')
+                        ->where('activity_type', '!=', '')
+                        ->where('country_name', $country_name)
+                        ->orderBy('activity_type')
+                        ->pluck('activity_type'),
+                    'roles' => UserActivity::selectRaw('DISTINCT user_roles')
+                        ->whereNotNull('user_roles')
+                        ->where('user_roles', '!=', '-')
+                        ->where('country_name', $country_name)
+                        ->orderBy('user_roles')
+                        ->pluck('user_roles'),
+                ];
+            }
 
             return view('user.user-activity.list', compact('filters'));
         } else {
@@ -153,6 +247,14 @@ class UserActivityController extends Controller
         }
         if ($request->filled('date_to')) {
             $query->whereDate('activity_date', '<=', $request->date_to);
+        }
+
+        $user_type = auth()->user()->user_type;
+        $user_country = auth()->user()->country;
+        $country_name = Country::where('id', $user_country)->value('name');
+
+        if ($user_type == 'Regional') {
+            $query->where('country_name', $country_name);
         }
 
         $activities = $query->orderBy('id', 'desc')->paginate($request->get('per_page', 10));

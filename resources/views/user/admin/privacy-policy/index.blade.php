@@ -18,6 +18,7 @@
                 <form action="{{ route('user.admin.privacy-policy.update') }}" method="post" enctype="multipart/form-data">
                     @csrf
                     <input type="hidden" name="id" value="{{ $privacy_policy->id ?? '' }}">
+                       @if (auth()->user()->user_type == 'Global')
                     <div class="row mb-4">
                         <div class="col-md-4">
                             <label for="country_code">Content Country</label>
@@ -32,6 +33,7 @@
                             </select>
                         </div>
                     </div>
+                    @endif
                     <div class="sales-report-card-wrap mt-5">
                         <div class="row">
                             <div class="col-xl-12 col-md-12 mb-3">

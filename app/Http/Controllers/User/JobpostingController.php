@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\User;
 
 use App\Http\Controllers\Controller;
+use App\Models\Country;
 use App\Models\Job;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -21,7 +22,14 @@ class JobpostingController extends Controller
     public function index()
     {
         if (auth()->user()->can('Manage Job Postings')) {
-            $jobs = Job::orderBy('id', 'desc')->paginate(15);
+            $user_type = auth()->user()->user_type;
+            $user_country = auth()->user()->country;
+
+            if ($user_type == 'Global') {
+                $jobs = Job::orderBy('id', 'desc')->paginate(15);
+            } else {
+                $jobs = Job::where('country_id', $user_country)->orderBy('id', 'desc')->paginate(15);
+            }
             return view('user.job.list')->with(compact('jobs'));
         } else {
             abort(403, 'You do not have permission to access this page.');
@@ -36,7 +44,11 @@ class JobpostingController extends Controller
     public function create()
     {
         if (auth()->user()->can('Create Job Postings')) {
-            return view('user.job.create');
+            $user_type = auth()->user()->user_type;
+            $user_country = auth()->user()->country;
+
+            $countries = Country::orderBy('name', 'asc')->get();
+            return view('user.job.create')->with(compact('countries'));
         } else {
             abort(403, 'You do not have permission to access this page.');
         }
@@ -51,6 +63,12 @@ class JobpostingController extends Controller
     public function store(Request $request)
     {
         if (auth()->user()->can('Create Job Postings')) {
+            $country_id = auth()->user()->user_type === 'Global'
+                ? $request->country_id
+                : auth()->user()->country;
+
+            $request->merge(['country_id' => $country_id]);
+
             $request->validate([
                 'job_title' => 'required',
                 'job_description' => 'required',
@@ -62,6 +80,7 @@ class JobpostingController extends Controller
                 'contact_person' => 'nullable',
                 'contact_email' => 'nullable|email',
                 'list_of_values' => 'nullable|required_with:job_salary',
+                'country_id' => 'required',
             ]);
 
             $job = new Job();
@@ -76,6 +95,7 @@ class JobpostingController extends Controller
             $job->contact_person = $request->contact_person;
             $job->contact_email = $request->contact_email;
             $job->list_of_values = $request->list_of_values;
+            $job->country_id = $request->country_id;
             $job->save();
 
             $userName = Auth::user()->getFullNameAttribute();
@@ -96,7 +116,13 @@ class JobpostingController extends Controller
     public function show($id)
     {
         if (auth()->user()->can('View Job Postings')) {
-            $job = Job::findOrFail($id);
+            $user_type = auth()->user()->user_type;
+            $user_country = auth()->user()->country;
+            if ($user_type == 'Global') {
+                $job = Job::findOrFail($id);
+            } else {
+                $job = Job::where('country_id', $user_country)->findOrFail($id);
+            }
             return view('user.job.show')->with(compact('job'));
         } else {
             abort(403, 'You do not have permission to access this page.');
@@ -111,9 +137,18 @@ class JobpostingController extends Controller
      */
     public function edit($id)
     {
-        $job = Job::findOrFail($id);
+        $user_type = auth()->user()->user_type;
+        $user_country = auth()->user()->country;
+
+        $countries = Country::orderBy('name', 'asc')->get();
+        if ($user_type == 'Global') {
+            $job = Job::findOrFail($id);
+        } else {
+            $job = Job::where('country_id', $user_country)->findOrFail($id);
+        }
+
         if ((auth()->user()->can('Edit Job Postings')  && $job->created_by == auth()->user()->id) || auth()->user()->hasRole('SUPER ADMIN')) {
-            return view('user.job.edit')->with(compact('job'));
+            return view('user.job.edit')->with(compact('job', 'countries'));
         } else {
             abort(403, 'You do not have permission to access this page.');
         }
@@ -129,6 +164,12 @@ class JobpostingController extends Controller
     public function update(Request $request, $id)
     {
         if (auth()->user()->can('Edit Job Postings')) {
+            $country_id = auth()->user()->user_type === 'Global'
+                ? $request->country_id
+                : auth()->user()->country;
+
+            $request->merge(['country_id' => $country_id]);
+
             $request->validate([
                 'job_title' => 'required',
                 'job_description' => 'required',
@@ -140,6 +181,7 @@ class JobpostingController extends Controller
                 'contact_email' => 'nullable|email',
                 'currency' => 'nullable',
                 'list_of_values' => 'nullable|required_with:job_salary',
+                'country_id' => 'required',
             ]);
 
             $job = Job::findOrFail($id);
@@ -153,6 +195,7 @@ class JobpostingController extends Controller
             $job->contact_person = $request->contact_person;
             $job->contact_email = $request->contact_email;
             $job->list_of_values = $request->list_of_values;
+            $job->country_id = $request->country_id;
             $job->save();
 
             return redirect()->route('jobs.index')->with('message', 'Job has been updated successfully.');
@@ -190,12 +233,18 @@ class JobpostingController extends Controller
                         ->orWhere('job_salary', 'like', '%' . $query . '%')
                         ->orWhere('job_experience', 'like', '%' . $query . '%')
                         ->orWhere('contact_person', 'like', '%' . $query . '%')
+                        ->orWhereHas('country', function ($q) use ($query) {
+                            $q->where('name', 'like', '%' . $query . '%');
+                        })
                         ->orWhere('contact_email', 'like', '%' . $query . '%');
                 });
 
+            if (auth()->user()->user_type === 'Global') {
+                $jobs = $jobs->orderBy($sort_by, $sort_type)->paginate(10);
+            } else {
+                $jobs = $jobs->where('country_id', auth()->user()->country)->orderBy($sort_by, $sort_type)->paginate(10);
+            }
 
-            $jobs->orderBy($sort_by, $sort_type);
-            $jobs = $jobs->paginate(10);
 
             return response()->json(['data' => view('user.job.table', compact('jobs'))->render()]);
         }

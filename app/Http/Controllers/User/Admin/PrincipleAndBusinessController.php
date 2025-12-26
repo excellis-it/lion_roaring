@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\User\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Models\Country;
 use App\Models\PrincipalAndBusiness;
 use App\Models\PrincipleBusinessImage;
 use App\Traits\ImageTrait;
@@ -13,6 +14,22 @@ class PrincipleAndBusinessController extends Controller
 {
 
     use ImageTrait;
+
+    public $user_type;
+    public $user_country;
+    public $country;
+
+    // use consructor
+    public function __construct()
+    {
+        $this->middleware(function ($request, $next) {
+            $this->user_type = auth()->user()->user_type;
+            $this->user_country = auth()->user()->country;
+            $this->country = Country::where('id', $this->user_country)->first();
+
+            return $next($request);
+        });
+    }
     /**
      * Display a listing of the resource.
      *
@@ -21,8 +38,12 @@ class PrincipleAndBusinessController extends Controller
     public function index(Request $request)
     {
         if (auth()->user()->can('Manage Principle and Business Page')) {
-            $business = PrincipalAndBusiness::where('country_code', $request->get('content_country_code', 'US'))->orderBy('id', 'desc')->first();
-            $principle_images = PrincipleBusinessImage::get();
+            if ($this->user_type == 'Global') {
+                $business = PrincipalAndBusiness::where('country_code', $request->get('content_country_code', 'US'))->orderBy('id', 'desc')->first();
+            } else {
+                $business = PrincipalAndBusiness::where('country_code', $this->country->code)->orderBy('id', 'desc')->first();
+            }
+            $principle_images = PrincipleBusinessImage::where('principle_id', $business->id)->get();
             return view('user.admin.principle-and-business.update')->with(compact('business', 'principle_images'));
         } else {
             return redirect()->route('admin.home')->with('error', 'Unauthorized Access');
@@ -78,7 +99,11 @@ class PrincipleAndBusinessController extends Controller
             $business->banner_image = $this->imageUpload($request->file('banner_image'), 'principle-and-business');
         }
         // $business->save();
-        $country = $request->content_country_code ?? 'US';
+        if ($this->user_type == 'Global') {
+            $country = $request->content_country_code ?? 'US';
+        } else {
+            $country = $this->country->code;
+        }
         $business = PrincipalAndBusiness::updateOrCreate(['country_code' => $country], array_merge($business->getAttributes(), ['country_code' => $country]));
 
         if ($request->hasFile('image')) {

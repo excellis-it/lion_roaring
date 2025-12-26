@@ -876,6 +876,9 @@ p {
     line-height: 28px;
     font-weight: 400;
     margin-bottom: 25px;
+    overflow-wrap: break-word;
+    word-break: break-word;
+    white-space: normal;
 }
 
 /* .heading_hp.text_white p {
@@ -2182,6 +2185,8 @@ li.slick-active button {
     border-radius: 10px;
     padding: 0px;
     box-shadow: 0 0 10px rgb(0 0 0 / 22%);
+    height: 225px;
+    object-fit: cover;
 }
 
 .gallery_page_sec .picture_wrapper img {
@@ -3994,29 +3999,29 @@ li.slick-active button {
     font-size: 16px;
     color: #4b254f;
 }
-.bank-details-box p{
+.bank-details-box p {
     font-size: 14px;
 }
-.bank-details-box{
+.bank-details-box {
     border: 1px solid #643271;
     padding: 20px;
     border-radius: 10px;
 }
-.payment-option-form{
+.payment-option-form {
     border: 1px solid #643271;
     padding: 20px;
     border-radius: 10px;
 }
-.modal-body.modal-body-inter-code{
+.modal-body.modal-body-inter-code {
     padding: 3rem;
 }
-.pure-u-1 legend{
+.pure-u-1 legend {
     border-bottom: 1px solid #643271;
 }
 
-.for-mobile-use .desktop-use-menu{
+.for-mobile-use .desktop-use-menu {
     display: none;
 }
-.view-only-mobile{
+.view-only-mobile {
     display: none;
 }

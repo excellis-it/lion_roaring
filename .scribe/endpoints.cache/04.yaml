@@ -29,14 +29,14 @@ endpoints:
         name: product_id
         description: 'Product ID'
         required: true
-        example: 7
+        example: 2
         type: integer
         enumValues: []
         exampleWasSpecified: false
         nullable: false
         custom: []
     cleanBodyParameters:
-      product_id: 7
+      product_id: 2
     fileParameters: []
     responses: []
     responseFields: []
@@ -75,7 +75,7 @@ endpoints:
     responses:
       -
         status: 200
-        content: '{"status":true,"data":[]}'
+        content: '{"status":true,"data":[{"id":16,"user_id":1,"product_id":46,"created_at":"2025-12-22T09:40:47.000000Z","updated_at":"2025-12-22T09:40:47.000000Z","product":{"id":46,"category_id":23,"user_id":1,"product_type":"variable","name":"Today Product","background_image":null,"description":"<p>Today Product<\/p>","short_description":"","sku":"","specification":"<p>Today Product<\/p>","affiliate_link":null,"price":56,"sale_price":null,"quantity":0,"discount":null,"slug":"today-product","meta_title":null,"meta_description":null,"status":1,"is_free":false,"is_deleted":0,"feature_product":1,"is_new_product":1,"today_deals":0,"created_at":"2025-10-15T14:10:49.000000Z","updated_at":"2025-10-15T14:13:17.000000Z","button_name":null,"main_image":"product\/20251015084049_68ef965190eff.jpg","average_rating":5,"review_count":1,"images":[{"id":284,"product_id":46,"image":"product\/20251015084049_68ef965190eff.jpg","featured_image":"1","created_at":"2025-10-15T14:10:49.000000Z","updated_at":"2025-10-15T14:10:49.000000Z"},{"id":285,"product_id":46,"image":"product\/20251015084049_68ef965193759.jpg","featured_image":"0","created_at":"2025-10-15T14:10:49.000000Z","updated_at":"2025-10-15T14:10:49.000000Z"}]}}]}'
         headers:
           cache-control: 'no-cache, private'
           content-type: application/json
@@ -119,14 +119,14 @@ endpoints:
         name: product_id
         description: 'Product ID'
         required: true
-        example: 13
+        example: 20
         type: integer
         enumValues: []
         exampleWasSpecified: false
         nullable: false
         custom: []
     cleanBodyParameters:
-      product_id: 13
+      product_id: 20
     fileParameters: []
     responses: []
     responseFields: []

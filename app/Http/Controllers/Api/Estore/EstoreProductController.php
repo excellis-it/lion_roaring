@@ -24,7 +24,7 @@ class EstoreProductController extends Controller
 {
     /**
      * Get all products (public)
-     *
+     * @authenticated
      * @queryParam page integer optional Page number. Example: 1
      * @queryParam category_id array optional Category ids to filter by. Example: [1,2]
      * @queryParam country_code string optional Country code. Example: US
@@ -128,11 +128,20 @@ class EstoreProductController extends Controller
 
     /**
      * Get product details
-     *
+     * @authenticated
      * @queryParam slug string required Product slug to fetch details. Example: product-slug
      * @response 200 {
      *  "status": true,
      *  "data": {"product": {"id": 1, "name": "..."}}
+     * }
+     */
+    /**
+     * Get product details (including nearest warehouse product and images for selected color/size)
+     *
+     * @queryParam slug string required Product slug. Example: product-slug
+     * @response 200 {
+     *  "status": true,
+     *  "data": {"product": {"id": 1, "name": "..."}, "warehouse_product": null, "product_images": [] }
      * }
      */
     public function productDetails(Request $request)
@@ -144,9 +153,65 @@ class EstoreProductController extends Controller
             return response()->json(['message' => 'Validation failed', 'errors' => $validator->errors()->first(), 'status' => false], 201);
         }
         try {
-            $product = Product::where('slug', $request->slug)->with('image', 'color', 'size', 'reviews')->first();
+            $product = Product::where('slug', $request->slug)->with('image', 'colors', 'sizes', 'reviews')->first();
             if (!$product) {
                 return response()->json(['message' => 'Product not found', 'status' => false], 201);
+            }
+
+            // Determine nearest warehouse
+            $nearbyWareHouseId = WareHouse::first()->id;
+            $originLat = null;
+            $originLng = null;
+            $isUser = auth()->user();
+            if ($isUser) {
+                $originLat = $isUser->location_lat;
+                $originLng = $isUser->location_lng;
+            } else {
+                $originLat = session('location_lat');
+                $originLng = session('location_lng');
+            }
+            $nearest = Helper::getNearestWarehouse($originLat, $originLng);
+            if (!empty($nearest['warehouse']->id)) {
+                $nearbyWareHouseId = $nearest['warehouse']->id;
+            }
+
+            // Find an initial warehouse product (respecting product_type and variations)
+            $warehouseProduct = null;
+            if ($product->product_type != 'simple') {
+                $warehouseProduct = WarehouseProduct::where('warehouse_id', $nearbyWareHouseId)
+                    ->where('product_id', $product->id)
+                    ->first();
+            } else {
+                $warehouseProduct = WarehouseProduct::where('warehouse_id', $nearbyWareHouseId)
+                    ->where('product_id', $product->id)
+                    ->first();
+            }
+
+            // Build product images (prefer color specific images if any)
+            $productImages = [];
+            if ($warehouseProduct) {
+                $colorImages = \App\Models\ProductColorImage::where('product_id', $product->id)
+                    ->where('color_id', $warehouseProduct->color_id)
+                    ->get();
+                if ($colorImages->isNotEmpty()) {
+                    $productImages = $colorImages->map(function ($item) {
+                        return [
+                            'id' => $item->id,
+                            'product_id' => $item->product_id,
+                            'color_id' => $item->color_id,
+                            'image_path' => $item->image_path,
+                            'color_name' => $item->color?->name ?? null,
+                        ];
+                    })->toArray();
+                }
+            }
+
+            if (empty($productImages)) {
+                $productImages = \App\Models\ProductImage::where('product_id', $product->id)
+                    ->get(['id', 'product_id', 'image'])
+                    ->map(function ($img) {
+                        return ['id' => $img->id, 'product_id' => $img->product_id, 'image' => $img->image, 'image_path' => $img->image];
+                    })->toArray();
             }
 
             $isAuth = auth()->check();
@@ -156,9 +221,6 @@ class EstoreProductController extends Controller
             $cartItem = $isAuth ? EstoreCart::where('user_id', auth()->id())->where('product_id', $product->id)->first() : EstoreCart::where('session_id', $userSessionId)->where('product_id', $product->id)->first();
 
             // Related products (limited)
-            $nearbyWareHouseId = WareHouse::first()->id;
-            $nearest = Helper::getNearestWarehouse(session('location_lat'), session('location_lng'));
-            if (!empty($nearest['warehouse']->id)) $nearbyWareHouseId = $nearest['warehouse']->id;
             $wareHouseProducts = Product::whereHas('warehouseProducts', function ($q) use ($nearbyWareHouseId) {
                 $q->where('warehouse_id', $nearbyWareHouseId)
                     ->where('quantity', '>', 0);
@@ -170,7 +232,10 @@ class EstoreProductController extends Controller
                 ->limit(8)
                 ->get();
 
-            return response()->json(['data' => ['product' => $product, 'related' => $related_products, 'cart_count' => $cartCount, 'cart_item' => $cartItem], 'status' => true], 200);
+            // in the product data array in colors set all the colors from Product variationUniqueColors
+            $product->variation_colors_images = $product->variation_unique_color_first_images;
+
+            return response()->json(['data' => ['product' => $product, 'warehouse_product' => $warehouseProduct, 'product_images' => $productImages, 'related' => $related_products, 'cart_count' => $cartCount, 'cart_item' => $cartItem], 'status' => true], 200);
         } catch (\Exception $e) {
             return response()->json(['message' => 'Something went wrong. ' . $e->getMessage(), 'status' => false], 201);
         }
@@ -282,17 +347,108 @@ class EstoreProductController extends Controller
     }
 
     /**
-     * Add to cart
+     * Get warehouse product details by product + optional size/color (used to update images/price/stock when user changes variant)
+     * @authenticated
      *
      * @bodyParam product_id integer required Product id. Example: 1
-     * @bodyParam quantity integer required Quantity. Example: 1
-     * @authenticated (optional, supports guest by session)
+     * @bodyParam size_id integer optional Size id. Example: 2
+     * @bodyParam color_id integer optional Color id. Example: 3
+     *
+     * @response 200 {
+     *  "status": true,
+     *  "data": {"id": 139, "product_variation_id": 110, "price": "30.00", "quantity": 10},
+     *  "productImages": []
+     * }
      */
+    public function getWarehouseProductDetails(Request $request)
+    {
+        try {
+            $validator = Validator::make($request->all(), [
+                'product_id' => 'required|integer',
+                'size_id' => 'nullable|integer',
+                'color_id' => 'nullable|integer',
+            ]);
+            if ($validator->fails()) {
+                return response()->json(['message' => 'Validation failed', 'errors' => $validator->errors()->first(), 'status' => false], 201);
+            }
+
+            $product = Product::where('id', $request->product_id)->where('is_deleted', 0)->first();
+            if (!$product) {
+                return response()->json(['message' => 'Product not found', 'status' => false], 201);
+            }
+
+            $nearbyWareHouseId = WareHouse::first()->id;
+            $originLat = null;
+            $originLng = null;
+            $isUser = auth()->user();
+            // return $isUser;
+            if ($isUser) {
+                $originLat = $isUser->location_lat;
+                $originLng = $isUser->location_lng;
+            } else {
+                $originLat = session('location_lat');
+                $originLng = session('location_lng');
+            }
+            $nearest = Helper::getNearestWarehouse($originLat, $originLng);
+            if (!empty($nearest['warehouse']->id)) {
+                $nearbyWareHouseId = $nearest['warehouse']->id;
+            }
+
+            if ($product->product_type != 'simple') {
+                $warehouseProduct = WarehouseProduct::where('warehouse_id', $nearbyWareHouseId)
+                    ->where('product_id', $request->product_id)
+                    ->when($request->size_id, function ($query) use ($request) {
+                        return $query->where('size_id', $request->size_id);
+                    })
+                    ->when($request->color_id, function ($query) use ($request) {
+                        return $query->where('color_id', $request->color_id);
+                    })
+                    ->first();
+            } else {
+                $warehouseProduct = WarehouseProduct::where('warehouse_id', $nearbyWareHouseId)
+                    ->where('product_id', $request->product_id)
+                    ->first();
+            }
+            $productImages = [];
+            $colorMatchedImages = \App\Models\ProductColorImage::where('product_id', $request->product_id)
+                ->where('color_id', $request->color_id)
+                ->get();
+            if ($colorMatchedImages->isNotEmpty()) {
+                $productImages = $colorMatchedImages->map(function ($item) {
+                    return [
+                        'id' => $item->id,
+                        'product_id' => $item->product_id,
+                        'color_id' => $item->color_id,
+                        'image_path' => $item->image_path,
+                        'color_name' => $item->color?->name ?? null,
+                    ];
+                })->toArray();
+            } else {
+                $productImages = \App\Models\ProductImage::where('product_id', $request->product_id)
+                    ->get(['id', 'product_id', 'image'])
+                    ->map(function ($img) {
+                        return ['id' => $img->id, 'product_id' => $img->product_id, 'image' => $img->image, 'image_path' => $img->image];
+                    })->toArray();
+            }
+
+            if (!$warehouseProduct) {
+                return response()->json(['status' => false, 'message' => 'Item Out Of Stock'], 201);
+            }
+
+            return response()->json(['status' => true, 'data' => $warehouseProduct, 'productImages' => $productImages], 200);
+        } catch (\Exception $e) {
+            return response()->json(['message' => 'Something went wrong. ' . $e->getMessage(), 'status' => false], 201);
+        }
+    }
+
     /**
-     * Add product to cart (public or authenticated) — creates/updates a cart item
+     * Add to cart
+     * @authenticated
      *
      * @bodyParam product_id integer required Product id. Example: 1
      * @bodyParam quantity integer required Quantity. Example: 1
+     * @bodyParam warehouse_product_id integer optional Warehouse product id (preferred for variations). Example: 139
+     * @bodyParam product_variation_id integer optional Product variation id. Example: 110
      * @bodyParam size_id integer optional Size id. Example: 2
      * @bodyParam color_id integer optional Color id. Example: 3
      */
@@ -300,7 +456,11 @@ class EstoreProductController extends Controller
     {
         $validator = Validator::make($request->all(), [
             'product_id' => 'required|integer',
-            'quantity' => 'required|integer|min:1'
+            'quantity' => 'required|integer|min:1',
+            'warehouse_product_id' => 'required|integer',
+            'product_variation_id' => 'required|integer',
+            'size_id' => 'nullable|integer',
+            'color_id' => 'nullable|integer',
         ]);
         if ($validator->fails()) {
             return response()->json(['message' => 'Validation failed', 'errors' => $validator->errors()->first(), 'status' => false], 201);
@@ -311,29 +471,100 @@ class EstoreProductController extends Controller
                 return response()->json(['message' => 'Product not found', 'status' => false], 201);
             }
 
-
-            // find existing cart item
-            $cartQuery = EstoreCart::where('product_id', $product->id);
-            $cartQuery->where('user_id', auth()->id());
-            $cartItem = $cartQuery->first();
-
-            if ($cartItem) {
-                $cartItem->quantity += $request->quantity;
-                $cartItem->save();
+            // determine nearest warehouse
+            $nearbyWareHouseId = WareHouse::first()->id;
+            $originLat = null;
+            $originLng = null;
+            $isUser = auth()->user();
+            if ($isUser) {
+                $originLat = $isUser->location_lat;
+                $originLng = $isUser->location_lng;
             } else {
-                $item = new EstoreCart();
-                $item->product_id = $product->id;
-                $item->quantity = $request->quantity;
-                $item->user_id = auth()->id();
-                $item->price = $product->price;
-                $item->warehouse_id = $request->warehouse_id ?? null;
-                $item->size_id = $request->size_id ?? null;
-                $item->color_id = $request->color_id ?? null;
-                $item->product_variation_id = $request->product_variation_id ?? null;
-                $item->save();
+                $originLat = session('location_lat');
+                $originLng = session('location_lng');
+            }
+            $nearest = Helper::getNearestWarehouse($originLat, $originLng);
+            if (!empty($nearest['warehouse']->id)) {
+                $nearbyWareHouseId = $nearest['warehouse']->id;
             }
 
-            $cartCount = EstoreCart::where('user_id', auth()->id())->count();
+            // Require explicit warehouse product (same as website) and use it directly
+            $warehouseProduct = WarehouseProduct::find($request->warehouse_product_id);
+            if (!$warehouseProduct) {
+                return response()->json(['message' => 'Item Out Of Stock', 'status' => false], 201);
+            }
+
+            // Check stock availability
+            if ($warehouseProduct->quantity < $request->quantity) {
+                return response()->json(['message' => 'Only ' . $warehouseProduct->quantity . ' items available', 'status' => false], 201);
+            }
+
+            $isAuth = auth()->check();
+            $sessionId = session()->getId();
+
+            // find existing cart item for this user/session using product_variation_id (same as website)
+            if ($isAuth) {
+                $existingCart = EstoreCart::where('user_id', auth()->id())
+                    ->where('product_id', $product->id)
+                    ->where('product_variation_id', $request->product_variation_id)
+                    ->first();
+            } else {
+                $existingCart = EstoreCart::where('session_id', $sessionId)
+                    ->where('product_id', $product->id)
+                    ->where('product_variation_id', $request->product_variation_id)
+                    ->first();
+            }
+
+            if ($existingCart) {
+                $existingCart->quantity += $request->quantity;
+                if ($product->is_free) {
+                    $existingCart->old_price = $existingCart->price;
+                    $existingCart->price = 0;
+                }
+                $existingCart->save();
+
+                return response()->json([
+                    'status' => true,
+                    'message' => 'Cart updated successfully',
+                    'action' => 'updated',
+                    'cart_item_id' => $existingCart->id,
+                    'quantity' => $existingCart->quantity
+                ]);
+            }
+
+            // set defaults for size/color if not provided (same as website)
+            $sizeId = $request->size_id ?? null;
+            if (!$request->size_id && ($product->sizes->count() > 0)) {
+                $sizeId = $product->sizes->first()->size->id;
+            }
+            $colorId = $request->color_id ?? null;
+            if (!$request->color_id && ($product->colors->count() > 0)) {
+                $colorId = $product->colors->first()->color->id;
+            }
+
+            $cart = new EstoreCart();
+            $cart->user_id = auth()->id();
+            $cart->product_id = $product->id;
+            $cart->product_variation_id = $warehouseProduct->product_variation_id;
+            $cart->warehouse_product_id = $warehouseProduct->id;
+            $cart->warehouse_id = $warehouseProduct->warehouse_id;
+            $cart->size_id = $sizeId;
+            $cart->color_id = $colorId;
+            $cart->quantity = $request->quantity;
+            $cart->old_price = $warehouseProduct->price;
+            $cart->price = $product->is_free ? 0 : $warehouseProduct->price;
+            $cart->session_id = $sessionId;
+            $cart->save();
+
+            return response()->json([
+                'status' => true,
+                'message' => 'Product added to cart successfully',
+                'action' => 'added',
+                'cart_item_id' => $cart->id,
+                'quantity' => $cart->quantity
+            ]);
+
+            $cartCount = $isAuth ? EstoreCart::where('user_id', auth()->id())->count() : EstoreCart::where('session_id', $sessionId)->count();
 
             return response()->json(['message' => 'Added to cart', 'status' => true, 'data' => ['cart_count' => $cartCount]], 200);
         } catch (\Exception $e) {
@@ -348,7 +579,11 @@ class EstoreProductController extends Controller
     {
         try {
             $cartQuery = EstoreCart::with('product');
-            $cartQuery->where('user_id', auth()->id());
+            if (auth()->check()) {
+                $cartQuery->where('user_id', auth()->id());
+            } else {
+                $cartQuery->where('session_id', session()->getId());
+            }
             $items = $cartQuery->get();
 
             $total = $items->sum(function ($i) {
@@ -377,7 +612,7 @@ class EstoreProductController extends Controller
             if (!$cartItem) return response()->json(['message' => 'Cart item not found', 'status' => false], 201);
             $cartItem->delete();
 
-            $cartCount = EstoreCart::where('user_id', auth()->id())->count();
+            $cartCount = auth()->check() ? EstoreCart::where('user_id', auth()->id())->count() : EstoreCart::where('session_id', session()->getId())->count();
 
             return response()->json(['message' => 'Removed from cart', 'status' => true, 'data' => ['cart_count' => $cartCount]], 200);
         } catch (\Exception $e) {
@@ -415,7 +650,11 @@ class EstoreProductController extends Controller
     public function cartCount(Request $request)
     {
         try {
-            $cartCount = EstoreCart::where('user_id', auth()->id())->count();
+            if (auth()->check()) {
+                $cartCount = EstoreCart::where('user_id', auth()->id())->count();
+            } else {
+                $cartCount = EstoreCart::where('session_id', session()->getId())->count();
+            }
             return response()->json(['data' => ['cart_count' => $cartCount], 'status' => true], 200);
         } catch (\Exception $e) {
             return response()->json(['message' => 'Something went wrong. ' . $e->getMessage(), 'status' => false], 201);
@@ -428,7 +667,11 @@ class EstoreProductController extends Controller
     public function clearCart(Request $request)
     {
         try {
-            EstoreCart::where('user_id', auth()->id())->delete();
+            if (auth()->check()) {
+                EstoreCart::where('user_id', auth()->id())->delete();
+            } else {
+                EstoreCart::where('session_id', session()->getId())->delete();
+            }
             return response()->json(['message' => 'Cart cleared', 'status' => true], 200);
         } catch (\Exception $e) {
             return response()->json(['message' => 'Something went wrong. ' . $e->getMessage(), 'status' => false], 201);
@@ -449,7 +692,11 @@ class EstoreProductController extends Controller
             }
 
             $cartQuery = EstoreCart::where('product_id', $request->product_id);
-            $cartQuery->where('user_id', auth()->id());
+            if (auth()->check()) {
+                $cartQuery->where('user_id', auth()->id());
+            } else {
+                $cartQuery->where('session_id', session()->getId());
+            }
             $cartItem = $cartQuery->first();
 
             return response()->json(['data' => ['exists' => (bool)$cartItem, 'cart_item' => $cartItem], 'status' => true], 200);

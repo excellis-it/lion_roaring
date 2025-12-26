@@ -24,7 +24,27 @@
                             </div>
                         </div>
                         <div class="row">
-                            <div class="col-md-6 mb-2">
+                            {{-- country --}}
+                            @if (auth()->user()->user_type == 'Global')
+                                <div class="col-md-4 mb-2">
+                                    <div class="box_label">
+                                        <label for="country">Country</label>
+
+                                        <select name="country_id" id="country" class="form-control">
+                                            <option value="">Select Country</option>
+                                            @foreach ($countries as $country)
+                                                <option value="{{ $country->id }}"
+                                                    {{ old('country_id') == $country->id ? 'selected' : '' }}>
+                                                    {{ $country->name }}</option>
+                                            @endforeach
+                                        </select>
+                                        @if ($errors->has('country_id'))
+                                            <span class="error">{{ $errors->first('country_id') }}</span>
+                                        @endif
+                                    </div>
+                                </div>
+                            @endif
+                            <div class="col-md-4 mb-2">
                                 <div class="box_label">
                                     <label>Topic Name *</label>
                                     <input type="text" class="form-control" name="topic_name"
@@ -37,7 +57,7 @@
                                 </div>
                             </div>
                             {{-- type --}}
-                            <div class="col-md-6 mb-2">
+                            <div class="col-md-4 mb-2">
                                 <div class="box_label">
                                     <label>Education Type</label>
 
@@ -62,6 +82,7 @@
                                     <a href="{{ route('topics.index') }}" class="print_btn print_btn_vv">Cancel</a>
                                 </div>
                             </div>
+                        </div>
                     </form>
                 </div>
             </div>

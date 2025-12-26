@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\User\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Models\Country;
 use App\Models\Footer;
 use App\Models\FooterSocialLink;
 use App\Traits\ImageTrait;
@@ -13,11 +14,30 @@ class FooterController extends Controller
 {
     use ImageTrait;
 
+    public $user_type;
+    public $user_country;
+    public $country;
+
+    // use consructor
+    public function __construct()
+    {
+        $this->middleware(function ($request, $next) {
+            $this->user_type = auth()->user()->user_type;
+            $this->user_country = auth()->user()->country;
+            $this->country = Country::where('id', $this->user_country)->first();
+
+            return $next($request);
+        });
+    }
+
     public function index(Request $request)
     {
         if (auth()->user()->can('Manage Footer')) {
-            $footer = Footer::where('country_code', $request->get('content_country_code', 'US'))->orderBy('id', 'desc')->first();
-
+            if ($this->user_type == 'Global') {
+                $footer = Footer::where('country_code', $request->get('content_country_code', 'US'))->orderBy('id', 'desc')->first();
+            } else {
+                $footer = Footer::where('country_code', $this->country->code)->orderBy('id', 'desc')->first();
+            }
             $social_links = FooterSocialLink::get();
             return view('user.admin.footer.update')->with(compact('footer', 'social_links'));
         } else {
@@ -84,8 +104,11 @@ class FooterController extends Controller
 
 
         //  $footer->save();
-
-        $country = $request->content_country_code ?? 'US';
+        if ($this->user_type == 'Global') {
+            $country = $request->content_country_code ?? 'US';
+        } else {
+            $country = $this->country->code;
+        }
         $footer = Footer::updateOrCreate(['country_code' => $country], array_merge($footer->getAttributes(), ['country_code' => $country]));
 
 
