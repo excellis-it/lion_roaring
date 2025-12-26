@@ -125,8 +125,10 @@ $showPopup = !session()->has($sessionKey) && !Session::has('agree');
                                 <div class="{{ $key % 2 == 0 ? 'col-xl-5 col-lg-6 col-md-6 col-sm-6 col-6 mb-4 top-imgs' : 'col-xl-5 col-lg-6 col-md-6 col-sm-6 col-6 mb-4 bottom-img mt-5' }} " data-aos="fade-right"
                                     data-aos-duration="{{ $key % 2 == 0 ? '800' : '1600' }}">
                                     @foreach ($chunk as $detail)
+                                       <a href="{{ route('details') }}" tabindex="0">
                                         <img src="{{ Storage::url($detail->image) }}"
                                             class=" {{ $key % 2 == 0 ? 'about_four_ii mb-3' : 'about_four_ii mb-3' }}">
+                                       </a>
                                     @endforeach
                                 </div>
                             @endforeach

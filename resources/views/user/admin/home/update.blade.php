@@ -549,46 +549,24 @@
 @endsection
 
 @push('scripts')
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote-lite.min.css">
-    <script src="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote-lite.min.js"></script>
     <script>
         $(document).ready(function() {
-            // ClassicEditor.create(document.querySelector("#section1_des"));
-            // ClassicEditor.create(document.querySelector("#section2_left_des"));
-            // ClassicEditor.create(document.querySelector("#section2_right_des"));
-            // ClassicEditor.create(document.querySelector("#section3_des"));
-            // ClassicEditor.create(document.querySelector("#section4_des"));
+            function initCKEditor(selector) {
+                ClassicEditor
+                    .create(document.querySelector(selector))
+                    .then(editor => {
+                        editor.ui.view.editable.element.style.height = '250px';
+                    })
+                    .catch(error => {
+                        console.error(error);
+                    });
+            }
 
-            $('#section1_des').summernote({
-                placeholder: 'Section 1 Description*',
-                tabsize: 2,
-                height: 400
-            });
-
-            $('#section2_left_des').summernote({
-                placeholder: 'Section 2 Left Description*',
-                tabsize: 2,
-                height: 400
-            });
-
-            $('#section2_right_des').summernote({
-                placeholder: 'Section 2 Right Description*',
-                tabsize: 2,
-                height: 400
-            });
-
-            $('#section3_des').summernote({
-                placeholder: 'Section 3 Description*',
-                tabsize: 2,
-                height: 400
-            });
-
-            $('#section4_des').summernote({
-                placeholder: 'Section 4 Description*',
-                tabsize: 2,
-                height: 400
-            });
-
+            initCKEditor('#section1_des');
+            initCKEditor('#section2_left_des');
+            initCKEditor('#section2_right_des');
+            initCKEditor('#section3_des');
+            initCKEditor('#section4_des');
         });
     </script>
 
@@ -602,10 +580,7 @@
                 }
                 reader.readAsDataURL(this.files[0]);
             });
-        });
-    </script>
-    <script>
-        $(document).ready(function() {
+
             $('#section_2_left').change(function() {
                 let reader = new FileReader();
                 reader.onload = (e) => {
@@ -614,22 +589,7 @@
                 }
                 reader.readAsDataURL(this.files[0]);
             });
-        });
-    </script>
-    <script>
-        $(document).ready(function() {
-            $('#section_2_left').change(function() {
-                let reader = new FileReader();
-                reader.onload = (e) => {
-                    $('#section_2_left_preview').show();
-                    $('#section_2_left_preview').attr('src', e.target.result);
-                }
-                reader.readAsDataURL(this.files[0]);
-            });
-        });
-    </script>
-    <script>
-        $(document).ready(function() {
+
             $('#section_2_right_image').change(function() {
                 let reader = new FileReader();
                 reader.onload = (e) => {

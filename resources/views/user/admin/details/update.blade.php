@@ -117,8 +117,6 @@
 @endsection
 
 @push('scripts')
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote-lite.min.css">
-    <script src="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote-lite.min.js"></script>
     <script>
         $(document).ready(function() {
             $('.remove-image').click(function() {
@@ -146,14 +144,25 @@
     </script>
     <script>
         $(document).ready(function() {
-            // Initialize Summernote for existing description fields
-            $(".description").each(function(index, element) {
-                $(element).summernote({
-                    placeholder: 'Description*',
-                    tabsize: 2,
-                    height: 400
+            // Function to initialize CKEditor
+            function initializeCKEditor(selector) {
+                $(selector).each(function() {
+                    if (!$(this).hasClass('ckeditor-initialized')) {
+                        ClassicEditor
+                            .create(this)
+                            .then(editor => {
+                                editor.ui.view.editable.element.style.height = '250px';
+                                $(this).addClass('ckeditor-initialized');
+                            })
+                            .catch(error => {
+                                console.error(error);
+                            });
+                    }
                 });
-            });
+            }
+
+            // Initialize CKEditor for existing description fields
+            initializeCKEditor('.description');
 
             // Function to handle the add-more button click
             $(document).on("click", ".add-more", function() {
@@ -186,14 +195,11 @@
                 </div>`;
 
                 // Append the new fields
-                $("#add-more").append(html);
+                var $newRow = $(html);
+                $("#add-more").append($newRow);
 
-                // Initialize Summernote for the newly added description field
-                $("#add-more .description").last().summernote({
-                    placeholder: 'Description*',
-                    tabsize: 2,
-                    height: 400
-                });
+                // Initialize CKEditor for the newly added description field
+                initializeCKEditor($newRow.find('.description'));
             });
 
             // Remove functionality

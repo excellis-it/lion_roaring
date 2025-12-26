@@ -2186,7 +2186,7 @@ li.slick-active button {
     padding: 0px;
     box-shadow: 0 0 10px rgb(0 0 0 / 22%);
     height: 225px;
-    object-fit: contain;
+    object-fit: cover;
 }
 
 .gallery_page_sec .picture_wrapper img {

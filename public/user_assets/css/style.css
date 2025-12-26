@@ -2786,7 +2786,6 @@ section {
     min-height: auto !important;
 }
 
-.note-editable ul{
+.ck-content ul{
     list-style: inside !important;
 }
-    
