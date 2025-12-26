@@ -121,17 +121,15 @@ $showPopup = !session()->has($sessionKey) && !Session::has('agree');
                 <div class="col-xxl-5 col-lg-6 mb-4" data-aos="fade-up" data-aos-duration="1000">
                     <div class="four_image">
                         <div class="row align-items-center justify-content-center">
-                            <div class="col-xl-5 col-lg-6 col-md-6 col-sm-6 col-6 mb-4 top-imgs" data-aos="fade-right"
-                                data-aos-duration="800">
-                                <img src="{{ asset('frontend_assets/images/abt_one.png') }}" class="about_four_ii mb-3">
-                                <img src="{{ asset('frontend_assets/images/abt_one1.png') }}" class="about_four_ii mb-3">
-                            </div>
-                            <div class="col-xl-5 col-lg-6 col-md-6 col-sm-6 col-6 mb-4 bottom-img" data-aos="fade-up"
-                                data-aos-duration="1600">
-                                <img src="{{ asset('frontend_assets/images/abt_one2.png') }}"
-                                    class="about_four_ii mb-3 mt-5">
-                                <img src="{{ asset('frontend_assets/images/abt_one3.jpg') }}" class="about_four_ii mb-3">
-                            </div>
+                            @foreach ($details as $key => $chunk)
+                                <div class="{{ $key % 2 == 0 ? 'col-xl-5 col-lg-6 col-md-6 col-sm-6 col-6 mb-4 top-imgs' : 'col-xl-5 col-lg-6 col-md-6 col-sm-6 col-6 mb-4 bottom-img mt-5' }} " data-aos="fade-right"
+                                    data-aos-duration="{{ $key % 2 == 0 ? '800' : '1600' }}">
+                                    @foreach ($chunk as $detail)
+                                        <img src="{{ Storage::url($detail->image) }}"
+                                            class=" {{ $key % 2 == 0 ? 'about_four_ii mb-3' : 'about_four_ii mb-3' }}">
+                                    @endforeach
+                                </div>
+                            @endforeach
                         </div>
                     </div>
                 </div>
@@ -258,6 +256,7 @@ $showPopup = !session()->has($sessionKey) && !Session::has('agree');
         <p><a class="cta-button red_btn" href="#" target="_blank" rel="noopener"> <span>Gift/Seed</span></a></p>
         <div class="right-triangle"> </div>
     </div>
+
     @if (count($our_organizations) > 0)
         <section class="real_solution_sec">
             <div class="container">
@@ -409,14 +408,14 @@ $showPopup = !session()->has($sessionKey) && !Session::has('agree');
 
     <!-- @if (count($galleries) > 0)
     <section class="gallery_sec margin_27">
-                                                                    <div class="gallery_slider">
-                                                                        @foreach ($galleries as $galary)
+                                                                        <div class="gallery_slider">
+                                                                            @foreach ($galleries as $galary)
     <div class="gallery_box" style="width: 100%; display: inline-block;">
-                                                                                <img src="{{ Storage::url($galary->image) }}" alt="">
-                                                                            </div>
+                                                                                    <img src="{{ Storage::url($galary->image) }}" alt="">
+                                                                                </div>
     @endforeach
-                                                                    </div>
-                                                                </section>
+                                                                        </div>
+                                                                    </section>
     @endif -->
 @endsection
 

@@ -47,8 +47,16 @@ class CmsController extends Controller
         $testimonials = Helper::getVisitorCmsContent('Testimonial', false, true, 'id', 'desc', null);
         $our_organizations = Helper::getVisitorCmsContent('OurOrganization', false, true, 'id', 'desc', null);
         $our_governances = Helper::getVisitorCmsContent('OurGovernance', false, true, 'id', 'asc', null);
+        $details = Helper::getVisitorCmsContent('Detail', false, true, 'id', 'asc', null)->chunk(2);
 
-        return view('frontend.home')->with(compact('galleries', 'testimonials', 'our_organizations', 'our_governances', 'home'));
+        return view('frontend.home')->with([
+            'galleries' => $galleries,
+            'testimonials' => $testimonials,
+            'our_organizations' => $our_organizations,
+            'our_governances' => $our_governances,
+            'home' => $home,
+            'details' => $details,
+        ]);
     }
 
     public function gallery()
@@ -59,7 +67,7 @@ class CmsController extends Controller
 
     public function contactUs()
     {
-       // $contact = ContactUsCms::first();
+        // $contact = ContactUsCms::first();
         $contact = Helper::getVisitorCmsContent('ContactUsCms', true, false, 'id', 'desc', null);
         return view('frontend.contact-us')->with('contact', $contact);
     }
@@ -160,8 +168,8 @@ class CmsController extends Controller
             'newsletter_message' => 'required',
         ]);
 
-         $currentCode = strtoupper(Helper::getVisitorCountryCode());
-         $country = Country::where('code', $currentCode)->first();
+        $currentCode = strtoupper(Helper::getVisitorCountryCode());
+        $country = Country::where('code', $currentCode)->first();
 
         if ($request->ajax()) {
             $newsletter = new Newsletter();
