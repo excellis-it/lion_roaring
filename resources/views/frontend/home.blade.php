@@ -258,8 +258,7 @@ $showPopup = !session()->has($sessionKey) && !Session::has('agree');
             </a>
         </p>
         <p>
-            <a class="cta-button red_btn" href="" target="_blank"
-                rel="noopener">
+            <a href="javascript:void(0);" data-bs-toggle="modal" data-bs-target="#exampleModal1" class="cta-button red_btn">
                 <span>{{ $home['section_6_button_text'] ?? 'Gift/Seed' }}</span>
             </a>
         </p>

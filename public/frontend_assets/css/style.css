@@ -876,6 +876,9 @@ p {
     line-height: 28px;
     font-weight: 400;
     margin-bottom: 25px;
+    overflow-wrap: break-word;
+    word-break: break-word;
+    white-space: normal;
 }
 
 /* .heading_hp.text_white p {

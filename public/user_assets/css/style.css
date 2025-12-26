@@ -2785,3 +2785,8 @@ section {
 .form-group-div .dropzone{
     min-height: auto !important;
 }
+
+.note-editable ul{
+    list-style: inside !important;
+}
+    
