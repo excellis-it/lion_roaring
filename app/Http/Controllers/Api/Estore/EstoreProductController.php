@@ -232,6 +232,9 @@ class EstoreProductController extends Controller
                 ->limit(8)
                 ->get();
 
+            // in the product data array in colors set all the colors from Product variationUniqueColors
+            $product->variation_colors_images = $product->variation_unique_color_first_images;
+
             return response()->json(['data' => ['product' => $product, 'warehouse_product' => $warehouseProduct, 'product_images' => $productImages, 'related' => $related_products, 'cart_count' => $cartCount, 'cart_item' => $cartItem], 'status' => true], 200);
         } catch (\Exception $e) {
             return response()->json(['message' => 'Something went wrong. ' . $e->getMessage(), 'status' => false], 201);

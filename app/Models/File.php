@@ -9,6 +9,9 @@ class File extends Model
 {
     use HasFactory;
 
+    // set created by name as created_by_full_name
+    protected $appends = ['created_by_full_name'];
+
     public function topic()
     {
         return $this->belongsTo(Topic::class);
@@ -18,5 +21,12 @@ class File extends Model
     public function user()
     {
         return $this->belongsTo(User::class, 'user_id');
+    }
+
+    // created by user full name
+
+    public function getCreatedByFullNameAttribute()
+    {
+        return $this->user ? $this->user->full_name : null;
     }
 }
