@@ -10,9 +10,10 @@ class MenuController extends Controller
 {
     public function index()
     {
-        $items = MenuItem::orderBy('id')->get();
+        $items = MenuItem::orderBy('id')->get()->groupBy('type');
         return view('user.admin.menu.index', compact('items'));
     }
+
 
     public function update(Request $request)
     {

@@ -89,17 +89,17 @@ class OrganizationController extends Controller
         }
 
         $organization->banner_title = $request->banner_title;
-        $organization->banner_description = $request->banner_description;
+        $organization->banner_description = $this->cleanText($request->banner_description);
         $organization->meta_title = $request->meta_title;
-        $organization->meta_description = $request->meta_description;
+        $organization->meta_description = $this->cleanText($request->meta_description);
         $organization->meta_keywords = $request->meta_keywords;
         $organization->project_section_title = $request->project_section_title;
         $organization->project_section_sub_title = $request->project_section_sub_title;
-        $organization->project_section_description = $request->project_section_description;
+        $organization->project_section_description = $this->cleanText($request->project_section_description);
         // second project section fields
         $organization->project_section_two_title = $request->project_section_two_title;
         $organization->project_section_two_sub_title = $request->project_section_two_sub_title;
-        $organization->project_section_two_description = $request->project_section_two_description;
+        $organization->project_section_two_description = $this->cleanText($request->project_section_two_description);
         if ($request->hasFile('banner_image')) {
             if (!empty($organization->banner_image) && Storage::exists($organization->banner_image)) {
                 Storage::delete($organization->banner_image);
@@ -132,7 +132,7 @@ class OrganizationController extends Controller
                 $organization_project = new OrganizationProject();
                 $organization_project->organization_id = $organization->id;
                 $organization_project->title = $title;
-                $organization_project->description = $request->card_description[$key];
+                $organization_project->description = $this->cleanText($request->card_description[$key]);
                 $organization_project->section = 1;
                 $organization_project->save();
             }
@@ -145,7 +145,7 @@ class OrganizationController extends Controller
                 $organization_project = new OrganizationProject();
                 $organization_project->organization_id = $organization->id;
                 $organization_project->title = $title;
-                $organization_project->description = $request->card_description_two[$key] ?? null;
+                $organization_project->description = $this->cleanText($request->card_description_two[$key]) ?? null;
                 $organization_project->section = 2;
                 $organization_project->save();
             }
@@ -208,5 +208,20 @@ class OrganizationController extends Controller
     public function destroy($id)
     {
         //
+    }
+
+    private function cleanText(?string $text): ?string
+    {
+        if (!$text) {
+            return null;
+        }
+
+        return trim(
+            preg_replace(
+                '/\s+/',
+                ' ',
+                html_entity_decode(strip_tags($text), ENT_QUOTES | ENT_HTML5)
+            )
+        );
     }
 }

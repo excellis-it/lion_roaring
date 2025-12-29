@@ -3108,26 +3108,52 @@ li.slick-active button {
     border: none;
 } */
 .goog-te-gadget .goog-te-combo {
-    padding: 9px 15px;
+   /* Force padding behavior */
+    padding: 9px 15px !important;
 
-    /* Border radius – cross browser */
-    -webkit-border-radius: 20px;
-    -moz-border-radius: 20px;
-    border-radius: 20px;
+    /* Safari requires explicit height */
+    height: 40px;
+    line-height: 22px;
 
-    /* Remove default border */
-    border: none;
+    /* Box model fix */
+    -webkit-box-sizing: border-box;
+    box-sizing: border-box;
 
-    /* Normalize appearance across browsers */
-    -webkit-appearance: none; /* Chrome, Safari */
-    -moz-appearance: none;    /* Firefox */
+    /* Appearance reset (CRITICAL for Safari) */
+    -webkit-appearance: none;
     appearance: none;
 
-    /* Improve consistency */
+    /* Border radius */
+    -webkit-border-radius: 20px;
+    border-radius: 20px;
+
+    /* Remove default border/background quirks */
+    border: none;
     outline: none;
     background-color: #fff;
+    background-clip: padding-box;
+
     cursor: pointer;
 }
+
+.goog-te-gadget .goog-te-combo {
+    height: 33px;
+    line-height: 14px;
+
+    padding: 9px 15px !important;
+    text-indent: 10px;
+
+    -webkit-appearance: none;
+    appearance: none;
+
+    -webkit-border-radius: 20px;
+    border-radius: 20px;
+
+    border: none;
+    background-color: #fff;
+    box-sizing: border-box;
+}
+
 /* .project p{
     white-space: normal;
     word-wrap: break-word;
@@ -4095,3 +4121,49 @@ li.slick-active button {
 
 
 
+
+
+/* macOS Safari hard reset for native select */
+
+
+  select {
+    -webkit-appearance: none;
+    appearance: none;
+
+    /* remove Safari bevel */
+    background-color: transparent;
+    background-image: none;
+    box-shadow: none;
+    outline: none;
+
+    /* underline style */
+    border: none;
+    border-bottom: 1px solid #000;
+    border-radius: 0;
+
+    padding: 6px 28px 6px 0;
+    font-size: inherit;
+    line-height: 1.4;
+  }
+
+  /* remove focus glow */
+  select:focus {
+    outline: none;
+    box-shadow: none;
+  }
+
+
+
+
+  select {
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath d='M4 6l4 4 4-4' fill='black'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 4px center;
+    background-size: 12px;
+  }
+
+
+select {
+    -webkit-appearance: none !important;
+
+}

@@ -36,7 +36,7 @@
                 </div>
 
                 <div class="col-xl-5 col-lg-6" data-aos="fade-up" data-aos-duration="1000">
-                    <div class="about_text heading_hp text_white">
+                    <div class="about_text heading_hp">
                         <h6>{{ $organization_center['name'] ?? 'title' }}</h6>
                         <p style="font-weight: 400;">
                             <strong>{!! $organization_center['description'] ?? '' !!}</strong></p>

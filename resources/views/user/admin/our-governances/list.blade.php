@@ -7,6 +7,15 @@
         .dataTables_filter {
             margin-bottom: 10px !important;
         }
+
+        .drag-handle {
+            cursor: move;
+            color: #6c757d;
+        }
+
+        .order-number {
+            font-weight: 600;
+        }
     </style>
 @endpush
 
@@ -28,7 +37,8 @@
                 </div>
                 <div>
                     @if (auth()->user()->can('Create Our Governance'))
-                        <a href="{{ route('user.admin.our-governances.create') }}" class="print_btn">+ Create Our Governance</a>
+                        <a href="{{ route('user.admin.our-governances.create') }}" class="print_btn">+ Create Our
+                            Governance</a>
                     @endif
                 </div>
             </div>
@@ -42,16 +52,16 @@
                     <div class="row g-1 justify-content-end">
                         <div class="col-md-4">
                             @if (auth()->user()->user_type == 'Global')
-                            <label for="country_code">Content Country</label>
-                            <select onchange="window.location.href='?content_country_code='+$(this).val()"
-                                name="content_country_code" id="content_country_code" class="form-control">
-                                @foreach (\App\Models\Country::all() as $country)
-                                    <option value="{{ $country->code }}"
-                                        {{ request()->get('content_country_code', 'US') == $country->code ? 'selected' : '' }}>
-                                        {{ $country->name }}
-                                    </option>
-                                @endforeach
-                            </select>
+                                <label for="country_code">Content Country</label>
+                                <select onchange="window.location.href='?content_country_code='+$(this).val()"
+                                    name="content_country_code" id="content_country_code" class="form-control">
+                                    @foreach (\App\Models\Country::all() as $country)
+                                        <option value="{{ $country->code }}"
+                                            {{ request()->get('content_country_code', 'US') == $country->code ? 'selected' : '' }}>
+                                            {{ $country->name }}
+                                        </option>
+                                    @endforeach
+                                </select>
                             @endif
                         </div>
                         <div class="col-md-8 pr-0">
@@ -74,8 +84,8 @@
                 <table class="table align-middle bg-white color_body_text" class="display">
                     <thead class="color_head">
                         <tr class="header-row">
-                            <th class="sorting" data-tippy-content="Sort by Id" data-sorting_type="asc"
-                                data-column_name="id" style="cursor: pointer">Id<span id="id_icon"></span>
+                            <th class="sorting" data-sorting_type="asc" data-column_name="order_no" style="cursor: pointer"
+                                data-tippy-content="Sort by Order">Order<span id="order_no_icon"></span>
                             </th>
                             <th class="sorting" data-sorting_type="asc" data-column_name="name" style="cursor: pointer"
                                 data-tippy-content="Sort by Governance Name">
@@ -91,8 +101,8 @@
                     </tbody>
                 </table>
                 <input type="hidden" name="hidden_page" id="hidden_page" value="1" />
-                <input type="hidden" name="hidden_column_name" id="hidden_column_name" value="id" />
-                <input type="hidden" name="hidden_sort_type" id="hidden_sort_type" value="desc" />
+                <input type="hidden" name="hidden_column_name" id="hidden_column_name" value="order_no" />
+                <input type="hidden" name="hidden_sort_type" id="hidden_sort_type" value="asc" />
             </div>
 
         </div>
@@ -127,6 +137,7 @@
         $(document).ready(function() {
 
             function clear_icon() {
+                $('#order_no_icon').html('');
                 $('#id_icon').html('');
                 $('#name_icon').html('');
                 $('#slug_icon').html('');
@@ -206,6 +217,43 @@
             allowHTML: true,
             placement: 'bottom',
             theme: 'light-theme',
+        });
+    </script>
+
+    {{-- SortableJS CDN --}}
+    <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.0/Sortable.min.js"></script>
+    <script>
+        // make table rows sortable by drag-handle
+        document.addEventListener('DOMContentLoaded', function() {
+            const tbody = document.querySelector('#our-governances-data table tbody');
+            if (!tbody) return;
+            const sortable = Sortable.create(tbody, {
+                handle: '.drag-handle',
+                animation: 150,
+                onEnd: function(evt) {
+                    // gather ordered ids
+                    const rows = tbody.querySelectorAll('tr[data-id]');
+                    const order = Array.from(rows).map(r => r.getAttribute('data-id'));
+
+                    // post to reorder route
+                    $.ajax({
+                        url: "{{ route('user.admin.our-governances.reorder') }}",
+                        method: 'POST',
+                        data: {
+                            _token: '{{ csrf_token() }}',
+                            order: order,
+                            content_country_code: $('#content_country_code').val()
+                        },
+                        success: function(res) {
+                            if (res.status) {
+                                // refresh list to get updated pagination and order numbers
+                                // trigger existing search handler which calls fetch_data
+                                $('#search').trigger('keyup');
+                            }
+                        }
+                    });
+                }
+            });
         });
     </script>
 @endpush
