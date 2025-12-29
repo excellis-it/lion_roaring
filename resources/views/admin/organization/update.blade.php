@@ -130,8 +130,7 @@
                                 <div class="form-group-div">
                                     <div class="form-group">
                                         <label for="floatingInputValue">Banner Description*</label>
-                                        <textarea name="banner_description" id="banner_description" placeholder="Banner Description"
-                                            class="form-control banner_desc_">{{ isset($organization->banner_description) ? $organization->banner_description : old('banner_description') }}</textarea>
+                                        <textarea name="banner_description" id="banner_description" placeholder="Banner Description" class="form-control ">{{ isset($organization->banner_description) ? $organization->banner_description : old('banner_description') }}</textarea>
                                         @if ($errors->has('banner_description'))
                                             <div class="error" style="color:red;">
                                                 {{ $errors->first('banner_description') }}</div>
@@ -513,21 +512,21 @@
     <script>
         $(document).ready(function() {
             // Initialize Summernote for existing card descriptions
-            $(".card_description").each(function(index, element) {
-                $('#card_description_' + index).summernote({
-                    placeholder: 'Card Description',
-                    tabsize: 2,
-                    height: 400
-                });
-            });
-            // Initialize Summernote for project_section_two card descriptions
-            $(".card_description_two").each(function(index, element) {
-                $('#card_description_two_' + index).summernote({
-                    placeholder: 'Card Description',
-                    tabsize: 2,
-                    height: 400
-                });
-            });
+            // $(".card_description").each(function(index, element) {
+            //     $('#card_description_' + index).summernote({
+            //         placeholder: 'Card Description',
+            //         tabsize: 2,
+            //         height: 400
+            //     });
+            // });
+            // // Initialize Summernote for project_section_two card descriptions
+            // $(".card_description_two").each(function(index, element) {
+            //     $('#card_description_two_' + index).summernote({
+            //         placeholder: 'Card Description',
+            //         tabsize: 2,
+            //         height: 400
+            //     });
+            // });
 
             // Add more functionality
             $(document).on("click", ".add-more", function() {
@@ -563,11 +562,13 @@
                 $("#add-more").append(html);
 
                 // Initialize Summernote for the newly added card description textarea
-                $('#card_description_' + count).summernote({
-                    placeholder: 'Card Description',
-                    tabsize: 2,
-                    height: 400
-                });
+                // $('#card_description_' + count).summernote({
+                //     placeholder: 'Card Description',
+                //     tabsize: 2,
+                //     height: 400
+                // });
+
+                toastr.success('Card Added Successfully');
             });
 
             // Add more functionality for second project section
@@ -604,11 +605,13 @@
                 $("#add-more-two").append(html);
 
                 // Initialize Summernote for the newly added card description textarea
-                $('#card_description_two_' + count).summernote({
-                    placeholder: 'Card Description',
-                    tabsize: 2,
-                    height: 400
-                });
+                // $('#card_description_two_' + count).summernote({
+                //     placeholder: 'Card Description',
+                //     tabsize: 2,
+                //     height: 400
+                // });
+
+                toastr.success('Card Added Successfully');
             });
 
             // Remove functionality for second section
@@ -632,22 +635,22 @@
         $(document).ready(function() {
             // ClassicEditor.create(document.querySelector("#banner_description"));
             // ClassicEditor.create(document.querySelector("#project_section_description"));
-            $('#banner_description').summernote({
-                placeholder: 'Banner Description*',
-                tabsize: 2,
-                height: 400
-            });
-            $('#project_section_description').summernote({
-                placeholder: 'Project Section Description*',
-                tabsize: 2,
-                height: 400
-            });
+            // $('#banner_description').summernote({
+            //     placeholder: 'Banner Description*',
+            //     tabsize: 2,
+            //     height: 400
+            // });
+            // $('#project_section_description').summernote({
+            //     placeholder: 'Project Section Description*',
+            //     tabsize: 2,
+            //     height: 400
+            // });
 
-            $('#project_section_two_description').summernote({
-                placeholder: 'Project Section Two Description',
-                tabsize: 2,
-                height: 400
-            });
+            // $('#project_section_two_description').summernote({
+            //     placeholder: 'Project Section Two Description',
+            //     tabsize: 2,
+            //     height: 400
+            // });
 
         });
     </script>
