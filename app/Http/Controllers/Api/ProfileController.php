@@ -297,6 +297,8 @@ class ProfileController extends Controller
             ['menu_name' => 'Job Posting', 'permission_name' => 'Manage Job Postings'],
             ['menu_name' => 'Meeting Schedule', 'permission_name' => 'Manage Meeting Schedule'],
             ['menu_name' => 'Live Events', 'permission_name' => 'Manage Event'],
+            ['menu_name' => 'Private Collaboration', 'permission_name' => 'Manage Private Collaboration'],
+
             ['menu_name' => 'All Members', 'permission_name' => 'Manage Partners'],
             ['menu_name' => 'Strategy', 'permission_name' => 'Manage Strategy'],
             ['menu_name' => 'Help', 'permission_name' => 'Manage Help'],
