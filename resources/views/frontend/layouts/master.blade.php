@@ -1535,6 +1535,13 @@
         <script type="text/javascript" src="https://js.stripe.com/v2/"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.payment/1.4.1/jquery.payment.min.js"></script>
 
+
+
+
+
+
+
+
         <script>
             $(document).ready(function() {
                 var cardTypeImages = {
