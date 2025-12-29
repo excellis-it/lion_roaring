@@ -256,33 +256,48 @@ AOS.init();
 
 
 
-  var pages = document.getElementsByClassName('page');
-  for(var i = 0; i < pages.length; i++)
-    {
-      var page = pages[i];
-      if (i % 2 === 0)
-        {
-          page.style.zIndex = (pages.length - i);
-        }
-    }
 
-  document.addEventListener('DOMContentLoaded', function(){
-    for(var i = 0; i < pages.length; i++)
-      {
-        //Or var page = pages[i];
-        pages[i].pageNum = i + 1;
-        pages[i].onclick=function()
-          {
-            if (this.pageNum % 2 === 0)
-              {
-                this.classList.remove('flipped');
-                this.previousElementSibling.classList.remove('flipped');
-              }
-            else
-              {
-                this.classList.add('flipped');
-                this.nextElementSibling.classList.add('flipped');
-              }
-           }
+ 
+
+document.addEventListener('DOMContentLoaded', function () {
+
+    const pages = document.querySelectorAll('.page');
+
+    /* Set z-index */
+    pages.forEach((page, index) => {
+        if (index % 2 === 0) {
+            page.style.zIndex = pages.length - index;
         }
-  })
+        page.pageNum = index + 1;
+    });
+
+    /* 🔥 OPEN BOOK BY DEFAULT */
+    pages[0].classList.add('flipped'); // page 1
+    pages[1].classList.add('flipped'); // page 2
+
+    /* Click logic */
+    pages.forEach(page => {
+        page.addEventListener('click', function () {
+
+            /* Prevent closing first page */
+            if (this.pageNum === 1) return;
+
+            /* EVEN pages → close */
+            if (this.pageNum % 2 === 0) {
+                this.classList.remove('flipped');
+                if (this.previousElementSibling) {
+                    this.previousElementSibling.classList.remove('flipped');
+                }
+            }
+            /* ODD pages → open */
+            else {
+                this.classList.add('flipped');
+                if (this.nextElementSibling) {
+                    this.nextElementSibling.classList.add('flipped');
+                }
+            }
+        });
+    });
+
+});
+

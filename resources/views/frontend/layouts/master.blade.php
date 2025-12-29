@@ -1678,7 +1678,42 @@
                 } else {
                     $('#submit-btn').text('Donate US$ ' + amount);
 
-                }
+                // $(document).on('click', '#submit-btn', function(){
+                //     $('#loading').addClass('loading');
+                //     $('#loading-content').addClass('loading-content');
+                // })
+            });
+        </script>
+        <script type="text/javascript" src="https://js.stripe.com/v2/"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.payment/1.4.1/jquery.payment.min.js"></script>
+
+
+
+
+
+
+
+
+        <script>
+            $(document).ready(function() {
+                var cardTypeImages = {
+                    'visa': '{{ 'frontend_assets/images/visa.png' }}',
+                    'mastercard': '{{ 'frontend_assets/images/mastercard.png' }}',
+                    'amex': '{{ 'frontend_assets/images/amex.png' }}',
+                    'unknown': '{{ 'frontend_assets/images/unknown.webp' }}'
+                };
+
+                $('#card-number').on('keyup change', function() {
+                    var cardNumber = $(this).val();
+                    var cardType = $.payment.cardType(cardNumber);
+
+                    var cardTypeImage = cardTypeImages[cardType] || cardTypeImages['unknown'];
+                    $('#card-type-image').attr('src', cardTypeImage);
+
+                    // Adjust CVV validation based on card type
+                    var cvvLength = cardType === 'amex' ? 4 : 3;
+                    $('#card-cvc').attr('maxlength', cvvLength);
+                });
             });
 
             // $(document).on('click', '#submit-btn', function(){
