@@ -73,6 +73,8 @@ class AddSidebarMenuItems extends Seeder
             ['key' => 'site_settings', 'default_name' => 'Site Settings'],
             ['key' => 'site_settings_settings', 'default_name' => 'Settings'],
             ['key' => 'site_settings_menu_names', 'default_name' => 'Menu Names'],
+
+
         ];
 
         foreach ($sidebarMenus as $menu) {
