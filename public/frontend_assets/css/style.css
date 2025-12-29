@@ -904,13 +904,13 @@ p {
 .img1 {
     width: 100%;
     position: relative;
-    border-radius: 300px;
+    /* border-radius: 300px; */
     overflow: hidden;
     height: 300px;
 }
 
 .img1 img {
-    border-radius: 30px;
+    /* border-radius: 30px; */
     width: 100%;
 }
 

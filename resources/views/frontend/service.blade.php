@@ -26,7 +26,7 @@
     <section class="about_sec">
         <div class="container">
             <div class="row justify-content-center mb-5">
-                <div class="col-xl-5 col-lg-6 mb-4" data-aos="fade-up" data-aos-duration="1000">
+                <div class=" col-lg-6 mb-4" data-aos="fade-up" data-aos-duration="1000">
                     <div class="">
                         <div class="img1">
                             <img src="{{ Storage::url($our_organization->image) ?? 'https://via.placeholder.com/150' }}"
@@ -35,8 +35,8 @@
                     </div>
                 </div>
 
-                <div class="col-xl-5 col-lg-6" data-aos="fade-up" data-aos-duration="1000">
-                    <div class="about_text heading_hp text_white">
+                <div class=" col-lg-6" data-aos="fade-up" data-aos-duration="1000">
+                    <div class="about_text heading_hp ">
                         <h6>{{ $our_organization['name'] ?? 'title' }}</h6>
                         <p style="font-weight: 400;">
                             <strong>{!! $our_organization['description'] ?? 'description' !!}</strong>
