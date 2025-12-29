@@ -29,8 +29,26 @@
                                     </div>
                                 </div>
                                 <div class="row ">
-                                    <div class="col-md-8">
-                                        <!-- <h3 class="mb-3 float-left">Members List</h3> -->
+                                    {{-- <div class="col-md-3">
+                                        <select name="user_type_filter" id="user_type_filter" class="form-control">
+                                            <option value="">All Types</option>
+                                            <option value="Global">Global</option>
+                                            <option value="Regional">Regional</option>
+                                        </select>
+                                    </div> --}}
+
+                                    <div class="col-md-3">
+                                        @if (auth()->user()->user_type == 'Global')
+                                            <select name="country_filter" id="country_filter" class="form-control">
+                                                <option value="">All Countries</option>
+                                                @foreach ($countries as $country)
+                                                    <option value="{{ $country->id }}">{{ $country->name }}</option>
+                                                @endforeach
+                                            </select>
+                                        @endif
+                                    </div>
+
+                                    <div class="col-md-5">
                                     </div>
                                     <div class="col-lg-4">
                                         <div class="search-field float-right">
@@ -187,13 +205,18 @@
                     page = $('#hidden_page').val();
                 }
 
+                // var user_type = $('#user_type_filter').val();
+                var country_id = $('#country_filter').val();
+
                 $.ajax({
                     url: "{{ route('partners.fetch-data') }}",
                     data: {
                         page: page,
                         sortby: sort_by,
                         sorttype: sort_type,
-                        query: query
+                        query: query,
+                        // user_type: user_type,
+                        country_id: country_id
                     },
                     success: function(data) {
                         $('tbody').html(data.data);
@@ -202,6 +225,22 @@
             }
 
             $(document).on('keyup', '#search', function() {
+                var query = $('#search').val();
+                var column_name = $('#hidden_column_name').val();
+                var sort_type = $('#hidden_sort_type').val();
+                var page = $('#hidden_page').val();
+                fetch_data(page, sort_type, column_name, query, 0);
+            });
+
+            // $(document).on('change', '#user_type_filter', function() {
+            //     var query = $('#search').val();
+            //     var column_name = $('#hidden_column_name').val();
+            //     var sort_type = $('#hidden_sort_type').val();
+            //     var page = $('#hidden_page').val();
+            //     fetch_data(page, sort_type, column_name, query, 0);
+            // });
+
+            $(document).on('change', '#country_filter', function() {
                 var query = $('#search').val();
                 var column_name = $('#hidden_column_name').val();
                 var sort_type = $('#hidden_sort_type').val();

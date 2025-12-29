@@ -69,10 +69,10 @@ class PartnerController extends Controller
 
             // Order and paginate results
             $partners = $partners->orderBy('id', 'desc')->paginate(15);
+            $countries = Country::orderBy('name', 'asc')->get();
 
 
-
-            return view('user.partner.list', compact('partners'));
+            return view('user.partner.list', compact('partners', 'countries'));
         } else {
             abort(403, 'You do not have permission to access this page.');
         }
@@ -398,6 +398,11 @@ class PartnerController extends Controller
                             });
                     });
                 });
+
+            if ($request->country_id) {
+                $partners->where('country', $request->country_id);
+            }
+
 
             // Apply role, user_type and ecclesia filters
             if ($user->user_type == 'Global' || $user->hasRole('SUPER ADMIN')) {
