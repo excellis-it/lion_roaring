@@ -23312,7 +23312,7 @@ select:disabled {
     vertical-align: top;
 }
 .table > :not(caption) > * > * {
-    padding: 6px 10px;
+    padding: 6px 10px 6px 30px;
     background-color: rgb(255 255 255 / 70%);
     border-width: 1px;
 }
@@ -47861,4 +47861,50 @@ input {
 }
 .note-btn-group .dropdown-toggle::after{
     display: none !important;
+}
+
+
+/* macOS Safari hard reset for native select */
+
+
+  select {
+    -webkit-appearance: none;
+    appearance: none;
+
+    /* remove Safari bevel */
+    background-color: transparent;
+    background-image: none;
+    box-shadow: none;
+    outline: none;
+
+    /* underline style */
+    border: none;
+    border-bottom: 1px solid #000;
+    border-radius: 0;
+
+    padding: 6px 28px 6px 0;
+    font-size: inherit;
+    line-height: 1.4;
+  }
+
+  /* remove focus glow */
+  select:focus {
+    outline: none;
+    box-shadow: none;
+  }
+
+
+
+
+  select {
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath d='M4 6l4 4 4-4' fill='black'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 4px center;
+    background-size: 12px;
+  }
+
+
+select {
+    -webkit-appearance: none !important;
+
 }

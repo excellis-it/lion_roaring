@@ -7,6 +7,15 @@
         .dataTables_filter {
             margin-bottom: 10px !important;
         }
+
+        .drag-handle {
+            cursor: move;
+            color: #6c757d;
+        }
+
+        .order-number {
+            font-weight: 600;
+        }
     </style>
 @endpush
 @section('head')
@@ -64,12 +73,16 @@
                     <table class="table table-bordered" class="display">
                         <thead>
                             <tr>
-                                <th class="sorting" data-tippy-content="Sort by Id" data-sorting_type="asc"
-                                    data-column_name="id" style="cursor: pointer">Id<span id="id_icon"></span>
+                                <th class="sorting" data-sorting_type="asc" data-column_name="order_no"
+                                    style="cursor: pointer" data-tippy-content="Sort by Order">Order<span
+                                        id="order_no_icon"></span>
+                                </th>
+                                {{-- <th class="sorting" data-tippy-content="Sort by Id" data-sorting_type="asc"
+                                    data-column_name="id" style="cursor: pointer">Id<span id="id_icon"></span> --}}
                                 </th>
                                 <th class="sorting" data-sorting_type="asc" data-column_name="name" style="cursor: pointer"
-                                    data-tippy-content="Sort by Governance Name">
-                                    Governance Name<span id="name_icon"></span></th>
+                                    data-tippy-content="Sort by Governance Name">Governance Name<span id="name_icon"></span>
+                                </th>
                                 <th class="sorting" data-sorting_type="asc" data-column_name="slug" style="cursor: pointer"
                                     data-tippy-content="Sort by Slug">Slug<span id="slug_icon"></span></th>
 
@@ -81,12 +94,17 @@
                         </tbody>
                     </table>
                     <input type="hidden" name="hidden_page" id="hidden_page" value="1" />
-                    <input type="hidden" name="hidden_column_name" id="hidden_column_name" value="id" />
-                    <input type="hidden" name="hidden_sort_type" id="hidden_sort_type" value="desc" />
+                    <input type="hidden" name="hidden_column_name" id="hidden_column_name" value="order_no" />
+                    <input type="hidden" name="hidden_sort_type" id="hidden_sort_type" value="asc" />
                 </div>
+                </table>
+                <input type="hidden" name="hidden_page" id="hidden_page" value="1" />
+                <input type="hidden" name="hidden_column_name" id="hidden_column_name" value="id" />
+                <input type="hidden" name="hidden_sort_type" id="hidden_sort_type" value="desc" />
             </div>
-
         </div>
+
+    </div>
     </div>
 @endsection
 
@@ -118,6 +136,7 @@
         $(document).ready(function() {
 
             function clear_icon() {
+                $('#order_no_icon').html('');
                 $('#id_icon').html('');
                 $('#name_icon').html('');
                 $('#slug_icon').html('');
@@ -197,6 +216,42 @@
             allowHTML: true,
             placement: 'bottom',
             theme: 'light-theme',
+        });
+    </script>
+
+    {{-- SortableJS CDN --}}
+    <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.0/Sortable.min.js"></script>
+    <script>
+        // make table rows sortable by drag-handle
+        document.addEventListener('DOMContentLoaded', function() {
+            const tbody = document.querySelector('#our-governances-data table tbody');
+            if (!tbody) return;
+            const sortable = Sortable.create(tbody, {
+                handle: '.drag-handle',
+                animation: 150,
+                onEnd: function(evt) {
+                    // gather ordered ids
+                    const rows = tbody.querySelectorAll('tr[data-id]');
+                    const order = Array.from(rows).map(r => r.getAttribute('data-id'));
+
+                    // post to reorder route
+                    $.ajax({
+                        url: "{{ route('our-governances.reorder') }}",
+                        method: 'POST',
+                        data: {
+                            _token: '{{ csrf_token() }}',
+                            order: order,
+                            content_country_code: $('#content_country_code').val()
+                        },
+                        success: function(res) {
+                            if (res.status) {
+                                // refresh list to get updated pagination and order numbers
+                                $('#search').trigger('keyup');
+                            }
+                        }
+                    });
+                }
+            });
         });
     </script>
 @endpush

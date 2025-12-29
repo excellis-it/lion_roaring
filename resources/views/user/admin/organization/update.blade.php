@@ -103,9 +103,8 @@
                             <div class="form-group-div">
                                 <div class="form-group">
                                     @if (isset($organization->banner_image))
-                                            <img src="{{ Storage::url($organization->banner_image) }}"
-                                                id="banner_image_preview" alt="Footer Logo"
-                                                style="width: 180px; height: 100px;">
+                                        <img src="{{ Storage::url($organization->banner_image) }}" id="banner_image_preview"
+                                            alt="Footer Logo" style="width: 180px; height: 100px;">
                                     @else
                                         <img src="" id="banner_image_preview" alt="Footer Logo"
                                             style="width: 180px; height: 100px; display:none;">
@@ -118,8 +117,7 @@
                             <div class="form-group-div">
                                 <div class="form-group">
                                     <label for="floatingInputValue">Banner Title*</label>
-                                        <input type="text" class="form-control" id="floatingInputValue"
-                                            name="banner_title"
+                                    <input type="text" class="form-control" id="floatingInputValue" name="banner_title"
                                         value="{{ isset($organization->banner_title) ? $organization->banner_title : old('banner_title') }}"
                                         placeholder="Banner Title">
                                     @if ($errors->has('banner_title'))
@@ -169,8 +167,8 @@
                                 @foreach ($organization->images as $image)
                                     <div class="image-area m-4" id="{{ $image->id }}">
                                         <img src="{{ Storage::url($image->image) }}" alt="Preview">
-                                            <a class="remove-image" href="javascript:void(0);"
-                                                data-id="{{ $image->id }}" style="display: inline;">&#215;</a>
+                                        <a class="remove-image" href="javascript:void(0);" data-id="{{ $image->id }}"
+                                            style="display: inline;">&#215;</a>
                                     </div>
                                 @endforeach
                             </div>
@@ -238,8 +236,8 @@
                                         <div class="form-group">
                                             {{-- meta title --}}
                                             <label for="floatingInputValue">Card Title*</label>
-                                                <input type="text" class="form-control" id="floatingInputValue"
-                                                    required name="card_title[]" value="{{ $item->title }}"
+                                            <input type="text" class="form-control" id="floatingInputValue" required
+                                                name="card_title[]" value="{{ $item->title }}"
                                                 placeholder="Card Title">
                                             <span class="text-danger" id="job_opportunity_title_0"></span>
                                         </div>
@@ -353,8 +351,8 @@
                                         <div class="form-group">
                                             {{-- meta title --}}
                                             <label for="floatingInputValue">Card Title*</label>
-                                                <input type="text" class="form-control" id="floatingInputValue"
-                                                    required name="card_title_two[]" value="{{ $item->title }}"
+                                            <input type="text" class="form-control" id="floatingInputValue" required
+                                                name="card_title_two[]" value="{{ $item->title }}"
                                                 placeholder="Card Title">
                                         </div>
                                     </div>
@@ -423,8 +421,7 @@
                                 <div class="form-group">
                                     {{-- meta title --}}
                                     <label for="floatingInputValue">Meta Title</label>
-                                        <input type="text" class="form-control" id="floatingInputValue"
-                                            name="meta_title"
+                                    <input type="text" class="form-control" id="floatingInputValue" name="meta_title"
                                         value="{{ isset($organization->meta_title) ? $organization->meta_title : old('meta_title') }}"
                                         placeholder="Meta Title">
                                     @if ($errors->has('meta_title'))
@@ -514,25 +511,25 @@
     </script>
     <script>
         $(document).ready(function() {
-            function initializeCKEditor(selector) {
-                document.querySelectorAll(selector).forEach((textarea) => {
-                    if (!textarea.classList.contains('ckeditor-initialized')) {
-                        ClassicEditor
-                            .create(textarea)
-                            .then(editor => {
-                                textarea.classList.add('ckeditor-initialized');
-                                editor.ui.view.editable.element.style.height = '250px';
-                            })
-                            .catch(error => {
-                                console.error(error);
-                            });
-                    }
-                });
-            }
+            // function initializeCKEditor(selector) {
+            //     document.querySelectorAll(selector).forEach((textarea) => {
+            //         if (!textarea.classList.contains('ckeditor-initialized')) {
+            //             ClassicEditor
+            //                 .create(textarea)
+            //                 .then(editor => {
+            //                     textarea.classList.add('ckeditor-initialized');
+            //                     editor.ui.view.editable.element.style.height = '250px';
+            //                 })
+            //                 .catch(error => {
+            //                     console.error(error);
+            //                 });
+            //         }
+            //     });
+            // }
 
             // Initialize CKEditor for existing card descriptions
-            initializeCKEditor('.card_description');
-            initializeCKEditor('.card_description_two');
+            //   initializeCKEditor('.card_description');
+            //  initializeCKEditor('.card_description_two');
 
             // Add more functionality
             $(document).on("click", ".add-more", function() {
@@ -567,8 +564,10 @@
                 // Append the new fields
                 $("#add-more").append(html);
 
+                toastr.success('Card Added Successfully');
+
                 // Initialize CKEditor for the newly added card description textarea
-                initializeCKEditor('#card_description_' + count);
+                //  initializeCKEditor('#card_description_' + count);
             });
 
             // Add more functionality for second project section
@@ -605,7 +604,9 @@
                 $("#add-more-two").append(html);
 
                 // Initialize CKEditor for the newly added card description textarea
-                initializeCKEditor('#card_description_two_' + count);
+                //  initializeCKEditor('#card_description_two_' + count);
+
+                toastr.success('Card Added Successfully');
             });
 
             // Remove functionality for second section
@@ -626,24 +627,24 @@
 
 
     <script>
-        $(document).ready(function() {
-            function initStaticCKEditor(selector) {
-                const el = document.querySelector(selector);
-                if (el) {
-                    ClassicEditor
-                        .create(el)
-                        .then(editor => {
-                            editor.ui.view.editable.element.style.height = '250px';
-                        })
-                        .catch(error => {
-                            console.error(error);
-                        });
-                }
-            }
-            initStaticCKEditor('#banner_description');
-            initStaticCKEditor('#project_section_description');
-            initStaticCKEditor('#project_section_two_description');
-        });
+        // $(document).ready(function() {
+        //     function initStaticCKEditor(selector) {
+        //         const el = document.querySelector(selector);
+        //         if (el) {
+        //             ClassicEditor
+        //                 .create(el)
+        //                 .then(editor => {
+        //                     editor.ui.view.editable.element.style.height = '250px';
+        //                 })
+        //                 .catch(error => {
+        //                     console.error(error);
+        //                 });
+        //         }
+        //     }
+        //     initStaticCKEditor('#banner_description');
+        //     initStaticCKEditor('#project_section_description');
+        //     initStaticCKEditor('#project_section_two_description');
+        // });
     </script>
     <script>
         $(document).ready(function() {
