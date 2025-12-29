@@ -712,4 +712,7 @@ input{
 .box_slae {
         width: 290px;
     }
+    .chatbox{
+            width: 290px !important;
+    }
 }
