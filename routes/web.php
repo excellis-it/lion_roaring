@@ -967,6 +967,7 @@ Route::prefix('user')->middleware(['user', 'preventBackHistory', 'userActivity']
 
         Route::prefix('our-governances')->group(function () {
             Route::get('/our-governance-delete/{id}', [UserAdminOurGovernanceController::class, 'delete'])->name('user.admin.our-governances.delete');
+            Route::post('/our-governances-reorder', [UserAdminOurGovernanceController::class, 'reorder'])->name('user.admin.our-governances.reorder');
         });
         Route::get('/our-governances-fetch-data', [UserAdminOurGovernanceController::class, 'fetchData'])->name('user.admin.our-governances.fetch-data');
 

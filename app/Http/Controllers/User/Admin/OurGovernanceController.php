@@ -22,18 +22,23 @@ class OurGovernanceController extends Controller
 
     public function index(Request $request)
     {
-        //  return $request->get('content_country_code', 'US');
         if (auth()->user()->can('Manage Our Governance')) {
-            // $our_governances = OurGovernance::orderBy('id', 'desc')->paginate(10);
             $user_type = auth()->user()->user_type;
             $user_country = auth()->user()->country;
             $country = Country::where('id', $user_country)->first();
+            $contentCountryCode = $request->get('content_country_code', 'US');
             if ($user_type == 'Global') {
-                $our_governances = OurGovernance::where('country_code', $request->get('content_country_code', 'US'))->orderBy('id', 'desc')->paginate(10);
+                $our_governances = OurGovernance::where('country_code', $contentCountryCode)
+                    ->orderBy('order_no', 'asc')
+                    ->orderBy('id', 'desc')
+                    ->paginate(10);
             } else {
-                $our_governances = OurGovernance::where('country_code', $country->code)->orderBy('id', 'desc')->paginate(10);
+                $our_governances = OurGovernance::where('country_code', $country->code)
+                    ->orderBy('order_no', 'asc')
+                    ->orderBy('id', 'desc')
+                    ->paginate(10);
             }
-            //   return $our_governances;
+
             return view('user.admin.our-governances.list')->with(compact('our_governances'));
         } else {
             abort(403, 'You do not have permission to access this page.');
@@ -51,24 +56,31 @@ class OurGovernanceController extends Controller
             $user_type = auth()->user()->user_type;
             $user_country = auth()->user()->country;
             $country = Country::where('id', $user_country)->first();
+
+            // default sort by order_no asc
+            if (!$sort_by) {
+                $sort_by = 'order_no';
+                $sort_type = 'asc';
+            }
+
             if ($user_type == 'Global') {
                 $our_governances = OurGovernance::where('country_code', $request->get('content_country_code', 'US'))
                     ->where(function ($q) use ($query) {
                         $q->where('id', 'like', '%' . $query . '%')
                             ->orWhere('name', 'like', '%' . $query . '%')
                             ->orWhere('slug', 'like', '%' . $query . '%');
-                })
-                ->orderBy($sort_by, $sort_type)
-                ->paginate(10);
+                    })
+                    ->orderBy($sort_by, $sort_type)
+                    ->paginate(10);
             } else {
                 $our_governances = OurGovernance::where('country_code', $country->code)
                     ->where(function ($q) use ($query) {
                         $q->where('id', 'like', '%' . $query . '%')
                             ->orWhere('name', 'like', '%' . $query . '%')
                             ->orWhere('slug', 'like', '%' . $query . '%');
-                })
-                ->orderBy($sort_by, $sort_type)
-                ->paginate(10);
+                    })
+                    ->orderBy($sort_by, $sort_type)
+                    ->paginate(10);
             }
             return response()->json(['data' => view('user.admin.our-governances.table', compact('our_governances'))->render()]);
         }
@@ -114,7 +126,7 @@ class OurGovernanceController extends Controller
             $slug = $slug . '-' . time();
         }
 
-          $user_type = auth()->user()->user_type;
+        $user_type = auth()->user()->user_type;
         $user_country = auth()->user()->country;
 
         $country = Country::where('id', $user_country)->first();
@@ -130,6 +142,11 @@ class OurGovernanceController extends Controller
         $our_governance->image = $this->imageUpload($request->file('image'), 'our_governances');
 
         $our_governance->country_code = $user_type == 'Global' ? $request->content_country_code : $country->code ?? 'US';
+
+        // set order_no to be last in that country
+        $contentCountryCode = $our_governance->country_code ?? 'US';
+        $maxOrder = OurGovernance::where('country_code', $contentCountryCode)->max('order_no') ?? 0;
+        $our_governance->order_no = $maxOrder + 1;
 
         $our_governance->save();
 
@@ -211,7 +228,22 @@ class OurGovernanceController extends Controller
             $our_governance->image = $this->imageUpload($request->file('image'), 'our_governances');
         }
 
-        $our_governance->country_code = $request->content_country_code ?? $our_governance->country_code ?? 'US';
+        $newCountryCode = $request->content_country_code ?? $our_governance->country_code ?? 'US';
+        $oldCountryCode = $our_governance->country_code ?? 'US';
+
+        if ($newCountryCode !== $oldCountryCode) {
+            // move to last in new country
+            $maxOrder = OurGovernance::where('country_code', $newCountryCode)->max('order_no') ?? 0;
+            $our_governance->order_no = $maxOrder + 1;
+
+            // update the country_code
+            $our_governance->country_code = $newCountryCode;
+
+            // resequence old country
+            $this->resequenceCountry($oldCountryCode);
+        } else {
+            $our_governance->country_code = $newCountryCode;
+        }
 
         $our_governance->save();
 
@@ -233,10 +265,61 @@ class OurGovernanceController extends Controller
     {
         if (auth()->user()->can('Delete Our Governance')) {
             $our_governance = OurGovernance::findOrfail($request->id);
+            $countryCode = $our_governance->country_code ?? 'US';
             $our_governance->delete();
+
+            // resequence after delete
+            $this->resequenceCountry($countryCode);
+
             return redirect()->route('user.admin.our-governances.index')->with('message', 'Our Governance deleted successfully.');
         } else {
             abort(403, 'You do not have permission to access this page.');
+        }
+    }
+
+    /**
+     * Reorder (AJAX)
+     */
+    public function reorder(Request $request)
+    {
+        if (!auth()->user()->can('Edit Our Governance')) {
+            return response()->json(['status' => false, 'message' => 'Forbidden'], 403);
+        }
+
+        $order = $request->get('order'); // expected array of ids
+        $countryCode = $request->get('content_country_code');
+
+        if (!is_array($order)) {
+            return response()->json(['status' => false, 'message' => 'Invalid order payload'], 422);
+        }
+
+        $position = 1;
+        foreach ($order as $id) {
+            $item = OurGovernance::find($id);
+            if (!$item) continue;
+
+            // if country_code provided, only update matching country items
+            if ($countryCode && $item->country_code !== $countryCode) continue;
+
+            $item->order_no = $position;
+            $item->save();
+            $position++;
+        }
+
+        return response()->json(['status' => true, 'message' => 'Order updated']);
+    }
+
+    /**
+     * Resequence order_no for a given country
+     */
+    protected function resequenceCountry($countryCode)
+    {
+        $items = OurGovernance::where('country_code', $countryCode)->orderBy('order_no', 'asc')->get();
+        $pos = 1;
+        foreach ($items as $it) {
+            $it->order_no = $pos;
+            $it->save();
+            $pos++;
         }
     }
 }
