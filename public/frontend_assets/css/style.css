@@ -3102,12 +3102,32 @@ li.slick-active button {
     font-size: 0px !important;
 }
 
-.goog-te-gadget .goog-te-combo {
+/* .goog-te-gadget .goog-te-combo {
     padding: 9px 15px;
     border-radius: 20px;
     border: none;
-}
+} */
+.goog-te-gadget .goog-te-combo {
+    padding: 9px 15px;
 
+    /* Border radius – cross browser */
+    -webkit-border-radius: 20px;
+    -moz-border-radius: 20px;
+    border-radius: 20px;
+
+    /* Remove default border */
+    border: none;
+
+    /* Normalize appearance across browsers */
+    -webkit-appearance: none; /* Chrome, Safari */
+    -moz-appearance: none;    /* Firefox */
+    appearance: none;
+
+    /* Improve consistency */
+    outline: none;
+    background-color: #fff;
+    cursor: pointer;
+}
 /* .project p{
     white-space: normal;
     word-wrap: break-word;
