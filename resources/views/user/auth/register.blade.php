@@ -35,6 +35,267 @@
             top: 29px;
         }
     </style>
+
+    <style>
+        /* Premium Modal Styles */
+        .modal-content.premium-modal {
+            border: none;
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.2);
+            background: #fff;
+        }
+
+        .premium-modal .modal-header {
+            background: linear-gradient(135deg, #643271 0%, #4a2454 100%);
+            color: #fff;
+            padding: 20px 30px;
+            border-bottom: none;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+        }
+
+        .premium-modal .modal-title {
+            font-family: 'EB Garamond', serif;
+            font-weight: 700;
+            font-size: 2rem;
+            letter-spacing: 1px;
+            color: #d98b1c;
+            /* Gold */
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+            margin: 0;
+        }
+
+        .premium-modal .close {
+            position: absolute;
+            right: 20px;
+            top: 20px;
+            color: rgba(255, 255, 255, 0.7);
+            opacity: 1;
+            font-size: 1.5rem;
+            transition: all 0.3s;
+            background: none;
+            border: none;
+        }
+
+        .premium-modal .close:hover {
+            color: #d98b1c;
+            transform: rotate(90deg);
+        }
+
+        .premium-modal .modal-body {
+            padding: 40px;
+            background: #fdfdfd;
+        }
+
+        /* Tier Cards */
+        .tier-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 25px;
+        }
+
+        .tier-card {
+            background: #fff;
+            border-radius: 15px;
+            padding: 30px;
+            position: relative;
+            transition: all 0.4s ease;
+            border: 1px solid #eee;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+            display: flex;
+            flex-direction: column;
+        }
+
+        .tier-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 20px 40px rgba(100, 50, 113, 0.15);
+            border-color: #d98b1c;
+            /* Gold border on hover */
+        }
+
+        .tier-card.featured {
+            border: 2px solid #d98b1c;
+            background: linear-gradient(to bottom, #fff, #fffbf2);
+        }
+
+        .tier-card .tier-name {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #643271;
+            margin-bottom: 10px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .tier-card .tier-price {
+            font-size: 2.5rem;
+            font-weight: 800;
+            color: #333;
+            margin-bottom: 20px;
+            font-family: 'Figtree', sans-serif;
+        }
+
+        .tier-card .tier-price span {
+            font-size: 1rem;
+            color: #777;
+            font-weight: 400;
+        }
+
+        .tier-card .tier-desc {
+            color: #666;
+            margin-bottom: 25px;
+            line-height: 1.6;
+            font-size: 0.95rem;
+        }
+
+        .tier-benefits {
+            list-style: none;
+            padding: 0;
+            margin: 0 0 30px 0;
+            text-align: left;
+            flex-grow: 1;
+        }
+
+        .tier-benefits li {
+            margin-bottom: 12px;
+            color: #444;
+            display: flex;
+            align-items: flex-start;
+        }
+
+        .tier-benefits li i {
+            color: #d98b1c;
+            /* Gold checkmarks */
+            font-size: 0.9rem;
+            margin-right: 10px;
+            margin-top: 5px;
+        }
+
+        .select-tier-btn {
+            width: 100%;
+            padding: 12px;
+            border-radius: 30px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            transition: all 0.3s;
+            border: none;
+            cursor: pointer;
+            background: #643271;
+            color: #fff;
+            box-shadow: 0 4px 15px rgba(100, 50, 113, 0.3);
+        }
+
+        .select-tier-btn:hover {
+            background: #4a2454;
+            transform: scale(1.02);
+            box-shadow: 0 6px 20px rgba(100, 50, 113, 0.4);
+        }
+
+        .tier-card.featured .select-tier-btn {
+            background: linear-gradient(135deg, #d98b1c 0%, #b57012 100%);
+            box-shadow: 0 4px 15px rgba(217, 139, 28, 0.4);
+        }
+
+        .tier-card.featured .select-tier-btn:hover {
+            background: linear-gradient(135deg, #b57012 0%, #945a0e 100%);
+        }
+
+        /* Payment Styles */
+        .payment-amount-box {
+            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+            padding: 20px;
+            border-radius: 12px;
+            margin-bottom: 30px;
+            text-align: center;
+            border: 1px solid #dee2e6;
+        }
+
+        .payment-amount-box h4 {
+            margin: 0;
+            color: #555;
+            font-size: 1.1rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .payment-amount-box .amount {
+            display: block;
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: #643271;
+            margin-top: 5px;
+        }
+
+        .stripe-container {
+            background: #fff;
+            padding: 15px;
+            border-radius: 8px;
+            border: 1px solid #ced4da;
+            box-shadow: inset 0 2px 5px rgba(0, 0, 0, 0.02);
+            margin-bottom: 10px;
+        }
+
+        .StripeElement {
+            width: 100%;
+            padding: 5px 0;
+        }
+
+        .stripe-container.focused {
+            border-color: #643271;
+            box-shadow: 0 0 0 3px rgba(100, 50, 113, 0.1);
+        }
+
+        .payment-actions {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 30px;
+        }
+
+        .back-btn {
+            background: none;
+            border: none;
+            color: #777;
+            font-weight: 600;
+            padding: 10px 20px;
+            cursor: pointer;
+            transition: color 0.3s;
+        }
+
+        .back-btn:hover {
+            color: #333;
+        }
+
+        .pay-btn {
+            background: linear-gradient(135deg, #28a745 0%, #218838 100%);
+            color: white;
+            padding: 12px 35px;
+            border-radius: 30px;
+            font-weight: 600;
+            border: none;
+            box-shadow: 0 4px 15px rgba(40, 167, 69, 0.3);
+            transition: all 0.3s;
+            cursor: pointer;
+            font-size: 1.1rem;
+        }
+
+        .pay-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(40, 167, 69, 0.4);
+            background: linear-gradient(135deg, #218838 0%, #1e7e34 100%);
+        }
+
+        .pay-btn:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+    </style>
 </head>
 @php
     use App\Helpers\Helper;
@@ -704,35 +965,36 @@
         });
     </script>
 
+
     <!-- Membership Tier Modal -->
     <div class="modal fade" id="tierModal" tabindex="-1" role="dialog" aria-labelledby="tierModalLabel"
         aria-hidden="true" data-backdrop="static" data-keyboard="false">
-        <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
-            <div class="modal-content">
+        <div class="modal-dialog modal-xl modal-dialog-centered" role="document">
+            <div class="modal-content premium-modal">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="tierModalLabel">Select Membership Tier</h5>
+                    <h5 class="modal-title" id="tierModalLabel">Choose Your Path</h5>
                 </div>
                 <div class="modal-body">
-                    <div class="row">
-                        @foreach ($tiers as $tier)
-                            <div class="col-md-4 mb-3">
-                                <div class="card h-100 text-center">
-                                    <div class="card-body d-flex flex-column">
-                                        <h5 class="card-title">{{ $tier->name }}</h5>
-                                        <h6 class="card-subtitle mb-2 text-muted">${{ number_format($tier->cost, 2) }}
-                                            / Year</h6>
-                                        <p class="card-text">{{ $tier->description }}</p>
-                                        <ul class="list-unstyled mt-auto mb-3 text-left">
-                                            @foreach ($tier->benefits as $benefit)
-                                                <li><i class="fa fa-check text-success"></i> {{ $benefit->benefit }}
-                                                </li>
-                                            @endforeach
-                                        </ul>
-                                        <button type="button" class="btn btn-primary select-tier-btn mt-auto"
-                                            data-id="{{ $tier->id }}"
-                                            data-cost="{{ $tier->cost }}">Select</button>
-                                    </div>
+                    <div class="tier-grid">
+                        @foreach ($tiers as $index => $tier)
+                            @php $is_featured = ($index == 1) ? 'featured' : ''; @endphp
+                            <div class="tier-card {{ $is_featured }}">
+                                <div class="tier-name">{{ $tier->name }}</div>
+                                <div class="tier-price">
+                                    ${{ number_format($tier->cost, 0) }}<span>/yr</span>
                                 </div>
+                                <div class="tier-desc">
+                                    {{ $tier->description }}
+                                </div>
+                                <ul class="tier-benefits">
+                                    @foreach ($tier->benefits as $benefit)
+                                        <li><i class="fas fa-check-circle"></i> {{ $benefit->benefit }}</li>
+                                    @endforeach
+                                </ul>
+                                <button type="button" class="select-tier-btn" data-id="{{ $tier->id }}"
+                                    data-cost="{{ $tier->cost }}">
+                                    {{ $tier->cost > 0 ? 'Join Now' : 'Get Started' }}
+                                </button>
                             </div>
                         @endforeach
                     </div>
@@ -745,33 +1007,47 @@
     <div class="modal fade" id="paymentModal" tabindex="-1" role="dialog" aria-labelledby="paymentModalLabel"
         aria-hidden="true" data-backdrop="static" data-keyboard="false">
         <div class="modal-dialog modal-dialog-centered" role="document">
-            <div class="modal-content">
+            <div class="modal-content premium-modal" style="max-width: 500px; margin: 0 auto;">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="paymentModalLabel">Complete Payment</h5>
+                    <h5 class="modal-title" id="paymentModalLabel">Secure Payment</h5>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close"
                         onclick="$('#paymentModal').modal('hide');">
                         <span aria-hidden="true">&times;</span>
                     </button>
                 </div>
                 <div class="modal-body">
-                    <div class="text-center mb-4">
-                        <h4>Total Amount: <span id="payment-amount-display">$0.00</span></h4>
+                    <div class="payment-amount-box">
+                        <h4>Total Amount</h4>
+                        <span class="amount" id="payment-amount-display">$0.00</span>
                     </div>
+
                     <form id="payment-form">
-                        <div class="form-group">
-                            <label for="card-element">Credit or debit card</label>
-                            <div id="card-element" class="form-control">
+                        <div class="form-group mb-4">
+                            <label for="card-element"
+                                style="font-weight: 600; color: #555; margin-bottom: 10px; display: block;">Credit or
+                                Debit Card</label>
+                            <div id="card-element" class="stripe-container">
                                 <!-- A Stripe Element will be inserted here. -->
                             </div>
                             <!-- Used to display form errors. -->
-                            <div id="card-errors" role="alert" class="text-danger mt-2"></div>
+                            <div id="card-errors" role="alert" class="text-danger mt-2"
+                                style="font-size: 0.9rem;"></div>
+                        </div>
+
+                        <div class="payment-actions">
+                            <button type="button" class="back-btn"
+                                onclick="$('#paymentModal').modal('hide'); $('#tierModal').modal('show');">
+                                <i class="fas fa-arrow-left"></i> Change Plan
+                            </button>
+                            <button type="button" class="pay-btn" id="confirm-payment-btn">
+                                Complete Payment <i class="fas fa-lock"
+                                    style="font-size: 0.8em; margin-left: 5px;"></i>
+                            </button>
+                        </div>
+                        <div style="text-align: center; margin-top: 20px; color: #999; font-size: 0.8rem;">
+                            <i class="fas fa-shield-alt"></i> Payments are secure and encrypted.
                         </div>
                     </form>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary"
-                        onclick="$('#paymentModal').modal('hide'); $('#tierModal').modal('show');">Back</button>
-                    <button type="button" class="btn btn-success" id="confirm-payment-btn">Pay Now</button>
                 </div>
             </div>
         </div>

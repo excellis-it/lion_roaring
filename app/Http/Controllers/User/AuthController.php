@@ -261,7 +261,7 @@ class AuthController extends Controller
         ]);
 
         Mail::to($request->email)->send(new AccountPendingApprovalMail($maildata));
-        return redirect()->route('home')->with('message', 'Plase wait for admin approval');
+        return redirect()->route('home')->with('message', 'Please wait for admin approval');
     }
 
     public function logout()
