@@ -8,9 +8,10 @@ use App\Models\MenuItem;
 
 class MenuController extends Controller
 {
+
     public function index()
     {
-        $items = MenuItem::orderBy('id')->get();
+        $items = MenuItem::orderBy('id')->get()->groupBy('type');
         return view('admin.menu.index', compact('items'));
     }
 

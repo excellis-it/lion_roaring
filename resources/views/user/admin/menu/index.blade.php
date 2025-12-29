@@ -12,48 +12,55 @@
                     <p class="text-muted small mb-0">Menu Names</p>
                 </div>
             </div>
-            <form action="{{ route('user.admin.menu.update') }}" method="post">
+            <form action="{{ route('user.admin.menu.update') }}" method="POST">
                 @csrf
 
-                <div class="card shadow-sm border-0 mb-4">
-                    <div class="card-header bg-white py-3 border-0">
-                        <h4 class="mb-0 fw-semibold">Menu Names</h4>
-                    </div>
+                @foreach ($items as $type => $menuItems)
+                    <div class="card shadow-sm border-0 mb-4">
+                        {{-- Type Header --}}
+                        <div class="card-header bg-light py-3 border-0">
+                            <h5 class="mb-0 fw-semibold text-capitalize">
+                                {{ $type ?? 'Other Menus' }}
+                            </h5>
+                        </div>
 
-                    <div class="card-body pt-0">
-                        <div class="row g-4">
-                            @foreach ($items as $item)
-                                <div class="col-md-6 col-lg-4">
-                                    <div class="form-group">
-                                        <label for="name_{{ $item->key }}" class="form-label fw-medium">
-                                            {{ $item->default_name }}
-                                        </label>
+                        {{-- Menu Inputs --}}
+                        <div class="card-body">
+                            <div class="row g-4">
+                                @foreach ($menuItems as $item)
+                                    <div class="col-md-6 col-lg-4">
+                                        <div class="form-group">
+                                            <label for="name_{{ $item->key }}" class="form-label fw-medium">
+                                                {{ $item->default_name }}
+                                            </label>
 
-                                        <input type="text"
-                                            class="form-control @error('names.' . $item->key) is-invalid @enderror"
-                                            id="name_{{ $item->key }}" name="names[{{ $item->key }}]"
-                                            value="{{ old('names.' . $item->key, $item->name ?? $item->default_name) }}"
-                                            placeholder="Enter {{ strtolower($item->default_name) }}">
+                                            <input type="text" id="name_{{ $item->key }}"
+                                                name="names[{{ $item->key }}]"
+                                                class="form-control @error('names.' . $item->key) is-invalid @enderror"
+                                                value="{{ old('names.' . $item->key, $item->name ?? $item->default_name) }}"
+                                                placeholder="Enter {{ strtolower($item->default_name) }}">
 
-                                        @error('names.' . $item->key)
-                                            <div class="invalid-feedback d-block">
-                                                {{ $message }}
-                                            </div>
-                                        @enderror
+                                            @error('names.' . $item->key)
+                                                <div class="invalid-feedback d-block">
+                                                    {{ $message }}
+                                                </div>
+                                            @enderror
+                                        </div>
                                     </div>
-                                </div>
-                            @endforeach
-                        </div>
-
-                        <div class="text-end mt-4">
-                            <button type="submit" class="btn btn-primary px-4 py-2">
-                                <i class="fa fa-save me-1"></i> Update
-                            </button>
+                                @endforeach
+                            </div>
                         </div>
                     </div>
-                </div>
+                @endforeach
 
+                {{-- Submit Button --}}
+                <div class="text-end">
+                    <button type="submit" class="btn btn-primary px-4 py-2">
+                        <i class="fa fa-save me-1"></i> Update Menus
+                    </button>
+                </div>
             </form>
+
 
         </div>
     </div>

@@ -1,4 +1,7 @@
 {{-- @json(session()->all()) --}}
+@php
+    use App\Helpers\Helper;
+@endphp
 <div class="main_menu_hdr">
     <div class="container-fluid">
         <div class="main_menu">
@@ -43,34 +46,34 @@
                 </div>
 
 
-   
+
 
                     <div class="menu-wrepper d-flex">
                         <div class="right_btm">
                             <div class="overlay" id="overlay">
                                 <nav class="overlay-menu">
                                     <ul id="menu-header-menu" class="menu">
+
                                         <li class="active">
-                                            <a href="{{ route('home') }}">Home</a>
+                                            <a href="{{ route('home') }}">{{ Helper::getMenuName('home', 'Home') }}</a>
                                         </li>
                                         <li>
-                                            <a href="{{ route('organization') }}">Private Ecclesia</a>
+                                            <a href="{{ route('organization') }}">{{ Helper::getMenuName('private_ecclesia', 'Private Ecclesia') }}</a>
                                         </li>
                                         <li>
-                                            <a href="{{ route('ecclesia-associations') }}">Ecclesia Covenant</a>
+                                            <a href="{{ route('ecclesia-associations') }}">{{ Helper::getMenuName('ecclesia_covenant', 'Ecclesia Covenant') }}</a>
                                         </li>
                                         <li>
-                                            <a href="{{ route('principle-and-business') }}">Mandate of Kingdom Precepts
-                                                and Dominion</a>
+                                            <a href="{{ route('principle-and-business') }}">{{ Helper::getMenuName('mandate_of_kingdom_precepts_and_dominion', 'Mandate of Kingdom Precepts and Dominion') }}</a>
                                         </li>
                                         <li>
-                                            <a href="{{ route('gallery') }}">Gallery</a>
+                                            <a href="{{ route('gallery') }}">{{ Helper::getMenuName('gallery', 'Gallery') }}</a>
                                         </li>
                                         <li>
-                                            <a href="{{ route('faq') }}">FAQ</a>
+                                            <a href="{{ route('faq') }}">{{ Helper::getMenuName('faq', 'FAQ') }}</a>
                                         </li>
                                         <li>
-                                            <a href="{{ route('membership') }}">Membership</a>
+                                            <a href="{{ route('membership') }}">{{ Helper::getMenuName('membership', 'Membership') }}</a>
                                         </li>
                                         {{-- <li>
                                         <a href="{{ route('contact-us') }}">Contact Us</a>
