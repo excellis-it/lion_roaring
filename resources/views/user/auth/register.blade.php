@@ -972,7 +972,7 @@
         <div class="modal-dialog modal-xl modal-dialog-centered" role="document">
             <div class="modal-content premium-modal">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="tierModalLabel">Choose Your Path</h5>
+                    <h5 class="modal-title" id="tierModalLabel">Choose Your Member Tier</h5>
                 </div>
                 <div class="modal-body">
                     <div class="tier-grid">
@@ -1037,7 +1037,7 @@
                         <div class="payment-actions">
                             <button type="button" class="back-btn"
                                 onclick="$('#paymentModal').modal('hide'); $('#tierModal').modal('show');">
-                                <i class="fas fa-arrow-left"></i> Change Plan
+                                <i class="fas fa-arrow-left"></i> Change Member Tier
                             </button>
                             <button type="button" class="pay-btn" id="confirm-payment-btn">
                                 Complete Payment <i class="fas fa-lock"
