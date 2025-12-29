@@ -21,6 +21,11 @@ use App\Mail\OtpMail;
 use App\Models\VerifyOTP;
 use Illuminate\Support\Facades\Hash;
 use App\Models\UserActivity;
+use App\Models\MembershipTier;
+use App\Models\UserSubscription;
+use App\Models\SubscriptionPayment;
+use Stripe\StripeClient;
+use Spatie\Permission\Models\Role;
 
 class AuthController extends Controller
 {
@@ -52,7 +57,7 @@ class AuthController extends Controller
         $currentCode = strtoupper(Helper::getVisitorCountryCode());
         $country = Country::where('code', $currentCode)->first();
 
-        if ($user && \Hash::check($request->password, $user->password)) {
+        if ($user && Hash::check($request->password, $user->password)) {
             if ($user->status == 1 && $user->is_accept == 1) {
 
                 // dd($country->id, $user->country);
@@ -102,32 +107,12 @@ class AuthController extends Controller
         // $eclessias = User::role('ECCLESIA')->orderBy('id', 'desc')->get();
         $eclessias = Ecclesia::orderBy('id', 'asc')->get();
         $countries = Country::all();
-        return view('user.auth.register')->with(compact('eclessias', 'countries'));
+        $tiers = MembershipTier::with('benefits')->get();
+        return view('user.auth.register')->with(compact('eclessias', 'countries', 'tiers'));
     }
 
     public function registerCheck(Request $request)
     {
-        //  abort(404);
-        // dd($request->all());
-        // $request->validate([
-        //     'user_name' => 'required|string|max:255|unique:users',
-        //     'email' => 'required|string|email|max:255|unique:users',
-        //     'ecclesia_id' => 'nullable',
-        //     'first_name' => 'required|string|max:255',
-        //     'last_name' => 'required|string|max:255',
-        //     'middle_name' => 'nullable|string|max:255',
-        //     'address' => 'required|string|max:255',
-        //     'phone_number' => 'required',
-        //     'city' => 'required|string|max:255',
-        //     'state' => 'required|string|max:255',
-        //     'address2' => 'nullable|string|max:255',
-        //     'country' => 'required|string|max:255',
-        //     'zip' => 'required',
-        //     'email_confirmation' => 'required|same:email',
-        //     'password' => 'required|string|regex:/^[\S]+$/',
-        //     'password_confirmation' => 'required|same:password',
-        // ]);
-
         $validator = Validator::make($request->all(), [
             'user_name' => 'required|string|max:255|unique:users',
             'email' => 'required|string|email|max:255|unique:users',
@@ -146,9 +131,13 @@ class AuthController extends Controller
             'password' => ['required', 'string', 'regex:/^(?=.*[@$%&])[^\s]{8,}$/'],
             'password_confirmation' => 'required|same:password',
             'signature' => 'required|string',
+            'tier_id' => 'required|exists:membership_tiers,id',
+            'stripeToken' => 'required',
         ], [
             'password.regex' => 'The password must be at least 8 characters long and include at least one special character from @$%&.',
             'signature.required' => 'Please provide your signature before submitting the form.',
+            'tier_id.required' => 'Please select a membership tier.',
+            'stripeToken.required' => 'Payment token is missing. Please try again.',
         ]);
 
 
@@ -171,11 +160,37 @@ class AuthController extends Controller
 
         $currentCode = strtoupper(Helper::getVisitorCountryCode());
         $country = Country::where('code', $currentCode)->first();
-        if ($country->id != $request->country) {
-            // return response()->json(['message' => 'You are not from ' . $country->name . '! Please change the country from dropdown.', 'status' => false]);
-            // merge as a validation error
+        if ($country && $country->id != $request->country) {
             $validator->errors()->add('country', 'Now you are registered from ' . $country->name . '! Please change the country from dropdown.');
             return redirect()->back()->withErrors($validator)->withInput();
+        }
+
+        $tier = MembershipTier::find($request->tier_id);
+        $payment_status = 'Pending';
+        $transaction_id = null;
+        $payment_amount = 0;
+
+        // Process Payment
+        if ($tier->cost > 0) {
+            try {
+                \Stripe\Stripe::setApiKey(env('STRIPE_SECRET'));
+                $charge = \Stripe\Charge::create([
+                    'amount' => $tier->cost * 100,
+                    'currency' => 'usd',
+                    'source' => $request->stripeToken,
+                    'description' => 'Membership Registration - ' . $tier->name,
+                ]);
+
+                if ($charge->status == 'succeeded') {
+                    $payment_status = 'Success';
+                    $transaction_id = $charge->id;
+                    $payment_amount = $tier->cost;
+                } else {
+                    return redirect()->back()->withErrors(['stripeToken' => 'Payment failed.'])->withInput();
+                }
+            } catch (\Exception $e) {
+                return redirect()->back()->withErrors(['stripeToken' => 'Payment error: ' . $e->getMessage()])->withInput();
+            }
         }
 
         $user = new User();
@@ -202,14 +217,47 @@ class AuthController extends Controller
 
 
         $user->assignRole('MEMBER_NON_SOVEREIGN');
+        if ($tier->role_id) {
+            $role = Role::find($tier->role_id);
+            if ($role) {
+                $user->assignRole($role->name);
+            }
+        }
+
+        // Create Subscription
+        $user_subscription = new UserSubscription();
+        $user_subscription->user_id = $user->id;
+        $user_subscription->plan_id = $tier->id;
+        $user_subscription->subscription_method = 'amount';
+        $user_subscription->subscription_name = $tier->name;
+        $user_subscription->subscription_price = $tier->cost;
+        $user_subscription->life_force_energy_tokens = null;
+        $user_subscription->agree_accepted_at = null;
+        $user_subscription->agree_description_snapshot = null;
+        $user_subscription->subscription_validity = 12; // 12 months by default
+        $user_subscription->subscription_start_date = now();
+        $user_subscription->subscription_expire_date = now()->addYear();
+        $user_subscription->save();
+
+        if ($payment_status == 'Success') {
+            $payment = new SubscriptionPayment();
+            $payment->user_id = $user->id;
+            $payment->user_subscription_id = $user_subscription->id;
+            $payment->transaction_id = $transaction_id;
+            $payment->payment_method = 'Stripe';
+            $payment->payment_amount = $payment_amount;
+            $payment->payment_status = 'Success';
+            $payment->save();
+        }
+
         $maildata = [
-            'name' => $request->full_name,
+            'name' => $request->first_name . ' ' . $request->last_name,
         ];
 
         UserActivity::logActivity([
             'user_id' => $user->id,
             'activity_type' => 'REGISTER',
-            'activity_description' => 'User registered',
+            'activity_description' => 'User registered with ' . $tier->name,
         ]);
 
         Mail::to($request->email)->send(new AccountPendingApprovalMail($maildata));
@@ -226,6 +274,58 @@ class AuthController extends Controller
         ]);
         auth()->logout();
         return redirect()->route('home')->with('message', 'Logout success');
+    }
+
+    public function registerValidate(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'user_name' => 'required|string|max:255|unique:users',
+            'email' => 'required|string|email|max:255|unique:users',
+            'ecclesia_id' => 'nullable',
+            'first_name' => 'required|string|max:255',
+            'last_name' => 'required|string|max:255',
+            'middle_name' => 'nullable|string|max:255',
+            'address' => 'required|string|max:255',
+            'phone_number' => 'required',
+            'city' => 'required|string|max:255',
+            'state' => 'required|string|max:255',
+            'address2' => 'nullable|string|max:255',
+            'country' => 'required|string|max:255',
+            'zip' => 'required',
+            'email_confirmation' => 'required|same:email',
+            'password' => ['required', 'string', 'regex:/^(?=.*[@$%&])[^\s]{8,}$/'],
+            'password_confirmation' => 'required|same:password',
+            'signature' => 'required|string',
+        ], [
+            'password.regex' => 'The password must be at least 8 characters long and include at least one special character from @$%&.',
+            'signature.required' => 'Please provide your signature before submitting the form.',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json(['status' => false, 'errors' => $validator->errors()]);
+        }
+
+        $phone_number = $request->full_phone_number;
+        if (!$phone_number) {
+            // In case full_phone_number is not populated by JS correctly for this check, check phone_number
+            // But existing code uses full_phone_number from request, which JS should send.
+            $phone_number = $request->phone_number;
+        }
+
+        $phone_number_cleaned = preg_replace('/[\s\-\(\)]+/', '', $phone_number);
+
+        $check = User::whereRaw("REPLACE(REPLACE(REPLACE(REPLACE(phone, ' ', ''), '-', ''), '(', ''), ')', '') = ?", [$phone_number_cleaned])->count();
+        if ($check > 0) {
+            return response()->json(['status' => false, 'errors' => ['phone_number' => ['Phone number already exists']]]);
+        }
+
+        $currentCode = strtoupper(Helper::getVisitorCountryCode());
+        $country = Country::where('code', $currentCode)->first();
+        if ($country && $country->id != $request->country) {
+            return response()->json(['status' => false, 'errors' => ['country' => ['Now you are registered from ' . $country->name . '! Please change the country from dropdown.']]]);
+        }
+
+        return response()->json(['status' => true]);
     }
 
     public function getStates(Request $request)

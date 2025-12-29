@@ -423,6 +423,7 @@ Route::middleware(['userActivity'])->group(function () {
     // register
     Route::get('/register', [UserAuthController::class, 'register'])->name('register');
     Route::post('/register-check', [UserAuthController::class, 'registerCheck'])->name('register.check');  //register check
+    Route::post('/register-validate', [UserAuthController::class, 'registerValidate'])->name('register.validate'); // AJAX Validation
     Route::post('forget-password', [UserForgetPasswordController::class, 'forgetPassword'])->name('user.forget.password');
     Route::post('password-change', [UserForgetPasswordController::class, 'changePassword'])->name('user.password-change');
     Route::get('forget-password/show', [UserForgetPasswordController::class, 'forgetPasswordShow'])->name('user.forget.password.show');

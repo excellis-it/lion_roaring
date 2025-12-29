@@ -49,8 +49,7 @@
                         <div class="login_bg_sec border-top-0">
                             <div class="logo-admin">
                                 @if (isset(Helper::getFooter()['footer_logo']))
-                                        <img src="{{ Storage::url(Helper::getFooter()['footer_logo']) }}"
-                                            alt="">
+                                    <img src="{{ Storage::url(Helper::getFooter()['footer_logo']) }}" alt="">
                                 @else
                                     <img src="{{ asset('user_assets/images/logo.png') }}" alt="">
                                 @endif
@@ -235,9 +234,8 @@
                                             <div class="col-lg-4 mb-3">
                                                 <div class="login-username">
                                                     <label for="user_login">Confirm Email ID</label>
-                                                        <input type="email" name="email_confirmation"
-                                                            id="user_login" class="input"
-                                                            value="{{ old('email_confirmation') }}">
+                                                    <input type="email" name="email_confirmation" id="user_login"
+                                                        class="input" value="{{ old('email_confirmation') }}">
                                                     @if ($errors->has('email_confirmation'))
                                                         <div class="error" style="color:red;">
                                                             {{ $errors->first('email_confirmation') }}</div>
@@ -706,6 +704,249 @@
         });
     </script>
 
+    <!-- Membership Tier Modal -->
+    <div class="modal fade" id="tierModal" tabindex="-1" role="dialog" aria-labelledby="tierModalLabel"
+        aria-hidden="true" data-backdrop="static" data-keyboard="false">
+        <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="tierModalLabel">Select Membership Tier</h5>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        @foreach ($tiers as $tier)
+                            <div class="col-md-4 mb-3">
+                                <div class="card h-100 text-center">
+                                    <div class="card-body d-flex flex-column">
+                                        <h5 class="card-title">{{ $tier->name }}</h5>
+                                        <h6 class="card-subtitle mb-2 text-muted">${{ number_format($tier->cost, 2) }}
+                                            / Year</h6>
+                                        <p class="card-text">{{ $tier->description }}</p>
+                                        <ul class="list-unstyled mt-auto mb-3 text-left">
+                                            @foreach ($tier->benefits as $benefit)
+                                                <li><i class="fa fa-check text-success"></i> {{ $benefit->benefit }}
+                                                </li>
+                                            @endforeach
+                                        </ul>
+                                        <button type="button" class="btn btn-primary select-tier-btn mt-auto"
+                                            data-id="{{ $tier->id }}"
+                                            data-cost="{{ $tier->cost }}">Select</button>
+                                    </div>
+                                </div>
+                            </div>
+                        @endforeach
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Payment Modal -->
+    <div class="modal fade" id="paymentModal" tabindex="-1" role="dialog" aria-labelledby="paymentModalLabel"
+        aria-hidden="true" data-backdrop="static" data-keyboard="false">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="paymentModalLabel">Complete Payment</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"
+                        onclick="$('#paymentModal').modal('hide');">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="text-center mb-4">
+                        <h4>Total Amount: <span id="payment-amount-display">$0.00</span></h4>
+                    </div>
+                    <form id="payment-form">
+                        <div class="form-group">
+                            <label for="card-element">Credit or debit card</label>
+                            <div id="card-element" class="form-control">
+                                <!-- A Stripe Element will be inserted here. -->
+                            </div>
+                            <!-- Used to display form errors. -->
+                            <div id="card-errors" role="alert" class="text-danger mt-2"></div>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary"
+                        onclick="$('#paymentModal').modal('hide'); $('#tierModal').modal('show');">Back</button>
+                    <button type="button" class="btn btn-success" id="confirm-payment-btn">Pay Now</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://js.stripe.com/v3/"></script>
+    <script>
+        $(document).ready(function() {
+            var stripe = Stripe('{{ env('STRIPE_KEY') }}');
+            var elements = stripe.elements();
+            var style = {
+                base: {
+                    color: '#32325d',
+                    fontFamily: '"Helvetica Neue", Helvetica, sans-serif',
+                    fontSmoothing: 'antialiased',
+                    fontSize: '16px',
+                    '::placeholder': {
+                        color: '#aab7c4'
+                    }
+                },
+                invalid: {
+                    color: '#fa755a',
+                    iconColor: '#fa755a'
+                }
+            };
+            var card = elements.create('card', {
+                style: style
+            });
+            card.mount('#card-element');
+
+            card.addEventListener('change', function(event) {
+                var displayError = document.getElementById('card-errors');
+                if (event.error) {
+                    displayError.textContent = event.error.message;
+                } else {
+                    displayError.textContent = '';
+                }
+            });
+
+            $('#login-form').on('submit', function(e) {
+                // If signature validation failed in previous handler, stop here
+                if (e.isDefaultPrevented()) {
+                    return;
+                }
+
+                // If we already have the tokens, let it submit
+                if ($('#tier_id').length > 0 && $('#stripeToken').length > 0) {
+                    // If it's a free tier check
+                    if ($('#stripeToken').val() === 'free_tier') {
+                        return true;
+                    }
+                    return true;
+                }
+
+                e.preventDefault();
+
+                // Validate Signature
+                if ($('#signature-data').val() === '') {
+                    if (!document.getElementById('login-form').checkValidity()) {
+                        document.getElementById('login-form').reportValidity();
+                        return;
+                    }
+                }
+
+                // Perform Backend Validation via AJAX
+                var form = $(this);
+                // Create FormData for file uploads (if any) and regular data
+                var formData = new FormData(this);
+
+                $.ajax({
+                    url: "{{ route('register.validate') }}",
+                    type: 'POST',
+                    data: formData,
+                    processData: false,
+                    contentType: false,
+                    beforeSend: function() {
+                        $('button[type="submit"]').prop('disabled', true).text('Validating...');
+                    },
+                    success: function(response) {
+                        $('button[type="submit"]').prop('disabled', false).text('Register');
+                        if (response.status === true) {
+                            // Validation Success, Show Tier Modal
+                            // Check if Tier is selected
+                            if ($('#tier_id').length === 0) {
+                                $('#tierModal').modal('show');
+                            } else {
+                                // Tier selected, need payment
+                                $('#paymentModal').modal('show');
+                            }
+                        } else {
+                            // Validation Failed
+                            var errors = response.errors;
+                            var errorMsg = '';
+                            $.each(errors, function(key, value) {
+                                errorMsg += value[0] + '\n';
+                            });
+
+                            if (typeof Swal !== 'undefined') {
+                                Swal.fire({
+                                    icon: 'error',
+                                    title: 'Validation Error',
+                                    text: errorMsg
+                                });
+                            } else if (typeof toastr !== 'undefined') {
+                                toastr.error(errorMsg);
+                            } else {
+                                alert(errorMsg);
+                            }
+                        }
+                    },
+                    error: function(xhr, status, error) {
+                        $('button[type="submit"]').prop('disabled', false).text('Register');
+                        alert('An error occurred during validation. Please try again.');
+                    }
+                });
+            });
+
+            // Handle Tier Selection
+            $('.select-tier-btn').click(function() {
+                var tierId = $(this).data('id');
+                var cost = parseFloat($(this).data('cost'));
+
+                // Remove existing input if any
+                $('#tier_id').remove();
+                $('<input>').attr({
+                    type: 'hidden',
+                    id: 'tier_id',
+                    name: 'tier_id',
+                    value: tierId
+                }).appendTo('#login-form');
+
+                $('#tierModal').modal('hide');
+
+                if (cost > 0) {
+                    $('#payment-amount-display').text('$' + cost.toFixed(2));
+                    $('#paymentModal').modal('show');
+                    // Re-mount card to ensure it renders correctly if modal was hidden
+                    // card.unmount(); card.mount('#card-element'); // Sometimes needed
+                } else {
+                    // Free Tier
+                    $('<input>').attr({
+                        type: 'hidden',
+                        id: 'stripeToken',
+                        name: 'stripeToken',
+                        value: 'free_tier'
+                    }).appendTo('#login-form');
+                    $('#login-form').submit();
+                }
+            });
+
+            // Handle Payment
+            $('#confirm-payment-btn').click(function() {
+                // Disable button to prevent multiple clicks
+                $(this).prop('disabled', true).text('Processing...');
+
+                stripe.createToken(card).then(function(result) {
+                    if (result.error) {
+                        $('#card-errors').text(result.error.message);
+                        $('#confirm-payment-btn').prop('disabled', false).text('Pay Now');
+                    } else {
+                        // Send the token to your server.
+                        $('#stripeToken').remove();
+                        $('<input>').attr({
+                            type: 'hidden',
+                            id: 'stripeToken',
+                            name: 'stripeToken',
+                            value: result.token.id
+                        }).appendTo('#login-form');
+                        $('#paymentModal').modal('hide');
+                        $('#login-form').submit();
+                    }
+                });
+            });
+        });
+    </script>
 </body>
 
 </html>
