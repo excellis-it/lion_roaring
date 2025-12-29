@@ -28,8 +28,8 @@
         <div class="container">
             <div class="row align-items-center justify-content-center mb-5">
                 <div class="col-lg-8">
-                    <div class="about_text heading_hp text-center">
-                        <h2>{{$our_organization['name'] ?? 'title'}}</h2>
+                    <div class="text-center">
+                        <h2>{{$our_organization['description'] ?? 'description'}}</h2>
                     </div>
                 </div>
             </div>
