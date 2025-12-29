@@ -2,7 +2,9 @@
     @foreach ($our_governances as $key => $our_governance)
         <tr data-id="{{ $our_governance->id }}">
             <td class="d-flex align-items-center">
-                <span class="drag-handle me-2" style="cursor:move"><i class="fas fa-arrows-alt"></i></span>
+                @if (auth()->user()->can('Edit Our Governance'))
+                    <span class="drag-handle me-2" style="cursor:move"><i class="fas fa-arrows-alt"></i></span>
+                @endif
                 <span class="order-number">{{ $our_governance->order_no ?? '—' }}</span>
             </td>
             {{-- <td>{{ ($our_governances->currentPage() - 1) * $our_governances->perPage() + $loop->index + 1 }}</td> --}}
