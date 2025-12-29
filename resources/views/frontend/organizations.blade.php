@@ -61,7 +61,7 @@
                             <div class="project">
                                 <h4>{{ $item->title }}</h4>
                                 <div class="text-box">
-                                    {!! $item->description !!}
+                                    <p>{!! $item->description !!}</p>
                                 </div>
                             </div>
                         </div>
@@ -86,7 +86,7 @@
                             <div class="project">
                                 <h4>{{ $item->title }}</h4>
                                 <div class="text-box">
-                                    {!! $item->description !!}
+                                    <p>{!! $item->description !!}</p>
                                 </div>
                             </div>
                         </div>
