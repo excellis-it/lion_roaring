@@ -23312,7 +23312,7 @@ select:disabled {
     vertical-align: top;
 }
 .table > :not(caption) > * > * {
-    padding: 6px 10px;
+    padding: 6px 10px 6px 30px;
     background-color: rgb(255 255 255 / 70%);
     border-width: 1px;
 }
