@@ -53,7 +53,8 @@ class PrivateCollaborationController extends Controller
     public function index(Request $request)
     {
         try {
-            $searchQuery = $request->get('search');
+            $searchQuery = trim((string) $request->get('search', ''));
+            $searchQuery = $searchQuery !== '' ? $searchQuery : null;
 
             $collaborations = PrivateCollaboration::with(['user', 'invitations.user'])
                 ->where(function ($query) {
@@ -63,8 +64,10 @@ class PrivateCollaborationController extends Controller
                         });
                 })
                 ->when($searchQuery, function ($q) use ($searchQuery) {
-                    $q->where('title', 'like', "%{$searchQuery}%")
-                        ->orWhere('description', 'like', "%{$searchQuery}%");
+                    $q->where(function ($sq) use ($searchQuery) {
+                        $sq->where('title', 'like', "%{$searchQuery}%")
+                            ->orWhere('description', 'like', "%{$searchQuery}%");
+                    });
                 })
                 ->orderBy('id', 'desc')
                 ->paginate(15);
