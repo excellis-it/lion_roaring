@@ -132,13 +132,36 @@ class AuthController extends Controller
             'password_confirmation' => 'required|same:password',
             'signature' => 'required|string',
             'tier_id' => 'required|exists:membership_tiers,id',
-            'stripeToken' => 'required',
         ], [
             'password.regex' => 'The password must be at least 8 characters long and include at least one special character from @$%&.',
             'signature.required' => 'Please provide your signature before submitting the form.',
             'tier_id.required' => 'Please select a membership tier.',
-            'stripeToken.required' => 'Payment token is missing. Please try again.',
         ]);
+
+        $validator->after(function ($validator) use ($request) {
+            if (!$request->tier_id) {
+                return;
+            }
+
+            $tier = MembershipTier::find($request->tier_id);
+            if (!$tier) {
+                return;
+            }
+
+            $pricingType = $tier->pricing_type ?? 'amount';
+
+            if ($pricingType === 'token') {
+                if (!$request->boolean('agree_accepted')) {
+                    $validator->errors()->add('agree_accepted', 'Please review and accept the tier agreement.');
+                }
+                return;
+            }
+
+            // Amount based tiers
+            if (floatval($tier->cost) > 0 && !$request->stripeToken) {
+                $validator->errors()->add('stripeToken', 'Payment token is missing. Please try again.');
+            }
+        });
 
 
         if ($validator->fails()) {
@@ -171,7 +194,7 @@ class AuthController extends Controller
         $payment_amount = 0;
 
         // Process Payment
-        if ($tier->cost > 0) {
+        if (($tier->pricing_type ?? 'amount') === 'amount' && floatval($tier->cost) > 0) {
             try {
                 \Stripe\Stripe::setApiKey(env('STRIPE_SECRET'));
                 $charge = \Stripe\Charge::create([
@@ -228,12 +251,22 @@ class AuthController extends Controller
         $user_subscription = new UserSubscription();
         $user_subscription->user_id = $user->id;
         $user_subscription->plan_id = $tier->id;
-        $user_subscription->subscription_method = 'amount';
         $user_subscription->subscription_name = $tier->name;
-        $user_subscription->subscription_price = $tier->cost;
-        $user_subscription->life_force_energy_tokens = null;
-        $user_subscription->agree_accepted_at = null;
-        $user_subscription->agree_description_snapshot = null;
+
+        if (($tier->pricing_type ?? 'amount') === 'token') {
+            $user_subscription->subscription_method = 'token';
+            $user_subscription->subscription_price = $tier->life_force_energy_tokens;
+            $user_subscription->life_force_energy_tokens = $tier->life_force_energy_tokens;
+            $user_subscription->agree_accepted_at = now();
+            $user_subscription->agree_description_snapshot = $tier->agree_description;
+        } else {
+            $user_subscription->subscription_method = 'amount';
+            $user_subscription->subscription_price = $tier->cost;
+            $user_subscription->life_force_energy_tokens = null;
+            $user_subscription->agree_accepted_at = null;
+            $user_subscription->agree_description_snapshot = null;
+        }
+
         $user_subscription->subscription_validity = 12; // 12 months by default
         $user_subscription->subscription_start_date = now();
         $user_subscription->subscription_expire_date = now()->addYear();
