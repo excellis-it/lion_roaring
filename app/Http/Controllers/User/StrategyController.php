@@ -26,7 +26,7 @@ class StrategyController extends Controller
             if ($user_type == 'Global') {
                 $strategies = Strategy::orderBy('id', 'desc')->paginate(15);
             } else {
-                $strategies = Strategy::where('country_id', $user_country->id)->orderBy('id', 'desc')->paginate(15);
+                $strategies = Strategy::where('country_id', $user_country)->orderBy('id', 'desc')->paginate(15);
             }
             return view('user.strategy.list')->with(compact('strategies'));
         } else {
@@ -180,7 +180,7 @@ class StrategyController extends Controller
                         ->orWhereHas('country', function ($q) use ($query) {
                             $q->where('name', 'like', '%' . $query . '%');
                         });
-                });                                                                                                                                                                                                                                                                                                                                    
+                });
             if ($request->topic_id) {
                 $strategies->whereHas('topic', function ($q) use ($request) {
                     $q->where('id', $request->topic_id);

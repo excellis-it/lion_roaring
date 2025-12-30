@@ -53,7 +53,7 @@ class User extends Authenticatable
         'location_state',
         'profile_picture',
     ];
-    protected $appends = ['ecclesia_access']; // Add this line
+    protected $appends = ['ecclesia_access', 'full_name']; // Add this line
 
     /**
      * The attributes that should be hidden for serialization.
