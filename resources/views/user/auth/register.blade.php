@@ -232,7 +232,7 @@
 
         .stripe-container {
             background: #fff;
-            padding: 15px;
+            padding: 15px !important;
             border-radius: 8px;
             border: 1px solid #ced4da;
             box-shadow: inset 0 2px 5px rgba(0, 0, 0, 0.02);
