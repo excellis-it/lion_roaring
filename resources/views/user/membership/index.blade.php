@@ -144,7 +144,7 @@
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="tokenAgreeModalTitle">Agreement</h5>
+                    <h5 class="modal-title" id="tokenAgreeModalTitle">Tier - Agreement</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
@@ -250,7 +250,7 @@
             var tierName = $(this).data('tier-name');
             var agree = $(this).data('agree-description') || '';
 
-            $('#tokenAgreeModalTitle').text(tierName + ' Agreement');
+            $('#tokenAgreeModalTitle').text(tierName + ' Tier - Agreement');
             $('#tokenAgreeModalBody').text(agree);
             $('#tokenAgreeForm').attr('action', '{{ url('user/membership/token-subscribe') }}/' + tierId);
 
