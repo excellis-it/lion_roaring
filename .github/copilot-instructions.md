@@ -36,3 +36,16 @@ applyTo: "**"
 -   E-learning
 -   Admin Panel
 -   Frontend
+
+## Copilot command: project-view-test
+
+-   When a user message begins with `project-view-test` followed by a short description (for example: `project-view-test the login feature and fix if any bugs`), Copilot should perform these steps:
+
+    -   Launch Playwright in **headed Chrome** with DevTools open (use the `chrome-devtools` project and flags such as `--headed` and `--project=chrome-devtools`).
+    -   Generate or update Playwright tests that exercise the described feature end-to-end, including visual checks (screenshots, DOM assertions) and edge cases where applicable.
+    -   Start the local development server at `http://127.0.0.1:8000` (if not already running) and run the tests against it.
+    -   If tests fail, attempt a minimal, safe fix to the app code (only when confident and non-destructive), re-run tests, and verify the fix.
+    -   Report results concisely: what was tested, pass/fail summary, screenshots or traces on failure, and any code changes made.
+    -   Before making changes that may affect production data, migrations, or sensitive configuration, ask for explicit confirmation from the user.
+
+-   Keep operations auditable: add tests and any code edits with clear commit messages and include new/updated test files in the report.
