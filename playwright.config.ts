@@ -26,7 +26,7 @@ export default defineConfig({
         launchOptions: {
           devtools: true,
           args: [
-            '--window-size=1600,900',
+            '--window-size=1920,1080',
             '--window-position=1920,0', // 👈 second monitor (right)
           ],
         },
