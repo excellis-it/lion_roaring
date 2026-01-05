@@ -149,6 +149,11 @@ $showPopup = !session()->has($sessionKey) && !Session::has('agree');
             </div>
         </div>
     </section>
+
+
+
+
+
     <section class="after_about after_about_hm display-desktop">
         <div class="container-fluid">
             <div class="row justify-content-center">
@@ -202,12 +207,6 @@ $showPopup = !session()->has($sessionKey) && !Session::has('agree');
             </div>
         </div>
     </section>
-
-
-
-
-
-
 
 
 

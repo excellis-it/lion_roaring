@@ -259,6 +259,8 @@ AOS.init();
 
  
 
+
+
 document.addEventListener('DOMContentLoaded', function () {
 
     const pages = document.querySelectorAll('.page');
@@ -272,15 +274,27 @@ document.addEventListener('DOMContentLoaded', function () {
     });
 
     /* 🔥 OPEN BOOK BY DEFAULT */
-    pages[0].classList.add('flipped'); // page 1
-    pages[1].classList.add('flipped'); // page 2
+    pages[0].classList.add('flipped');
+    pages[1].classList.add('flipped');
+
+    /* Helper: check if book is fully closed */
+    function isBookClosed() {
+        return !pages[0].classList.contains('flipped') &&
+               !pages[1].classList.contains('flipped');
+    }
 
     /* Click logic */
     pages.forEach(page => {
         page.addEventListener('click', function () {
 
-            /* Prevent closing first page */
-            if (this.pageNum === 1) return;
+            /* ✅ FIRST PAGE CLICK — reopen book if closed */
+            if (this.pageNum === 1) {
+                if (isBookClosed()) {
+                    pages[0].classList.add('flipped');
+                    pages[1].classList.add('flipped');
+                }
+                return;
+            }
 
             /* EVEN pages → close */
             if (this.pageNum % 2 === 0) {
@@ -300,4 +314,5 @@ document.addEventListener('DOMContentLoaded', function () {
     });
 
 });
+
 
