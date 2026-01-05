@@ -133,7 +133,7 @@
                         </ul>
                     </div>
                 </div>
-                
+
                 <div class="col-md-12 col-lg-3">
                     {{-- <span class="badge bg-dark"> <i class="fa fa-globe"></i>
                         {{ Helper::getVisitorCountryName() }}</span> --}}
@@ -182,13 +182,13 @@
     const popup = document.getElementById("popupOverlay");
 
     // Show popup short time after load if present and not explicitly hidden
-    window.addEventListener('load', function() {
-        if (!popup) return;
-        if (popup.style.display && popup.style.display === 'none') return;
-        setTimeout(() => {
-            popup.style.display = "flex";
-        }, 1000);
-    });
+    // window.addEventListener('load', function() {
+    //     if (!popup) return;
+    //     if (popup.style.display && popup.style.display === 'none') return;
+    //     setTimeout(() => {
+    //         popup.style.display = "flex";
+    //     }, 1000);
+    // });
 
     // Close popup
     function closePopup() {

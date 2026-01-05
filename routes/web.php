@@ -352,10 +352,10 @@ Route::middleware(['userActivity'])->group(function () {
     $__ccPattern = $__countryCodes ? implode('|', array_map(fn($s) => preg_quote($s, '/'), $__countryCodes)) : 'a^';
 
     // Redirect "/" to "/{cc}"
-    // Route::get('/', function () {
-    //     $cc = strtolower(Helper::getVisitorCountryCode()); // e.g., "US" -> "us"
-    //     return $cc ? redirect('/' . $cc, 302) : app(CmsController::class)->index();
-    // })->name('home');
+    Route::get('/', function () {
+        $cc = strtolower(Helper::getVisitorCountryCode()); // e.g., "US" -> "us"
+        return $cc ? redirect('/' . $cc, 302) : app(CmsController::class)->index();
+    })->name('home');
 
     // Country-code masked home (won't affect other routes due to tight constraint)
     Route::get('/{cc}', function (string $cc) {
