@@ -102,6 +102,26 @@
                             <textarea class="form-control" id="modalDescriptionEdit" name="description"></textarea>
                         </div>
 
+                        <div class="mb-3">
+                            <label for="modalTypeEdit" class="col-form-label">Event Type:</label>
+                            <select class="form-control" id="modalTypeEdit" name="type">
+                                <option value="free">Free Event</option>
+                                <option value="paid">Paid Event</option>
+                            </select>
+                        </div>
+
+                        <div class="mb-3" id="priceFieldEdit" style="display: none;">
+                            <label for="modalPriceEdit" class="col-form-label">Price (USD):</label>
+                            <input type="number" step="0.01" min="0" class="form-control" id="modalPriceEdit"
+                                name="price">
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="modalCapacityEdit" class="col-form-label">Capacity (Optional):</label>
+                            <input type="number" min="1" class="form-control" id="modalCapacityEdit"
+                                name="capacity" placeholder="Leave blank for unlimited">
+                        </div>
+
                         <!-- Links detected (Edit modal) -->
                         <div class="mb-3">
                             <label class="col-form-label">Links:</label>
@@ -192,11 +212,36 @@
                                 <textarea class="form-control" id="modalDescription" name="description"></textarea>
                             </div>
 
-                            <!-- Links detected (Add modal) -->
                             <div class="mb-3">
-                                <label class="col-form-label">Links detected:</label>
-                                <ul id="modalDescriptionLinks" class="list-unstyled small"></ul>
+                                <label for="modalType" class="col-form-label">Event Type:</label>
+                                <select class="form-control" id="modalType" name="type">
+                                    <option value="free">Free Event</option>
+                                    <option value="paid">Paid Event</option>
+                                </select>
                             </div>
+
+                            <div class="mb-3" id="priceField" style="display: none;">
+                                <label for="modalPrice" class="col-form-label">Price (USD):</label>
+                                <input type="number" step="0.01" min="0" class="form-control"
+                                    id="modalPrice" name="price">
+                            </div>
+
+                            <div class="mb-3">
+                                <label for="modalCapacity" class="col-form-label">Capacity (Optional):</label>
+                                <input type="number" min="1" class="form-control" id="modalCapacity"
+                                    name="capacity" placeholder="Leave blank for unlimited">
+                            </div>
+
+                            <div class="mb-3">
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" id="modalSendNotification"
+                                        name="send_notification" checked>
+                                    <label class="form-check-label" for="modalSendNotification">
+                                        Send notification to all users
+                                    </label>
+                                </div>
+                            </div>
+
 
                         </div>
                         <div class="modal-footer">
@@ -240,6 +285,30 @@
                 headers: {
                     "X-CSRF-TOKEN": $('meta[name="csrf-token"]').attr("content"),
                 },
+            });
+
+            // Handle event type change for Add modal
+            $('#modalType').on('change', function() {
+                if ($(this).val() === 'paid') {
+                    $('#priceField').show();
+                    $('#modalPrice').attr('required', true);
+                } else {
+                    $('#priceField').hide();
+                    $('#modalPrice').attr('required', false);
+                    $('#modalPrice').val('');
+                }
+            });
+
+            // Handle event type change for Edit modal
+            $('#modalTypeEdit').on('change', function() {
+                if ($(this).val() === 'paid') {
+                    $('#priceFieldEdit').show();
+                    $('#modalPriceEdit').attr('required', true);
+                } else {
+                    $('#priceFieldEdit').hide();
+                    $('#modalPriceEdit').attr('required', false);
+                    $('#modalPriceEdit').val('');
+                }
             });
 
             // Utility: extract and render links from description text

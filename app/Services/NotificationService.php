@@ -56,7 +56,7 @@ class NotificationService
     /**
      * Save notification in database.
      */
-    private static function saveNotification($userId, $message, $type)
+    public static function saveNotification($userId, $message, $type)
     {
         return Notification::create([
             'user_id' => $userId,
