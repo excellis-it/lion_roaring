@@ -794,6 +794,7 @@
     }
     .after_about.after_about_hm {
     padding: 30px 0px;
+    display: none;
     }
     /* .heading_hp h2 {
         font-size: 14px;
