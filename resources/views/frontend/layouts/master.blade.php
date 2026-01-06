@@ -564,11 +564,11 @@
                                         }
                                         return null;
                                     }
-                                    
+
                                     // Get user's timezone based on IP address
                                     $ip = $_SERVER['REMOTE_ADDR'];
                                     $timezone = getTimezoneFromIp($ip);
-                                    
+
                                     if ($timezone) {
                                         // Set the default timezone
                                         date_default_timezone_set($timezone);
@@ -576,10 +576,10 @@
                                         // Fallback timezone
                                         date_default_timezone_set('UTC');
                                     }
-                                    
+
                                     // Get the current hour in 24-hour format
                                     $time = date('H');
-                                    
+
                                     // Determine greeting based on time
                                     if ($time < '12') {
                                         echo 'Perfect morning';
@@ -755,120 +755,7 @@
                     </div>
                 </div>
             </div>
-            <div class="modal fade modal_code" id="join_member" tabindex="-1" aria-labelledby="exampleModalLabel"
-                aria-hidden="true">
-                <div class="modal-dialog modal-lg modal-dialog-centered">
-                    <div class="modal-content">
-                        <div class="modal-body login_bg_sec border-top-0">
-                            <div class="join_member_box">
-                                <div class="ftr_logo_sec text-center">
-                                    <a href="https://www.lionroaring.us" class="ftr_logo d-inline-block">
-                                        {{-- <img src="uploads/2024/02/Group-2029.png" alt=""> --}}
-                                    </a>
-                                </div>
-                                <h2>Lion Roaring PMA (Private Members Association) Agreement</h2>
-                                <p>It is the responsibility of the members to read and review the Articles of
-                                    Association of
-                                    Lion Roaring PMA in its entirety and agree to adopt and comply to its belief,
-                                    foundation
-                                    and purpose of the Lion Roaring PMA. </p>
-                                <p> Click here to read the full document <a
-                                        href="uploads/2024/01/Articles-of-Association-1.pdf">
-                                        ARTICLES OF ASSOCIATION</a> (provide link to bring up the PMA to the screen)</p>
-                                <p>Each member agrees to the following excerpt taken from the Articles of Association of
-                                    PMA:</p>
-                                <ul>
-                                    <li>Lion Roaring PMA is a Private Members Association protected under the
-                                        Constitution
-                                        of the United States of America and the original constitution for these united
-                                        States of America and the Maryland Constitution</li>
-                                    <li>Member agrees and is supportive to the mission and vision of the Lion Roaring
-                                    </li>
-                                    <li>Member strives to contribute to the purpose of the PMA to fulfill the God given
-                                        call
-                                        to the founding members as it is written in Section 4 through 15 in the Article
-                                        of
-                                        Association</li>
-                                    <li>Member will not hold Lion Roaring PMA liable for any materials or contents
-                                        posted in
-                                        the website or any paperwork, written articles, education materials or others
-                                        created within the PMA for its members’ benefits and private usage</li>
-                                    <li>Member’s agreement does not entitle a member to any financial or other interest
-                                        in
-                                        the Private Members Association or management thereof</li>
-                                    <li>Information regarding details of the association, any materials produced or
-                                        created
-                                        by Lion Roaring PMA including all paperwork, agreements, articles, PowerPoints
-                                        presentations, word parchments, coaching, and education materials are private
-                                        intellectual property of the PMA and will not be shared, replicated, dispersed
-                                        or
-                                        distributed with anyone outside the PMA without explicit written permission from
-                                        the
-                                        founder</li>
-                                    <li>Member’s due diligence is expected and member will hold harmless any member or
-                                        founder of Lion Roaring PMA and any dispute shall be handled by the founder(s)
-                                        with
-                                        final decision for remedy made by the founder(s) and shall be accepted as a
-                                        settled
-                                        matter. (Article III for disputes resolution &amp; Article IV for Sovereignty in
-                                        the
-                                        Private)</li>
-                                    <li>As a private member of the Lion Roaring PMA, member is invoking its united
-                                        States
-                                        constitutional rights specifically the 1st, 4th, 5th, 9th and 10th and the
-                                        Maryland
-                                        Constitutional rights included in the Maryland Declaration of Rights Sections 1,
-                                        2,
-                                        6, 10, 24, 26, 36, 40 and 45 and as such take full responsibility for his or her
-                                        behavior, such that his or her actions shall never constitute anything that can
-                                        be
-                                        determined to be of a “clear and present danger of a substantial evil.” </li>
-                                    <li>Any actions by the member which are not consistent with the values of the PMA
-                                        can
-                                        result in the founder’s decision to ask the member to leave the PMA</li>
-                                    <li>Member is connected with each other and the actions affect one another,
-                                        therefore,
-                                        the Lion Roaring PMA encourages and supports one another as a family and
-                                        community
-                                    </li>
-                                    <li>Member and those who are included in this member’s agreement and contract are
-                                        solely
-                                        responsible for member’s own outcome or results from participating or receiving
-                                        any
-                                        education materials, counsel, coaching, training, mentoring or other services
-                                        provided by Lion Roaring PMA through its websites or any other resources made
-                                        available to the members</li>
-                                    <li>The terminology used in these articles of organization and member’s agreement is
-                                        used solely for clarification of the various usages for Private Members
-                                        Association
-                                        under universal contract law by and between free, spiritually free men and
-                                        women,
-                                        creations of nature and Natures God, whose lives and rights derive from God
-                                        Almighty
-                                        and unique Covenant of the man and/or woman with the Creator</li>
-                                    <li>Any reference within the Articles of Association to the man shall also include
-                                        the
-                                        woman and any reference to one people may include many people. This PMA shall be
-                                        construed and interpreted in the private and all decisions or disputes will be
-                                        final
-                                        as settled by the founders in accordance with Article III </li>
-                                    <li>Member agrees that the elimination of one Item or segment of this Agreement does
-                                        not
-                                        eliminate the entirety of the Agreement but the Agreement will remain as Agreed
-                                    </li>
-                                </ul>
-
-                                <form action="#" method="post">
-                                    <input type="checkbox" id="checkbox" name="checkbox" value="checked">
-                                    <label for="checkbox">I have read and agreed to the Lion Roaring PMA Agreement
-                                    </label>
-                                    <!-- Remove the submit button -->
-                                </form>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
+            
             <div id="onload_popup" class="modal fade" data-bs-keyboard="false" data-bs-backdrop="static"
                 style="display: none;" aria-hidden="true">
                 <div class="modal-dialog modal-lg">
