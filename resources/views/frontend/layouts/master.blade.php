@@ -755,7 +755,7 @@
                     </div>
                 </div>
             </div>
-            
+
             <div id="onload_popup" class="modal fade" data-bs-keyboard="false" data-bs-backdrop="static"
                 style="display: none;" aria-hidden="true">
                 <div class="modal-dialog modal-lg">
@@ -876,17 +876,28 @@
                                         {{ Helper::getAgreements()['agreement_title'] ?? 'Lion Roaring PMA (Private Members Association) Agreement' }}
                                     </h2>
                                 </div>
+
+                                <div class="row g-3 mb-3">
+                                    <div class="col-12">
+                                        <label for="pma_register_signer_name" class="form-label fw-bold">Full
+                                            name</label>
+                                        <input type="text" class="form-control" id="pma_register_signer_name"
+                                            placeholder="Enter your full name" autocomplete="name">
+                                    </div>
+                                    <div class="col-12">
+                                        <div class="form-group mb-0">
+                                            <input type="checkbox" id="pma_register_initial_check">
+                                            <label for="pma_register_initial_check" id="pma_register_initial_label">
+                                                I confirm my initials
+                                            </label>
+                                        </div>
+                                    </div>
+                                </div>
+
                                 <div class="member-text-div admin-srl" id="admin-srl_1">
                                     <div class="member-text">
                                         {!! Helper::getAgreements()['agreement_description'] ??
                                             'This is the agreement for Lion Roaring PMA (Private Members Association)' !!}
-                                    </div>
-                                    <div class="check-main">
-                                        <div class="form-group">
-                                            <input type="checkbox" id="pma_register_check2">
-                                            <label
-                                                for="pma_register_check2">{{ Helper::getAgreements()['checkbox_text'] ?? 'I have read and agreed to the Lion Roaring PMA Agreement' }}</label>
-                                        </div>
                                     </div>
                                 </div>
 
@@ -907,9 +918,53 @@
                 </div>
             </div>
 
+            <div class="modal fade" id="registerAgreementPreviewModal" data-bs-backdrop="static"
+                data-bs-keyboard="false" tabindex="-1" aria-hidden="true">
+                <div class="modal-dialog modal-xl modal-dialog-centered">
+                    <div class="modal-content border-0 shadow-lg" style="border-radius: 20px; overflow: hidden;">
+                        <div class="modal-header bg-white border-0">
+                            <h5 class="modal-title fw-bold">Review & Agree</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            <div class="pdf-viewer-wrapper">
+                                <div id="register_agreement_pdf_container" style="height: 70vh;">
+                                    <iframe id="register_agreement_pdf_iframe" src="" width="100%"
+                                        height="100%" style="border:0; border-radius: 12px;"></iframe>
+                                </div>
+                            </div>
+
+                            <div class="agreement-glass-box mt-4">
+                                <div class="check-main">
+                                    <div class="form-group mb-0">
+                                        <input type="checkbox" id="pma_register_check3">
+                                        <label for="pma_register_check3" class="fw-bold text-dark mb-0">
+                                            {{ Helper::getAgreements()['checkbox_text'] ?? 'I have read and agreed to the Lion Roaring PMA Agreement' }}
+                                        </label>
+                                    </div>
+                                </div>
+                                <div class="row justify-content-end mt-4">
+                                    <div class="col-lg-4">
+                                        <div class="login-submit text-end">
+                                            <a href="javascript:void(0);"
+                                                class="button button-primary w-100 register_next_preview py-3 shadow">
+                                                Next <i class="fas fa-arrow-right ms-2"></i>
+                                            </a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
         </main>
         <script>
             var register_page_route = "{{ route('register') }}";
+            var register_agreement_preview_route = "{{ route('register.agreement.preview') }}";
+            var csrf_token = "{{ csrf_token() }}";
         </script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.9.0/slick.min.js"></script>

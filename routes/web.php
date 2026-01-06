@@ -133,6 +133,7 @@ use Illuminate\Support\Str;
 use App\Http\Controllers\VisitorController;
 use App\Http\Controllers\User\UserActivityController;
 use App\Http\Controllers\User\MembershipController as UserMembershipController;
+use App\Http\Controllers\User\RegisterAgreementPreviewController;
 
 
 /*
@@ -423,6 +424,7 @@ Route::middleware(['userActivity'])->group(function () {
 
     // register
     Route::get('/register', [UserAuthController::class, 'register'])->name('register');
+    Route::post('/register-agreement/preview', [RegisterAgreementPreviewController::class, 'generate'])->name('register.agreement.preview');
     Route::post('/register-check', [UserAuthController::class, 'registerCheck'])->name('register.check');  //register check
     Route::post('/register-validate', [UserAuthController::class, 'registerValidate'])->name('register.validate'); // AJAX Validation
     Route::post('forget-password', [UserForgetPasswordController::class, 'forgetPassword'])->name('user.forget.password');
