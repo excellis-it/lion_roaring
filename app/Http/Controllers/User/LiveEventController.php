@@ -48,12 +48,37 @@ class LiveEventController extends Controller
         $user_type = auth()->user()->user_type;
         $user_country = auth()->user()->country;
         if ($user_type == 'Global') {
-            $events = Event::orderBy('id', 'desc')->get(['id', 'user_id', 'title', 'description', 'start', 'end', 'country_id', 'type', 'price']);
+            $events = Event::orderBy('id', 'desc')->get();
         } else {
             $events = Event::where('country_id', $user_country)
                 ->orderBy('id', 'desc')
-                ->get(['id', 'user_id', 'title', 'description', 'start', 'end', 'country_id', 'type', 'price']);
+                ->get();
         }
+
+        // Add decrypted link, RSVP status, and ensure type is included
+        $events = $events->map(function ($event) {
+            return [
+                'id' => $event->id,
+                'title' => $event->title,
+                'description' => $event->description,
+                'start' => $event->start,
+                'end' => $event->end,
+                'type' => $event->type ?? 'free', // Ensure type is always set
+                'price' => $event->price,
+                'capacity' => $event->capacity,
+                'country_id' => $event->country_id,
+                'user_id' => $event->user_id,
+                'decrypted_link' => $event->getDecryptedLink(),
+                'is_host' => Auth::id() === $event->user_id,
+                'user_rsvp_status' => EventRsvp::where('event_id', $event->id)
+                    ->where('user_id', Auth::id())
+                    ->value('status'),
+                'formatted_start' => $event->formatted_start,
+                'formatted_end' => $event->formatted_end,
+                'timezone' => $event->time_zone,
+            ];
+        });
+
         return response()->json($events);
     }
 
@@ -121,8 +146,13 @@ class LiveEventController extends Controller
         $event->type = $request->type;
         $event->price = $request->type === 'paid' ? $request->price : null;
         $event->capacity = $request->capacity;
-        $event->access_link = Str::random(32);
         $event->send_notification = $sendNotification;
+
+        // Set encrypted event link if provided
+        if ($request->event_link) {
+            $event->setEncryptedLink($request->event_link);
+        }
+
         $event->save();
 
         // Send notifications if enabled
@@ -180,6 +210,12 @@ class LiveEventController extends Controller
         $event->type = $request->type;
         $event->price = $request->type === 'paid' ? $request->price : null;
         $event->capacity = $request->capacity;
+
+        // Update encrypted event link
+        if ($request->has('event_link')) {
+            $event->setEncryptedLink($request->event_link);
+        }
+
         $event->update();
 
         return response()->json([

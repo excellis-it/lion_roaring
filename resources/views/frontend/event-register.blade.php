@@ -86,10 +86,12 @@
 
                                 <div class="row mb-4">
                                     <div class="col-md-6">
-                                        <p><strong>Start:</strong> {{ $event->start->format('M d, Y h:i A') }}</p>
+                                        <p><strong>Start:</strong> {{ $event->start->format('M d, Y h:i A') }}
+                                            ({{ $event->start->format('T') }})</p>
                                     </div>
                                     <div class="col-md-6">
-                                        <p><strong>End:</strong> {{ $event->end->format('M d, Y h:i A') }}</p>
+                                        <p><strong>End:</strong> {{ $event->end->format('M d, Y h:i A') }}
+                                            ({{ $event->end->format('T') }})</p>
                                     </div>
                                 </div>
 

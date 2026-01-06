@@ -58,10 +58,12 @@
 
                         <div class="row mb-4">
                             <div class="col-md-6">
-                                <p><strong>Start:</strong> {{ $event->start->format('M d, Y h:i A') }}</p>
+                                <p><strong>Start:</strong> {{ $event->start->format('M d, Y h:i A') }}
+                                    ({{ $event->start->format('T') }})</p>
                             </div>
                             <div class="col-md-6">
-                                <p><strong>End:</strong> {{ $event->end->format('M d, Y h:i A') }}</p>
+                                <p><strong>End:</strong> {{ $event->end->format('M d, Y h:i A') }}
+                                    ({{ $event->end->format('T') }})</p>
                             </div>
                         </div>
 
@@ -71,15 +73,22 @@
 
                         <div class="access-link">
                             <h5>Your Event Access Link</h5>
-                            <p class="mb-2">
-                                <strong>Link:</strong>
-                                <a href="{{ $event->access_link }}" target="_blank" id="access-link">
-                                    {{ $event->access_link }}
-                                </a>
-                            </p>
-                            <button class="btn btn-sm btn-outline-primary" onclick="copyAccessLink()">
-                                <i class="ti ti-copy"></i> Copy Link
-                            </button>
+                            @if ($event->getDecryptedLink())
+                                <p class="mb-2">
+                                    <strong>Link:</strong>
+                                    <a href="{{ $event->getDecryptedLink() }}" target="_blank" id="access-link"
+                                        class="text-break">
+                                        {{ $event->getDecryptedLink() }}
+                                    </a>
+                                </p>
+                                <button class="btn btn-sm btn-outline-primary" onclick="copyAccessLink()">
+                                    <i class="ti ti-copy"></i> Copy Link
+                                </button>
+                            @else
+                                <div class="alert alert-info">
+                                    No event link has been set yet. Please contact the event host.
+                                </div>
+                            @endif
                         </div>
 
                         <div class="mb-4">
@@ -92,18 +101,20 @@
                         </div>
 
                         <div class="text-center">
-                            <a href="{{ $event->access_link }}" class="join-btn" target="_blank">
-                                Join Event
-                            </a>
+                            @if ($event->getDecryptedLink())
+                                <a href="{{ $event->getDecryptedLink() }}" class="join-btn" target="_blank">
+                                    Join Event
+                                </a>
+                            @endif
                         </div>
 
                         <hr class="my-4">
 
-                        <div class="text-center">
+                        {{-- <div class="text-center">
                             <button class="btn btn-outline-danger" onclick="cancelRsvp()">
                                 Cancel Registration
                             </button>
-                        </div>
+                        </div> --}}
                     </div>
                 </div>
             </div>
@@ -114,7 +125,12 @@
 @push('scripts')
     <script>
         function copyAccessLink() {
-            const link = document.getElementById('access-link').href;
+            const linkElement = document.getElementById('access-link');
+            if (!linkElement) {
+                alert('No link available to copy');
+                return;
+            }
+            const link = linkElement.href;
             navigator.clipboard.writeText(link).then(() => {
                 alert('Link copied to clipboard!');
             });

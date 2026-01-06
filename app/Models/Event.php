@@ -22,7 +22,7 @@ class Event extends Model
         'type',
         'price',
         'capacity',
-        'access_link',
+        'event_link',
         'send_notification',
         'created_at',
         'updated_at',
@@ -79,22 +79,6 @@ class Event extends Model
     }
 
     /**
-     * Check if event is paid.
-     */
-    public function isPaid()
-    {
-        return $this->type === 'paid';
-    }
-
-    /**
-     * Check if event is free.
-     */
-    public function isFree()
-    {
-        return $this->type === 'free';
-    }
-
-    /**
      * Check if event has capacity.
      */
     public function hasCapacity()
@@ -114,6 +98,35 @@ class Event extends Model
             return null;
         }
         return $this->capacity - $this->confirmedRsvps()->count();
+    }
+
+    /**
+     * Get decrypted event link
+     */
+    public function getDecryptedLink()
+    {
+        if (!$this->event_link) {
+            return null;
+        }
+
+        try {
+            return decrypt($this->event_link);
+        } catch (\Exception $e) {
+            return null;
+        }
+    }
+
+    /**
+     * Set encrypted event link
+     */
+    public function setEncryptedLink($link)
+    {
+        if (!$link) {
+            $this->event_link = null;
+            return;
+        }
+
+        $this->event_link = encrypt($link);
     }
 
 
@@ -150,5 +163,81 @@ class Event extends Model
             : config('app.timezone');
         $datetime = Carbon::parse($value, $this->resolveUserTimezone($this->time_zone));
         return Carbon::parse($datetime)->timezone($tz);
+    }
+
+    /**
+     * Get the event start time in user's timezone
+     */
+    public function getStartAttribute($value)
+    {
+        if (!$value) return null;
+
+        $tz = auth()->check()
+            ? $this->resolveUserTimezone(auth()->user()->time_zone)
+            : config('app.timezone');
+
+        // Parse the start time from event's timezone and convert to user's timezone
+        $datetime = Carbon::parse($value, $this->resolveUserTimezone($this->time_zone));
+        return $datetime->timezone($tz);
+    }
+
+    /**
+     * Get the event end time in user's timezone
+     */
+    public function getEndAttribute($value)
+    {
+        if (!$value) return null;
+
+        $tz = auth()->check()
+            ? $this->resolveUserTimezone(auth()->user()->time_zone)
+            : config('app.timezone');
+
+        // Parse the end time from event's timezone and convert to user's timezone
+        $datetime = Carbon::parse($value, $this->resolveUserTimezone($this->time_zone));
+        return $datetime->timezone($tz);
+    }
+
+    /**
+     * Get formatted start time with timezone
+     */
+    public function getFormattedStartAttribute()
+    {
+        if (!$this->start) return null;
+
+        $tz = auth()->check()
+            ? $this->resolveUserTimezone(auth()->user()->time_zone)
+            : config('app.timezone');
+
+        return $this->start->format('M j, Y g:i A T');
+    }
+
+    /**
+     * Get formatted end time with timezone
+     */
+    public function getFormattedEndAttribute()
+    {
+        if (!$this->end) return null;
+
+        $tz = auth()->check()
+            ? $this->resolveUserTimezone(auth()->user()->time_zone)
+            : config('app.timezone');
+
+        return $this->end->format('M j, Y g:i A T');
+    }
+
+    /**
+     * Check if event is paid
+     */
+    public function isPaid()
+    {
+        return $this->type === 'paid';
+    }
+
+    /**
+     * Check if event is free
+     */
+    public function isFree()
+    {
+        return $this->type === 'free';
     }
 }

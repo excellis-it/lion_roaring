@@ -88,6 +88,7 @@
                     <strong>Event Details:</strong><br>
                     Date: {{ $event->start->format('l, F j, Y') }}<br>
                     Time: {{ $event->start->format('g:i A') }} - {{ $event->end->format('g:i A') }}
+                    ({{ $event->start->format('T') }})
                 </p>
 
                 <p style="font-size: 14px; color: #666;">

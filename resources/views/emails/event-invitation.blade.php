@@ -58,7 +58,8 @@
 
                 <p>{{ $event->description }}</p>
 
-                <p><strong>When:</strong> {{ $event->start->format('l, F j, Y \a\t g:i A') }}</p>
+                <p><strong>When:</strong> {{ $event->start->format('l, F j, Y \a\t g:i A') }}
+                    ({{ $event->start->format('T') }})</p>
                 <p><strong>Ends:</strong> {{ $event->end->format('l, F j, Y \a\t g:i A') }}</p>
                 <p><strong>Host:</strong> {{ $event->user->getFullNameAttribute() }}</p>
 

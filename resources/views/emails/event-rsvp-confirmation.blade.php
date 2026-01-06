@@ -70,6 +70,7 @@
                     <p><strong>Event:</strong> {{ $event->title }}</p>
                     <p><strong>Date:</strong> {{ $event->start->format('l, F j, Y') }}</p>
                     <p><strong>Time:</strong> {{ $event->start->format('g:i A') }} - {{ $event->end->format('g:i A') }}
+                        ({{ $event->start->format('T') }})
                     </p>
                     <p><strong>Host:</strong> {{ $event->user->getFullNameAttribute() }}</p>
                 </div>

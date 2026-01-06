@@ -13,6 +13,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Str;
+use Illuminate\Support\Facades\Log;
 
 class EventRegistrationController extends Controller
 {
@@ -127,8 +128,12 @@ class EventRegistrationController extends Controller
             }
         }
 
-        // For free events, send confirmation
-        $this->sendRsvpConfirmation($rsvp);
+        // For free events, send confirmation (but don't fail if email fails)
+        try {
+            $this->sendRsvpConfirmation($rsvp);
+        } catch (\Exception $e) {
+            Log::error('Failed to send RSVP confirmation email: ' . $e->getMessage());
+        }
 
         return response()->json([
             'status' => true,
@@ -154,8 +159,18 @@ class EventRegistrationController extends Controller
 
         if ($result['success']) {
 
-            $this->sendRsvpConfirmation($payment->rsvp);
-            $this->sendPaymentReceipt($payment);
+            // Send emails but don't fail if email delivery fails
+            try {
+                $this->sendRsvpConfirmation($payment->rsvp);
+            } catch (\Exception $e) {
+                Log::error('Failed to send RSVP confirmation email: ' . $e->getMessage());
+            }
+
+            try {
+                $this->sendPaymentReceipt($payment);
+            } catch (\Exception $e) {
+                Log::error('Failed to send payment receipt email: ' . $e->getMessage());
+            }
 
             return redirect()->route('event.access', $payment->event_id)
                 ->with('success', 'Payment successful! You are now registered for the event.');
@@ -215,7 +230,12 @@ class EventRegistrationController extends Controller
      */
     protected function sendRsvpConfirmation(EventRsvp $rsvp)
     {
-        Mail::to($rsvp->user->email)->send(new EventRsvpConfirmation($rsvp));
+        try {
+            Mail::to($rsvp->user->email)->queue(new EventRsvpConfirmation($rsvp));
+        } catch (\Exception $e) {
+            Log::error('Failed to queue RSVP confirmation email for user ' . $rsvp->user->email . ': ' . $e->getMessage());
+            throw $e;
+        }
     }
 
     /**
@@ -223,6 +243,11 @@ class EventRegistrationController extends Controller
      */
     protected function sendPaymentReceipt(EventPayment $payment)
     {
-        Mail::to($payment->user->email)->send(new EventPaymentReceipt($payment));
+        try {
+            Mail::to($payment->user->email)->queue(new EventPaymentReceipt($payment));
+        } catch (\Exception $e) {
+            Log::error('Failed to queue payment receipt email for user ' . $payment->user->email . ': ' . $e->getMessage());
+            throw $e;
+        }
     }
 }

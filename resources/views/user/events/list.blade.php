@@ -122,8 +122,16 @@
                                 name="capacity" placeholder="Leave blank for unlimited">
                         </div>
 
-                        <!-- Links detected (Edit modal) -->
                         <div class="mb-3">
+                            <label for="modalEventLinkEdit" class="col-form-label">Event Link (URL):</label>
+                            <input type="url" class="form-control" id="modalEventLinkEdit" name="event_link"
+                                placeholder="https://zoom.us/j/example or any meeting link">
+                            <small class="text-muted">This link will be encrypted and only visible to registered
+                                users</small>
+                        </div>
+
+                        <!-- Links detected (Edit modal) -->
+                        <div class="mb-3" hidden>
                             <label class="col-form-label">Links:</label>
                             <ul id="modalDescriptionEditLinks" class="list-unstyled small"></ul>
                         </div>
@@ -148,16 +156,20 @@
                 </div>
                 <div class="modal-body">
                     <p><strong>Title:</strong> <span id="formmodalTitle"></span></p>
+                    <p><strong>Type:</strong> <span id="formmodalType" class="badge"></span></p>
+                    <p><strong>Price:</strong> <span id="formmodalPrice"></span></p>
                     <p><strong>Start:</strong> <span id="formmodalStart"></span></p>
                     <p><strong>End:</strong> <span id="formmodalEnd"></span></p>
                     <p><strong>Description:</strong> <span id="formmodalDescription"></span></p>
+                    <p><strong>Capacity:</strong> <span id="formmodalCapacity"></span></p>
                     <!-- Links detected (View-only modal) -->
                     <div class="mb-3">
                         <strong>Links:</strong>
-                        <ul id="formmodalDescriptionLinks" class="list-unstyled small"></ul>
+                        <ul id="formmodalDescriptionLinks" class="list-unstyled small">Register Event to Access Link</ul>
                     </div>
                 </div>
                 <div class="modal-footer">
+                    <div id="rsvpActionButtons" class="w-100 text-center"></div>
                     <button type="button" class="print_btn" data-bs-dismiss="modal">Close</button>
                 </div>
             </div>
@@ -230,6 +242,14 @@
                                 <label for="modalCapacity" class="col-form-label">Capacity (Optional):</label>
                                 <input type="number" min="1" class="form-control" id="modalCapacity"
                                     name="capacity" placeholder="Leave blank for unlimited">
+                            </div>
+
+                            <div class="mb-3">
+                                <label for="modalEventLink" class="col-form-label">Event Link (URL):</label>
+                                <input type="url" class="form-control" id="modalEventLink" name="event_link"
+                                    placeholder="https://zoom.us/j/example or any meeting link">
+                                <small class="text-muted">This link will be encrypted and only visible to registered
+                                    users</small>
                             </div>
 
                             <div class="mb-3">
@@ -377,12 +397,24 @@
                                 var events = data.map(event => {
                                     return {
                                         id: event.id,
-                                        user_id: event.user_id,
                                         title: event.title,
                                         start: event.start,
                                         end: event.end,
-                                        description: event.description,
-                                        country_id: event.country_id
+                                        extendedProps: {
+                                            user_id: event.user_id,
+                                            description: event.description,
+                                            country_id: event.country_id,
+                                            type: event.type,
+                                            price: event.price,
+                                            capacity: event.capacity,
+                                            decrypted_link: event.decrypted_link,
+                                            is_host: event.is_host,
+                                            user_rsvp_status: event
+                                                .user_rsvp_status,
+                                            formatted_start: event.formatted_start,
+                                            formatted_end: event.formatted_end,
+                                            timezone: event.timezone,
+                                        }
                                     };
                                 });
                                 successCallback(events);
@@ -399,66 +431,122 @@
                         var permission = @json(auth()->user()->can('Edit Event'));
                         var admin = @json(auth()->user()->hasRole('SUPER ADMIN'));
                         var currentUser = {{ auth()->user()->id }};
+                        var isHost = event.extendedProps.is_host || event.extendedProps.user_id ==
+                            currentUser;
 
-                        // Check if the user has permission or is an admin
-                        if (permission && event.extendedProps.user_id == currentUser || admin) {
-                            // Helper function to format date for input fields
-                            const formatDateForInput = (date) => date ? moment(date).format(
-                                'YYYY-MM-DDTHH:mm') : '';
+                        // Debug: Log event data to check type value
+                        console.log('Event clicked:', {
+                            id: event.id,
+                            title: event.title,
+                            type: event.extendedProps.type,
+                            price: event.extendedProps.price,
+                            allProps: event.extendedProps
+                        });
 
-                            // Set modal fields with event data
-                            $('#modalTitleEdit').val(event.title);
-                            $('#modalStartEdit').val(formatDateForInput(event.start));
-                            $('#modalEndEdit').val(formatDateForInput(event.end));
-                            $('#modalDescriptionEdit').val(event.extendedProps.description);
-                            $('#modalCountryEdit').val(event.extendedProps.country_id);
-                            // Render detected links for Edit modal
-                            renderLinks(extractLinks(event.extendedProps.description), $(
-                                '#modalDescriptionEditLinks'));
-                            $('#event-edit').attr('action',
-                                '{{ route('events.update', '') }}/' + event.id);
+                        // Always show details modal first (both for host and invited users)
+                        $('#formmodalTitle').text(event.title);
+                        $('#formmodalType').text(event.extendedProps.type === 'paid' ?
+                                'Paid Event' : 'Free Event')
+                            .removeClass('bg-success bg-info')
+                            .addClass(event.extendedProps.type === 'paid' ? 'bg-success' :
+                                'bg-info');
+                        $('#formmodalPrice').text(event.extendedProps.type === 'paid' ? '$' +
+                            parseFloat(event.extendedProps.price || 0).toFixed(2) : 'Free');
 
-                            // Handle event deletion
-                            $('#deleteEventBtn').off('click').on('click', function() {
-                                if (confirm('Are you sure you want to delete this event?')) {
-                                    $.ajax({
-                                        url: '{{ route('events.destroy', '') }}/' +
-                                            event.id,
-                                        method: 'DELETE',
-                                        success: function() {
-                                            toastr.success(
-                                                'Event deleted successfully.');
-                                            event
-                                                .remove(); // Remove event from calendar
-                                            $('#eventModal').modal('hide');
-                                            socket.emit(
-                                                'event_store_update_delete', {
-                                                    'message': 'Event updated'
-                                                });
-                                        },
-                                        error: function() {
-                                            alert('Failed to delete event.');
-                                        }
-                                    });
-                                }
-                            });
+                        // Display time with timezone info
+                        var startText = event.extendedProps.formatted_start || moment(event.start)
+                            .format('MMM D, YYYY h:mm A');
+                        var endText = event.end ? (event.extendedProps.formatted_end || moment(event
+                            .end).format('MMM D, YYYY h:mm A')) : 'N/A';
 
-                            $('#deleteEventBtn').show();
-                            $('#eventModal').modal('show'); // Open edit modal
-                        } else {
-                            // Display event details if user lacks permissions
-                            $('#formmodalTitle').text(event.title);
-                            $('#formmodalStart').text(moment(event.start).format('MMM D, YYYY h:mm A'));
-                            $('#formmodalEnd').text(event.end ? moment(event.end).format(
-                                'MMM D, YYYY h:mm A') : 'N/A');
-                            $('#formmodalDescription').text(event.extendedProps.description);
-                            // Render detected links for View-only modal
-                            renderLinks(extractLinks(event.extendedProps.description), $(
+                        $('#formmodalStart').text(startText);
+                        $('#formmodalEnd').text(endText);
+                        $('#formmodalDescription').text(event.extendedProps.description);
+                        $('#formmodalCapacity').text(event.extendedProps.capacity ? event
+                            .extendedProps.capacity + ' seats' : 'Unlimited');
+
+                        // Render detected links for View-only modal
+                        // renderLinks(extractLinks(event.extendedProps.decrypted_link), $(
+                        //     '#formmodalDescriptionLinks'));
+
+                        // Check if the user is the host or has permission
+                        if ((permission && isHost) || admin) {
+
+                            renderLinks(extractLinks(event.extendedProps.decrypted_link), $(
                                 '#formmodalDescriptionLinks'));
 
-                            $('#deleteEventBtn').hide();
-                            $('#eventModalDetails').modal('show'); // Open view-only modal
+                            // Host view - show management buttons
+                            var hostActionHtml =
+                                '<div class="d-flex flex-wrap gap-2 justify-content-center mb-3">';
+
+                            // Edit Event button
+                            hostActionHtml +=
+                                '<button class="btn btn-primary" onclick="openEditModal(' + event.id +
+                                ', event)"><i class="ti ti-edit"></i> Edit Event</button>';
+
+                            // Build route URLs using templates and replace placeholder with event id
+                            var rsvpsUrl = '{{ route('events.rsvps', ':id') }}'.replace(':id', event
+                                .id);
+                            var paymentsUrl = '{{ route('events.payments', ':id') }}'.replace(':id',
+                                event.id);
+
+                            // RSVP List button
+                            hostActionHtml += '<a href="' + rsvpsUrl +
+                                '" class="btn btn-primary"><i class="ti ti-users"></i> View RSVPs</a>';
+
+                            // Event Payments button (only for paid events)
+                            if (event.extendedProps.type === 'paid') {
+                                hostActionHtml += '<a href="' + paymentsUrl +
+                                    '" class="btn btn-primary"><i class="ti ti-currency-dollar"></i> View Payments</a>';
+                            }
+
+                            // Join Event button (if event link exists)
+                            if (event.extendedProps.decrypted_link) {
+                                hostActionHtml += '<br><a href="' + event.extendedProps.decrypted_link +
+                                    '" target="_blank" class="btn btn-primary"><i class="ti ti-external-link"></i> Join Event</a>';
+                            }
+
+                            hostActionHtml += '</div>';
+
+                            $('#rsvpActionButtons').html(hostActionHtml);
+
+                            // Store event data for edit modal
+                            $('#eventModalDetails').data('eventData', {
+                                id: event.id,
+                                title: event.title,
+                                start: event.start,
+                                end: event.end,
+                                description: event.extendedProps.description,
+                                country_id: event.extendedProps.country_id,
+                                type: event.extendedProps.type || 'free',
+                                price: event.extendedProps.price || '',
+                                capacity: event.extendedProps.capacity || '',
+                                decrypted_link: event.extendedProps.decrypted_link || '',
+                                eventInfo: info.event
+                            });
+                        } else {
+                            // Invited user view - show appropriate action button based on RSVP status
+                            var rsvpStatus = event.extendedProps.user_rsvp_status;
+                            var actionHtml = '';
+
+                            if (rsvpStatus === 'confirmed') {
+                                renderLinks(extractLinks(event.extendedProps.decrypted_link), $(
+                                    '#formmodalDescriptionLinks'));
+                                actionHtml = '<a href="{{ url('event') }}/' + event.id +
+                                    '/access" class="btn btn-primary mb-2"><i class="ti ti-check-circle"></i> Access Event</a>';
+                            } else if (rsvpStatus === 'pending') {
+                                actionHtml =
+                                    '<span class="badge bg-warning mb-2">Payment Pending</span>';
+                            } else {
+                                actionHtml = '<a href="{{ url('event') }}/' + event.id +
+                                    '/register" class="btn btn-primary mb-2"><i class="ti ti-calendar-plus"></i> Register for Event</a>';
+                            }
+
+                            $('#rsvpActionButtons').html(actionHtml);
                         }
+
+                        $('#deleteEventBtn').hide();
+                        $('#eventModalDetails').modal('show'); // Always open view-only modal first
                     },
 
                     eventTimeFormat: {
@@ -643,6 +731,70 @@
                 var calendar;
                 initializeFullCalendar();
             });
+
+            // Function to open edit modal from details modal
+            window.openEditModal = function(eventId, eventInfo) {
+                var eventData = $('#eventModalDetails').data('eventData');
+
+                if (!eventData) {
+                    console.error('Event data not found');
+                    return;
+                }
+
+                // Helper function to format date for input fields
+                const formatDateForInput = (date) => date ? moment(date).format('YYYY-MM-DDTHH:mm') : '';
+
+                // Set modal fields with event data
+                $('#modalTitleEdit').val(eventData.title);
+                $('#modalStartEdit').val(formatDateForInput(eventData.start));
+                $('#modalEndEdit').val(formatDateForInput(eventData.end));
+                $('#modalDescriptionEdit').val(eventData.description);
+                $('#modalCountryEdit').val(eventData.country_id);
+                $('#modalTypeEdit').val(eventData.type || 'free');
+                $('#modalPriceEdit').val(eventData.price || '');
+                $('#modalCapacityEdit').val(eventData.capacity || '');
+                $('#modalEventLinkEdit').val(eventData.decrypted_link || '');
+
+                // Show/hide price field based on type
+                if (eventData.type === 'paid') {
+                    $('#priceFieldEdit').show();
+                } else {
+                    $('#priceFieldEdit').hide();
+                }
+
+                // Render detected links for Edit modal
+                renderLinks(extractLinks(eventData.decrypted_link), $('#modalDescriptionEditLinks'));
+                $('#event-edit').attr('action', '{{ route('events.update', '') }}/' + eventId);
+
+                // Handle event deletion
+                $('#deleteEventBtn').off('click').on('click', function() {
+                    if (confirm('Are you sure you want to delete this event?')) {
+                        $.ajax({
+                            url: '{{ route('events.destroy', '') }}/' + eventId,
+                            method: 'DELETE',
+                            success: function() {
+                                toastr.success('Event deleted successfully.');
+                                if (eventData.eventInfo) {
+                                    eventData.eventInfo
+                                        .remove(); // Remove event from calendar
+                                }
+                                $('#eventModal').modal('hide');
+                                $('#eventModalDetails').modal('hide');
+                                socket.emit('event_store_update_delete', {
+                                    'message': 'Event deleted'
+                                });
+                            },
+                            error: function() {
+                                alert('Failed to delete event.');
+                            }
+                        });
+                    }
+                });
+
+                $('#deleteEventBtn').show();
+                $('#eventModalDetails').modal('hide');
+                $('#eventModal').modal('show'); // Open edit modal
+            };
         });
     </script>
 @endpush
