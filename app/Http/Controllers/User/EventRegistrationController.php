@@ -189,6 +189,15 @@ class EventRegistrationController extends Controller
      */
     public function access($id)
     {
+
+        // if not authenticated, redirect to home for login and then back to this page with error message
+        if (!Auth::check()) {
+            return redirect()->route('home')
+                ->with('redirect_to', route('event.access', $id))
+                ->with('error', 'Please login to access this event');
+
+        }
+
         $event = Event::with(['user', 'country'])->findOrFail($id);
 
         // Check if user has valid RSVP

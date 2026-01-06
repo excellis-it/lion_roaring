@@ -43,16 +43,30 @@
                         </div>
 
                         <div class="row">
-                            <div class="col-xl-6 col-md-6">
+                            <div class="col-xl-6 col-md-6 mb-3">
                                 <div class="form-group-div">
                                     <div class="form-group">
                                         {{-- meta title --}}
-                                        <label for="floatingInputValue">Organization Name*</label>
-                                        <input type="text" class="form-control" id="floatingInputValue" name="name"
-                                            value="{{ old('name') }}" placeholder="Organization Name">
+                                        <label for="floatingInputValueName">Organization Name*</label>
+                                        <input type="text" class="form-control" id="floatingInputValueName"
+                                            name="name" value="{{ old('name') }}" placeholder="Organization Name">
                                         @if ($errors->has('name'))
                                             <div class="error" style="color:red;">
                                                 {{ $errors->first('name') }}</div>
+                                        @endif
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-xl-6 col-md-6 mb-3">
+                                <div class="form-group-div">
+                                    <div class="form-group">
+                                        {{-- meta title --}}
+                                        <label for="floatingInputValueSlug">Slug*</label>
+                                        <input type="text" class="form-control" id="floatingInputValueSlug"
+                                            name="slug" value="{{ old('slug') }}" placeholder="Slug">
+                                        @if ($errors->has('slug'))
+                                            <div class="error" style="color:red;">
+                                                {{ $errors->first('slug') }}</div>
                                         @endif
                                     </div>
                                 </div>
@@ -136,6 +150,17 @@
                 }
                 reader.readAsDataURL(this.files[0]);
             });
+        });
+    </script>
+    <script>
+        // Auto-generate slug from name
+        $('#floatingInputValueName').on('input', function() {
+            let name = $(this).val();
+            let slug = name.toLowerCase().trim()
+                .replace(/&/g, '-and-') // Replace & with 'and'
+                .replace(/[\s\W-]+/g, '-') // Replace spaces and non-word characters with hyphen
+                .replace(/^-+|-+$/g, ''); // Remove leading and trailing hyphens
+            $('#floatingInputValueSlug').val(slug);
         });
     </script>
 @endpush

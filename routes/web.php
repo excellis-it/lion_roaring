@@ -452,7 +452,7 @@ Route::middleware(['userActivity'])->group(function () {
         Route::get('/{id}/register', [EventRegistrationController::class, 'show'])->name('event.register.show');
         Route::post('/{id}/register', [EventRegistrationController::class, 'register'])->name('event.register.submit');
         Route::get('/payment/{payment}/success', [EventRegistrationController::class, 'paymentSuccess'])->name('event.payment.success');
-        Route::get('/{id}/access', [EventRegistrationController::class, 'access'])->name('event.access')->middleware('auth');
+        Route::get('/{id}/access', [EventRegistrationController::class, 'access'])->name('event.access');
         Route::post('/{id}/rsvp/cancel', [EventRegistrationController::class, 'cancelRsvp'])->name('event.rsvp.cancel')->middleware('auth');
     });
 });

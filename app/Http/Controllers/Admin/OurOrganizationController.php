@@ -75,18 +75,19 @@ class OurOrganizationController extends Controller
             'name' => 'required',
             'description' => 'required',
             'image' => 'required|image|mimes:jpeg,png,jpg,gif,svg',
+            'slug' => 'required|unique:our_organizations,slug',
         ]);
 
-        $slug = $this->createSlug($request->name);
-        // check slug is already exist or not
-        $is_slug_exist = OurOrganization::where('slug', $slug)->first();
-        if ($is_slug_exist) {
-            $slug = $slug . '-' . time();
-        }
+        // $slug = $this->createSlug($request->name);
+        // // check slug is already exist or not
+        // $is_slug_exist = OurOrganization::where('slug', $slug)->first();
+        // if ($is_slug_exist) {
+        //     $slug = $slug . '-' . time();
+        // }
 
         $our_organization = new OurOrganization();
         $our_organization->name = $request->name;
-        $our_organization->slug = $slug;
+        $our_organization->slug = $request->slug;
         $our_organization->description = $request->description;
         $our_organization->image = $this->imageUpload($request->file('image'), 'our_organizations');
         $our_organization->country_code = $request->content_country_code ?? 'US';
@@ -136,17 +137,19 @@ class OurOrganizationController extends Controller
         $request->validate([
             'name' => 'required',
             'description' => 'required',
+            'slug' => 'required|unique:our_organizations,slug,' . $id,
         ]);
 
         $our_organization = OurOrganization::find($id);
-        if ($our_organization->name != $request->name) {
-            $slug = $this->createSlug($request->name);
-            $is_slug_exist = OurOrganization::where('slug', $slug)->first();
-            if ($is_slug_exist) {
-                $slug = $slug . '-' . time();
-            }
-            $our_organization->slug = $slug;
-        }
+        // if ($our_organization->name != $request->name) {
+        //     $slug = $this->createSlug($request->name);
+        //     $is_slug_exist = OurOrganization::where('slug', $slug)->first();
+        //     if ($is_slug_exist) {
+        //         $slug = $slug . '-' . time();
+        //     }
+        //     $our_organization->slug = $slug;
+        // }
+        $our_organization->slug = $request->slug;
         $our_organization->name = $request->name;
         $our_organization->description = $request->description;
         if ($request->hasFile('image')) {
