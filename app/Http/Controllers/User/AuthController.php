@@ -24,8 +24,10 @@ use App\Models\UserActivity;
 use App\Models\MembershipTier;
 use App\Models\UserSubscription;
 use App\Models\SubscriptionPayment;
+use App\Models\UserRegisterAgreement;
 use Stripe\StripeClient;
 use Spatie\Permission\Models\Role;
+use Illuminate\Support\Facades\Storage;
 
 class AuthController extends Controller
 {
@@ -139,6 +141,17 @@ class AuthController extends Controller
         ]);
 
         $validator->after(function ($validator) use ($request) {
+            $pending = $request->session()->get('pending_register_agreement');
+            if (!is_array($pending) || empty($pending['tmp_path']) || empty($pending['signer_name'])) {
+                $validator->errors()->add('register_agreement', 'Please review and accept the registration agreement before registering.');
+                return;
+            }
+
+            if (!Storage::disk('public')->exists($pending['tmp_path'])) {
+                $validator->errors()->add('register_agreement', 'Agreement preview has expired. Please review the agreement again.');
+                return;
+            }
+
             if (!$request->tier_id) {
                 return;
             }
@@ -237,6 +250,37 @@ class AuthController extends Controller
         $user->email_verified_at = now();
         $user->status = 0;
         $user->save();
+
+        // Finalize & persist registration agreement PDF against this user
+        $pending = $request->session()->get('pending_register_agreement');
+        if (is_array($pending) && !empty($pending['tmp_path']) && Storage::disk('public')->exists($pending['tmp_path'])) {
+            $token = $pending['token'] ?? (string) \Illuminate\Support\Str::uuid();
+            $finalPath = "register-agreements/users/{$user->id}/agreement-{$token}.pdf";
+
+            // Ensure directory exists
+            Storage::disk('public')->makeDirectory("register-agreements/users/{$user->id}");
+
+            $moved = Storage::disk('public')->move($pending['tmp_path'], $finalPath);
+            if (!$moved) {
+                // Fallback: copy+delete
+                $content = Storage::disk('public')->get($pending['tmp_path']);
+                Storage::disk('public')->put($finalPath, $content);
+                Storage::disk('public')->delete($pending['tmp_path']);
+            }
+
+            UserRegisterAgreement::create([
+                'user_id' => $user->id,
+                'country_code' => $pending['country_code'] ?? 'US',
+                'signer_name' => $pending['signer_name'] ?? ($request->first_name . ' ' . $request->last_name),
+                'signer_initials' => $pending['signer_initials'] ?? null,
+                'pdf_path' => $finalPath,
+                'agreement_title_snapshot' => $pending['agreement_title_snapshot'] ?? null,
+                'agreement_description_snapshot' => $pending['agreement_description_snapshot'] ?? null,
+                'checkbox_text_snapshot' => $pending['checkbox_text_snapshot'] ?? null,
+            ]);
+
+            $request->session()->forget('pending_register_agreement');
+        }
 
 
         $user->assignRole('MEMBER_NON_SOVEREIGN');

@@ -22,41 +22,55 @@
                     <div class="form-head">
                         <h4>Details</h4>
                     </div>
-                       @if (auth()->user()->user_type == 'Global')
-                    <div class="row">
-                        <div class="col-md-6 mb-3">
-                            <div class="form-group-div">
-                                <div class="form-group">
-                                    <label for="content_country_code">Content Country*</label>
-                                    <select name="content_country_code" id="content_country_code" class="form-control">
-                                        @foreach (\App\Models\Country::all() as $country)
-                                            <option value="{{ $country->code }}"
-                                                {{ old('content_country_code', 'US') == $country->code ? 'selected' : '' }}>
-                                                {{ $country->name }}
-                                            </option>
-                                        @endforeach
-                                    </select>
-                                    @if ($errors->has('content_country_code'))
-                                        <div class="error" style="color:red;">
-                                            {{ $errors->first('content_country_code') }}
-                                        </div>
-                                    @endif
+                    @if (auth()->user()->user_type == 'Global')
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <div class="form-group-div">
+                                    <div class="form-group">
+                                        <label for="content_country_code">Content Country*</label>
+                                        <select name="content_country_code" id="content_country_code" class="form-control">
+                                            @foreach (\App\Models\Country::all() as $country)
+                                                <option value="{{ $country->code }}"
+                                                    {{ old('content_country_code', 'US') == $country->code ? 'selected' : '' }}>
+                                                    {{ $country->name }}
+                                                </option>
+                                            @endforeach
+                                        </select>
+                                        @if ($errors->has('content_country_code'))
+                                            <div class="error" style="color:red;">
+                                                {{ $errors->first('content_country_code') }}
+                                            </div>
+                                        @endif
+                                    </div>
                                 </div>
                             </div>
                         </div>
-                    </div>
                     @endif
                     <div class="row">
                         <div class="col-xl-6 col-md-6 mb-3">
                             <div class="form-group-div">
                                 <div class="form-group">
                                     {{-- meta title --}}
-                                    <label for="floatingInputValue">Organization Name*</label>
-                                    <input type="text" class="form-control" id="floatingInputValue" name="name"
+                                    <label for="floatingInputValueName">Organization Name*</label>
+                                    <input type="text" class="form-control" id="floatingInputValueName" name="name"
                                         value="{{ old('name') }}" placeholder="Organization Name">
                                     @if ($errors->has('name'))
                                         <div class="error" style="color:red;">
                                             {{ $errors->first('name') }}</div>
+                                    @endif
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-xl-6 col-md-6 mb-3">
+                            <div class="form-group-div">
+                                <div class="form-group">
+                                    {{-- meta title --}}
+                                    <label for="floatingInputValueSlug">Slug*</label>
+                                    <input type="text" class="form-control" id="floatingInputValueSlug" name="slug"
+                                        value="{{ old('slug') }}" placeholder="Slug">
+                                    @if ($errors->has('slug'))
+                                        <div class="error" style="color:red;">
+                                            {{ $errors->first('slug') }}</div>
                                     @endif
                                 </div>
                             </div>
@@ -100,7 +114,8 @@
                         <div class="col-xl-12">
                             <div class="btn-1">
                                 <button type="submit" class="print_btn me-2 mt-2 mb-2">Create</button>
-                                <a href="{{ route('user.admin.our-organizations.index') }}" class="print_btn print_btn_vv">Cancel</a>
+                                <a href="{{ route('user.admin.our-organizations.index') }}"
+                                    class="print_btn print_btn_vv">Cancel</a>
                             </div>
                         </div>
                     </div>
@@ -141,6 +156,18 @@
                 }
                 reader.readAsDataURL(this.files[0]);
             });
+        });
+    </script>
+
+    <script>
+        // Auto-generate slug from name
+        $('#floatingInputValueName').on('input', function() {
+            let name = $(this).val();
+            let slug = name.toLowerCase().trim()
+                .replace(/&/g, '-and-') // Replace & with 'and'
+                .replace(/[\s\W-]+/g, '-') // Replace spaces and non-word characters with hyphen
+                .replace(/^-+|-+$/g, ''); // Remove leading and trailing hyphens
+            $('#floatingInputValueSlug').val(slug);
         });
     </script>
 @endpush

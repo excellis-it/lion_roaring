@@ -2,50 +2,87 @@
 applyTo: "**"
 ---
 
-# Project general coding standards
+# Project Copilot Guidelines (Laravel)
 
-## For ONLY API-related code use these instructions
+This file defines practical, actionable rules for contributing to this Laravel project. Keep instructions brief and follow repository conventions.
 
--   You are assisting in a Laravel API-only project
--   Work only inside app/Http/Controllers/Api/
--   Never modify models.
--   Use short code, avoid boilerplate.
--   Use try-catch with 200 for success/201 for failure response.
--   Follow existing module patterns.
--   Add proper Scribe annotations for every method.
--   Only generate API controllers and routes.
--   Every API method MUST return JSON responses and must have 'status' = true/false.
--   Also check for blade files in resources/views/ for any API-related code.
--   Also check views if any extra things are needed for API-related code.
--   Always check routes/api.php for route definitions.
--   Which db table have 'country_code' column, should ask for country code optionally in the API, otherwise filter by default country code 'US', add in scribe annotation with example: 'US'.
--   For every new or updated API method, you MUST add or update proper Scribe annotations above functions:
-    -- @group (for main module name)
-    -- \* Feature Name (for every feature inside the module)
-    -- @authenticated (if required)
-    -- @bodyParam
-    -- @queryParam
-    -- @urlParam
-    -- @response 200 (for success example)
-    -- @response 201 (for failure example)
+## High-level rules
 
-## You are assisting in a Laravel project that contains major modules:
+-   Work in small, reviewable commits and include meaningful commit messages.
+-   Never commit `.env` or sensitive credentials. Update `.env.example` if env vars change.
+-   Follow PSR-12 coding style and Laravel conventions.
 
--   User Panel
--   E-commerce
--   E-learning
--   Admin Panel
--   Frontend
+## API-related workflow (required)
 
-## Copilot command: project-view-test
+-   Only modify controllers for API features inside `app/Http/Controllers/Api/` unless the task explicitly requires otherwise.
+-   Do NOT modify models unless explicitly requested and approved.
+-   Prefer using Artisan generators and framework commands (don't hand-write scaffolding when a command exists):
 
--   When a user message begins with `project-view-test` followed by a short description (for example: `project-view-test the login feature and fix if any bugs`), Copilot should perform these steps:
+    -   Create migrations: `php artisan make:migration create_users_table --create=users`
+    -   Create models + migration + factory + seeder + controller: `php artisan make:model ModelName --migration --factory --seeder --controller`
+    -   Create API controller: `php artisan make:controller Api/MyController --api`
+    -   Create resource controllers: `php artisan make:controller Api/ThingController --resource --api`
+    -   Create requests: `php artisan make:request StoreThingRequest`
+    -   Create jobs, events, listeners, notifications with `php artisan make:*` equivalents.
 
-    -   Launch Playwright in **headed Chrome** with DevTools open (use the `chrome-devtools` project and flags such as `--headed` and `--project=chrome-devtools`).
-    -   Generate or update Playwright tests that exercise the described feature end-to-end, including visual checks (screenshots, DOM assertions) and edge cases where applicable.
-    -   Start the local development server at `http://127.0.0.1:8000` (if not already running) and run the tests against it.
-    -   If tests fail, attempt a minimal, safe fix to the app code (only when confident and non-destructive), re-run tests, and verify the fix.
-    -   Report results concisely: what was tested, pass/fail summary, screenshots or traces on failure, and any code changes made.
-    -   Before making changes that may affect production data, migrations, or sensitive configuration, ask for explicit confirmation from the user.
+-   Migrations: prefer run/test with Artisan commands (don't create migration files by hand unless necessary):
+    -   Run locally: `php artisan migrate`
+    -   Rollback last batch: `php artisan migrate:rollback`
+    -   Fresh + seed: `php artisan migrate:fresh --seed`
+    -   Use `--path` when you need to run a specific migration file.
 
--   Keep operations auditable: add tests and any code edits with clear commit messages and include new/updated test files in the report.
+## Responses, errors, and HTTP codes
+
+-   API endpoints MUST return JSON with a boolean `status` key along with data or error message.
+-   Use semantic HTTP codes: `200` for OK, `201` for created resources, `204` for no content, `400/422` for client errors, `401` for unauthorized, `403` for forbidden, `500` for server errors.
+-   Wrap controllers or service calls in try/catch only where needed; handle validation with Form Requests and rely on exceptions for unexpected errors. When catching, return appropriate error code and message.
+
+## Scribe documentation (required for API methods)
+
+-   Add Scribe annotations for every public API controller method you add or change. At minimum include:
+    -   `@group` (module name)
+    -   short feature description
+    -   `@authenticated` when auth is required
+    -   `@bodyParam`, `@queryParam`, `@urlParam` examples
+    -   `@response 200` success example
+    -   `@response 4xx|5xx` failure example(s)
+
+## Country code rule
+
+-   For tables that include a `country_code` column: accept an optional `country_code` parameter in the API. If omitted, default to `US`. Include the example `US` in Scribe annotations.
+
+## Tests & CI
+
+-   Write or update PHPUnit/Pest tests for any controller, model, or service logic you add or change.
+-   Run tests locally before pushing: `php artisan test` or `vendor/bin/phpunit`.
+-   End-to-end or browser tests (Playwright) should run against `http://127.0.0.1:8000`. Use existing Playwright config and add tests under `tests/` as appropriate.
+
+## Frontend / assets
+
+-   Use npm scripts already present in the repo: `npm install` then `npm run dev` for development, `npm run prod` for production builds.
+
+## Database seeding & fixtures
+
+-   Use factories and seeders for test data. Create them via Artisan (`php artisan make:factory`, `php artisan make:seeder`).
+
+## Database migrations caution
+
+-   Prefer `php artisan make:migration` and let Artisan set filenames and timestamps. Avoid manually editing migration timestamps or filenames unless fixing a specific conflict.
+
+## Security & maintenance
+
+-   Always run `composer install` and `composer dump-autoload` after adding packages.
+-   Run `php artisan config:cache` and `php artisan route:cache` only in production or when explicitly needed.
+
+## Playwright / project-view-test command
+
+-   If a user asks via `project-view-test`, follow the repo's test workflow: run Playwright in headed Chrome, exercise the requested feature, report concise pass/fail and attach traces/screenshots. Start the local dev server at `http://127.0.0.1:8000`.
+-   Ask for explicit confirmation before making any DB/schema changes or destructive edits when running automated tests.
+
+## Small checklist for PRs
+
+-   Include tests for behavior changes.
+-   Update `README.md` or module docs when adding features or env variables.
+-   Run static analysis (if configured) and include test output when relevant.
+
+***

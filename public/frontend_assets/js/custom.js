@@ -1,5 +1,3 @@
-
-
 $("#toggle").click(function () {
     $(this).toggleClass("active");
     $("#overlay").toggleClass("open");
@@ -170,7 +168,6 @@ $(".gallery_slider").slick({
     ],
 });
 
-
 $(".reviews_slider").slick({
     autoplay: true,
     speed: 2000,
@@ -240,30 +237,105 @@ $(document).ready(function () {
         }
     });
 
-    // check if pma_register_check2 is checked, if checked then redirect to register route
-    $(".register_next_second").on("click", function () {
-        if ($("#pma_register_check2").is(":checked")) {
-            window.location.href = register_page_route;
+    function computeInitials(name) {
+        if (!name) return "";
+        const parts = name.trim().split(/\s+/).filter(Boolean);
+        return parts
+            .map((p) => (p[0] || "").toUpperCase())
+            .join("")
+            .slice(0, 4);
+    }
+
+    function updateInitialLabel() {
+        const name = $("#pma_register_signer_name").val() || "";
+        const initials = computeInitials(name);
+        if (initials) {
+            $("#pma_register_initial_label").text(
+                "I confirm my initials: " + initials
+            );
         } else {
-            toastr.error("Please check the agreement");
-            console.log("Checkbox 2 is not checked");
+            $("#pma_register_initial_label").text("I confirm my initials");
         }
+    }
+
+    $(document).on("input", "#pma_register_signer_name", function () {
+        updateInitialLabel();
+        $("#pma_register_initial_check").prop("checked", false);
+    });
+
+    // Step 2: generate filled agreement PDF and show preview modal
+    $(".register_next_second").on("click", function () {
+        const signerName = ($("#pma_register_signer_name").val() || "").trim();
+        if (!signerName) {
+            toastr.error("Please enter your full name");
+            return;
+        }
+
+        updateInitialLabel();
+
+        if (!$("#pma_register_initial_check").is(":checked")) {
+            toastr.error("Please confirm your initials");
+            return;
+        }
+
+        const btn = $(this);
+        btn.addClass("disabled");
+
+        $.ajax({
+            url:
+                typeof register_agreement_preview_route !== "undefined"
+                    ? register_agreement_preview_route
+                    : "/register-agreement/preview",
+            method: "POST",
+            headers: {
+                "X-CSRF-TOKEN":
+                    typeof csrf_token !== "undefined" ? csrf_token : undefined,
+            },
+            data: {
+                signer_name: signerName,
+            },
+        })
+            .done(function (res) {
+                if (!res || res.status !== true || !res.pdf_url) {
+                    toastr.error(
+                        "Could not generate agreement preview. Please try again."
+                    );
+                    return;
+                }
+
+                $("#register_agreement_pdf_iframe").attr("src", res.pdf_url);
+                $("#pma_register_check3").prop("checked", false);
+
+                $("#registerModalSecond").modal("hide");
+                $("#registerAgreementPreviewModal").modal("show");
+            })
+            .fail(function (xhr) {
+                const msg =
+                    (xhr &&
+                        xhr.responseJSON &&
+                        (xhr.responseJSON.message || xhr.responseJSON.error)) ||
+                    "Could not generate agreement preview. Please try again.";
+                toastr.error(msg);
+            })
+            .always(function () {
+                btn.removeClass("disabled");
+            });
+    });
+
+    // Preview step: require agreement checkbox then go to register page
+    $(".register_next_preview").on("click", function () {
+        if (!$("#pma_register_check3").is(":checked")) {
+            toastr.error("Please check the agreement");
+            return;
+        }
+        window.location.href = register_page_route;
     });
 });
 
 AOS.init();
 
-
-
-
-
- 
-
-
-
-document.addEventListener('DOMContentLoaded', function () {
-
-    const pages = document.querySelectorAll('.page');
+document.addEventListener("DOMContentLoaded", function () {
+    const pages = document.querySelectorAll(".page");
 
     /* Set z-index */
     pages.forEach((page, index) => {
@@ -274,45 +346,42 @@ document.addEventListener('DOMContentLoaded', function () {
     });
 
     /* 🔥 OPEN BOOK BY DEFAULT */
-    pages[0].classList.add('flipped');
-    pages[1].classList.add('flipped');
+    pages[0].classList.add("flipped");
+    pages[1].classList.add("flipped");
 
     /* Helper: check if book is fully closed */
     function isBookClosed() {
-        return !pages[0].classList.contains('flipped') &&
-               !pages[1].classList.contains('flipped');
+        return (
+            !pages[0].classList.contains("flipped") &&
+            !pages[1].classList.contains("flipped")
+        );
     }
 
     /* Click logic */
-    pages.forEach(page => {
-        page.addEventListener('click', function () {
-
+    pages.forEach((page) => {
+        page.addEventListener("click", function () {
             /* ✅ FIRST PAGE CLICK — reopen book if closed */
             if (this.pageNum === 1) {
                 if (isBookClosed()) {
-                    pages[0].classList.add('flipped');
-                    pages[1].classList.add('flipped');
+                    pages[0].classList.add("flipped");
+                    pages[1].classList.add("flipped");
                 }
                 return;
             }
 
             /* EVEN pages → close */
             if (this.pageNum % 2 === 0) {
-                this.classList.remove('flipped');
+                this.classList.remove("flipped");
                 if (this.previousElementSibling) {
-                    this.previousElementSibling.classList.remove('flipped');
+                    this.previousElementSibling.classList.remove("flipped");
                 }
-            }
+            } else {
             /* ODD pages → open */
-            else {
-                this.classList.add('flipped');
+                this.classList.add("flipped");
                 if (this.nextElementSibling) {
-                    this.nextElementSibling.classList.add('flipped');
+                    this.nextElementSibling.classList.add("flipped");
                 }
             }
         });
     });
-
 });
-
-

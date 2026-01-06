@@ -53,6 +53,7 @@ use App\Http\Controllers\User\ForgetPasswordController as UserForgetPasswordCont
 use App\Http\Controllers\User\JobpostingController;
 use App\Http\Controllers\User\LeadershipDevelopmentController;
 use App\Http\Controllers\User\LiveEventController;
+use App\Http\Controllers\User\EventRegistrationController;
 use App\Http\Controllers\User\MeetingSchedulingController;
 use App\Http\Controllers\User\PrivateCollaborationController;
 use App\Http\Controllers\User\NewsletterController as UserNewsletterController;
@@ -132,6 +133,7 @@ use Illuminate\Support\Str;
 use App\Http\Controllers\VisitorController;
 use App\Http\Controllers\User\UserActivityController;
 use App\Http\Controllers\User\MembershipController as UserMembershipController;
+use App\Http\Controllers\User\RegisterAgreementPreviewController;
 
 
 /*
@@ -352,10 +354,10 @@ Route::middleware(['userActivity'])->group(function () {
     $__ccPattern = $__countryCodes ? implode('|', array_map(fn($s) => preg_quote($s, '/'), $__countryCodes)) : 'a^';
 
     // Redirect "/" to "/{cc}"
-    // Route::get('/', function () {
-    //     $cc = strtolower(Helper::getVisitorCountryCode()); // e.g., "US" -> "us"
-    //     return $cc ? redirect('/' . $cc, 302) : app(CmsController::class)->index();
-    // })->name('home');
+    Route::get('/', function () {
+        $cc = strtolower(Helper::getVisitorCountryCode()); // e.g., "US" -> "us"
+        return $cc ? redirect('/' . $cc, 302) : app(CmsController::class)->index();
+    })->name('home');
 
     // Country-code masked home (won't affect other routes due to tight constraint)
     Route::get('/{cc}', function (string $cc) {
@@ -422,6 +424,7 @@ Route::middleware(['userActivity'])->group(function () {
 
     // register
     Route::get('/register', [UserAuthController::class, 'register'])->name('register');
+    Route::post('/register-agreement/preview', [RegisterAgreementPreviewController::class, 'generate'])->name('register.agreement.preview');
     Route::post('/register-check', [UserAuthController::class, 'registerCheck'])->name('register.check');  //register check
     Route::post('/register-validate', [UserAuthController::class, 'registerValidate'])->name('register.validate'); // AJAX Validation
     Route::post('forget-password', [UserForgetPasswordController::class, 'forgetPassword'])->name('user.forget.password');
@@ -445,6 +448,15 @@ Route::middleware(['userActivity'])->group(function () {
     Route::post('/send-otp', [EmailVerificationController::class, 'sendOtp'])->name('send.otp');
     Route::post('/verify-otp', [EmailVerificationController::class, 'verifyOtp'])->name('verify.otp');
     Route::post('/resend-otp', [EmailVerificationController::class, 'resendOtp'])->name('resend.otp');
+
+    // Public Event Registration Routes
+    Route::prefix('event')->group(function () {
+        Route::get('/{id}/register', [EventRegistrationController::class, 'show'])->name('event.register.show');
+        Route::post('/{id}/register', [EventRegistrationController::class, 'register'])->name('event.register.submit');
+        Route::get('/payment/{payment}/success', [EventRegistrationController::class, 'paymentSuccess'])->name('event.payment.success');
+        Route::get('/{id}/access', [EventRegistrationController::class, 'access'])->name('event.access');
+        Route::post('/{id}/rsvp/cancel', [EventRegistrationController::class, 'cancelRsvp'])->name('event.rsvp.cancel')->middleware('auth');
+    });
 });
 
 Route::prefix('user')->middleware(['user', 'preventBackHistory', 'userActivity'])->group(function () {
@@ -901,6 +913,11 @@ Route::prefix('user')->middleware(['user', 'preventBackHistory', 'userActivity']
         Route::post('/store', [LiveEventController::class, 'store'])->name('events.store');
         Route::put('/update/{id}', [LiveEventController::class, 'update'])->name('events.update');
         Route::delete('/destroy/{id}', [LiveEventController::class, 'destroy'])->name('events.destroy');
+
+        // RSVP and payment management routes
+        Route::get('/{id}/rsvps', [LiveEventController::class, 'viewRsvps'])->name('events.rsvps');
+        Route::get('/{id}/payments', [LiveEventController::class, 'viewPayments'])->name('events.payments');
+        Route::get('/{id}/export-attendees', [LiveEventController::class, 'exportAttendees'])->name('events.export-attendees');
     });
 
     Route::prefix('newsletters')->group(function () {
