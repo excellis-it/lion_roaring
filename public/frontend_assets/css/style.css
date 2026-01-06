@@ -4323,3 +4323,24 @@ select {
     background: var(--sec-color);
     border-radius: 4px;
 }
+
+.slid_bh .slick-nav {
+    --active: #643271;
+    --border: #643271;
+    /* border: var(--main-color); */
+    /* color: var(--main-color); */
+    width: 44px;
+    height: 44px;
+    position: absolute;
+    cursor: pointer;
+    top: calc(50% - 44px);
+}
+.slid_bh .slick-nav.prev-arrow {
+    left: 0%;
+    transform: scaleX(-1);
+    z-index: 1;
+}
+.slid_bh .slick-nav.next-arrow {
+    left: auto;
+    right: 0%;
+}

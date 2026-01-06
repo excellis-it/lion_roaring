@@ -47,7 +47,7 @@ $(".slick-nav").on("click touch", function (e) {
 
 $(".slid_bh").slick({
     dots: false,
-    arrows: false,
+    arrows: true,
     autoplay: true,
     infinite: false,
     speed: 300,
