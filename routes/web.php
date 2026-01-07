@@ -32,6 +32,7 @@ use App\Http\Controllers\User\Admin\MenuController as UserAdminMenuController;
 
 use App\Http\Controllers\Estore\HomeController;
 use App\Http\Controllers\Estore\ProductController as EstoreProductController;
+use App\Http\Controllers\Estore\UserAddressController as EstoreUserAddressController;
 use App\Http\Controllers\Elearning\ElearningHomeController;
 use App\Http\Controllers\Elearning\ElearningProductController as ElearningProductController;
 use App\Http\Controllers\Frontend\CmsController;
@@ -1120,8 +1121,15 @@ Route::prefix('e-store')->group(function () {
     Route::post('/product/remove-from-wishlist', [EstoreProductController::class, 'removeFromWishlist'])->name('e-store.remove-from-wishlist');
     // // by ajax get warehouse product details by product id with optional size and color
     Route::post('/get-warehouse-product-details', [EstoreProductController::class, 'getWarehouseProductDetails'])->name('e-store.get-warehouse-product-details');
-    // user-update.location
-    Route::post('/user-update/location', [HomeController::class, 'updateLocation'])->name('user-update.location');
+
+    // user addresses (multi-address location picker)
+    Route::get('/addresses', [EstoreUserAddressController::class, 'index'])->name('e-store.addresses.index')->middleware('user');
+    Route::post('/addresses', [EstoreUserAddressController::class, 'store'])->name('e-store.addresses.store');
+    Route::post('/addresses/{address}', [EstoreUserAddressController::class, 'update'])->name('e-store.addresses.update')->middleware('user');
+    Route::post('/addresses/default', [EstoreUserAddressController::class, 'setDefault'])->name('e-store.addresses.default')->middleware('user');
+
+    // Backward-compat: location updater now saves into user_addresses (or session for guests)
+    Route::post('/user-update/location', [EstoreUserAddressController::class, 'store'])->name('user-update.location');
     // estore.register
     Route::post('/register', [HomeController::class, 'register'])->name('estore.register');
 

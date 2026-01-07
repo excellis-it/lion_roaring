@@ -25,7 +25,9 @@
                             <div class="row">
                                 <div class="col-md-6">
                                     <h4>Order #{{ $order->order_number }}</h4>
-                                    <p class="mb-0">Placed on {{ \Carbon\Carbon::parse($order->created_at)->timezone(auth()->user()->time_zone)->format('M d, Y h:i A') }}</p>
+                                    <p class="mb-0">Placed on
+                                        {{ \Carbon\Carbon::parse($order->created_at)->timezone(auth()->user()->time_zone)->format('M d, Y h:i A') }}
+                                    </p>
                                     @if ($order->status == 4 && $order->payment_status == 'paid')
                                         <a href="{{ route('user.store-orders.invoice', $order->id) }}" target="_blank"
                                             class="btn btn-sm btn-primary">
@@ -234,7 +236,8 @@
                                         </p>
                                         @if ($payment->paid_at)
                                             <p class="mb-0"><strong>Paid on:</strong>
-                                                {{ \Carbon\Carbon::parse($payment->paid_at)->timezone(auth()->user()->time_zone)->format('M d, Y h:i A') }}</p>
+                                                {{ \Carbon\Carbon::parse($payment->paid_at)->timezone(auth()->user()->time_zone)->format('M d, Y h:i A') }}
+                                            </p>
                                         @endif
                                     </div>
                                 @endforeach
@@ -243,9 +246,17 @@
 
                         <!-- Actions Order Cancellation button with modal confirm with note area and cancel button -->
                         <div class="order-cancellation mt-4">
+
+                            @if ($order->status == 3)
+                                <button type="button" class="btn btn-outline-dark w-100" disabled>
+                                    Order that has been shipped can't be cancelled.
+                                </button>
+                            @endif
+
                             @if (
-                                $order->status != 5 &&
+                                $order->status != 3 &&
                                     $order->status != 4 &&
+                                    $order->status != 5 &&
                                     $order->created_at->diffInDays(now()) <= optional($estoreSettings)->refund_max_days)
                                 <button type="button" class="btn btn-outline-danger w-100" data-bs-toggle="modal"
                                     data-bs-target="#cancelOrderModal">
@@ -398,12 +409,15 @@
                             <h5 class="h6 mb-1">Current Status: <span
                                     class="fw-bold">{{ $order->orderStatus->name ?? ucfirst($order->status) }}</span>
                             </h5>
-                            <p class="mb-2 small text-muted">Last updated {{ \Carbon\Carbon::parse($order->updated_at)->timezone(auth()->user()->time_zone)->format('M d, Y h:i A') }}
+                            <p class="mb-2 small text-muted">Last updated
+                                {{ \Carbon\Carbon::parse($order->updated_at)->timezone(auth()->user()->time_zone)->format('M d, Y h:i A') }}
                             </p>
                             <ul class="list-unstyled small mb-0">
                                 {{-- {{ auth()->user()->time_zone }} <br>
                                 {{ \Carbon\Carbon::parse($createdAt)->timezone(auth()->user()->time_zone)->format('M d, Y h:i A') }} --}}
-                                <li>Placed: <strong>{{ \Carbon\Carbon::parse($createdAt)->timezone(auth()->user()->time_zone)->format('M d, Y h:i A') }}</strong></li>
+                                <li>Placed:
+                                    <strong>{{ \Carbon\Carbon::parse($createdAt)->timezone(auth()->user()->time_zone)->format('M d, Y h:i A') }}</strong>
+                                </li>
 
                                 @if (($order->orderStatus->slug ?? $order->status) === 'cancelled')
                                     <li class="text-danger">Order was cancelled.</li>

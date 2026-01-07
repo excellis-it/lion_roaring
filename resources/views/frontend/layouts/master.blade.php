@@ -2094,23 +2094,29 @@
             });
         </script>
 
+
+
         <script>
             $(document).ready(function() {
-                @if (isset($_GET['is_donation']) && $_GET['is_donation'] == 'yes')
 
-                    $('#onload_popup').modal('hide');
-                    $('#exampleModalToggle2').modal('show');
-                @else
-                    @php
-                        $ip = request()->ip();
-                        $visitorCountrySessionKey = 'visitor_country_flag_code_' . $ip;
-                    @endphp
+                const sessions = @json(session()->all());
+                console.log('Sessions:', sessions);
 
-                    // Show agreement only AFTER country selection popup has been completed.
-                    @if (!Session::has('agree') && session()->has($visitorCountrySessionKey))
-                        $('#onload_popup').modal('show');
-                    @endif
-                @endif
+                const isDonation = "{{ request('is_donation') }}" === "yes";
+                const hasAgree = {{ session()->has('agree') ? 'true' : 'false' }};
+
+                setTimeout(() => {
+
+                    if (isDonation) {
+                        $('#onload_popup').modal('hide');
+                        $('#exampleModalToggle2').modal('show');
+                    } else {
+                        if (!hasAgree) {
+                            $('#onload_popup').modal('show');
+                        }
+                    }
+
+                }, 300); // IMPORTANT
             });
         </script>
 

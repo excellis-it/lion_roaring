@@ -99,7 +99,7 @@
                                 <div class="col-md-6">
                                     <div class="form-floating mb-3">
                                         <input type="text" class="form-control " name="city" id="city"
-                                            placeholder="City/District" value="{{ '' }}">
+                                            placeholder="City/District" value="{{ auth()->user()->defaultDeliveryAddress?->city ?? '' }}">
                                         <label for="city">City/District</label>
                                     </div>
                                 </div>

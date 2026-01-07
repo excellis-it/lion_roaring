@@ -57,7 +57,7 @@ class ProductController extends Controller
         $userSessionId = session()->getId();
         $cartCount = $isAuth ? EstoreCart::where('user_id', auth()->id())->count() : EstoreCart::where('session_id', $userSessionId)->count();
 
-        $nearbyWareHouseId = Warehouse::first()->id;
+        $nearbyWareHouseId = WareHouse::where('is_active', 1)->first()->id;
         $originLat = null;
         $originLng = null;
         $isUser = auth()->user();
@@ -75,7 +75,7 @@ class ProductController extends Controller
         if (!empty($nearest['warehouse']->id)) {
             $nearbyWareHouseId = $nearest['warehouse']->id;
         }
-        // return $getNearbywareHouse;
+        // return $nearbyWareHouseId;
 
         $wareHouseProducts = Product::whereHas('warehouseProducts', function ($q) use ($nearbyWareHouseId) {
             $q->where('warehouse_id', $nearbyWareHouseId)
@@ -141,7 +141,7 @@ class ProductController extends Controller
         $childCategoriesList = [];
         $category_name = null;
 
-        $nearbyWareHouseId = Warehouse::first()->id;
+        $nearbyWareHouseId = WareHouse::where('is_active', 1)->first()->id;
         $originLat = null;
         $originLng = null;
         $isUser = auth()->user();
@@ -219,7 +219,7 @@ class ProductController extends Controller
 
 
 
-            $nearbyWareHouseId = Warehouse::first()->id;
+            $nearbyWareHouseId = WareHouse::where('is_active', 1)->first()->id;
             $originLat = null;
             $originLng = null;
             $isUser = auth()->user();
@@ -1386,7 +1386,7 @@ class ProductController extends Controller
             if (!$product) {
                 return response()->json(['status' => false, 'message' => 'Product not found']);
             }
-            $nearbyWareHouseId = Warehouse::first()->id; // first id from warehouses
+            $nearbyWareHouseId = WareHouse::where('is_active', 1)->first()->id; // first id from warehouses
             $originLat = null;
             $originLng = null;
             $isUser = auth()->user();

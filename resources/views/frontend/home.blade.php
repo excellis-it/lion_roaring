@@ -363,7 +363,7 @@ $showPopup = !session()->has($sessionKey) && !Session::has('agree');
             <div class="testimonial_slider">
                 @foreach ($testimonials as $key => $item)
                     <div class="client">
-                        <div class="testimonial_box testimonial_box_1">
+                        <div class="testimonial_box testimonial_box_{{ (($loop->iteration - 1) % 4) + 1 }}">
                             <div class="d-flex">
                                 <div class="client_img">
                                     <img src="{{ Storage::url($item->image) }}" alt="">
@@ -372,56 +372,12 @@ $showPopup = !session()->has($sessionKey) && !Session::has('agree');
                             </div>
                             <div class="client-text">
                                 <div class="srlt" id="">
-                                    {!! $item->description !!}
+                                    <p>{!! $item->description !!}</p>
                                 </div>
                             </div>
                         </div>
                     </div>
-                    <div class="client">
-                        <div class="testimonial_box testimonial_box_2">
-                            <div class="d-flex">
-                                <div class="client_img">
-                                    <img src="{{ Storage::url($item->image) }}" alt="">
-                                </div>
-                                <h2>{{ $item->name ?? 'N/A' }}<span>{{ $item->address ?? 'N/A' }}</span></h2>
-                            </div>
-                            <div class="client-text">
-                                <div class="srlt" id="">
-                                    {!! $item->description !!}
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="client">
-                        <div class="testimonial_box testimonial_box_3">
-                            <div class="d-flex">
-                                <div class="client_img">
-                                    <img src="{{ Storage::url($item->image) }}" alt="">
-                                </div>
-                                <h2>{{ $item->name ?? 'N/A' }}<span>{{ $item->address ?? 'N/A' }}</span></h2>
-                            </div>
-                            <div class="client-text">
-                                <div class="srlt" id="">
-                                    {!! $item->description !!}
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="client">
-                        <div class="testimonial_box testimonial_box_4">
-                            <div class="d-flex">
-                                <div class="client_img">
-                                    <img src="{{ Storage::url($item->image) }}" alt="">
-                                </div>
-                                <h2>{{ $item->name ?? 'N/A' }}<span>{{ $item->address ?? 'N/A' }}</span></h2>
-                            </div>
-                            <div class="client-text">
-                                <div class="srlt" id="">
-                                    {!! $item->description !!}
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+
                 @endforeach
             </div>
 

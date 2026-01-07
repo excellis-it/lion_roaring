@@ -180,4 +180,10 @@ class User extends Authenticatable
 
         return false;
     }
+
+    // default delivery address
+    public function defaultDeliveryAddress()
+    {
+        return $this->hasOne(UserAddress::class)->where('is_default', true);
+    }
 }
