@@ -12,7 +12,6 @@ use App\Models\SubscriptionPayment;
 use Illuminate\Support\Facades\Auth;
 use App\Models\User;
 use Stripe\StripeClient;
-use Spatie\Permission\Models\Role;
 
 class MembershipController extends Controller
 {
@@ -40,8 +39,7 @@ class MembershipController extends Controller
         if (!auth()->user()->can('Create Membership')) {
             abort(403, 'Unauthorized');
         }
-        $roles = Role::all();
-        return view('user.membership.create', compact('roles'));
+        return view('user.membership.create');
     }
 
     public function store(Request $request)
@@ -66,7 +64,6 @@ class MembershipController extends Controller
             'pricing_type',
             'life_force_energy_tokens',
             'agree_description',
-            'role_id',
         ]));
         $benefits = $request->input('benefits', []);
         foreach ($benefits as $i => $b) {
@@ -82,9 +79,8 @@ class MembershipController extends Controller
         if (!auth()->user()->can('Edit Membership')) {
             abort(403, 'Unauthorized');
         }
-        $roles = Role::all();
         $tier = $membership->load('benefits');
-        return view('user.membership.edit', compact('tier', 'roles'));
+        return view('user.membership.edit', compact('tier'));
     }
 
     public function updateTier(Request $request, MembershipTier $membership)
@@ -109,7 +105,6 @@ class MembershipController extends Controller
             'pricing_type',
             'life_force_energy_tokens',
             'agree_description',
-            'role_id',
         ]));
         // update benefits
         MembershipBenefit::where('tier_id', $membership->id)->delete();
@@ -331,15 +326,6 @@ class MembershipController extends Controller
             $payment->payment_status = 'Success';
             $payment->save();
 
-            // assign role
-            if ($tier->role_id) {
-                $role = Role::find($tier->role_id);
-                if ($role) {
-                    // assign the role without removing existing roles
-                    $user->assignRole($role->name);
-                }
-            }
-
             return redirect()->route('user.membership.index')->with('success', 'Membership upgraded successfully via Stripe');
         } catch (\Throwable $th) {
             return redirect()->route('user.membership.index')->with('error', $th->getMessage());
@@ -413,13 +399,6 @@ class MembershipController extends Controller
         $user_subscription->subscription_start_date = now();
         $user_subscription->subscription_expire_date = now()->addYear();
         $user_subscription->save();
-
-        if ($tier->role_id) {
-            $role = Role::find($tier->role_id);
-            if ($role) {
-                $user->assignRole($role->name);
-            }
-        }
 
         return redirect()->route('user.membership.index')->with('success', 'Membership subscribed successfully.');
     }

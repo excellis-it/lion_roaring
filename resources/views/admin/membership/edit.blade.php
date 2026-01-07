@@ -39,18 +39,7 @@
                                 <input name="cost" class="form-control" value="{{ $tier->cost }}">
                             </div>
                         </div>
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label>Role</label>
-                                <select name="role_id" class="form-control">
-                                    <option value="">-- select a role --</option>
-                                    @foreach ($roles as $role)
-                                        <option value="{{ $role->id }}"
-                                            {{ $tier->role_id == $role->id ? 'selected' : '' }}>{{ $role->name }}</option>
-                                    @endforeach
-                                </select>
-                            </div>
-                        </div>
+
                         <div class="col-md-12">
                             <label>Benefits</label>
                             <div id="benefits">
@@ -81,7 +70,7 @@
         $(document).on('click', '.add-benefit', function() {
             $('#benefits').append(
                 '<div class="input-group mb-2"><input type="text" name="benefits[]" class="form-control"><div class="input-group-btn"><button type="button" class="btn btn-danger remove-benefit">-</button></div></div>'
-                );
+            );
         });
         $(document).on('click', '.remove-benefit', function() {
             $(this).closest('.input-group').remove();

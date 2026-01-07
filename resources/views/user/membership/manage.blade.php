@@ -13,9 +13,9 @@
                     @if (auth()->user()->can('Create Membership'))
                         <a href="{{ route('user.membership.create') }}" class="btn btn-primary me-2">+ Add Tier</a>
                     @endif
-                    @if (auth()->user()->can('View Membership Settings'))
+                    {{-- @if (auth()->user()->can('View Membership Settings'))
                         <a href="{{ route('user.membership.settings') }}" class="btn btn-secondary">Settings</a>
-                    @endif
+                    @endif --}}
                 </div>
             </div>
             <div class="row">

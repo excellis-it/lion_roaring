@@ -135,6 +135,7 @@ use App\Http\Controllers\VisitorController;
 use App\Http\Controllers\User\UserActivityController;
 use App\Http\Controllers\User\MembershipController as UserMembershipController;
 use App\Http\Controllers\User\RegisterAgreementPreviewController;
+use App\Http\Controllers\Frontend\MembershipController as FrontEndMembershipController;
 
 
 /*
@@ -392,7 +393,7 @@ Route::middleware(['userActivity'])->group(function () {
 
 
     Route::get('/gallery', [CmsController::class, 'gallery'])->name('gallery');
-    Route::get('/membership', [\App\Http\Controllers\Frontend\MembershipController::class, 'index'])->name('membership');
+    Route::get('/membership', [FrontEndMembershipController::class, 'index'])->name('membership');
     Route::get('/faq', [CmsController::class, 'faq'])->name('faq');
     Route::get('/contact-us', [CmsController::class, 'contactUs'])->name('contact-us');
     Route::get('/account-delete-request', [CmsController::class, 'accountDeleteRequest'])->name('account-delete-request');

@@ -61,17 +61,7 @@
                             <textarea name="agree_description" class="form-control" rows="5"></textarea>
                         </div>
                     </div>
-                    <div class="col-md-6 mb-3">
-                        <div class="box_label">
-                            <label>Role</label>
-                            <select name="role_id" class="form-control">
-                                <option value="">-- select a role --</option>
-                                @foreach ($roles as $role)
-                                    <option value="{{ $role->id }}">{{ $role->name }}</option>
-                                @endforeach
-                            </select>
-                        </div>
-                    </div>
+
                     <div class="col-md-12 mb-3">
                         <div class="box_label">
                             <label>Benefits</label>

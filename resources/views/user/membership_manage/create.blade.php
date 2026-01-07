@@ -39,17 +39,7 @@
                                 <input name="cost" class="form-control">
                             </div>
                         </div>
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label>Role</label>
-                                <select name="role_id" class="form-control">
-                                    <option value="">-- select a role --</option>
-                                    @foreach ($roles as $role)
-                                        <option value="{{ $role->id }}">{{ $role->name }}</option>
-                                    @endforeach
-                                </select>
-                            </div>
-                        </div>
+
                         <div class="col-md-12">
                             <label>Benefits</label>
                             <div id="benefits">
