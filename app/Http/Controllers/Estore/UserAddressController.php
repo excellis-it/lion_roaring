@@ -225,4 +225,69 @@ class UserAddressController extends Controller
             'data' => $address,
         ]);
     }
+
+    public function destroy(Request $request, UserAddress $address)
+    {
+        if (!auth()->check()) {
+            return response()->json([
+                'status' => false,
+                'message' => 'Unauthorized',
+            ], 401);
+        }
+
+        if ((int) $address->user_id !== (int) auth()->id()) {
+            return response()->json([
+                'status' => false,
+                'message' => 'Address not found',
+            ], 404);
+        }
+
+        $wasDefault = (bool) $address->is_default;
+
+        DB::transaction(function () use ($address, $wasDefault) {
+            $address->delete();
+
+            if (!$wasDefault) {
+                return;
+            }
+
+            $replacement = UserAddress::query()
+                ->where('user_id', auth()->id())
+                ->orderByDesc('id')
+                ->first();
+
+            /** @var \App\Models\User $user */
+            $user = auth()->user();
+
+            if ($replacement) {
+                UserAddress::where('user_id', auth()->id())->update(['is_default' => false]);
+                $replacement->is_default = true;
+                $replacement->save();
+
+                $user->location_lat = $replacement->latitude;
+                $user->location_lng = $replacement->longitude;
+                $user->location_address = $replacement->formatted_address;
+                $user->location_zip = $replacement->postal_code;
+                $user->location_country = $replacement->country;
+                $user->location_state = $replacement->state;
+                $user->save();
+
+                return;
+            }
+
+            // No addresses left
+            $user->location_lat = null;
+            $user->location_lng = null;
+            $user->location_address = null;
+            $user->location_zip = null;
+            $user->location_country = null;
+            $user->location_state = null;
+            $user->save();
+        });
+
+        return response()->json([
+            'status' => true,
+            'message' => 'Address deleted',
+        ]);
+    }
 }

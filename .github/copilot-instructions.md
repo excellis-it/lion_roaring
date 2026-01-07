@@ -6,11 +6,20 @@ applyTo: "**"
 
 This file defines practical, actionable rules for contributing to this Laravel project. Keep instructions brief and follow repository conventions.
 
+## You are assisting in a Laravel project that contains major modules:
+
+-   User Panel
+-   E-commerce
+-   E-learning
+-   Admin Panel
+-   Frontend
+
 ## High-level rules
 
 -   Work in small, reviewable commits and include meaningful commit messages.
 -   Never commit `.env` or sensitive credentials. Update `.env.example` if env vars change.
 -   Follow PSR-12 coding style and Laravel conventions.
+-   Never use RefreshDatabase trait in tests; use transactions or manual setup/teardown.
 
 ## API-related workflow (required)
 
@@ -53,13 +62,9 @@ This file defines practical, actionable rules for contributing to this Laravel p
 
 ## Tests & CI
 
--   Write or update PHPUnit/Pest tests for any controller, model, or service logic you add or change.
+-   Do not Write or update PHPUnit/Pest tests for any controller, model, or service logic you add or change unless explicitly requested.
 -   Run tests locally before pushing: `php artisan test` or `vendor/bin/phpunit`.
 -   End-to-end or browser tests (Playwright) should run against `http://127.0.0.1:8000`. Use existing Playwright config and add tests under `tests/` as appropriate.
-
-## Frontend / assets
-
--   Use npm scripts already present in the repo: `npm install` then `npm run dev` for development, `npm run prod` for production builds.
 
 ## Database seeding & fixtures
 
@@ -78,11 +83,3 @@ This file defines practical, actionable rules for contributing to this Laravel p
 
 -   If a user asks via `project-view-test`, follow the repo's test workflow: run Playwright in headed Chrome, exercise the requested feature, report concise pass/fail and attach traces/screenshots. Start the local dev server at `http://127.0.0.1:8000`.
 -   Ask for explicit confirmation before making any DB/schema changes or destructive edits when running automated tests.
-
-## Small checklist for PRs
-
--   Include tests for behavior changes.
--   Update `README.md` or module docs when adding features or env variables.
--   Run static analysis (if configured) and include test output when relevant.
-
-***

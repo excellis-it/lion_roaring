@@ -592,6 +592,7 @@
                     index: "{{ route('e-store.addresses.index') }}",
                     setDefault: "{{ route('e-store.addresses.default') }}",
                     updateTemplate: "{{ route('e-store.addresses.update', ['address' => '__ADDRESS__']) }}",
+                    deleteTemplate: "{{ route('e-store.addresses.delete', ['address' => '__ADDRESS__']) }}",
                 @endif
             };
             const csrf = "{{ csrf_token() }}";
@@ -951,6 +952,9 @@
                                     <div class="small text-muted">${text}</div>
                                     <div class="small text-muted">Click to edit</div>
                                 </div>
+                               ${a.is_default ? '' : `<button type="button" class="btn btn-link p-0 text-danger lr-delete-btn" aria-label="Delete address" title="Delete">
+                                            <i class="fa-solid fa-trash"></i>
+                                        </button>`}
                             </div>
                         `;
 
@@ -958,6 +962,16 @@
                         radio.addEventListener('change', function() {
                             setDefaultAddress(a.id);
                         });
+
+                        const delBtn = wrap.querySelector('.lr-delete-btn');
+                        if (delBtn) {
+                            delBtn.addEventListener('click', function(e) {
+                                e.preventDefault();
+                                e.stopPropagation();
+                                deleteAddress(a.id);
+                            });
+                        }
+
                         wrap.addEventListener('click', function(e) {
                             if (e.target && e.target.tagName === 'INPUT') return;
                             startEdit(a);
@@ -1070,6 +1084,48 @@
                     }
                 } catch (e) {
                     toastr.error('Failed to update default');
+                } finally {
+                    setBusy(false);
+                }
+            }
+
+            async function deleteAddress(addressId) {
+                if (!isLoggedIn || !routes.deleteTemplate) return;
+                if (!confirm('Delete this address?')) return;
+
+                try {
+                    setBusy(true);
+                    const url = routes.deleteTemplate.replace('__ADDRESS__', String(addressId));
+                    const resp = await $.ajax({
+                        url,
+                        type: 'POST',
+                        data: {
+                            _token: csrf,
+                        }
+                    });
+
+                    if (resp && resp.status) {
+                        toastr.success(resp.message || 'Address deleted');
+
+                        // Update UI without full reload
+                        addressCache = (addressCache || []).filter(x => String(x.id) !== String(addressId));
+                        const el = savedBox ? savedBox.querySelector(
+                            `.lr-address-item[data-address-id="${addressId}"]`) : null;
+                        if (el) el.remove();
+                        if (savedEmpty && (!addressCache || !addressCache.length)) savedEmpty.classList.remove(
+                            'd-none');
+
+                        if (editingId && String(editingId) === String(addressId)) {
+                            startNew();
+                        }
+
+                        // If default was deleted, backend may switch default; refresh to update header location
+                        window.location.reload();
+                    } else {
+                        toastr.error((resp && resp.message) || 'Failed to delete');
+                    }
+                } catch (e) {
+                    toastr.error('Failed to delete');
                 } finally {
                     setBusy(false);
                 }
