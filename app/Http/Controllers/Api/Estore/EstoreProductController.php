@@ -49,7 +49,7 @@ class EstoreProductController extends Controller
             $limit = (int)$request->get('limit', 12);
             $offset = ($page - 1) * $limit;
 
-            $nearbyWareHouseId = WareHouse::first()->id;
+            $nearbyWareHouseId = WareHouse::where('is_active', 1)->first()->id;
             $originLat = null;
             $originLng = null;
             $isUser = auth()->user();
@@ -159,7 +159,7 @@ class EstoreProductController extends Controller
             }
 
             // Determine nearest warehouse
-            $nearbyWareHouseId = WareHouse::first()->id;
+            $nearbyWareHouseId = WareHouse::where('is_active', 1)->first()->id;
             $originLat = null;
             $originLng = null;
             $isUser = auth()->user();
@@ -264,7 +264,7 @@ class EstoreProductController extends Controller
             $latest_filter = $request->latestFilter ?? '';
             $search = $request->search ?? '';
 
-            $nearbyWareHouseId = \App\Models\WareHouse::first()->id;
+            $nearbyWareHouseId = \App\Models\WareHouse::where('is_active', 1)->first()->id;
             $originLat = null;
             $originLng = null;
             $isUser = auth()->user();
@@ -377,7 +377,7 @@ class EstoreProductController extends Controller
                 return response()->json(['message' => 'Product not found', 'status' => false], 201);
             }
 
-            $nearbyWareHouseId = WareHouse::first()->id;
+            $nearbyWareHouseId = WareHouse::where('is_active', 1)->first()->id;
             $originLat = null;
             $originLng = null;
             $isUser = auth()->user();
@@ -472,7 +472,7 @@ class EstoreProductController extends Controller
             }
 
             // determine nearest warehouse
-            $nearbyWareHouseId = WareHouse::first()->id;
+            $nearbyWareHouseId = WareHouse::where('is_active', 1)->first()->id;
             $originLat = null;
             $originLng = null;
             $isUser = auth()->user();

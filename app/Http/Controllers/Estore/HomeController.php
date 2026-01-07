@@ -30,7 +30,7 @@ class HomeController extends Controller
         $session_id = session()->getId();
         $this->updateCartUserId();
 
-        $nearbyWareHouseId = Warehouse::first()->id; // first id from warehouses
+        $nearbyWareHouseId = WareHouse::where('is_active', 1)->first()->id; // first id from warehouses
         $originLat = null;
         $originLng = null;
         $isUser = auth()->user();
