@@ -1123,10 +1123,10 @@ Route::prefix('e-store')->group(function () {
     Route::post('/get-warehouse-product-details', [EstoreProductController::class, 'getWarehouseProductDetails'])->name('e-store.get-warehouse-product-details');
 
     // user addresses (multi-address location picker)
-    Route::get('/e-store/addresses', [EstoreUserAddressController::class, 'index'])->name('e-store.addresses.index')->middleware('user');
-    Route::post('/e-store/addresses', [EstoreUserAddressController::class, 'store'])->name('e-store.addresses.store');
-    Route::post('/e-store/addresses/{address}', [EstoreUserAddressController::class, 'update'])->name('e-store.addresses.update')->middleware('user');
-    Route::post('/e-store/addresses/default', [EstoreUserAddressController::class, 'setDefault'])->name('e-store.addresses.default')->middleware('user');
+    Route::get('/addresses', [EstoreUserAddressController::class, 'index'])->name('e-store.addresses.index')->middleware('user');
+    Route::post('/addresses', [EstoreUserAddressController::class, 'store'])->name('e-store.addresses.store');
+    Route::post('/addresses/{address}', [EstoreUserAddressController::class, 'update'])->name('e-store.addresses.update')->middleware('user');
+    Route::post('/addresses/default', [EstoreUserAddressController::class, 'setDefault'])->name('e-store.addresses.default')->middleware('user');
 
     // Backward-compat: location updater now saves into user_addresses (or session for guests)
     Route::post('/user-update/location', [EstoreUserAddressController::class, 'store'])->name('user-update.location');
