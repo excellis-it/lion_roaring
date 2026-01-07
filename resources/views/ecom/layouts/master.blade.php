@@ -32,6 +32,76 @@
         <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
         <link rel="stylesheet" type="text/css"
             href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css">
+
+        <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+            integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
+        <style>
+            .lr-map {
+                width: 100%;
+                height: 320px;
+                border-radius: 10px;
+                overflow: hidden;
+            }
+
+            #savedAddresses .list-group-item {
+                cursor: pointer;
+            }
+
+            .lr-address-modal .lr-left {
+                background: var(--bs-gray-100);
+                border-right: 1px solid var(--bs-border-color);
+                min-height: 560px;
+            }
+
+            .lr-address-modal .lr-left-header {
+                padding: 16px 16px 8px;
+            }
+
+            .lr-address-modal .lr-left-body {
+                padding: 0 16px 16px;
+            }
+
+            .lr-address-modal .lr-right {
+                padding: 16px;
+            }
+
+            .lr-address-item {
+                border-radius: 12px;
+                border: 1px solid var(--bs-border-color);
+                background: var(--bs-body-bg);
+                padding: 12px;
+                margin-bottom: 10px;
+            }
+
+            .lr-address-item.active {
+                border-color: var(--bs-primary);
+                box-shadow: 0 0 0 .2rem rgba(13, 110, 253, .15);
+            }
+
+            .lr-map-wrap {
+                position: relative;
+                border-radius: 12px;
+                overflow: hidden;
+                border: 1px solid var(--bs-border-color);
+            }
+
+            .lr-map-action {
+                position: absolute;
+                right: 12px;
+                bottom: 12px;
+                z-index: 500;
+            }
+
+            .lr-chip-group .btn {
+                border-radius: 999px;
+                padding: 6px 14px;
+            }
+
+            /* Google Places Autocomplete dropdown inside Bootstrap modal */
+            .pac-container {
+                z-index: 2000 !important;
+            }
+        </style>
         @stack('styles')
     </head>
 

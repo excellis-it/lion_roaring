@@ -130,10 +130,7 @@
                                     <td>Gender :</td>
                                     <td>{{ $user->gender ?? '-' }}</td>
                                 </tr> --}}
-                                <tr>
-                                    <td>Home Address :</td>
-                                    <td>{{ $user->address ?? '-' }}</td>
-                                </tr>
+
                                 <tr>
                                     <td>Email :</td>
                                     <td>{{ $user->email }}</td>
@@ -141,6 +138,20 @@
                                 <tr>
                                     <td>Phone number :</td>
                                     <td>{{ $user->phone ?? '-' }}</td>
+                                </tr>
+                                <tr>
+                                    <td></td>
+                                    <td></td>
+                                </tr>
+                                <tr>
+                                    <td>Delivery Address :</td>
+                                    <td>{{ $user->defaultDeliveryAddress?->formatted_address ?? '-' }}
+                                        &nbsp;
+                                        <a href="javascript:void(0)" onclick="changeLocation()" style="cursor: pointer;">
+                                            <span><i class="fa fa-pencil"></i></span>
+                                        </a>
+                                    </td>
+
                                 </tr>
                             </tbody>
                         </table>
@@ -177,7 +188,7 @@
                                 <input type="text" name="phone" class="form-control"
                                     value="{{ old('phone', $user->phone) }}" required>
                             </div>
-                            <div class="col-12">
+                            <div class="col-12" hidden>
                                 <label class="form-label">Address</label>
                                 <input type="text" name="address" class="form-control"
                                     value="{{ old('address', $user->address) }}">
