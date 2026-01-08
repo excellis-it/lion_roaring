@@ -612,9 +612,28 @@
                         $("#warehouse-product-id").val(response.data.id);
                         $("#product-variation-id").val(response.data.product_variation_id);
                         $("#warehouse-product-price").text(response.data.price);
-                        // Update max quantity
-                        $(".product-qty").attr("max", response.data.quantity);
-                        $(".product-qty").trigger("change");
+                        // Update max quantity and rebuild options to reflect returned quantity
+                        var $qtySelect = $(".product-qty");
+                        var currentVal = parseInt($qtySelect.val()) || 1;
+                        var qty = parseInt(response.data.quantity) || 0;
+                        $qtySelect.empty();
+                        if (qty > 0) {
+                            var max = Math.min(qty, 20); // cap to 20 for UI
+                            for (var i = 1; i <= max; i++) {
+                                $qtySelect.append($('<option>').val(i).text(i));
+                            }
+                            // preserve selection if possible
+                            if (currentVal <= max) {
+                                $qtySelect.val(currentVal);
+                            } else {
+                                $qtySelect.val(1);
+                            }
+                        } else {
+                            // no stock - keep a single 0 option (will be hidden by UI logic)
+                            $qtySelect.append($('<option>').val(0).text(0));
+                        }
+                        $qtySelect.attr("max", qty);
+                        $qtySelect.trigger("change");
 
                         var productImagesSection = $("#product-images-section");
                         var sliderLeft = $('<div class="slider_left"></div>');
