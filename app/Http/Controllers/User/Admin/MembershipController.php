@@ -10,7 +10,6 @@ use App\Models\MembershipMeasurement;
 use App\Models\UserSubscription;
 use App\Models\SubscriptionPayment;
 use App\Models\User;
-use Spatie\Permission\Models\Role;
 
 class MembershipController extends Controller
 {
@@ -23,8 +22,7 @@ class MembershipController extends Controller
 
     public function create()
     {
-        $roles = Role::all();
-        return view('user.admin.membership.create', compact('roles'));
+        return view('user.admin.membership.create');
     }
 
     public function store(Request $request)
@@ -33,7 +31,7 @@ class MembershipController extends Controller
             'name' => 'required|string|max:255',
             'slug' => 'required|string|max:255|unique:membership_tiers,slug',
         ]);
-        $tier = MembershipTier::create($request->only(['name', 'slug', 'description', 'cost', 'role_id']));
+        $tier = MembershipTier::create($request->only(['name', 'slug', 'description', 'cost']));
         $benefits = $request->input('benefits', []);
         foreach ($benefits as $i => $b) {
             if (!empty($b)) {
@@ -45,15 +43,14 @@ class MembershipController extends Controller
 
     public function edit(MembershipTier $membership)
     {
-        $roles = Role::all();
         $tier = $membership->load('benefits');
-        return view('user.admin.membership.edit', compact('tier', 'roles'));
+        return view('user.admin.membership.edit', compact('tier'));
     }
 
     public function update(Request $request, MembershipTier $membership)
     {
         $request->validate(['name' => 'required|string|max:255']);
-        $membership->update($request->only(['name', 'slug', 'description', 'cost', 'role_id']));
+        $membership->update($request->only(['name', 'slug', 'description', 'cost']));
         // update benefits
         MembershipBenefit::where('tier_id', $membership->id)->delete();
         $benefits = $request->input('benefits', []);

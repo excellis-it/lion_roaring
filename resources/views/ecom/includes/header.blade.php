@@ -43,7 +43,8 @@
                     </div>
 
                     <div class="top-bar-text">
-                        <span class="d-block font-bold" onclick="changeLocation()" style="cursor: pointer;">Near My Location</span>
+                        <span class="d-block font-bold" onclick="changeLocation()" style="cursor: pointer;">Near My
+                            Location</span>
 
                         @if (Auth::check())
                             @if (Auth::user()->location_lat || Auth::user()->location_lng)
@@ -179,15 +180,137 @@
 <!-- Location Modal -->
 <div class="modal location-modal fade" id="locationModal" tabindex="-1" aria-labelledby="locationModalLabel"
     aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-dialog modal-dialog-centered modal-xl modal-dialog-scrollable">
         <div class="modal-content rounded-3 shadow">
             <div class="modal-header">
-                <h5 class="modal-title" id="locationModalLabel">Allow Location Access</h5>
+                <h5 class="modal-title" id="locationModalLabel">Choose Delivery Address</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
-            <div class="modal-body text-center">
-                <p>We need your location to provide better service near you.</p>
-                <button id="getLocationBtn" class="back_main">Share My Location</button>
+            <div class="modal-body p-0">
+                <div class="lr-address-modal">
+                    <div class="row g-0">
+                        <div class="col-md-4 lr-left">
+                            <div class="lr-left-header">
+                                <div class="fw-semibold">Saved Addresses</div>
+                                <div class="text-muted small">Manage your delivery locations</div>
+                            </div>
+                            <div class="lr-left-body">
+                                @if (Auth::check())
+                                    <div id="savedAddresses"></div>
+                                    <div id="savedAddressesEmpty" class="text-muted small d-none">No saved addresses
+                                        yet.</div>
+                                    <button id="addNewAddressBtn" type="button"
+                                        class="btn btn-light red_btn w-100 mt-2">
+                                        <span> + Add New Address</span>
+                                    </button>
+                                    <div class="text-muted small mt-2" hidden>Tip: select radio to set default.</div>
+                                @else
+                                    <div class="text-muted small">Login to manage multiple addresses.</div>
+                                @endif
+                            </div>
+                        </div>
+
+                        <div class="col-md-8 lr-right">
+                            <div class="d-flex align-items-center justify-content-between mb-2">
+                                <div class="fw-semibold" id="lrFormTitle">Add New Address</div>
+                                <span id="locationBusy" class="text-muted small d-none">Working…</span>
+                            </div>
+
+                            <div class="mb-2">
+                                <input type="text" id="lr_address_search" class="form-control"
+                                    placeholder="Search address" autocomplete="off" />
+                            </div>
+
+                            <div class="lr-map-wrap mb-3">
+                                <div id="lr-map" class="lr-map"></div>
+                                <button id="getLocationBtn" type="button" class="btn btn-light lr-map-action">
+                                    Use Current Location
+                                </button>
+                            </div>
+
+                            <input type="hidden" id="lr_lat" value="">
+                            <input type="hidden" id="lr_lng" value="">
+
+                            <div class="row g-3">
+                                <div class="col-12">
+                                    <label class="form-label">Street Address</label>
+                                    <input type="text" id="lr_address_line1" class="form-control"
+                                        placeholder="House no, street" />
+                                </div>
+
+                                <div class="col-12">
+                                    <label class="form-label">Apartment / Landmark (optional)</label>
+                                    <input type="text" id="lr_address_line2" class="form-control"
+                                        placeholder="Apartment, suite, landmark" />
+                                </div>
+
+                                <div class="col-md-6">
+                                    <label class="form-label">City</label>
+                                    <input type="text" id="lr_city" class="form-control" placeholder="City" />
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label">State / Province</label>
+                                    <input type="text" id="lr_state" class="form-control" placeholder="State" />
+                                </div>
+
+                                <div class="col-md-6">
+                                    <label class="form-label">Zip Code</label>
+                                    <input type="text" id="lr_postal_code" class="form-control"
+                                        placeholder="ZIP" />
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label">Country</label>
+                                    <input type="text" id="lr_country" class="form-control"
+                                        placeholder="Country" />
+                                </div>
+
+                                <div class="col-12">
+                                    <label class="form-label">Address Label</label>
+                                    <div class="d-flex gap-3 flex-wrap">
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="radio" name="lr_label"
+                                                id="lr_label_home" value="Home" checked>
+                                            <label class="form-check-label" for="lr_label_home">Home</label>
+                                        </div>
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="radio" name="lr_label"
+                                                id="lr_label_work" value="Work">
+                                            <label class="form-check-label" for="lr_label_work">Work</label>
+                                        </div>
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="radio" name="lr_label"
+                                                id="lr_label_other" value="Other">
+                                            <label class="form-check-label" for="lr_label_other">Other</label>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="col-12">
+                                    <label class="form-label">Full Address</label>
+                                    <textarea id="lr_formatted_address" class="form-control" rows="2" placeholder="Auto-filled, editable"></textarea>
+                                </div>
+
+                                @if (Auth::check())
+                                    <div class="col-12">
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="checkbox" value="1"
+                                                id="lr_make_default" checked>
+                                            <label class="form-check-label" for="lr_make_default">Set as default
+                                                delivery address</label>
+                                        </div>
+                                    </div>
+                                @endif
+                            </div>
+
+                            <div class="d-flex justify-content-end gap-2 mt-3">
+                                <button type="button" class="btn btn-light btn-link"
+                                    data-bs-dismiss="modal">Cancel</button>
+                                <button id="saveAddressBtn" type="button" class="btn btn-primary">Save
+                                    Address</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
@@ -389,6 +512,14 @@
 
 
 @push('scripts')
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+        integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+
+    @if (config('services.google.maps_key'))
+        <script src="https://maps.googleapis.com/maps/api/js?key={{ config('services.google.maps_key') }}&libraries=places">
+        </script>
+    @endif
+
     <script>
         document.addEventListener("DOMContentLoaded", function() {
             const timezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
@@ -453,42 +584,719 @@
 
 
     <script>
-        document.getElementById('getLocationBtn').addEventListener('click', function() {
-            if (navigator.geolocation) {
-                navigator.geolocation.getCurrentPosition(function(position) {
-                    let lat = position.coords.latitude;
-                    let lng = position.coords.longitude;
+        (function() {
+            const isLoggedIn = {{ Auth::check() ? 'true' : 'false' }};
+            const routes = {
+                store: "{{ route('user-update.location') }}",
+                @if (Auth::check())
+                    index: "{{ route('e-store.addresses.index') }}",
+                    setDefault: "{{ route('e-store.addresses.default') }}",
+                    updateTemplate: "{{ route('e-store.addresses.update', ['address' => '__ADDRESS__']) }}",
+                    deleteTemplate: "{{ route('e-store.addresses.delete', ['address' => '__ADDRESS__']) }}",
+                @endif
+            };
+            const csrf = "{{ csrf_token() }}";
 
-                    // Send via AJAX to Laravel
-                    $.ajax({
-                        url: "{{ route('user-update.location') }}",
-                        type: "POST",
+            const modalEl = document.getElementById('locationModal');
+            const busyEl = document.getElementById('locationBusy');
+            const getLocationBtn = document.getElementById('getLocationBtn');
+            const saveBtn = document.getElementById('saveAddressBtn');
+
+            const formTitleEl = document.getElementById('lrFormTitle');
+            const addNewAddressBtn = document.getElementById('addNewAddressBtn');
+
+            const savedBox = document.getElementById('savedAddresses');
+            const savedEmpty = document.getElementById('savedAddressesEmpty');
+
+            const searchEl = document.getElementById('lr_address_search');
+
+            const latEl = document.getElementById('lr_lat');
+            const lngEl = document.getElementById('lr_lng');
+            const line1El = document.getElementById('lr_address_line1');
+            const line2El = document.getElementById('lr_address_line2');
+            const cityEl = document.getElementById('lr_city');
+            const stateEl = document.getElementById('lr_state');
+            const zipEl = document.getElementById('lr_postal_code');
+            const countryEl = document.getElementById('lr_country');
+            const formattedEl = document.getElementById('lr_formatted_address');
+            const makeDefaultEl = document.getElementById('lr_make_default');
+
+            const labelRadios = document.querySelectorAll('input[name="lr_label"]');
+
+            let map, marker;
+            let googleGeocoder, googleAutocomplete;
+            let mapProvider = null; // 'google' | 'leaflet'
+            let editingId = null;
+            let addressCache = [];
+            let formattedTouched = false;
+
+            function setBusy(isBusy) {
+                if (!busyEl) return;
+                busyEl.classList.toggle('d-none', !isBusy);
+                if (getLocationBtn) getLocationBtn.disabled = isBusy;
+                if (saveBtn) saveBtn.disabled = isBusy;
+            }
+
+            function setLatLng(lat, lng) {
+                latEl.value = lat;
+                lngEl.value = lng;
+            }
+
+            function getLatLng() {
+                const lat = parseFloat(latEl.value);
+                const lng = parseFloat(lngEl.value);
+                return {
+                    lat,
+                    lng,
+                    ok: Number.isFinite(lat) && Number.isFinite(lng)
+                };
+            }
+
+            function getSelectedLabel() {
+                const checked = document.querySelector('input[name="lr_label"]:checked');
+                return checked ? checked.value : null;
+            }
+
+            function setSelectedLabel(value) {
+                if (!value) return;
+                const normalized = String(value).toLowerCase();
+                let target = null;
+                if (normalized === 'home') target = document.getElementById('lr_label_home');
+                else if (normalized === 'work' || normalized === 'office') target = document.getElementById(
+                    'lr_label_work');
+                else target = document.getElementById('lr_label_other');
+                if (target) target.checked = true;
+            }
+
+            function buildFormattedAddress() {
+                const parts = [];
+                const l1 = (line1El && line1El.value ? line1El.value.trim() : '');
+                const l2 = (line2El && line2El.value ? line2El.value.trim() : '');
+                const city = (cityEl && cityEl.value ? cityEl.value.trim() : '');
+                const state = (stateEl && stateEl.value ? stateEl.value.trim() : '');
+                const zip = (zipEl && zipEl.value ? zipEl.value.trim() : '');
+                const country = (countryEl && countryEl.value ? countryEl.value.trim() : '');
+
+                if (l1) parts.push(l1);
+                if (l2) parts.push(l2);
+
+                const cityState = [city, state].filter(Boolean).join(', ');
+                const stateZip = [state, zip].filter(Boolean).join(' ');
+                const cityStateZip = [city, stateZip].filter(Boolean).join(', ');
+
+                if (cityStateZip) parts.push(cityStateZip);
+                if (country) parts.push(country);
+
+                return parts.filter(Boolean).join(', ');
+            }
+
+            function syncFormattedAddressFromFields() {
+                if (!formattedEl) return;
+                if (formattedTouched) return;
+                formattedEl.value = buildFormattedAddress();
+            }
+
+            function initMap(lat, lng) {
+                const hasGoogle = (typeof google !== 'undefined') && google.maps && google.maps.Map;
+                if (hasGoogle) {
+                    return initGoogleMap(lat, lng);
+                }
+                return initLeafletMap(lat, lng);
+            }
+
+            function initLeafletMap(lat, lng) {
+                mapProvider = 'leaflet';
+                if (map) {
+                    map.setView([lat, lng], 15);
+                    if (marker) marker.setLatLng([lat, lng]);
+                    return;
+                }
+
+                map = L.map('lr-map', {
+                    zoomControl: true
+                }).setView([lat, lng], 15);
+
+                L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                    maxZoom: 19,
+                    attribution: '&copy; OpenStreetMap'
+                }).addTo(map);
+
+                marker = L.marker([lat, lng], {
+                    draggable: true
+                }).addTo(map);
+
+                marker.on('dragend', function() {
+                    const p = marker.getLatLng();
+                    setLatLng(p.lat, p.lng);
+                    reverseGeocode(p.lat, p.lng);
+                });
+
+                map.on('click', function(e) {
+                    marker.setLatLng(e.latlng);
+                    setLatLng(e.latlng.lat, e.latlng.lng);
+                    reverseGeocode(e.latlng.lat, e.latlng.lng);
+                });
+
+                if (searchEl) {
+                    searchEl.addEventListener('focus', function() {
+                        toastr.info(
+                            'Google Maps key not configured. You can still click the map or use current location.'
+                        );
+                    }, {
+                        once: true
+                    });
+                }
+            }
+
+            function initGoogleMap(lat, lng) {
+                mapProvider = 'google';
+
+                if (!googleGeocoder) {
+                    googleGeocoder = new google.maps.Geocoder();
+                }
+
+                if (!map) {
+                    map = new google.maps.Map(document.getElementById('lr-map'), {
+                        center: {
+                            lat,
+                            lng
+                        },
+                        zoom: 16,
+                        streetViewControl: false,
+                        mapTypeControl: false,
+                        fullscreenControl: false,
+                    });
+
+                    marker = new google.maps.Marker({
+                        position: {
+                            lat,
+                            lng
+                        },
+                        map,
+                        draggable: true,
+                    });
+
+                    marker.addListener('dragend', function(e) {
+                        const p = e.latLng;
+                        const nlat = p.lat();
+                        const nlng = p.lng();
+                        setLatLng(nlat, nlng);
+                        reverseGeocode(nlat, nlng);
+                    });
+
+                    map.addListener('click', function(e) {
+                        const p = e.latLng;
+                        const nlat = p.lat();
+                        const nlng = p.lng();
+                        marker.setPosition(p);
+                        setLatLng(nlat, nlng);
+                        reverseGeocode(nlat, nlng);
+                    });
+
+                    if (searchEl && !googleAutocomplete && google.maps.places && google.maps.places.Autocomplete) {
+                        googleAutocomplete = new google.maps.places.Autocomplete(searchEl, {
+                            fields: ['geometry', 'address_components', 'formatted_address', 'name'],
+                            types: ['geocode'],
+                        });
+
+                        googleAutocomplete.addListener('place_changed', function() {
+                            const place = googleAutocomplete.getPlace();
+                            if (!place || !place.geometry || !place.geometry.location) {
+                                toastr.error('Please select an address from suggestions.');
+                                return;
+                            }
+                            const loc = place.geometry.location;
+                            const nlat = loc.lat();
+                            const nlng = loc.lng();
+                            setLatLng(nlat, nlng);
+                            map.panTo(loc);
+                            marker.setPosition(loc);
+                            applyGoogleAddress(place);
+                        });
+                    }
+                } else {
+                    map.setCenter({
+                        lat,
+                        lng
+                    });
+                    if (marker) marker.setPosition({
+                        lat,
+                        lng
+                    });
+                }
+            }
+
+            function applyGoogleAddress(placeOrResult) {
+                const comps = (placeOrResult && placeOrResult.address_components) ? placeOrResult.address_components :
+                [];
+                const get = (type) => {
+                    const c = comps.find(x => (x.types || []).includes(type));
+                    return c ? (c.long_name || '') : '';
+                };
+                const streetNumber = get('street_number');
+                const route = get('route');
+                const sublocality = get('sublocality') || get('sublocality_level_1') || get('neighborhood');
+                const city = get('locality') || get('postal_town') || get('administrative_area_level_2');
+                const state = get('administrative_area_level_1');
+                const postal = get('postal_code');
+                const country = get('country');
+                const line1 = [streetNumber, route].filter(Boolean).join(' ').trim() || (placeOrResult.name || '');
+
+                // Marker move should update everything from map location
+                if (line1El) line1El.value = line1;
+                // keep user's landmark if present; otherwise fill with sublocality
+                if (line2El && !line2El.value) line2El.value = sublocality || '';
+                if (cityEl) cityEl.value = city || '';
+                if (stateEl) stateEl.value = state || '';
+                if (zipEl) zipEl.value = postal || '';
+                if (countryEl) countryEl.value = country || '';
+
+                formattedTouched = false;
+                syncFormattedAddressFromFields();
+            }
+
+            async function reverseGeocode(lat, lng) {
+                try {
+                    setBusy(true);
+                    if (mapProvider === 'google' && typeof google !== 'undefined' && googleGeocoder) {
+                        await new Promise((resolve) => {
+                            googleGeocoder.geocode({
+                                location: {
+                                    lat,
+                                    lng
+                                }
+                            }, function(results, status) {
+                                if (status === 'OK' && results && results[0]) {
+                                    applyGoogleAddress(results[0]);
+                                }
+                                resolve(true);
+                            });
+                        });
+                        return;
+                    }
+
+                    const url =
+                        `https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat=${encodeURIComponent(lat)}&lon=${encodeURIComponent(lng)}`;
+                    const resp = await fetch(url, {
+                        headers: {
+                            'Accept': 'application/json'
+                        }
+                    });
+                    const data = await resp.json();
+
+                    const addr = data && data.address ? data.address : {};
+                    const road = addr.road || addr.pedestrian || addr.path || '';
+                    const house = addr.house_number || '';
+                    const suburb = addr.suburb || addr.neighbourhood || '';
+                    const city = addr.city || addr.town || addr.village || '';
+                    const state = addr.state || '';
+                    const postcode = addr.postcode || '';
+                    const country = addr.country || '';
+
+                    const line1 = [house, road].filter(Boolean).join(' ');
+
+                    if (line1El) line1El.value = line1;
+                    if (line2El && !line2El.value) line2El.value = suburb;
+                    if (cityEl) cityEl.value = city;
+                    if (stateEl) stateEl.value = state;
+                    if (zipEl) zipEl.value = postcode;
+                    if (countryEl) countryEl.value = country;
+
+                    formattedTouched = false;
+                    syncFormattedAddressFromFields();
+                } catch (e) {
+                    // ignore
+                } finally {
+                    setBusy(false);
+                }
+            }
+
+            async function loadSavedAddresses() {
+                if (!isLoggedIn || !savedBox || !routes.index) return;
+                try {
+                    const resp = await fetch(routes.index, {
+                        headers: {
+                            'Accept': 'application/json',
+                            'X-Requested-With': 'XMLHttpRequest'
+                        }
+                    });
+                    const json = await resp.json();
+                    const list = json && json.status ? (json.data || []) : [];
+                    addressCache = list;
+
+                    savedBox.innerHTML = '';
+                    if (!list.length) {
+                        if (savedEmpty) savedEmpty.classList.remove('d-none');
+                        return;
+                    }
+                    if (savedEmpty) savedEmpty.classList.add('d-none');
+
+                    list.forEach(a => {
+                        const text = a.formatted_address || [a.address_line1, a.address_line2, a.city, a
+                                .state, a.postal_code, a.country
+                            ]
+                            .filter(Boolean)
+                            .join(', ');
+
+                        const wrap = document.createElement('div');
+                        wrap.className = 'lr-address-item';
+                        wrap.dataset.addressId = a.id;
+                        wrap.innerHTML = `
+                            <div class="d-flex align-items-start gap-2">
+                                <input class="form-check-input mt-1" type="radio" name="saved_address" ${a.is_default ? 'checked' : ''} aria-label="Set as default">
+                                <div class="flex-grow-1">
+                                    <div class="d-flex align-items-center gap-2">
+                                        <div class="fw-semibold">${a.label ? a.label : 'Address'}</div>
+                                        ${a.is_default ? '<span class="badge bg-primary">Default</span>' : ''}
+                                    </div>
+                                    <div class="small text-muted">${text}</div>
+                                    <div class="small text-muted">Click to edit</div>
+                                </div>
+                               ${a.is_default ? '' : `<button type="button" class="btn btn-link p-0 text-danger lr-delete-btn" aria-label="Delete address" title="Delete">
+                                            <i class="fa-solid fa-trash"></i>
+                                        </button>`}
+                            </div>
+                        `;
+
+                        const radio = wrap.querySelector('input');
+                        radio.addEventListener('change', function() {
+                            setDefaultAddress(a.id);
+                        });
+
+                        const delBtn = wrap.querySelector('.lr-delete-btn');
+                        if (delBtn) {
+                            delBtn.addEventListener('click', function(e) {
+                                e.preventDefault();
+                                e.stopPropagation();
+                                deleteAddress(a.id);
+                            });
+                        }
+
+                        wrap.addEventListener('click', function(e) {
+                            if (e.target && e.target.tagName === 'INPUT') return;
+                            startEdit(a);
+                        });
+                        savedBox.appendChild(wrap);
+                    });
+
+                    // Auto-load default address into form (nice UX)
+                    const def = list.find(x => x.is_default);
+                    if (def) startEdit(def);
+                } catch (e) {
+                    // ignore
+                }
+            }
+
+            function updateActiveCard() {
+                if (!savedBox) return;
+                const activeId = (editingId === null || editingId === undefined) ? null : parseInt(String(editingId),
+                    10);
+                [...savedBox.querySelectorAll('.lr-address-item')].forEach(el => {
+                    const id = parseInt(el.dataset.addressId || '0', 10);
+                    el.classList.toggle('active', activeId !== null && Number.isFinite(activeId) && id ===
+                        activeId);
+                });
+            }
+
+            function fillFormFromAddress(a) {
+                if (!a) return;
+                setSelectedLabel(a.label || 'Home');
+                if (line1El) line1El.value = a.address_line1 || '';
+                if (line2El) line2El.value = a.address_line2 || '';
+                if (cityEl) cityEl.value = a.city || '';
+                if (stateEl) stateEl.value = a.state || '';
+                if (zipEl) zipEl.value = a.postal_code || '';
+                if (countryEl) countryEl.value = a.country || '';
+                if (formattedEl) formattedEl.value = a.formatted_address || '';
+                if (makeDefaultEl) makeDefaultEl.checked = !!a.is_default;
+
+                formattedTouched = !!(formattedEl && formattedEl.value);
+
+                if (Number.isFinite(a.latitude) && Number.isFinite(a.longitude)) {
+                    setLatLng(a.latitude, a.longitude);
+                    initMap(a.latitude, a.longitude);
+                    if (marker) {
+                        if (mapProvider === 'google' && typeof marker.setPosition === 'function') {
+                            marker.setPosition({
+                                lat: a.latitude,
+                                lng: a.longitude
+                            });
+                        } else if (typeof marker.setLatLng === 'function') {
+                            marker.setLatLng([a.latitude, a.longitude]);
+                        }
+                    }
+                }
+            }
+
+            function startNew() {
+                editingId = null;
+                if (formTitleEl) formTitleEl.textContent = 'Add New Address';
+                if (saveBtn) saveBtn.textContent = 'Save Address';
+                clearAddressFields();
+                if (makeDefaultEl) makeDefaultEl.checked = true;
+                setSelectedLabel('Home');
+                if (searchEl) searchEl.value = '';
+                updateActiveCard();
+                seedInitialLatLng();
+                setTimeout(() => {
+                    if (mapProvider === 'leaflet' && map && typeof map.invalidateSize === 'function') map
+                        .invalidateSize();
+                    if (mapProvider === 'google' && typeof google !== 'undefined' && google.maps && google.maps
+                        .event && map) {
+                        google.maps.event.trigger(map, 'resize');
+                    }
+                }, 50);
+            }
+
+            function startEdit(a) {
+                editingId = parseInt(String(a.id), 10);
+                if (formTitleEl) formTitleEl.textContent = 'Edit Address';
+                if (saveBtn) saveBtn.textContent = 'Save Changes';
+                fillFormFromAddress(a);
+                updateActiveCard();
+                setTimeout(() => {
+                    if (mapProvider === 'leaflet' && map && typeof map.invalidateSize === 'function') map
+                        .invalidateSize();
+                    if (mapProvider === 'google' && typeof google !== 'undefined' && google.maps && google.maps
+                        .event && map) {
+                        google.maps.event.trigger(map, 'resize');
+                    }
+                }, 50);
+            }
+
+            async function setDefaultAddress(addressId) {
+                if (!routes.setDefault) return;
+                try {
+                    setBusy(true);
+                    const resp = await $.ajax({
+                        url: routes.setDefault,
+                        type: 'POST',
                         data: {
-                            _token: "{{ csrf_token() }}",
-                            latitude: lat,
-                            longitude: lng
-                        },
-                        success: function(response) {
-                            console.log("Location updated:", response);
-                            toastr.success("Location saved successfully!");
-                            var locationModal = bootstrap.Modal.getInstance(document
-                                .getElementById('locationModal'));
-                            locationModal.hide();
-                            window.location.reload();
-                        },
-                        error: function(xhr) {
-                            console.error("Error:", xhr.responseText);
-                            alert("Failed to save location");
+                            _token: csrf,
+                            address_id: addressId
+                        }
+                    });
+                    if (resp && resp.status) {
+                        toastr.success(resp.message || 'Default address updated');
+                        window.location.reload();
+                    } else {
+                        toastr.error((resp && resp.message) || 'Failed to update default');
+                    }
+                } catch (e) {
+                    toastr.error('Failed to update default');
+                } finally {
+                    setBusy(false);
+                }
+            }
+
+            async function deleteAddress(addressId) {
+                if (!isLoggedIn || !routes.deleteTemplate) return;
+                if (!confirm('Delete this address?')) return;
+
+                try {
+                    setBusy(true);
+                    const url = routes.deleteTemplate.replace('__ADDRESS__', String(addressId));
+                    const resp = await $.ajax({
+                        url,
+                        type: 'POST',
+                        data: {
+                            _token: csrf,
                         }
                     });
 
-                }, function(error) {
-                    alert("Location access denied.");
-                });
-            } else {
-                alert("Geolocation is not supported by this browser.");
+                    if (resp && resp.status) {
+                        toastr.success(resp.message || 'Address deleted');
+
+                        // Update UI without full reload
+                        addressCache = (addressCache || []).filter(x => String(x.id) !== String(addressId));
+                        const el = savedBox ? savedBox.querySelector(
+                            `.lr-address-item[data-address-id="${addressId}"]`) : null;
+                        if (el) el.remove();
+                        if (savedEmpty && (!addressCache || !addressCache.length)) savedEmpty.classList.remove(
+                            'd-none');
+
+                        if (editingId && String(editingId) === String(addressId)) {
+                            startNew();
+                        }
+
+                        // If default was deleted, backend may switch default; refresh to update header location
+                        window.location.reload();
+                    } else {
+                        toastr.error((resp && resp.message) || 'Failed to delete');
+                    }
+                } catch (e) {
+                    toastr.error('Failed to delete');
+                } finally {
+                    setBusy(false);
+                }
             }
-        });
+
+            function seedInitialLatLng() {
+                let lat = null;
+                let lng = null;
+
+                @if (Auth::check())
+                    lat = {!! Auth::user()->location_lat ? json_encode((float) Auth::user()->location_lat) : 'null' !!};
+                    lng = {!! Auth::user()->location_lng ? json_encode((float) Auth::user()->location_lng) : 'null' !!};
+                @else
+                    lat = {!! session()->has('location_lat') ? json_encode((float) session('location_lat')) : 'null' !!};
+                    lng = {!! session()->has('location_lng') ? json_encode((float) session('location_lng')) : 'null' !!};
+                @endif
+
+                if (!Number.isFinite(lat) || !Number.isFinite(lng)) {
+                    // Default to US center if nothing else is known
+                    lat = 37.0902;
+                    lng = -95.7129;
+                }
+
+                setLatLng(lat, lng);
+                initMap(lat, lng);
+            }
+
+            function clearAddressFields() {
+                if (line1El) line1El.value = '';
+                if (line2El) line2El.value = '';
+                if (cityEl) cityEl.value = '';
+                if (stateEl) stateEl.value = '';
+                if (zipEl) zipEl.value = '';
+                if (countryEl) countryEl.value = '';
+                if (formattedEl) formattedEl.value = '';
+                formattedTouched = false;
+            }
+
+            async function useCurrentLocation() {
+                if (!navigator.geolocation) {
+                    toastr.error('Geolocation is not supported by this browser.');
+                    return;
+                }
+
+                setBusy(true);
+                navigator.geolocation.getCurrentPosition(async function(position) {
+                        const lat = position.coords.latitude;
+                        const lng = position.coords.longitude;
+
+                        clearAddressFields();
+                        setLatLng(lat, lng);
+                        initMap(lat, lng);
+                        if (marker) {
+                            if (mapProvider === 'google' && typeof marker.setPosition === 'function') {
+                                marker.setPosition({
+                                    lat,
+                                    lng
+                                });
+                            } else if (typeof marker.setLatLng === 'function') {
+                                marker.setLatLng([lat, lng]);
+                            }
+                        }
+                        await reverseGeocode(lat, lng);
+                        setBusy(false);
+                    },
+                    function() {
+                        setBusy(false);
+                        toastr.error('Location access denied.');
+                    }, {
+                        enableHighAccuracy: true,
+                        timeout: 10000
+                    });
+            }
+
+            async function saveAddress() {
+                const p = getLatLng();
+                if (!p.ok) {
+                    toastr.error('Please choose a location on the map.');
+                    return;
+                }
+
+                const payload = {
+                    _token: csrf,
+                    latitude: p.lat,
+                    longitude: p.lng,
+                    label: getSelectedLabel(),
+                    address_line1: line1El ? line1El.value : null,
+                    address_line2: line2El ? line2El.value : null,
+                    city: cityEl ? cityEl.value : null,
+                    state: stateEl ? stateEl.value : null,
+                    postal_code: zipEl ? zipEl.value : null,
+                    country: countryEl ? countryEl.value : null,
+                    formatted_address: formattedEl ? (formattedEl.value || buildFormattedAddress()) :
+                        buildFormattedAddress(),
+                };
+
+                if (isLoggedIn && makeDefaultEl) {
+                    payload.make_default = makeDefaultEl.checked ? 1 : 0;
+                }
+
+                try {
+                    setBusy(true);
+                    let url = routes.store;
+                    if (isLoggedIn && editingId && routes.updateTemplate) {
+                        url = routes.updateTemplate.replace('__ADDRESS__', String(editingId));
+                    }
+                    const resp = await $.ajax({
+                        url,
+                        type: 'POST',
+                        data: payload
+                    });
+                    if (resp && resp.status) {
+                        toastr.success(resp.message || 'Address saved');
+                        const modal = bootstrap.Modal.getInstance(modalEl);
+                        if (modal) modal.hide();
+                        window.location.reload();
+                    } else {
+                        toastr.error((resp && resp.message) || 'Failed to save');
+                    }
+                } catch (xhr) {
+                    if (xhr && xhr.responseJSON && xhr.responseJSON.errors) {
+                        Object.values(xhr.responseJSON.errors).forEach(list => {
+                            if (Array.isArray(list) && list[0]) toastr.error(list[0]);
+                        });
+                    } else {
+                        toastr.error('Failed to save');
+                    }
+                } finally {
+                    setBusy(false);
+                }
+            }
+
+            if (modalEl) {
+                modalEl.addEventListener('shown.bs.modal', function() {
+                    seedInitialLatLng();
+                    setTimeout(() => {
+                        if (map && mapProvider === 'leaflet') map.invalidateSize();
+                    }, 50);
+                    loadSavedAddresses();
+                    if (!isLoggedIn) {
+                        // Guest flow: just show new-address form
+                        if (formTitleEl) formTitleEl.textContent = 'Add New Address';
+                    }
+                });
+            }
+
+            if (formattedEl) {
+                formattedEl.addEventListener('input', function() {
+                    formattedTouched = true;
+                });
+            }
+
+            [line1El, line2El, cityEl, stateEl, zipEl, countryEl].forEach(el => {
+                if (!el) return;
+                el.addEventListener('input', function() {
+                    // If user edits street/landmark etc, keep full address in sync
+                    syncFormattedAddressFromFields();
+                });
+            });
+
+            if (addNewAddressBtn) {
+                addNewAddressBtn.addEventListener('click', startNew);
+            }
+
+            if (getLocationBtn) {
+                getLocationBtn.addEventListener('click', useCurrentLocation);
+            }
+            if (saveBtn) {
+                saveBtn.addEventListener('click', saveAddress);
+            }
+        })();
     </script>
     <script>
         $(document).ready(function() {

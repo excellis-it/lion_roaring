@@ -204,4 +204,9 @@ class User extends Authenticatable
 
         return $this->roles()->where('name', $roles)->exists();
     }
+    // default delivery address
+    public function defaultDeliveryAddress()
+    {
+        return $this->hasOne(UserAddress::class)->where('is_default', true);
+    }
 }

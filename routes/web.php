@@ -32,6 +32,7 @@ use App\Http\Controllers\User\Admin\MenuController as UserAdminMenuController;
 
 use App\Http\Controllers\Estore\HomeController;
 use App\Http\Controllers\Estore\ProductController as EstoreProductController;
+use App\Http\Controllers\Estore\UserAddressController as EstoreUserAddressController;
 use App\Http\Controllers\Elearning\ElearningHomeController;
 use App\Http\Controllers\Elearning\ElearningProductController as ElearningProductController;
 use App\Http\Controllers\Frontend\CmsController;
@@ -134,6 +135,7 @@ use App\Http\Controllers\VisitorController;
 use App\Http\Controllers\User\UserActivityController;
 use App\Http\Controllers\User\MembershipController as UserMembershipController;
 use App\Http\Controllers\User\RegisterAgreementPreviewController;
+use App\Http\Controllers\Frontend\MembershipController as FrontEndMembershipController;
 
 
 /*
@@ -391,7 +393,7 @@ Route::middleware(['userActivity'])->group(function () {
 
 
     Route::get('/gallery', [CmsController::class, 'gallery'])->name('gallery');
-    Route::get('/membership', [\App\Http\Controllers\Frontend\MembershipController::class, 'index'])->name('membership');
+    Route::get('/membership', [FrontEndMembershipController::class, 'index'])->name('membership');
     Route::get('/faq', [CmsController::class, 'faq'])->name('faq');
     Route::get('/contact-us', [CmsController::class, 'contactUs'])->name('contact-us');
     Route::get('/account-delete-request', [CmsController::class, 'accountDeleteRequest'])->name('account-delete-request');
@@ -459,7 +461,7 @@ Route::middleware(['userActivity'])->group(function () {
     });
 });
 
-Route::prefix('user')->middleware(['user', 'preventBackHistory', 'userActivity'])->group(function () {
+Route::prefix('user')->middleware(['user', 'preventBackHistory', 'userActivity', 'member.access'])->group(function () {
     Route::prefix('membership')->group(function () {
         Route::get('/', [UserMembershipController::class, 'index'])->name('user.membership.index');
         Route::post('/upgrade/{tier}', [UserMembershipController::class, 'upgrade'])->name('user.membership.upgrade');
@@ -481,7 +483,7 @@ Route::prefix('user')->middleware(['user', 'preventBackHistory', 'userActivity']
         Route::get('/payments', [UserMembershipController::class, 'payments'])->name('user.membership.payments');
     });
 
-    // Route::middleware(['member.access'])->group(function () {
+
     // Route::get('/dashboard', [UserDashboardController::class, 'dashboard'])->name('user.dashboard');
     Route::get('/profile', [UserDashboardController::class, 'profile'])->name('user.profile');
     Route::get('/user-subscription', [UserDashboardController::class, 'userSubscription'])->name('user.user-subscription');
@@ -492,6 +494,7 @@ Route::prefix('user')->middleware(['user', 'preventBackHistory', 'userActivity']
     Route::get('/notification-read/{type}/{id}', [UserDashboardController::class, 'notificationRead'])->name('notification.read');
     // notification.clear
     Route::get('/notification-clear', [UserDashboardController::class, 'notificationClear'])->name('notification.clear');
+
 
 
     Route::get('unread-messages-count', [UserDashboardController::class, 'unreadMessagesCount'])->name('unread.messages.count');
@@ -1120,8 +1123,16 @@ Route::prefix('e-store')->group(function () {
     Route::post('/product/remove-from-wishlist', [EstoreProductController::class, 'removeFromWishlist'])->name('e-store.remove-from-wishlist');
     // // by ajax get warehouse product details by product id with optional size and color
     Route::post('/get-warehouse-product-details', [EstoreProductController::class, 'getWarehouseProductDetails'])->name('e-store.get-warehouse-product-details');
-    // user-update.location
-    Route::post('/user-update/location', [HomeController::class, 'updateLocation'])->name('user-update.location');
+
+    // user addresses (multi-address location picker)
+    Route::get('/addresses', [EstoreUserAddressController::class, 'index'])->name('e-store.addresses.index')->middleware('user');
+    Route::post('/addresses', [EstoreUserAddressController::class, 'store'])->name('e-store.addresses.store');
+    Route::post('/addresses/{address}', [EstoreUserAddressController::class, 'update'])->name('e-store.addresses.update')->middleware('user');
+    Route::post('/addresses/{address}/delete', [EstoreUserAddressController::class, 'destroy'])->name('e-store.addresses.delete')->middleware('user');
+    Route::post('/addresses/default', [EstoreUserAddressController::class, 'setDefault'])->name('e-store.addresses.default')->middleware('user');
+
+    // Backward-compat: location updater now saves into user_addresses (or session for guests)
+    Route::post('/user-update/location', [EstoreUserAddressController::class, 'store'])->name('user-update.location');
     // estore.register
     Route::post('/register', [HomeController::class, 'register'])->name('estore.register');
 

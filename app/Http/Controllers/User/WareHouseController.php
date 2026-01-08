@@ -438,9 +438,15 @@ class WareHouseController extends Controller
     // select warehouse before warehouse product management
     public function selectWarehouse($productId)
     {
+
+
         $product = Product::findOrFail($productId);
-        $user_warehouses = auth()->user()->warehouses->pluck('id')->toArray();
-        $warehouses = WareHouse::whereIn('id', $user_warehouses)->where('is_active', 1)->get();
+        if (auth()->user()->hasRole('SUPER ADMIN')) {
+            $warehouses = WareHouse::where('is_active', 1)->get();
+        } else {
+            $user_warehouses = auth()->user()->warehouses->pluck('id')->toArray();
+            $warehouses = WareHouse::whereIn('id', $user_warehouses)->where('is_active', 1)->get();
+        }
 
         return view('user.warehouse.select_warehouse', compact('product', 'warehouses'));
     }
