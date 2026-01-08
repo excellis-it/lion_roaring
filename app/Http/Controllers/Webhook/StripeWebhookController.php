@@ -8,7 +8,6 @@ use App\Models\SubscriptionPayment;
 use App\Models\User;
 use App\Models\UserSubscription;
 use Illuminate\Http\Request;
-use Spatie\Permission\Models\Role;
 use Stripe\Webhook;
 
 class StripeWebhookController extends Controller
@@ -90,14 +89,6 @@ class StripeWebhookController extends Controller
             $payment->payment_status = 'Success';
             $payment->save();
 
-            // Assign the role for the membership tier
-            if ($tier->role_id) {
-                $role = Role::find($tier->role_id);
-                if ($role) {
-                    // assign the role without removing existing roles
-                    $user->assignRole($role->name);
-                }
-            }
 
             return response()->json(['status' => 'ok'], 200);
         }

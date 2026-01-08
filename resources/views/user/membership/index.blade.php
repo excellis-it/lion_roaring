@@ -27,33 +27,67 @@
                         class="card p-4 h-100 text-center {{ $user_subscription ? 'current-card' : '' }} membership-current-card">
                         <div class="mb-3 d-flex align-items-center justify-content-center">
                             <h5 class="mb-0 me-2">My Current Membership</h5>
-                            @if ($user_subscription)
-                                <span class="badge-active">Active</span>
-                            @endif
+
                         </div>
-                        <div class="my-3">
+                        <div class="my-3 text-start">
                             @if ($user_subscription)
+                                @php
+                                    $expireDate = \Carbon\Carbon::parse($user_subscription->subscription_expire_date);
+                                    $remainingDays = now()->diffInDays($expireDate, false);
+                                    $canRenew = ($remainingDays <= 30 && $remainingDays >= 0) || $expireDate->isPast();
+                                @endphp
+
                                 <h4 class="mb-1">{{ $user_subscription->subscription_name }}</h4>
                                 <div class="text-muted">Valid until:
-                                    <strong>{{ $user_subscription->subscription_expire_date }}</strong>
+                                    <strong>{{ date('F j, Y', strtotime($user_subscription->subscription_expire_date)) }}</strong>
                                 </div>
                                 <div class="text-muted">Remaining:
-                                    <strong>{{ Helper::expireTo($user_subscription->subscription_expire_date) }}
-                                        days</strong>
+                                    <strong>
+                                        @if ($expireDate->isPast())
+                                            Expired
+                                        @else
+                                            {{ $remainingDays }} days
+                                        @endif
+                                    </strong>
                                 </div>
-                                <div class="mt-3"><strong class="text-primary">
+                                {{-- <div class="mt-3"><strong class="text-primary">
                                         @if (($user_subscription->subscription_method ?? 'amount') === 'token')
                                             {{ $user_subscription->life_force_energy_tokens ?? $user_subscription->subscription_price }}
                                             {{ $measurement->label ?? 'Life Force Energy' }}
                                         @else
                                             ${{ number_format((float) $user_subscription->subscription_price, 2) }}
                                         @endif
-                                    </strong></div>
+                                    </strong></div> --}}
+
+                                {{-- Progress bar and renew action --}}
+                                {{-- @php
+                                    $start = \Carbon\Carbon::parse(
+                                        $user_subscription->subscription_start_date ?? now(),
+                                    );
+                                    $end = \Carbon\Carbon::parse($user_subscription->subscription_expire_date ?? now());
+                                    $totalDays = max(1, $start->diffInDays($end));
+                                    $elapsed = max(0, $totalDays - max(0, $remainingDays));
+                                    $percent = (int) round(($elapsed / $totalDays) * 100);
+                                @endphp
+                                <div class="progress mb-2" style="height:8px;">
+                                    <div class="progress-bar bg-success" role="progressbar"
+                                        style="width: {{ $percent }}%;" aria-valuenow="{{ $percent }}"
+                                        aria-valuemin="0" aria-valuemax="100"></div>
+                                </div>
+                                <small class="text-muted d-block mb-2">Membership progress: {{ $percent }}%</small> --}}
+
                                 <div class="mt-3">
-                                    <form action="{{ route('user.membership.renew') }}" method="POST"
-                                        style="display:inline">
+                                    <form action="{{ route('user.membership.renew') }}" method="POST">
                                         @csrf
-                                        <button class="btn btn-primary">Renew</button>
+                                        @if ($canRenew)
+                                            <button type="submit" class="btn btn-primary">Renew</button>
+                                        @else
+                                            @php $daysToOpen = max(0, $remainingDays - 30); @endphp
+                                            <button type="button" class="btn btn-secondary" disabled>Renew (available in
+                                                {{ $daysToOpen }} days)</button>
+                                            {{-- <small class="d-block text-muted mt-1">Renewals open 30 days before
+                                                expiry.</small> --}}
+                                        @endif
                                     </form>
                                 </div>
                             @else
@@ -71,9 +105,9 @@
                         @foreach ($tiers as $tier)
                             <div class="col-md-4 mb-3">
                                 <div class="card h-100 p-4 tier-card position-relative">
-                                    {{-- @if ($tier->cost == $maxCost)
+                                    @if ($tier->cost == $maxCost)
                                         <div class="ribbon">Most Popular</div>
-                                    @endif --}}
+                                    @endif
                                     <div class="d-flex justify-content-between align-items-center mb-2">
                                         <h5 class="mb-0">{{ $tier->name }}</h5>
                                         <div class="text-primary fw-bold">
@@ -113,7 +147,7 @@
                                                         class="btn btn-upgrade btn-primary">Upgrade to
                                                         {{ $tier->name }}</a>
                                                 @else
-                                                    <span class="btn btn-sm btn-outline-primary disabled">Lower Tier</span>
+                                                    <span class="btn btn-sm btn-outline-primary disabled"></span>
                                                 @endif
                                             @endif
                                         @else
@@ -233,6 +267,39 @@
             border-top: 6px solid var(--theme);
             border-bottom: 4px solid var(--theme-25);
         }
+
+        /* Tier card visuals */
+        .tier-card {
+            transition: transform .18s ease, box-shadow .18s ease;
+            border-radius: 10px;
+        }
+
+        .tier-card:hover {
+            transform: translateY(-6px);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+        }
+
+        .ribbon {
+            position: absolute;
+            left: -10px;
+            top: 12px;
+            background: var(--theme);
+            color: #fff;
+            padding: 6px 10px;
+            font-size: 0.8rem;
+            font-weight: 700;
+            border-radius: 4px;
+        }
+
+        .btn-upgrade {
+            width: 100%;
+        }
+
+        @media (max-width: 767px) {
+            .membership-current-card {
+                margin-bottom: 1rem;
+            }
+        }
     </style>
 @endpush
 
@@ -261,5 +328,12 @@
                 $('#tokenAgreeModal').modal('show');
             }
         });
+
+        @if (session('success'))
+            toastr.success("{{ session('success') }}");
+        @endif
+        @if (session('error'))
+            toastr.error("{{ session('error') }}");
+        @endif
     </script>
 @endpush

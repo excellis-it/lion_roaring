@@ -5,6 +5,7 @@ namespace App\Http\Controllers\User;
 use App\Helpers\Helper;
 use App\Http\Controllers\Controller;
 use App\Mail\AccountPendingApprovalMail;
+use App\Mail\ActiveUserMail;
 use App\Mail\RegistrationMail;
 use App\Models\Country;
 use App\Models\Ecclesia;
@@ -248,7 +249,8 @@ class AuthController extends Controller
         $user->password = bcrypt($request->password);
         $user->signature = $request->signature;
         $user->email_verified_at = now();
-        $user->status = 0;
+        $user->status = 1;
+        $user->is_accept = 1;
         $user->save();
 
         // Finalize & persist registration agreement PDF against this user
@@ -327,9 +329,9 @@ class AuthController extends Controller
             $payment->save();
         }
 
-        $maildata = [
-            'name' => $request->first_name . ' ' . $request->last_name,
-        ];
+        // $maildata = [
+        //     'name' => $request->first_name . ' ' . $request->last_name,
+        // ];
 
         UserActivity::logActivity([
             'user_id' => $user->id,
@@ -337,7 +339,14 @@ class AuthController extends Controller
             'activity_description' => 'User registered with ' . $tier->name,
         ]);
 
-        Mail::to($request->email)->send(new AccountPendingApprovalMail($maildata));
+        //  Mail::to($request->email)->send(new AccountPendingApprovalMail($maildata));
+
+        $maildata = [
+            'name' => $request->first_name . ' ' . $request->last_name,
+            'email' => $request->email,
+            'type' => 'Activated',
+        ];
+        Mail::to($request->email)->send(new ActiveUserMail($maildata));
         return redirect()->route('home')->with('message', 'Please wait for admin approval');
     }
 
