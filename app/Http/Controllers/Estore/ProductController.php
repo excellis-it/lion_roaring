@@ -1549,7 +1549,20 @@ class ProductController extends Controller
                     ->first();
 
                 if ($warehouseProduct) {
+                    // Increment warehouse product quantity
                     $warehouseProduct->increment('quantity', $item->quantity);
+
+                    // Attempt to restock the corresponding warehouse product variation (if present)
+                    $wareHouseProductVariation = WarehouseProductVariation::where('warehouse_id', $item->warehouse_id)
+                        ->where('product_variation_id', $warehouseProduct->product_variation_id)
+                        ->where('product_id', $item->product_id)
+                        ->first();
+
+                    if ($wareHouseProductVariation) {
+                        $wareHouseProductVariation->increment('warehouse_quantity', $item->quantity);
+                        $wareHouseProductVariation->updated_at = now();
+                        $wareHouseProductVariation->save();
+                    }
                 }
             }
 
