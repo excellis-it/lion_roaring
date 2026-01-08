@@ -12,6 +12,7 @@ use App\Models\SubscriptionPayment;
 use Illuminate\Support\Facades\Auth;
 use App\Models\User;
 use Stripe\StripeClient;
+use Spatie\Permission\Models\Permission;
 
 class MembershipController extends Controller
 {
@@ -48,7 +49,8 @@ class MembershipController extends Controller
         if (!auth()->user()->can('Create Membership')) {
             abort(403, 'Unauthorized');
         }
-        return view('user.membership.create');
+        $allPermissions = Permission::all();
+        return view('user.membership.create', compact('allPermissions'));
     }
 
     public function store(Request $request)
@@ -65,7 +67,7 @@ class MembershipController extends Controller
             'agree_description' => 'nullable|required_if:pricing_type,token|string',
         ]);
 
-        $tier = MembershipTier::create($request->only([
+        $data = $request->only([
             'name',
             'slug',
             'description',
@@ -73,7 +75,10 @@ class MembershipController extends Controller
             'pricing_type',
             'life_force_energy_tokens',
             'agree_description',
-        ]));
+        ]);
+        $data['permissions'] = $request->has('permissions') ? implode(',', $request->permissions) : null;
+
+        $tier = MembershipTier::create($data);
         $benefits = $request->input('benefits', []);
         foreach ($benefits as $i => $b) {
             if (!empty($b)) {
@@ -89,7 +94,9 @@ class MembershipController extends Controller
             abort(403, 'Unauthorized');
         }
         $tier = $membership->load('benefits');
-        return view('user.membership.edit', compact('tier'));
+        $allPermissions = Permission::all();
+        $currentPermissions = !empty($tier->permissions) ? explode(',', $tier->permissions) : [];
+        return view('user.membership.edit', compact('tier', 'allPermissions', 'currentPermissions'));
     }
 
     public function updateTier(Request $request, MembershipTier $membership)
@@ -106,7 +113,7 @@ class MembershipController extends Controller
             'agree_description' => 'nullable|required_if:pricing_type,token|string',
         ]);
 
-        $membership->update($request->only([
+        $data = $request->only([
             'name',
             'slug',
             'description',
@@ -114,7 +121,10 @@ class MembershipController extends Controller
             'pricing_type',
             'life_force_energy_tokens',
             'agree_description',
-        ]));
+        ]);
+        $data['permissions'] = $request->has('permissions') ? implode(',', $request->permissions) : null;
+
+        $membership->update($data);
         // update benefits
         MembershipBenefit::where('tier_id', $membership->id)->delete();
         $benefits = $request->input('benefits', []);
@@ -214,6 +224,8 @@ class MembershipController extends Controller
             $user_subscription->subscription_expire_date = now()->addYear();
             $user_subscription->save();
 
+            $this->syncTierPermissions($user, $tier);
+
             return redirect()->route('user.membership.index')->with('success', 'Membership upgraded');
         }
 
@@ -238,6 +250,8 @@ class MembershipController extends Controller
         $payment->payment_amount = $tier->cost;
         $payment->payment_status = 'Success';
         $payment->save();
+
+        $this->syncTierPermissions($user, $tier);
 
         return redirect()->route('user.membership.index')->with('success', 'Membership upgraded');
     }
@@ -326,6 +340,8 @@ class MembershipController extends Controller
                 $user_subscription->save();
             }
 
+            $this->syncTierPermissions($user, $tier);
+
             $payment = new SubscriptionPayment();
             $payment->user_id = $user->id;
             $payment->user_subscription_id = $user_subscription->id;
@@ -358,6 +374,7 @@ class MembershipController extends Controller
             $sub->subscription_expire_date = now()->max($sub->subscription_expire_date)->addYear();
             $sub->subscription_method = 'token';
             $sub->save();
+            $this->syncTierPermissions($user, $tier);
             return redirect()->route('user.membership.index')->with('success', 'Membership renewed successfully.');
         }
 
@@ -409,6 +426,20 @@ class MembershipController extends Controller
         $user_subscription->subscription_expire_date = now()->addYear();
         $user_subscription->save();
 
+        $this->syncTierPermissions($user, $tier);
+
         return redirect()->route('user.membership.index')->with('success', 'Membership subscribed successfully.');
+    }
+
+    private function syncTierPermissions($user, $tier)
+    {
+        if (!empty($tier->permissions)) {
+            $permissions = explode(',', $tier->permissions);
+            // We give permissions directly or we could use roles.
+            // Since the user asked to "add permissions", we'll sync them.
+            // Note: syncPermissions replaces existing ones. If we want to ADD, we use givePermissionTo.
+            // However, usually membership permissions should be consistent for that tier.
+            $user->syncPermissions($permissions);
+        }
     }
 }

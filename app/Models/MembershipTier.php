@@ -17,6 +17,7 @@ class MembershipTier extends Model
         'pricing_type',
         'life_force_energy_tokens',
         'agree_description',
+        'permissions',
     ];
 
     public function benefits()

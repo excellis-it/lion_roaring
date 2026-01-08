@@ -63,6 +63,52 @@
                     </div>
 
                     <div class="col-md-12 mb-3">
+                        <div class="card border-0 shadow-sm" style="background: #f8f9fa; border-radius: 15px;">
+                            <div
+                                class="card-header bg-white border-bottom-0 pt-4 px-4 d-flex justify-content-between align-items-center">
+                                <div>
+                                    <h5 class="mb-0 text-primary"><i class="fas fa-shield-alt me-2"></i> Permissions</h5>
+                                    <small class="text-muted">Select the specific accesses for this membership tier</small>
+                                </div>
+                                <div class="form-check form-switch">
+                                    <input class="form-check-input" type="checkbox" id="select-all-permissions"
+                                        style="cursor: pointer; width: 2.5em; height: 1.25em;">
+                                    <label class="form-check-label ms-2 fw-bold text-dark" for="select-all-permissions"
+                                        style="cursor: pointer;">Select All</label>
+                                </div>
+                            </div>
+                            <div class="card-body p-4">
+                                <div class="row g-3">
+                                    @foreach ($allPermissions as $permission)
+                                        <div class="col-xl-3 col-lg-4 col-md-6">
+                                            <div class="permission-item p-2 mb-2 rounded border bg-white shadow-sm h-100 d-flex align-items-center"
+                                                style="cursor: pointer; transition: all 0.2s;">
+                                                <div class="form-check mb-0">
+                                                    <input class="form-check-input permission-checkbox" type="checkbox"
+                                                        name="permissions[]" value="{{ $permission->name }}"
+                                                        id="perm-{{ $permission->id }}"
+                                                        {{ is_array(old('permissions')) && in_array($permission->name, old('permissions')) ? 'checked' : '' }}
+                                                        style="cursor: pointer; width: 1.2em; height: 1.2em;">
+                                                    <label class="form-check-label ms-2" for="perm-{{ $permission->id }}"
+                                                        style="cursor: pointer; font-size: 0.95rem; font-weight: 500;">
+                                                        {{ $permission->name }}
+                                                    </label>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    @endforeach
+                                </div>
+                                @if ($errors->has('permissions'))
+                                    <div class="error mt-3" style="color:red !important; font-weight: bold;">
+                                        <i class="fas fa-exclamation-circle me-1"></i>
+                                        {{ $errors->first('permissions') }}
+                                    </div>
+                                @endif
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-md-12 mb-3">
                         <div class="box_label">
                             <label>Benefits</label>
                             <div id="benefits">
@@ -109,6 +155,32 @@
         });
         $(document).on('click', '.remove-benefit', function() {
             $(this).closest('.input-group').remove();
+        });
+
+        // Permissions logic
+        function updateSelectAllState() {
+            var total = $('.permission-checkbox').length;
+            var checked = $('.permission-checkbox:checked').length;
+            $('#select-all-permissions').prop('checked', total > 0 && total === checked);
+        }
+
+        $('#select-all-permissions').change(function() {
+            $('.permission-checkbox').prop('checked', $(this).prop('checked'));
+        });
+
+        $(document).on('change', '.permission-checkbox', function() {
+            updateSelectAllState();
+        });
+
+        $(document).on('click', '.permission-item', function(e) {
+            if (!$(e.target).is('input') && !$(e.target).is('label')) {
+                var checkbox = $(this).find('input[type="checkbox"]');
+                checkbox.prop('checked', !checkbox.prop('checked')).trigger('change');
+            }
+        });
+
+        $(document).ready(function() {
+            updateSelectAllState();
         });
 
         @if ($errors->any())
