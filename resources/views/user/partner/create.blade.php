@@ -395,7 +395,57 @@
                                     </div>
                                 </div>
 
-                                <div class="row mt-4">
+                                <!-- Membership Tier Selection (Only for MEMBER_NON_SOVEREIGN) -->
+                                <div class="row mt-4 d-none" id="membership-tier-section">
+                                    <div class="col-md-12">
+                                        <div class="card border-0 shadow-sm"
+                                            style="background: #f8f9fa; border-radius: 15px;">
+                                            <div class="card-header bg-white border-bottom-0 pt-4 px-4">
+                                                <h5 class="mb-0 text-primary"><i class="fas fa-crown me-2"></i> Membership
+                                                    Tier*</h5>
+                                                <small class="text-muted">Select the membership plan for this
+                                                    member</small>
+                                            </div>
+                                            <div class="card-body p-4">
+                                                <div class="row g-3">
+                                                    @foreach ($membershipTiers as $tier)
+                                                        <div class="col-xl-4 col-md-6">
+                                                            <div class="membership-item p-3 mb-2 rounded border bg-white shadow-sm h-100"
+                                                                style="cursor: pointer; transition: all 0.2s;">
+                                                                <div class="form-check position-relative h-100">
+                                                                    <input class="form-check-input membership-radio"
+                                                                        type="radio" name="membership_tier_id"
+                                                                        value="{{ $tier->id }}"
+                                                                        id="tier-{{ $tier->id }}"
+                                                                        {{ old('membership_tier_id') == $tier->id ? 'checked' : '' }}
+                                                                        style="cursor: pointer;">
+                                                                    <label class="form-check-label ms-2 d-block"
+                                                                        for="tier-{{ $tier->id }}"
+                                                                        style="cursor: pointer;">
+                                                                        <div class="fw-bold text-dark">{{ $tier->name }}
+                                                                        </div>
+                                                                        <div class="small text-muted">
+                                                                            {{ $tier->pricing_type == 'token' ? $tier->life_force_energy_tokens . ' Tokens' : '$' . $tier->cost }}
+                                                                        </div>
+                                                                    </label>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    @endforeach
+                                                </div>
+                                                @if ($errors->has('membership_tier_id'))
+                                                    <div class="error mt-3"
+                                                        style="color:red !important; font-weight: bold;">
+                                                        <i class="fas fa-exclamation-circle me-1"></i>
+                                                        {{ $errors->first('membership_tier_id') }}
+                                                    </div>
+                                                @endif
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="row mt-4" id="permissions-section">
                                     <div class="col-md-12">
                                         <div class="card border-0 shadow-sm"
                                             style="background: #f8f9fa; border-radius: 15px;">
@@ -711,9 +761,42 @@
                 updateSelectAllState();
             });
 
+            function togglePermissionsAndMembership() {
+                var selectedRole = $('input[name="role"]:checked').val();
+                if (selectedRole === 'MEMBER_NON_SOVEREIGN') {
+                    $('#permissions-section').addClass('d-none');
+                    $('#membership-tier-section').removeClass('d-none');
+                    // Ensure at least one tier is selected if none is
+                    if ($('input[name="membership_tier_id"]:checked').length === 0) {
+                        $('input[name="membership_tier_id"]').first().prop('checked', true);
+                    }
+                } else {
+                    $('#permissions-section').removeClass('d-none');
+                    $('#membership-tier-section').addClass('d-none');
+                }
+            }
+
+            $(document).on('change', 'input[name="role"]', function() {
+                togglePermissionsAndMembership();
+                var is_ecclesia = $(this).data(
+                'isecclesia'); // Corrected from 'is-ecclesia' to 'isecclesia'
+                if (is_ecclesia == 1) {
+                    $('#house-of-ecclesia-section').removeClass('d-none');
+                } else {
+                    $('#house-of-ecclesia-section').addClass('d-none');
+                }
+            });
+
+            $(document).on('click', '.membership-item', function(e) {
+                if (!$(e.target).is('input') && !$(e.target).is('label')) {
+                    $(this).find('input[type="radio"]').prop('checked', true).trigger('change');
+                }
+            });
+
             // Initial calls
             updateSelectAllState();
             updateSelectAllEcclesiasState();
+            togglePermissionsAndMembership(); // Call on initial load
 
             // Handle initial visibility for old role
             var checkedRole = $(".data-roles:checked");

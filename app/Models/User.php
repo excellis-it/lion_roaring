@@ -199,10 +199,10 @@ class User extends Authenticatable
     public function hasNewRole($roles)
     {
         if (is_array($roles)) {
-            return $this->roles()->whereIn('name', $roles)->exists();
+            return $this->userRole()->whereIn('name', $roles)->exists();
         }
 
-        return $this->roles()->where('name', $roles)->exists();
+        return $this->userRole()->where('name', $roles)->exists();
     }
     // default delivery address
     public function defaultDeliveryAddress()

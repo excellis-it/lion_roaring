@@ -346,6 +346,12 @@
                                             <h5>Roles*</h5>
 
 
+                                            @php
+                                                $currentRoleName = old(
+                                                    'role',
+                                                    $partner->userRole->name ?? $partner->getRoleNames()->first(),
+                                                );
+                                            @endphp
                                             @foreach ($roles as $role)
                                                 <div class="form-check form-check-inline">
                                                     <input id="data-roles-{{ $role->id }}"
@@ -353,8 +359,7 @@
                                                         value="{{ $role->name }}"
                                                         data-permissions="{{ json_encode($role->permissions->pluck('name')) }}"
                                                         data-isecclesia="{{ $role->is_ecclesia }}"
-                                                        {{ old('role', $partner->userRole->name ?? '') == $role->name ? 'checked' : '' }}
-                                                        required>
+                                                        {{ $currentRoleName == $role->name ? 'checked' : '' }} required>
                                                     <label class="form-check-label"
                                                         for="data-roles-{{ $role->id }}">{{ $role->name }}
                                                         <small>{{ $role->is_ecclesia == 1 ? '(ECCLESIA)' : '' }}</small></label>
@@ -440,7 +445,66 @@
                                     </div>
                                 </div>
 
-                                <div class="row mt-4">
+                                <!-- Membership Tier Selection (Only for MEMBER_NON_SOVEREIGN) -->
+                                <div class="row mt-4 d-none" id="membership-tier-section">
+                                    <div class="col-md-12">
+                                        <div class="card border-0 shadow-sm"
+                                            style="background: #f8f9fa; border-radius: 15px;">
+                                            <div class="card-header bg-white border-bottom-0 pt-4 px-4">
+                                                <h5 class="mb-0 text-primary"><i class="fas fa-crown me-2"></i> Membership
+                                                    Tier*</h5>
+                                                <div class="d-flex justify-content-between align-items-center">
+                                                    <small class="text-muted">Select the membership plan for this
+                                                        member</small>
+                                                    @if ($partner->userLastSubscription && $partner->userLastSubscription->subscription_expire_date)
+                                                        <span
+                                                            class="badge bg-soft-info text-info border border-info px-3 py-2 rounded-pill">
+                                                            <i class="fas fa-calendar-alt me-1"></i> Expires:
+                                                            {{ \Carbon\Carbon::parse($partner->userLastSubscription->subscription_expire_date)->format('M d, Y') }}
+                                                        </span>
+                                                    @endif
+                                                </div>
+                                            </div>
+                                            <div class="card-body p-4">
+                                                <div class="row g-3">
+                                                    @foreach ($membershipTiers as $tier)
+                                                        <div class="col-xl-4 col-md-6">
+                                                            <div class="membership-item p-3 mb-2 rounded border bg-white shadow-sm h-100"
+                                                                style="cursor: pointer; transition: all 0.2s;">
+                                                                <div class="form-check position-relative h-100">
+                                                                    <input class="form-check-input membership-radio"
+                                                                        type="radio" name="membership_tier_id"
+                                                                        value="{{ $tier->id }}"
+                                                                        id="tier-{{ $tier->id }}"
+                                                                        {{ (old('membership_tier_id') ?? $currentTierId) == $tier->id ? 'checked' : '' }}
+                                                                        style="cursor: pointer;">
+                                                                    <label class="form-check-label ms-2 d-block"
+                                                                        for="tier-{{ $tier->id }}"
+                                                                        style="cursor: pointer;">
+                                                                        <div class="fw-bold text-dark">{{ $tier->name }}
+                                                                        </div>
+                                                                        <div class="small text-muted">
+                                                                            {{ $tier->pricing_type == 'token' ? $tier->life_force_energy_tokens . ' Tokens' : '$' . $tier->cost }}
+                                                                        </div>
+                                                                    </label>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    @endforeach
+                                                </div>
+                                                @if ($errors->has('membership_tier_id'))
+                                                    <div class="error mt-3"
+                                                        style="color:red !important; font-weight: bold;">
+                                                        <i class="fas fa-exclamation-circle me-1"></i>
+                                                        {{ $errors->first('membership_tier_id') }}
+                                                    </div>
+                                                @endif
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="row mt-4" id="permissions-section">
                                     <div class="col-md-12">
                                         <div class="card border-0 shadow-sm"
                                             style="background: #f8f9fa; border-radius: 15px;">
@@ -804,30 +868,56 @@
                 updateSelectAllState();
             }
 
-            // Event: Handle radio button change
-            $(".data-roles").change(function(e) {
-                e.preventDefault();
-                var permissions = $(this).data('permissions');
-                var is_ecclesia = $(this).data('isecclesia');
-                updatePermissions(permissions, is_ecclesia);
-            });
+            function togglePermissionsAndMembership() {
+                var checkedRadio = $('input[name="role"]:checked');
+                var selectedRole = checkedRadio.val();
 
-            // Handle initial state if needed (though it should be pre-checked by Blade)
-            var initialChecked = $(".data-roles:checked");
-            if (initialChecked.length > 0) {
-                var is_ecclesia = initialChecked.data('isecclesia');
+                if (selectedRole === 'MEMBER_NON_SOVEREIGN') {
+                    $('#permissions-section').addClass('d-none');
+                    $('#membership-tier-section').removeClass('d-none');
+                    if ($('input[name="membership_tier_id"]:checked').length === 0) {
+                        $('input[name="membership_tier_id"]').first().prop('checked', true);
+                    }
+                } else {
+                    $('#permissions-section').removeClass('d-none');
+                    $('#membership-tier-section').addClass('d-none');
+                }
+
+                // Handle Ecclesia Row visibility
+                var is_ecclesia = checkedRadio.data('isecclesia');
                 if (is_ecclesia == 1) {
                     $("#hoe_row").show();
                     $("#ecclesia_main_input").hide();
+                    // Optional: if you used another ID somewhere
+                    // $('#house-of-ecclesia-section').removeClass('d-none');
                 } else {
                     $("#hoe_row").hide();
                     $("#ecclesia_main_input").show();
                 }
             }
 
-            // Initial call to set "Select All" state on page load
+            // Combined Roles Change Handler
+            $(document).on('change', 'input[name="role"]', function() {
+                var permissions = $(this).data('permissions');
+                var is_ecclesia = $(this).data('isecclesia');
+
+                // Original permission updating logic
+                updatePermissions(permissions, is_ecclesia);
+
+                // Toggle membership section
+                togglePermissionsAndMembership();
+            });
+
+            $(document).on('click', '.membership-item', function(e) {
+                if (!$(e.target).is('input') && !$(e.target).is('label')) {
+                    $(this).find('input[type="radio"]').prop('checked', true).trigger('change');
+                }
+            });
+
+            // Initial call to set state on page load
             updateSelectAllState();
             updateSelectAllEcclesiasState();
+            togglePermissionsAndMembership();
         });
     </script>
     <style>

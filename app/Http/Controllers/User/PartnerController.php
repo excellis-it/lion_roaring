@@ -20,6 +20,8 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
 use Spatie\Permission\Models\Role;
+use App\Models\MembershipTier;
+use App\Models\UserSubscription;
 
 
 class PartnerController extends Controller
@@ -120,7 +122,9 @@ class PartnerController extends Controller
                 }
             }
 
-            return view('user.partner.create')->with(compact('roles', 'eclessias', 'countries', 'allPermissions'));
+            $membershipTiers = MembershipTier::all();
+
+            return view('user.partner.create')->with(compact('roles', 'eclessias', 'countries', 'allPermissions', 'membershipTiers'));
         } else {
             abort(403, 'You do not have permission to access this page.');
         }
@@ -135,7 +139,7 @@ class PartnerController extends Controller
     public function store(Request $request)
     {
 
-        $request->validate([
+        $rules = [
             'user_name' => 'required|unique:users',
             'ecclesia_id' => 'nullable|exists:ecclesias,id',
             'role' => 'required',
@@ -153,10 +157,15 @@ class PartnerController extends Controller
             'address2' => 'nullable',
             'phone' => 'required',
             'user_type' => 'required',
-            'permissions' => 'required|array',
+        ];
 
-            // 'manage_ecclesia' => 'nullable|array'
-        ], [
+        if ($request->role === 'MEMBER_NON_SOVEREIGN') {
+            $rules['membership_tier_id'] = 'required|exists:membership_tiers,id';
+        } else {
+            $rules['permissions'] = 'required|array';
+        }
+
+        $request->validate($rules, [
             'password.regex' => 'The password must be at least 8 characters long and include at least one special character from @$%&.',
         ]);
 
@@ -203,8 +212,14 @@ class PartnerController extends Controller
             'guard_name' => 'web'
         ]);
 
-        // Sync permissions to the new role
-        if ($request->has('permissions')) {
+        // Sync permissions
+        if ($the_role->name == 'MEMBER_NON_SOVEREIGN' && $request->has('membership_tier_id')) {
+            $tier = MembershipTier::find($request->membership_tier_id);
+            if ($tier && !empty($tier->permissions)) {
+                $permissions = explode(',', $tier->permissions);
+                $newRole->syncPermissions($permissions);
+            }
+        } elseif ($request->has('permissions')) {
             $newRole->syncPermissions($request->permissions);
         }
 
@@ -242,6 +257,23 @@ class PartnerController extends Controller
 
         // Assign the newly created role to the user
         $data->assignRole($newRole->name);
+
+        // If MEMBER_NON_SOVEREIGN, create subscription
+        if ($the_role->name == 'MEMBER_NON_SOVEREIGN' && $request->has('membership_tier_id')) {
+            $tier = MembershipTier::find($request->membership_tier_id);
+            if ($tier) {
+                UserSubscription::create([
+                    'user_id' => $data->id,
+                    'plan_id' => $tier->id,
+                    'subscription_name' => $tier->name,
+                    'subscription_method' => $tier->pricing_type ?? 'amount',
+                    'subscription_price' => $tier->cost ?? 0,
+                    'subscription_start_date' => now(),
+                    'subscription_expire_date' => now()->addYear(),
+                    'subscription_validity' => 12,
+                ]);
+            }
+        }
 
         $maildata = [
             'name' => $request->full_name,
@@ -323,8 +355,10 @@ class PartnerController extends Controller
             }
 
             $currentPermissions = $partner->getAllPermissions()->pluck('name');
+            $membershipTiers = MembershipTier::all();
+            $currentTierId = $partner->userLastSubscription->plan_id ?? null;
 
-            return view('user.partner.edit', compact('partner', 'roles', 'eclessias', 'countries', 'allPermissions', 'currentPermissions'));
+            return view('user.partner.edit', compact('partner', 'roles', 'eclessias', 'countries', 'allPermissions', 'currentPermissions', 'membershipTiers', 'currentTierId'));
         } else {
             abort(403, 'You do not have permission to access this page.');
         }
@@ -342,7 +376,7 @@ class PartnerController extends Controller
         // dd($request->all());
         if (Auth::user()->can('Edit Partners')) {
             $id = Crypt::decrypt($id);
-            $request->validate([
+            $rules = [
                 'role' => 'required',
                 'first_name' => 'required',
                 'last_name' => 'required',
@@ -359,10 +393,19 @@ class PartnerController extends Controller
                 'address2' => 'nullable',
                 'password' => ['nullable', 'string', 'regex:/^(?=.*[@$%&])[^\s]{8,}$/'],
                 'confirm_password' => 'nullable|min:8|same:password',
-                'permissions' => 'required|array',
-            ], [
+            ];
+
+            if ($request->role === 'MEMBER_NON_SOVEREIGN') {
+                $rules['membership_tier_id'] = 'required|exists:membership_tiers,id';
+            } else {
+                $rules['permissions'] = 'required|array';
+            }
+
+            $request->validate($rules, [
                 'password.regex' => 'The password must be at least 8 characters long and include at least one special character from @$%&.',
             ]);
+
+            $the_role = UserType::where('name', $request->role)->first();
 
             $phone_number = $request->full_phone_number;
             $phone_number_cleaned = preg_replace('/[\s\-\(\)]+/', '', $phone_number);
@@ -444,12 +487,45 @@ class PartnerController extends Controller
             }
 
             // Sync permissions to the custom role
-            if ($request->has('permissions')) {
+            if ($the_role->name == 'MEMBER_NON_SOVEREIGN' && $request->has('membership_tier_id')) {
+                $tier = MembershipTier::find($request->membership_tier_id);
+                if ($tier && !empty($tier->permissions)) {
+                    $permissions = explode(',', $tier->permissions);
+                    $userRole->syncPermissions($permissions);
+                }
+            } elseif ($request->has('permissions')) {
                 $userRole->syncPermissions($request->permissions);
             }
 
             // Sync user to ONLY the custom role
             $data->syncRoles([$userRole->name]);
+
+            // Handle Membership Subscription Update
+            if ($the_role->name == 'MEMBER_NON_SOVEREIGN' && $request->has('membership_tier_id')) {
+                $tier = MembershipTier::find($request->membership_tier_id);
+                if ($tier) {
+                    $sub = UserSubscription::where('user_id', $data->id)->orderBy('id', 'desc')->first();
+                    if ($sub) {
+                        $sub->update([
+                            'plan_id' => $tier->id,
+                            'subscription_name' => $tier->name,
+                            'subscription_method' => $tier->pricing_type ?? 'amount',
+                            'subscription_price' => $tier->cost ?? 0,
+                        ]);
+                    } else {
+                        UserSubscription::create([
+                            'user_id' => $data->id,
+                            'plan_id' => $tier->id,
+                            'subscription_name' => $tier->name,
+                            'subscription_method' => $tier->pricing_type ?? 'amount',
+                            'subscription_price' => $tier->cost ?? 0,
+                            'subscription_start_date' => now(),
+                            'subscription_expire_date' => now()->addYear(),
+                            'subscription_validity' => 12,
+                        ]);
+                    }
+                }
+            }
 
             return redirect()->route('partners.index')->with('message', 'Member updated successfully.');
         } else {
