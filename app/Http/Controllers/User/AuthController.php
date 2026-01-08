@@ -28,6 +28,9 @@ use App\Models\SubscriptionPayment;
 use App\Models\UserRegisterAgreement;
 use Stripe\StripeClient;
 use Spatie\Permission\Models\Role;
+use Spatie\Permission\Models\Permission;
+use App\Models\UserType;
+use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Storage;
 
 class AuthController extends Controller
@@ -285,12 +288,41 @@ class AuthController extends Controller
         }
 
 
-        $user->assignRole('MEMBER_NON_SOVEREIGN');
-        if ($tier->role_id) {
-            $role = Role::find($tier->role_id);
-            if ($role) {
-                $user->assignRole($role->name);
-            }
+        // Create a unique slug for the role name based on user_name (as per store partner)
+        $slug = Str::slug($user->user_name);
+
+        // Ensure slug is unique in roles table
+        $originalSlug = $slug;
+        $counter = 1;
+        while (Role::where('name', $slug)->exists()) {
+            $slug = $originalSlug . '-' . $counter;
+            $counter++;
+        }
+
+        // Find the default Member user type (as baseline)
+        $memberType = UserType::where('name', 'MEMBER_NON_SOVEREIGN')->first();
+
+        // Create the new role for this specific user
+        $newRole = Role::create([
+            'name' => $slug,
+            'type' => $memberType->type ?? 2,
+            'is_ecclesia' => $memberType->is_ecclesia ?? 0,
+            'guard_name' => 'web'
+        ]);
+
+        // Assign permissions from membership tier to this new role
+        if (!empty($tier->permissions)) {
+            $permissions = explode(',', $tier->permissions);
+            $newRole->syncPermissions($permissions);
+        }
+
+        // Assign the newly created role to the user
+        $user->assignRole($newRole->name);
+
+        // Set user_type_id and ensure user is saved with it
+        if ($memberType) {
+            $user->user_type_id = $memberType->id;
+            $user->save();
         }
 
         // Create Subscription
