@@ -16,22 +16,39 @@ class MemberAccess
      */
     public function handle(Request $request, Closure $next)
     {
-        if (auth()->check() && isset(auth()->user()->userSubscription) && auth()->user()->userLastSubscription != null) {
-            if (auth()->user()->userLastSubscription->subscription_expire_date >= date('Y-m-d')) {
-                return $next($request);
-            } else {
-                if (auth()->check() && auth()->user()->hasRole('MEMBER_NON_SOVEREIGN')) {
-                    return redirect()->route('user.profile')->with('error', 'Your subscription has expired or subscription management is temporarily unavailable.');
-                } else {
+        // Allow unauthenticated requests to proceed (auth middleware handles auth)
+        if (!auth()->check()) {
+            return $next($request);
+        }
+
+        $user = auth()->user();
+        $sub = $user->userLastSubscription ?? null;
+
+        // If the user has a subscription and it is expired, redirect them to membership page
+        if ($sub && $sub->subscription_expire_date) {
+
+
+            $expire = \Carbon\Carbon::parse($sub->subscription_expire_date);
+            if ($expire->isPast()) {
+                // Allow membership routes and logout so user can renew or logout
+                if ($request->is('user/membership') || $request->is('user/membership/*') || $request->is('user/logout')) {
                     return $next($request);
                 }
+
+                return redirect()->route('user.membership.index')->with('error', 'Your membership has expired. Please renew to reactivate your account.');
             }
         } else {
-            if (auth()->check() && auth()->user()->hasRole('MEMBER_NON_SOVEREIGN')) {
-                return redirect()->route('user.profile')->with('error', 'You have not subscribed to a plan or subscription management is temporarily unavailable.');
-            } else {
-                return $next($request);
-            }
+
+
+            /////// No subscription found, redirect to membership page, uncomment below if needed when only subscription is required to access pages ///////
+
+
+            // if ($request->is('user/membership') || $request->is('user/membership/*') || $request->is('user/logout')) {
+            //     return $next($request);
+            // }
+            // return redirect()->route('user.membership.index')->with('error', 'You need an active membership to access this section. Please subscribe.');
         }
+
+        return $next($request);
     }
 }

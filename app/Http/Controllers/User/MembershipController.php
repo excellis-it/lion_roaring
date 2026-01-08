@@ -20,6 +20,15 @@ class MembershipController extends Controller
         $measurement = MembershipMeasurement::first();
         $tiers = MembershipTier::with('benefits')->get();
         $user_subscription = Auth::user()->userLastSubscription ?? null;
+
+        // If user has subscription and it is expired, show the expired page
+        if ($user_subscription && $user_subscription->subscription_expire_date) {
+            $expire = \Carbon\Carbon::parse($user_subscription->subscription_expire_date);
+            if ($expire->isPast()) {
+                return view('user.membership.expired', compact('measurement', 'tiers', 'user_subscription'));
+            }
+        }
+
         return view('user.membership.index', compact('measurement', 'tiers', 'user_subscription'));
     }
 

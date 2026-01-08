@@ -461,7 +461,7 @@ Route::middleware(['userActivity'])->group(function () {
     });
 });
 
-Route::prefix('user')->middleware(['user', 'preventBackHistory', 'userActivity'])->group(function () {
+Route::prefix('user')->middleware(['user', 'preventBackHistory', 'userActivity', 'member.access'])->group(function () {
     Route::prefix('membership')->group(function () {
         Route::get('/', [UserMembershipController::class, 'index'])->name('user.membership.index');
         Route::post('/upgrade/{tier}', [UserMembershipController::class, 'upgrade'])->name('user.membership.upgrade');
@@ -483,7 +483,7 @@ Route::prefix('user')->middleware(['user', 'preventBackHistory', 'userActivity']
         Route::get('/payments', [UserMembershipController::class, 'payments'])->name('user.membership.payments');
     });
 
-    // Route::middleware(['member.access'])->group(function () {
+
     // Route::get('/dashboard', [UserDashboardController::class, 'dashboard'])->name('user.dashboard');
     Route::get('/profile', [UserDashboardController::class, 'profile'])->name('user.profile');
     Route::get('/user-subscription', [UserDashboardController::class, 'userSubscription'])->name('user.user-subscription');
@@ -494,6 +494,7 @@ Route::prefix('user')->middleware(['user', 'preventBackHistory', 'userActivity']
     Route::get('/notification-read/{type}/{id}', [UserDashboardController::class, 'notificationRead'])->name('notification.read');
     // notification.clear
     Route::get('/notification-clear', [UserDashboardController::class, 'notificationClear'])->name('notification.clear');
+
 
 
     Route::get('unread-messages-count', [UserDashboardController::class, 'unreadMessagesCount'])->name('unread.messages.count');
