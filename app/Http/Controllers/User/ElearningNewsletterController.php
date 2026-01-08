@@ -13,7 +13,7 @@ class ElearningNewsletterController extends Controller
 {
     public function list()
     {
-        if (auth()->user()->hasRole('SUPER ADMIN')) {
+        if (auth()->user()->hasNewRole('SUPER ADMIN')) {
             $newsletters = ElearningEcomNewsletter::orderBy('id', 'desc')->paginate(10);
             return view('user.elearning-newsletter.list')->with('newsletters', $newsletters);
         } else {
@@ -47,7 +47,7 @@ class ElearningNewsletterController extends Controller
     // delete
     public function delete($id)
     {
-        if (auth()->user()->hasRole('SUPER ADMIN')) {
+        if (auth()->user()->hasNewRole('SUPER ADMIN')) {
             $newsletter = ElearningEcomNewsletter::find($id);
             Log::info(($newsletter->id ?? $id) . ' deleted by ' . auth()->user()->email . ' deleted at ' . now());
             if ($newsletter) {

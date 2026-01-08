@@ -12,6 +12,7 @@ use App\Models\Ecclesia;
 use App\Models\Team;
 use App\Models\TeamMember;
 use App\Models\User;
+use App\Models\UserType;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Crypt;
@@ -32,19 +33,19 @@ class PartnerController extends Controller
             $user_ecclesia_id = $user->ecclesia_id;
             $is_user_ecclesia_admin = $user->is_ecclesia_admin;
 
-            $partners = User::with(['ecclesia', 'roles'])
-                ->whereHas('roles', function ($q) {
+            $partners = User::with(['ecclesia', 'userRole'])
+                ->whereHas('userRole', function ($q) {
                     $q->where('name', '!=', 'SUPER ADMIN')->where('name', '!=', 'ESTORE_USER');
                 });
 
-            if ($user->user_type == 'Global' || $user->hasRole('SUPER ADMIN')) {
-                $partners->whereHas('roles', function ($q) {
+            if ($user->user_type == 'Global' || $user->hasNewRole('SUPER ADMIN')) {
+                $partners->whereHas('userRole', function ($q) {
                     $q->whereIn('type', [2, 3]);
                 })
                     ->where('id', '!=', $user->id);
             } elseif ($user->user_type == 'Regional') {
                 $partners->where('country', $user->country)
-                    ->whereHas('roles', function ($q) {
+                    ->whereHas('userRole', function ($q) {
                         $q->whereIn('type', [2, 3]);
                     })
                     ->where('id', '!=', $user->id);
@@ -53,7 +54,7 @@ class PartnerController extends Controller
                     ? $user->manage_ecclesia
                     : explode(',', $user->manage_ecclesia);
 
-                $partners->whereHas('roles', function ($q) {
+                $partners->whereHas('userRole', function ($q) {
                     $q->whereIn('type', [2, 3]);
                 })
                     ->where(function ($q) use ($manage_ecclesia_ids, $user) {
@@ -86,26 +87,40 @@ class PartnerController extends Controller
     public function create()
     {
         if (Auth::user()->can('Create Partners')) {
-            // $roles = Role::whereNotIn('type', [1, 3])->get();
+            // $roles = UserType::whereNotIn('type', [1, 3])->get();
             $auth_user_ecclesia_id = Auth::user()->ecclesia_id;
-            if (Auth::user()->getFirstRoleType() == 1) {
-                $roles = Role::whereIn('type', [2, 3])->get();
+            if (Auth::user()->getFirstUserRoleType() == 1) {
+                $roles = UserType::whereIn('type', [2, 3])->get();
                 $eclessias = Ecclesia::orderBy('id', 'asc')->get();
-            } elseif (Auth::user()->getFirstRoleType() == 2 || Auth::user()->getFirstRoleType() == 3) {
-                $roles = Role::whereIn('type', [2, 3])->get();
+            } elseif (Auth::user()->getFirstUserRoleType() == 2 || Auth::user()->getFirstUserRoleType() == 3) {
+                $roles = UserType::whereIn('type', [2, 3])->get();
                 if (Auth::user()->isEcclesiaUser()) {
                     $eclessias = Auth::user()->getEcclesiaAccessAttribute();
                 } else {
                     $eclessias = Ecclesia::where('id', $auth_user_ecclesia_id)->orderBy('id', 'asc')->get();
                 }
             } else {
-                $roles = Role::whereIn('type', [2, 3])->get();
+                $roles = UserType::whereIn('type', [2, 3])->get();
                 $eclessias = Ecclesia::orderBy('id', 'asc')->get();
             }
             // $eclessias = User::role('ECCLESIA')->orderBy('id', 'desc')->get();
             //   $eclessias = Ecclesia::orderBy('id', 'asc')->get();
             $countries = Country::orderBy('name', 'asc')->get();
-            return view('user.partner.create')->with(compact('roles', 'eclessias', 'countries'));
+
+            // Load all permissions
+            $allPermissions = \Spatie\Permission\Models\Permission::all();
+
+            // Load permissions for each role
+            foreach ($roles as $role) {
+                $roleModel = Role::where('name', $role->name)->first();
+                if ($roleModel) {
+                    $role->permissions = $roleModel->permissions;
+                } else {
+                    $role->permissions = collect();
+                }
+            }
+
+            return view('user.partner.create')->with(compact('roles', 'eclessias', 'countries', 'allPermissions'));
         } else {
             abort(403, 'You do not have permission to access this page.');
         }
@@ -138,6 +153,7 @@ class PartnerController extends Controller
             'address2' => 'nullable',
             'phone' => 'required',
             'user_type' => 'required',
+            'permissions' => 'required|array',
 
             // 'manage_ecclesia' => 'nullable|array'
         ], [
@@ -157,7 +173,7 @@ class PartnerController extends Controller
 
 
         $is_ecclesia_admin = 0;
-        $the_role = Role::where('name', $request->role)->first();
+        $the_role = UserType::where('name', $request->role)->first();
         if ($the_role->is_ecclesia == 1) {
             $is_ecclesia_admin = 1;
             // another validation
@@ -166,6 +182,30 @@ class PartnerController extends Controller
                 //  return 'mn is empty';
                 return redirect()->back()->withErrors(['manage_ecclesia' => 'Required - House Of ECCLESIA if Role is an ECCLESIA'])->withInput();
             }
+        }
+
+        // Create a unique slug for the role name
+        $slug = \Illuminate\Support\Str::slug($request->user_name);
+
+        // Ensure slug is unique in roles table
+        $originalSlug = $slug;
+        $counter = 1;
+        while (Role::where('name', $slug)->exists()) {
+            $slug = $originalSlug . '-' . $counter;
+            $counter++;
+        }
+
+        // Create the new role
+        $newRole = Role::create([
+            'name' => $slug,
+            'type' => $the_role->type ?? 2,
+            'is_ecclesia' => $the_role->is_ecclesia ?? 0,
+            'guard_name' => 'web'
+        ]);
+
+        // Sync permissions to the new role
+        if ($request->has('permissions')) {
+            $newRole->syncPermissions($request->permissions);
         }
 
         // return $request;
@@ -179,6 +219,7 @@ class PartnerController extends Controller
         $data->personal_email = $lr_email ? str_replace(' ', '', $lr_email) : null;
         $data->email = $request->email;
         $data->user_type = $request->user_type;
+        $data->user_type_id = $the_role->id;
         $data->password = bcrypt($request->password);
         $data->address = $request->address;
         $data->country = $request->country;
@@ -197,10 +238,11 @@ class PartnerController extends Controller
 
         $data->manage_ecclesia = $request->has('manage_ecclesia') ? implode(',', $request->manage_ecclesia) : null;
 
-
-
         $data->save();
-        $data->assignRole($request->role);
+
+        // Assign the newly created role to the user
+        $data->assignRole($newRole->name);
+
         $maildata = [
             'name' => $request->full_name,
             'email' => $request->email,
@@ -240,33 +282,49 @@ class PartnerController extends Controller
         if (Auth::user()->can('Edit Partners')) {
             $id = Crypt::decrypt($id);
             $partner = User::findOrFail($id);
-            // // $roles = Role::whereNotIn('type', [1, 3])->get();
-            // if (Auth::user()->getFirstRoleType() == 1) {
-            //     $roles = Role::whereIn('type', [2, 3])->get();
-            // } elseif (Auth::user()->getFirstRoleType() == 3) {
-            //     $roles = Role::whereIn('type', [2, 3])->get();
+            // // $roles = UserType::whereNotIn('type', [1, 3])->get();
+            // if (Auth::user()->getFirstUserRoleType() == 1) {
+            //     $roles = UserType::whereIn('type', [2, 3])->get();
+            // } elseif (Auth::user()->getFirstUserRoleType() == 3) {
+            //     $roles = UserType::whereIn('type', [2, 3])->get();
             // } else {
-            //     $roles = Role::whereIn('type', [2, 3])->get();
+            //     $roles = UserType::whereIn('type', [2, 3])->get();
             // }
             // // $ecclessias = User::role('ECCLESIA')->orderBy('id', 'desc')->get();
             // $eclessias = Ecclesia::orderBy('id', 'asc')->get();
             $auth_user_ecclesia_id = Auth::user()->ecclesia_id;
-            if (Auth::user()->getFirstRoleType() == 1) {
-                $roles = Role::whereIn('type', [2, 3])->get();
+            if (Auth::user()->getFirstUserRoleType() == 1) {
+                $roles = UserType::whereIn('type', [2, 3])->get();
                 $eclessias = Ecclesia::orderBy('id', 'asc')->get();
-            } elseif (Auth::user()->getFirstRoleType() == 2 || Auth::user()->getFirstRoleType() == 3) {
-                $roles = Role::whereIn('type', [2, 3])->get();
+            } elseif (Auth::user()->getFirstUserRoleType() == 2 || Auth::user()->getFirstUserRoleType() == 3) {
+                $roles = UserType::whereIn('type', [2, 3])->get();
                 if (Auth::user()->isEcclesiaUser()) {
                     $eclessias = Auth::user()->getEcclesiaAccessAttribute();
                 } else {
                     $eclessias = Ecclesia::where('id', $auth_user_ecclesia_id)->orderBy('id', 'asc')->get();
                 }
             } else {
-                $roles = Role::whereIn('type', [2, 3])->get();
+                $roles = UserType::whereIn('type', [2, 3])->get();
                 $eclessias = Ecclesia::orderBy('id', 'asc')->get();
             }
             $countries = Country::orderBy('name', 'asc')->get();
-            return view('user.partner.edit', compact('partner', 'roles', 'eclessias', 'countries'));
+
+            // Load all permissions
+            $allPermissions = \Spatie\Permission\Models\Permission::all();
+
+            // Load permissions for each role
+            foreach ($roles as $role) {
+                $roleModel = Role::where('name', $role->name)->first();
+                if ($roleModel) {
+                    $role->permissions = $roleModel->permissions;
+                } else {
+                    $role->permissions = collect();
+                }
+            }
+
+            $currentPermissions = $partner->getAllPermissions()->pluck('name');
+
+            return view('user.partner.edit', compact('partner', 'roles', 'eclessias', 'countries', 'allPermissions', 'currentPermissions'));
         } else {
             abort(403, 'You do not have permission to access this page.');
         }
@@ -301,6 +359,7 @@ class PartnerController extends Controller
                 'address2' => 'nullable',
                 'password' => ['nullable', 'string', 'regex:/^(?=.*[@$%&])[^\s]{8,}$/'],
                 'confirm_password' => 'nullable|min:8|same:password',
+                'permissions' => 'required|array',
             ], [
                 'password.regex' => 'The password must be at least 8 characters long and include at least one special character from @$%&.',
             ]);
@@ -313,7 +372,7 @@ class PartnerController extends Controller
             }
 
             $is_ecclesia_admin = 0;
-            $the_role = Role::where('name', $request->role)->first();
+            $the_role = UserType::where('name', $request->role)->first();
             if ($the_role->is_ecclesia == 1) {
                 $is_ecclesia_admin = 1;
                 // another validation
@@ -330,6 +389,7 @@ class PartnerController extends Controller
             $data->middle_name = $request->middle_name;
             $data->email = $request->email;
             $data->user_type = $request->user_type;
+            $data->user_type_id = $the_role->id; // SAVE USER_TYPE_ID
             $data->address = $request->address;
             $data->country = $request->country;
             $data->state = $request->state;
@@ -347,7 +407,50 @@ class PartnerController extends Controller
             $data->manage_ecclesia = $request->has('manage_ecclesia') ? implode(',', $request->manage_ecclesia) : null;
 
             $data->save();
-            $data->syncRoles([$request->role]);
+
+            // Handle unique slug role
+            $slug = \Illuminate\Support\Str::slug($data->user_name);
+            $userRole = null;
+
+            // Check if user already has a custom role (one that is NOT a base role)
+            $baseRoleNames = UserType::pluck('name')->toArray();
+            foreach ($data->roles as $role) {
+                if (!in_array($role->name, $baseRoleNames)) {
+                    $userRole = $role;
+                    break;
+                }
+            }
+
+            if (!$userRole) {
+                // If no custom role found, check if a role with this slug exists
+                $originalSlug = $slug;
+                $counter = 1;
+                while (Role::where('name', $slug)->exists()) {
+                    $slug = $originalSlug . '-' . $counter;
+                    $counter++;
+                }
+
+                $userRole = Role::create([
+                    'name' => $slug,
+                    'type' => $the_role->type ?? 2,
+                    'is_ecclesia' => $the_role->is_ecclesia ?? 0,
+                    'guard_name' => 'web'
+                ]);
+            } else {
+                // Update existing custom role metadata
+                $userRole->type = $the_role->type ?? 2;
+                $userRole->is_ecclesia = $the_role->is_ecclesia ?? 0;
+                $userRole->save();
+            }
+
+            // Sync permissions to the custom role
+            if ($request->has('permissions')) {
+                $userRole->syncPermissions($request->permissions);
+            }
+
+            // Sync user to ONLY the custom role
+            $data->syncRoles([$userRole->name]);
+
             return redirect()->route('partners.index')->with('message', 'Member updated successfully.');
         } else {
             abort(403, 'You do not have permission to access this page.');
@@ -405,7 +508,7 @@ class PartnerController extends Controller
 
 
             // Apply role, user_type and ecclesia filters
-            if ($user->user_type == 'Global' || $user->hasRole('SUPER ADMIN')) {
+            if ($user->user_type == 'Global' || $user->hasNewRole('SUPER ADMIN')) {
                 $partners->whereHas('roles', function ($q) {
                     $q->whereIn('type', [2, 3]);
                 })
@@ -506,8 +609,8 @@ class PartnerController extends Controller
             $user = Auth::user();
 
 
-            $partners = User::with(['ecclesia', 'roles'])
-                ->whereHas('roles', function ($q) {
+            $partners = User::with(['ecclesia', 'userRole'])
+                ->whereHas('userRole', function ($q) {
                     $q->where('name', 'ESTORE_USER');
                 });
 
@@ -528,8 +631,8 @@ class PartnerController extends Controller
         $query = str_replace(" ", "%", $query);
 
         if (Auth::user()->can('Manage Partners')) {
-            $partners = User::with(['ecclesia', 'roles'])
-                ->whereHas('roles', function ($q) {
+            $partners = User::with(['ecclesia', 'userRole'])
+                ->whereHas('userRole', function ($q) {
                     $q->where('name', 'ESTORE_USER');
                 });
 

@@ -46,7 +46,7 @@ class BulletinController extends Controller
                             ->orWhere('description', 'like', "%{$searchQuery}%");
                     });
                 })
-                ->when(!Auth::user()->hasRole('SUPER ADMIN'), function ($query) {
+                ->when(!Auth::user()->hasNewRole('SUPER ADMIN'), function ($query) {
                     $query->where('user_id', Auth::id());
                 })
                 ->orderBy('id', 'desc')

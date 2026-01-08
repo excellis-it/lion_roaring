@@ -166,7 +166,7 @@
         window.Laravel = {
             csrfToken: '{{ csrf_token() }}',
             authUserId: {{ auth()->user()->id }},
-            authUserRole: "{{ auth()->user()->hasRole('SUPER ADMIN') ? 'admin' : 'user' }}",
+            authUserRole: "{{ auth()->user()->hasNewRole('SUPER ADMIN') ? 'admin' : 'user' }}",
             authTimeZone: "{{ auth()->user()->time_zone ?? 'UTC' }}",
             ipAddress: "{{ env('IP_ADDRESS') }}",
             storageUrl: "{{ Storage::url('') }}",
@@ -348,7 +348,7 @@
             let socket_port = '3000';
             let socket = io(ip_address + ':' + socket_port);
             var sender_id = {{ auth()->user()->id }};
-            @if (auth()->user()->hasRole('SUPER ADMIN'))
+            @if (auth()->user()->hasNewRole('SUPER ADMIN'))
                 var role = 'admin';
             @else
                 var role = 'user';

@@ -99,7 +99,7 @@ class PolicyGuidenceController extends Controller
     {
         $policy = Policy::find($id);
         if ((auth()->user()->can('Delete Policy') && $policy->user_id == auth()->user()->id) ||
-            auth()->user()->hasRole('SUPER ADMIN')
+            auth()->user()->hasNewRole('SUPER ADMIN')
         ) {
 
             Log::info($policy->id . ' deleted by ' . auth()->user()->email . ' deleted at ' . now());

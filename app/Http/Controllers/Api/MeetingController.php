@@ -424,7 +424,7 @@ class MeetingController extends Controller
                 return response()->json(['status' => false, 'message' => 'Zoom SDK credentials missing.'], 201);
             }
 
-            $role = (auth()->id() === $meeting->user_id || auth()->user()->hasRole('SUPER ADMIN')) ? 1 : 0;
+            $role = (auth()->id() === $meeting->user_id || auth()->user()->hasNewRole('SUPER ADMIN')) ? 1 : 0;
             $ts = round(microtime(true) * 1000) - 30000;
             $msg = base64_encode($sdkKey . $meetingNumber . $ts . $role);
             $hash = base64_encode(hash_hmac('sha256', $msg, $sdkSecret, true));

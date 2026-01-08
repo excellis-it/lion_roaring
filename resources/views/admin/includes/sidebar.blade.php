@@ -9,13 +9,13 @@
             <a href="{{ route('admin.dashboard') }}"><span class="logo-fm"><img
                         src="{{ asset('admin_assets/img/logo_fm.png') }}" /></span> </a>
             <h5>
-                {{-- @if (Auth::user()->hasRole('SUPER ADMIN'))
+                {{-- @if (Auth::user()->hasNewRole('SUPER ADMIN'))
                     Super Admin
-                @elseif (Auth::user()->hasRole('ECCLESIA'))
+                @elseif (Auth::user()->hasNewRole('ECCLESIA'))
                     ECCLESIA - Admin
-                @elseif (Auth::user()->hasRole('TR LEADER'))
+                @elseif (Auth::user()->hasNewRole('TR LEADER'))
                     TR LEADER - Admin
-                @elseif (Auth::user()->hasRole('Sub Admin'))
+                @elseif (Auth::user()->hasNewRole('Sub Admin'))
                     Sub Admin
                 @endif --}}
                 {{ Auth::user()->getRoleNames()->first() }}
@@ -54,7 +54,7 @@
                 </li>
             @endif
 
-            {{-- @if (Auth::user()->hasRole('SUPER ADMIN'))
+            {{-- @if (Auth::user()->hasNewRole('SUPER ADMIN'))
                 @if (Gate::check('Manage Admin List'))
                     <li class="dropdown {{ Request::is('admin/detail*') ? 'active' : ' ' }}">
                         <a href="{{ route('admin.index') }}">
@@ -64,7 +64,7 @@
                     </li>
                 @endif
             @endif --}}
-            {{-- @if (Auth::user()->hasRole('SUPER ADMIN') || Auth::user()->hasRole('LEADER'))
+            {{-- @if (Auth::user()->hasNewRole('SUPER ADMIN') || Auth::user()->hasNewRole('LEADER'))
                 <li class="dropdown {{ Request::is('admin/roles*') ? 'active' : ' ' }}">
                     <a href="{{ route('admin.roles.index') }}">
                         <i class="ph ph-shield-check"></i>
@@ -73,14 +73,14 @@
                 </li>
             @endif --}}
 
-            {{-- @if (Auth::user()->getFirstRoleType() == 1)
+            {{-- @if (Auth::user()->getFirstUserRoleType() == 1)
                 <li class="dropdown {{ Request::is('admin/roles*') ? 'active' : ' ' }}">
                     <a href="{{ route('admin.roles.index') }}">
                         <i class="ph ph-shield-check"></i>
                         <span>Admin Role Permission</span>
                     </a>
                 </li>
-            @elseif(Auth::user()->getFirstRoleType() == 3)
+            @elseif(Auth::user()->getFirstUserRoleType() == 3)
                 <li class="dropdown {{ Request::is('admin/roles*') ? 'active' : ' ' }}">
                     <a href="{{ route('admin.roles.index') }}">
                         <i class="ph ph-shield-check"></i>
@@ -355,7 +355,7 @@
                                 <a class="nav-link" href="{{ route('pma-terms.index') }}"> PMA Terms </a>
                             </li>
                         @endif
-                        @if (Auth::user()->hasRole('SUPER ADMIN'))
+                        @if (Auth::user()->hasNewRole('SUPER ADMIN'))
                             <li class="{{ Request::is('admin/pages/privacy-policy') ? 'active' : '' }}">
                                 <a class="nav-link" href="{{ route('privacy-policy.index') }}"> Privacy Policy </a>
                             </li>
@@ -379,7 +379,7 @@
                 </li>
             @endif
 
-            @if (Auth::user()->getFirstRoleType() == 1)
+            @if (Auth::user()->getFirstUserRoleType() == 1)
                 <li class="dropdown">
                     <a href="javascript:void(0);"
                         class="menu-toggle nav-link has-dropdown {{ Request::is('admin/settings*') ? 'active' : ' ' }}">

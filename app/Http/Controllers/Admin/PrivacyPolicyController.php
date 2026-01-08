@@ -10,7 +10,7 @@ class PrivacyPolicyController extends Controller
 {
     public function index(Request $request)
     {
-        if (auth()->user()->hasRole('SUPER ADMIN')) {
+        if (auth()->user()->hasNewRole('SUPER ADMIN')) {
             $privacy_policy = PrivacyPolicy::where('country_code', $request->get('content_country_code', 'US'))->orderBy('id', 'desc')->first();
             return view('admin.privacy-policy.index')->with(compact('privacy_policy'));
         } else {

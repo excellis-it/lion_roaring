@@ -164,10 +164,10 @@ class PartnerController extends Controller
                             ->orWhereRaw('CONCAT(COALESCE(first_name, ""), " ", COALESCE(middle_name, ""), " ", COALESCE(last_name, "")) LIKE ?', ["%{$searchQuery}%"])
                             ->orWhere('email', 'like', "%{$searchQuery}%")
                             ->orWhere('phone', 'like', "%{$searchQuery}%");
-                         //   ->orWhere('address', 'like', "%{$searchQuery}%")
-                         //   ->orWhere('city', 'like', "%{$searchQuery}%")
-                         //   ->orWhere('state', 'like', "%{$searchQuery}%")
-                         //   ->orWhere('country', 'like', "%{$searchQuery}%");
+                        //   ->orWhere('address', 'like', "%{$searchQuery}%")
+                        //   ->orWhere('city', 'like', "%{$searchQuery}%")
+                        //   ->orWhere('state', 'like', "%{$searchQuery}%")
+                        //   ->orWhere('country', 'like', "%{$searchQuery}%");
                     });
                 })
                 ->orderBy('id', 'desc');
@@ -184,7 +184,7 @@ class PartnerController extends Controller
                         $q->whereIn('ecclesia_id', $manage_ecclesia_ids)->whereNotNull('ecclesia_id')
                             ->orWhere('created_id', $user->id)->orWhere('id', auth()->id());
                     });
-            } elseif ($user->hasRole('SUPER ADMIN')) {
+            } elseif ($user->hasNewRole('SUPER ADMIN')) {
                 $partners->whereHas('roles', function ($q) {
                     $q->whereIn('type', [2, 3]);
                 })
@@ -249,10 +249,10 @@ class PartnerController extends Controller
 
 
             $auth_user_ecclesia_id = Auth::user()->ecclesia_id;
-            if (Auth::user()->getFirstRoleType() == 1) {
+            if (Auth::user()->getFirstUserRoleType() == 1) {
                 $roles = Role::with('permissions')->whereIn('type', [2, 3])->get();
                 $eclessias = Ecclesia::orderBy('id', 'asc')->get();
-            } elseif (Auth::user()->getFirstRoleType() == 2 || Auth::user()->getFirstRoleType() == 3) {
+            } elseif (Auth::user()->getFirstUserRoleType() == 2 || Auth::user()->getFirstUserRoleType() == 3) {
                 $roles = Role::with('permissions')->whereIn('type', [2, 3])->get();
                 if (Auth::user()->isEcclesiaUser()) {
                     $eclessias = Auth::user()->getEcclesiaAccessAttribute();
@@ -695,10 +695,10 @@ class PartnerController extends Controller
             //   $roles = Role::with('permissions')->where('name', '!=', 'SUPER ADMIN')->get();
 
             $auth_user_ecclesia_id = Auth::user()->ecclesia_id;
-            if (Auth::user()->getFirstRoleType() == 1) {
+            if (Auth::user()->getFirstUserRoleType() == 1) {
                 $roles = Role::with('permissions')->whereIn('type', [2, 3])->get();
                 $eclessias = Ecclesia::orderBy('id', 'asc')->get();
-            } elseif (Auth::user()->getFirstRoleType() == 2 || Auth::user()->getFirstRoleType() == 3) {
+            } elseif (Auth::user()->getFirstUserRoleType() == 2 || Auth::user()->getFirstUserRoleType() == 3) {
                 $roles = Role::with('permissions')->whereIn('type', [2, 3])->get();
                 if (Auth::user()->isEcclesiaUser()) {
                     $eclessias = Auth::user()->getEcclesiaAccessAttribute();

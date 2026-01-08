@@ -25,7 +25,7 @@ class WarehouseAdminController extends Controller
     public function __construct()
     {
         // Example: only admins can access this controller
-        // if (!auth()->user()->hasRole('SUPER ADMIN') || !auth()->user()->hasRole('ADMINISTRATOR') || !auth()->user()->isWarehouseAdmin()) {
+        // if (!auth()->user()->hasNewRole('SUPER ADMIN') || !auth()->user()->hasNewRole('ADMINISTRATOR') || !auth()->user()->isWarehouseAdmin()) {
         //     abort(403, 'Access denied.');
         // }
         $this->middleware(function ($request, $next) {
@@ -37,8 +37,8 @@ class WarehouseAdminController extends Controller
             }
 
             if (
-                !$user->hasRole('SUPER ADMIN') &&
-                !$user->hasRole('ADMINISTRATOR') &&
+                !$user->hasNewRole('SUPER ADMIN') &&
+                !$user->hasNewRole('ADMINISTRATOR') &&
                 !$user->isWarehouseAdmin()
             ) {
                 abort(403, 'Access denied.');

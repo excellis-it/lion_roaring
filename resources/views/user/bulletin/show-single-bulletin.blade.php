@@ -1,7 +1,7 @@
 <td>
     {{ $bulletins->firstItem() + $key }}
 </td>
-@if (auth()->user()->hasRole('SUPER ADMIN'))
+@if (auth()->user()->hasNewRole('SUPER ADMIN'))
     <td>
         {{ isset($bulletin->user->full_name) && !empty($bulletin->user->full_name) ? $bulletin->user->full_name : 'Unknown' }}
     </td>

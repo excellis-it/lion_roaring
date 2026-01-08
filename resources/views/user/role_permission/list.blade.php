@@ -1,6 +1,6 @@
 @extends('user.layouts.master')
 @section('title')
-    Role Permission List - {{ env('APP_NAME') }}
+    Role List - {{ env('APP_NAME') }}
 @endsection
 @push('styles')
 @endpush
@@ -15,7 +15,7 @@
 
                                 <div class="row justify-content-between">
                                     <div class="col-lg-8">
-                                        <h3 class="mb-3">Role Permission List</h3>
+                                        <h3 class="mb-3">Role List</h3>
                                     </div>
 
                                     <div class="col-lg-4 text-end">
@@ -45,7 +45,6 @@
                                                 <th>ID (#)</th>
                                                 <th>Role</th>
                                                 <th>Is ECCLESIA</th>
-                                                <th>Permission</th>
                                                 <th></th>
                                             </tr>
                                         </thead>
@@ -56,21 +55,7 @@
                                                         <td>{{ $key + 1 }}</td>
                                                         <td> {{ $role->name }}</td>
                                                         <td>{{ $role->is_ecclesia == 1 ? 'ECCLESIA' : '' }}</td>
-                                                        {{-- <td>
-                                                            @foreach ($role->permissions()->where('type', 1)->get() as $permission)
-                                                                <span class="round-btn">{{ $permission->name }}</span>
-                                                            @endforeach
-                                                        </td> --}}
-                                                        <td>
 
-                                                            <button type="button" class="btn text-blue btn-view-permission"
-                                                                data-permissions="{{ $role->permissions()->where('type', 1)->get() }}"
-                                                                data-role-name="{{ $role->name }}">
-                                                                View Permission
-                                                            </button>
-
-
-                                                        </td>
                                                         <td>
 
                                                             <div class="d-flex">
@@ -108,14 +93,6 @@
                                 </div>
 
 
-                                <div class="card card-body container role_card" style="display: none;">
-                                    <h5 class="mt-1" id="Role_Name"></h5>
-                                    <div class="row container mt-1" id="permissions-container">
-
-
-                                    </div>
-                                </div>
-
                             </div>
                         </div>
                     </div>
@@ -148,49 +125,5 @@
                 })
         });
     </script>
-    <script>
-        $(document).ready(function() {
-            $(".btn-view-permission").click(function(e) {
-                e.preventDefault();
-                $(".role_card").show();
-                var permissions = $(this).data('permissions');
-                var role_name = $(this).data('role-name');
-                console.log(permissions);
-                $("#Role_Name").text(role_name);
-
-                var col1 = $('<div class="col-4"></div>');
-                var col2 = $('<div class="col-4"></div>');
-
-                // Create an unordered list to hold the permissions for each column
-                var permissionsList1 = $('<ul></ul>');
-                var permissionsList2 = $('<ul></ul>');
-
-                // Divide the permissions list into two arrays
-                var half = Math.ceil(permissions.length / 2); // To split the list into two equal parts
-                var firstHalf = permissions.slice(0, half);
-                var secondHalf = permissions.slice(half);
-
-                // Add permissions to the first column
-                $.each(firstHalf, function(index, permission) {
-                    var listItem = $('<li></li>').text(permission.name);
-                    permissionsList1.append(listItem);
-                });
-
-                // Add permissions to the second column
-                $.each(secondHalf, function(index, permission) {
-                    var listItem = $('<li></li>').text(permission.name);
-                    permissionsList2.append(listItem);
-                });
-
-                // Append the lists to the respective columns
-                col1.append(permissionsList1);
-                col2.append(permissionsList2);
-
-                // Append the columns to the container row, replacing the content
-                $('#permissions-container').html(col1).append(col2);
-
-            });
-
-        });
-    </script>
+    
 @endpush

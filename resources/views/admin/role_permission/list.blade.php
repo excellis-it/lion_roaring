@@ -19,11 +19,12 @@
     </style>
 @endpush
 @section('head')
-    {{ Auth::user()->getFirstRoleType() == 1 ? 'Admin' : '' }} Role Permission
+    {{ Auth::user()->getFirstUserRoleType() == 1 ? 'Admin' : '' }} Role Permission
 @endsection
 @section('create_button')
     <a href="{{ route('admin.roles.create') }}" id="create-admin" class="btn btn-primary" data-bs-toggle="modal"
-        data-bs-target="#add_admin"> <i class="ph ph-plus"></i>Add {{ Auth::user()->getFirstRoleType() == 1 ? 'Admin' : '' }}
+        data-bs-target="#add_admin"> <i class="ph ph-plus"></i>Add
+        {{ Auth::user()->getFirstUserRoleType() == 1 ? 'Admin' : '' }}
         Role Permission</a>
 @endsection
 @section('content')
@@ -57,7 +58,7 @@
                         <thead>
                             <tr>
                                 <th>ID (#)</th>
-                                <th>{{ Auth::user()->getFirstRoleType() == 1 ? 'Admin' : '' }} Role</th>
+                                <th>{{ Auth::user()->getFirstUserRoleType() == 1 ? 'Admin' : '' }} Role</th>
                                 <th>Permissions</th>
                                 <th></th>
                             </tr>
@@ -74,7 +75,7 @@
                                             @endforeach
                                         </td> --}}
                                         <td>
-                                            @if (Auth::user()->getFirstRoleType() == 1)
+                                            @if (Auth::user()->getFirstUserRoleType() == 1)
                                                 <button type="button" class="btn text-blue btn-view-permission"
                                                     data-permissions="{{ $role->permissions()->where('type', 2)->get() }}"
                                                     data-role-name="{{ $role->name }}">

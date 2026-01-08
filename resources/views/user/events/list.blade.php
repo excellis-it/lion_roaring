@@ -429,7 +429,7 @@
                     eventClick: function(info) {
                         var event = info.event;
                         var permission = @json(auth()->user()->can('Edit Event'));
-                        var admin = @json(auth()->user()->hasRole('SUPER ADMIN'));
+                        var admin = @json(auth()->user()->hasNewRole('SUPER ADMIN'));
                         var currentUser = {{ auth()->user()->id }};
                         var isHost = event.extendedProps.is_host || event.extendedProps.user_id ==
                             currentUser;

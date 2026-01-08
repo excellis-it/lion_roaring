@@ -58,9 +58,9 @@ class RolePermissionController extends Controller
     public function index()
     {
         try {
-            if (Auth::user()->getFirstRoleType() == 1) {
+            if (Auth::user()->getFirstUserRoleType() == 1) {
                 $roles = Role::with('permissions')->whereIn('type', [2, 3])->get();
-            } elseif (Auth::user()->getFirstRoleType() == 3) {
+            } elseif (Auth::user()->getFirstUserRoleType() == 3) {
                 $roles = Role::with('permissions')->whereIn('type', [2])->get();
             } else {
                 $roles = Role::with('permissions')->whereIn('type', [2])->get();

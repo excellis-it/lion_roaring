@@ -17,7 +17,7 @@
 
                 <div class="left_right">
                     <div class="row">
-                        @if (auth()->user()->hasRole('SUPER ADMIN'))
+                        @if (auth()->user()->hasNewRole('SUPER ADMIN'))
                             <div class="col-md-12">
                                 <!-- <h2 class="flight_titel">Flight</h2> -->
                                 <div class="row">

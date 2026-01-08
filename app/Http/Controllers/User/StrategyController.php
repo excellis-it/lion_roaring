@@ -100,7 +100,7 @@ class StrategyController extends Controller
     {
         $strategy = Strategy::find($id);
         if ((auth()->user()->can('Delete Strategy') && $strategy->user_id == auth()->user()->id) ||
-            auth()->user()->hasRole('SUPER ADMIN')
+            auth()->user()->hasNewRole('SUPER ADMIN')
         ) {
 
             Log::info($strategy->id . ' deleted by ' . auth()->user()->email . ' deleted at ' . now());

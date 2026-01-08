@@ -35,10 +35,10 @@ class AuthController extends Controller
         }
         if (Auth::attempt(['email' => $request->email, 'password' => $request->password], $remember_me)) {
             $user = User::where('email', $request->email)->select('id', 'email', 'status')->first();
-            if ($user->getFirstRoleType() != 1) {
+            if ($user->getFirstUserRoleType() != 1) {
                 return redirect()->back()->with('error', 'This User Not Allowed Here!');
             }
-            if ($user->getFirstRoleType() == 1 && $user->status == 1) {
+            if ($user->getFirstUserRoleType() == 1 && $user->status == 1) {
                 $user->update(['time_zone' => $request->time_zone]);
                 return redirect()->route('admin.dashboard');
             } else {

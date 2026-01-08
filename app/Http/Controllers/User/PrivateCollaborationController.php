@@ -195,7 +195,7 @@ class PrivateCollaborationController extends Controller
 
         $countries = Country::orderBy('name', 'asc')->get();
 
-        if (auth()->user()->can('Edit Private Collaboration') && auth()->user()->id == $collaboration->user_id || auth()->user()->hasRole('SUPER ADMIN')) {
+        if (auth()->user()->can('Edit Private Collaboration') && auth()->user()->id == $collaboration->user_id || auth()->user()->hasNewRole('SUPER ADMIN')) {
             return view('user.private_collaboration.edit', compact('collaboration', 'countries'));
         } else {
             abort(403, 'You do not have permission to edit this collaboration.');
@@ -217,7 +217,7 @@ class PrivateCollaborationController extends Controller
 
             $collaboration = PrivateCollaboration::findOrFail($id);
 
-            if ($collaboration->user_id != auth()->id() && !auth()->user()->hasRole('SUPER ADMIN')) {
+            if ($collaboration->user_id != auth()->id() && !auth()->user()->hasNewRole('SUPER ADMIN')) {
                 abort(403, 'You can only edit your own collaborations.');
             }
 
@@ -252,7 +252,7 @@ class PrivateCollaborationController extends Controller
         if (Auth::user()->can('Delete Private Collaboration')) {
             $collaboration = PrivateCollaboration::findOrFail($id);
 
-            if ($collaboration->user_id == Auth::user()->id || Auth::user()->hasRole('SUPER ADMIN')) {
+            if ($collaboration->user_id == Auth::user()->id || Auth::user()->hasNewRole('SUPER ADMIN')) {
                 $collaboration->delete();
                 return response()->json([
                     'message' => 'Private collaboration deleted successfully.',

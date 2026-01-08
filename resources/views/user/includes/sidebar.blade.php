@@ -117,7 +117,7 @@
                          Gate::check('Manage Becoming a Leader') ||
                          Gate::check('Manage File') ||
                          Gate::check('Manage Topic') ||
-                         Auth::user()->hasRole('SUPER ADMIN'))
+                         Auth::user()->hasNewRole('SUPER ADMIN'))
                      <li class="sidebar-item">
                          <a class="sidebar-link" href="#" aria-expanded="false" data-bs-toggle="collapse"
                              data-bs-target="#collapseExampleEducation">
@@ -686,7 +686,7 @@
                          </div>
                      </li>
                  @endif
-                 {{-- @if (Auth::user()->hasRole('SUPER ADMIN'))
+                 {{-- @if (Auth::user()->hasNewRole('SUPER ADMIN'))
                     <li class="sidebar-item">
                         <a class="sidebar-link {{ Request::is('user/ecclesias/*') ? 'active' : '' }}"
                             href="{{ route('ecclesias.index') }}" aria-expanded="false">

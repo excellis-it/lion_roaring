@@ -22,7 +22,7 @@
                     @endif
                     @if (
                         (auth()->user()->can('Delete Strategy') && $strategy->user_id == auth()->user()->id) ||
-                            auth()->user()->hasRole('SUPER ADMIN'))
+                            auth()->user()->hasNewRole('SUPER ADMIN'))
                         <a href="javascript:void(0)" id="delete"
                             data-route="{{ route('strategy.delete', $strategy->id) }}" class="delete_icon">
                             <i class="fa-solid fa-trash"></i>

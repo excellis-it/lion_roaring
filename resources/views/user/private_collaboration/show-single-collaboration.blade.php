@@ -70,13 +70,13 @@
         @endif
 
         {{-- Edit and Delete only for creator or super admin --}}
-        @if (auth()->user()->can('Edit Private Collaboration') && ($isCreator || auth()->user()->hasRole('SUPER ADMIN')))
+        @if (auth()->user()->can('Edit Private Collaboration') && ($isCreator || auth()->user()->hasNewRole('SUPER ADMIN')))
             <a href="{{ route('private-collaborations.edit', $collaboration->id) }}" class="delete_icon me-2">
                 <i class="fa-solid fa-edit"></i>
             </a>
         @endif
 
-        @if (auth()->user()->can('Delete Private Collaboration') && ($isCreator || auth()->user()->hasRole('SUPER ADMIN')))
+        @if (auth()->user()->can('Delete Private Collaboration') && ($isCreator || auth()->user()->hasNewRole('SUPER ADMIN')))
             <a href="javascript:void(0)" id="delete"
                 data-route="{{ route('private-collaborations.delete', $collaboration->id) }}" class="delete_icon me-2">
                 <i class="fa-solid fa-trash"></i>

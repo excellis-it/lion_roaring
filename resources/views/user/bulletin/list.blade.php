@@ -54,7 +54,7 @@
                                         <thead class="color_head">
                                             <tr class="header-row">
                                                 <th>ID (#)</th>
-                                                @if (auth()->user()->hasRole('SUPER ADMIN'))
+                                                @if (auth()->user()->hasNewRole('SUPER ADMIN'))
                                                     <th>
                                                         Upload By
                                                     </th>

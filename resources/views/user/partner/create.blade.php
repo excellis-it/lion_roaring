@@ -3,16 +3,34 @@
     Create Partners - {{ env('APP_NAME') }}
 @endsection
 @push('styles')
+    <style>
+        .permission-item {
+            transition: all 0.2s ease-in-out;
+            cursor: pointer;
+        }
+
+        .permission-item:hover {
+            border-color: #0d6efd !important;
+            background-color: #f1f7ff !important;
+            transform: translateY(-2px);
+        }
+
+        .form-check-input:checked+.form-check-label {
+            color: #0d6efd;
+            font-weight: 600;
+        }
+    </style>
 @endpush
 @section('content')
-<section id="loading">
-    <div id="loading-content"></div>
-</section>
+    <section id="loading">
+        <div id="loading-content"></div>
+    </section>
     <div class="container-fluid">
         <div class="bg_white_border">
             <div class="row">
                 <div class="col-lg-12">
-                    <form action="{{ route('partners.store') }}" method="POST" autocomplete="new" autofill="off" id="uploadForm">
+                    <form action="{{ route('partners.store') }}" method="POST" autocomplete="new" autofill="off"
+                        id="uploadForm">
                         @csrf
                         <div class="row">
                             <div class="col-lg-12">
@@ -24,7 +42,7 @@
                                     </div>
                                 </div>
                                 <div class="row">
-                                     {{-- user_name --}}
+                                    {{-- user_name --}}
                                     <div class="col-md-6 mb-2">
                                         <div class="box_label">
                                             <label>User Name *</label>
@@ -55,8 +73,10 @@
                                             <label>User Type *</label>
                                             <select class="form-control" name="user_type">
                                                 <option value="">Select User Type</option>
-                                                <option value="Regional" {{ old('user_type') == 'Regional' ? 'selected' : '' }}>Regional</option>
-                                                <option value="Global" {{ old('user_type') == 'Global' ? 'selected' : '' }}>Global</option>
+                                                <option value="Regional"
+                                                    {{ old('user_type') == 'Regional' ? 'selected' : '' }}>Regional</option>
+                                                <option value="Global" {{ old('user_type') == 'Global' ? 'selected' : '' }}>
+                                                    Global</option>
                                             </select>
                                             @if ($errors->has('user_type'))
                                                 <div class="error" style="color:red !important;">
@@ -303,8 +323,9 @@
                                                     <input id="data-roles-{{ $role->id }}"
                                                         class="form-check-input data-roles" type="radio" name="role"
                                                         value="{{ $role->name }}"
-                                                        data-permissions="{{ $role->permissions()->where('type', 1)->get() }}"
-                                                        data-isecclesia="{{ $role->is_ecclesia }}" required>
+                                                        data-permissions="{{ json_encode($role->permissions->pluck('name')) }}"
+                                                        data-isecclesia="{{ $role->is_ecclesia }}"
+                                                        {{ old('role') == $role->name ? 'checked' : '' }} required>
                                                     <label class="form-check-label"
                                                         for="data-roles-{{ $role->id }}">{{ $role->name }}
                                                         <small>{{ $role->is_ecclesia == 1 ? '(ECCLESIA)' : '' }}</small></label>
@@ -325,29 +346,112 @@
 
                                 <div class="row mt-3" id="hoe_row" style="display: none">
                                     <div class="col-md-12">
-                                        <div class="form-group">
-                                            <h5>Can manage this House Of ECCLESIA*</h5>
-
-
-                                            @foreach ($eclessias as $eclessia)
-                                                <div class="form-check form-check-inline">
-                                                    <input id="data-eclessia-{{ $eclessia->id }}"
-                                                        class="form-check-input data-eclessia" type="checkbox"
-                                                        name="manage_ecclesia[]" value="{{ $eclessia->id }}">
-                                                    <label class="form-check-label"
-                                                        for="data-eclessia-{{ $eclessia->id }}">{{ $eclessia->name . ' (' . $eclessia->countryName->name . ')' }}
-                                                    </label>
+                                        <div class="card border-0 shadow-sm"
+                                            style="background: #fdfdfe; border-radius: 15px; border: 1px solid #e0e0e0 !important;">
+                                            <div
+                                                class="card-header bg-white border-bottom-0 pt-4 px-4 d-flex justify-content-between align-items-center">
+                                                <div>
+                                                    <h5 class="mb-0 text-success"><i class="fas fa-home me-2"></i> House
+                                                        Of ECCLESIA*</h5>
+                                                    <small class="text-muted">Select the houses this user can
+                                                        manage</small>
                                                 </div>
-                                            @endforeach
-
-
-
+                                                <div class="form-check form-switch">
+                                                    <input class="form-check-input" type="checkbox"
+                                                        id="select-all-ecclesias"
+                                                        style="cursor: pointer; width: 2.5em; height: 1.25em;">
+                                                    <label class="form-check-label ms-2 fw-bold text-dark"
+                                                        for="select-all-ecclesias" style="cursor: pointer;">Select
+                                                        All</label>
+                                                </div>
+                                            </div>
+                                            <div class="card-body p-4">
+                                                <div class="row g-3">
+                                                    @foreach ($eclessias as $eclessia)
+                                                        <div class="col-xl-3 col-lg-4 col-md-6">
+                                                            <div class="ecclesia-item p-2 mb-2 rounded border bg-white shadow-sm h-100 d-flex align-items-center"
+                                                                style="transition: all 0.2s;">
+                                                                <div class="form-check mb-0">
+                                                                    <input id="data-eclessia-{{ $eclessia->id }}"
+                                                                        class="form-check-input data-eclessia"
+                                                                        type="checkbox" name="manage_ecclesia[]"
+                                                                        value="{{ $eclessia->id }}"
+                                                                        {{ is_array(old('manage_ecclesia')) && in_array($eclessia->id, old('manage_ecclesia')) ? 'checked' : '' }}
+                                                                        style="cursor: pointer; width: 1.25em; height: 1.25em;">
+                                                                    <label class="form-check-label ms-2"
+                                                                        for="data-eclessia-{{ $eclessia->id }}"
+                                                                        style="cursor: pointer; font-size: 0.9rem;">
+                                                                        {{ $eclessia->name }} <br>
+                                                                        <small
+                                                                            class="text-muted">{{ $eclessia->countryName->name }}</small>
+                                                                    </label>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    @endforeach
+                                                </div>
+                                            </div>
                                         </div>
                                     </div>
-
                                 </div>
 
-                                <div class="w-100 text-end d-flex align-items-center justify-content-end">
+                                <div class="row mt-4">
+                                    <div class="col-md-12">
+                                        <div class="card border-0 shadow-sm"
+                                            style="background: #f8f9fa; border-radius: 15px;">
+                                            <div
+                                                class="card-header bg-white border-bottom-0 pt-4 px-4 d-flex justify-content-between align-items-center">
+                                                <div>
+                                                    <h5 class="mb-0 text-primary"><i class="fas fa-shield-alt me-2"></i>
+                                                        Permissions*</h5>
+                                                    <small class="text-muted">Select the specific accesses for this user
+                                                        role</small>
+                                                </div>
+                                                <div class="form-check form-switch">
+                                                    <input class="form-check-input" type="checkbox"
+                                                        id="select-all-permissions"
+                                                        style="cursor: pointer; width: 2.5em; height: 1.25em;">
+                                                    <label class="form-check-label ms-2 fw-bold text-dark"
+                                                        for="select-all-permissions" style="cursor: pointer;">Select
+                                                        All</label>
+                                                </div>
+                                            </div>
+                                            <div class="card-body p-4">
+                                                <div class="row g-3">
+                                                    @foreach ($allPermissions as $permission)
+                                                        <div class="col-xl-3 col-lg-4 col-md-6">
+                                                            <div
+                                                                class="permission-item p-2 mb-2 rounded border bg-white shadow-sm h-100 d-flex align-items-center">
+                                                                <div class="form-check mb-0">
+                                                                    <input class="form-check-input permission-checkbox"
+                                                                        type="checkbox" name="permissions[]"
+                                                                        value="{{ $permission->name }}"
+                                                                        id="perm-{{ $permission->id }}"
+                                                                        {{ is_array(old('permissions')) && in_array($permission->name, old('permissions')) ? 'checked' : '' }}
+                                                                        style="cursor: pointer; width: 1.2em; height: 1.2em;">
+                                                                    <label class="form-check-label ms-2"
+                                                                        for="perm-{{ $permission->id }}"
+                                                                        style="cursor: pointer; font-size: 0.95rem; font-weight: 500;">
+                                                                        {{ $permission->name }}
+                                                                    </label>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    @endforeach
+                                                </div>
+                                                @if ($errors->has('permissions'))
+                                                    <div class="error mt-3"
+                                                        style="color:red !important; font-weight: bold;">
+                                                        <i class="fas fa-exclamation-circle me-1"></i>
+                                                        {{ $errors->first('permissions') }}
+                                                    </div>
+                                                @endif
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="w-100 text-end d-flex align-items-center justify-content-end mt-4">
                                     <button type="submit" class="print_btn me-2">Save</button>
                                     <a class="print_btn print_btn_vv" href="{{ route('partners.index') }}">Cancel</a>
                                 </div>
@@ -356,11 +460,11 @@
                     </form>
 
 
-                    <div class="card card-body shadow-lg mt-2">
+                    {{-- <div class="card card-body shadow-lg mt-2">
                         <h5 class="mt-0" id="Role_Name"></h5>
                         <div class="row container mt-1" id="permissions-container">
                         </div>
-                    </div>
+                    </div> --}}
 
 
                 </div>
@@ -372,15 +476,15 @@
 @endsection
 
 @push('scripts')
-<script>
-    $(document).ready(function() {
-        $("#uploadForm").on("submit", function(e) {
-            // e.preventDefault();
-            $('#loading').addClass('loading');
-            $('#loading-content').addClass('loading-content');
+    <script>
+        $(document).ready(function() {
+            $("#uploadForm").on("submit", function(e) {
+                // e.preventDefault();
+                $('#loading').addClass('loading');
+                $('#loading-content').addClass('loading-content');
+            });
         });
-    });
-</script>
+    </script>
     <script>
         $(document).ready(function() {
             $('#eye-button-1').click(function() {
@@ -538,13 +642,52 @@
     </script>
     <script>
         $(document).ready(function() {
+            // Function to update "Select All" state for permissions
+            function updateSelectAllState() {
+                var total = $('.permission-checkbox').length;
+                var checked = $('.permission-checkbox:checked').length;
+                $('#select-all-permissions').prop('checked', total > 0 && total === checked);
+            }
+
+            // Function to update "Select All" state for ecclesias
+            function updateSelectAllEcclesiasState() {
+                var total = $('.data-eclessia').length;
+                var checked = $('.data-eclessia:checked').length;
+                $('#select-all-ecclesias').prop('checked', total > 0 && total === checked);
+            }
+
+            // Select/Unselect All Toggle for Permissions
+            $('#select-all-permissions').change(function() {
+                $('.permission-checkbox').prop('checked', $(this).prop('checked'));
+            });
+
+            // Select/Unselect All Toggle for Ecclesias
+            $('#select-all-ecclesias').change(function() {
+                $('.data-eclessia').prop('checked', $(this).prop('checked'));
+            });
+
+            // Individual Permission Click
+            $(document).on('change', '.permission-checkbox', function() {
+                updateSelectAllState();
+            });
+
+            // Individual Ecclesia Click
+            $(document).on('change', '.data-eclessia', function() {
+                updateSelectAllEcclesiasState();
+            });
+
+            // Make the entire card clickable
+            $(document).on('click', '.permission-item, .ecclesia-item', function(e) {
+                if (!$(e.target).is('input') && !$(e.target).is('label')) {
+                    var checkbox = $(this).find('input[type="checkbox"]');
+                    checkbox.prop('checked', !checkbox.prop('checked')).trigger('change');
+                }
+            });
+
             $(".data-roles").change(function(e) {
                 e.preventDefault();
                 var permissions = $(this).data('permissions');
-                var role_name = $(this).val();
                 var is_ecclesia = $(this).data('isecclesia');
-
-                console.log(permissions);
 
                 if (is_ecclesia == 1) {
                     $("#hoe_row").show();
@@ -554,42 +697,48 @@
                     $("#ecclesia_main_input").show();
                 }
 
+                // Uncheck all permissions first
+                $('.permission-checkbox').prop('checked', false);
 
-                $("#Role_Name").text(role_name);
+                // Check permissions corresponding to the selected role
+                if (permissions && Array.isArray(permissions)) {
+                    permissions.forEach(function(permName) {
+                        $('.permission-checkbox[value="' + permName + '"]').prop('checked', true);
+                    });
+                }
 
-                var col1 = $('<div class="col-6"></div>');
-                var col2 = $('<div class="col-6"></div>');
-
-                // Create an unordered list to hold the permissions for each column
-                var permissionsList1 = $('<ul></ul>');
-                var permissionsList2 = $('<ul></ul>');
-
-                // Divide the permissions list into two arrays
-                var half = Math.ceil(permissions.length / 2); // To split the list into two equal parts
-                var firstHalf = permissions.slice(0, half);
-                var secondHalf = permissions.slice(half);
-
-                // Add permissions to the first column
-                $.each(firstHalf, function(index, permission) {
-                    var listItem = $('<li></li>').text(permission.name);
-                    permissionsList1.append(listItem);
-                });
-
-                // Add permissions to the second column
-                $.each(secondHalf, function(index, permission) {
-                    var listItem = $('<li></li>').text(permission.name);
-                    permissionsList2.append(listItem);
-                });
-
-                // Append the lists to the respective columns
-                col1.append(permissionsList1);
-                col2.append(permissionsList2);
-
-                // Append the columns to the container row, replacing the content
-                $('#permissions-container').html(col1).append(col2);
-
+                // Update Select All state after role change
+                updateSelectAllState();
             });
 
+            // Initial calls
+            updateSelectAllState();
+            updateSelectAllEcclesiasState();
+
+            // Handle initial visibility for old role
+            var checkedRole = $(".data-roles:checked");
+            if (checkedRole.length > 0) {
+                var is_ecclesia = checkedRole.data('isecclesia');
+                if (is_ecclesia == 1) {
+                    $("#hoe_row").show();
+                    $("#ecclesia_main_input").hide();
+                } else {
+                    $("#hoe_row").hide();
+                    $("#ecclesia_main_input").show();
+                }
+            }
         });
     </script>
+    <style>
+        .ecclesia-item:hover {
+            border-color: #198754 !important;
+            background-color: #f0fff4 !important;
+            transform: translateY(-2px);
+        }
+
+        .data-eclessia:checked+.form-check-label {
+            color: #198754;
+            font-weight: 600;
+        }
+    </style>
 @endpush

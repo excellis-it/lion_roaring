@@ -37,7 +37,7 @@ class ProductController extends Controller
     public function index()
     {
         // // return User::with('roles')->where('id', auth()->id())->first();
-        // if (auth()->user()->hasRole('SUPER ADMIN') || auth()->user()->hasRole('ADMINISTRATOR')) {
+        // if (auth()->user()->hasNewRole('SUPER ADMIN') || auth()->user()->hasNewRole('ADMINISTRATOR')) {
         //     $products = Product::where('is_deleted', false)->orderBy('id', 'desc')->paginate(10);
         //     return view('user.product.list', compact('products'));
         // } else if (auth()->user()->isWarehouseAdmin()) {
@@ -80,7 +80,7 @@ class ProductController extends Controller
             //     $products = $products->whereHas('warehouseProducts', function ($q) use ($warehouseIds) {
             //         $q->whereIn('warehouse_id', $warehouseIds);
             //     });
-            // } elseif (!auth()->user()->hasRole('SUPER ADMIN') && !auth()->user()->hasRole('ADMINISTRATOR')) {
+            // } elseif (!auth()->user()->hasNewRole('SUPER ADMIN') && !auth()->user()->hasNewRole('ADMINISTRATOR')) {
             //     abort(403, 'You do not have permission to access this page.');
             // }
 
@@ -165,7 +165,7 @@ class ProductController extends Controller
         $colors = Color::where('status', 1)->get();
 
         // Get warehouses for assignment
-        if (auth()->user()->hasRole('SUPER ADMIN') || auth()->user()->hasRole('ADMINISTRATOR')) {
+        if (auth()->user()->hasNewRole('SUPER ADMIN') || auth()->user()->hasNewRole('ADMINISTRATOR')) {
             $warehouses = WareHouse::where('is_active', 1)->get();
         } else {
             $warehouses = auth()->user()->warehouses;
@@ -380,7 +380,7 @@ class ProductController extends Controller
 
             // create WarehouseProductVariation and warehouse products and warehouse product images for this variation in all warehouses
             $warehouses = [];
-            if (auth()->user()->hasRole('SUPER ADMIN') || auth()->user()->hasRole('ADMINISTRATOR')) {
+            if (auth()->user()->hasNewRole('SUPER ADMIN') || auth()->user()->hasNewRole('ADMINISTRATOR')) {
                 $warehouses = WareHouse::where('is_active', 1)->get();
             } else {
                 $warehouses = auth()->user()->warehouses;
@@ -455,7 +455,7 @@ class ProductController extends Controller
         $colors = Color::where('status', 1)->get();
 
         // Get warehouses for assignment
-        if (auth()->user()->hasRole('SUPER ADMIN') || auth()->user()->hasRole('ADMINISTRATOR')) {
+        if (auth()->user()->hasNewRole('SUPER ADMIN') || auth()->user()->hasNewRole('ADMINISTRATOR')) {
             $warehouses = WareHouse::where('is_active', 1)->get();
         } else {
             $warehouses = auth()->user()->warehouses;
@@ -832,7 +832,7 @@ class ProductController extends Controller
     public function deleteVariation(Request $request)
     {
         $id = $request->id;
-        if (auth()->user()->hasRole('SUPER ADMIN') || auth()->user()->hasRole('ADMINISTRATOR') || auth()->user()->isWarehouseAdmin()) {
+        if (auth()->user()->hasNewRole('SUPER ADMIN') || auth()->user()->hasNewRole('ADMINISTRATOR') || auth()->user()->isWarehouseAdmin()) {
             $variation = ProductVariation::findOrFail($id);
             $productId = $variation->product_id;
             $variation->delete();
@@ -1151,8 +1151,8 @@ class ProductController extends Controller
 
     private function authorizeBulkVariations()
     {
-        if (!(auth()->user()->hasRole('SUPER ADMIN')
-            || auth()->user()->hasRole('ADMINISTRATOR')
+        if (!(auth()->user()->hasNewRole('SUPER ADMIN')
+            || auth()->user()->hasNewRole('ADMINISTRATOR')
             || auth()->user()->can('Edit Estore Products')
             || auth()->user()->isWarehouseAdmin())) {
             abort(403, 'You do not have permission to access this page.');

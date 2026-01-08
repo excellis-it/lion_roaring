@@ -16,7 +16,7 @@ class MemberController extends Controller
     public function index()
     {
         if (Auth::user()->can('Manage Members Access')) {
-            if (Auth::user()->hasRole('ECCLESIA')) {
+            if (Auth::user()->hasNewRole('ECCLESIA')) {
                 // Exclude SUPER ADMIN and ECCLESIA roles
                 $partners = User::whereHas('roles', function ($q) {
                     $q->whereNotIn('name', ['SUPER ADMIN', 'ECCLESIA']);
@@ -73,7 +73,7 @@ class MemberController extends Controller
             //     $q->where('name', 'SUPER ADMIN')->orWhere('name', 'ECCLESIA');
             // });
 
-            if (Auth::user()->hasRole('ECCLESIA')) {
+            if (Auth::user()->hasNewRole('ECCLESIA')) {
                 // Exclude SUPER ADMIN and ECCLESIA roles
                 $partners = User::whereHas('roles', function ($q) {
                     $q->whereNotIn('name', ['SUPER ADMIN', 'ECCLESIA']);
@@ -88,7 +88,7 @@ class MemberController extends Controller
                     ->paginate(15);
             }
 
-            if (Auth::user()->hasRole('SUPER ADMIN')) {
+            if (Auth::user()->hasNewRole('SUPER ADMIN')) {
                 $partners = $partners->paginate(15);
             } else {
                 $partners = $partners->paginate(15);

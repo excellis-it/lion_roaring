@@ -21,7 +21,7 @@
     <div class="d-flex">
 
 
-        @if (auth()->user()->can('Edit Meeting Schedule') || auth()->user()->hasRole('SUPER ADMIN'))
+        @if (auth()->user()->can('Edit Meeting Schedule') || auth()->user()->hasNewRole('SUPER ADMIN'))
             <a href="{{ route('meetings.edit', $meeting->id) }}" class="delete_icon">
                 <i class="fa-solid fa-edit"></i>
             </a> &nbsp; &nbsp;

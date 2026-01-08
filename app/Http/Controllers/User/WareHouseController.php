@@ -104,7 +104,7 @@ class WareHouseController extends Controller
                 $user = User::find($userId);
                 if ($user) {
                     $user->warehouses()->syncWithoutDetaching([$wareHouse->id]); // avoid duplicate attach
-                    // if (!$user->hasRole('WAREHOUSE_ADMIN')) {
+                    // if (!$user->hasNewRole('WAREHOUSE_ADMIN')) {
                     //     $user->syncRoles(['WAREHOUSE_ADMIN']);
                     // }
                 }
@@ -187,7 +187,7 @@ class WareHouseController extends Controller
                 $user = User::find($userId);
                 if ($user) {
                     $user->warehouses()->syncWithoutDetaching([$wareHouse->id]);
-                    // if (!$user->hasRole('WAREHOUSE_ADMIN')) {
+                    // if (!$user->hasNewRole('WAREHOUSE_ADMIN')) {
                     //     $user->syncRoles(['WAREHOUSE_ADMIN']);
                     // }
                 }
@@ -199,7 +199,7 @@ class WareHouseController extends Controller
                     $user->warehouses()->detach($wareHouse->id);
                     // if user has no more warehouses, remove warehouse admin role
                     if ($user->warehouses()->count() == 0) {
-                        // if ($user->hasRole('WAREHOUSE_ADMIN')) {
+                        // if ($user->hasNewRole('WAREHOUSE_ADMIN')) {
                         //     $user->removeRole('WAREHOUSE_ADMIN');
                         //     // assign default role
                         //     $user->syncRoles(['MEMBER_NON_SOVEREIGN']);
@@ -271,7 +271,7 @@ class WareHouseController extends Controller
             abort(403, 'Unauthorized action.');
         }
 
-        if (Auth::user()->hasRole('SUPER ADMIN')) {
+        if (Auth::user()->hasNewRole('SUPER ADMIN')) {
             $products = Product::where('status', 1)->get();
         } else {
             $products = Product::where('status', 1)
@@ -349,7 +349,7 @@ class WareHouseController extends Controller
         }
 
         $warehouseProduct = WarehouseProduct::findOrFail($productId);
-        if (Auth::user()->hasRole('SUPER ADMIN')) {
+        if (Auth::user()->hasNewRole('SUPER ADMIN')) {
             $products = Product::where('status', 1)->get();
         } else {
             $products = Product::where('status', 1)

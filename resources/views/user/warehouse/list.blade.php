@@ -31,7 +31,7 @@
                             <th>Warehouse Admins</th>
 
                             <th>Status</th>
-                            @if (Auth::user()->hasRole('SUPER ADMIN'))
+                            @if (Auth::user()->hasNewRole('SUPER ADMIN'))
                                 <th>Actions</th>
                             @endif
                         </tr>

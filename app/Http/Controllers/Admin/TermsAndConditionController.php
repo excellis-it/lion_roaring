@@ -10,7 +10,7 @@ class TermsAndConditionController extends Controller
 {
     public function index(Request $request)
     {
-        if (auth()->user()->hasRole('SUPER ADMIN')) {
+        if (auth()->user()->hasNewRole('SUPER ADMIN')) {
             $terms_and_condition = TermsAndCondition::where('country_code', $request->get('content_country_code', 'US'))->orderBy('id', 'desc')->first();
             return view('admin.terms.index')->with(compact('terms_and_condition'));
         } else {

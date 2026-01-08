@@ -162,7 +162,7 @@ class User extends Authenticatable
     // Check if user is a warehouse admin
     public function isWarehouseAdmin()
     {
-        // return $this->hasRole('WAREHOUSE_ADMIN');
+        // return $this->hasNewRole('WAREHOUSE_ADMIN');
         // check if user has any warehouses assigned
         return $this->warehouses()->exists();
     }
@@ -170,7 +170,7 @@ class User extends Authenticatable
     // Check if user can manage a specific warehouse
     public function canManageWarehouse($warehouseId)
     {
-        if ($this->hasRole('SUPER ADMIN')) {
+        if ($this->hasNewRole('SUPER ADMIN')) {
             return true;
         }
 
@@ -179,5 +179,29 @@ class User extends Authenticatable
         }
 
         return false;
+    }
+
+    public function userRole()
+    {
+        return $this->belongsTo(UserType::class, 'user_type_id');
+    }
+
+    public function getFirstUserRoleType()
+    {
+        return $this->userRole->pluck('type')->first();
+    }
+
+    public function getFirstUserRoleName()
+    {
+        return $this->userRole->pluck('name')->first();
+    }
+
+    public function hasNewRole($roles)
+    {
+        if (is_array($roles)) {
+            return $this->roles()->whereIn('name', $roles)->exists();
+        }
+
+        return $this->roles()->where('name', $roles)->exists();
     }
 }

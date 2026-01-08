@@ -24,7 +24,7 @@ class BulletinController extends Controller
             $user_type = auth()->user()->user_type;
             $user_country = auth()->user()->country;
 
-            if (Auth::user()->hasRole('SUPER ADMIN')) {
+            if (Auth::user()->hasNewRole('SUPER ADMIN')) {
                 $bulletins = Bulletin::orderBy('id', 'desc')->paginate(15);
             } else {
                 if ($user_type == 'Global') {
@@ -122,7 +122,7 @@ class BulletinController extends Controller
             $user_type = auth()->user()->user_type;
             $user_country = auth()->user()->country;
 
-            if (auth()->user()->hasRole('SUPER ADMIN')) {
+            if (auth()->user()->hasNewRole('SUPER ADMIN')) {
                 $bulletin = Bulletin::find($id);
             } else {
                 if ($user_type == 'Global') {
@@ -157,7 +157,7 @@ class BulletinController extends Controller
 
             $request->merge(['country_id' => $country_id]);
 
-            if (auth()->user()->hasRole('SUPER ADMIN')) {
+            if (auth()->user()->hasNewRole('SUPER ADMIN')) {
                 $bulletin = Bulletin::find($id);
             } else {
                 if (auth()->user()->user_type == 'Global') {
@@ -205,7 +205,7 @@ class BulletinController extends Controller
     public function delete($id)
     {
         if (Auth::user()->can('Delete Bulletin')) {
-            if (auth()->user()->hasRole('SUPER ADMIN')) {
+            if (auth()->user()->hasNewRole('SUPER ADMIN')) {
                 $bulletin = Bulletin::find($id);
             } else {
                 $bulletin = Bulletin::where('user_id', Auth::user()->id)->find($id);
@@ -235,7 +235,7 @@ class BulletinController extends Controller
                 $query = $request->get('query', '');
                 $query = str_replace(" ", "%", $query);
 
-                if (Auth::user()->hasRole('SUPER ADMIN')) {
+                if (Auth::user()->hasNewRole('SUPER ADMIN')) {
                     $bulletins = Bulletin::query()
                         ->where('title', 'like', '%' . $query . '%')
                         ->orWhere('description', 'like', '%' . $query . '%')
@@ -268,7 +268,7 @@ class BulletinController extends Controller
 
     public function loadTable(Request $request)
     {
-        if (Auth::user()->hasRole('SUPER ADMIN')) {
+        if (Auth::user()->hasNewRole('SUPER ADMIN')) {
             $bulletins = Bulletin::orderBy('id', 'desc')->paginate(15);
         } else {
             $bulletins = Bulletin::where('user_id', Auth::user()->id)->orderBy('id', 'desc')->paginate(15);
@@ -279,7 +279,7 @@ class BulletinController extends Controller
 
     public function single(Request $request)
     {
-        if (Auth::user()->hasRole('SUPER ADMIN')) {
+        if (Auth::user()->hasNewRole('SUPER ADMIN')) {
             $bulletins = Bulletin::orderBy('id', 'desc')->paginate(15);
         } else {
             $bulletins = Bulletin::where('user_id', Auth::user()->id)->orderBy('id', 'desc')->paginate(15);

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Models\UserType;
 use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Auth;
@@ -19,7 +20,7 @@ class RolePermissionController extends Controller
      */
     // public function index()
     // {
-    //     if (Auth::user()->hasRole('SUPER ADMIN')) {
+    //     if (Auth::user()->hasNewRole('SUPER ADMIN')) {
     //         $roles = Role::where('name', '!=', 'SUPER ADMIN')->whereIn('type', [1, 3])->get();
     //         return view('admin.role_permission.list', compact('roles'));
     //     } else {
@@ -28,13 +29,13 @@ class RolePermissionController extends Controller
     // }
     public function index()
     {
-        if (Auth::user()->getFirstRoleType() == 1 || Auth::user()->getFirstRoleType() == 3) {
-            if (Auth::user()->getFirstRoleType() == 1) {
-                $roles = Role::where('name', '!=', 'SUPER ADMIN')->whereIn('type', [1, 3])->get();
+        if (Auth::user()->getFirstUserRoleType() == 1 || Auth::user()->getFirstUserRoleType() == 3) {
+            if (Auth::user()->getFirstUserRoleType() == 1) {
+                $roles = UserType::where('name', '!=', 'SUPER ADMIN')->whereIn('type', [1, 3])->get();
             } else {
-                $roles = Role::where('name', '!=', 'SUPER ADMIN')->whereIn('type', [2])->get();
+                $roles = UserType::where('name', '!=', 'SUPER ADMIN')->whereIn('type', [2])->get();
             }
-            //   $roles = Role::where('name', '!=', 'SUPER ADMIN')->whereIn('type', [3])->get();
+            //   $roles = UserType::where('name', '!=', 'SUPER ADMIN')->whereIn('type', [3])->get();
             return view('admin.role_permission.list', compact('roles'));
         } else {
             abort(403, 'You do not have permission to access this page.');
@@ -48,7 +49,7 @@ class RolePermissionController extends Controller
      */
     public function create()
     {
-        if (Auth::user()->getFirstRoleType() == 1 || Auth::user()->getFirstRoleType() == 3) {
+        if (Auth::user()->getFirstUserRoleType() == 1 || Auth::user()->getFirstUserRoleType() == 3) {
             $permissions = Permission::all()->pluck('name', 'id')->toArray();
             return view('admin.role_permission.create', compact('permissions'));
         } else {
@@ -64,7 +65,7 @@ class RolePermissionController extends Controller
      */
     public function store(Request $request)
     {
-        if (Auth::user()->getFirstRoleType() == 1) {
+        if (Auth::user()->getFirstUserRoleType() == 1) {
             $roleType = 3;
         } else {
             $roleType = 2;
@@ -75,7 +76,7 @@ class RolePermissionController extends Controller
         ]);
 
         $name             = $request['role_name'];
-        $role             = new Role();
+        $role             = new UserType();
         $role->name       = $name;
         $role->type = $roleType;
         $permissions      = $request['permissions'];
@@ -84,7 +85,7 @@ class RolePermissionController extends Controller
         if (!empty($permissions)) {
             foreach ($permissions as $permission) {
                 $p = Permission::where('id', '=', $permission)->firstOrFail();
-                $role = Role::where('name', '=', $name)->whereIn('type', [3])->first();
+                $role = UserType::where('name', '=', $name)->whereIn('type', [3])->first();
                 $role->givePermissionTo($p);
             }
         }
@@ -111,12 +112,12 @@ class RolePermissionController extends Controller
      */
     public function edit($id)
     {
-        if (Auth::user()->getFirstRoleType() == 1 || Auth::user()->getFirstRoleType() == 3) {
+        if (Auth::user()->getFirstUserRoleType() == 1 || Auth::user()->getFirstUserRoleType() == 3) {
             $id = Crypt::decrypt($id);
-            $role = Role::findOrFail($id);
+            $role = UserType::findOrFail($id);
 
             $user = Auth::user();
-            $firstRoleType = $user->getFirstRoleType();
+            $firstRoleType = $user->getFirstUserRoleType();
             $permissions = new Collection();
 
             $rolePermissions = $role->permissions()->get();
@@ -150,7 +151,7 @@ class RolePermissionController extends Controller
             'permissions' => 'required'
         ]);
 
-        $role = Role::findOrFail($id);
+        $role = UserType::findOrFail($id);
         $role->name = $request->role_name;
         $permissions = $request['permissions'];
         $role->save();
@@ -178,7 +179,7 @@ class RolePermissionController extends Controller
     public function destroy($id)
     {
         $id = Crypt::decrypt($id);
-        $role = Role::findOrFail($id);
+        $role = UserType::findOrFail($id);
         if ($role->name != 'SUPER ADMIN') {
             $role->delete();
             return redirect()->back()->with('message', 'Role deleted successfully.');

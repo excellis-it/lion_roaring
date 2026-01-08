@@ -492,7 +492,7 @@ class EstoreCmsController extends Controller
     public function fetchOrdersData(Request $request)
     {
         if ($request->ajax()) {
-            if (Auth::user()->hasRole('SUPER ADMIN')) {
+            if (Auth::user()->hasNewRole('SUPER ADMIN')) {
                 $orders = EstoreOrder::with(['user', 'orderItems'])
                     ->orderBy('created_at', 'desc');
             } else {
@@ -955,7 +955,7 @@ class EstoreCmsController extends Controller
                 ->where('status', '!=', 'cancelled');
 
             // Apply warehouse filter for non-admin users
-            if (!Auth::user()->hasRole('SUPER ADMIN')) {
+            if (!Auth::user()->hasNewRole('SUPER ADMIN')) {
                 $wareHouseIds = Auth::user()->warehouses->pluck('id')->toArray();
                 $query->whereIn('warehouse_id', $wareHouseIds);
             }
@@ -1084,7 +1084,7 @@ class EstoreCmsController extends Controller
         $query = EstoreOrder::where('status', '!=', 'cancelled')
             ->whereBetween('created_at', [$startDate, $endDate]);
 
-        if (!Auth::user()->hasRole('SUPER ADMIN')) {
+        if (!Auth::user()->hasNewRole('SUPER ADMIN')) {
             $wareHouseIds = Auth::user()->warehouses->pluck('id')->toArray();
             $query->whereIn('warehouse_id', $wareHouseIds);
         }
@@ -1132,7 +1132,7 @@ class EstoreCmsController extends Controller
         $query = EstoreOrder::where('status', '!=', 'cancelled')
             ->whereBetween('created_at', [$startDate, $endDate]);
 
-        if (!Auth::user()->hasRole('SUPER ADMIN')) {
+        if (!Auth::user()->hasNewRole('SUPER ADMIN')) {
             $wareHouseIds = Auth::user()->warehouses->pluck('id')->toArray();
             $query->whereIn('warehouse_id', $wareHouseIds);
         }
@@ -1183,7 +1183,7 @@ class EstoreCmsController extends Controller
             ->whereBetween('created_at', [$startDate, $endDate])
             ->where('status', '!=', 'cancelled');
 
-        if (!Auth::user()->hasRole('SUPER ADMIN')) {
+        if (!Auth::user()->hasNewRole('SUPER ADMIN')) {
             $wareHouseIds = Auth::user()->warehouses->pluck('id')->toArray();
             $query->whereIn('warehouse_id', $wareHouseIds);
         }

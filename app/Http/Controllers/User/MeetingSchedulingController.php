@@ -166,7 +166,7 @@ class MeetingSchedulingController extends Controller
      */
     public function edit($id)
     {
-        if (auth()->user()->can('Edit Meeting Schedule') && auth()->user()->id == Meeting::find($id)->user_id || auth()->user()->hasRole('SUPER ADMIN')) {
+        if (auth()->user()->can('Edit Meeting Schedule') && auth()->user()->id == Meeting::find($id)->user_id || auth()->user()->hasNewRole('SUPER ADMIN')) {
             $countries = Country::orderBy('name', 'asc')->get();
             $user_type = auth()->user()->user_type;
             $user_country = auth()->user()->country;
@@ -286,7 +286,7 @@ class MeetingSchedulingController extends Controller
     }
     public function delete($id)
     {
-        if (Auth::user()->can('Delete Meeting Schedule') && Auth::user()->id == Meeting::find($id)->user_id || Auth::user()->hasRole('SUPER ADMIN')) {
+        if (Auth::user()->can('Delete Meeting Schedule') && Auth::user()->id == Meeting::find($id)->user_id || Auth::user()->hasNewRole('SUPER ADMIN')) {
             $meeting = Meeting::findOrFail($id);
             $meeting->delete();
             return response()->json(['message' => 'Meeting deleted successfully.', 'status' => true, 'id' => $id]);
@@ -397,7 +397,7 @@ class MeetingSchedulingController extends Controller
         }
 
         // Host if creator or SUPER ADMIN, else attendee
-        $role = (auth()->id() === $meeting->user_id || auth()->user()->hasRole('SUPER ADMIN')) ? 1 : 0;
+        $role = (auth()->id() === $meeting->user_id || auth()->user()->hasNewRole('SUPER ADMIN')) ? 1 : 0;
 
         // Signature v2 (per Zoom docs)
         $ts = round(microtime(true) * 1000) - 30000;

@@ -364,9 +364,9 @@ class RolePermissionsController extends Controller
     {
         try {
             // Check if the user has the necessary roles
-            if (Auth::user()->hasRole('SUPER ADMIN') || Auth::user()->hasRole('LEADER')) {
+            if (Auth::user()->hasNewRole('SUPER ADMIN') || Auth::user()->hasNewRole('LEADER')) {
                 // If the user is a LEADER, fetch only the 'MEMBER_NON_SOVEREIGN' roles
-                if (Auth::user()->hasRole('LEADER')) {
+                if (Auth::user()->hasNewRole('LEADER')) {
                     $roles = Role::where('name', 'MEMBER_NON_SOVEREIGN')
                         ->with('permissions') // Load permissions for the 'MEMBER_NON_SOVEREIGN' role
                         ->get();
@@ -616,7 +616,7 @@ class RolePermissionsController extends Controller
     {
         try {
             // Check if the user has the necessary roles
-            if (Auth::user()->hasRole('SUPER ADMIN') || Auth::user()->hasRole('LEADER')) {
+            if (Auth::user()->hasNewRole('SUPER ADMIN') || Auth::user()->hasNewRole('LEADER')) {
                 // Decrypt the role ID
                 $id = $id;
                 // Find the role by ID

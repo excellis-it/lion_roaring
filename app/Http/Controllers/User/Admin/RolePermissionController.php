@@ -19,7 +19,7 @@ class RolePermissionController extends Controller
      */
     // public function index()
     // {
-    //     if (Auth::user()->hasRole('SUPER ADMIN')) {
+    //     if (Auth::user()->hasNewRole('SUPER ADMIN')) {
     //         $roles = Role::where('name', '!=', 'SUPER ADMIN')->whereIn('type', [1, 3])->get();
     //         return view('user.admin.role_permission.list', compact('roles'));
     //     } else {
@@ -28,8 +28,8 @@ class RolePermissionController extends Controller
     // }
     public function index()
     {
-        if (Auth::user()->getFirstRoleType() == 1 || Auth::user()->getFirstRoleType() == 3) {
-            if (Auth::user()->getFirstRoleType() == 1) {
+        if (Auth::user()->getFirstUserRoleType() == 1 || Auth::user()->getFirstUserRoleType() == 3) {
+            if (Auth::user()->getFirstUserRoleType() == 1) {
                 $roles = Role::where('name', '!=', 'SUPER ADMIN')->whereIn('type', [1, 3])->get();
             } else {
                 $roles = Role::where('name', '!=', 'SUPER ADMIN')->whereIn('type', [2])->get();
@@ -48,7 +48,7 @@ class RolePermissionController extends Controller
      */
     public function create()
     {
-        if (Auth::user()->getFirstRoleType() == 1 || Auth::user()->getFirstRoleType() == 3) {
+        if (Auth::user()->getFirstUserRoleType() == 1 || Auth::user()->getFirstUserRoleType() == 3) {
             $permissions = Permission::all()->pluck('name', 'id')->toArray();
             return view('user.admin.role_permission.create', compact('permissions'));
         } else {
@@ -64,7 +64,7 @@ class RolePermissionController extends Controller
      */
     public function store(Request $request)
     {
-        if (Auth::user()->getFirstRoleType() == 1) {
+        if (Auth::user()->getFirstUserRoleType() == 1) {
             $roleType = 3;
         } else {
             $roleType = 2;
@@ -111,17 +111,17 @@ class RolePermissionController extends Controller
      */
     public function edit($id)
     {
-        if (Auth::user()->getFirstRoleType() == 1 || Auth::user()->getFirstRoleType() == 3) {
+        if (Auth::user()->getFirstUserRoleType() == 1 || Auth::user()->getFirstUserRoleType() == 3) {
             $id = Crypt::decrypt($id);
             $role = Role::findOrFail($id);
 
             $user = Auth::user();
-            $firstRoleType = $user->getFirstRoleType();
+            $firstRoleType = $user->getFirstUserRoleType();
             $permissions = new Collection();
 
             $rolePermissions = $role->permissions()->get();
 
-           
+
 
             $permissions1 = $permissions->merge($rolePermissions);
 
