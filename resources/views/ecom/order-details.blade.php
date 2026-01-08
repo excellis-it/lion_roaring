@@ -400,7 +400,7 @@
                                     <h6 style="margin:0; font-size:14px; color:#495057;">
                                         <strong style="color:#0d6efd;">Expected Delivery Date:</strong>
                                         <span style="font-weight:bold; color:#212529;">
-                                            {{ \Carbon\Carbon::parse($deliveredAt)->timezone(auth()->user()->time_zone)->format('M d, Y') }}
+                                            {{ \Carbon\Carbon::parse($deliveredAt)->format('M d, Y') }}
                                         </span>
                                     </h6>
                                 </div>
