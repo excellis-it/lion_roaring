@@ -46,6 +46,7 @@ use App\Models\OrderStatus;
 use App\Models\ProductColorImage;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Mail;
+use App\Mail\OutOfStockNotificationMail;
 use Stripe\Climate\Order;
 use App\Models\ProductImage;
 
@@ -1463,7 +1464,7 @@ class ProductController extends Controller
             // product details
             $productDetails = [
                 'product_id' => $warehouseProduct->product_id,
-                'product_name' => $warehouseProduct->product->name,
+                'product_name' => $warehouseProduct->product->name ?? '',
                 'warehouse_id' => $warehouseProduct->warehouse_id,
                 'quantity' => $warehouseProduct->quantity,
             ];
@@ -1472,7 +1473,30 @@ class ProductController extends Controller
             // Get the admin users directly through the relationship
             $warehouse_admin_users = $warehouseProduct->warehouse->admins ?? collect();
             foreach ($warehouse_admin_users as $assigned_user) {
-                NotificationService::notifyUser($assigned_user->id, 'Product is out of stock : ' . $productDetails['product_name']);
+                // In-app notification
+                NotificationService::notifyUser($assigned_user->id, 'Product is out of stock: ' . $productDetails['product_name']);
+
+                // Send queued email to assigned warehouse admin
+                if (!empty($assigned_user->email)) {
+                    try {
+                        Mail::to($assigned_user->email)->queue(new OutOfStockNotificationMail($warehouseProduct, $assigned_user));
+                    } catch (\Throwable $th) {
+                        Log::error('Failed to send out-of-stock email to warehouse admin', ['user_id' => $assigned_user->id, 'error' => $th->getMessage()]);
+                    }
+                }
+            }
+
+            // Also notify and email all SUPER ADMIN users
+            $superAdmins = User::role('SUPER ADMIN')->get();
+            foreach ($superAdmins as $sa) {
+                NotificationService::notifyUser($sa->id, 'Product is out of stock: ' . $productDetails['product_name']);
+                if (!empty($sa->email)) {
+                    try {
+                        Mail::to($sa->email)->queue(new OutOfStockNotificationMail($warehouseProduct, $sa));
+                    } catch (\Throwable $th) {
+                        Log::error('Failed to send out-of-stock email to super admin', ['user_id' => $sa->id, 'error' => $th->getMessage()]);
+                    }
+                }
             }
         }
     }
