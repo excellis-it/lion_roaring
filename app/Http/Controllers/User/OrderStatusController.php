@@ -36,6 +36,7 @@ class OrderStatusController extends Controller
 
         $request->validate([
             'name' => 'required|string|max:100',
+            'pickup_name' => 'nullable|string|max:100',
             // 'slug' => [
             //     'required',
             //     'string',
@@ -64,7 +65,7 @@ class OrderStatusController extends Controller
         $request->merge(['slug' => $slug]);
 
 
-        OrderStatus::create($request->only(['name', 'slug', 'sort_order', 'is_active']));
+        OrderStatus::create($request->only(['name', 'pickup_name', 'slug', 'sort_order', 'is_active']));
 
         return redirect()->route('order-status.index')->with('message', 'Order status created successfully.');
     }
@@ -89,11 +90,12 @@ class OrderStatusController extends Controller
 
         $request->validate([
             'name' => 'required|string|max:100',
+            'pickup_name' => 'nullable|string|max:100',
             'sort_order' => 'nullable|integer',
             'is_active' => 'boolean',
         ]);
 
-        $status->update($request->only(['name', 'sort_order', 'is_active']));
+        $status->update($request->only(['name', 'pickup_name', 'sort_order', 'is_active']));
 
         return redirect()->route('order-status.index')->with('message', 'Order status updated successfully.');
     }

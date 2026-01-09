@@ -40,6 +40,7 @@
                                             <tr class="header-row">
                                                 <th>ID (#)</th>
                                                 <th>Name</th>
+                                                <th>Pickup Name</th>
                                                 <th>Slug</th>
                                                 <th>Sort Order</th>
                                                 <th>Status</th>
@@ -51,6 +52,7 @@
                                                 <tr>
                                                     <td>{{ $key + 1 }}</td>
                                                     <td>{{ $status->name }}</td>
+                                                    <td>{{ $status->pickup_name }}</td>
                                                     <td>{{ $status->slug }}</td>
                                                     <td>{{ $status->sort_order }}</td>
                                                     <td>{{ $status->is_active ? 'Active' : 'Inactive' }}</td>

@@ -38,7 +38,7 @@
                                 <div class="col-md-6 text-end">
                                     <span
                                         class="badge bg-{{ $order->status == 4 ? 'success' : ($order->status == 5 ? 'danger' : 'primary') }} mb-1">
-                                        {{ ucfirst($order->orderStatus->name ?? '-') }}
+                                        {{ $order->is_pickup ? ucfirst($order->orderStatus->pickup_name ?? '-') : ucfirst($order->orderStatus->name ?? '-') }}
                                     </span><br>
                                     <span class="badge bg-{{ $order->payment_status == 'paid' ? 'success' : 'warning' }}">
                                         Payment {{ ucfirst($order->payment_status) }}
@@ -249,7 +249,8 @@
 
                             @if ($order->status == 3)
                                 <button type="button" class="btn btn-outline-dark w-100" disabled>
-                                    Order that has been shipped can't be cancelled.
+                                    Order that has been {{ $order->is_pickup ? 'ready for picked up' : 'shipped' }} can't
+                                    be cancelled.
                                 </button>
                             @endif
 
@@ -332,15 +333,27 @@
 
             <div class="row mt-3">
                 <div class="col-md-8">
+
                     @php
-                        $labels = [
-                            // optional overrides for label text; otherwise use $status->name
-                            'pending' => 'Ordered',
-                            'processing' => 'Processing',
-                            'shipped' => 'Shipped',
-                            'delivered' => 'Delivered',
-                            'cancelled' => 'Cancelled',
-                        ];
+                        if ($order->is_pickup == 1) {
+                            $labels = [
+                                'pending' => 'Ordered',
+                                'processing' => 'Processing',
+                                'shipped' => 'Ready for Pickup',
+                                'out_for_delivery' => 'Picked Up',
+                                'delivered' => 'Delivered',
+                                'cancelled' => 'Cancelled',
+                            ];
+                        } else {
+                            $labels = [
+                                'pending' => 'Ordered',
+                                'processing' => 'Processing',
+                                'shipped' => 'Shipped',
+                                'out_for_delivery' => 'Out for Delivery',
+                                'delivered' => 'Delivered',
+                                'cancelled' => 'Cancelled',
+                            ];
+                        }
                     @endphp
 
                     <div class="delevry-sumry shadow p-3">
