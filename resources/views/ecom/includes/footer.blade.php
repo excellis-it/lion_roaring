@@ -77,7 +77,7 @@
                         {{-- <li><a href="{{ route('privacy-policy.e-store.cms-page') }}">Privacy Policy</a></li>
                         <li><a href="{{ route('terms-and-condition.e-store.cms-page') }}">Terms and Conditions</a></li> --}}
                         <li><a href="{{ route('e-store.cms-page', ['slug' => 'privacy-policy']) }}">Privacy Policy</a></li>
-                        <li><a href="{{ route('e-store.cms-page', ['slug' => 'terms-and-condition']) }}">Terms and Conditions</a></li>
+                        <li><a href="{{ route('terms-and-conditions') }}">Terms and Conditions</a></li>
 
                     </ul>
                 </div>

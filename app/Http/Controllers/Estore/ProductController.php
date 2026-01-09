@@ -1070,7 +1070,7 @@ class ProductController extends Controller
 
             $allWarehouseAdminIds = array_unique($allWarehouseAdminIds);
 
-            $superAdminIds = User::role('SUPER ADMIN')->pluck('id')->toArray();
+            $superAdminIds = User::where('user_type_id', 1)->pluck('id')->toArray();
 
             $recipientIds = array_unique(array_merge($allWarehouseAdminIds, $superAdminIds));
 
@@ -1487,7 +1487,7 @@ class ProductController extends Controller
             }
 
             // Also notify and email all SUPER ADMIN users
-            $superAdmins = User::role('SUPER ADMIN')->get();
+            $superAdmins = User::where('user_type_id', 1)->get();
             foreach ($superAdmins as $sa) {
                 NotificationService::notifyUser($sa->id, 'Product is out of stock: ' . $productDetails['product_name']);
                 if (!empty($sa->email)) {

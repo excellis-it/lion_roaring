@@ -47,7 +47,7 @@
                 @if (count($categories) > 0)
                     @foreach ($categories as $category)
                         <div class="feature_slid_padding">
-                            <div class="feature_box">
+                            <div class="feature_box shadow">
                                 <div class="feature_img">
                                     <a href="{{ route($category->slug . '.e-learning.page') }}"><img
                                             src="{{ Storage::url($category->image) }}" /></a>
@@ -81,7 +81,7 @@
                     @if (count($feature_products) > 0)
                         @foreach ($feature_products as $product)
                             <div class="feature_slid_padding">
-                                <div class="feature_box">
+                                <div class="feature_box shadow">
                                     <div class="feature_img">
 
                                         <a href="{{ $product['affiliate_link'] }}">
@@ -128,7 +128,7 @@
                     @if (count($new_products) > 0)
                         @foreach ($new_products as $product)
                             <div class="feature_slid_padding">
-                                <div class="feature_box">
+                                <div class="feature_box shadow">
                                     <div class="feature_img">
 
                                         <a href="{{ $product['affiliate_link'] }}">
@@ -151,7 +151,7 @@
                                             href="{{ $product['affiliate_link'] }}">{{ $product['button_name'] ? $product['button_name'] : 'go to shop' }}</a>
                                     </div>
                                     </div>
-                                    
+
                                 </div>
                             </div>
                         @endforeach

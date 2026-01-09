@@ -108,6 +108,10 @@
                                         class="badge {{ $order->payment_status_badge_class }}">{{ ucfirst($order->payment_status) }}</span> --}}
                                     {{-- add invoice button --}}
 
+                                    @if ($order->is_pickup == 1)
+                                        <h5 class="bg-dark text-white p-2 rounded">Order Type: Pickup Order</h5>
+                                    @endif
+
                                     @if ($order->status == 4 && $order->payment_status == 'paid')
                                         <a href="{{ route('user.store-orders.invoice', $order->id) }}" target="_blank"
                                             class="btn btn-sm btn-primary">
@@ -129,20 +133,30 @@
                                         <p><strong>Username:</strong> {{ $order->user->user_name }}</p>
                                     @endif
                                 </div>
-                                <div class="col-md-6">
-                                    <h6>Warehouse:</h6>
-                                    <p>{{ $order->warehouse_name ?? 'N/A' }}, {{ $order->warehouse_address ?? '' }}
-                                    </p>
-                                    <h6>Shipping Address</h6>
-                                    <address>
-                                        {{ $order->address_line_1 }}<br>
-                                        @if ($order->address_line_2)
-                                            {{ $order->address_line_2 }}<br>
-                                        @endif
-                                        {{ $order->city }}, {{ $order->state }} {{ $order->pincode }}<br>
-                                        {{ $order->country }}
-                                    </address>
-                                </div>
+
+                                @if ($order->is_pickup == 1)
+                                    <div class="col-md-6">
+                                        <h6>Warehouse - Pickup Location:</h6>
+                                        <p>{{ $order->warehouse_name ?? 'N/A' }}, {{ $order->warehouse_address ?? '' }}
+                                        </p>
+
+                                    </div>
+                                @else
+                                    <div class="col-md-6">
+                                        <h6>Warehouse:</h6>
+                                        <p>{{ $order->warehouse_name ?? 'N/A' }}, {{ $order->warehouse_address ?? '' }}
+                                        </p>
+                                        <h6>Shipping Address</h6>
+                                        <address>
+                                            {{ $order->address_line_1 }}<br>
+                                            @if ($order->address_line_2)
+                                                {{ $order->address_line_2 }}<br>
+                                            @endif
+                                            {{ $order->city }}, {{ $order->state }} {{ $order->pincode }}<br>
+                                            {{ $order->country }}
+                                        </address>
+                                    </div>
+                                @endif
                             </div>
 
                             <div class="row mt-3">
@@ -286,13 +300,25 @@
 
                     <div class="card shadow-sm">
                         @php
-                            $labels = [
-                                'pending' => 'Ordered',
-                                'processing' => 'Processing',
-                                'shipped' => 'Shipped',
-                                'delivered' => 'Delivered',
-                                'cancelled' => 'Cancelled',
-                            ];
+                            if ($order->is_pickup == 1) {
+                                $labels = [
+                                    'pending' => 'Ordered',
+                                    'processing' => 'Processing',
+                                    'shipped' => 'Ready for Pickup',
+                                    'out_for_delivery' => 'Picked Up',
+                                    'delivered' => 'Delivered',
+                                    'cancelled' => 'Cancelled',
+                                ];
+                            } else {
+                                $labels = [
+                                    'pending' => 'Ordered',
+                                    'processing' => 'Processing',
+                                    'shipped' => 'Shipped',
+                                    'out_for_delivery' => 'Out for Delivery',
+                                    'delivered' => 'Delivered',
+                                    'cancelled' => 'Cancelled',
+                                ];
+                            }
                         @endphp
 
                         <div class="card-body">
@@ -477,7 +503,7 @@
                                 @foreach ($order_status as $status)
                                     <option value="{{ $status->id }}"
                                         {{ $order->status == $status->id ? 'selected' : '' }}>
-                                        {{ ucfirst($status->name) }}
+                                        {{ $order->is_pickup ? ucfirst($status->pickup_name) : ucfirst($status->name) }}
                                     </option>
                                 @endforeach
                             </select>
@@ -537,14 +563,14 @@
         }
 
         /* .timeline::before {
-                                content: '';
-                                position: absolute;
-                                left: 15px;
-                                top: 0;
-                                bottom: 0;
-                                width: 2px;
-                                background: #e9ecef;
-                            } */
+                                                                content: '';
+                                                                position: absolute;
+                                                                left: 15px;
+                                                                top: 0;
+                                                                bottom: 0;
+                                                                width: 2px;
+                                                                background: #e9ecef;
+                                                            } */
 
         .timeline-item {
             position: relative;

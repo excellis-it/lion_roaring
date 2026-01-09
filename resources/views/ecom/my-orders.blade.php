@@ -42,7 +42,7 @@
                                                 <div class="text-start mt-2">
                                                     <span
                                                         class="badge bg-{{ $order->status == 4 ? 'success' : ($order->status == 5 ? 'danger' : 'primary') }} mb-1">
-                                                        {{ ucfirst($order->orderStatus->name ?? '-') }}
+                                                        {{ $order->is_pickup ? ucfirst($order->orderStatus->pickup_name ?? '-') : ucfirst($order->orderStatus->name ?? '-') }}
                                                     </span>
                                                     <span
                                                         class="badge bg-{{ $order->payment_status == 'paid' ? 'success' : 'warning' }}">
