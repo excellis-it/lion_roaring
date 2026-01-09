@@ -157,6 +157,8 @@
                                     href="{{ route('e-learning.cms-page', ['slug' => $page->slug]) }}">{{ $page->page_name }}</a>
                             </li>
                         @endforeach
+
+                        <li><a href="{{ route('terms-and-conditions') }}">Terms & Conditions</a></li>
                     @endif
                 </ul>
             </div>
