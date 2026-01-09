@@ -945,7 +945,7 @@ p {
     position: relative;
     border-radius: 0px;
     transition: all ease-in 0.3s;
-    border: 1px solid #ccc;
+    /* border: 1px solid #ccc; */
     border-radius: 20px;
 }
 
