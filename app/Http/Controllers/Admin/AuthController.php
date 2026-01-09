@@ -34,11 +34,12 @@ class AuthController extends Controller
             return redirect()->back()->with('error', 'Something went wrong with the timezone detection. Please refresh the page and try again.');
         }
         if (Auth::attempt(['email' => $request->email, 'password' => $request->password], $remember_me)) {
-            $user = User::where('email', $request->email)->select('id', 'email', 'status')->first();
-            if ($user->getFirstUserRoleType() != 1) {
+            $user = User::where('email', $request->email)->first();
+            // dd($user);
+            if ($user->getFirstUserRoleType() && $user->getFirstUserRoleType() != 1) {
                 return redirect()->back()->with('error', 'This User Not Allowed Here!');
             }
-            if ($user->getFirstUserRoleType() == 1 && $user->status == 1) {
+            if ($user->getFirstUserRoleType() && $user->getFirstUserRoleType() == 1 && $user->status == 1) {
                 $user->update(['time_zone' => $request->time_zone]);
                 return redirect()->route('admin.dashboard');
             } else {
