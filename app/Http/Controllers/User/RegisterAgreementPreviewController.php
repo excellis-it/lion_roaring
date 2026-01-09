@@ -33,7 +33,8 @@ class RegisterAgreementPreviewController extends Controller
 
         $html = $this->applyPlaceholders($html, $signerName, $signerInitials);
         // Always satisfy the requested "I, user name" line.
-        $html = '<p><strong>I, ' . e($signerName) . '</strong></p>' . $html;
+        // $html = '<p><strong>I, ' . e($signerName) . '</strong></p>' . $html;
+        $html = '<p></p>' . $html;
 
         $token = (string) Str::uuid();
         $tmpPath = "register-agreements/tmp/{$token}.pdf";

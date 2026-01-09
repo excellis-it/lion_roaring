@@ -352,7 +352,7 @@
                                     <span class="badge bg-info text-dark p-2">
                                         <i class="fa-solid fa-calendar-day me-1"></i>
                                         Expected Delivery:
-                                        {{ \Carbon\Carbon::parse($order->expected_delivery_date)->timezone(auth()->user()->time_zone)->format('M d, Y') }}
+                                        {{ \Carbon\Carbon::parse($order->expected_delivery_date)->format('M d, Y') }}
                                     </span>
                                 </div>
                             @endif
@@ -537,14 +537,14 @@
         }
 
         /* .timeline::before {
-                            content: '';
-                            position: absolute;
-                            left: 15px;
-                            top: 0;
-                            bottom: 0;
-                            width: 2px;
-                            background: #e9ecef;
-                        } */
+                                content: '';
+                                position: absolute;
+                                left: 15px;
+                                top: 0;
+                                bottom: 0;
+                                width: 2px;
+                                background: #e9ecef;
+                            } */
 
         .timeline-item {
             position: relative;

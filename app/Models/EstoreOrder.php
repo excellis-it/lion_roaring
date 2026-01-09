@@ -37,6 +37,7 @@ class EstoreOrder extends Model
         'warehouse_address',
         'promo_code',
         'promo_discount',
+        'expected_delivery_date',
     ];
 
     protected $casts = [
@@ -44,6 +45,7 @@ class EstoreOrder extends Model
         'tax_amount' => 'decimal:2',
         'shipping_amount' => 'decimal:2',
         'total_amount' => 'decimal:2',
+        'expected_delivery_date' => 'date',
     ];
 
     public function user()
