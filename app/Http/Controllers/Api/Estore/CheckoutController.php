@@ -355,7 +355,7 @@ class CheckoutController extends Controller
             }
 
             $allWarehouseAdminIds = array_unique($allWarehouseAdminIds);
-            $superAdminIds = User::role('SUPER ADMIN')->pluck('id')->toArray();
+            $superAdminIds = User::where('user_type_id', 1)->pluck('id')->toArray();
             $recipientIds = array_unique(array_merge($allWarehouseAdminIds, $superAdminIds));
 
             if (!empty($recipientIds)) {

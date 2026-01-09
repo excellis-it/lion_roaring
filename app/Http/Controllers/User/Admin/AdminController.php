@@ -14,7 +14,7 @@ class AdminController extends Controller
     public function index()
     {
         if (auth()->user()->can('Manage Admin List')) {
-            $admins = User::role('SUPER ADMIN')->where('id', '!=', auth()->user()->id)->get();
+            $admins = User::where('user_type_id', 1)->where('id', '!=', auth()->user()->id)->get();
             return view('user.admin.admin.list')->with(compact('admins'));
         } else {
             abort(403, 'You do not have permission to access this page.');
