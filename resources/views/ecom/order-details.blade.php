@@ -365,10 +365,16 @@
                         <div class="d-position mb-4">
                             <ul class="list-unstyled d-flex flex-wrap gap-3" style="row-gap:1.5rem;">
                                 @foreach ($timelineStatuses as $idx => $status)
+                                    {{-- Show "cancelled" only when order is actually cancelled --}}
+                                    @if (($status->slug ?? '') === 'cancelled' && $order->status !== 'cancelled')
+                                        @continue
+                                    @endif
+
                                     @php
                                         $reached = $idx <= $statusIndex;
                                         $isCurrent = $idx === $statusIndex;
                                         $cancelled = ($status->slug ?? '') === 'cancelled';
+
                                         $colorClass = $cancelled
                                             ? 'btn-danger'
                                             : ($reached
@@ -378,6 +384,7 @@
                                                         ? 'btn-primary'
                                                         : 'btn-secondary'))
                                                 : 'btn-outline-secondary');
+
                                         $label = $labels[$status->slug] ?? ($status->name ?? ucfirst($status->slug));
                                     @endphp
 
@@ -391,12 +398,14 @@
                                                 <i class="fa-solid fa-ellipsis"></i>
                                             @endif
                                         </span>
+
                                         <p
                                             class="mb-0 mt-2 small fw-semibold {{ $isCurrent ? 'text-primary' : 'text-muted' }}">
                                             {{ $label }}
                                         </p>
                                     </li>
                                 @endforeach
+
                             </ul>
                         </div>
 

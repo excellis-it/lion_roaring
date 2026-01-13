@@ -653,9 +653,17 @@ class EstoreCmsController extends Controller
             $order->save();
 
             // Send email if template exists for this status
+            $isPickup = (bool)($order->is_pickup ?? false);
             $template = OrderEmailTemplate::where('order_status_id', $request->status)
                 ->where('is_active', 1)
+                ->where('is_pickup', $isPickup)
                 ->first();
+
+            if (!$template) {
+                $template = OrderEmailTemplate::where('order_status_id', $request->status)
+                    ->where('is_active', 1)
+                    ->first();
+            }
 
             if ($template) {
                 // Build order list table HTML

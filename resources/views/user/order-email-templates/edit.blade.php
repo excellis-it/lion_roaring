@@ -92,10 +92,17 @@
                                             <option value="{{ $status->id }}"
                                                 {{ old('order_status_id', $template->order_status_id) == $status->id ? 'selected' : '' }}
                                                 {{ $disabled ? 'disabled' : '' }}>
-                                                {{ $status->name }}
+                                                {{ $template->is_pickup ? $status->pickup_name : $status->name }}
                                             </option>
                                         @endforeach
                                     </select>
+
+                                    <input type="hidden" name="is_pickup"
+                                        value="{{ old('is_pickup', $template->is_pickup) ? 1 : 0 }}">
+                                    @if ($template->is_pickup)
+                                        <span class="badge bg-secondary">Pickup Template</span>
+                                    @endif
+
                                     <small class="text-muted">If selected, this template will be sent when the order reaches
                                         this status.</small>
                                     @error('order_status_id')

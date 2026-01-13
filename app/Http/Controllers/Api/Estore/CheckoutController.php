@@ -418,9 +418,17 @@ class CheckoutController extends Controller
             }
 
             // Send order confirmation email to customer
+            $isPickup = (bool)($order->is_pickup ?? false);
             $template = OrderEmailTemplate::where('order_status_id', $order_status->id)
                 ->where('is_active', 1)
+                ->where('is_pickup', $isPickup)
                 ->first();
+
+            if (!$template) {
+                $template = OrderEmailTemplate::where('order_status_id', $order_status->id)
+                    ->where('is_active', 1)
+                    ->first();
+            }
 
             if ($template) {
                 try {

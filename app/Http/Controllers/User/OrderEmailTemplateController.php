@@ -20,10 +20,14 @@ class OrderEmailTemplateController extends Controller
         }
 
         $templates = OrderEmailTemplate::with('orderStatus')
-            ->orderBy('id', 'desc')
+            ->orderBy('id', 'asc')
             ->get();
 
-        return view('user.order-email-templates.list', compact('templates'));
+        // Split templates into general (delivery) and pickup variants
+        $generalTemplates = $templates->where('is_pickup', false)->values();
+        $pickupTemplates = $templates->where('is_pickup', true)->values();
+
+        return view('user.order-email-templates.list', compact('generalTemplates', 'pickupTemplates'));
     }
 
     /**
@@ -35,12 +39,14 @@ class OrderEmailTemplateController extends Controller
             abort(403, 'You do not have permission to create a template.');
         }
 
-        // Get all active order statuses that don't already have an email template
-        $statuses = OrderStatus::where('is_active', 1)
-            ->whereDoesntHave('emailTemplate') // relationship we will define
-            ->get();
+        // Get all active order statuses
+        // We'll allow creating both delivery and pickup templates for each status (uniqueness enforced on store)
+        $statuses = OrderStatus::where('is_active', 1)->orderBy('sort_order', 'asc')->get();
 
-        return view('user.order-email-templates.create', compact('statuses'));
+        // honor ?type=pickup to open create in pickup-mode
+        $isPickupParam = request('type') === 'pickup';
+
+        return view('user.order-email-templates.create', compact('statuses', 'isPickupParam'));
     }
 
 
@@ -55,10 +61,18 @@ class OrderEmailTemplateController extends Controller
 
         $request->validate([
             'title' => 'required|string|max:150',
-            'order_status_id' => 'nullable|exists:order_statuses,id|unique:order_email_templates,order_status_id',
+            'order_status_id' => 'nullable|exists:order_statuses,id',
             'subject' => 'required|string|max:200',
             'body'    => 'required|string',
+            'is_pickup' => 'nullable|boolean',
         ]);
+
+        // accept either hidden input or ?type=pickup as a fallback
+        $isPickup = $request->boolean('is_pickup') || request('type') === 'pickup';
+        // ensure there isn't already a template for this (status, is_pickup) pair
+        if ($request->order_status_id && OrderEmailTemplate::where('order_status_id', $request->order_status_id)->where('is_pickup', $isPickup)->exists()) {
+            return back()->withInput()->withErrors(['order_status_id' => 'A template for this order status and template type already exists.']);
+        }
 
         // Generate unique slug from title
         $baseSlug = \Str::slug($request->title);
@@ -74,6 +88,7 @@ class OrderEmailTemplateController extends Controller
             'title' => $request->title,
             'slug' => $slug,
             'order_status_id' => $request->order_status_id,
+            'is_pickup' => $isPickup,
             'subject' => $request->subject,
             'body' => $request->body,
         ]);
@@ -96,10 +111,11 @@ class OrderEmailTemplateController extends Controller
         $template = OrderEmailTemplate::findOrFail($id);
 
         // Get all active order statuses
-        $allStatuses = OrderStatus::where('is_active', 1)->get();
+        $allStatuses = OrderStatus::where('is_active', 1)->orderBy('sort_order', 'asc')->get();
 
-        // Get order_status_ids already used by other templates
+        // Get order_status_ids already used by other templates of the same template type (pickup/delivery)
         $usedStatusIds = OrderEmailTemplate::where('id', '!=', $id)
+            ->where('is_pickup', $template->is_pickup)
             ->pluck('order_status_id')
             ->filter(); // remove nulls
 
@@ -128,18 +144,29 @@ class OrderEmailTemplateController extends Controller
             'order_status_id' => [
                 'nullable',
                 'exists:order_statuses,id',
-                // ensure uniqueness except for this template
-                \Illuminate\Validation\Rule::unique('order_email_templates', 'order_status_id')->ignore($template->id),
             ],
             'subject' => 'required|string|max:200',
             'body'    => 'required|string',
+            'is_pickup' => 'nullable|boolean',
         ]);
 
+        // accept either hidden input or ?type=pickup fallback
+        $isPickup = $request->boolean('is_pickup') || request('type') === 'pickup';
 
+        // ensure uniqueness for (order_status_id, is_pickup) excluding this template
+        if (
+            $request->order_status_id && OrderEmailTemplate::where('order_status_id', $request->order_status_id)
+            ->where('is_pickup', $isPickup)
+            ->where('id', '!=', $template->id)
+            ->exists()
+        ) {
+            return back()->withInput()->withErrors(['order_status_id' => 'A template for this order status and template type already exists.']);
+        }
 
         $template->update([
             'title' => $request->title,
             'order_status_id' => $request->order_status_id,
+            'is_pickup' => $isPickup,
             'subject' => $request->subject,
             'body' => $request->body,
         ]);
