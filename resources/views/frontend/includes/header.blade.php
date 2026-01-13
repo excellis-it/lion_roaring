@@ -1,4 +1,3 @@
-{{-- @json(session()->all()) --}}
 @php
     use App\Helpers\Helper;
 @endphp

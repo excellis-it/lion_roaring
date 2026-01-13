@@ -7,10 +7,10 @@
              <a href="javascript:void(0);" class="text-nowrap logo-img">
 
                  @if (isset(Helper::getSettings()->PMA_PANEL_LOGO))
-                <img class="dark-logo" src="{{ asset(Helper::getSettings()->PMA_PANEL_LOGO) }}" alt="">
-            @else
-                <img class="dark-logo" src="{{ asset('user_assets/images/logo.png') }}" alt="">
-            @endif
+                     <img class="dark-logo" src="{{ asset(Helper::getSettings()->PMA_PANEL_LOGO) }}" alt="">
+                 @else
+                     <img class="dark-logo" src="{{ asset('user_assets/images/logo.png') }}" alt="">
+                 @endif
              </a>
              <div class="close-btn d-lg-none d-block sidebartoggler cursor-pointer" id="sidebarCollapse">
                  <i class="ti ti-x fs-8 text-muted"></i>
@@ -927,7 +927,8 @@
                              <div class="menu_bb">
                                  @if (count(Helper::getOrganzations()) > 0)
                                      @foreach (Helper::getOrganzations() as $key => $organization)
-                                         <a href="{{ route('user.admin.services.index', ['slug' => $organization->slug]) }}">
+                                         <a
+                                             href="{{ route('user.admin.services.index', ['slug' => $organization->slug]) }}">
                                              <span>
                                                  <img src="{{ asset('user_assets/images/lion-roring-icon/lion-roring-icon/education-center.png') }}"
                                                      alt="Service">
@@ -949,7 +950,7 @@
                          Gate::check('Manage Gallery') ||
                          Gate::check('Manage Ecclesia Association Page') ||
                          Gate::check('Manage Principle and Business Page') ||
-                        //  Gate::check('Manage Contact Us Page') ||
+                         //  Gate::check('Manage Contact Us Page') ||
                          Gate::check('Manage Article of Association Page') ||
                          Gate::check('Manage Footer') ||
                          Gate::check('Manage Register Page Agreement Page') ||
@@ -1172,9 +1173,7 @@
                      </li>
                  @endif
 
-                 <br>
-                 <br>
-                 <br>
+
                  {{-- @if (Gate::check('Manage Help'))
                     <li class="sidebar-item">
                         <a class="sidebar-link"
@@ -1187,6 +1186,42 @@
                         </a>
                     </li>
                 @endif --}}
+                 @if (Gate::check('Manage Chatbot'))
+                     <li class="sidebar-item">
+                         <a class="sidebar-link" href="#" aria-expanded="false" data-bs-toggle="collapse"
+                             data-bs-target="#collapseChatbot">
+                             <span>
+                                 <i class="fas fa-robot fs-4"></i>
+                             </span>
+                             <span class="hide-menu">Chatbot Assistant</span>
+                         </a>
+                         <div class="collapse {{ Request::is('user/admin/chatbot*') ? 'show' : '' }}"
+                             id="collapseChatbot">
+                             <div class="menu_bb">
+                                 <a href="{{ route('user.admin.chatbot.index') }}">
+                                     <span><i class="fas fa-tachometer-alt"></i></span>
+                                     <span>Dashboard</span>
+                                 </a>
+                                 @if (Gate::check('Manage Chatbot Keywords'))
+                                     <a href="{{ route('user.admin.chatbot.keywords') }}">
+                                         <span><i class="fas fa-key"></i></span>
+                                         <span>Keywords</span>
+                                     </a>
+                                 @endif
+                                 @if (Gate::check('View Chatbot History'))
+                                     <a href="{{ route('user.admin.chatbot.conversations') }}">
+                                         <span><i class="fas fa-history"></i></span>
+                                         <span>History</span>
+                                     </a>
+                                 @endif
+                             </div>
+                         </div>
+                     </li>
+                 @endif
+
+                   <br>
+                 <br>
+                 <br>
              </ul>
          </nav>
 

@@ -65,32 +65,7 @@
         </div>
         <div class="dark-transparent sidebartoggler"></div>
 
-        <div class="chatbot-container">
-            <div class="chatbot-btn" id="chatbotBtn">
-                <img src="{{ asset('user_assets/images/chat-bot.png') }}" class="img-fluid rounded-top"
-                    alt="" />
-
-            </div>
-
-            <div class="chatbox" id="chatbox">
-                <div class="chatbox-header">
-                    <span>Chat With Us</span>
-                    <button class="close-btn" id="closeChatbox">&times;</button>
-                </div>
-                <div class="chatbox-body" id="chatboxBody">
-                    <!-- Chat messages go here -->
-                    <div class="chatbot-message chatbot-bot-message">
-                        <p>Lion Roaring Help & Support</p>
-                    </div>
-
-                </div>
-                <div class="chatbox-footer">
-                    <input type="text" id="chatbotuserInput" placeholder="Type a message...">
-                    <button id="chatbotsendBtn">Send</button>
-                </div>
-            </div>
-        </div>
-
+        @include('frontend.includes.chatbot')
     </div>
     <script src="{{ asset('user_assets/js/jquery.min.js') }}"></script>
     <script src="{{ asset('user_assets/js/simplebar.min.js') }}"></script>
@@ -120,7 +95,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/moment-timezone/0.5.34/moment-timezone-with-data.min.js"></script>
 
     <script src="https://cdn.socket.io/4.0.1/socket.io.min.js"></script>
-    <script src="{{ asset('user_assets/js/chatbot.js') }}"></script>
+
     <script src="{{ asset('user_assets/js/inapp-notification.js') }}"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/dropzone/4.3.0/dropzone.js"></script>
     <script>
@@ -183,7 +158,7 @@
             },
             routes: {
                 chatbotMessage: "{{ route('chatbot.message') }}",
-                chatbotFaqs: "{{ route('chatbot.faqs') }}",
+
                 notificationList: "{{ route('notification.list') }}",
                 notificationClear: "{{ route('notification.clear') }}",
 

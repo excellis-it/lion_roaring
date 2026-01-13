@@ -29,6 +29,7 @@ use App\Http\Controllers\User\Admin\SettingsController as UserAdminSettingsContr
 use App\Http\Controllers\User\Admin\TermsAndConditionController as UserAdminTermsAndConditionController;
 use App\Http\Controllers\User\Admin\CountryController as UserAdminCountryController;
 use App\Http\Controllers\User\Admin\MenuController as UserAdminMenuController;
+use App\Http\Controllers\User\Admin\ChatbotController as UserAdminChatbotController;
 
 use App\Http\Controllers\Estore\HomeController;
 use App\Http\Controllers\Estore\ProductController as EstoreProductController;
@@ -1023,6 +1024,8 @@ Route::prefix('user')->middleware(['user', 'preventBackHistory', 'userActivity',
 
             ]);
 
+
+
             // privacy-policy
             Route::get('/privacy-policy', [UserAdminPrivacyPolicyController::class, 'index'])->name('privacy-policy.index');
             Route::post('/privacy-policy/update', [UserAdminPrivacyPolicyController::class, 'update'])->name('privacy-policy.update');
@@ -1053,6 +1056,20 @@ Route::prefix('user')->middleware(['user', 'preventBackHistory', 'userActivity',
                 Route::get('/', [UserAdminFooterController::class, 'index'])->name('index');
                 Route::post('/update', [UserAdminFooterController::class, 'update'])->name('update');
             });
+        });
+
+        Route::prefix('chatbot')->name('user.admin.chatbot.')->group(function () {
+            Route::get('/', [UserAdminChatbotController::class, 'index'])->name('index');
+            Route::get('/keywords', [UserAdminChatbotController::class, 'keywords'])->name('keywords');
+            Route::get('/keywords/create', [UserAdminChatbotController::class, 'keywordCreate'])->name('keywords.create');
+            Route::post('/keywords/store', [UserAdminChatbotController::class, 'keywordStore'])->name('keywords.store');
+            Route::get('/keywords/edit/{id}', [UserAdminChatbotController::class, 'keywordEdit'])->name('keywords.edit');
+            Route::post('/keywords/update/{id}', [UserAdminChatbotController::class, 'keywordUpdate'])->name('keywords.update');
+            Route::get('/keywords/delete/{id}', [UserAdminChatbotController::class, 'keywordDelete'])->name('keywords.delete');
+            Route::post('/keywords/bulk-upload', [UserAdminChatbotController::class, 'keywordBulkUpload'])->name('keywords.bulk-upload');
+            Route::get('/keywords/sample-download', [UserAdminChatbotController::class, 'keywordSampleDownload'])->name('keywords.sample-download');
+            Route::get('/conversations', [UserAdminChatbotController::class, 'conversations'])->name('conversations');
+            Route::get('/conversations/{id}', [UserAdminChatbotController::class, 'conversationShow'])->name('conversations.show');
         });
         // manage menu names
         Route::prefix('menu')->group(function () {
@@ -1216,8 +1233,28 @@ Route::prefix('e-learning')->middleware(['user'])->group(function () {
     Route::get('/page/{slug}', [ElearningCmsController::class, 'cmsPageContent'])->name('e-learning.cms-page');
 });
 
-Route::get('/chatbot/faqs', [ChatBotController::class, 'getFaqs'])->name('chatbot.faqs');
-Route::post('/chatbot', [ChatBotController::class, 'FaqChat'])->name('chatbot.message');
+// Chatbot Routes
+Route::prefix('chatbot')->name('chatbot.')->group(function () {
+    Route::post('/init', [\App\Http\Controllers\ChatbotController::class, 'initConversation'])->name('init');
+    Route::post('/guest-name', [\App\Http\Controllers\ChatbotController::class, 'updateGuestName'])->name('guest-name');
+    Route::post('/language', [\App\Http\Controllers\ChatbotController::class, 'changeLanguage'])->name('language');
+    Route::get('/languages', [\App\Http\Controllers\ChatbotController::class, 'getLanguages'])->name('languages');
+
+    Route::get('/faq-questions', [\App\Http\Controllers\ChatbotController::class, 'getFaqQuestions'])->name('faq-questions');
+    Route::get('/search-estore', [\App\Http\Controllers\ChatbotController::class, 'searchEstoreProducts'])->name('search-estore');
+    Route::get('/search-elearning', [\App\Http\Controllers\ChatbotController::class, 'searchElearningCourses'])->name('search-elearning');
+    Route::get('/search-keywords', [\App\Http\Controllers\ChatbotController::class, 'searchKeywords'])->name('search-keywords');
+    Route::post('/feedback', [\App\Http\Controllers\ChatbotController::class, 'submitFeedback'])->name('feedback');
+    Route::post('/message', [\App\Http\Controllers\ChatbotController::class, 'saveMessage'])->name('message');
+    Route::get('/history', [\App\Http\Controllers\ChatbotController::class, 'getConversationHistory'])->name('history');
+});
+
+
+
+// Legacy chatbot routes (keep for backwards compatibility)
+// Legacy chatbot routes (keep for backwards compatibility)
+Route::get('/chatbot/faqs-legacy', [\App\Http\Controllers\ChatbotController::class, 'getFaqCategories'])->name('chatbot.legacy.faqs');
+Route::post('/chatbot-legacy', [\App\Http\Controllers\ChatbotController::class, 'saveMessage'])->name('chatbot.legacy.message');
 
 // Stripe webhook (public)
 Route::post('/stripe/webhook', [\App\Http\Controllers\Webhook\StripeWebhookController::class, 'handle'])->name('stripe.webhook');
