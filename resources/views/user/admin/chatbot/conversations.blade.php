@@ -11,6 +11,30 @@
                 <p class="text-muted">Review previous interactions with the chatbot</p>
             </div>
 
+            <!-- Filter Section -->
+            <div class="row g-3 mb-4">
+                <div class="col-md-12">
+                    <form action="{{ route('user.admin.chatbot.conversations') }}" method="GET"
+                        class="row g-3 bg-light p-3 rounded-3 border">
+                        <div class="col-md-4">
+                            <label class="form-label small fw-bold">Search</label>
+                            <input type="text" name="q" class="form-control"
+                                placeholder="Name, Guest Name, or Session ID" value="{{ request('q') }}">
+                        </div>
+                        <div class="col-md-2">
+                            <label class="form-label small fw-bold">Date</label>
+                            <input type="date" name="date" class="form-control" value="{{ request('date') }}">
+                        </div>
+
+                        <div class="col-md-2 d-flex align-items-end gap-2">
+                            <button type="submit" class="print_btn ">Filter</button>
+                            <a href="{{ route('user.admin.chatbot.conversations') }}"
+                                class=" print_btn ">Reset</a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
             <div class="table-responsive">
                 <table class="table align-middle bg-white">
                     <thead class="color_head">

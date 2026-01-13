@@ -147,16 +147,41 @@ class ChatbotController extends Controller
 
         return response()->stream($callback, 200, $headers);
     }
-    public function conversations()
+    public function conversations(Request $request)
     {
         if (!auth()->user()->can('View Chatbot History')) {
             abort(403);
         }
 
-        $conversations = ChatbotConversation::with(['user', 'messages'])
-            ->withCount('messages')
-            ->orderBy('created_at', 'desc')
-            ->paginate(15);
+        $query = ChatbotConversation::with(['user', 'messages'])
+            ->withCount('messages');
+
+        // Search by User/Guest Name or Session ID
+        if ($request->filled('q')) {
+            $search = $request->q;
+            $query->where(function ($q) use ($search) {
+                $q->where('session_id', 'like', "%{$search}%")
+                    ->orWhere('guest_name', 'like', "%{$search}%")
+                    ->orWhereHas('user', function ($uq) use ($search) {
+                        $uq->where('first_name', 'like', "%{$search}%")
+                            ->orWhere('last_name', 'like', "%{$search}%")
+                            ->orWhere(DB::raw("CONCAT(first_name, ' ', last_name)"), 'like', "%{$search}%");
+                    });
+            });
+        }
+
+        // Filter by Date
+        if ($request->filled('date')) {
+            $query->whereDate('created_at', $request->date);
+        }
+
+        // Filter by Language
+        if ($request->filled('lang')) {
+            $query->where('language', $request->lang);
+        }
+
+        $conversations = $query->orderBy('created_at', 'desc')->paginate(15);
+        $conversations->appends($request->all());
 
         return view('user.admin.chatbot.conversations', compact('conversations'));
     }

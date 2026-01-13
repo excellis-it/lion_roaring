@@ -18,34 +18,51 @@
 
         .msg-bubble {
             max-width: 80%;
-            padding: 12px 18px;
-            border-radius: 20px;
+            padding: 10px 15px;
+            border-radius: 18px;
             position: relative;
+            font-size: 14px;
+            line-height: 1.5;
+        }
+
+        .msg-text p {
+            margin-bottom: 5px;
+        }
+
+        .msg-text p:last-child {
+            margin-bottom: 0;
+        }
+
+        .msg-text ul,
+        .msg-text ol {
+            margin-bottom: 5px;
+            padding-left: 20px;
         }
 
         .msg-bubble.user {
             align-self: flex-end;
-            background: var(--chatbot-primary, #643271);
+            background: #643271;
             color: white;
-            border-bottom-right-radius: 5px;
+            border-bottom-right-radius: 2px;
         }
 
         .msg-bubble.bot {
             align-self: flex-start;
-            background: white;
-            color: #333;
-            border-bottom-left-radius: 5px;
-            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+            background: #f1f0f0;
+            color: #222;
+            border-bottom-left-radius: 2px;
+            box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
         }
 
         .msg-info {
-            font-size: 10px;
-            margin-top: 5px;
-            opacity: 0.7;
+            font-size: 11px;
+            margin-top: 4px;
+            color: #888;
         }
 
         .user .msg-info {
             text-align: right;
+            color: rgba(255, 255, 255, 0.8);
         }
     </style>
 @endpush
@@ -75,7 +92,13 @@
             <div class="transcript-container shadow-inner border">
                 @forelse($conversation->messages as $msg)
                     <div class="msg-bubble {{ $msg->sender }}">
-                        <div class="msg-text">{{ $msg->message }}</div>
+                        <div class="msg-text">
+                            @if ($msg->sender == 'bot')
+                                {!! $msg->message !!}
+                            @else
+                                {{ $msg->message }}
+                            @endif
+                        </div>
                         <div class="msg-info">{{ $msg->created_at->format('H:i') }} &bull; {{ ucfirst($msg->sender) }}
                         </div>
                     </div>

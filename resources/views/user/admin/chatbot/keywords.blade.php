@@ -12,7 +12,7 @@
                     <p class="text-muted">Manage automatic responses based on user input</p>
                 </div>
                 <div class="d-flex gap-2">
-                    <button type="button" class="btn btn-outline-primary" data-bs-toggle="modal"
+                    <button type="button" class="print_btn" data-bs-toggle="modal"
                         data-bs-target="#bulkUploadModal">
                         <i class="fas fa-upload me-1"></i> Bulk Upload
                     </button>
