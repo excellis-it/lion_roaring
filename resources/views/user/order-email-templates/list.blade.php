@@ -24,7 +24,7 @@
                                             <a href="{{ route('order-email-templates.create') }}"
                                                 class="btn btn-primary w-100"><i class="fa-solid fa-plus"></i> Create
                                                 Email Template</a>
-                                            
+
                                         @endif
                                     </div>
                                 </div>
@@ -82,11 +82,10 @@
 
                                 <hr>
 
-                                <div class="row mb-3 mt-5">
+                                <div class="row mb-2 mt-5">
                                     <div class="col-md-10">
                                         <h3 class="mb-3">Pickup Email Template List</h3>
-                                        <p class="text-muted small mb-2">Below are templates for delivery-related order
-                                            statuses. Pickup templates are shown separately below.</p>
+
                                     </div>
                                     <div class="col-md-2 float-right">
                                         @if (auth()->user()->can('Create Email Template'))
@@ -98,7 +97,7 @@
                                 </div>
 
                                 {{-- Pickup templates table --}}
-                                <div class="mt-5">
+                                <div class="mt-3">
 
                                     <div class="table-responsive">
                                         <table class="table align-middle bg-white color_body_text">

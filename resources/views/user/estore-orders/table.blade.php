@@ -47,12 +47,12 @@
                     <strong>${{ number_format($order->total_amount, 2) }}</strong>
                 </td>
                 <td>
-                    <span class=" {{ $order->status_badge_class }}">
-                        {{ ucfirst($order->orderStatus->name ?? '-') }}
+                    <span class=" {{ $order->status_badge_class }} p-1 rounded">
+                        {{ $order->is_pickup ? ucfirst($order->orderStatus->pickup_name ?? '-') : ucfirst($order->orderStatus->name ?? '-') }}
                     </span>
                 </td>
                 <td>
-                    <span class=" {{ $order->payment_status_badge_class }}">
+                    <span class=" {{ $order->payment_status_badge_class }} p-1 rounded">
                         {{ ucfirst($order->payment_status) }}
                     </span>
                 </td>

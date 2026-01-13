@@ -98,7 +98,8 @@
                             <label for="order-status" class="form-label">Order Status</label>
                             <select class="form-control" id="order-status" name="status" required>
                                 @foreach ($order_status as $status)
-                                    <option value="{{ $status->id }}">{{ $status->name }}</option>
+                                    <option value="{{ $status->id }}" data-default-name="{{ $status->name }}"
+                                        data-pickup-name="{{ $status->pickup_name ?? '' }}">{{ $status->name }}</option>
                                 @endforeach
                             </select>
                         </div>
@@ -420,6 +421,10 @@
             $('#order-notes').val(notes || '');
             // store pickup flag in hidden input for later checks
             $('#modal-is-pickup').val(isPickup ? 1 : 0);
+
+            // update option labels to pickup names when required
+            toggleStatusOptionLabels(isPickup);
+
             $('#updateStatusModal').modal('show');
             $('#expected-delivery-date').val(date);
 
@@ -445,6 +450,26 @@
             // Read isPickup from the modal hidden field (set when modal opens)
             const isPickupKnown = parseInt($('#modal-is-pickup').val() || 0);
             toggleExpectedDeliveryVisibility(isPickupKnown, selected);
+        });
+
+        // Toggle status option labels to pickup-specific names when appropriate
+        function toggleStatusOptionLabels(isPickup) {
+            isPickup = parseInt(isPickup) === 1 ? 1 : 0;
+            $('#order-status option').each(function() {
+                const $opt = $(this);
+                const defaultName = $opt.data('default-name') || $opt.text();
+                const pickupName = $opt.data('pickup-name') || '';
+                if (isPickup === 1 && pickupName && pickupName.length > 0) {
+                    $opt.text(pickupName);
+                } else {
+                    $opt.text(defaultName);
+                }
+            });
+        }
+
+        // Reset labels back to defaults when modal hides
+        $('#updateStatusModal').on('hidden.bs.modal', function() {
+            toggleStatusOptionLabels(0);
         });
 
 
