@@ -597,21 +597,36 @@ class EstoreCmsController extends Controller
             abort(403, 'You do not have permission to access this page.');
         }
 
-        // Validation
+        // Basic validation (expected_delivery_date validated for date self-consistency here)
         $request->validate(
             [
                 'order_id' => 'required|exists:estore_orders,id',
                 'status' => 'required|exists:order_statuses,id',
                 'payment_status' => 'nullable|in:pending,paid,failed,refunded',
                 'notes' => 'nullable|string|max:1000',
-                // Only required if status is NOT 5 (e.g., cancelled)
-                'expected_delivery_date' => 'nullable|date|after_or_equal:today|required_unless:status,5',
+                'expected_delivery_date' => 'nullable|date|after_or_equal:today',
             ],
             [
                 'expected_delivery_date.after_or_equal' => 'The expected delivery date must be today or a future date.',
-                'expected_delivery_date.required_unless' => 'Please provide an expected delivery date unless the order is cancelled.',
             ]
         );
+
+        // Additional rule: expected_delivery_date is REQUIRED only when order is NOT pickup and status is NOT cancelled
+        $orderPreview = \App\Models\EstoreOrder::find($request->order_id);
+        if ($orderPreview) {
+            $isPickupOrder = (bool)$orderPreview->is_pickup;
+            $targetStatusId = (int)$request->status;
+
+            if (!$isPickupOrder && $targetStatusId !== 5) {
+                if (empty($request->expected_delivery_date)) {
+                    $message = 'Please provide an expected delivery date unless the order is cancelled or a pickup.';
+                    if ($request->ajax()) {
+                        return response()->json(['status' => false, 'message' => $message], 422);
+                    }
+                    return redirect()->back()->withErrors(['expected_delivery_date' => $message])->withInput();
+                }
+            }
+        }
 
         try {
             // Find order
@@ -619,7 +634,13 @@ class EstoreCmsController extends Controller
 
             // Update order fields
             $order->status = $request->status;
-            $order->expected_delivery_date = $request->expected_delivery_date;
+
+            // If this order is pickup or the target status is cancelled, clear expected delivery date
+            if ((bool)$order->is_pickup || (int)$request->status === 5) {
+                $order->expected_delivery_date = null;
+            } else {
+                $order->expected_delivery_date = $request->expected_delivery_date;
+            }
 
             if ($request->has('payment_status') && $request->payment_status) {
                 $order->payment_status = $request->payment_status;
@@ -632,9 +653,17 @@ class EstoreCmsController extends Controller
             $order->save();
 
             // Send email if template exists for this status
+            $isPickup = (bool)($order->is_pickup ?? false);
             $template = OrderEmailTemplate::where('order_status_id', $request->status)
                 ->where('is_active', 1)
+                ->where('is_pickup', $isPickup)
                 ->first();
+
+            if (!$template) {
+                $template = OrderEmailTemplate::where('order_status_id', $request->status)
+                    ->where('is_active', 1)
+                    ->first();
+            }
 
             if ($template) {
                 // Build order list table HTML

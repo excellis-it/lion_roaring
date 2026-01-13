@@ -80,7 +80,7 @@ class EstoreSettingController extends Controller
         if (!auth()->user()->can('Edit Estore Settings')) {
             abort(403, 'You do not have permission to access this page.');
         }
-        // ✅ Validate request
+        // ✅ Basic validation
         $validated = $request->validate([
             'shipping_cost' => 'nullable|numeric|min:0',
             'delivery_cost' => 'nullable|numeric|min:0',
@@ -88,7 +88,37 @@ class EstoreSettingController extends Controller
             'credit_card_percentage' => 'nullable|numeric|min:0|max:100',
             'is_pickup_available' => 'required|boolean',
             'refund_max_days' => 'nullable|integer|min:0',
+            'shipping_rules' => 'nullable', // accept array or JSON string
         ]);
+
+        // Normalize and validate shipping_rules if provided (accepted as JSON string or array)
+        if ($request->filled('shipping_rules')) {
+            $raw = $request->input('shipping_rules');
+            $decoded = $raw;
+            if (is_string($raw)) {
+                $decoded = json_decode($raw, true);
+            }
+
+            if (!is_array($decoded)) {
+                return redirect()->back()->withErrors(['shipping_rules' => 'Shipping rules must be an array or JSON string.']);
+            }
+
+            // Validate each rule
+            $ruleValidator = \Illuminate\Support\Facades\Validator::make(['shipping_rules' => $decoded], [
+                'shipping_rules.*.min_qty' => 'required|integer|min:0',
+                'shipping_rules.*.max_qty' => 'nullable|integer|min:0',
+                'shipping_rules.*.shipping_cost' => 'nullable|numeric|min:0',
+                'shipping_rules.*.delivery_cost' => 'nullable|numeric|min:0',
+            ]);
+
+            if ($ruleValidator->fails()) {
+                return redirect()->back()->withErrors($ruleValidator)->withInput();
+            }
+
+            $validated['shipping_rules'] = $decoded;
+        } else {
+            $validated['shipping_rules'] = null;
+        }
 
         try {
             $estoreSetting = EstoreSetting::findOrFail($id);

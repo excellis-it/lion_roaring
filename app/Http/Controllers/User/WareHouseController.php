@@ -441,7 +441,7 @@ class WareHouseController extends Controller
 
 
         $product = Product::findOrFail($productId);
-        if (auth()->user()->hasRole('SUPER ADMIN')) {
+        if (auth()->user()->hasNewRole('SUPER ADMIN')) {
             $warehouses = WareHouse::where('is_active', 1)->get();
         } else {
             $user_warehouses = auth()->user()->warehouses->pluck('id')->toArray();
@@ -469,8 +469,74 @@ class WareHouseController extends Controller
 
         // Check if user can access this product
         if (auth()->user()->isWarehouseAdmin()) {
-            $product_variations = $product->variations()->with(['colorDetail', 'sizeDetail', 'images'])->withSum('warehouseProductVariations as allocated_quantity', 'warehouse_quantity')->get();
-            // $user_warehouses = auth()->user()->warehouses->pluck('id')->toArray();
+            // Ensure warehouse has entries for all existing product variations (created later warehouses)
+            $allVariations = $product->variations()->get();
+            foreach ($allVariations as $variation) {
+                WarehouseProductVariation::firstOrCreate([
+                    'warehouse_id' => $wareHouse->id,
+                    'product_variation_id' => $variation->id,
+                    'product_id' => $product->id,
+                ], [
+                    'warehouse_quantity' => 0,
+                ]);
+
+                // Create corresponding WarehouseProduct if missing
+                $warehouseProduct = WarehouseProduct::where('warehouse_id', $wareHouse->id)
+                    ->where('product_variation_id', $variation->id)
+                    ->where('product_id', $variation->product_id)
+                    ->first();
+
+                if (!$warehouseProduct) {
+                    WarehouseProduct::create([
+                        'product_variation_id' => $variation->id,
+                        'sku' => $variation->sku,
+                        'warehouse_id' => $wareHouse->id,
+                        'product_id' => $variation->product_id,
+                        'color_id' => $variation->color_id,
+                        'size_id' => $variation->size_id,
+                        'quantity' => 0,
+                        'price' => $variation->sale_price ? $variation->sale_price : $variation->price,
+                        'before_sale_price' => $variation->sale_price ? $variation->price : null,
+                        'tax_rate' => 0,
+                    ]);
+                }
+            }
+
+            // Build product_variations list scoped to this warehouse (same ordering as created)
+            $warehouse_product_variations_ids = WarehouseProductVariation::where('warehouse_id', $warehouseId)
+                ->where('product_id', $productId)
+                ->orderBy('id', 'desc')
+                ->pluck('product_variation_id');
+
+            if ($warehouse_product_variations_ids->isNotEmpty()) {
+                $product_variations = ProductVariation::whereIn('id', $warehouse_product_variations_ids)
+                    ->with(['colorDetail', 'sizeDetail', 'images'])
+                    ->orderByRaw("FIELD(id, " . implode(',', $warehouse_product_variations_ids->toArray()) . ")")
+                    ->get();
+
+                foreach ($product_variations as $variation) {
+                    $warehouseProductVariation = WarehouseProductVariation::where('warehouse_id', $warehouseId)
+                        ->where('product_variation_id', $variation->id)
+                        ->first();
+                    $variation->warehouse_quantity = $warehouseProductVariation ? $warehouseProductVariation->warehouse_quantity : 0;
+                    $variation->admin_available_quantity = $variation->available_quantity;
+
+                    $warehouseProduct = WarehouseProduct::where('warehouse_id', $warehouseId)
+                        ->where('product_variation_id', $variation->id)
+                        ->first();
+                    if ($warehouseProduct) {
+                        $variation->warehouse_price = $warehouseProduct->price;
+                        $variation->warehouse_before_sale_price = $warehouseProduct->before_sale_price;
+                    } else {
+                        $variation->warehouse_price = 0;
+                        $variation->warehouse_before_sale_price = 0;
+                    }
+                }
+            } else {
+                // Fallback: if no records found for some reason, show empty collection
+                $product_variations = collect();
+            }
+
             return view('user.warehouse.warehouse-variations', compact('product', 'product_variations', 'wareHouse', 'product_have_colors'));
         } else {
             abort(403, 'You do not have permission to access this page.');

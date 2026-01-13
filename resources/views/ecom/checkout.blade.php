@@ -99,7 +99,8 @@
                                 <div class="col-md-6">
                                     <div class="form-floating mb-3">
                                         <input type="text" class="form-control " name="city" id="city"
-                                            placeholder="City/District" value="{{ auth()->user()->defaultDeliveryAddress?->city ?? '' }}">
+                                            placeholder="City/District"
+                                            value="{{ auth()->user()->defaultDeliveryAddress?->city ?? '' }}">
                                         <label for="city">City/District</label>
                                     </div>
                                 </div>
@@ -182,7 +183,10 @@
                                         </ul>
                                     @endif
 
-                                    @if ($estoreSettings && $estoreSettings->shipping_cost > 0)
+                                    @if (
+                                        $estoreSettings &&
+                                            ($estoreSettings->shipping_cost > 0 ||
+                                                (is_array($estoreSettings->shipping_rules) && count($estoreSettings->shipping_rules) > 0)))
                                         <ul id="shipping-cost-row"
                                             style="{{ request('order_method') == 1 && $estoreSettings->is_pickup_available ? 'display: none;' : '' }}">
                                             <li>Shipping Cost</li>
@@ -192,7 +196,10 @@
                                         </ul>
                                     @endif
 
-                                    @if ($estoreSettings && $estoreSettings->delivery_cost > 0)
+                                    @if (
+                                        $estoreSettings &&
+                                            ($estoreSettings->delivery_cost > 0 ||
+                                                (is_array($estoreSettings->shipping_rules) && count($estoreSettings->shipping_rules) > 0)))
                                         <ul id="delivery-cost-row"
                                             style="{{ request('order_method') == 1 && $estoreSettings->is_pickup_available ? 'display: none;' : '' }}">
                                             <li>Delivery Cost</li>
@@ -286,24 +293,68 @@
             const costs = {
                 subtotal: {{ $subtotal }},
                 promoDiscount: {{ $promoDiscount ?? 0 }},
-                shipping: {{ $shippingCost }},
-                delivery: {{ $deliveryCost }},
                 tax: {{ $taxAmount }},
                 isPickupAvailable: {{ $estoreSettings && $estoreSettings->is_pickup_available ? 'true' : 'false' }}
             };
 
+            // Shipping rules from server
+            const shippingRules = {!! json_encode($estoreSettings->shipping_rules ?? []) !!};
+            const totalItems = {{ collect($cartItems)->sum('quantity') }};
+
+            function findShippingForQty(qty) {
+                if (!Array.isArray(shippingRules) || shippingRules.length === 0) {
+                    // fallback to server-provided values present in the page when no rules
+                    return {
+                        shipping: {{ $shippingCost }},
+                        delivery: {{ $deliveryCost }}
+                    };
+                }
+
+                // sort by min_qty asc
+                shippingRules.sort((a, b) => (a.min_qty || 0) - (b.min_qty || 0));
+                for (let i = 0; i < shippingRules.length; i++) {
+                    const r = shippingRules[i];
+                    const min = parseInt(r.min_qty || 0, 10);
+                    const max = (r.max_qty === null || r.max_qty === undefined || r.max_qty === '') ? null :
+                        parseInt(r.max_qty, 10);
+                    if (qty >= min && (max === null || qty <= max)) {
+                        return {
+                            shipping: parseFloat(r.shipping_cost || 0),
+                            delivery: parseFloat(r.delivery_cost || 0)
+                        };
+                    }
+                }
+
+                return {
+                    shipping: {{ $shippingCost }},
+                    delivery: {{ $deliveryCost }}
+                };
+            }
+
             function calculateTotal() {
                 const isPickup = document.querySelector(".order-method-radio:checked").value == "1";
-                let baseTotal = costs.subtotal - costs.promoDiscount + costs.tax;
+                let shippingInfo = {
+                    shipping: 0,
+                    delivery: 0
+                };
 
                 if (!isPickup) {
-                    baseTotal += costs.shipping + costs.delivery;
+                    shippingInfo = findShippingForQty(totalItems);
                     document.getElementById("shipping-cost-row")?.style.setProperty("display", "flex");
                     document.getElementById("delivery-cost-row")?.style.setProperty("display", "flex");
+
+                    document.getElementById('shipping-amount').textContent = `$${shippingInfo.shipping.toFixed(2)}`;
+                    document.getElementById('shipping-amount').setAttribute('data-value', shippingInfo.shipping);
+
+                    document.getElementById('delivery-amount').textContent = `$${shippingInfo.delivery.toFixed(2)}`;
+                    document.getElementById('delivery-amount').setAttribute('data-value', shippingInfo.delivery);
                 } else {
                     document.getElementById("shipping-cost-row")?.style.setProperty("display", "none");
                     document.getElementById("delivery-cost-row")?.style.setProperty("display", "none");
                 }
+
+                const baseTotal = costs.subtotal - costs.promoDiscount + costs.tax + (isPickup ? 0 : (shippingInfo
+                    .shipping + shippingInfo.delivery));
 
                 let finalTotal = baseTotal;
 

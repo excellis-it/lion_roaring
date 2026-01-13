@@ -183,10 +183,20 @@ class CheckoutController extends Controller
         // Calculate shipping, delivery, and tax
         $shippingCost = $deliveryCost = $taxAmount = 0;
 
+        // calculate total items in cart
+        $totalItems = array_sum(array_map(fn($c) => isset($c['quantity']) ? (int)$c['quantity'] : 0, $carts->toArray()));
+
         if ($estoreSettings) {
             if ($is_pickup == 0 || !$estoreSettings->is_pickup_available) {
-                $shippingCost = $estoreSettings->shipping_cost ?? 0;
-                $deliveryCost = $estoreSettings->delivery_cost ?? 0;
+                // If shipping rules exist, use them; otherwise fallback to legacy flat rates
+                if (is_array($estoreSettings->shipping_rules) && count($estoreSettings->shipping_rules) > 0) {
+                    $shippingForQty = $estoreSettings->getShippingForQuantity($totalItems);
+                    $shippingCost = $shippingForQty['shipping_cost'];
+                    $deliveryCost = $shippingForQty['delivery_cost'];
+                } else {
+                    $shippingCost = $estoreSettings->shipping_cost ?? 0;
+                    $deliveryCost = $estoreSettings->delivery_cost ?? 0;
+                }
             }
             $taxAmount = (($subtotal - $promoDiscount) * ($estoreSettings->tax_percentage ?? 0)) / 100;
         }
@@ -408,9 +418,17 @@ class CheckoutController extends Controller
             }
 
             // Send order confirmation email to customer
+            $isPickup = (bool)($order->is_pickup ?? false);
             $template = OrderEmailTemplate::where('order_status_id', $order_status->id)
                 ->where('is_active', 1)
+                ->where('is_pickup', $isPickup)
                 ->first();
+
+            if (!$template) {
+                $template = OrderEmailTemplate::where('order_status_id', $order_status->id)
+                    ->where('is_active', 1)
+                    ->first();
+            }
 
             if ($template) {
                 try {
@@ -644,6 +662,7 @@ class CheckoutController extends Controller
                     'shipping_cost' => $estoreSettings->shipping_cost ?? 0,
                     'delivery_cost' => $estoreSettings->delivery_cost ?? 0,
                     'tax_percentage' => $estoreSettings->tax_percentage ?? 0,
+                    'shipping_rules' => $estoreSettings->shipping_rules ?? [],
                 ],
                 'status_timeline' => [
                     'all_statuses' => $timelineStatuses,
