@@ -73,7 +73,7 @@
                         @endif
                         @if (auth()->user()->can('Edit Estore Orders') && !in_array($order->status, ['delivered', 'cancelled']))
                             <button type="button" class="btn btn-sm btn-warning"
-                                onclick="openUpdateStatusModal({{ $order->id }}, '{{ $order->status }}', '{{ $order->payment_status }}', '{{ $order->notes }}', '{{ $order->expected_delivery_date ? date('Y-m-d', strtotime($order->expected_delivery_date)) : '' }}')"
+                                onclick="openUpdateStatusModal({{ $order->id }}, '{{ $order->status }}', '{{ $order->payment_status }}', '{{ $order->notes }}', '{{ $order->expected_delivery_date ? date('Y-m-d', strtotime($order->expected_delivery_date)) : '' }}', '{{ $order->is_pickup ? 1 : 0 }}')"
                                 title="Update Status">
                                 <i class="fas fa-edit"></i>
                             </button>
