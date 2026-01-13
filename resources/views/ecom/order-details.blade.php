@@ -255,9 +255,8 @@
                             @endif
 
                             @if (
-                                $order->status != 3 &&
-                                    $order->status != 4 &&
-                                    $order->status != 5 &&
+                               ( $order->status == 1 ||
+                                    $order->status == 2) &&
                                     $order->created_at->diffInDays(now()) <= optional($estoreSettings)->refund_max_days)
                                 <button type="button" class="btn btn-outline-danger w-100" data-bs-toggle="modal"
                                     data-bs-target="#cancelOrderModal">
@@ -380,6 +379,7 @@
                                                 : 'btn-outline-secondary');
                                         $label = $labels[$status->slug] ?? ($status->name ?? ucfirst($status->slug));
                                     @endphp
+                                      @if (($status->slug ?? '') !== 'cancelled' || $isCurrent)
 
                                     <li class="text-center" style="min-width:90px;">
                                         <span
@@ -396,6 +396,7 @@
                                             {{ $label }}
                                         </p>
                                     </li>
+                                    @endif
                                 @endforeach
                             </ul>
                         </div>

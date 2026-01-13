@@ -588,6 +588,7 @@ class WareHouseController extends Controller
                 }
             }
 
+            // dd($product, $available_product_variations);
 
             return view('user.warehouse.include.warehouse-variations-data', compact('product', 'available_product_variations'));
         } else {
