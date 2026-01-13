@@ -796,8 +796,22 @@ class ProductController extends Controller
         $taxAmount = 0;
 
         if ($estoreSettings) {
-            $shippingCost = $estoreSettings->shipping_cost ?? 0;
-            $deliveryCost = $estoreSettings->delivery_cost ?? 0;
+            // Calculate total ordered item count
+            $totalQuantity = 0;
+            foreach ($carts as $c) {
+                $totalQuantity += (int)($c->quantity ?? 0);
+            }
+
+            // Use shipping rules if configured
+            if (is_array($estoreSettings->shipping_rules) && count($estoreSettings->shipping_rules) > 0) {
+                $shippingForQty = $estoreSettings->getShippingForQuantity($totalQuantity);
+                $shippingCost = $shippingForQty['shipping_cost'];
+                $deliveryCost = $shippingForQty['delivery_cost'];
+            } else {
+                $shippingCost = $estoreSettings->shipping_cost ?? 0;
+                $deliveryCost = $estoreSettings->delivery_cost ?? 0;
+            }
+
             $taxPercentage = $estoreSettings->tax_percentage ?? 0;
 
             if ($taxPercentage > 0) {
@@ -1121,9 +1135,20 @@ class ProductController extends Controller
                 ]);
             }
 
+            // For pickup orders use the pickup-specific template if available
+            $isPickup = (bool)($order->is_pickup ?? false);
             $template = OrderEmailTemplate::where('order_status_id', $order_status->id)
                 ->where('is_active', 1)
+                ->where('is_pickup', $isPickup)
                 ->first();
+
+            // Fallback: if not found, try opposite type (delivery/pickup) then any
+            if (!$template) {
+                $template = OrderEmailTemplate::where('order_status_id', $order_status->id)
+                    ->where('order_status_id', $order_status->id)
+                    ->where('is_active', 1)
+                    ->first();
+            }
 
             if ($template) {
                 // Build order list table HTML

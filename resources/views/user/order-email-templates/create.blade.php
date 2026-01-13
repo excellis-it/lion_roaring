@@ -85,16 +85,22 @@
                                         @foreach ($statuses as $status)
                                             <option value="{{ $status->id }}"
                                                 {{ old('order_status_id') == $status->id ? 'selected' : '' }}>
-                                                {{ $status->name }}
+                                                {{ !empty($isPickupParam) && $isPickupParam ? $status->pickup_name : $status->name }}
                                             </option>
                                         @endforeach
                                     </select>
-                                    <small class="text-muted">If selected, this template will be sent when the order reaches
+
+                                    <input type="hidden" name="is_pickup"
+                                        value="{{ old('is_pickup', !empty($isPickupParam) && $isPickupParam ? 1 : 0) }}">
+
+                                    <small class="text-muted">If selected, this template will be sent when the order
+                                        reaches
                                         this status.</small>
                                     @error('order_status_id')
                                         <span class="text-danger">{{ $message }}</span>
                                     @enderror
                                 </div>
+
                             </div>
 
                             {{-- Subject --}}
@@ -134,7 +140,8 @@
                                     <select name="is_active" id="is_active" class="form-select">
                                         <option value="1" {{ old('is_active', 1) == 1 ? 'selected' : '' }}>Active
                                         </option>
-                                        <option value="0" {{ old('is_active', 1) == 0 ? 'selected' : '' }}>Inactive
+                                        <option value="0" {{ old('is_active', 1) == 0 ? 'selected' : '' }}>
+                                            Inactive
                                         </option>
                                     </select>
                                     @error('is_active')
@@ -142,12 +149,12 @@
                                     @enderror
                                 </div>
                             </div>
-                        </div>
 
-                        <div class="w-100 text-end mt-3">
-                            <button type="submit" class="btn btn-primary me-2">Save</button>
-                            <a href="{{ route('order-email-templates.index') }}" class="btn btn-primary">Cancel</a>
-                        </div>
+
+                            <div class="w-100 text-end mt-3">
+                                <button type="submit" class="btn btn-primary me-2">Save</button>
+                                <a href="{{ route('order-email-templates.index') }}" class="btn btn-primary">Cancel</a>
+                            </div>
                     </form>
 
 

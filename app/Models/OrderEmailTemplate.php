@@ -15,6 +15,7 @@ class OrderEmailTemplate extends Model
         'title',
         'slug',
         'order_status_id',
+        'is_pickup',
         'subject',
         'body',
         'is_active',

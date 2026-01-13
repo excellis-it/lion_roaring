@@ -373,7 +373,7 @@
                             </div>
 
                             {{-- Expected Delivery Date --}}
-                            @if (!empty($order->expected_delivery_date) && $order->status != 5 && $order->status != 4)
+                            @if (!empty($order->expected_delivery_date) && !$order->is_pickup && $order->status != 5 && $order->status != 4)
                                 <div class="text-center mb-3">
                                     <span class="badge bg-info text-dark p-2">
                                         <i class="fa-solid fa-calendar-day me-1"></i>
@@ -425,7 +425,7 @@
                                     (auth()->user()->can('Edit Estore Orders') || auth()->user()->isWarehouseAdmin()) &&
                                         !in_array($order->status, [4, 5]))
                                     <button type="button" class="btn btn-warning w-100 mb-2"
-                                        onclick="openUpdateStatusModal({{ $order->id }}, '{{ $order->status }}', '{{ $order->payment_status }}', '{{ $order->notes }}')">
+                                        onclick="openUpdateStatusModal({{ $order->id }}, '{{ $order->status }}', '{{ $order->payment_status }}', '{{ $order->notes }}', '{{ $order->expected_delivery_date ? date('Y-m-d', strtotime($order->expected_delivery_date)) : '' }}', '{{ $order->is_pickup ? 1 : 0 }}')">
                                         <i class="fas fa-edit"></i> Update Status
                                     </button>
                                 @endif
@@ -563,14 +563,14 @@
         }
 
         /* .timeline::before {
-                                                                content: '';
-                                                                position: absolute;
-                                                                left: 15px;
-                                                                top: 0;
-                                                                bottom: 0;
-                                                                width: 2px;
-                                                                background: #e9ecef;
-                                                            } */
+                                                                    content: '';
+                                                                    position: absolute;
+                                                                    left: 15px;
+                                                                    top: 0;
+                                                                    bottom: 0;
+                                                                    width: 2px;
+                                                                    background: #e9ecef;
+                                                                } */
 
         .timeline-item {
             position: relative;
@@ -655,7 +655,8 @@
             @endforeach
         ];
 
-        function openUpdateStatusModal(orderId, currentStatus, currentPaymentStatus, notes) {
+        function openUpdateStatusModal(orderId, currentStatus, currentPaymentStatus, notes, date, isPickup) {
+            isPickup = parseInt(isPickup) === 1 ? 1 : 0;
             if ([4, 5].includes(parseInt(currentStatus))) { // Assuming 4 = delivered, 5 = cancelled
                 toastr.warning('This order status is final and cannot be changed.');
                 return;
@@ -674,7 +675,30 @@
             $('#order-status').val(currentStatus);
             $('#order-notes').val(notes || '');
             $('#updateStatusModal').modal('show');
+            $('#expected-delivery-date').val(date);
+            // Show/hide expected delivery based on pickup flag or if status is cancelled
+            toggleExpectedDeliveryVisibility(isPickup, currentStatus);
         }
+
+        function toggleExpectedDeliveryVisibility(isPickup, statusId) {
+            const wrapper = $('#expected-delivery-wrapper');
+            const input = $('#expected-delivery-date');
+            if (isPickup === 1 || parseInt(statusId) === 5) {
+                wrapper.hide();
+                input.prop('disabled', true).val('');
+            } else {
+                wrapper.show();
+                input.prop('disabled', false);
+            }
+        }
+
+        // Re-evaluate when status selector changes
+        $(document).on('change', '#order-status', function() {
+            const selected = $(this).val();
+            // We don't have isPickup here; read from current order DOM if present
+            const isPickupKnown = {{ $order->is_pickup ? 1 : 0 }};
+            toggleExpectedDeliveryVisibility(isPickupKnown, selected);
+        });
 
         $('#updateStatusForm').on('submit', function(e) {
             e.preventDefault();
@@ -692,6 +716,17 @@
             if (targetIndex !== -1 && currentIndex !== -1 && targetIndex < currentIndex) {
                 toastr.warning('Cannot revert an order to a previous status.');
                 return;
+            }
+
+            // Client-side required check for expected delivery
+            const isPickupKnown = {{ $order->is_pickup ? 1 : 0 }};
+            if (parseInt(isPickupKnown) !== 1 && targetStatus != '5') {
+                const dateVal = $('#expected-delivery-date').val();
+                if (!dateVal) {
+                    toastr.error(
+                        'Please provide an expected delivery date unless the order is cancelled or pickup.');
+                    return;
+                }
             }
 
             const formData = new FormData(this);

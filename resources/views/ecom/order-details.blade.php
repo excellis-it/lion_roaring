@@ -365,10 +365,16 @@
                         <div class="d-position mb-4">
                             <ul class="list-unstyled d-flex flex-wrap gap-3" style="row-gap:1.5rem;">
                                 @foreach ($timelineStatuses as $idx => $status)
+                                    {{-- Show "cancelled" only when order is actually cancelled --}}
+                                    @if (($status->slug ?? '') === 'cancelled' && $order->status !== 'cancelled')
+                                        @continue
+                                    @endif
+
                                     @php
                                         $reached = $idx <= $statusIndex;
                                         $isCurrent = $idx === $statusIndex;
                                         $cancelled = ($status->slug ?? '') === 'cancelled';
+
                                         $colorClass = $cancelled
                                             ? 'btn-danger'
                                             : ($reached
@@ -378,6 +384,7 @@
                                                         ? 'btn-primary'
                                                         : 'btn-secondary'))
                                                 : 'btn-outline-secondary');
+
                                         $label = $labels[$status->slug] ?? ($status->name ?? ucfirst($status->slug));
                                     @endphp
 
@@ -391,12 +398,14 @@
                                                 <i class="fa-solid fa-ellipsis"></i>
                                             @endif
                                         </span>
+
                                         <p
                                             class="mb-0 mt-2 small fw-semibold {{ $isCurrent ? 'text-primary' : 'text-muted' }}">
                                             {{ $label }}
                                         </p>
                                     </li>
                                 @endforeach
+
                             </ul>
                         </div>
 
@@ -407,7 +416,7 @@
                         @endphp
 
                         <div class="d-details">
-                            @if ($deliveredAt && $order->status != 5 && $order->status != 4)
+                            @if ($deliveredAt && !$order->is_pickup && $order->status != 5 && $order->status != 4)
                                 <div
                                     style="margin-top:15px;margin-bottom:5px; padding:10px 15px; border-left:4px solid #0d6efd; background:#f8f9fa; border-radius:5px; display:inline-block;">
                                     <h6 style="margin:0; font-size:14px; color:#495057;">

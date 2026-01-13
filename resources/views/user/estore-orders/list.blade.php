@@ -92,12 +92,14 @@
                     <div class="modal-body">
                         <input type="hidden" id="order-id" name="order_id">
                         <input type="hidden" id="current-status" name="current_status">
+                        <input type="hidden" id="modal-is-pickup" name="is_pickup" value="0">
 
                         <div class="mb-3">
                             <label for="order-status" class="form-label">Order Status</label>
                             <select class="form-control" id="order-status" name="status" required>
                                 @foreach ($order_status as $status)
-                                    <option value="{{ $status->id }}">{{ $status->name }}</option>
+                                    <option value="{{ $status->id }}" data-default-name="{{ $status->name }}"
+                                        data-pickup-name="{{ $status->pickup_name ?? '' }}">{{ $status->name }}</option>
                                 @endforeach
                             </select>
                         </div>
@@ -398,7 +400,8 @@
             @endforeach
         ];
 
-        function openUpdateStatusModal(orderId, currentStatus, currentPaymentStatus, notes, date) {
+        function openUpdateStatusModal(orderId, currentStatus, currentPaymentStatus, notes, date, isPickup) {
+            isPickup = parseInt(isPickup) === 1 ? 1 : 0;
             if ([4, 5].includes(parseInt(currentStatus))) { // Assuming 4 = delivered, 5 = cancelled
                 toastr.warning('This order status is final and cannot be changed.');
                 return;
@@ -416,10 +419,60 @@
             });
             $('#order-status').val(currentStatus);
             $('#order-notes').val(notes || '');
+            // store pickup flag in hidden input for later checks
+            $('#modal-is-pickup').val(isPickup ? 1 : 0);
+
+            // update option labels to pickup names when required
+            toggleStatusOptionLabels(isPickup);
+
             $('#updateStatusModal').modal('show');
             $('#expected-delivery-date').val(date);
 
+            // Show/hide expected delivery based on pickup flag or if status is cancelled
+            toggleExpectedDeliveryVisibility(isPickup, currentStatus);
         }
+
+        function toggleExpectedDeliveryVisibility(isPickup, statusId) {
+            const wrapper = $('#expected-delivery-wrapper');
+            const input = $('#expected-delivery-date');
+            if (isPickup === 1 || parseInt(statusId) === 5) {
+                wrapper.hide();
+                input.prop('disabled', true).val('');
+            } else {
+                wrapper.show();
+                input.prop('disabled', false);
+            }
+        }
+
+        // Re-evaluate when status selector changes
+        $(document).on('change', '#order-status', function() {
+            const selected = $(this).val();
+            // Read isPickup from the modal hidden field (set when modal opens)
+            const isPickupKnown = parseInt($('#modal-is-pickup').val() || 0);
+            toggleExpectedDeliveryVisibility(isPickupKnown, selected);
+        });
+
+        // Toggle status option labels to pickup-specific names when appropriate
+        function toggleStatusOptionLabels(isPickup) {
+            isPickup = parseInt(isPickup) === 1 ? 1 : 0;
+            $('#order-status option').each(function() {
+                const $opt = $(this);
+                const defaultName = $opt.data('default-name') || $opt.text();
+                const pickupName = $opt.data('pickup-name') || '';
+                if (isPickup === 1 && pickupName && pickupName.length > 0) {
+                    $opt.text(pickupName);
+                } else {
+                    $opt.text(defaultName);
+                }
+            });
+        }
+
+        // Reset labels back to defaults when modal hides
+        $('#updateStatusModal').on('hidden.bs.modal', function() {
+            toggleStatusOptionLabels(0);
+        });
+
+
 
         function updateOrderStatus() {
             const currentStatus = $('#current-status').val();
@@ -434,6 +487,16 @@
                 toastr.warning('Cannot revert an order to a previous status.');
                 return;
             }
+            // Client-side check: ensure expected delivery date present when required (non-pickup & not cancelled)
+            const isPickupKnown = parseInt($('#modal-is-pickup').val() || 0);
+            if (isPickupKnown !== 1 && targetStatus != '5') {
+                const dateVal = $('#expected-delivery-date').val();
+                if (!dateVal) {
+                    toastr.error('Please provide an expected delivery date unless the order is cancelled or pickup.');
+                    return;
+                }
+            }
+
             const formData = new FormData($('#updateStatusForm')[0]);
 
             $.ajax({
