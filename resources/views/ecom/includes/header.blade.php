@@ -67,6 +67,7 @@
                         @endif
                     </div>
                 </div>
+                
                 <div class="menu-with-login-right">
                     <div class="right_btm order-4 order-lg-3">
                         <div id="cssmenu">
@@ -953,8 +954,8 @@
                                     <div class="small text-muted">Click to edit</div>
                                 </div>
                                ${a.is_default ? '' : `<button type="button" class="btn btn-link p-0 text-danger lr-delete-btn" aria-label="Delete address" title="Delete">
-                                            <i class="fa-solid fa-trash"></i>
-                                        </button>`}
+                                                <i class="fa-solid fa-trash"></i>
+                                            </button>`}
                             </div>
                         `;
 

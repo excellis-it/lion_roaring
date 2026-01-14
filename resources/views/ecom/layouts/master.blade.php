@@ -102,6 +102,23 @@
             z-index: 2000 !important;
         }
     </style>
+    <style>
+        .skiptranslate {
+            display: none !important;
+        }
+
+        body {
+            top: 0px !important;
+        }
+
+        .goog-logo-link {
+            display: none !important;
+        }
+
+        .trans-section {
+            margin: 100px;
+        }
+    </style>
     @stack('styles')
 </head>
 
@@ -280,6 +297,7 @@
         });
     </script>
     @stack('scripts')
+    @include('frontend.includes.google_translate')
     @include('frontend.includes.chatbot')
 </body>
 

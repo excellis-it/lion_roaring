@@ -130,6 +130,7 @@ use App\Http\Controllers\User\OrderStatusController;
 use App\Http\Controllers\User\WareHouseController;
 use App\Http\Controllers\User\WarehouseAdminController;
 use App\Helpers\Helper;
+use App\Http\Controllers\ChatbotController as ControllersChatbotController;
 use App\Models\Country;
 use Illuminate\Support\Str;
 use App\Http\Controllers\VisitorController;
@@ -1235,26 +1236,26 @@ Route::prefix('e-learning')->middleware(['user'])->group(function () {
 
 // Chatbot Routes
 Route::prefix('chatbot')->name('chatbot.')->group(function () {
-    Route::post('/init', [\App\Http\Controllers\ChatbotController::class, 'initConversation'])->name('init');
-    Route::post('/guest-name', [\App\Http\Controllers\ChatbotController::class, 'updateGuestName'])->name('guest-name');
-    Route::post('/language', [\App\Http\Controllers\ChatbotController::class, 'changeLanguage'])->name('language');
-    Route::get('/languages', [\App\Http\Controllers\ChatbotController::class, 'getLanguages'])->name('languages');
+    Route::post('/init', [ControllersChatbotController::class, 'initConversation'])->name('init');
+    Route::post('/guest-name', [ControllersChatbotController::class, 'updateGuestName'])->name('guest-name');
+    Route::post('/language', [ControllersChatbotController::class, 'changeLanguage'])->name('language');
+    Route::get('/languages', [ControllersChatbotController::class, 'getLanguages'])->name('languages');
 
-    Route::get('/faq-questions', [\App\Http\Controllers\ChatbotController::class, 'getFaqQuestions'])->name('faq-questions');
-    Route::get('/search-estore', [\App\Http\Controllers\ChatbotController::class, 'searchEstoreProducts'])->name('search-estore');
-    Route::get('/search-elearning', [\App\Http\Controllers\ChatbotController::class, 'searchElearningCourses'])->name('search-elearning');
-    Route::get('/search-keywords', [\App\Http\Controllers\ChatbotController::class, 'searchKeywords'])->name('search-keywords');
-    Route::post('/feedback', [\App\Http\Controllers\ChatbotController::class, 'submitFeedback'])->name('feedback');
-    Route::post('/message', [\App\Http\Controllers\ChatbotController::class, 'saveMessage'])->name('message');
-    Route::get('/history', [\App\Http\Controllers\ChatbotController::class, 'getConversationHistory'])->name('history');
+    Route::get('/faq-questions', [ControllersChatbotController::class, 'getFaqQuestions'])->name('faq-questions');
+    Route::get('/search-estore', [ControllersChatbotController::class, 'searchEstoreProducts'])->name('search-estore');
+    Route::get('/search-elearning', [ControllersChatbotController::class, 'searchElearningCourses'])->name('search-elearning');
+    Route::get('/search-keywords', [ControllersChatbotController::class, 'searchKeywords'])->name('search-keywords');
+    Route::post('/feedback', [ControllersChatbotController::class, 'submitFeedback'])->name('feedback');
+    Route::post('/message', [ControllersChatbotController::class, 'saveMessage'])->name('message');
+    Route::get('/history', [ControllersChatbotController::class, 'getConversationHistory'])->name('history');
 });
 
 
 
 // Legacy chatbot routes (keep for backwards compatibility)
 // Legacy chatbot routes (keep for backwards compatibility)
-Route::get('/chatbot/faqs-legacy', [\App\Http\Controllers\ChatbotController::class, 'getFaqCategories'])->name('chatbot.legacy.faqs');
-Route::post('/chatbot-legacy', [\App\Http\Controllers\ChatbotController::class, 'saveMessage'])->name('chatbot.legacy.message');
+Route::get('/chatbot/faqs-legacy', [ControllersChatbotController::class, 'getFaqCategories'])->name('chatbot.legacy.faqs');
+Route::post('/chatbot-legacy', [ControllersChatbotController::class, 'saveMessage'])->name('chatbot.legacy.message');
 
 // Stripe webhook (public)
 Route::post('/stripe/webhook', [\App\Http\Controllers\Webhook\StripeWebhookController::class, 'handle'])->name('stripe.webhook');
