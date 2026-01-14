@@ -15,6 +15,7 @@ use App\Models\Product;
 use App\Models\ElearningProduct;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Auth;
+use GuzzleHttp\Client;
 
 class ChatbotController extends Controller
 {
@@ -71,9 +72,16 @@ class ChatbotController extends Controller
         if ($conversation) {
             $conversation->update(['guest_name' => $request->guest_name]);
 
+            $message = "Nice to meet you, {$request->guest_name}! 😊 How can I assist you today?";
+
+            // Translate if needed
+            if ($conversation->language !== 'en') {
+                $message = $this->translateText($message, $conversation->language);
+            }
+
             return response()->json([
                 'success' => true,
-                'message' => "Nice to meet you, {$request->guest_name}! 😊 How can I assist you today?",
+                'message' => $message,
             ]);
         }
 
@@ -125,9 +133,17 @@ class ChatbotController extends Controller
             ->orderBy('id', 'asc')
             ->get();
 
-        // Track analytics
+        // Translate FAQs if needed
         if ($request->session_id) {
             $conversation = ChatbotConversation::where('session_id', $request->session_id)->first();
+            if ($conversation && $conversation->language !== 'en') {
+                foreach ($questions as $q) {
+                    $q->question = $this->translateText($q->question, $conversation->language);
+                    $q->answer = $this->translateText($q->answer, $conversation->language);
+                }
+            }
+
+            // Track analytics
             if ($conversation) {
                 ChatbotAnalytics::create([
                     'conversation_id' => $conversation->id,
@@ -179,6 +195,15 @@ class ChatbotController extends Controller
     public function searchEstoreProducts(Request $request)
     {
         $query = $request->get('query');
+
+        // Translate query to English if needed
+        if ($request->session_id) {
+            $conversation = ChatbotConversation::where('session_id', $request->session_id)->first();
+            if ($conversation && $conversation->language !== 'en') {
+                $query = $this->translateText($query, 'en');
+            }
+        }
+
         $keyword = ChatbotKeyword::findByKeyword($query);
 
         $products = Product::where('is_deleted', false)
@@ -192,6 +217,14 @@ class ChatbotController extends Controller
         // Track search
         if ($request->session_id) {
             $conversation = ChatbotConversation::where('session_id', $request->session_id)->first();
+
+            // Translate if needed
+            if ($conversation && $conversation->language !== 'en') {
+                foreach ($products as $product) {
+                    $product->name = $this->translateText($product->name, $conversation->language);
+                }
+            }
+
             if ($conversation) {
                 ChatbotAnalytics::create([
                     'conversation_id' => $conversation->id,
@@ -213,7 +246,7 @@ class ChatbotController extends Controller
         return response()->json([
             'success' => true,
             'products' => $products,
-            'response' => $keyword->response ?? null,
+            'response' => $keyword ? ($conversation && $conversation->language !== 'en' ? $this->translateText($keyword->response, $conversation->language) : $keyword->response) : null,
         ]);
     }
 
@@ -223,6 +256,15 @@ class ChatbotController extends Controller
     public function searchElearningCourses(Request $request)
     {
         $query = $request->get('query');
+
+        // Translate query to English if needed
+        if ($request->session_id) {
+            $conversation = ChatbotConversation::where('session_id', $request->session_id)->first();
+            if ($conversation && $conversation->language !== 'en') {
+                $query = $this->translateText($query, 'en');
+            }
+        }
+
         $keyword = ChatbotKeyword::findByKeyword($query);
 
         $courses = ElearningProduct::where(function ($q) use ($query) {
@@ -235,6 +277,14 @@ class ChatbotController extends Controller
         // Track search
         if ($request->session_id) {
             $conversation = ChatbotConversation::where('session_id', $request->session_id)->first();
+
+            // Translate if needed
+            if ($conversation && $conversation->language !== 'en') {
+                foreach ($courses as $course) {
+                    $course->name = $this->translateText($course->name, $conversation->language);
+                }
+            }
+
             if ($conversation) {
                 ChatbotAnalytics::create([
                     'conversation_id' => $conversation->id,
@@ -256,7 +306,7 @@ class ChatbotController extends Controller
         return response()->json([
             'success' => true,
             'courses' => $courses,
-            'response' => $keyword->response ?? null,
+            'response' => $keyword ? ($conversation && $conversation->language !== 'en' ? $this->translateText($keyword->response, $conversation->language) : $keyword->response) : null,
         ]);
     }
 
@@ -266,6 +316,15 @@ class ChatbotController extends Controller
     public function searchKeywords(Request $request)
     {
         $query = $request->get('query');
+
+        // Translate query to English if needed
+        if ($request->session_id) {
+            $conversation = ChatbotConversation::where('session_id', $request->session_id)->first();
+            if ($conversation && $conversation->language !== 'en') {
+                $query = $this->translateText($query, 'en');
+            }
+        }
+
         $keyword = ChatbotKeyword::findByKeyword($query);
 
         $products = collect();
@@ -327,10 +386,25 @@ class ChatbotController extends Controller
                 ->get(['id', 'name', 'slug', 'price', 'affiliate_link']);
         }
 
-        // Track search
+        // Track search & Translate
+        $conversation = null;
         if ($request->session_id) {
             $conversation = ChatbotConversation::where('session_id', $request->session_id)->first();
+
             if ($conversation) {
+                // Translate results if needed
+                if ($conversation->language !== 'en') {
+                    foreach ($products as $product) {
+                        $product->name = $this->translateText($product->name, $conversation->language);
+                    }
+                    foreach ($courses as $course) {
+                        $course->name = $this->translateText($course->name, $conversation->language);
+                    }
+                    if ($response) {
+                        $response = $this->translateText($response, $conversation->language);
+                    }
+                }
+
                 ChatbotAnalytics::create([
                     'conversation_id' => $conversation->id,
                     'event_type' => 'keyword_search',
@@ -354,9 +428,14 @@ class ChatbotController extends Controller
             ]);
         }
 
+        $msg = "Sorry, I couldn't find anything matching your query. Please rephrase or contact support.";
+        if ($conversation && $conversation->language !== 'en') {
+            $msg = $this->translateText($msg, $conversation->language);
+        }
+
         return response()->json([
             'success' => false,
-            'message' => "Sorry, I couldn't find anything matching your query. Please rephrase or contact support.",
+            'message' => $msg,
         ]);
     }
 
@@ -452,5 +531,46 @@ class ChatbotController extends Controller
         }
 
         return response()->json(['success' => false], 404);
+    }
+
+    /**
+     * Helper to translate text using Google Translate free API (gtx)
+     */
+    private function translateText($text, $targetLang)
+    {
+        if ($targetLang === 'en' || empty($text)) {
+            return $text;
+        }
+
+        try {
+            $client = new Client();
+            $response = $client->get('https://translate.googleapis.com/translate_a/single', [
+                'query' => [
+                    'client' => 'gtx',
+                    'sl' => 'auto',
+                    'tl' => $targetLang,
+                    'dt' => 't',
+                    'q' => $text
+                ]
+            ]);
+
+            $result = json_decode($response->getBody(), true);
+
+            // Extract translated text from the response structure
+            if (isset($result[0])) {
+                $translatedText = '';
+                foreach ($result[0] as $part) {
+                    if (isset($part[0])) {
+                        $translatedText .= $part[0];
+                    }
+                }
+                return $translatedText ?: $text;
+            }
+
+            return $text;
+        } catch (\Exception $e) {
+            // In case of error, return original text
+            return $text;
+        }
     }
 }
