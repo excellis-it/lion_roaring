@@ -416,6 +416,8 @@
             return 'en';
         }
 
+        
+
         currentLanguage = getGoogleTranslateLang();
 
         // Check window state from local storage

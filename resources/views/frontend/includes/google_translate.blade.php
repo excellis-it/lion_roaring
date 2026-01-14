@@ -1,6 +1,5 @@
 <div id="google_translate_element" style="position: absolute; opacity: 0; width: 0; height: 0; overflow: hidden;"></div>
-<script type="text/javascript" src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit">
-</script>
+
 
 <script>
     // example: [{"id":202,"code":"es","name":"Spanish",...}, {"id":249,"code":"en","name":"English",...}]
@@ -95,9 +94,14 @@
             const select = document.querySelector('.goog-te-combo');
             if (select) {
                 clearInterval(checkAndSet);
-                select.value = lang;
-                select.dispatchEvent(new Event('change'));
-                select.dispatchEvent(new Event('click'));
+                // Use forceSelectValue if available to handle 'en' -> '' mapping
+                if (window.forceSelectValue) {
+                    window.forceSelectValue(select, lang);
+                } else {
+                    select.value = lang;
+                    select.dispatchEvent(new Event('change'));
+                    select.dispatchEvent(new Event('click'));
+                }
                 console.log('Language changed to: ' + lang);
             } else {
                 attempts++;
@@ -152,6 +156,7 @@
     function forceSelectValue(selectEl, value) {
         if (!selectEl) return;
 
+
         // Try to find the option by value, prefix, or text
         let found = Array.from(selectEl.options).find(opt =>
             opt.value === value ||
@@ -163,6 +168,9 @@
         // Fallback for English: first option is usually the original language
         if (!found && value === 'en') {
             found = selectEl.options[0];
+            // console.log('english not found');
+            // console.log(selectEl.options[0]);
+
         }
 
         if (found) {
@@ -171,17 +179,19 @@
             const evt = document.createEvent('HTMLEvents');
             evt.initEvent('change', true, true);
             selectEl.dispatchEvent(evt);
-
+            console.log('english found');
+            // console.log(selectEl.options[0]);
             // If switching back to English, clear the Google Translate cookies to ensure a full reset
-            if (value === 'en') {
-                const domain = window.location.hostname;
-                const path = "/";
-                document.cookie = `googtrans=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=${path};`;
-                document.cookie = `googtrans=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=${path}; domain=${domain};`;
-                document.cookie = `googtrans=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=${path}; domain=.${domain};`;
-            }
+            // if (value === 'en') {
+            //     const domain = window.location.hostname;
+            //     const path = "/";
+            //     document.cookie = `googtrans=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=${path};`;
+            //     document.cookie = `googtrans=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=${path}; domain=${domain};`;
+            //     document.cookie = `googtrans=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=${path}; domain=.${domain};`;
+            // }
         }
     }
+    window.forceSelectValue = forceSelectValue;
 
     /**
      * googleTranslateElementInit
@@ -204,4 +214,6 @@
         }, 5000);
         */
     }
+</script>
+<script type="text/javascript" src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit">
 </script>
