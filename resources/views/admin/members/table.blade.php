@@ -12,7 +12,7 @@
             <td>{{ $partner->email }}</td>
             <td>{{ $partner->phone }}</td>
             <td>{{ $partner->address }}</td>
-            <td>{{ $partner->getRoleNames()->first() }}</td>
+            <td>{{ $partner->getFirstUserRoleName() }}</td>
             <td>
                 @if ($partner->is_accept == 1)
                     <span>Accepted</span>

@@ -173,70 +173,70 @@
             </div>
         </div>
     </div>
-     <div class="container-fluid">
-         <div class="bg_white_border">
+    <div class="container-fluid">
+        <div class="bg_white_border">
 
-                <div class="row justify-content-end">
-                    <div class="col-md-6">
-                        <div class="row g-1 justify-content-end">
+            <div class="row justify-content-end">
+                <div class="col-md-6">
+                    <div class="row g-1 justify-content-end">
 
-                            {{-- <div class="col-md-3 pl-0 ml-2">
+                        {{-- <div class="col-md-3 pl-0 ml-2">
                                 <button class="btn btn-primary button-search" id="search-button"> <span class=""><i
                                             class="fa fa-search"></i></span> Search</button>
                             </div> --}}
-                        </div>
                     </div>
                 </div>
-                <div class="table-responsive" id="contacts-data">
-                    <table id="example" class="dd table table-striped table-bordered" style="width:100%">
-                       <thead class="color_head">
-                                            <tr class="header-row">
-                                <th>
-                                    User Name
-                                </th>
-                                <th>
-                                    Role
-                                </th>
-                                <th>Name</th>
-                                <th>Email</th>
-                                <th>
-                                    Phone
-                                </th>
-                                <th>Created Date</th>
-                                <th>Action</th>
+            </div>
+            <div class="table-responsive" id="contacts-data">
+                <table id="example" class="dd table table-striped table-bordered" style="width:100%">
+                    <thead class="color_head">
+                        <tr class="header-row">
+                            <th>
+                                User Name
+                            </th>
+                            <th>
+                                Role
+                            </th>
+                            <th>Name</th>
+                            <th>Email</th>
+                            <th>
+                                Phone
+                            </th>
+                            <th>Created Date</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach ($ecclessias as $ecclessia)
+                            <tr>
+                                <td>{{ $ecclessia->user_name }}</td>
+                                <td>{{ $ecclessia->getFirstUserRoleName() }}</td>
+                                <td>{{ $ecclessia->full_name }}</td>
+                                <td>{{ $ecclessia->email }}</td>
+                                <td>{{ $ecclessia->phone }}</td>
+                                <td>{{ date('d M Y', strtotime($ecclessia->created_at)) }}</td>
+                                <td align="center">
+                                    <div class="edit-1 d-flex align-items-center justify-content-center">
+                                        @if (auth()->user()->can('Edit All Users'))
+                                            <a class="edit-admins edit-icon" href="#" data-bs-toggle="modal"
+                                                data-bs-target="#edit_admin" data-id="{{ $ecclessia->id }}"
+                                                data-route="{{ route('ecclessias.edit', $ecclessia->id) }}"> <span
+                                                    class="edit-icon"><i class="fas fa-edit"></i></span></a>
+                                        @endif
+                                        @if (auth()->user()->can('Delete All Users'))
+                                            <a href="{{ route('ecclessias.delete', $ecclessia->id) }}"
+                                                onclick="return confirm('Are you sure to delete this user?')">
+                                                <span class="trash-icon"><i class="fas fa-trash"></i></span></a>
+                                        @endif
+                                    </div>
+
+                                </td>
                             </tr>
-                        </thead>
-                        <tbody>
-                            @foreach ($ecclessias as $ecclessia)
-                                <tr>
-                                    <td>{{ $ecclessia->user_name }}</td>
-                                    <td>{{$ecclessia->getRoleNames()->first()}}</td>
-                                    <td>{{ $ecclessia->full_name }}</td>
-                                    <td>{{ $ecclessia->email }}</td>
-                                    <td>{{ $ecclessia->phone }}</td>
-                                    <td>{{ date('d M Y', strtotime($ecclessia->created_at)) }}</td>
-                                    <td align="center">
-                                        <div class="edit-1 d-flex align-items-center justify-content-center">
-                                            @if (auth()->user()->can('Edit All Users'))
-                                                <a class="edit-admins edit-icon" href="#" data-bs-toggle="modal"
-                                                    data-bs-target="#edit_admin" data-id="{{ $ecclessia->id }}"
-                                                    data-route="{{ route('ecclessias.edit', $ecclessia->id) }}"> <span
-                                                        class="edit-icon"><i class="fas fa-edit"></i></span></a>
-                                            @endif
-                                            @if (auth()->user()->can('Delete All Users'))
-                                                <a href="{{ route('ecclessias.delete', $ecclessia->id) }}"
-                                                    onclick="return confirm('Are you sure to delete this user?')">
-                                                    <span class="trash-icon"><i class="fas fa-trash"></i></span></a>
-                                            @endif
-                                        </div>
+                        @endforeach
+                    </tbody>
 
-                                    </td>
-                                </tr>
-                            @endforeach
-                        </tbody>
-
-                    </table>
-                </div>
+                </table>
+            </div>
 
         </div>
     </div>

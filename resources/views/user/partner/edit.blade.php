@@ -155,7 +155,7 @@
                                                 <option value="">Select Role</option>
                                                 @foreach ($roles as $item)
                                                     <option value="{{ $item->name }}"
-                                                        {{ $partner->getRoleNames()->first() == $item->name ? 'selected' : '' }}>
+                                                        {{ $partner->getFirstUserRoleName() == $item->name ? 'selected' : '' }}>
                                                         {{ $item->name }}</option>
                                                 @endforeach
                                             </select>
@@ -349,7 +349,7 @@
                                             @php
                                                 $currentRoleName = old(
                                                     'role',
-                                                    $partner->userRole->name ?? $partner->getRoleNames()->first(),
+                                                    $partner->userRole->name ?? $partner->getFirstUserRoleName(),
                                                 );
                                             @endphp
                                             @foreach ($roles as $role)

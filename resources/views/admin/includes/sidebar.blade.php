@@ -18,7 +18,7 @@
                 @elseif (Auth::user()->hasNewRole('Sub Admin'))
                     Sub Admin
                 @endif --}}
-                {{ Auth::user()->getRoleNames()->first() }}
+                {{ Auth::user()->getFirstUserRoleName() }}
             </h5>
         </div>
         <ul class="sidebar-menu">
