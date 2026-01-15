@@ -102,6 +102,19 @@
                                 <p class="text-none mb-0 h5">Order #{{ $order->order_number }}</p>
 
                                 <div>
+                                    @php
+                                        $statusSlug = optional($order->orderStatus)->slug;
+                                        $isFinalDelivered = in_array(
+                                            $statusSlug,
+                                            ['delivered', 'pickup_picked_up'],
+                                            true,
+                                        );
+                                        $isFinalCancelled = in_array(
+                                            $statusSlug,
+                                            ['cancelled', 'pickup_cancelled'],
+                                            true,
+                                        );
+                                    @endphp
                                     {{-- <span
                                         class="badge {{ $order->status_badge_class }} me-2">{{ ucfirst($order->status) }}</span>
                                     <span
@@ -112,7 +125,7 @@
                                         <h5 class="bg-dark text-white p-2 rounded">Order Type: Pickup Order</h5>
                                     @endif
 
-                                    @if ($order->status == 4 && $order->payment_status == 'paid')
+                                    @if ($isFinalDelivered && $order->payment_status == 'paid')
                                         <a href="{{ route('user.store-orders.invoice', $order->id) }}" target="_blank"
                                             class="btn btn-sm btn-primary">
                                             <i class="fas fa-download"></i> Download Invoice
@@ -302,12 +315,11 @@
                         @php
                             if ($order->is_pickup == 1) {
                                 $labels = [
-                                    'pending' => 'Ordered',
-                                    'processing' => 'Processing',
-                                    'shipped' => 'Ready for Pickup',
-                                    'out_for_delivery' => 'Picked Up',
-                                    'delivered' => 'Delivered',
-                                    'cancelled' => 'Cancelled',
+                                    'pickup_pending' => 'Ordered',
+                                    'pickup_processing' => 'Processing',
+                                    'pickup_ready_for_pickup' => 'Ready for Pickup',
+                                    'pickup_picked_up' => 'Picked Up',
+                                    'pickup_cancelled' => 'Cancelled',
                                 ];
                             } else {
                                 $labels = [
@@ -335,11 +347,15 @@
                                     @php
                                         $reached = $idx <= $statusIndex;
                                         $isCurrent = $idx === $statusIndex;
-                                        $cancelled = ($status->slug ?? '') === 'cancelled';
+                                        $cancelled = in_array(
+                                            $status->slug ?? '',
+                                            ['cancelled', 'pickup_cancelled'],
+                                            true,
+                                        );
                                         $colorClass = $cancelled
                                             ? 'bg-danger'
                                             : ($reached
-                                                ? ($status->slug === 'delivered'
+                                                ? (in_array($status->slug, ['delivered', 'pickup_picked_up'], true)
                                                     ? 'bg-success'
                                                     : ($isCurrent
                                                         ? 'bg-primary'
@@ -350,7 +366,7 @@
 
                                     <div class="timeline-item text-center position-relative flex-fill">
                                         {{-- Circle --}}
-                                        <div class="timeline-circle {{ $reached ? 'text-white' : 'text-muted' }} {{ $cancelled ? 'bg-danger' : ($reached ? ($status->slug === 'delivered' ? 'bg-success' : ($isCurrent ? 'bg-primary' : 'bg-secondary')) : 'bg-light') }}"
+                                        <div class="timeline-circle {{ $reached ? 'text-white' : 'text-muted' }} {{ $cancelled ? 'bg-danger' : ($reached ? (in_array($status->slug, ['delivered', 'pickup_picked_up'], true) ? 'bg-success' : ($isCurrent ? 'bg-primary' : 'bg-secondary')) : 'bg-light') }}"
                                             style="width:50px; height:50px; border-radius:50%; display:flex; align-items:center; justify-content:center; margin:auto; font-size:1.2rem; background-color:#ccc !important;">
                                             @if ($reached)
                                                 <i class="fa-solid fa-check"></i>
@@ -373,7 +389,7 @@
                             </div>
 
                             {{-- Expected Delivery Date --}}
-                            @if (!empty($order->expected_delivery_date) && !$order->is_pickup && $order->status != 5 && $order->status != 4)
+                            @if (!empty($order->expected_delivery_date) && !$order->is_pickup && !$isFinalCancelled && !$isFinalDelivered)
                                 <div class="text-center mb-3">
                                     <span class="badge bg-info text-dark p-2">
                                         <i class="fa-solid fa-calendar-day me-1"></i>
@@ -407,7 +423,7 @@
                         </div>
                         {{-- @dd($order->payment_status, $order->status) --}}
                         <div class="card-body">
-                            @if ($order->payment_status === 'paid' && $order->status == 5)
+                            @if ($order->payment_status === 'paid' && $isFinalCancelled)
                                 @if (auth()->user()->can('Edit Estore Orders') || auth()->user()->isWarehouseAdmin())
                                     <button type="button" class="btn btn-danger w-100 mb-2"
                                         onclick="processRefund({{ $order->id }})">
@@ -423,7 +439,8 @@
                             @else
                                 @if (
                                     (auth()->user()->can('Edit Estore Orders') || auth()->user()->isWarehouseAdmin()) &&
-                                        !in_array($order->status, [4, 5]))
+                                        !$isFinalDelivered &&
+                                        !$isFinalCancelled)
                                     <button type="button" class="btn btn-warning w-100 mb-2"
                                         onclick="openUpdateStatusModal({{ $order->id }}, '{{ $order->status }}', '{{ $order->payment_status }}', '{{ $order->notes }}', '{{ $order->expected_delivery_date ? date('Y-m-d', strtotime($order->expected_delivery_date)) : '' }}', '{{ $order->is_pickup ? 1 : 0 }}')">
                                         <i class="fas fa-edit"></i> Update Status
@@ -503,7 +520,7 @@
                                 @foreach ($order_status as $status)
                                     <option value="{{ $status->id }}"
                                         {{ $order->status == $status->id ? 'selected' : '' }}>
-                                        {{ $order->is_pickup ? ucfirst($status->pickup_name) : ucfirst($status->name) }}
+                                        {{ ucfirst($status->name) }}
                                     </option>
                                 @endforeach
                             </select>
@@ -563,14 +580,14 @@
         }
 
         /* .timeline::before {
-                                                                    content: '';
-                                                                    position: absolute;
-                                                                    left: 15px;
-                                                                    top: 0;
-                                                                    bottom: 0;
-                                                                    width: 2px;
-                                                                    background: #e9ecef;
-                                                                } */
+                                                                        content: '';
+                                                                        position: absolute;
+                                                                        left: 15px;
+                                                                        top: 0;
+                                                                        bottom: 0;
+                                                                        width: 2px;
+                                                                        background: #e9ecef;
+                                                                    } */
 
         .timeline-item {
             position: relative;
@@ -654,10 +671,15 @@
                 '{{ $status->id }}',
             @endforeach
         ];
+        const CANCELLED_STATUS_ID =
+            {{ $order_status->firstWhere('slug', $order->is_pickup ? 'pickup_cancelled' : 'cancelled')?->id ?? 'null' }};
+        const FINAL_STATUS_ID =
+            {{ $order_status->firstWhere('slug', $order->is_pickup ? 'pickup_picked_up' : 'delivered')?->id ?? 'null' }};
 
         function openUpdateStatusModal(orderId, currentStatus, currentPaymentStatus, notes, date, isPickup) {
             isPickup = parseInt(isPickup) === 1 ? 1 : 0;
-            if ([4, 5].includes(parseInt(currentStatus))) { // Assuming 4 = delivered, 5 = cancelled
+            if ((FINAL_STATUS_ID && parseInt(currentStatus) === parseInt(FINAL_STATUS_ID)) ||
+                (CANCELLED_STATUS_ID && parseInt(currentStatus) === parseInt(CANCELLED_STATUS_ID))) {
                 toastr.warning('This order status is final and cannot be changed.');
                 return;
             }
@@ -683,7 +705,7 @@
         function toggleExpectedDeliveryVisibility(isPickup, statusId) {
             const wrapper = $('#expected-delivery-wrapper');
             const input = $('#expected-delivery-date');
-            if (isPickup === 1 || parseInt(statusId) === 5) {
+            if (isPickup === 1 || (CANCELLED_STATUS_ID && parseInt(statusId) === parseInt(CANCELLED_STATUS_ID))) {
                 wrapper.hide();
                 input.prop('disabled', true).val('');
             } else {
@@ -708,7 +730,8 @@
             const currentIndex = STATUS_SEQUENCE.indexOf(currentStatus);
             const targetIndex = STATUS_SEQUENCE.indexOf(targetStatus);
 
-            if (['delivered', 'cancelled'].includes(currentStatus)) {
+            if ((FINAL_STATUS_ID && parseInt(currentStatus) === parseInt(FINAL_STATUS_ID)) ||
+                (CANCELLED_STATUS_ID && parseInt(currentStatus) === parseInt(CANCELLED_STATUS_ID))) {
                 toastr.warning('Finalized orders cannot be updated.');
                 return;
             }
@@ -720,7 +743,8 @@
 
             // Client-side required check for expected delivery
             const isPickupKnown = {{ $order->is_pickup ? 1 : 0 }};
-            if (parseInt(isPickupKnown) !== 1 && targetStatus != '5') {
+            if (parseInt(isPickupKnown) !== 1 && (!CANCELLED_STATUS_ID || parseInt(targetStatus) !== parseInt(
+                    CANCELLED_STATUS_ID))) {
                 const dateVal = $('#expected-delivery-date').val();
                 if (!dateVal) {
                     toastr.error(

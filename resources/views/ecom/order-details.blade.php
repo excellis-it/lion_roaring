@@ -28,7 +28,25 @@
                                     <p class="mb-0">Placed on
                                         {{ \Carbon\Carbon::parse($order->created_at)->timezone(auth()->user()->time_zone)->format('M d, Y h:i A') }}
                                     </p>
-                                    @if ($order->status == 4 && $order->payment_status == 'paid')
+                                    @php
+                                        $statusSlug = optional($order->orderStatus)->slug;
+                                        $isFinalDelivered = in_array(
+                                            $statusSlug,
+                                            ['delivered', 'pickup_picked_up'],
+                                            true,
+                                        );
+                                        $isFinalCancelled = in_array(
+                                            $statusSlug,
+                                            ['cancelled', 'pickup_cancelled'],
+                                            true,
+                                        );
+                                        $statusBadgeClass = $isFinalDelivered
+                                            ? 'success'
+                                            : ($isFinalCancelled
+                                                ? 'danger'
+                                                : 'primary');
+                                    @endphp
+                                    @if ($isFinalDelivered && $order->payment_status == 'paid')
                                         <a href="{{ route('user.store-orders.invoice', $order->id) }}" target="_blank"
                                             class="btn btn-sm btn-primary">
                                             <i class="fas fa-download"></i> Download Invoice
@@ -36,9 +54,8 @@
                                     @endif
                                 </div>
                                 <div class="col-md-6 text-end">
-                                    <span
-                                        class="badge bg-{{ $order->status == 4 ? 'success' : ($order->status == 5 ? 'danger' : 'primary') }} mb-1">
-                                        {{ $order->is_pickup ? ucfirst($order->orderStatus->pickup_name ?? '-') : ucfirst($order->orderStatus->name ?? '-') }}
+                                    <span class="badge bg-{{ $statusBadgeClass }} mb-1">
+                                        {{ ucfirst($order->orderStatus->name ?? '-') }}
                                     </span><br>
                                     <span class="badge bg-{{ $order->payment_status == 'paid' ? 'success' : 'warning' }}">
                                         Payment {{ ucfirst($order->payment_status) }}
@@ -52,7 +69,7 @@
 
                         @if ($order->is_pickup == 1)
                             <div class="alert alert-info">
-                                This order is marked for <strong>Pickup</strong>.
+                                Order Type : <strong>Pickup</strong>.
                             </div>
                             <!-- Pickup Address -->
                             <div class="shipping-address mb-4">
@@ -247,17 +264,22 @@
                         <!-- Actions Order Cancellation button with modal confirm with note area and cancel button -->
                         <div class="order-cancellation mt-4">
 
-                            @if ($order->status == 3)
+                            @php
+                                $blockingSlugs = $order->is_pickup
+                                    ? ['pickup_ready_for_pickup', 'pickup_picked_up']
+                                    : ['shipped', 'out_for_delivery', 'delivered'];
+                            @endphp
+                            @if (in_array($statusSlug, $blockingSlugs, true))
                                 <button type="button" class="btn btn-outline-dark w-100" disabled>
                                     Order that has been {{ $order->is_pickup ? 'ready for picked up' : 'shipped' }} can't
                                     be cancelled.
                                 </button>
                             @endif
 
-                            @if (
-                               ( $order->status == 1 ||
-                                    $order->status == 2) &&
-                                    $order->created_at->diffInDays(now()) <= optional($estoreSettings)->refund_max_days)
+                            @if (in_array(
+                                    $statusSlug,
+                                    $order->is_pickup ? ['pickup_pending', 'pickup_processing'] : ['pending', 'processing'],
+                                    true) && $order->created_at->diffInDays(now()) <= optional($estoreSettings)->refund_max_days)
                                 <button type="button" class="btn btn-outline-danger w-100" data-bs-toggle="modal"
                                     data-bs-target="#cancelOrderModal">
                                     Cancel Order
@@ -304,7 +326,7 @@
                             @endif
                         </div>
 
-                        @if ($order->status == 5)
+                        @if ($isFinalCancelled)
                             <div class="alert alert-danger mt-3">
 
                                 @if ($payment->status == 'refunded')
@@ -336,12 +358,11 @@
                     @php
                         if ($order->is_pickup == 1) {
                             $labels = [
-                                'pending' => 'Ordered',
-                                'processing' => 'Processing',
-                                'shipped' => 'Ready for Pickup',
-                                'out_for_delivery' => 'Picked Up',
-                                'delivered' => 'Delivered',
-                                'cancelled' => 'Cancelled',
+                                'pickup_pending' => 'Ordered',
+                                'pickup_processing' => 'Processing',
+                                'pickup_ready_for_pickup' => 'Ready for Pickup',
+                                'pickup_picked_up' => 'Picked Up',
+                                'pickup_cancelled' => 'Cancelled',
                             ];
                         } else {
                             $labels = [
@@ -365,19 +386,24 @@
                             <ul class="list-unstyled d-flex flex-wrap gap-3" style="row-gap:1.5rem;">
                                 @foreach ($timelineStatuses as $idx => $status)
                                     {{-- Show "cancelled" only when order is actually cancelled --}}
-                                    @if (($status->slug ?? '') === 'cancelled' && $order->status !== 'cancelled')
+                                    @if (in_array($status->slug ?? '', ['cancelled', 'pickup_cancelled'], true) &&
+                                            !in_array($statusSlug, ['cancelled', 'pickup_cancelled'], true))
                                         @continue
                                     @endif
 
                                     @php
                                         $reached = $idx <= $statusIndex;
                                         $isCurrent = $idx === $statusIndex;
-                                        $cancelled = ($status->slug ?? '') === 'cancelled';
+                                        $cancelled = in_array(
+                                            $status->slug ?? '',
+                                            ['cancelled', 'pickup_cancelled'],
+                                            true,
+                                        );
 
                                         $colorClass = $cancelled
                                             ? 'btn-danger'
                                             : ($reached
-                                                ? ($status->slug === 'delivered'
+                                                ? (in_array($status->slug, ['delivered', 'pickup_picked_up'], true)
                                                     ? 'btn-success'
                                                     : ($isCurrent
                                                         ? 'btn-primary'
@@ -386,24 +412,23 @@
 
                                         $label = $labels[$status->slug] ?? ($status->name ?? ucfirst($status->slug));
                                     @endphp
-                                      @if (($status->slug ?? '') !== 'cancelled' || $isCurrent)
+                                    @if (!in_array($status->slug ?? '', ['cancelled', 'pickup_cancelled'], true) || $isCurrent)
+                                        <li class="text-center" style="min-width:90px;">
+                                            <span
+                                                class="btn {{ $colorClass }} rounded-circle d-inline-flex align-items-center justify-content-center"
+                                                style="width:42px;height:42px;">
+                                                @if ($reached)
+                                                    <i class="fa-solid fa-check"></i>
+                                                @else
+                                                    <i class="fa-solid fa-ellipsis"></i>
+                                                @endif
+                                            </span>
 
-                                    <li class="text-center" style="min-width:90px;">
-                                        <span
-                                            class="btn {{ $colorClass }} rounded-circle d-inline-flex align-items-center justify-content-center"
-                                            style="width:42px;height:42px;">
-                                            @if ($reached)
-                                                <i class="fa-solid fa-check"></i>
-                                            @else
-                                                <i class="fa-solid fa-ellipsis"></i>
-                                            @endif
-                                        </span>
-
-                                        <p
-                                            class="mb-0 mt-2 small fw-semibold {{ $isCurrent ? 'text-primary' : 'text-muted' }}">
-                                            {{ $label }}
-                                        </p>
-                                    </li>
+                                            <p
+                                                class="mb-0 mt-2 small fw-semibold {{ $isCurrent ? 'text-primary' : 'text-muted' }}">
+                                                {{ $label }}
+                                            </p>
+                                        </li>
                                     @endif
                                 @endforeach
 
@@ -417,7 +442,7 @@
                         @endphp
 
                         <div class="d-details">
-                            @if ($deliveredAt && !$order->is_pickup && $order->status != 5 && $order->status != 4)
+                            @if ($deliveredAt && !$order->is_pickup && !$isFinalCancelled && !$isFinalDelivered)
                                 <div
                                     style="margin-top:15px;margin-bottom:5px; padding:10px 15px; border-left:4px solid #0d6efd; background:#f8f9fa; border-radius:5px; display:inline-block;">
                                     <h6 style="margin:0; font-size:14px; color:#495057;">

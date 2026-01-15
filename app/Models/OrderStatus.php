@@ -13,11 +13,10 @@ class OrderStatus extends Model
 
     protected $fillable = [
         'name',
-        'pickup_name',
         'slug',
-        'color',
         'sort_order',
         'is_active',
+        'is_pickup',
     ];
 
     /**

@@ -484,8 +484,22 @@ class EstoreCmsController extends Controller
         if (!auth()->user()->can('Manage Estore Orders') && !auth()->user()->isWarehouseAdmin()) {
             abort(403, 'You do not have permission to access this page.');
         }
-        $order_status = OrderStatus::orderBy('sort_order', 'asc')->get();
-        return view('user.estore-orders.list')->with(compact('order_status'));
+        $deliveryStatuses = OrderStatus::where('is_pickup', 0)->orderBy('sort_order', 'asc')->get();
+        $pickupStatuses = OrderStatus::where('is_pickup', 1)->orderBy('sort_order', 'asc')->get();
+
+        $deliveryCancelledId = optional($deliveryStatuses->firstWhere('slug', 'cancelled'))->id;
+        $deliveryDeliveredId = optional($deliveryStatuses->firstWhere('slug', 'delivered'))->id;
+        $pickupCancelledId = optional($pickupStatuses->firstWhere('slug', 'pickup_cancelled'))->id;
+        $pickupFinalId = optional($pickupStatuses->firstWhere('slug', 'pickup_picked_up'))->id;
+
+        return view('user.estore-orders.list')->with([
+            'deliveryStatuses' => $deliveryStatuses,
+            'pickupStatuses' => $pickupStatuses,
+            'deliveryCancelledId' => $deliveryCancelledId,
+            'deliveryDeliveredId' => $deliveryDeliveredId,
+            'pickupCancelledId' => $pickupCancelledId,
+            'pickupFinalId' => $pickupFinalId,
+        ]);
     }
 
     // Fetch Orders Data for DataTable
@@ -544,13 +558,47 @@ class EstoreCmsController extends Controller
         $order = EstoreOrder::with(['user', 'orderItems.product', 'payments'])
             ->findOrFail($orderId);
 
-        $order_status = OrderStatus::orderBy('sort_order', 'asc')->get();
+        $order_status = OrderStatus::where('is_pickup', $order->is_pickup ? 1 : 0)
+            ->orderBy('sort_order', 'asc')
+            ->get();
 
         // find the current status id on the order
         $currentStatusId = $order->status; // integer id (assumption)
+        $currentStatusModel = $currentStatusId ? OrderStatus::find($currentStatusId) : null;
+
+        // Normalize legacy/mismatched statuses for pickup vs delivery
+        if ($currentStatusModel && (bool)$currentStatusModel->is_pickup !== (bool)$order->is_pickup) {
+            $deliveryToPickup = [
+                'pending' => 'pickup_pending',
+                'processing' => 'pickup_processing',
+                'shipped' => 'pickup_ready_for_pickup',
+                'out_for_delivery' => 'pickup_picked_up',
+                'delivered' => 'pickup_picked_up',
+                'cancelled' => 'pickup_cancelled',
+            ];
+            $pickupToDelivery = [
+                'pickup_pending' => 'pending',
+                'pickup_processing' => 'processing',
+                'pickup_ready_for_pickup' => 'shipped',
+                'pickup_picked_up' => 'delivered',
+                'pickup_cancelled' => 'cancelled',
+            ];
+
+            $mappedSlug = $order->is_pickup
+                ? ($deliveryToPickup[$currentStatusModel->slug] ?? null)
+                : ($pickupToDelivery[$currentStatusModel->slug] ?? null);
+
+            if ($mappedSlug) {
+                $mappedStatus = $order_status->firstWhere('slug', $mappedSlug);
+                if ($mappedStatus) {
+                    $currentStatusId = $mappedStatus->id;
+                    $currentStatusModel = $mappedStatus;
+                }
+            }
+        }
 
         // Optional: handle cancelled specially — if you want timeline to be [first, cancelled]
-        $cancelSlug = 'cancelled';
+        $cancelSlug = $order->is_pickup ? 'pickup_cancelled' : 'cancelled';
         $cancelStatus = $order_status->firstWhere('slug', $cancelSlug);
 
         if ($currentStatusId && $cancelStatus && $currentStatusId == $cancelStatus->id) {
@@ -571,8 +619,7 @@ class EstoreCmsController extends Controller
 
         // If not found (custom status etc.), append it to timeline for display
         if ($statusIndex === false && $currentStatusId) {
-            $currentStatusModel = OrderStatus::find($currentStatusId);
-            if ($currentStatusModel) {
+            if ($currentStatusModel && (bool)$currentStatusModel->is_pickup === (bool)$order->is_pickup) {
                 $timelineStatuses = $timelineStatuses->push($currentStatusModel);
                 $statusIndex = $timelineStatuses->count() - 1;
             } else {
@@ -617,7 +664,21 @@ class EstoreCmsController extends Controller
             $isPickupOrder = (bool)$orderPreview->is_pickup;
             $targetStatusId = (int)$request->status;
 
-            if (!$isPickupOrder && $targetStatusId !== 5) {
+            $targetStatus = OrderStatus::find($targetStatusId);
+            if (!$targetStatus || (bool)$targetStatus->is_pickup !== $isPickupOrder) {
+                $message = 'Selected status does not match the order type.';
+                if ($request->ajax()) {
+                    return response()->json(['status' => false, 'message' => $message], 422);
+                }
+                return redirect()->back()->withErrors(['status' => $message])->withInput();
+            }
+
+            $cancelledStatus = OrderStatus::where('slug', $isPickupOrder ? 'pickup_cancelled' : 'cancelled')
+                ->where('is_pickup', $isPickupOrder ? 1 : 0)
+                ->first();
+            $cancelledStatusId = $cancelledStatus ? $cancelledStatus->id : null;
+
+            if (!$isPickupOrder && $cancelledStatusId && $targetStatusId !== (int)$cancelledStatusId) {
                 if (empty($request->expected_delivery_date)) {
                     $message = 'Please provide an expected delivery date unless the order is cancelled or a pickup.';
                     if ($request->ajax()) {
@@ -636,7 +697,12 @@ class EstoreCmsController extends Controller
             $order->status = $request->status;
 
             // If this order is pickup or the target status is cancelled, clear expected delivery date
-            if ((bool)$order->is_pickup || (int)$request->status === 5) {
+            $isPickupOrder = (bool)$order->is_pickup;
+            $cancelledStatusId = OrderStatus::where('slug', $isPickupOrder ? 'pickup_cancelled' : 'cancelled')
+                ->where('is_pickup', $isPickupOrder ? 1 : 0)
+                ->value('id');
+
+            if ($isPickupOrder || ($cancelledStatusId && (int)$request->status === (int)$cancelledStatusId)) {
                 $order->expected_delivery_date = null;
             } else {
                 $order->expected_delivery_date = $request->expected_delivery_date;

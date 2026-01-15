@@ -40,9 +40,24 @@
                                                     ${{ number_format($order->total_amount, 2) }}</p>
 
                                                 <div class="text-start mt-2">
-                                                    <span
-                                                        class="badge bg-{{ $order->status == 4 ? 'success' : ($order->status == 5 ? 'danger' : 'primary') }} mb-1">
-                                                        {{ $order->is_pickup ? ucfirst($order->orderStatus->pickup_name ?? '-') : ucfirst($order->orderStatus->name ?? '-') }}
+                                                    @php
+                                                        $statusSlug = optional($order->orderStatus)->slug;
+                                                        $badgeClass = in_array(
+                                                            $statusSlug,
+                                                            ['delivered', 'pickup_picked_up'],
+                                                            true,
+                                                        )
+                                                            ? 'success'
+                                                            : (in_array(
+                                                                $statusSlug,
+                                                                ['cancelled', 'pickup_cancelled'],
+                                                                true,
+                                                            )
+                                                                ? 'danger'
+                                                                : 'primary');
+                                                    @endphp
+                                                    <span class="badge bg-{{ $badgeClass }} mb-1">
+                                                        {{ ucfirst($order->orderStatus->name ?? '-') }}
                                                     </span>
                                                     <span
                                                         class="badge bg-{{ $order->payment_status == 'paid' ? 'success' : 'warning' }}">
