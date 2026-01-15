@@ -106,7 +106,7 @@ class EstoreSettingController extends Controller
             // Validate each rule
             $ruleValidator = \Illuminate\Support\Facades\Validator::make(['shipping_rules' => $decoded], [
                 'shipping_rules.*.min_qty' => 'required|integer|min:0',
-                'shipping_rules.*.max_qty' => 'nullable|integer|min:0',
+                'shipping_rules.*.max_qty' => 'required|integer|min:0',
                 'shipping_rules.*.shipping_cost' => 'nullable|numeric|min:0',
                 'shipping_rules.*.delivery_cost' => 'nullable|numeric|min:0',
             ]);

@@ -18,7 +18,7 @@
 
                         <div class="row">
                             <!-- Shipping Cost -->
-                            <div class="col-md-6 mb-2">
+                            <div class="col-md-6 mb-2" style="display: {{ $hasShippingRules ? 'none' : 'block' }};">
                                 <div class="box_label">
                                     <label for="shipping_cost">Shipping Cost</label>
                                     <input type="number" step="any" name="shipping_cost" id="shipping_cost"
@@ -38,13 +38,18 @@
                             </div>
 
                             <!-- Delivery Cost -->
-                            <div class="col-md-6 mb-2">
+                            <div class="col-md-6 mb-2" style="display: {{ $hasShippingRules ? 'none' : 'block' }};">
                                 <div class="box_label">
                                     <label for="delivery_cost">Delivery Cost</label>
                                     <input type="number" step="any" name="delivery_cost" id="delivery_cost"
                                         class="form-control @error('delivery_cost') is-invalid @enderror"
                                         value="{{ old('delivery_cost', $storeSetting->delivery_cost) }}"
                                         @if ($hasShippingRules) disabled @endif>
+
+                                    <small id="delivery-rates-note" class="text-muted"
+                                        style="display: {{ $hasShippingRules ? 'block' : 'none' }};">
+                                        Legacy delivery cost are ignored while quantity-based shipping rules are configured.
+                                    </small>
 
                                     @error('delivery_cost')
                                         <div class="invalid-feedback">{{ $message }}</div>
@@ -124,7 +129,7 @@
                                             <thead>
                                                 <tr>
                                                     <th>Min Qty</th>
-                                                    <th>Max Qty (optional)</th>
+                                                    <th>Max Qty <span class="text-danger">*</span></th>
                                                     <th>Shipping Cost ($)</th>
                                                     <th>Delivery Cost ($)</th>
                                                     <th></th>
@@ -137,8 +142,8 @@
                                     <input type="hidden" name="shipping_rules" id="shipping_rules_input"
                                         value="{{ old('shipping_rules') ? json_encode(old('shipping_rules')) : json_encode($storeSetting->shipping_rules ?? []) }}">
 
-                                    <button type="button" class="btn btn-sm btn-primary"
-                                        id="add-shipping-rule">Add Rule</button>
+                                    <button type="button" class="btn btn-sm btn-primary" id="add-shipping-rule">Add
+                                        Rule</button>
                                     @error('shipping_rules')
                                         <div class="invalid-feedback d-block">{{ $message }}</div>
                                     @enderror
@@ -182,7 +187,7 @@
                     const tr = document.createElement('tr');
                     tr.innerHTML = `
                         <td><input type="number" min="0" step="1" class="form-control form-control-sm min-qty" value="${r.min_qty ?? 0}"></td>
-                        <td><input type="number" min="0" step="1" class="form-control form-control-sm max-qty" value="${r.max_qty ?? ''}"></td>
+                        <td><input type="number" min="0" step="1" class="form-control form-control-sm max-qty" value="${r.max_qty ?? 0}" required></td>
                         <td><input type="number" min="0" step="0.01" class="form-control form-control-sm shipping-cost" value="${r.shipping_cost ?? 0}"></td>
                         <td><input type="number" min="0" step="0.01" class="form-control form-control-sm delivery-cost" value="${r.delivery_cost ?? 0}"></td>
                         <td><button type="button" class="btn btn-sm btn-primary remove-row"><span class="fa fa-trash"></span></button></td>
@@ -198,8 +203,7 @@
                         tr.querySelector('.' + cls).addEventListener('input', function() {
                             const rowIdx = Array.from(tableBody.children).indexOf(tr);
                             const min = parseInt(tr.querySelector('.min-qty').value || 0, 10);
-                            const maxVal = tr.querySelector('.max-qty').value;
-                            const max = maxVal === '' ? null : parseInt(maxVal, 10);
+                            const max = parseInt(tr.querySelector('.max-qty').value || '0', 10);
                             const ship = parseFloat(tr.querySelector('.shipping-cost').value ||
                                 0);
                             const del = parseFloat(tr.querySelector('.delivery-cost').value ||
@@ -234,7 +238,7 @@
             document.getElementById('add-shipping-rule').addEventListener('click', function() {
                 rules.push({
                     min_qty: 0,
-                    max_qty: null,
+                    max_qty: 0,
                     shipping_cost: 0,
                     delivery_cost: 0
                 });
