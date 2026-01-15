@@ -9,6 +9,10 @@ class SiteSettingsSeeder extends Seeder
 {
     public function run()
     {
+        if (SiteSetting::query()->exists()) {
+            return;
+        }
+
         SiteSetting::create([
             'SITE_NAME' => 'Lion Roaring',
             'SITE_LOGO' => 'user_assets/images/logo.png',

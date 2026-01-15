@@ -14,7 +14,8 @@ class IsAcceptedStatusUpdateSeeder extends Seeder
      */
     public function run()
     {
-        User::query()->update(['is_accept' => 1]);
-
+        User::query()
+            ->whereNull('is_accept')
+            ->update(['is_accept' => 1]);
     }
 }

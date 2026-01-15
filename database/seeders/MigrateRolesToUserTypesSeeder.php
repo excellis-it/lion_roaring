@@ -19,6 +19,11 @@ class MigrateRolesToUserTypesSeeder extends Seeder
      */
     public function run()
     {
+        if (UserType::query()->exists()) {
+            $this->command->info('User types already exist. Skipping migration.');
+            return;
+        }
+
         // Disable FK checks to allow truncation
         Schema::disableForeignKeyConstraints();
 

@@ -1193,25 +1193,25 @@
                              <span>
                                  <i class="fas fa-robot fs-4"></i>
                              </span>
-                             <span class="hide-menu">Chatbot Assistant</span>
+                             <span class="hide-menu">{{ Helper::getMenuName('chatbot', 'Chatbot Assistant') }}</span>
                          </a>
                          <div class="collapse {{ Request::is('user/admin/chatbot*') ? 'show' : '' }}"
                              id="collapseChatbot">
                              <div class="menu_bb">
                                  <a href="{{ route('user.admin.chatbot.index') }}">
                                      <span><i class="fas fa-tachometer-alt"></i></span>
-                                     <span>Dashboard</span>
+                                     <span>{{ Helper::getMenuName('chatbot_dashboard', 'Dashboard') }}</span>
                                  </a>
                                  @if (Gate::check('Manage Chatbot Keywords'))
                                      <a href="{{ route('user.admin.chatbot.keywords') }}">
                                          <span><i class="fas fa-key"></i></span>
-                                         <span>Keywords</span>
+                                         <span>{{ Helper::getMenuName('chatbot_keywords', 'Keywords') }}</span>
                                      </a>
                                  @endif
                                  @if (Gate::check('View Chatbot History'))
                                      <a href="{{ route('user.admin.chatbot.conversations') }}">
                                          <span><i class="fas fa-history"></i></span>
-                                         <span>History</span>
+                                         <span>{{ Helper::getMenuName('chatbot_history', 'History') }}</span>
                                      </a>
                                  @endif
                              </div>
@@ -1219,7 +1219,7 @@
                      </li>
                  @endif
 
-                   <br>
+                 <br>
                  <br>
                  <br>
              </ul>

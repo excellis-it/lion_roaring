@@ -4,6 +4,7 @@ namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Str;
 
 class AddSidebarMenuItems extends Seeder
 {
@@ -74,30 +75,38 @@ class AddSidebarMenuItems extends Seeder
             ['key' => 'site_settings_settings', 'default_name' => 'Settings'],
             ['key' => 'site_settings_menu_names', 'default_name' => 'Menu Names'],
 
+            // Chatbot
+            ['key' => 'chatbot', 'default_name' => 'Chatbot Assistant'],
+            ['key' => 'chatbot_dashboard', 'default_name' => 'Dashboard'],
+            ['key' => 'chatbot_keywords', 'default_name' => 'Keywords'],
+            ['key' => 'chatbot_history', 'default_name' => 'History'],
+
+            // Membership
+            ['key' => 'membership', 'default_name' => 'Membership'],
+            ['key' => 'membership_management', 'default_name' => 'Membership Management'],
+            ['key' => 'membership_plan_list', 'default_name' => 'Plan List'],
+            ['key' => 'membership_create_plan', 'default_name' => 'Create Plan'],
+            ['key' => 'membership_members', 'default_name' => 'Members'],
+            ['key' => 'membership_all_payments', 'default_name' => 'All Payments'],
+            ['key' => 'membership_settings', 'default_name' => 'Settings'],
+
 
         ];
 
         foreach ($sidebarMenus as $menu) {
-            // Check if the menu item already exists
-            $exists = DB::table('menu_items')->where('key', $menu['key'])->exists();
+            $existing = DB::table('menu_items')->where('key', $menu['key'])->first();
 
-            if (!$exists) {
+            if (!$existing) {
+                $labelName = $menu['name'] ?? Str::title(str_replace('_', ' ', $menu['key']));
+
                 DB::table('menu_items')->insert([
                     'key' => $menu['key'],
-                    'default_name' => $menu['default_name'],
+                    'default_name' => $labelName,
                     'name' => $menu['default_name'],
+                    'type' => 'Panel Menu',
                     'created_at' => now(),
-                    'updated_at' => now()
+                    'updated_at' => now(),
                 ]);
-            } else {
-                // Update existing menu item
-                DB::table('menu_items')
-                    ->where('key', $menu['key'])
-                    ->update([
-                        'default_name' => $menu['default_name'],
-                        'name' => $menu['default_name'],
-                        'updated_at' => now()
-                    ]);
             }
         }
 

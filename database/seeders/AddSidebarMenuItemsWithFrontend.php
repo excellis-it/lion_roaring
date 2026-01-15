@@ -14,10 +14,6 @@ class AddSidebarMenuItemsWithFrontend extends Seeder
      */
     public function run()
     {
-
-        // update type of menu items
-        DB::table('menu_items')->update(['type' => 'Panel Menu']);
-
         $sidebarMenus = [
             ['key' => 'home', 'default_name' => 'Home', 'type' => 'Frontend Sandwich Menu'],
             ['key' => 'private_ecclesia', 'default_name' => 'Private Ecclesia', 'type' => 'Frontend Sandwich Menu'],
@@ -29,32 +25,38 @@ class AddSidebarMenuItemsWithFrontend extends Seeder
         ];
 
         foreach ($sidebarMenus as $menu) {
-            // Check if the menu item already exists
-            $exists = DB::table('menu_items')->where('key', $menu['key'])->exists();
+            $existing = DB::table('menu_items')->where('key', $menu['key'])->first();
 
-            if (!$exists) {
+            if ($existing) {
+                $updateData = [
+                    'default_name' => $menu['default_name'],
+                    'type' => $menu['type'],
+                    'updated_at' => now(),
+                ];
+
+                if (empty($existing->name)) {
+                    $updateData['name'] = $menu['default_name'];
+                }
+
+                DB::table('menu_items')
+                    ->where('key', $menu['key'])
+                    ->update([
+                        'default_name' => $menu['default_name'],
+                        'name' => $updateData['name'] ?? $existing->name,
+                        'type' => $menu['type'],
+                        'updated_at' => $updateData['updated_at'],
+                    ]);
+            } else {
                 DB::table('menu_items')->insert([
                     'key' => $menu['key'],
                     'default_name' => $menu['default_name'],
                     'name' => $menu['default_name'],
                     'type' => $menu['type'],
                     'created_at' => now(),
-                    'updated_at' => now()
+                    'updated_at' => now(),
                 ]);
-            } else {
-                // Update existing menu item
-                DB::table('menu_items')
-                    ->where('key', $menu['key'])
-                    ->update([
-                        'default_name' => $menu['default_name'],
-                        'name' => $menu['default_name'],
-                        'type' => $menu['type'],
-                        'updated_at' => now()
-                    ]);
             }
         }
-
-        //update type
 
         $this->command->info('Sidebar menu items seeded successfully!');
     }

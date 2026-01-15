@@ -14,7 +14,6 @@ class StatesTableSeeder extends Seeder
      */
     public function run()
     {
-        DB::table('states')->delete();
         $states = array(
             array('name' => "Andaman and Nicobar Islands", 'country_id' => 101),
             array('name' => "Andhra Pradesh", 'country_id' => 101),
@@ -45,7 +44,6 @@ class StatesTableSeeder extends Seeder
             array('name' => "Narora", 'country_id' => 101),
             array('name' => "Natwar", 'country_id' => 101),
             array('name' => "Odisha", 'country_id' => 101),
-            array('name' => "Paschim Medinipur", 'country_id' => 101),
             array('name' => "Pondicherry", 'country_id' => 101),
             array('name' => "Punjab", 'country_id' => 101),
             array('name' => "Rajasthan", 'country_id' => 101),
@@ -4138,6 +4136,11 @@ class StatesTableSeeder extends Seeder
             array('name' => "Matabeleland South", 'country_id' => 246),
             array('name' => "Midlands", 'country_id' => 246)
         );
-        DB::table('states')->insert($states);
+        foreach ($states as $state) {
+            DB::table('states')->where([
+                'name' => $state['name'],
+                'country_id' => $state['country_id'],
+            ])->doesntExist() && DB::table('states')->insert($state);
+        }
     }
 }

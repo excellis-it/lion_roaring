@@ -72,7 +72,7 @@ This file defines practical, actionable rules for contributing to this Laravel p
 -   For any new role permissions, update the RolePermissionSeeder seeder to include that role and its permissions, instead of creating new seeders.
 -   To add any new menu items in User Panel, update the AddSidebarMenuItems seeder instead of creating new seeders.
 -   When modifying existing seeders, ensure they are idempotent (can run multiple times without side effects).
--   When adding new seeders, register them in DatabaseSeeder.php so they run with `php artisan db:seed` and can run multiple times without issues. 
+-   When adding new seeders, register them in DatabaseSeeder.php so they run with `php artisan db:seed` and can run multiple times without issues.
 
 ## Database migrations caution
 

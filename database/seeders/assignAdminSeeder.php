@@ -4,6 +4,7 @@ namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
 use App\Models\User;
+use Spatie\Permission\Models\Role;
 
 class assignAdminSeeder extends Seeder
 {
@@ -14,14 +15,22 @@ class assignAdminSeeder extends Seeder
      */
     public function run()
     {
-        $admin = new User();
-        $admin->user_name = 'admin';
-        $admin->first_name = 'Admin';
-        $admin->last_name = 'Admin';
-        $admin->email = 'main@yopmail.com';
-        $admin->password = bcrypt('12345678');
-        $admin->status = true;
-        $admin->save();
-        $admin->assignRole('SUPER ADMIN');
+        $admin = User::firstOrCreate(
+            ['email' => 'main@yopmail.com'],
+            [
+                'user_name' => 'admin',
+                'first_name' => 'Admin',
+                'last_name' => 'Admin',
+                'password' => bcrypt('12345678'),
+                'status' => true,
+            ]
+        );
+
+        $role = Role::firstOrCreate([
+            'name' => 'SUPER ADMIN',
+            'guard_name' => 'web',
+        ]);
+
+        $admin->assignRole($role);
     }
 }
