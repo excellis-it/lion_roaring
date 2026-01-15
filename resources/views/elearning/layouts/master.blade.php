@@ -26,6 +26,23 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
     <link rel="stylesheet" type="text/css"
         href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css">
+    <style>
+        .skiptranslate {
+            display: none !important;
+        }
+
+        body {
+            top: 0px !important;
+        }
+
+        .goog-logo-link {
+            display: none !important;
+        }
+
+        .trans-section {
+            margin: 100px;
+        }
+    </style>
     @stack('styles')
 </head>
 
@@ -132,7 +149,9 @@
             });
         });
     </script>
+
     @stack('scripts')
+    @include('frontend.includes.google_translate')
     @include('frontend.includes.chatbot')
 </body>
 

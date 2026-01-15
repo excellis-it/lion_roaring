@@ -995,6 +995,7 @@
     <script>
         // example: [{"id":202,"code":"es","name":"Spanish",...}, {"id":249,"code":"en","name":"English",...}]
         window.sessionLanguages = @json(session('visitor_country_languages') ?? []);
+        // console.log(window.sessionLanguages);
     </script>
 
     <!-- Google Translate initialization + robust allowed-language logic -->
@@ -1113,6 +1114,8 @@
             // Fallback for English: first option is usually the original language
             if (!found && value === 'en') {
                 found = selectEl.options[0];
+                // console.log('not found');
+
             }
 
             if (found) {
@@ -1121,17 +1124,18 @@
                 const evt = document.createEvent('HTMLEvents');
                 evt.initEvent('change', true, true);
                 selectEl.dispatchEvent(evt);
-
+                // console.log('found');
                 // If switching back to English, clear the Google Translate cookies to ensure a full reset
-                if (value === 'en') {
-                    const domain = window.location.hostname;
-                    const path = "/";
-                    document.cookie = `googtrans=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=${path};`;
-                    document.cookie = `googtrans=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=${path}; domain=${domain};`;
-                    document.cookie = `googtrans=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=${path}; domain=.${domain};`;
-                }
+                // if (value === 'en') {
+                //     const domain = window.location.hostname;
+                //     const path = "/";
+                //     document.cookie = `googtrans=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=${path};`;
+                //     document.cookie = `googtrans=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=${path}; domain=${domain};`;
+                //     document.cookie = `googtrans=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=${path}; domain=.${domain};`;
+                // }
             }
         }
+        window.forceSelectValue = forceSelectValue;
 
         /**
          * googleTranslateElementInit
@@ -1164,7 +1168,7 @@
 
 
 
-   
+
 
     <script>
         @if (Session::has('message'))
