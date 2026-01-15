@@ -247,7 +247,10 @@ class CheckoutController extends Controller
             // Create order
             $warehouseId = $carts->first()->warehouse_id ?? null;
             $wareHouse = WareHouse::find($warehouseId);
-            $order_status = OrderStatus::where('slug', 'processing')->first();
+            $statusSlug = $is_pickup ? 'pickup_processing' : 'processing';
+            $order_status = OrderStatus::where('slug', $statusSlug)
+                ->where('is_pickup', $is_pickup ? 1 : 0)
+                ->first();
 
             $order = EstoreOrder::create([
                 'warehouse_id' => $warehouseId,
@@ -607,14 +610,47 @@ class CheckoutController extends Controller
 
         // Get all active order statuses
         $allStatuses = OrderStatus::where('is_active', 1)
+            ->where('is_pickup', $order->is_pickup ? 1 : 0)
             ->orderBy('sort_order', 'asc')
             ->get();
 
         // Find the current status id on the order
         $currentStatusId = $order->status; // integer id
+        $currentStatusModel = $currentStatusId ? OrderStatus::find($currentStatusId) : null;
+
+        // Normalize legacy/mismatched statuses for pickup vs delivery
+        if ($currentStatusModel && (bool)$currentStatusModel->is_pickup !== (bool)$order->is_pickup) {
+            $deliveryToPickup = [
+                'pending' => 'pickup_pending',
+                'processing' => 'pickup_processing',
+                'shipped' => 'pickup_ready_for_pickup',
+                'out_for_delivery' => 'pickup_picked_up',
+                'delivered' => 'pickup_picked_up',
+                'cancelled' => 'pickup_cancelled',
+            ];
+            $pickupToDelivery = [
+                'pickup_pending' => 'pending',
+                'pickup_processing' => 'processing',
+                'pickup_ready_for_pickup' => 'shipped',
+                'pickup_picked_up' => 'delivered',
+                'pickup_cancelled' => 'cancelled',
+            ];
+
+            $mappedSlug = $order->is_pickup
+                ? ($deliveryToPickup[$currentStatusModel->slug] ?? null)
+                : ($pickupToDelivery[$currentStatusModel->slug] ?? null);
+
+            if ($mappedSlug) {
+                $mappedStatus = $allStatuses->firstWhere('slug', $mappedSlug);
+                if ($mappedStatus) {
+                    $currentStatusId = $mappedStatus->id;
+                    $currentStatusModel = $mappedStatus;
+                }
+            }
+        }
 
         // Handle cancelled status specially
-        $cancelSlug = 'cancelled';
+        $cancelSlug = $order->is_pickup ? 'pickup_cancelled' : 'cancelled';
         $cancelStatus = $allStatuses->firstWhere('slug', $cancelSlug);
 
         if ($currentStatusId && $cancelStatus && $currentStatusId == $cancelStatus->id) {
@@ -635,8 +671,7 @@ class CheckoutController extends Controller
 
         // If not found (custom status etc.), append it to timeline for display
         if ($statusIndex === false && $currentStatusId) {
-            $currentStatusModel = OrderStatus::find($currentStatusId);
-            if ($currentStatusModel) {
+            if ($currentStatusModel && (bool)$currentStatusModel->is_pickup === (bool)$order->is_pickup) {
                 $timelineStatuses = $timelineStatuses->push($currentStatusModel);
                 $statusIndex = $timelineStatuses->count() - 1;
             } else {
@@ -699,8 +734,20 @@ class CheckoutController extends Controller
         $order = EstoreOrder::where('id', $request->order_id)
             ->where('user_id', auth()->id())
             ->where('payment_status', 'paid')
-            ->whereIn('status', ['1', '2']) // Only allow cancellation for processing/pending orders
             ->first();
+
+        if ($order) {
+            $allowedSlugs = $order->is_pickup
+                ? ['pickup_pending', 'pickup_processing']
+                : ['pending', 'processing'];
+            $allowedStatusIds = OrderStatus::whereIn('slug', $allowedSlugs)
+                ->where('is_pickup', $order->is_pickup ? 1 : 0)
+                ->pluck('id')
+                ->toArray();
+            if (!in_array($order->status, $allowedStatusIds, true)) {
+                $order = null;
+            }
+        }
 
         if (!$order) {
             return response()->json([
@@ -713,8 +760,10 @@ class CheckoutController extends Controller
 
         try {
             // Get cancelled status ID
-            $cancelledStatus = OrderStatus::where('slug', 'cancelled')->first();
-            $cancelledStatusId = $cancelledStatus ? $cancelledStatus->id : '5';
+            $cancelSlug = $order->is_pickup ? 'pickup_cancelled' : 'cancelled';
+            $cancelledStatusId = OrderStatus::where('slug', $cancelSlug)
+                ->where('is_pickup', $order->is_pickup ? 1 : 0)
+                ->value('id');
 
             // Update order status
             $order->update([

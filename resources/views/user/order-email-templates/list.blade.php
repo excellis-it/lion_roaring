@@ -24,7 +24,6 @@
                                             <a href="{{ route('order-email-templates.create') }}"
                                                 class="btn btn-primary w-100"><i class="fa-solid fa-plus"></i> Create
                                                 Email Template</a>
-
                                         @endif
                                     </div>
                                 </div>
@@ -118,7 +117,7 @@
                                                         <td>{{ $key + 1 }}</td>
                                                         <td>{{ $template->title }}</td>
                                                         <td>{{ $template->slug }}</td>
-                                                        <td>{{ $template->orderStatus ? $template->orderStatus->pickup_name ?? $template->orderStatus->name : '-' }}
+                                                        <td>{{ $template->orderStatus ? $template->orderStatus->name : '-' }}
                                                         </td>
                                                         <td>{{ $template->subject }}</td>
                                                         <td>{{ $template->is_active ? 'Active' : 'Inactive' }}</td>

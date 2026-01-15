@@ -36,17 +36,13 @@
                                 </div>
                             </div>
 
-                            {{-- Pickup Name --}}
-                            <div class="col-md-6 mb-3">
-                                <div class="box_label">
-                                    <label for="pickup_name" class="form-label">Pickup Name</label>
-                                    <input type="text" name="pickup_name" id="pickup_name" class="form-control"
-                                        value="{{ old('pickup_name', $status->pickup_name) }}">
-                                    @error('pickup_name')
-                                        <span class="text-danger">{{ $message }}</span>
-                                    @enderror
+                            <input type="hidden" name="is_pickup" value="{{ $status->is_pickup ? 1 : 0 }}">
+
+                            @if ($status->is_pickup)
+                                <div class="col-md-6 mb-3">
+                                    <span class="badge bg-secondary">Pickup Status</span>
                                 </div>
-                            </div>
+                            @endif
 
                             {{-- Sort Order --}}
                             <div class="col-md-6 mb-3">

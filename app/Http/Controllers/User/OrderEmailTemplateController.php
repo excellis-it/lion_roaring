@@ -39,12 +39,14 @@ class OrderEmailTemplateController extends Controller
             abort(403, 'You do not have permission to create a template.');
         }
 
-        // Get all active order statuses
-        // We'll allow creating both delivery and pickup templates for each status (uniqueness enforced on store)
-        $statuses = OrderStatus::where('is_active', 1)->orderBy('sort_order', 'asc')->get();
-
         // honor ?type=pickup to open create in pickup-mode
         $isPickupParam = request('type') === 'pickup';
+
+        // Get active order statuses scoped by template type
+        $statuses = OrderStatus::where('is_active', 1)
+            ->where('is_pickup', $isPickupParam ? 1 : 0)
+            ->orderBy('sort_order', 'asc')
+            ->get();
 
         return view('user.order-email-templates.create', compact('statuses', 'isPickupParam'));
     }
@@ -69,6 +71,13 @@ class OrderEmailTemplateController extends Controller
 
         // accept either hidden input or ?type=pickup as a fallback
         $isPickup = $request->boolean('is_pickup') || request('type') === 'pickup';
+
+        if ($request->order_status_id) {
+            $status = OrderStatus::find($request->order_status_id);
+            if (!$status || (bool)$status->is_pickup !== $isPickup) {
+                return back()->withInput()->withErrors(['order_status_id' => 'Selected status does not match the template type.']);
+            }
+        }
         // ensure there isn't already a template for this (status, is_pickup) pair
         if ($request->order_status_id && OrderEmailTemplate::where('order_status_id', $request->order_status_id)->where('is_pickup', $isPickup)->exists()) {
             return back()->withInput()->withErrors(['order_status_id' => 'A template for this order status and template type already exists.']);
@@ -110,8 +119,11 @@ class OrderEmailTemplateController extends Controller
 
         $template = OrderEmailTemplate::findOrFail($id);
 
-        // Get all active order statuses
-        $allStatuses = OrderStatus::where('is_active', 1)->orderBy('sort_order', 'asc')->get();
+        // Get active order statuses scoped by template type
+        $allStatuses = OrderStatus::where('is_active', 1)
+            ->where('is_pickup', $template->is_pickup ? 1 : 0)
+            ->orderBy('sort_order', 'asc')
+            ->get();
 
         // Get order_status_ids already used by other templates of the same template type (pickup/delivery)
         $usedStatusIds = OrderEmailTemplate::where('id', '!=', $id)
@@ -152,6 +164,13 @@ class OrderEmailTemplateController extends Controller
 
         // accept either hidden input or ?type=pickup fallback
         $isPickup = $request->boolean('is_pickup') || request('type') === 'pickup';
+
+        if ($request->order_status_id) {
+            $status = OrderStatus::find($request->order_status_id);
+            if (!$status || (bool)$status->is_pickup !== $isPickup) {
+                return back()->withInput()->withErrors(['order_status_id' => 'Selected status does not match the template type.']);
+            }
+        }
 
         // ensure uniqueness for (order_status_id, is_pickup) excluding this template
         if (

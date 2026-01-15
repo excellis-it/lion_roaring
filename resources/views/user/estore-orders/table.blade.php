@@ -48,7 +48,7 @@
                 </td>
                 <td>
                     <span class=" {{ $order->status_badge_class }} p-1 rounded">
-                        {{ $order->is_pickup ? ucfirst($order->orderStatus->pickup_name ?? '-') : ucfirst($order->orderStatus->name ?? '-') }}
+                        {{ ucfirst($order->orderStatus->name ?? '-') }}
                     </span>
                 </td>
                 <td>
@@ -71,7 +71,11 @@
                                 <i class="fas fa-eye"></i>
                             </a>
                         @endif
-                        @if (auth()->user()->can('Edit Estore Orders') && !in_array($order->status, ['delivered', 'cancelled']))
+                        @php
+                            $finalSlugs = ['delivered', 'cancelled', 'pickup_picked_up', 'pickup_cancelled'];
+                            $isFinalStatus = in_array(optional($order->orderStatus)->slug, $finalSlugs, true);
+                        @endphp
+                        @if (auth()->user()->can('Edit Estore Orders') && !$isFinalStatus)
                             <button type="button" class="btn btn-sm btn-warning"
                                 onclick="openUpdateStatusModal({{ $order->id }}, '{{ $order->status }}', '{{ $order->payment_status }}', '{{ $order->notes }}', '{{ $order->expected_delivery_date ? date('Y-m-d', strtotime($order->expected_delivery_date)) : '' }}', '{{ $order->is_pickup ? 1 : 0 }}')"
                                 title="Update Status">

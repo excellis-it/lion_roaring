@@ -31,9 +31,16 @@
                                     <label for="status-filter">Order Status</label>
                                     <select class="form-control" id="status-filter">
                                         <option value="">All Status</option>
-                                        @foreach ($order_status as $status)
-                                            <option value="{{ $status->id }}">{{ $status->name }}</option>
-                                        @endforeach
+                                        <optgroup label="Delivery Statuses">
+                                            @foreach ($deliveryStatuses as $status)
+                                                <option value="{{ $status->id }}">{{ $status->name }}</option>
+                                            @endforeach
+                                        </optgroup>
+                                        <optgroup label="Pickup Statuses">
+                                            @foreach ($pickupStatuses as $status)
+                                                <option value="{{ $status->id }}">{{ $status->name }}</option>
+                                            @endforeach
+                                        </optgroup>
                                     </select>
                                 </div>
                                 <div class="col-md-2">
@@ -97,9 +104,13 @@
                         <div class="mb-3">
                             <label for="order-status" class="form-label">Order Status</label>
                             <select class="form-control" id="order-status" name="status" required>
-                                @foreach ($order_status as $status)
+                                @foreach ($deliveryStatuses as $status)
                                     <option value="{{ $status->id }}" data-default-name="{{ $status->name }}"
-                                        data-pickup-name="{{ $status->pickup_name ?? '' }}">{{ $status->name }}</option>
+                                        data-is-pickup="0">{{ $status->name }}</option>
+                                @endforeach
+                                @foreach ($pickupStatuses as $status)
+                                    <option value="{{ $status->id }}" data-default-name="{{ $status->name }}"
+                                        data-is-pickup="1">{{ $status->name }}</option>
                                 @endforeach
                             </select>
                         </div>
@@ -394,36 +405,69 @@
         }
     </script>
     <script>
-        const STATUS_SEQUENCE = [
-            @foreach ($order_status as $status)
+        const STATUS_SEQUENCE_DELIVERY = [
+            @foreach ($deliveryStatuses as $status)
+                '{{ $status->id }}',
+            @endforeach
+        ];
+        const STATUS_SEQUENCE_PICKUP = [
+            @foreach ($pickupStatuses as $status)
                 '{{ $status->id }}',
             @endforeach
         ];
 
+        const DELIVERY_CANCELLED_ID = {{ $deliveryCancelledId ?? 'null' }};
+        const DELIVERY_DELIVERED_ID = {{ $deliveryDeliveredId ?? 'null' }};
+        const PICKUP_CANCELLED_ID = {{ $pickupCancelledId ?? 'null' }};
+        const PICKUP_FINAL_ID = {{ $pickupFinalId ?? 'null' }};
+
+        function getStatusSequence(isPickup) {
+            return isPickup ? STATUS_SEQUENCE_PICKUP : STATUS_SEQUENCE_DELIVERY;
+        }
+
+        function getCancelledStatusId(isPickup) {
+            return isPickup ? PICKUP_CANCELLED_ID : DELIVERY_CANCELLED_ID;
+        }
+
+        function getFinalStatusId(isPickup) {
+            return isPickup ? PICKUP_FINAL_ID : DELIVERY_DELIVERED_ID;
+        }
+
         function openUpdateStatusModal(orderId, currentStatus, currentPaymentStatus, notes, date, isPickup) {
             isPickup = parseInt(isPickup) === 1 ? 1 : 0;
-            if ([4, 5].includes(parseInt(currentStatus))) { // Assuming 4 = delivered, 5 = cancelled
+            const finalStatusId = getFinalStatusId(isPickup);
+            const cancelledStatusId = getCancelledStatusId(isPickup);
+
+            if (finalStatusId && parseInt(currentStatus) === parseInt(finalStatusId)) {
                 toastr.warning('This order status is final and cannot be changed.');
                 return;
             }
+            if (cancelledStatusId && parseInt(currentStatus) === parseInt(cancelledStatusId)) {
+                toastr.warning('This order status is final and cannot be changed.');
+                return;
+            }
+
             $('#order-id').val(orderId);
             $('#current-status').val(currentStatus);
             $('#order-status option').each(function() {
-                $(this).prop('disabled', false);
+                const optionPickup = parseInt($(this).data('is-pickup') || 0);
+                $(this).prop('disabled', optionPickup !== isPickup);
+            });
+
+            const sequence = getStatusSequence(isPickup);
+            $('#order-status option:enabled').each(function() {
                 const optionValue = $(this).val();
-                const optionIndex = STATUS_SEQUENCE.indexOf(optionValue);
-                const currentIndex = STATUS_SEQUENCE.indexOf(currentStatus);
+                const optionIndex = sequence.indexOf(optionValue);
+                const currentIndex = sequence.indexOf(currentStatus);
                 const isPreviousStep = optionIndex !== -1 && optionIndex < currentIndex && optionValue !==
                     currentStatus;
                 $(this).prop('disabled', isPreviousStep);
             });
+
             $('#order-status').val(currentStatus);
             $('#order-notes').val(notes || '');
             // store pickup flag in hidden input for later checks
             $('#modal-is-pickup').val(isPickup ? 1 : 0);
-
-            // update option labels to pickup names when required
-            toggleStatusOptionLabels(isPickup);
 
             $('#updateStatusModal').modal('show');
             $('#expected-delivery-date').val(date);
@@ -435,7 +479,8 @@
         function toggleExpectedDeliveryVisibility(isPickup, statusId) {
             const wrapper = $('#expected-delivery-wrapper');
             const input = $('#expected-delivery-date');
-            if (isPickup === 1 || parseInt(statusId) === 5) {
+            const cancelledStatusId = getCancelledStatusId(isPickup);
+            if (isPickup === 1 || (cancelledStatusId && parseInt(statusId) === parseInt(cancelledStatusId))) {
                 wrapper.hide();
                 input.prop('disabled', true).val('');
             } else {
@@ -452,24 +497,9 @@
             toggleExpectedDeliveryVisibility(isPickupKnown, selected);
         });
 
-        // Toggle status option labels to pickup-specific names when appropriate
-        function toggleStatusOptionLabels(isPickup) {
-            isPickup = parseInt(isPickup) === 1 ? 1 : 0;
-            $('#order-status option').each(function() {
-                const $opt = $(this);
-                const defaultName = $opt.data('default-name') || $opt.text();
-                const pickupName = $opt.data('pickup-name') || '';
-                if (isPickup === 1 && pickupName && pickupName.length > 0) {
-                    $opt.text(pickupName);
-                } else {
-                    $opt.text(defaultName);
-                }
-            });
-        }
-
-        // Reset labels back to defaults when modal hides
+        // Reset disabled options when modal hides
         $('#updateStatusModal').on('hidden.bs.modal', function() {
-            toggleStatusOptionLabels(0);
+            $('#order-status option').prop('disabled', false);
         });
 
 
@@ -477,9 +507,14 @@
         function updateOrderStatus() {
             const currentStatus = $('#current-status').val();
             const targetStatus = $('#order-status').val();
-            const currentIndex = STATUS_SEQUENCE.indexOf(currentStatus);
-            const targetIndex = STATUS_SEQUENCE.indexOf(targetStatus);
-            if (['delivered', 'cancelled'].includes(currentStatus)) {
+            const isPickupKnown = parseInt($('#modal-is-pickup').val() || 0);
+            const sequence = getStatusSequence(isPickupKnown === 1);
+            const currentIndex = sequence.indexOf(currentStatus);
+            const targetIndex = sequence.indexOf(targetStatus);
+            const finalStatusId = getFinalStatusId(isPickupKnown === 1);
+            const cancelledStatusId = getCancelledStatusId(isPickupKnown === 1);
+            if ((finalStatusId && parseInt(currentStatus) === parseInt(finalStatusId)) ||
+                (cancelledStatusId && parseInt(currentStatus) === parseInt(cancelledStatusId))) {
                 toastr.warning('Finalized orders cannot be updated.');
                 return;
             }
@@ -488,8 +523,7 @@
                 return;
             }
             // Client-side check: ensure expected delivery date present when required (non-pickup & not cancelled)
-            const isPickupKnown = parseInt($('#modal-is-pickup').val() || 0);
-            if (isPickupKnown !== 1 && targetStatus != '5') {
+            if (isPickupKnown !== 1 && (!cancelledStatusId || parseInt(targetStatus) !== parseInt(cancelledStatusId))) {
                 const dateVal = $('#expected-delivery-date').val();
                 if (!dateVal) {
                     toastr.error('Please provide an expected delivery date unless the order is cancelled or pickup.');
