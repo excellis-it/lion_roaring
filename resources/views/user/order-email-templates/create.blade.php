@@ -85,7 +85,7 @@
                                         @foreach ($statuses as $status)
                                             <option value="{{ $status->id }}"
                                                 {{ old('order_status_id') == $status->id ? 'selected' : '' }}>
-                                                {{ !empty($isPickupParam) && $isPickupParam ? $status->pickup_name : $status->name }}
+                                                {{ $status->name }}
                                             </option>
                                         @endforeach
                                     </select>

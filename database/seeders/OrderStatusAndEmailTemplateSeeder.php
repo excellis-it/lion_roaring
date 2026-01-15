@@ -14,33 +14,33 @@ class OrderStatusAndEmailTemplateSeeder extends Seeder
         DB::transaction(function () {
             // 1) Order statuses
             $statuses = [
-                ['name' => 'Pending',    'slug' => 'pending',    'color' => '#FFA500', 'sort_order' => 1, 'is_active' => 1],
-                ['name' => 'Processing', 'slug' => 'processing', 'color' => '#00BFFF', 'sort_order' => 2, 'is_active' => 1],
-                ['name' => 'Shipped',    'slug' => 'shipped',    'color' => '#32CD32', 'sort_order' => 3, 'is_active' => 1],
-                ['name' => 'Out for Delivery', 'slug' => 'out_for_delivery', 'color' => '#0000FF', 'sort_order' => 4, 'is_active' => 1],
-                ['name' => 'Delivered',  'slug' => 'delivered',  'color' => '#008000', 'sort_order' => 5, 'is_active' => 1],
-                ['name' => 'Cancelled',  'slug' => 'cancelled',  'color' => '#FF0000', 'sort_order' => 6, 'is_active' => 1],
+                ['name' => 'Pending',    'slug' => 'pending',    'sort_order' => 1, 'is_active' => 1, 'is_pickup' => 0],
+                ['name' => 'Processing', 'slug' => 'processing', 'sort_order' => 2, 'is_active' => 1, 'is_pickup' => 0],
+                ['name' => 'Shipped',    'slug' => 'shipped',    'sort_order' => 3, 'is_active' => 1, 'is_pickup' => 0],
+                ['name' => 'Out for Delivery', 'slug' => 'out_for_delivery', 'sort_order' => 4, 'is_active' => 1, 'is_pickup' => 0],
+                ['name' => 'Delivered',  'slug' => 'delivered',  'sort_order' => 5, 'is_active' => 1, 'is_pickup' => 0],
+                ['name' => 'Cancelled',  'slug' => 'cancelled',  'sort_order' => 6, 'is_active' => 1, 'is_pickup' => 0],
 
             ];
 
             $pickup_statuses = [
-                ['name' => 'Pending',    'slug' => 'pickup_pending',    'color' => '#FFA500', 'sort_order' => 1, 'is_active' => 1],
-                ['name' => 'Processing', 'slug' => 'pickup_processing', 'color' => '#00BFFF', 'sort_order' => 2, 'is_active' => 1],
-                ['name' => 'Ready For Pickup',    'slug' => 'pickup_ready_for_pickup',    'color' => '#32CD32', 'sort_order' => 3, 'is_active' => 1],
-                ['name' => 'Picked Up', 'slug' => 'pickup_picked_up', 'color' => '#0000FF', 'sort_order' => 4, 'is_active' => 1],
-                ['name' => 'Cancelled',  'slug' => 'pickup_cancelled',  'color' => '#FF0000', 'sort_order' => 5, 'is_active' => 1],
+                ['name' => 'Pending',    'slug' => 'pickup_pending',    'sort_order' => 1, 'is_active' => 1, 'is_pickup' => 1],
+                ['name' => 'Processing', 'slug' => 'pickup_processing', 'sort_order' => 2, 'is_active' => 1, 'is_pickup' => 1],
+                ['name' => 'Ready For Pickup',    'slug' => 'pickup_ready_for_pickup',    'sort_order' => 3, 'is_active' => 1, 'is_pickup' => 1],
+                ['name' => 'Picked Up', 'slug' => 'pickup_picked_up', 'sort_order' => 4, 'is_active' => 1, 'is_pickup' => 1],
+                ['name' => 'Cancelled',  'slug' => 'pickup_cancelled',  'sort_order' => 5, 'is_active' => 1, 'is_pickup' => 1],
 
             ];
 
             foreach ($statuses as $s) {
-                OrderStatus::firstOrCreate(
+                OrderStatus::updateOrCreate(
                     ['slug' => $s['slug']],
                     $s
                 );
             }
 
             foreach ($pickup_statuses as $s) {
-                OrderStatus::firstOrCreate(
+                OrderStatus::updateOrCreate(
                     ['slug' => $s['slug']],
                     $s
                 );
@@ -59,10 +59,9 @@ class OrderStatusAndEmailTemplateSeeder extends Seeder
 <p><strong>Order details:</strong></p>
 {order_list}
 
-<p>Estimated arriving date: {arriving_date}</p>
 <p>Total: {total_order_value}</p>
 
-<p>If you have any questions, reply to this email: {customer_email}</p>
+<p>If you have any questions, contact us.</p>
 HTML
                 ],
                 'processing' => [
@@ -133,7 +132,7 @@ HTML
 <p>Hi {customer_name},</p>
 <p>We're sorry to inform you that your order <strong>#{order_id}</strong> has been <strong>cancelled</strong>.</p>
 
-<p>If you have questions or want assistance, reply to: {customer_email}</p>
+<p>If you have questions or want assistance, contact us.</p>
 <p>Order summary:</p>
 {order_list}
 <p>Amount: {total_order_value}</p>
@@ -154,7 +153,7 @@ HTML
 <p><strong>Order details:</strong></p>
 {order_list}
 
-<p>If you have any questions, reply to this email: {customer_email}</p>
+<p>If you have any questions, contact us.</p>
 HTML
                 ],
                 'pickup_processing' => [
@@ -200,14 +199,14 @@ HTML
 <p>Hi {customer_name},</p>
 <p>We're sorry to inform you that your pickup order <strong>#{order_id}</strong> has been <strong>cancelled</strong>.</p>
 
-<p>If you have questions or want assistance, reply to: {customer_email}</p>
+<p>If you have questions or want assistance, contact us.</p>
 HTML
                 ],
             ];
 
             foreach ($templates as $statusSlug => $template) {
                 // find the related order_status id (nullable if not found)
-                $orderStatus = OrderStatus::where('slug', $statusSlug)->first();
+                $orderStatus = OrderStatus::where('slug', $statusSlug)->where('is_pickup', 0)->first();
                 $orderStatusId = $orderStatus ? $orderStatus->id : null;
 
                 // Delivery template
@@ -225,7 +224,7 @@ HTML
             }
 
             foreach ($pickupTemplates as $statusSlug => $template) {
-                $orderStatus = OrderStatus::where('slug', $statusSlug)->first();
+                $orderStatus = OrderStatus::where('slug', $statusSlug)->where('is_pickup', 1)->first();
                 $orderStatusId = $orderStatus ? $orderStatus->id : null;
 
                 OrderEmailTemplate::firstOrCreate(

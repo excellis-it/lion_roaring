@@ -31,25 +31,21 @@
                                     <label for="name" class="form-label">Status Name <span
                                             class="text-danger">*</span></label>
                                     <input type="text" name="name" id="name" class="form-control"
-                                        value="{{ old('name') }}" >
+                                        value="{{ old('name') }}">
                                     @error('name')
                                         <span class="text-danger">{{ $message }}</span>
                                     @enderror
                                 </div>
                             </div>
 
-                            {{-- Pickup Name --}}
-                            <div class="col-md-6 mb-3">
-                                <div class="box_label">
-                                    <label for="pickup_name" class="form-label">Pickup Name</label>
-                                    <input type="text" name="pickup_name" id="pickup_name" class="form-control"
-                                        value="{{ old('pickup_name') }}">
-                                    @error('pickup_name')
-                                        <span class="text-danger">{{ $message }}</span>
-                                    @enderror
-                                </div>
-                            </div>
+                            <input type="hidden" name="is_pickup"
+                                value="{{ old('is_pickup', !empty($isPickupParam) && $isPickupParam ? 1 : 0) }}">
 
+                            @if (!empty($isPickupParam) && $isPickupParam)
+                                <div class="col-md-6 mb-3">
+                                    <span class="badge bg-secondary">Pickup Status</span>
+                                </div>
+                            @endif
 
                             {{-- Sort Order --}}
                             <div class="col-md-6 mb-3">

@@ -40,7 +40,6 @@
                                             <tr class="header-row">
                                                 <th>ID (#)</th>
                                                 <th>Name</th>
-                                                <th>Pickup Name</th>
                                                 {{-- <th>Slug</th> --}}
                                                 <th>Sort Order</th>
                                                 <th>Status</th>
@@ -52,7 +51,6 @@
                                                 <tr>
                                                     <td>{{ $key + 1 }}</td>
                                                     <td>{{ $status->name }}</td>
-                                                    <td>{{ $status->pickup_name }}</td>
                                                     {{-- <td>{{ $status->slug }}</td> --}}
                                                     <td>{{ $status->sort_order }}</td>
                                                     <td>{{ $status->is_active ? 'Active' : 'Inactive' }}</td>
@@ -83,6 +81,69 @@
                                         </tbody>
                                     </table>
 
+                                </div>
+
+                                <hr>
+
+                                <div class="row mb-2 mt-4">
+                                    <div class="col-md-10">
+                                        <h3 class="mb-3">Pickup Order Status List</h3>
+                                    </div>
+                                    <div class="col-md-2 float-right">
+                                        @if (auth()->user()->can('Create Order Status'))
+                                            <a href="{{ route('order-status.create', ['type' => 'pickup']) }}"
+                                                class="btn btn-primary w-100"><i class="fa-solid fa-plus"></i> Create
+                                                Pickup Status</a>
+                                        @endif
+                                    </div>
+                                </div>
+
+                                <div class="table-responsive">
+                                    <table class="table align-middle bg-white color_body_text">
+                                        <thead class="color_head">
+                                            <tr class="header-row">
+                                                <th>ID (#)</th>
+                                                <th>Name</th>
+                                                {{-- <th>Slug</th> --}}
+                                                <th>Sort Order</th>
+                                                <th>Status</th>
+                                                <th>Action</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            @forelse ($pickupStatuses as $key => $status)
+                                                <tr>
+                                                    <td>{{ $key + 1 }}</td>
+                                                    <td>{{ $status->name }}</td>
+                                                    {{-- <td>{{ $status->slug }}</td> --}}
+                                                    <td>{{ $status->sort_order }}</td>
+                                                    <td>{{ $status->is_active ? 'Active' : 'Inactive' }}</td>
+                                                    <td>
+                                                        <div class="d-flex">
+                                                            @if (auth()->user()->can('Edit Order Status'))
+                                                                <a href="{{ route('order-status.edit', $status->id) }}"
+                                                                    class="edit_icon me-2">
+                                                                    <i class="fa-solid fa-pen-to-square"></i>
+                                                                </a>
+                                                            @endif
+
+                                                            @if (auth()->user()->can('Delete Order Status') &&
+                                                                    !in_array($status->slug, ['pickup_pending', 'pickup_picked_up', 'pickup_cancelled']))
+                                                                <a href="javascript:void(0)" class="delete_status"
+                                                                    data-route="{{ route('order-status.destroy', $status->id) }}">
+                                                                    <i class="fa-solid fa-trash text-danger"></i>
+                                                                </a>
+                                                            @endif
+                                                        </div>
+                                                    </td>
+                                                </tr>
+                                            @empty
+                                                <tr>
+                                                    <td colspan="5" class="text-center">No data found</td>
+                                                </tr>
+                                            @endforelse
+                                        </tbody>
+                                    </table>
                                 </div>
                             </div>
                         </div>

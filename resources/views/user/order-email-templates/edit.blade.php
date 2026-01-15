@@ -92,7 +92,7 @@
                                             <option value="{{ $status->id }}"
                                                 {{ old('order_status_id', $template->order_status_id) == $status->id ? 'selected' : '' }}
                                                 {{ $disabled ? 'disabled' : '' }}>
-                                                {{ $template->is_pickup ? $status->pickup_name : $status->name }}
+                                                {{ $status->name }}
                                             </option>
                                         @endforeach
                                     </select>

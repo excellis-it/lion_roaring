@@ -15,8 +15,9 @@ class OrderStatusController extends Controller
             abort(403, 'You do not have permission to access this page.');
         }
 
-        $statuses = OrderStatus::orderBy('sort_order')->get();
-        return view('user.order-status.list', compact('statuses'));
+        $statuses = OrderStatus::where('is_pickup', 0)->orderBy('sort_order')->get();
+        $pickupStatuses = OrderStatus::where('is_pickup', 1)->orderBy('sort_order')->get();
+        return view('user.order-status.list', compact('statuses', 'pickupStatuses'));
     }
 
     public function create()
@@ -25,7 +26,8 @@ class OrderStatusController extends Controller
             abort(403, 'You do not have permission to access this page.');
         }
 
-        return view('user.order-status.create');
+        $isPickupParam = request('type') === 'pickup';
+        return view('user.order-status.create', compact('isPickupParam'));
     }
 
     public function store(Request $request)
@@ -34,38 +36,43 @@ class OrderStatusController extends Controller
             abort(403, 'You do not have permission to perform this action.');
         }
 
-        $request->validate([
-            'name' => 'required|string|max:100',
-            'pickup_name' => 'nullable|string|max:100',
-            // 'slug' => [
-            //     'required',
-            //     'string',
-            //     'max:100',
-            //     'unique:order_statuses,slug',
-            //     'regex:/^[a-z0-9-]+$/', // Only lowercase letters, numbers, hyphens
-            // ],
-            'sort_order' => 'nullable|integer',
-            'is_active' => 'boolean',
-        ],
-        // [
-        //     'slug.required' => 'The status slug is required.',
-        //     'slug.unique' => 'This slug is already taken. Please choose a different one.',
-        //     'slug.regex' => 'The slug can only contain lowercase letters, numbers, and hyphens (no spaces).',
-        //     'slug.max' => 'The slug cannot exceed 100 characters.',
-        // ]
-    );
+        $request->validate(
+            [
+                'name' => 'required|string|max:100',
+                'is_pickup' => 'nullable|boolean',
+                // 'slug' => [
+                //     'required',
+                //     'string',
+                //     'max:100',
+                //     'unique:order_statuses,slug',
+                //     'regex:/^[a-z0-9-]+$/', // Only lowercase letters, numbers, hyphens
+                // ],
+                'sort_order' => 'nullable|integer',
+                'is_active' => 'boolean',
+            ],
+            // [
+            //     'slug.required' => 'The status slug is required.',
+            //     'slug.unique' => 'This slug is already taken. Please choose a different one.',
+            //     'slug.regex' => 'The slug can only contain lowercase letters, numbers, and hyphens (no spaces).',
+            //     'slug.max' => 'The slug cannot exceed 100 characters.',
+            // ]
+        );
 
-    // slug is auto-generated from name and made unique
-        $baseSlug = strtolower(trim(preg_replace('/[^A-Za-z0-9-]+/', '-', $request->name)));
+        // resolve pickup flag from hidden input or query param
+        $isPickup = $request->boolean('is_pickup') || request('type') === 'pickup';
+
+        // slug is auto-generated from name and made unique
+        $baseNameSlug = strtolower(trim(preg_replace('/[^A-Za-z0-9-]+/', '-', $request->name)));
+        $baseSlug = $isPickup ? ('pickup_' . $baseNameSlug) : $baseNameSlug;
         $slug = $baseSlug;
         $counter = 1;
         while (OrderStatus::where('slug', $slug)->exists()) {
             $slug = $baseSlug . '-' . $counter++;
         }
-        $request->merge(['slug' => $slug]);
+        $request->merge(['slug' => $slug, 'is_pickup' => $isPickup ? 1 : 0]);
 
 
-        OrderStatus::create($request->only(['name', 'pickup_name', 'slug', 'sort_order', 'is_active']));
+        OrderStatus::create($request->only(['name', 'slug', 'sort_order', 'is_active', 'is_pickup']));
 
         return redirect()->route('order-status.index')->with('message', 'Order status created successfully.');
     }
@@ -90,12 +97,11 @@ class OrderStatusController extends Controller
 
         $request->validate([
             'name' => 'required|string|max:100',
-            'pickup_name' => 'nullable|string|max:100',
             'sort_order' => 'nullable|integer',
             'is_active' => 'boolean',
         ]);
 
-        $status->update($request->only(['name', 'pickup_name', 'sort_order', 'is_active']));
+        $status->update($request->only(['name', 'sort_order', 'is_active']));
 
         return redirect()->route('order-status.index')->with('message', 'Order status updated successfully.');
     }
@@ -109,7 +115,8 @@ class OrderStatusController extends Controller
         $status = OrderStatus::findOrFail($id);
 
         // Prevent deletion of important statuses
-        if (in_array($status->slug, ['pending', 'delivered', 'cancelled'])) {
+        $protectedSlugs = ['pending', 'delivered', 'cancelled', 'pickup_pending', 'pickup_picked_up', 'pickup_cancelled'];
+        if (in_array($status->slug, $protectedSlugs, true)) {
             return redirect()->route('order-status.index')
                 ->with('error', 'This status cannot be deleted.');
         }

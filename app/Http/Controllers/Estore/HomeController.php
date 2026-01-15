@@ -377,13 +377,47 @@ class HomeController extends Controller
                 return redirect()->route('e-store.order-tracking')->with('error', 'Order not found');
             }
 
-            $order_status = OrderStatus::orderBy('sort_order', 'asc')->get();
+            $order_status = OrderStatus::where('is_pickup', $order->is_pickup ? 1 : 0)
+                ->orderBy('sort_order', 'asc')
+                ->get();
 
             // find the current status id on the order
             $currentStatusId = $order->status; // integer id (assumption)
+            $currentStatusModel = $currentStatusId ? OrderStatus::find($currentStatusId) : null;
+
+            // Normalize legacy/mismatched statuses for pickup vs delivery
+            if ($currentStatusModel && (bool)$currentStatusModel->is_pickup !== (bool)$order->is_pickup) {
+                $deliveryToPickup = [
+                    'pending' => 'pickup_pending',
+                    'processing' => 'pickup_processing',
+                    'shipped' => 'pickup_ready_for_pickup',
+                    'out_for_delivery' => 'pickup_picked_up',
+                    'delivered' => 'pickup_picked_up',
+                    'cancelled' => 'pickup_cancelled',
+                ];
+                $pickupToDelivery = [
+                    'pickup_pending' => 'pending',
+                    'pickup_processing' => 'processing',
+                    'pickup_ready_for_pickup' => 'shipped',
+                    'pickup_picked_up' => 'delivered',
+                    'pickup_cancelled' => 'cancelled',
+                ];
+
+                $mappedSlug = $order->is_pickup
+                    ? ($deliveryToPickup[$currentStatusModel->slug] ?? null)
+                    : ($pickupToDelivery[$currentStatusModel->slug] ?? null);
+
+                if ($mappedSlug) {
+                    $mappedStatus = $order_status->firstWhere('slug', $mappedSlug);
+                    if ($mappedStatus) {
+                        $currentStatusId = $mappedStatus->id;
+                        $currentStatusModel = $mappedStatus;
+                    }
+                }
+            }
 
             // Optional: handle cancelled specially — if you want timeline to be [first, cancelled]
-            $cancelSlug = 'cancelled';
+            $cancelSlug = $order->is_pickup ? 'pickup_cancelled' : 'cancelled';
             $cancelStatus = $order_status->firstWhere('slug', $cancelSlug);
 
             if ($currentStatusId && $cancelStatus && $currentStatusId == $cancelStatus->id) {
@@ -404,8 +438,7 @@ class HomeController extends Controller
 
             // If not found (custom status etc.), append it to timeline for display
             if ($statusIndex === false && $currentStatusId) {
-                $currentStatusModel = OrderStatus::find($currentStatusId);
-                if ($currentStatusModel) {
+                if ($currentStatusModel && (bool)$currentStatusModel->is_pickup === (bool)$order->is_pickup) {
                     $timelineStatuses = $timelineStatuses->push($currentStatusModel);
                     $statusIndex = $timelineStatuses->count() - 1;
                 } else {

@@ -42,14 +42,25 @@
                 <div class="col-lg-7">
                     @if (isset($order))
                         @php
-                            $labels = [
-                                // optional overrides for label text; otherwise use $status->name
-                                'pending' => 'Ordered',
-                                'processing' => 'Processing',
-                                'shipped' => 'Shipped',
-                                'delivered' => 'Delivered',
-                                'cancelled' => 'Cancelled',
-                            ];
+                            $statusSlug = optional($order->orderStatus)->slug;
+                            $isFinalDelivered = in_array($statusSlug, ['delivered', 'pickup_picked_up'], true);
+                            $isFinalCancelled = in_array($statusSlug, ['cancelled', 'pickup_cancelled'], true);
+                            $labels = $order->is_pickup
+                                ? [
+                                    'pickup_pending' => 'Ordered',
+                                    'pickup_processing' => 'Processing',
+                                    'pickup_ready_for_pickup' => 'Ready for Pickup',
+                                    'pickup_picked_up' => 'Picked Up',
+                                    'pickup_cancelled' => 'Cancelled',
+                                ]
+                                : [
+                                    'pending' => 'Ordered',
+                                    'processing' => 'Processing',
+                                    'shipped' => 'Shipped',
+                                    'out_for_delivery' => 'Out for Delivery',
+                                    'delivered' => 'Delivered',
+                                    'cancelled' => 'Cancelled',
+                                ];
                         @endphp
 
                         <div class="delevry-sumry shadow p-3">
@@ -64,11 +75,15 @@
                                         @php
                                             $reached = $idx <= $statusIndex;
                                             $isCurrent = $idx === $statusIndex;
-                                            $cancelled = ($status->slug ?? '') === 'cancelled';
+                                            $cancelled = in_array(
+                                                $status->slug ?? '',
+                                                ['cancelled', 'pickup_cancelled'],
+                                                true,
+                                            );
                                             $colorClass = $cancelled
                                                 ? 'btn-danger'
                                                 : ($reached
-                                                    ? ($status->slug === 'delivered'
+                                                    ? (in_array($status->slug, ['delivered', 'pickup_picked_up'], true)
                                                         ? 'btn-success'
                                                         : ($isCurrent
                                                             ? 'btn-primary'
@@ -104,8 +119,7 @@
                             @endphp
 
                             <div class="d-details">
-                                @if ($deliveredAt && $order->status != 5 && $order->status != 4)
-                              
+                                @if ($deliveredAt && !$isFinalCancelled && !$isFinalDelivered)
                                     <div
                                         style="margin-top:15px;margin-bottom:5px; padding:10px 15px; border-left:4px solid #0d6efd; background:#f8f9fa; border-radius:5px; display:inline-block;">
                                         <h6 style="margin:0; font-size:14px; color:#495057;">
@@ -125,7 +139,7 @@
                                 </p>
                                 <ul class="list-unstyled small mb-0">
                                     <li>Placed: <strong>{{ $createdAt->format('M d, Y h:i A') }}</strong></li>
-                                    @if (($order->orderStatus->slug ?? $order->status) === 'cancelled')
+                                    @if (in_array($order->orderStatus->slug ?? '', ['cancelled', 'pickup_cancelled'], true))
                                         <li class="text-danger">Order was cancelled.</li>
                                     @endif
                                 </ul>
