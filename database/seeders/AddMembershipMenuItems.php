@@ -25,16 +25,32 @@ class AddMembershipMenuItems extends Seeder
         ];
 
         foreach ($membershipMenus as $menu) {
-            // Check if the menu item already exists
-            $exists = DB::table('menu_items')->where('key', $menu['key'])->exists();
+            $existing = DB::table('menu_items')->where('key', $menu['key'])->first();
 
-            if (!$exists) {
+            if ($existing) {
+                $updateData = [
+                    'default_name' => $menu['default_name'],
+                    'updated_at' => now(),
+                ];
+
+                if (empty($existing->name)) {
+                    $updateData['name'] = $menu['default_name'];
+                }
+
+                DB::table('menu_items')
+                    ->where('key', $menu['key'])
+                    ->update([
+                        'default_name' => $menu['default_name'],
+                        'name' => $updateData['name'] ?? $existing->name,
+                        'updated_at' => $updateData['updated_at'],
+                    ]);
+            } else {
                 DB::table('menu_items')->insert([
                     'key' => $menu['key'],
                     'default_name' => $menu['default_name'],
-                    'name' => null,
+                    'name' => $menu['default_name'],
                     'created_at' => now(),
-                    'updated_at' => now()
+                    'updated_at' => now(),
                 ]);
             }
         }

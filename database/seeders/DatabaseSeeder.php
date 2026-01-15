@@ -13,24 +13,25 @@ class DatabaseSeeder extends Seeder
      */
     public function run()
     {
-        // \App\Models\User::factory(10)->create();
         $this->call([
-            // assignRoleSeeder::class,
-            // assignAdminSeeder::class,
+            // first time only
             // CountriesTableSeeder::class,
-            // CategorySeeder::class,
-            // RolePermissionSeeder::class,
-            // AddStrategyPermission::class,
             // StatesTableSeeder::class,
-            // AddStrategyPermission::class,
-            // AdminPanelRolePermissionSeeder::class,
-            // OrderStatusAndEmailTemplateSeeder::class,
-            // AddOrderStatusTemplatePermission::class,
-            // CompressCategoryImagesSeeder::class,
-            // HomeCmsImageSeeder::class,
+
+            // then run these
+            RolePermissionSeeder::class,
+            assignAdminSeeder::class,
+            AddSuperAdminGlobal::class,
+            IsAcceptedStatusUpdateSeeder::class,
             AddSidebarMenuItems::class,
-            SiteManagementPermissionSeeder::class,
-            \Database\Seeders\OrderEmailTemplatesSeeder::class,
+            AddSidebarMenuItemsWithFrontend::class,
+            AddMembershipMenuItems::class,
+            SiteSettingsSeeder::class,
+            OrderStatusAndEmailTemplateSeeder::class,
+            ChatbotSeeder::class,
+            CompressCategoryImagesSeeder::class,
+            HomeCmsImageSeeder::class,
+            MigrateRolesToUserTypesSeeder::class,
         ]);
     }
 }

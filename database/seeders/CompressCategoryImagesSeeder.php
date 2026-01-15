@@ -6,6 +6,7 @@ use Illuminate\Database\Seeder;
 use App\Models\Category;
 use App\Models\GlobalImage;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str;
 
 class CompressCategoryImagesSeeder extends Seeder
 {
@@ -37,19 +38,36 @@ class CompressCategoryImagesSeeder extends Seeder
     protected function compressAndUpdateImage($category, $field)
     {
         $oldPath = $category->$field;
+        if (!$oldPath) {
+            return;
+        }
+
+        $existingGlobal = GlobalImage::where('original_path', $oldPath)->first();
+        if ($existingGlobal && $existingGlobal->compressed_path) {
+            $compressedExists = Storage::disk('public')->exists($existingGlobal->compressed_path);
+            if ($compressedExists && $category->$field === $existingGlobal->compressed_path) {
+                return;
+            }
+        }
+
+        if (Str::startsWith(basename($oldPath), 'compressed_')) {
+            return;
+        }
+
         $fullPath = Storage::disk('public')->path($oldPath);
         $file = new \Illuminate\Http\UploadedFile($fullPath, basename($oldPath), null, null, true);
 
         // Use the same imageUpload logic
         $compressedPath = $this->imageUpload($file, 'category', true);
 
-        // Update category with compressed path
-        $category->update([
-            $field => $compressedPath,
-        ]);
+        if ($compressedPath && $compressedPath !== $oldPath) {
+            $category->update([
+                $field => $compressedPath,
+            ]);
+        }
 
         // Log in GlobalImage (if not already done in imageUpload)
-        if (!GlobalImage::where('original_path', $oldPath)->exists()) {
+        if (!$existingGlobal) {
             GlobalImage::create([
                 'original_path'   => $oldPath,
                 'compressed_path' => $compressedPath,
@@ -137,10 +155,13 @@ class CompressCategoryImagesSeeder extends Seeder
             }
         }
 
-        GlobalImage::create([
-            'original_path'   => $originalPath,
-            'compressed_path' => $compressedPath,
-        ]);
+        GlobalImage::firstOrCreate(
+            ['original_path' => $originalPath],
+            [
+                'original_path'   => $originalPath,
+                'compressed_path' => $compressedPath,
+            ]
+        );
 
         return $compressedPath ?? $originalPath;
     }

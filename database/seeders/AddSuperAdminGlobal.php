@@ -14,6 +14,8 @@ class AddSuperAdminGlobal extends Seeder
      */
     public function run()
     {
-        User::role('SUPER ADMIN')->update(['user_type' => 'Global']);
+        User::role('SUPER ADMIN')
+            ->whereNull('user_type')
+            ->update(['user_type' => 'Global']);
     }
 }

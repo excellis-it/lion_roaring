@@ -59,7 +59,9 @@ class HomeCmsImageSeeder extends Seeder
 
             // slider_data (array of slides with image key)
             if ($cms->slider_data) {
-                $sliderArray = json_decode($cms->slider_data, true);
+                $sliderArray = is_string($cms->slider_data)
+                    ? json_decode($cms->slider_data, true)
+                    : (is_array($cms->slider_data) ? $cms->slider_data : null);
                 if (is_array($sliderArray)) {
                     $changed = false;
                     foreach ($sliderArray as $idx => $slide) {
@@ -82,7 +84,9 @@ class HomeCmsImageSeeder extends Seeder
 
             // slider_data_second
             if ($cms->slider_data_second) {
-                $sliderArray = json_decode($cms->slider_data_second, true);
+                $sliderArray = is_string($cms->slider_data_second)
+                    ? json_decode($cms->slider_data_second, true)
+                    : (is_array($cms->slider_data_second) ? $cms->slider_data_second : null);
                 if (is_array($sliderArray)) {
                     $changed = false;
                     foreach ($sliderArray as $idx => $slide) {
@@ -130,6 +134,13 @@ class HomeCmsImageSeeder extends Seeder
             return null;
         }
 
+        $existingGlobal = GlobalImage::where('original_path', $originalPath)->first();
+        if ($existingGlobal && $existingGlobal->compressed_path) {
+            if ($disk->exists($existingGlobal->compressed_path)) {
+                return $existingGlobal->compressed_path;
+            }
+        }
+
         // Ensure file exists in storage/app/public
         if (! $disk->exists($originalPath)) {
             $this->command->warn("File not found in storage: {$originalPath}");
@@ -143,10 +154,10 @@ class HomeCmsImageSeeder extends Seeder
         } catch (\Exception $e) {
             $this->command->error("Intervention failed to read file: {$originalPath} — " . $e->getMessage());
             // Still store original to GlobalImage (since user wanted original path stored)
-            GlobalImage::create([
-                'original_path' => $originalPath,
-                'compressed_path' => null,
-            ]);
+            GlobalImage::firstOrCreate(
+                ['original_path' => $originalPath],
+                ['original_path' => $originalPath, 'compressed_path' => null]
+            );
             return null;
         }
 
@@ -160,10 +171,10 @@ class HomeCmsImageSeeder extends Seeder
 
         if ($isLowResolution || $isSmallFile) {
             // store original path in GlobalImage and do not change DB reference
-            GlobalImage::create([
-                'original_path' => $originalPath,
-                'compressed_path' => null,
-            ]);
+            GlobalImage::firstOrCreate(
+                ['original_path' => $originalPath],
+                ['original_path' => $originalPath, 'compressed_path' => null]
+            );
             return $originalPath;
         }
 
@@ -196,10 +207,10 @@ class HomeCmsImageSeeder extends Seeder
         } catch (\Exception $e) {
             $this->command->error("Failed to write compressed file for {$originalPath}: " . $e->getMessage());
             // still save original path
-            GlobalImage::create([
-                'original_path' => $originalPath,
-                'compressed_path' => null,
-            ]);
+            GlobalImage::firstOrCreate(
+                ['original_path' => $originalPath],
+                ['original_path' => $originalPath, 'compressed_path' => null]
+            );
             return $originalPath;
         }
 
@@ -216,10 +227,10 @@ class HomeCmsImageSeeder extends Seeder
         }
 
         // Save original and compressed in GlobalImage
-        GlobalImage::create([
-            'original_path' => $originalPath,
-            'compressed_path' => $finalPath,
-        ]);
+        GlobalImage::firstOrCreate(
+            ['original_path' => $originalPath],
+            ['original_path' => $originalPath, 'compressed_path' => $finalPath]
+        );
 
         return $finalPath;
     }

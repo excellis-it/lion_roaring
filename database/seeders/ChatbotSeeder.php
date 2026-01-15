@@ -13,13 +13,6 @@ class ChatbotSeeder extends Seeder
      */
     public function run(): void
     {
-        // Truncate tables to avoid duplicates
-        \Illuminate\Support\Facades\Schema::disableForeignKeyConstraints();
-        ChatbotKeyword::truncate();
-        // We probably shouldn't truncate Faq table as it might have real data,
-        // but for seeding purpose let's at least ensure we have some data for common countries.
-        \Illuminate\Support\Facades\Schema::enableForeignKeyConstraints();
-
         // Seed Keywords
         $keywords = [
             [
@@ -45,7 +38,10 @@ class ChatbotSeeder extends Seeder
         ];
 
         foreach ($keywords as $keywordData) {
-            ChatbotKeyword::create($keywordData);
+            ChatbotKeyword::updateOrCreate(
+                ['keyword' => $keywordData['keyword']],
+                $keywordData
+            );
         }
 
         // Seed FAQs into the Faq model instead of ChatbotFaqQuestion
@@ -78,10 +74,13 @@ class ChatbotSeeder extends Seeder
         ];
 
         foreach ($faqs as $faqData) {
-            // Check if it already exists to avoid duplicates if we don't truncate
-            if (!Faq::where('question', $faqData['question'])->where('country_code', $faqData['country_code'])->exists()) {
-                Faq::create($faqData);
-            }
+            Faq::updateOrCreate(
+                [
+                    'question' => $faqData['question'],
+                    'country_code' => $faqData['country_code'],
+                ],
+                $faqData
+            );
         }
     }
 }
