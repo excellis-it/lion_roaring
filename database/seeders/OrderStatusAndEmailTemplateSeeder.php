@@ -59,7 +59,6 @@ class OrderStatusAndEmailTemplateSeeder extends Seeder
 <p><strong>Order details:</strong></p>
 {order_list}
 
-<p>Estimated arriving date: {arriving_date}</p>
 <p>Total: {total_order_value}</p>
 
 <p>If you have any questions, contact us.</p>
@@ -154,7 +153,7 @@ HTML
 <p><strong>Order details:</strong></p>
 {order_list}
 
-<p>If you have any questions, reply to this email: {customer_email}</p>
+<p>If you have any questions, contact us.</p>
 HTML
                 ],
                 'pickup_processing' => [
