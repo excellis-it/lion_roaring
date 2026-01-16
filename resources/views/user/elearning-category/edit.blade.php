@@ -49,7 +49,7 @@
                                 <div class="box_label">
                                     <label for="image"> Category Image</label>
                                     <input type="file" name="image" id="image" class="form-control"
-                                        value="{{ old('image') }}" placeholder="Enter Category Image">
+                                        value="{{ old('image') }}" placeholder="Enter Category Image" accept="image/*">
                                     @if ($errors->has('image'))
                                         <span class="error">{{ $errors->first('image') }}</span>
                                     @endif

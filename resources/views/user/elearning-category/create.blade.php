@@ -47,7 +47,7 @@
                                 <div class="box_label">
                                     <label for="image"> Category Image*</label>
                                     <input type="file" name="image" id="image" class="form-control"
-                                        value="{{ old('image') }}" placeholder="Enter Category Image">
+                                        value="{{ old('image') }}" placeholder="Enter Category Image" accept="image/*">
                                     @if ($errors->has('image'))
                                         <span class="error">{{ $errors->first('image') }}</span>
                                     @endif
@@ -100,7 +100,8 @@
 
                             <div class="w-100 text-end d-flex align-items-center justify-content-end mt-3">
                                 <button type="submit" class="print_btn me-2">Add</button>
-                                <a href="{{ route('elearning-categories.index') }}" class="print_btn print_btn_vv">Cancel</a>
+                                <a href="{{ route('elearning-categories.index') }}"
+                                    class="print_btn print_btn_vv">Cancel</a>
                             </div>
                         </div>
                     </form>

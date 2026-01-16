@@ -54,7 +54,7 @@
                                 data-tippy-content="Sort by Code">Code<span id="code_icon"></span></th>
                             <th>Flag</th>
                             <th>Languages</th>
-                            <th class="sorting" data-sorting_type="asc" data-column_name="status" style="cursor:pointer"
+                            <th class="sorting" data-sorting_type="desc" data-column_name="status" style="cursor:pointer"
                                 data-tippy-content="Sort by Status">Status<span id="status_icon"></span></th>
                             <th class="text-right">Actions</th>
                         </tr>
@@ -64,7 +64,7 @@
                     </tbody>
                 </table>
                 <input type="hidden" name="hidden_page" id="hidden_page" value="1" />
-                <input type="hidden" name="hidden_column_name" id="hidden_column_name" value="id" />
+                <input type="hidden" name="hidden_column_name" id="hidden_column_name" value="status" />
                 <input type="hidden" name="hidden_sort_type" id="hidden_sort_type" value="desc" />
             </div>
 
@@ -81,6 +81,8 @@
                 $('#code_icon').html('');
                 $('#status_icon').html('');
             }
+            // default: show Active countries first (status desc)
+            $('#status_icon').html('<span class="fa fa-arrow-down"></span>');
 
             function fetch_data(page, sort_type, sort_by, query) {
                 $.ajax({
@@ -100,7 +102,16 @@
                 var query = $('#search').val();
                 var column_name = $('#hidden_column_name').val();
                 var sort_type = $('#hidden_sort_type').val();
-                var page = $('#hidden_page').val();
+                var page = 1; // reset to first page when searching
+                $('#hidden_page').val(page);
+                fetch_data(page, sort_type, column_name, query);
+            });
+            $(document).on('click', '#search-button', function() {
+                var query = $('#search').val();
+                var column_name = $('#hidden_column_name').val();
+                var sort_type = $('#hidden_sort_type').val();
+                var page = 1; // reset to first page when searching
+                $('#hidden_page').val(page);
                 fetch_data(page, sort_type, column_name, query);
             });
             $(document).on('click', '.sorting', function() {
@@ -121,7 +132,8 @@
                 }
                 $('#hidden_column_name').val(column_name);
                 $('#hidden_sort_type').val(reverse_order);
-                var page = $('#hidden_page').val();
+                var page = 1; // reset to first page when sorting
+                $('#hidden_page').val(page);
                 var query = $('#search').val();
                 fetch_data(page, reverse_order, column_name, query);
             });
