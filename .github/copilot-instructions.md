@@ -85,5 +85,8 @@ This file defines practical, actionable rules for contributing to this Laravel p
 
 ## Playwright / project-view-test command
 
--   If a user asks via `project-view-test`, follow the repo's test workflow: run Playwright in headed Chrome, exercise the requested feature, report concise pass/fail and attach traces/screenshots. Start the local dev server at `http://127.0.0.1:8000`.
+-   If a user asks via `project-view-test`, follow the repo's test workflow: run Playwright in headed Chrome with chrome devtools, exercise the requested feature, report concise pass/fail and attach traces/screenshots. Start the local dev server at `http://127.0.0.1:8000`.
+-   Use the command:
+    -   `npx playwright test tests/<requested-feature>.spec.ts --project=chrome-devtools --headed`
+-   Ensure tests run should run like real user interactions, avoiding direct API calls or database manipulations.
 -   Ask for explicit confirmation before making any DB/schema changes or destructive edits when running automated tests.
