@@ -703,7 +703,7 @@
                          <a class="sidebar-link {{ Request::is('user/signup-rules*') ? 'active' : '' }}"
                              href="{{ route('user.signup-rules.index') }}" aria-expanded="false">
                              <span>
-                                 <i class="ti ti-clock-check fs-6"></i>
+                                <img src="{{ asset('user_assets/images/signup-rule.png') }}" alt="">
                              </span>
                              <span class="hide-menu">{{ Helper::getMenuName('signup_rules', 'Signup Rules') }}</span>
                          </a>
@@ -1203,7 +1203,7 @@
                          <a class="sidebar-link" href="#" aria-expanded="false" data-bs-toggle="collapse"
                              data-bs-target="#collapseChatbot">
                              <span>
-                                 <i class="fas fa-robot fs-4"></i>
+                                 <img src="{{ asset('user_assets/images/chatbot.png') }}" alt="">
                              </span>
                              <span class="hide-menu">{{ Helper::getMenuName('chatbot', 'Chatbot Assistant') }}</span>
                          </a>
@@ -1211,18 +1211,18 @@
                              id="collapseChatbot">
                              <div class="menu_bb">
                                  <a href="{{ route('user.admin.chatbot.index') }}">
-                                     <span><i class="fas fa-tachometer-alt"></i></span>
+                                     <span><img src="{{ asset('user_assets/images/dashboard.png') }}" alt=""></span>
                                      <span>{{ Helper::getMenuName('chatbot_dashboard', 'Dashboard') }}</span>
                                  </a>
                                  @if (Gate::check('Manage Chatbot Keywords'))
                                      <a href="{{ route('user.admin.chatbot.keywords') }}">
-                                         <span><i class="fas fa-key"></i></span>
+                                         <span><img src="{{ asset('user_assets/images/keyword.png') }}" alt=""></span>
                                          <span>{{ Helper::getMenuName('chatbot_keywords', 'Keywords') }}</span>
                                      </a>
                                  @endif
                                  @if (Gate::check('View Chatbot History'))
                                      <a href="{{ route('user.admin.chatbot.conversations') }}">
-                                         <span><i class="fas fa-history"></i></span>
+                                         <span><img src="{{ asset('user_assets/images/history.png') }}" alt=""></span>
                                          <span>{{ Helper::getMenuName('chatbot_history', 'History') }}</span>
                                      </a>
                                  @endif

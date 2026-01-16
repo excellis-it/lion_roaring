@@ -109,24 +109,19 @@
                                                 </form>
                                             </td>
                                             <td class="text-end">
-                                                <div class="btn-group" role="group">
+                                                <div class="edit-1 d-flex align-items-center gap-2 justify-content-end">
                                                     @if (Gate::check('Edit Signup Rules'))
-                                                        <a href="{{ route('user.signup-rules.edit', $rule->id) }}"
-                                                            class="btn btn-sm btn-outline-primary" title="Edit">
-                                                            <i class="fa fa-edit"></i>
+                                                        <a title="Edit"
+                                                            href="{{ route('user.signup-rules.edit', $rule->id) }}">
+                                                            <span class="edit-icon"><i class="fas fa-edit"></i></span>
                                                         </a>
                                                     @endif
                                                     @if (Gate::check('Delete Signup Rules'))
-                                                        <form action="{{ route('user.signup-rules.destroy', $rule->id) }}"
-                                                            method="POST" class="d-inline"
-                                                            onsubmit="return confirm('Are you sure you want to delete this rule?');">
-                                                            @csrf
-                                                            @method('DELETE')
-                                                            <button type="submit" class="btn btn-sm btn-outline-danger"
-                                                                title="Delete">
-                                                                <i class="fa fa-trash"></i>
-                                                            </button>
-                                                        </form>
+                                                        <a title="Delete"
+                                                            data-route="{{ route('user.signup-rules.destroy', $rule->id) }}"
+                                                            href="javascript:void(0);" class="delete-rule">
+                                                            <span class="trash-icon"><i class="fas fa-trash"></i></span>
+                                                        </a>
                                                     @endif
                                                 </div>
                                             </td>
@@ -159,10 +154,6 @@
             border-bottom: 2px solid #dee2e6;
         }
 
-        .table-hover tbody tr:hover {
-            background-color: #f8f9fa;
-        }
-
         code {
             background-color: #f8f9fa;
             padding: 2px 6px;
@@ -174,6 +165,47 @@
 
 @push('scripts')
     <script>
+        // Delete confirmation with SweetAlert
+        $(document).on('click', '.delete-rule', function(e) {
+            e.preventDefault();
+            var deleteUrl = $(this).data('route');
+
+            swal({
+                    title: "Are you sure?",
+                    text: "To delete this signup rule.",
+                    type: "warning",
+                    confirmButtonText: "Yes",
+                    showCancelButton: true
+                })
+                .then((result) => {
+                    if (result.value) {
+                        // Create a form and submit it
+                        var form = $('<form>', {
+                            'method': 'POST',
+                            'action': deleteUrl
+                        });
+
+                        var csrfToken = $('<input>', {
+                            'type': 'hidden',
+                            'name': '_token',
+                            'value': '{{ csrf_token() }}'
+                        });
+
+                        var methodField = $('<input>', {
+                            'type': 'hidden',
+                            'name': '_method',
+                            'value': 'DELETE'
+                        });
+
+                        form.append(csrfToken).append(methodField);
+                        $('body').append(form);
+                        form.submit();
+                    } else if (result.dismiss === 'cancel') {
+                        swal('Cancelled', 'Your signup rule is safe :)', 'error')
+                    }
+                })
+        });
+
         @if (session('success'))
             toastr.success("{{ session('success') }}");
         @endif
