@@ -11,7 +11,11 @@
             <td>
                 <span>{{ $partner->userRole->name ?? '' }}</span>
             </td>
+
+
             <td>
+                {{ isset($partner->ecclesia) ? $partner->ecclesia->name . ' (' . $partner->ecclesia->countryName->name . ')' : 'NO NAME' }}
+
                 @if ($partner->is_ecclesia_admin == 1)
                     {{-- @dd($partner) --}}
                     <br>
@@ -65,10 +69,6 @@
                         </div>
                     </div>
                 @endif
-            </td>
-
-            <td>
-                {{ isset($partner->ecclesia) ? $partner->ecclesia->name . ' (' . $partner->ecclesia->countryName->name . ')' : 'NO NAME' }}
             </td>
             <td>
 
