@@ -32,7 +32,8 @@ class DatabaseSeeder extends Seeder
             CompressCategoryImagesSeeder::class,
             HomeCmsImageSeeder::class,
             MigrateRolesToUserTypesSeeder::class,
-            
+            SignupRuleSeeder::class,
+
         ]);
     }
 }
