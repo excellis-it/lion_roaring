@@ -86,7 +86,7 @@
                             @endif
                             <div class="ms-3">
                                 <h5 class="mb-1 fs-3">{{ Auth::user()->full_name }}</h5>
-                                <span class="mb-1 d-block text-dark">{{ Auth::user()->getRoleNames()->first() }}</span>
+                                <span class="mb-1 d-block text-dark">{{ Auth::user()->userRole->name ?? '' }}</span>
                                 <p class="mb-0 d-flex text-dark align-items-center gap-2">
                                     <i class="ti ti-mail fs-4"></i> {{ Auth::user()->email }}
                                 </p>

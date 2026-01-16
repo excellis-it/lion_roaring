@@ -28,9 +28,9 @@ class CountryController extends Controller
             });
         }
 
-        $sortBy = in_array($request->get('sortby'), ['id', 'name', 'code', 'status']) ? $request->get('sortby') : 'id';
+        $sortBy = in_array($request->get('sortby'), ['id', 'name', 'code', 'status']) ? $request->get('sortby') : 'status';
         $sortType = $request->get('sorttype') === 'asc' ? 'asc' : 'desc';
-        $countries = $query->orderBy($sortBy, $sortType)->paginate(10);
+        $countries = $query->orderBy($sortBy, $sortType)->paginate(20)->appends($request->only(['sortby', 'sorttype', 'query']));
 
         return view('user.admin.countries.list', compact('countries'));
     }
@@ -49,9 +49,9 @@ class CountryController extends Controller
                     ->orWhere('code', 'like', "%{$search}%");
             });
         }
-        $sortBy = in_array($request->get('sortby'), ['id', 'name', 'code', 'status']) ? $request->get('sortby') : 'id';
+        $sortBy = in_array($request->get('sortby'), ['id', 'name', 'code', 'status']) ? $request->get('sortby') : 'status';
         $sortType = $request->get('sorttype') === 'asc' ? 'asc' : 'desc';
-        $countries = $query->orderBy($sortBy, $sortType)->paginate(10);
+        $countries = $query->orderBy($sortBy, $sortType)->paginate(20)->appends($request->only(['sortby', 'sorttype', 'query']));
 
         $view = view('user.admin.countries.table', compact('countries'))->render();
         return response()->json(['data' => $view]);
