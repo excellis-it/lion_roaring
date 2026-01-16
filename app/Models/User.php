@@ -188,12 +188,12 @@ class User extends Authenticatable
 
     public function getFirstUserRoleType()
     {
-        return $this->userRole->pluck('type')->first() ?? null;
+        return $this->userRole ? $this->userRole->type : null;
     }
 
     public function getFirstUserRoleName()
     {
-        return $this->userRole->pluck('name')->first() ?? null;
+        return $this->userRole ? $this->userRole->name : null;
     }
 
     public function hasNewRole($roles)
