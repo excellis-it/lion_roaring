@@ -36,3 +36,8 @@ export default defineConfig({
     },
   ],
 });
+
+
+// for test example command
+// npx playwright test tests/login.spec.ts --project=chrome-devtools --debug
+// npx playwright test tests/login.spec.ts --project=chrome-devtools --headed
