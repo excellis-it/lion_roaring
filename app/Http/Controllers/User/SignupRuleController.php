@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\SignupRule;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\Gate;
 
 class SignupRuleController extends Controller
 {
@@ -16,6 +17,8 @@ class SignupRuleController extends Controller
      */
     public function index()
     {
+        abort_unless(Gate::check('Manage Signup Rules'), 403);
+
         $rules = SignupRule::orderBy('priority', 'desc')->orderBy('created_at', 'desc')->get();
         return view('user.signup-rules.index', compact('rules'));
     }
@@ -27,6 +30,8 @@ class SignupRuleController extends Controller
      */
     public function create()
     {
+        abort_unless(Gate::check('Create Signup Rules'), 403);
+
         return view('user.signup-rules.create');
     }
 
@@ -38,6 +43,8 @@ class SignupRuleController extends Controller
      */
     public function store(Request $request)
     {
+        abort_unless(Gate::check('Create Signup Rules'), 403);
+
         $validator = Validator::make($request->all(), [
             'field_name' => 'required|string|max:255',
             'rule_type' => 'required|string|max:255',
@@ -90,6 +97,8 @@ class SignupRuleController extends Controller
      */
     public function edit($id)
     {
+        abort_unless(Gate::check('Edit Signup Rules'), 403);
+
         $rule = SignupRule::findOrFail($id);
         return view('user.signup-rules.edit', compact('rule'));
     }
@@ -103,6 +112,8 @@ class SignupRuleController extends Controller
      */
     public function update(Request $request, $id)
     {
+        abort_unless(Gate::check('Edit Signup Rules'), 403);
+
         $rule = SignupRule::findOrFail($id);
 
         $validator = Validator::make($request->all(), [
@@ -145,6 +156,8 @@ class SignupRuleController extends Controller
      */
     public function destroy($id)
     {
+        abort_unless(Gate::check('Delete Signup Rules'), 403);
+
         $rule = SignupRule::findOrFail($id);
         $rule->delete();
 
@@ -160,6 +173,8 @@ class SignupRuleController extends Controller
      */
     public function toggleStatus($id)
     {
+        abort_unless(Gate::check('Edit Signup Rules'), 403);
+
         $rule = SignupRule::findOrFail($id);
         $rule->is_active = !$rule->is_active;
         $rule->save();

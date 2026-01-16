@@ -698,7 +698,7 @@
                     </li>
                  @endif
                  {{-- Signup Rules Management --}}
-                 @if (Auth::user()->hasNewRole('SUPER ADMIN'))
+                 @if (Gate::check('Manage Signup Rules'))
                      <li class="sidebar-item">
                          <a class="sidebar-link {{ Request::is('user/signup-rules*') ? 'active' : '' }}"
                              href="{{ route('user.signup-rules.index') }}" aria-expanded="false">

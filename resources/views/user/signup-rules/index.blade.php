@@ -9,9 +9,11 @@
                     <p class="text-muted small mb-0">Define validation rules for signup form fields</p>
                 </div>
                 <div>
-                    <a href="{{ route('user.signup-rules.create') }}" class="btn btn-primary">
-                        <i class="fa fa-plus me-2"></i>Add New Rule
-                    </a>
+                    @if (Gate::check('Create Signup Rules'))
+                        <a href="{{ route('user.signup-rules.create') }}" class="btn btn-primary">
+                            <i class="fa fa-plus me-2"></i>Add New Rule
+                        </a>
+                    @endif
                 </div>
             </div>
 
@@ -108,20 +110,24 @@
                                             </td>
                                             <td class="text-end">
                                                 <div class="btn-group" role="group">
-                                                    <a href="{{ route('user.signup-rules.edit', $rule->id) }}"
-                                                        class="btn btn-sm btn-outline-primary" title="Edit">
-                                                        <i class="fa fa-edit"></i>
-                                                    </a>
-                                                    <form action="{{ route('user.signup-rules.destroy', $rule->id) }}"
-                                                        method="POST" class="d-inline"
-                                                        onsubmit="return confirm('Are you sure you want to delete this rule?');">
-                                                        @csrf
-                                                        @method('DELETE')
-                                                        <button type="submit" class="btn btn-sm btn-outline-danger"
-                                                            title="Delete">
-                                                            <i class="fa fa-trash"></i>
-                                                        </button>
-                                                    </form>
+                                                    @if (Gate::check('Edit Signup Rules'))
+                                                        <a href="{{ route('user.signup-rules.edit', $rule->id) }}"
+                                                            class="btn btn-sm btn-outline-primary" title="Edit">
+                                                            <i class="fa fa-edit"></i>
+                                                        </a>
+                                                    @endif
+                                                    @if (Gate::check('Delete Signup Rules'))
+                                                        <form action="{{ route('user.signup-rules.destroy', $rule->id) }}"
+                                                            method="POST" class="d-inline"
+                                                            onsubmit="return confirm('Are you sure you want to delete this rule?');">
+                                                            @csrf
+                                                            @method('DELETE')
+                                                            <button type="submit" class="btn btn-sm btn-outline-danger"
+                                                                title="Delete">
+                                                                <i class="fa fa-trash"></i>
+                                                            </button>
+                                                        </form>
+                                                    @endif
                                                 </div>
                                             </td>
                                         </tr>
