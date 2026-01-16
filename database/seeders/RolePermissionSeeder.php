@@ -289,6 +289,12 @@ class RolePermissionSeeder extends Seeder
             ["name" => "View Chatbot History"],
             ["name" => "Manage Chatbot Keywords"],
             ["name" => "View Chatbot Analytics"],
+
+            // Signup rules
+            ["name" => "Manage Signup Rules"],
+            ["name" => "Create Signup Rules"],
+            ["name" => "Edit Signup Rules"],
+            ["name" => "Delete Signup Rules"],
         ];
 
         $permissionNames = [];

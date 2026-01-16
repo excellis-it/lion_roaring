@@ -696,7 +696,19 @@
                             <span class="hide-menu">{{ Helper::getMenuName('ecclesias', 'Ecclesias') }}</span>
                         </a>
                     </li>
-                @endif --}}
+                 @endif
+                 {{-- Signup Rules Management --}}
+                 @if (Auth::user()->hasNewRole('SUPER ADMIN'))
+                     <li class="sidebar-item">
+                         <a class="sidebar-link {{ Request::is('user/signup-rules*') ? 'active' : '' }}"
+                             href="{{ route('user.signup-rules.index') }}" aria-expanded="false">
+                             <span>
+                                 <i class="ti ti-clock-check fs-6"></i>
+                             </span>
+                             <span class="hide-menu">{{ Helper::getMenuName('signup_rules', 'Signup Rules') }}</span>
+                         </a>
+                     </li>
+                 @endif
                  @if (Gate::check('Manage Strategy'))
                      <li class="sidebar-item">
                          <a class="sidebar-link" href="{{ route('strategy.index') }}" aria-expanded="false">

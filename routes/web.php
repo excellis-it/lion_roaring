@@ -70,6 +70,7 @@ use App\Http\Controllers\User\TeamChatController;
 use App\Http\Controllers\User\TeamController;
 use App\Http\Controllers\User\TopicController;
 use App\Http\Controllers\User\ElearningTopicController;
+use App\Http\Controllers\User\SignupRuleController as UserSignupRuleController;
 
 
 use App\Http\Controllers\Admin\AboutUsController;
@@ -110,6 +111,7 @@ use App\Http\Controllers\Admin\SettingsController;
 use App\Http\Controllers\Admin\TermsAndConditionController;
 use App\Http\Controllers\Admin\CountryController;
 use App\Http\Controllers\Admin\MenuController;
+use App\Http\Controllers\Admin\SignupRuleController;
 
 
 use App\Models\Category;
@@ -640,6 +642,19 @@ Route::prefix('user')->middleware(['user', 'preventBackHistory', 'userActivity',
     Route::get('/get-user-activity/by-country', [UserActivityController::class, 'getActivitiesByCountry'])->name('user-activity-by-country');
     Route::get('/get-user-activity/by-user', [UserActivityController::class, 'getActivitiesByUser'])->name('user-activity-by-user');
     Route::get('/get-user-activity/by-type', [UserActivityController::class, 'getActivitiesByType'])->name('user-activity-by-type');
+
+    // Signup Rules Management
+    Route::resource('signup-rules', UserSignupRuleController::class)->names([
+        'index' => 'user.signup-rules.index',
+        'create' => 'user.signup-rules.create',
+        'store' => 'user.signup-rules.store',
+        'show' => 'user.signup-rules.show',
+        'edit' => 'user.signup-rules.edit',
+        'update' => 'user.signup-rules.update',
+        'destroy' => 'user.signup-rules.destroy',
+    ]);
+    Route::post('/signup-rules/{id}/toggle-status', [UserSignupRuleController::class, 'toggleStatus'])->name('user.signup-rules.toggle-status');
+    Route::get('/signup-rules/check/status', [UserSignupRuleController::class, 'checkStatus'])->name('user.signup-rules.check-status');
 
     // e-store routes
     Route::prefix('products')->group(function () {

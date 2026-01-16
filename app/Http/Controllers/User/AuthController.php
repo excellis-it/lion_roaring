@@ -26,6 +26,7 @@ use App\Models\MembershipTier;
 use App\Models\UserSubscription;
 use App\Models\SubscriptionPayment;
 use App\Models\UserRegisterAgreement;
+use App\Models\SignupRule;
 use Stripe\StripeClient;
 use Spatie\Permission\Models\Role;
 use Spatie\Permission\Models\Permission;
@@ -233,6 +234,9 @@ class AuthController extends Controller
             }
         }
 
+        // Validate signup data against field rules
+        $signupValidation = SignupRule::validateSignupData($request->all());
+
         $user = new User();
         $user->user_name = $request->user_name;
         $user->ecclesia_id = $request->ecclesia_id;
@@ -252,8 +256,11 @@ class AuthController extends Controller
         $user->password = bcrypt($request->password);
         $user->signature = $request->signature;
         $user->email_verified_at = now();
-        $user->status = 1;
-        $user->is_accept = 1;
+
+        // Set user status based on signup field validation
+        // If all critical rules passed, user is active (1), otherwise inactive (0)
+        $user->status = $signupValidation['user_should_be_active'] ? 1 : 0;
+        $user->is_accept = $signupValidation['user_should_be_active'] ? 1 : 0;
         $user->save();
 
         // Finalize & persist registration agreement PDF against this user
