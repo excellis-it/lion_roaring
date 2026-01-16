@@ -5,6 +5,8 @@ namespace Database\Seeders;
 use Illuminate\Database\Seeder;
 use Spatie\Permission\Models\Permission;
 use Spatie\Permission\Models\Role;
+use App\Models\UserType;
+use App\Models\User;
 
 class RolePermissionSeeder extends Seeder
 {
@@ -320,56 +322,16 @@ class RolePermissionSeeder extends Seeder
 
         $permissionNames = array_values(array_unique($permissionNames));
 
-        $roles = [
-            'SUPER ADMIN',
-            'ADMINISTRATOR',
-            'MEMBER_NON_SOVEREIGN',
-            'LEADER',
-            'ECCLESIA',
-            'WAREHOUSE_ADMIN',
-        ];
 
-        foreach ($roles as $roleName) {
-            Role::firstOrCreate([
-                'name' => $roleName,
-                'guard_name' => 'web',
-            ]);
-        }
-
-        $adminRole = Role::where('name', 'SUPER ADMIN')->first();
-        if ($adminRole) {
-            $adminRole->givePermissionTo($permissionNames);
-        }
-
-        $administratorRole = Role::where('name', 'ADMINISTRATOR')->first();
-        if ($administratorRole) {
-            $administratorRole->givePermissionTo($permissionNames);
-        }
-
-        $memberPermissions = [
-            'Manage Profile',
-            'Manage Password',
-        ];
+        // Ensure SUPER ADMIN UserType exists
+        $superAdminType = UserType::where('name', 'SUPER ADMIN')->first();
 
 
-        $memberRole = Role::where('name', 'MEMBER_NON_SOVEREIGN')->first();
-        if ($memberRole) {
-            $memberRole->givePermissionTo($memberPermissions);
-        }
+        $superadmin_users = User::where('user_type_id', $superAdminType->id)->get();
 
-        $eccRole = Role::where('name', 'ECCLESIA')->first();
-        if ($eccRole) {
-            $eccRole->givePermissionTo(['Manage All Members']);
-        }
-
-        $warehouseAdminRole = Role::where('name', 'WAREHOUSE_ADMIN')->first();
-        if ($warehouseAdminRole) {
-            $warehouseAdminRole->givePermissionTo([
-                'Manage Profile',
-                'Manage Password',
-                'Manage Warehouse Manager',
-                'Manage Assigned Warehouses',
-            ]);
+        foreach ($superadmin_users as $superadmin_user) {
+            $role = $superadmin_user->roles()->first();
+            $role->givePermissionTo(Permission::all());
         }
     }
 }
