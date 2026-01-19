@@ -18,12 +18,12 @@
 
                         <div class="row">
                             <!-- Shipping Cost -->
-                            <div class="col-md-6 mb-2" style="display: {{ $hasShippingRules ? 'none' : 'block' }};">
+                            <div class="col-md-6 mb-2">
                                 <div class="box_label">
                                     <label for="shipping_cost">Shipping Cost</label>
                                     <input type="number" step="any" name="shipping_cost" id="shipping_cost"
                                         class="form-control @error('shipping_cost') is-invalid @enderror"
-                                        value="{{ old('shipping_cost', $storeSetting->shipping_cost) }}"
+                                        value="{{ $hasShippingRules ? 0 : old('shipping_cost', $storeSetting->shipping_cost) }}"
                                         @if ($hasShippingRules) disabled @endif>
 
                                     <small id="flat-rates-note" class="text-muted"
@@ -38,12 +38,12 @@
                             </div>
 
                             <!-- Delivery Cost -->
-                            <div class="col-md-6 mb-2" style="display: {{ $hasShippingRules ? 'none' : 'block' }};">
+                            <div class="col-md-6 mb-2">
                                 <div class="box_label">
                                     <label for="delivery_cost">Delivery Cost</label>
                                     <input type="number" step="any" name="delivery_cost" id="delivery_cost"
                                         class="form-control @error('delivery_cost') is-invalid @enderror"
-                                        value="{{ old('delivery_cost', $storeSetting->delivery_cost) }}"
+                                        value="{{ $hasShippingRules ? 0 : old('delivery_cost', $storeSetting->delivery_cost) }}"
                                         @if ($hasShippingRules) disabled @endif>
 
                                     <small id="delivery-rates-note" class="text-muted"

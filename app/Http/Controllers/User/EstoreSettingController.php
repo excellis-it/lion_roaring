@@ -120,6 +120,12 @@ class EstoreSettingController extends Controller
             $validated['shipping_rules'] = null;
         }
 
+        // If quantity-based shipping rules are present, ensure legacy flat rates are reset to 0
+        if (!empty($validated['shipping_rules']) && is_array($validated['shipping_rules']) && count($validated['shipping_rules']) > 0) {
+            $validated['shipping_cost'] = 0;
+            $validated['delivery_cost'] = 0;
+        }
+
         try {
             $estoreSetting = EstoreSetting::findOrFail($id);
             $estoreSetting->update($validated);
