@@ -76,11 +76,25 @@
         .color-variation-group .variation-product-entry:last-of-type {
             border-bottom: 0;
         }
+
+        @media (max-width: 575.98px) {
+            .bg_white_border.products-page-form .form-group {
+                width: 100%;
+            }
+
+            .print_btn {
+                padding: 5px 16px;
+            }
+
+            .form-check-input {
+                margin-left: 0em;
+            }
+        }
     </style>
 @endpush
 @section('content')
     <div class="container-fluid">
-        <div class="bg_white_border">
+        <div class="bg_white_border products-page-form">
             @if ($product->product_type != 'simple')
                 <div class="row card card-body">
                     <div class="col-lg-12">
@@ -302,14 +316,14 @@
                                                             </div>
                                                         </div>
                                                     @endif
-                                                    <div class="col-xxl-2 col-lg-2 col-md-6">
+                                                    <div class="col-xxl-4 col-lg-4 col-md-6">
                                                         <label class="small fw-semibold">SKU <span
                                                                 class="text-danger">*</span></label>
                                                         <input type="text"
                                                             name="variation_products[{{ $index }}][sku]"
                                                             class="form-control" value="{{ $variation->sku }}">
                                                     </div>
-                                                    <div class="col-xxl-2 col-lg-2 col-md-6">
+                                                    <div class="col-xxl-1 col-lg-1 col-md-6">
                                                         <label class="small fw-semibold">Price <span
                                                                 class="text-danger">*</span></label>
                                                         <input type="number" step="0.01"
@@ -331,7 +345,7 @@
                                                             value="{{ $variation->colorDetail->color_name ?? '' }}"
                                                             readonly>
                                                     </div>
-                                                    <div class="col-xxl-2 col-lg-2 col-md-6"
+                                                    <div class="col-xxl-1 col-lg-1 col-md-6"
                                                         {{ $product->product_type == 'simple' ? 'hidden' : '' }}>
                                                         <label class="small fw-semibold">Size</label>
                                                         <input type="hidden"
