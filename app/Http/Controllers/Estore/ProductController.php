@@ -965,10 +965,24 @@ class ProductController extends Controller
         $shippingCost = $deliveryCost = $taxAmount = 0;
 
         if ($estoreSettings) {
-            if ($is_pickup == 0 || !$estoreSettings->is_pickup_available) {
-                $shippingCost = $estoreSettings->shipping_cost ?? 0;
-                $deliveryCost = $estoreSettings->delivery_cost ?? 0;
+            // Calculate total ordered item count
+            $totalQuantity = 0;
+            foreach ($carts as $c) {
+                $totalQuantity += (int)($c->quantity ?? 0);
             }
+
+            if ($is_pickup == 0 || !$estoreSettings->is_pickup_available) {
+                // Use shipping rules if configured
+                if (is_array($estoreSettings->shipping_rules) && count($estoreSettings->shipping_rules) > 0) {
+                    $shippingForQty = $estoreSettings->getShippingForQuantity($totalQuantity);
+                    $shippingCost = $shippingForQty['shipping_cost'] ?? 0;
+                    $deliveryCost = $shippingForQty['delivery_cost'] ?? 0;
+                } else {
+                    $shippingCost = $estoreSettings->shipping_cost ?? 0;
+                    $deliveryCost = $estoreSettings->delivery_cost ?? 0;
+                }
+            }
+
             $taxAmount = (($subtotal - $promoDiscount) * ($estoreSettings->tax_percentage ?? 0)) / 100;
         }
 
