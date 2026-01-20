@@ -17,6 +17,7 @@ class EstoreSetting extends Model
         'credit_card_percentage',
         'refund_max_days',
         'shipping_rules',
+        'max_order_quantity',
     ];
 
     protected $casts = [

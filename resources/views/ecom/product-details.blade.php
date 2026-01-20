@@ -26,6 +26,8 @@
 @section('content')
     @php
         use App\Helpers\Helper;
+        $estoreSettings = \App\Models\EstoreSetting::first();
+        $maxOrderQty = $estoreSettings->max_order_quantity ?? null;
     @endphp
     <section class="inner_banner_sec"
         style="background-image: url({{ isset($product->background_image) && $product->background_image ? (\Illuminate\Support\Str::startsWith($product->background_image, 'http') ? $product->background_image : (\Illuminate\Support\Str::startsWith($product->background_image, 'storage/') ? asset($product->background_image) : Storage::url($product->background_image))) : \App\Helpers\Helper::estorePageBannerUrl('product-details') }}); background-position: center; background-repeat: no-repeat; background-size: cover">
@@ -223,9 +225,13 @@
                                                 <option value="1"> 1</option>
                                                 @php
                                                     $qty = (int) ($wareHouseHaveProductVariables?->quantity ?? 0);
-                                                    $max = $qty > 0 ? min($qty, 20) : 0;
+                                                    // Apply max_order_quantity limit if set
+                                                    $maxAllowed = $qty > 0 ? min($qty, 20) : 0;
+                                                    if ($maxOrderQty && $maxOrderQty > 0) {
+                                                        $maxAllowed = min($maxAllowed, $maxOrderQty);
+                                                    }
                                                 @endphp
-                                                @for ($i = 2; $i <= $max; $i++)
+                                                @for ($i = 2; $i <= $maxAllowed; $i++)
                                                     <option value="{{ $i }}">{{ $i }}</option>
                                                 @endfor
                                             </select>
@@ -506,6 +512,7 @@
         }
         // Flag from backend whether this product is free
         const IS_FREE_PRODUCT = {{ $product->is_free ?? false ? 'true' : 'false' }};
+        const MAX_ORDER_QUANTITY = {{ $maxOrderQty ?? 'null' }};
         $(document).ready(function() {
             $(document).on('submit', '#review-form', function() {
                 var formData = $(this).serialize();
@@ -619,6 +626,10 @@
                         $qtySelect.empty();
                         if (qty > 0) {
                             var max = Math.min(qty, 20); // cap to 20 for UI
+                            // Apply max_order_quantity limit if set
+                            if (MAX_ORDER_QUANTITY && MAX_ORDER_QUANTITY > 0) {
+                                max = Math.min(max, MAX_ORDER_QUANTITY);
+                            }
                             for (var i = 1; i <= max; i++) {
                                 $qtySelect.append($('<option>').val(i).text(i));
                             }

@@ -394,6 +394,16 @@ class ProductController extends Controller
 
             $userSessionId = session()->getId();
 
+            // Check max order quantity setting
+            $estoreSettings = EstoreSetting::first();
+            $maxOrderQty = $estoreSettings->max_order_quantity ?? null;
+
+            if ($maxOrderQty && $maxOrderQty > 0 && $request->quantity > $maxOrderQty) {
+                return response()->json([
+                    'status' => false,
+                    'message' => "Maximum order quantity is {$maxOrderQty} per product"
+                ]);
+            }
 
             $product = Product::find($request->product_id);
             if (!$product) {
@@ -423,7 +433,17 @@ class ProductController extends Controller
 
             if ($existingCart) {
                 // Update quantity instead of creating new entry
-                $existingCart->quantity += $request->quantity;
+                $newTotalQty = $existingCart->quantity + $request->quantity;
+
+                // Check against max order quantity
+                if ($maxOrderQty && $maxOrderQty > 0 && $newTotalQty > $maxOrderQty) {
+                    return response()->json([
+                        'status' => false,
+                        'message' => "Maximum order quantity is {$maxOrderQty} per product. You currently have {$existingCart->quantity} in cart."
+                    ]);
+                }
+
+                $existingCart->quantity = $newTotalQty;
                 if ($isFree) {
                     $existingCart->old_price = $existingCart->price; // keep previous stored
                     $existingCart->price = 0;
@@ -547,6 +567,17 @@ class ProductController extends Controller
             if ($request->quantity <= 0) {
                 $cart->delete();
                 return response()->json(['status' => true, 'message' => 'Cart item removed successfully']);
+            }
+
+            // Check max order quantity setting
+            $estoreSettings = EstoreSetting::first();
+            $maxOrderQty = $estoreSettings->max_order_quantity ?? null;
+
+            if ($maxOrderQty && $maxOrderQty > 0 && $request->quantity > $maxOrderQty) {
+                return response()->json([
+                    'status' => false,
+                    'message' => "Maximum order quantity is {$maxOrderQty} per product"
+                ]);
             }
 
             $cart->quantity = $request->quantity;
@@ -867,6 +898,7 @@ class ProductController extends Controller
         }
 
         $estoreSettings = EstoreSetting::first();
+        $maxOrderQty = $estoreSettings->max_order_quantity ?? null;
 
         $hasBlockingStockIssue = false;
         $recalculatedSubtotal = 0;
@@ -876,6 +908,14 @@ class ProductController extends Controller
             $warehouseProduct = $cart->warehouseProduct;
             $currentWarehousePrice = $warehouseProduct?->price ?? 0;
             $availableQty = $warehouseProduct?->quantity ?? 0;
+
+            // Check max order quantity
+            if ($maxOrderQty && $maxOrderQty > 0 && $cart->quantity > $maxOrderQty) {
+                return response()->json([
+                    'status' => false,
+                    'message' => "Product '{$cart->product->name}' exceeds maximum order quantity of {$maxOrderQty}"
+                ]);
+            }
 
             if (($cart->price ?? 0) != $currentWarehousePrice && !($cart->product?->is_free)) {
                 $cart->old_price = $cart->price;

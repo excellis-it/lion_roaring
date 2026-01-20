@@ -1101,7 +1101,7 @@ Route::post('/set-visitor-country', [VisitorController::class, 'setCountry'])->n
 
 /**************************************************----------------------------ECOM--------------------------****************************************************************/
 
-Route::prefix('e-store')->group(function () {
+Route::prefix('e-store')->middleware(['user', 'preventBackHistory', 'userActivity', 'member.access'])->group(function () {
 
     Route::get('/', [HomeController::class, 'eStore'])->name('e-store');
     Route::post('/newsletter', [HomeController::class, 'newsletter'])->name('e-store.newsletter');

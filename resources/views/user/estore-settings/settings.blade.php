@@ -115,6 +115,22 @@
                                     @enderror
                                 </div>
                             </div>
+                           
+                            {{-- Max Order Quantity --}}
+                            <div class="col-md-6 mb-2">
+                                <div class="box_label">
+                                    <label for="max_order_quantity">Max Order Quantity (Per Product)</label>
+                                    <input type="number" step="1" min="1" name="max_order_quantity"
+                                        id="max_order_quantity"
+                                        class="form-control @error('max_order_quantity') is-invalid @enderror"
+                                        value="{{ old('max_order_quantity', $storeSetting->max_order_quantity ?? '') }}"
+                                        placeholder="Enter maximum quantity allowed per product">
+                                    <small class="text-muted">Leave empty for no limit</small>
+                                    @error('max_order_quantity')
+                                        <div class="invalid-feedback">{{ $message }}</div>
+                                    @enderror
+                                </div>
+                            </div>
 
                             {{-- Shipping Rules (quantity based) --}}
                             <div class="col-12 mb-3">
@@ -156,7 +172,8 @@
 
                                     <button type="submit" class="print_btn me-2">Save</button>
 
-                                    <a href="{{ route('store-settings.index') }}" class="print_btn print_btn_vv">Cancel</a>
+                                    <a href="{{ route('store-settings.index') }}"
+                                        class="print_btn print_btn_vv">Cancel</a>
                                 </div>
                             @endif
                         </div>
