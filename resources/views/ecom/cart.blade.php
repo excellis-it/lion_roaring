@@ -71,9 +71,9 @@
                                                     <h4>{{ $item->product->name ?? '' }}</h4>
                                                     <h6>SKU: {{ $item->warehouseProduct->sku ?? '' }}</h6>
                                                     <!-- <h6>{{ $item->size ? 'Size: ' . $item->size?->size ?? '' : '' }}
-                                                                &nbsp;&nbsp;
-                                                                {{ $item->color ? 'Color: ' . $item->color?->color_name ?? '' : '' }}
-                                                            </h6> -->
+                                                                        &nbsp;&nbsp;
+                                                                        {{ $item->color ? 'Color: ' . $item->color?->color_name ?? '' : '' }}
+                                                                    </h6> -->
                                                     {{-- <span class="">{!! \Illuminate\Support\Str::limit($item->product->description, 50) !!}</span> --}}
 
                                                     <ul class="wl_price mb-1">
@@ -232,6 +232,29 @@
                                 </div>
                             </div>
 
+                            @php
+                                $cartTotalQty = $carts
+                                    ->filter(fn($c) => !($c->meta['out_of_stock'] ?? false))
+                                    ->sum('quantity');
+                                $shippingCostCart = 0;
+                                $handlingCostCart = 0;
+
+                                if ($estoreSettings) {
+                                    if (
+                                        is_array($estoreSettings->shipping_rules) &&
+                                        count($estoreSettings->shipping_rules) > 0
+                                    ) {
+                                        $shippingForQty = $estoreSettings->getShippingForQuantity((int) $cartTotalQty);
+                                        $shippingCostCart = (float) ($shippingForQty['shipping_cost'] ?? 0);
+                                        $handlingCostCart = (float) ($shippingForQty['delivery_cost'] ?? 0);
+                                    } else {
+                                        $shippingCostCart = (float) ($estoreSettings->shipping_cost ?? 0);
+                                        $handlingCostCart = (float) ($estoreSettings->delivery_cost ?? 0);
+                                    }
+                                }
+                                $finalTotalCart =
+                                    $total - ($promoDiscount ?? 0) + $shippingCostCart + $handlingCostCart;
+                            @endphp
                             <div class="bill_details">
                                 <h4>Bill Details</h4>
                                 <div class="bill_text">
@@ -248,10 +271,27 @@
                                         </ul>
                                     @endif
 
+                                    @if (
+                                        $estoreSettings &&
+                                            ((is_array($estoreSettings->shipping_rules) && count($estoreSettings->shipping_rules) > 0) ||
+                                                ($estoreSettings->shipping_cost ?? 0) > 0 ||
+                                                ($estoreSettings->delivery_cost ?? 0) > 0))
+                                        <ul>
+                                            <li>Shipping</li>
+                                            <li id="shipping-amount" data-value="{{ $shippingCostCart }}">
+                                                ${{ number_format($shippingCostCart, 2) }}</li>
+                                        </ul>
+                                        <ul>
+                                            <li>Handling</li>
+                                            <li id="handling-amount" data-value="{{ $handlingCostCart }}">
+                                                ${{ number_format($handlingCostCart, 2) }}</li>
+                                        </ul>
+                                    @endif
+
                                     <div class="total_payable">
                                         <div class="total_payable_l">Total Payable</div>
                                         <div class="total_payable_r" id="final-total">
-                                            ${{ number_format($total - ($promoDiscount ?? 0), 2) }}</div>
+                                            ${{ number_format($finalTotalCart, 2) }}</div>
                                     </div>
                                 </div>
 
@@ -283,6 +323,48 @@
                                     </a> --}}
                                 </div>
                             </div>
+
+                            @if ($estoreSettings && is_array($estoreSettings->shipping_rules) && count($estoreSettings->shipping_rules) > 0)
+                                <div class="bill_details mt-3">
+                                    <h4>Shipping &amp; Handling Costs by Quantity</h4>
+                                    <div class="bill_text">
+                                        <p class="small text-muted mb-2">
+                                            Based on your total item quantity. The active row updates as you change cart
+                                            quantities.
+                                        </p>
+                                        <div class="table-responsive">
+                                            <table class="table table-sm" id="shipping-rules-summary">
+                                                <thead>
+                                                    <tr>
+                                                        <th>Qty Range</th>
+                                                        <th>Shipping</th>
+                                                        <th>Handling</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    @foreach ($estoreSettings->shipping_rules as $rule)
+                                                        @php
+                                                            $minQty = (int) ($rule['min_qty'] ?? 0);
+                                                            $maxQty = $rule['max_qty'] ?? null;
+                                                            $rangeLabel = is_null($maxQty)
+                                                                ? $minQty . '+'
+                                                                : $minQty . ' - ' . (int) $maxQty;
+                                                        @endphp
+                                                        <tr data-min="{{ $minQty }}"
+                                                            data-max="{{ is_null($maxQty) ? '' : (int) $maxQty }}">
+                                                            <td>{{ $rangeLabel }}</td>
+                                                            <td>${{ number_format((float) ($rule['shipping_cost'] ?? 0), 2) }}
+                                                            </td>
+                                                            <td>${{ number_format((float) ($rule['delivery_cost'] ?? 0), 2) }}
+                                                            </td>
+                                                        </tr>
+                                                    @endforeach
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
+                            @endif
                         </div>
                     </div>
                 </div>
@@ -308,6 +390,10 @@
 @push('scripts')
     <script>
         $(document).ready(function() {
+            const shippingRules = {!! json_encode($estoreSettings->shipping_rules ?? []) !!};
+            const flatShipping = {{ (float) ($estoreSettings->shipping_cost ?? 0) }};
+            const flatHandling = {{ (float) ($estoreSettings->delivery_cost ?? 0) }};
+
             function formatMoney(amount) {
                 return '$' + (amount || 0).toLocaleString('en-US', {
                     minimumFractionDigits: 2,
@@ -379,6 +465,58 @@
                 var otherCharges = parseFloat($cartItem.find('.cart-quantity').data('other-charges')) || 0;
                 var subtotal = (unitPrice * quantity) + otherCharges;
                 $cartItem.find('.item-subtotal').text(formatMoney(subtotal));
+            }
+
+            function findShippingForQty(qty) {
+                if (!Array.isArray(shippingRules) || shippingRules.length === 0) {
+                    return {
+                        shipping: flatShipping,
+                        handling: flatHandling
+                    };
+                }
+
+                const sorted = [...shippingRules].sort((a, b) => (a.min_qty || 0) - (b.min_qty || 0));
+                for (let i = 0; i < sorted.length; i++) {
+                    const min = parseInt(sorted[i].min_qty || 0);
+                    const max = sorted[i].max_qty === null || sorted[i].max_qty === undefined || sorted[i]
+                        .max_qty === '' ?
+                        null :
+                        parseInt(sorted[i].max_qty || 0);
+                    if (qty >= min && (max === null || qty <= max)) {
+                        return {
+                            shipping: parseFloat(sorted[i].shipping_cost || 0),
+                            handling: parseFloat(sorted[i].delivery_cost || 0)
+                        };
+                    }
+                }
+
+                return {
+                    shipping: flatShipping,
+                    handling: flatHandling
+                };
+            }
+
+            function updateShippingRuleHighlight() {
+                var totalQty = 0;
+                $('.cart-quantity:not(:disabled)').each(function() {
+                    totalQty += parseInt($(this).val()) || 0;
+                });
+
+                var $rows = $('#shipping-rules-summary tbody tr');
+                if (!$rows.length) return;
+
+                $rows.removeClass('table-primary');
+                $rows.each(function() {
+                    var min = parseInt($(this).data('min')) || 0;
+                    var maxAttr = $(this).data('max');
+                    var max = maxAttr === '' || maxAttr === undefined || maxAttr === null ? null : parseInt(
+                        maxAttr);
+
+                    if (totalQty >= min && (max === null || totalQty <= max)) {
+                        $(this).addClass('table-primary');
+                        return false;
+                    }
+                });
             }
 
             function syncQtyButtons($input) {
@@ -551,10 +689,28 @@
                     total += parseFloat(subtotalText) || 0;
                 });
                 var discount = getPromoDiscount();
-                var finalTotal = Math.max(total - discount, 0);
+                var totalQty = 0;
+                $('.cart-quantity:not(:disabled)').each(function() {
+                    totalQty += parseInt($(this).val()) || 0;
+                });
+
+                var shippingInfo = findShippingForQty(totalQty);
+                if ($('#shipping-amount').length) {
+                    $('#shipping-amount')
+                        .text(formatMoney(shippingInfo.shipping))
+                        .attr('data-value', shippingInfo.shipping);
+                }
+                if ($('#handling-amount').length) {
+                    $('#handling-amount')
+                        .text(formatMoney(shippingInfo.handling))
+                        .attr('data-value', shippingInfo.handling);
+                }
+
+                var finalTotal = Math.max(total - discount + shippingInfo.shipping + shippingInfo.handling, 0);
 
                 $('#cart-total').text(formatMoney(total));
                 $('#final-total').text(formatMoney(finalTotal));
+                updateShippingRuleHighlight();
             }
 
             function refreshPromoDiscount(code) {
@@ -768,6 +924,8 @@
                     syncQtyButtons($input);
                 }
             });
+
+            updateShippingRuleHighlight();
         });
     </script>
 @endpush
