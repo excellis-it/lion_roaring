@@ -27,6 +27,7 @@ class EstoreOrder extends Model
         'subtotal',
         'tax_amount',
         'shipping_amount',
+        'handling_amount',
         'total_amount',
         'status',
         'payment_status',
@@ -44,6 +45,7 @@ class EstoreOrder extends Model
         'subtotal' => 'decimal:2',
         'tax_amount' => 'decimal:2',
         'shipping_amount' => 'decimal:2',
+        'handling_amount' => 'decimal:2',
         'total_amount' => 'decimal:2',
         'expected_delivery_date' => 'date',
     ];
