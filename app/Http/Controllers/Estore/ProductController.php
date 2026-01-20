@@ -394,15 +394,23 @@ class ProductController extends Controller
 
             $userSessionId = session()->getId();
 
-            // Check max order quantity setting
+            // Check max order quantity setting (total cart quantity)
             $estoreSettings = EstoreSetting::first();
             $maxOrderQty = $estoreSettings->max_order_quantity ?? null;
 
-            if ($maxOrderQty && $maxOrderQty > 0 && $request->quantity > $maxOrderQty) {
-                return response()->json([
-                    'status' => false,
-                    'message' => "Maximum order quantity is {$maxOrderQty} per product"
-                ]);
+            if ($maxOrderQty && $maxOrderQty > 0) {
+                $baseCartQuery = $isAuth
+                    ? EstoreCart::where('user_id', auth()->id())
+                    : EstoreCart::where('session_id', $userSessionId);
+
+                $totalQty = (int) $baseCartQuery->sum('quantity');
+
+                if ($totalQty + $request->quantity > $maxOrderQty) {
+                    return response()->json([
+                        'status' => false,
+                        'message' => "Maximum order quantity is {$maxOrderQty} for your cart"
+                    ]);
+                }
             }
 
             $product = Product::find($request->product_id);
@@ -435,12 +443,21 @@ class ProductController extends Controller
                 // Update quantity instead of creating new entry
                 $newTotalQty = $existingCart->quantity + $request->quantity;
 
-                // Check against max order quantity
-                if ($maxOrderQty && $maxOrderQty > 0 && $newTotalQty > $maxOrderQty) {
-                    return response()->json([
-                        'status' => false,
-                        'message' => "Maximum order quantity is {$maxOrderQty} per product. You currently have {$existingCart->quantity} in cart."
-                    ]);
+                // Check against max order quantity (total cart quantity)
+                if ($maxOrderQty && $maxOrderQty > 0) {
+                    $baseCartQuery = $isAuth
+                        ? EstoreCart::where('user_id', auth()->id())
+                        : EstoreCart::where('session_id', $userSessionId);
+
+                    $totalQty = (int) $baseCartQuery->sum('quantity');
+                    $newCartTotal = $totalQty - (int) $existingCart->quantity + (int) $newTotalQty;
+
+                    if ($newCartTotal > $maxOrderQty) {
+                        return response()->json([
+                            'status' => false,
+                            'message' => "Maximum order quantity is {$maxOrderQty} for your cart"
+                        ]);
+                    }
                 }
 
                 $existingCart->quantity = $newTotalQty;
@@ -569,15 +586,24 @@ class ProductController extends Controller
                 return response()->json(['status' => true, 'message' => 'Cart item removed successfully']);
             }
 
-            // Check max order quantity setting
+            // Check max order quantity setting (total cart quantity)
             $estoreSettings = EstoreSetting::first();
             $maxOrderQty = $estoreSettings->max_order_quantity ?? null;
 
-            if ($maxOrderQty && $maxOrderQty > 0 && $request->quantity > $maxOrderQty) {
-                return response()->json([
-                    'status' => false,
-                    'message' => "Maximum order quantity is {$maxOrderQty} per product"
-                ]);
+            if ($maxOrderQty && $maxOrderQty > 0) {
+                $baseCartQuery = $isAuth
+                    ? EstoreCart::where('user_id', auth()->id())
+                    : EstoreCart::where('session_id', $userSessionId);
+
+                $totalQty = (int) $baseCartQuery->sum('quantity');
+                $newCartTotal = $totalQty - (int) $cart->quantity + (int) $request->quantity;
+
+                if ($newCartTotal > $maxOrderQty) {
+                    return response()->json([
+                        'status' => false,
+                        'message' => "Maximum order quantity is {$maxOrderQty} for your cart"
+                    ]);
+                }
             }
 
             $cart->quantity = $request->quantity;

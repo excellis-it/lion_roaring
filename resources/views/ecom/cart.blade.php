@@ -24,6 +24,7 @@
     @php
         $estoreSettings = \App\Models\EstoreSetting::first();
         $maxOrderQty = $estoreSettings->max_order_quantity ?? null;
+        $cartTotalQty = $carts->filter(fn($c) => !($c->meta['out_of_stock'] ?? false))->sum('quantity');
     @endphp
     <section class="inner_banner_sec"
         style="background-image: url({{ \App\Helpers\Helper::estorePageBannerUrl('cart') }}); background-position: center; background-repeat: no-repeat; background-size: cover">
@@ -71,9 +72,9 @@
                                                     <h4>{{ $item->product->name ?? '' }}</h4>
                                                     <h6>SKU: {{ $item->warehouseProduct->sku ?? '' }}</h6>
                                                     <!-- <h6>{{ $item->size ? 'Size: ' . $item->size?->size ?? '' : '' }}
-                                                                        &nbsp;&nbsp;
-                                                                        {{ $item->color ? 'Color: ' . $item->color?->color_name ?? '' : '' }}
-                                                                    </h6> -->
+                                                                            &nbsp;&nbsp;
+                                                                            {{ $item->color ? 'Color: ' . $item->color?->color_name ?? '' : '' }}
+                                                                        </h6> -->
                                                     {{-- <span class="">{!! \Illuminate\Support\Str::limit($item->product->description, 50) !!}</span> --}}
 
                                                     <ul class="wl_price mb-1">
@@ -147,9 +148,21 @@
                                                                         @php
                                                                             $warehouseMax =
                                                                                 $item->warehouseProduct->quantity ?? 0;
+                                                                            $remainingTotal =
+                                                                                $maxOrderQty && $maxOrderQty > 0
+                                                                                    ? max(
+                                                                                        $maxOrderQty -
+                                                                                            ($cartTotalQty -
+                                                                                                $item['quantity']),
+                                                                                        0,
+                                                                                    )
+                                                                                    : $warehouseMax;
                                                                             $inputMax =
                                                                                 $maxOrderQty && $maxOrderQty > 0
-                                                                                    ? min($warehouseMax, $maxOrderQty)
+                                                                                    ? min(
+                                                                                        $warehouseMax,
+                                                                                        $remainingTotal,
+                                                                                    )
                                                                                     : $warehouseMax;
                                                                         @endphp
                                                                         <input class="cart-quantity product-qty"
@@ -157,6 +170,8 @@
                                                                             max="{{ $inputMax }}"
                                                                             value="{{ $item['quantity'] }}"
                                                                             data-id="{{ $item['id'] }}"
+                                                                            data-item-qty="{{ $item['quantity'] }}"
+                                                                            data-warehouse-max="{{ $warehouseMax }}"
                                                                             data-price="{{ $unitPrice }}"
                                                                             data-other-charges="{{ $otherChargesTotal }}">
                                                                         <button class="cart-qty-count qty-count--add"
@@ -393,6 +408,7 @@
             const shippingRules = {!! json_encode($estoreSettings->shipping_rules ?? []) !!};
             const flatShipping = {{ (float) ($estoreSettings->shipping_cost ?? 0) }};
             const flatHandling = {{ (float) ($estoreSettings->delivery_cost ?? 0) }};
+            const maxOrderQty = {{ $maxOrderQty ? (int) $maxOrderQty : 'null' }};
 
             function formatMoney(amount) {
                 return '$' + (amount || 0).toLocaleString('en-US', {
@@ -465,6 +481,29 @@
                 var otherCharges = parseFloat($cartItem.find('.cart-quantity').data('other-charges')) || 0;
                 var subtotal = (unitPrice * quantity) + otherCharges;
                 $cartItem.find('.item-subtotal').text(formatMoney(subtotal));
+            }
+
+            function getTotalQty() {
+                var totalQty = 0;
+                $('.cart-quantity:not(:disabled)').each(function() {
+                    totalQty += parseInt($(this).val()) || 0;
+                });
+                return totalQty;
+            }
+
+            function updateMaxForInputs() {
+                if (!maxOrderQty) return;
+                var totalQty = getTotalQty();
+                $('.cart-quantity:not(:disabled)').each(function() {
+                    var $input = $(this);
+                    var itemQty = parseInt($input.val()) || 0;
+                    var warehouseMax = parseInt($input.attr('data-warehouse-max')) || parseInt($input.attr(
+                        'max')) || 9999;
+                    var remainingTotal = Math.max(maxOrderQty - (totalQty - itemQty), 0);
+                    var newMax = Math.min(warehouseMax, remainingTotal);
+                    $input.attr('max', newMax);
+                    syncQtyButtons($input);
+                });
             }
 
             function findShippingForQty(qty) {
@@ -580,7 +619,7 @@
                     // Disable add button if at max
                     if (newVal >= maxVal) {
                         $this.attr('disabled', true);
-                        toastr.warning('No more stock available on that item');
+                       // toastr.warning('No more stock available on that item');
                     }
 
                     // Enable minus button if above min
@@ -606,6 +645,10 @@
 
                 // Only update if value has changed
                 if (newVal !== currentVal) {
+                    if (maxOrderQty && (getTotalQty() - currentVal + newVal) > maxOrderQty) {
+                        toastr.warning(`Maximum total quantity is ${maxOrderQty}`);
+                        return;
+                    }
                     $input.data('prev', currentVal);
                     $input.val(newVal);
                     updateCartItem($input);
@@ -632,6 +675,11 @@
                 } else {
                     $this.siblings('.qty-count--minus').attr('disabled', currentVal <= minVal);
                     $this.siblings('.qty-count--add').attr('disabled', currentVal >= maxVal);
+                }
+                if (maxOrderQty && getTotalQty() > maxOrderQty) {
+                    $this.val(prevVal);
+                    toastr.warning(`Maximum total quantity is ${maxOrderQty}`);
+                    syncQtyButtons($this);
                 }
                 $this.data('prev', prevVal);
                 updateCartItem($this);
@@ -689,10 +737,7 @@
                     total += parseFloat(subtotalText) || 0;
                 });
                 var discount = getPromoDiscount();
-                var totalQty = 0;
-                $('.cart-quantity:not(:disabled)').each(function() {
-                    totalQty += parseInt($(this).val()) || 0;
-                });
+                var totalQty = getTotalQty();
 
                 var shippingInfo = findShippingForQty(totalQty);
                 if ($('#shipping-amount').length) {
@@ -711,6 +756,7 @@
                 $('#cart-total').text(formatMoney(total));
                 $('#final-total').text(formatMoney(finalTotal));
                 updateShippingRuleHighlight();
+                updateMaxForInputs();
             }
 
             function refreshPromoDiscount(code) {
@@ -926,6 +972,7 @@
             });
 
             updateShippingRuleHighlight();
+            updateMaxForInputs();
         });
     </script>
 @endpush
