@@ -1108,14 +1108,13 @@
                 opt.value === value ||
                 opt.value.startsWith(value + '|') ||
                 (value === 'en' && opt.value === '') || // Google often uses empty value for original
-                opt.text.toLowerCase().includes(value.toLowerCase())
+                (value !== 'en' && opt.text.toLowerCase().includes(value
+            .toLowerCase())) // Avoid matching 'en' in 'Bengali'
             );
 
             // Fallback for English: first option is usually the original language
             if (!found && value === 'en') {
                 found = selectEl.options[0];
-                // console.log('not found');
-
             }
 
             if (found) {
@@ -1124,7 +1123,7 @@
                 const evt = document.createEvent('HTMLEvents');
                 evt.initEvent('change', true, true);
                 selectEl.dispatchEvent(evt);
-                // console.log('found');
+
                 // If switching back to English, clear the Google Translate cookies to ensure a full reset
                 // if (value === 'en') {
                 //     const domain = window.location.hostname;
@@ -1132,6 +1131,11 @@
                 //     document.cookie = `googtrans=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=${path};`;
                 //     document.cookie = `googtrans=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=${path}; domain=${domain};`;
                 //     document.cookie = `googtrans=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=${path}; domain=.${domain};`;
+
+                //     // Reload the page to fully reset the translation
+                //     // setTimeout(() => {
+                //     //     window.location.reload();
+                //     // }, 300);
                 // }
             }
         }
