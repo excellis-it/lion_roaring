@@ -291,6 +291,13 @@
                                             </tr>
                                         @endif
 
+                                        @if (!empty($order->handling_amount) && $order->handling_amount > 0)
+                                            <tr>
+                                                <th colspan="3" class="text-end">Handling:</th>
+                                                <th>${{ number_format($order->handling_amount, 2) }}</th>
+                                            </tr>
+                                        @endif
+
                                         @if (!empty($order->credit_card_fee) && $order->credit_card_fee > 0)
                                             <tr>
                                                 <th colspan="3" class="text-end">Credit Card Fee:</th>
@@ -580,14 +587,14 @@
         }
 
         /* .timeline::before {
-                                                                        content: '';
-                                                                        position: absolute;
-                                                                        left: 15px;
-                                                                        top: 0;
-                                                                        bottom: 0;
-                                                                        width: 2px;
-                                                                        background: #e9ecef;
-                                                                    } */
+                                                                            content: '';
+                                                                            position: absolute;
+                                                                            left: 15px;
+                                                                            top: 0;
+                                                                            bottom: 0;
+                                                                            width: 2px;
+                                                                            background: #e9ecef;
+                                                                        } */
 
         .timeline-item {
             position: relative;

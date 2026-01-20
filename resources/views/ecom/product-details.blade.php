@@ -26,6 +26,12 @@
 @section('content')
     @php
         use App\Helpers\Helper;
+        use App\Models\EstoreCart;
+        $estoreSettings = \App\Models\EstoreSetting::first();
+        $maxOrderQty = $estoreSettings->max_order_quantity ?? null;
+        $cartTotalQty = auth()->check()
+            ? EstoreCart::where('user_id', auth()->id())->sum('quantity')
+            : EstoreCart::where('session_id', session()->getId())->sum('quantity');
     @endphp
     <section class="inner_banner_sec"
         style="background-image: url({{ isset($product->background_image) && $product->background_image ? (\Illuminate\Support\Str::startsWith($product->background_image, 'http') ? $product->background_image : (\Illuminate\Support\Str::startsWith($product->background_image, 'storage/') ? asset($product->background_image) : Storage::url($product->background_image))) : \App\Helpers\Helper::estorePageBannerUrl('product-details') }}); background-position: center; background-repeat: no-repeat; background-size: cover">
@@ -206,12 +212,33 @@
                         </div> --}}
 
                             {{-- hidden div for out of stock message badge --}}
-                            <div id="out-of-stock-message" class="text-danger me-2" style="display: none;">
+                            @php
+                                $initialStockQty = (int) ($wareHouseHaveProductVariables?->quantity ?? 0);
+                                $remainingOrderQty = null;
+                                if ($maxOrderQty && $maxOrderQty > 0) {
+                                    $remainingOrderQty = max($maxOrderQty - $cartTotalQty, 0);
+                                }
+                                $maxAllowed = $initialStockQty > 0 ? min($initialStockQty, 20) : 0;
+                                if (!is_null($remainingOrderQty)) {
+                                    $maxAllowed = min($maxAllowed, $remainingOrderQty);
+                                }
+                                $showOutOfStock = $initialStockQty <= 0;
+                                $showMaxOrderMessage =
+                                    !$showOutOfStock && !is_null($remainingOrderQty) && $remainingOrderQty <= 0;
+                                $showQtySelect = !$showOutOfStock && $maxAllowed > 0;
+                            @endphp
+                            <div id="out-of-stock-message" class="text-danger me-2"
+                                style="display: {{ $showOutOfStock ? 'block' : 'none' }};">
                                 <span class="h5">Out of Stock</span>
                             </div>
 
+                            <div id="max-order-qty-message" class="text-danger me-2"
+                                style="display: {{ $showMaxOrderMessage ? 'block' : 'none' }};">
+                                <span class="h5">Maximum order quantity reached</span>
+                            </div>
+
                             {{-- Select option dropdown for quantity --}}
-                            <div class="me-3" id="qty-div">
+                            <div class="me-3" id="qty-div" style="display: {{ $showQtySelect ? 'block' : 'none' }};">
                                 <div class="d-flex justify-content-start align-items-center">
                                     <div class="small_number mb-3">
                                         <div class="d-flex ">
@@ -220,14 +247,18 @@
                                             {{-- if $wareHouseHaveProductVariables->quantity is 0 then hide this div --}}
                                             <select class="form-select product-qty" name="product-qty"
                                                 data-product-id="{{ $product->id }}">
-                                                <option value="1"> 1</option>
                                                 @php
                                                     $qty = (int) ($wareHouseHaveProductVariables?->quantity ?? 0);
-                                                    $max = $qty > 0 ? min($qty, 20) : 0;
+                                                    $maxAllowed = $qty > 0 ? min($qty, 20) : 0;
+                                                    if (!is_null($remainingOrderQty)) {
+                                                        $maxAllowed = min($maxAllowed, $remainingOrderQty);
+                                                    }
                                                 @endphp
-                                                @for ($i = 2; $i <= $max; $i++)
-                                                    <option value="{{ $i }}">{{ $i }}</option>
-                                                @endfor
+                                                @if ($maxAllowed >= 1)
+                                                    @for ($i = 1; $i <= $maxAllowed; $i++)
+                                                        <option value="{{ $i }}">{{ $i }}</option>
+                                                    @endfor
+                                                @endif
                                             </select>
                                         </div>
                                     </div>
@@ -327,10 +358,10 @@
                             <div class="feature_slid_padding">
                                 <div class="feature_box">
                                     <div class="feature_img">
-                                        <div class="wishlist_icon" data-id="{{ $related_product->id }}">
+                                        {{-- <div class="wishlist_icon" data-id="{{ $related_product->id }}">
                                             <a href="javascript:void(0);"><i
                                                     class="fa-solid fa-heart {{ $product->isInWishlist() ? 'text-danger' : '' }}"></i></a>
-                                        </div>
+                                        </div> --}}
                                         <a href="{{ route('e-store.product-details', $related_product->slug) }}">
                                             @if (isset($related_product->main_image) && $related_product->main_image != null)
                                                 <img src="{{ Storage::url($related_product->main_image) }}"
@@ -401,6 +432,11 @@
                 quantity = parseInt(qtyInput.val()) || 1;
             }
 
+            if (MAX_ORDER_QUANTITY && MAX_ORDER_QUANTITY > 0 && (cartTotalQty + quantity) > MAX_ORDER_QUANTITY) {
+                toastr.error("Maximum order quantity is " + MAX_ORDER_QUANTITY + ".");
+                return;
+            }
+
             var originalText = $button.find("a").text();
             $button.find("a").text("Adding...");
             $button.addClass("loading");
@@ -441,6 +477,8 @@
                 success: function(response) {
                     if (response.status) {
                         toastr.success(response.message);
+                        cartTotalQty += quantity;
+                        refreshQtyOptions(currentWarehouseQty);
                         updateCartCount();
                     } else {
                         toastr.error(response.message);
@@ -506,6 +544,60 @@
         }
         // Flag from backend whether this product is free
         const IS_FREE_PRODUCT = {{ $product->is_free ?? false ? 'true' : 'false' }};
+        const MAX_ORDER_QUANTITY = {{ $maxOrderQty ?? 'null' }};
+        let cartTotalQty = {{ $cartTotalQty ?? 0 }};
+        let currentWarehouseQty = {{ (int) ($wareHouseHaveProductVariables?->quantity ?? 0) }};
+
+        function getRemainingOrderQty() {
+            if (!MAX_ORDER_QUANTITY || MAX_ORDER_QUANTITY <= 0) {
+                return null;
+            }
+            return Math.max(MAX_ORDER_QUANTITY - cartTotalQty, 0);
+        }
+
+        function refreshQtyOptions(stockQty) {
+            var $qtySelect = $(".product-qty");
+            var currentVal = parseInt($qtySelect.val()) || 1;
+            var max = Math.min(stockQty, 20);
+            var remaining = getRemainingOrderQty();
+
+            if (remaining !== null) {
+                max = Math.min(max, remaining);
+            }
+
+            $qtySelect.empty();
+            if (max > 0) {
+                for (var i = 1; i <= max; i++) {
+                    $qtySelect.append($('<option>').val(i).text(i));
+                }
+                $qtySelect.val(currentVal <= max ? currentVal : 1);
+            } else {
+                $qtySelect.append($('<option>').val(1).text(1));
+                $qtySelect.val(1);
+            }
+
+            if (stockQty > 0 && max > 0) {
+                $("#qty-div").show();
+                $("#max-order-qty-message").hide();
+                $("#out-of-stock-message").hide();
+                $(".cart-btns").show();
+                $(".warehouse-product-price-div").show();
+            } else if (stockQty > 0 && max <= 0) {
+                $("#qty-div").hide();
+                $("#out-of-stock-message").hide();
+                $("#max-order-qty-message").show();
+                $(".cart-btns").hide();
+                $(".warehouse-product-price-div").show();
+            } else {
+                $("#qty-div").hide();
+                $("#out-of-stock-message").show();
+                $("#max-order-qty-message").hide();
+                $(".cart-btns").hide();
+                if (!IS_FREE_PRODUCT) {
+                    $(".warehouse-product-price-div").hide();
+                }
+            }
+        }
         $(document).ready(function() {
             $(document).on('submit', '#review-form', function() {
                 var formData = $(this).serialize();
@@ -613,25 +705,10 @@
                         $("#product-variation-id").val(response.data.product_variation_id);
                         $("#warehouse-product-price").text(response.data.price);
                         // Update max quantity and rebuild options to reflect returned quantity
-                        var $qtySelect = $(".product-qty");
-                        var currentVal = parseInt($qtySelect.val()) || 1;
                         var qty = parseInt(response.data.quantity) || 0;
-                        $qtySelect.empty();
-                        if (qty > 0) {
-                            var max = Math.min(qty, 20); // cap to 20 for UI
-                            for (var i = 1; i <= max; i++) {
-                                $qtySelect.append($('<option>').val(i).text(i));
-                            }
-                            // preserve selection if possible
-                            if (currentVal <= max) {
-                                $qtySelect.val(currentVal);
-                            } else {
-                                $qtySelect.val(1);
-                            }
-                        } else {
-                            // no stock - keep a single 0 option (will be hidden by UI logic)
-                            $qtySelect.append($('<option>').val(0).text(0));
-                        }
+                        currentWarehouseQty = qty;
+                        refreshQtyOptions(qty);
+                        var $qtySelect = $(".product-qty");
                         $qtySelect.attr("max", qty);
                         $qtySelect.trigger("change");
 
@@ -734,26 +811,8 @@
                             initZoom();
                         }
 
-                        // If stock quantity available; for free product ignore price check
-                        if (response.data.quantity > 0 && (IS_FREE_PRODUCT || response.data.price > 0)) {
-                            $("#qty-div").show();
-                            $("#out-of-stock-message").hide();
-                            $(".cart-btns").show();
-
-
-                            // Keep price (or FREE badge) visible
-                            $(".warehouse-product-price-div").show();
-
-                        } else {
-                            $("#qty-div").hide();
-                            $("#out-of-stock-message").show();
-                            $(".cart-btns").hide();
-
-                            // Only hide price area if not free product
-                            if (!IS_FREE_PRODUCT) {
-                                $(".warehouse-product-price-div").hide();
-                            }
-                        }
+                        // Apply total max + stock constraints to UI visibility
+                        refreshQtyOptions(currentWarehouseQty);
                         initZoom();
                     } else {
                         // toastr.error(response.message);
@@ -796,6 +855,7 @@
             }
 
             getWareHouseProductDetails();
+            refreshQtyOptions(currentWarehouseQty);
         });
 
         // on change product-select-size-input or product-select-color-input // by ajax get warehouse product details by product id with optional size and color

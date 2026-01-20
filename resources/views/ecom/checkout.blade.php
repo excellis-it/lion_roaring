@@ -202,7 +202,7 @@
                                                 (is_array($estoreSettings->shipping_rules) && count($estoreSettings->shipping_rules) > 0)))
                                         <ul id="delivery-cost-row"
                                             style="{{ request('order_method') == 1 && $estoreSettings->is_pickup_available ? 'display: none;' : '' }}">
-                                            <li>Delivery Cost</li>
+                                            <li>Handling Cost</li>
                                             <li id="delivery-amount" data-value="{{ $deliveryCost }}">
                                                 ${{ number_format($deliveryCost, 2) }}
                                             </li>

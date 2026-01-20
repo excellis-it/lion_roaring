@@ -37,10 +37,10 @@
                                 </div>
                             </div>
 
-                            <!-- Delivery Cost -->
+                            <!-- Handling Cost -->
                             <div class="col-md-6 mb-2">
                                 <div class="box_label">
-                                    <label for="delivery_cost">Delivery Cost</label>
+                                    <label for="delivery_cost">Handling Cost</label>
                                     <input type="number" step="any" name="delivery_cost" id="delivery_cost"
                                         class="form-control @error('delivery_cost') is-invalid @enderror"
                                         value="{{ $hasShippingRules ? 0 : old('delivery_cost', $storeSetting->delivery_cost) }}"
@@ -48,7 +48,7 @@
 
                                     <small id="delivery-rates-note" class="text-muted"
                                         style="display: {{ $hasShippingRules ? 'block' : 'none' }};">
-                                        Legacy delivery cost are ignored while quantity-based shipping rules are configured.
+                                        Legacy handling cost are ignored while quantity-based shipping rules are configured.
                                     </small>
 
                                     @error('delivery_cost')
@@ -116,11 +116,27 @@
                                 </div>
                             </div>
 
+                            {{-- Max Order Quantity --}}
+                            <div class="col-md-6 mb-2">
+                                <div class="box_label">
+                                    <label for="max_order_quantity">Max Order Quantity (Per Order)</label>
+                                    <input type="number" step="1" min="1" name="max_order_quantity"
+                                        id="max_order_quantity"
+                                        class="form-control @error('max_order_quantity') is-invalid @enderror"
+                                        value="{{ old('max_order_quantity', $storeSetting->max_order_quantity ?? '') }}"
+                                        placeholder="Enter maximum quantity allowed per order">
+                                    <small class="text-muted">Leave empty for no limit</small>
+                                    @error('max_order_quantity')
+                                        <div class="invalid-feedback">{{ $message }}</div>
+                                    @enderror
+                                </div>
+                            </div>
+
                             {{-- Shipping Rules (quantity based) --}}
                             <div class="col-12 mb-3">
                                 <div class="box_label">
                                     <p>Quantity-based Shipping Rules</p>
-                                    <p class="small text-muted mt-1">Define shipping/delivery cost buckets based on total
+                                    <p class="small text-muted mt-1">Define shipping/handling cost buckets based on total
                                         ordered
                                         item quantity. Leave empty to use legacy flat rates.</p>
 
@@ -131,7 +147,7 @@
                                                     <th>Min Qty</th>
                                                     <th>Max Qty <span class="text-danger">*</span></th>
                                                     <th>Shipping Cost ($)</th>
-                                                    <th>Delivery Cost ($)</th>
+                                                    <th>Handling Cost ($)</th>
                                                     <th></th>
                                                 </tr>
                                             </thead>
@@ -156,7 +172,8 @@
 
                                     <button type="submit" class="print_btn me-2">Save</button>
 
-                                    <a href="{{ route('store-settings.index') }}" class="print_btn print_btn_vv">Cancel</a>
+                                    <a href="{{ route('store-settings.index') }}"
+                                        class="print_btn print_btn_vv">Cancel</a>
                                 </div>
                             @endif
                         </div>

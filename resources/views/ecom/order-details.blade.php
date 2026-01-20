@@ -217,8 +217,14 @@
                                     </ul>
                                 @endif
 
+                                @if (!empty($order->handling_amount) && $order->handling_amount > 0)
+                                    <ul class="list-unstyled mb-2 d-flex justify-content-between">
+                                        <li>Handling</li>
+                                        <li>${{ number_format($order->handling_amount, 2) }}</li>
+                                    </ul>
+                                @endif
 
-                                @if ($order->shipping_amount && $order->credit_card_fee > 0)
+                                @if ($order->credit_card_fee && $order->credit_card_fee > 0)
                                     <ul class="list-unstyled mb-2 d-flex justify-content-between">
                                         <li>Credit Card Fee:</li>
                                         <li>${{ number_format($order->credit_card_fee, 2) }}</li>

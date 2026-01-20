@@ -21,6 +21,11 @@
 @endpush
 
 @section('content')
+    @php
+        $estoreSettings = \App\Models\EstoreSetting::first();
+        $maxOrderQty = $estoreSettings->max_order_quantity ?? null;
+        $cartTotalQty = $carts->filter(fn($c) => !($c->meta['out_of_stock'] ?? false))->sum('quantity');
+    @endphp
     <section class="inner_banner_sec"
         style="background-image: url({{ \App\Helpers\Helper::estorePageBannerUrl('cart') }}); background-position: center; background-repeat: no-repeat; background-size: cover">
         <div class="container">
@@ -57,8 +62,8 @@
                                             <div class="col-md-3">
                                                 <div class="cart_images">
 
-                                                        <img src="{{ Storage::url($item->product?->getProductFirstImage($item->color_id)) }}"
-                                                            alt="{{ $item->product->name ?? '' }}" />
+                                                    <img src="{{ Storage::url($item->product?->getProductFirstImage($item->color_id)) }}"
+                                                        alt="{{ $item->product->name ?? '' }}" />
 
                                                 </div>
                                             </div>
@@ -67,9 +72,9 @@
                                                     <h4>{{ $item->product->name ?? '' }}</h4>
                                                     <h6>SKU: {{ $item->warehouseProduct->sku ?? '' }}</h6>
                                                     <!-- <h6>{{ $item->size ? 'Size: ' . $item->size?->size ?? '' : '' }}
-                                                            &nbsp;&nbsp;
-                                                            {{ $item->color ? 'Color: ' . $item->color?->color_name ?? '' : '' }}
-                                                        </h6> -->
+                                                                                                &nbsp;&nbsp;
+                                                                                                {{ $item->color ? 'Color: ' . $item->color?->color_name ?? '' : '' }}
+                                                                                            </h6> -->
                                                     {{-- <span class="">{!! \Illuminate\Support\Str::limit($item->product->description, 50) !!}</span> --}}
 
                                                     <ul class="wl_price mb-1">
@@ -79,6 +84,12 @@
                                                                 $displayPrice =
                                                                     $item->price ??
                                                                     ($item->warehouseProduct->price ?? 0);
+                                                                $unitPrice =
+                                                                    $item->meta['current_price'] ?? $displayPrice;
+                                                                $otherChargesTotal =
+                                                                    $item->product?->otherCharges?->sum(
+                                                                        'charge_amount',
+                                                                    ) ?? 0;
                                                             @endphp
                                                             @if (isset($item->meta['price_changed']) && $item->meta['price_changed'])
                                                                 <span style="text-decoration: none;"
@@ -134,12 +145,35 @@
                                                                     @else
                                                                         <button class="cart-qty-count qty-count--minus"
                                                                             data-action="minus" type="button">-</button>
+                                                                        @php
+                                                                            $warehouseMax =
+                                                                                $item->warehouseProduct->quantity ?? 0;
+                                                                            $remainingTotal =
+                                                                                $maxOrderQty && $maxOrderQty > 0
+                                                                                    ? max(
+                                                                                        $maxOrderQty -
+                                                                                            ($cartTotalQty -
+                                                                                                $item['quantity']),
+                                                                                        0,
+                                                                                    )
+                                                                                    : $warehouseMax;
+                                                                            $inputMax =
+                                                                                $maxOrderQty && $maxOrderQty > 0
+                                                                                    ? min(
+                                                                                        $warehouseMax,
+                                                                                        $remainingTotal,
+                                                                                    )
+                                                                                    : $warehouseMax;
+                                                                        @endphp
                                                                         <input class="cart-quantity product-qty"
                                                                             type="number" min="1"
-                                                                            max="{{ $item->warehouseProduct->quantity ?? 0 }}"
+                                                                            max="{{ $inputMax }}"
                                                                             value="{{ $item['quantity'] }}"
                                                                             data-id="{{ $item['id'] }}"
-                                                                            data-price="{{ $item['price'] }}">
+                                                                            data-item-qty="{{ $item['quantity'] }}"
+                                                                            data-warehouse-max="{{ $warehouseMax }}"
+                                                                            data-price="{{ $unitPrice }}"
+                                                                            data-other-charges="{{ $otherChargesTotal }}">
                                                                         <button class="cart-qty-count qty-count--add"
                                                                             data-action="add" type="button">+</button>
                                                                     @endif
@@ -183,7 +217,8 @@
                                 <h4>Promo Code</h4>
                                 <div class="promo-code-section">
                                     @if (isset($appliedPromoCode) && $appliedPromoCode)
-                                        <div class="applied-promo" id="applied-promo-section">
+                                        <div class="applied-promo" id="applied-promo-section"
+                                            data-code="{{ $appliedPromoCode }}" data-discount="{{ $promoDiscount ?? 0 }}">
                                             <div class="d-flex justify-content-between align-items-center">
                                                 <span class="text-success">
                                                     <i class="fa-solid fa-check"></i> {{ $appliedPromoCode }}
@@ -212,9 +247,39 @@
                                 </div>
                             </div>
 
+                            @php
+                                $cartTotalQty = $carts
+                                    ->filter(fn($c) => !($c->meta['out_of_stock'] ?? false))
+                                    ->sum('quantity');
+                                $shippingCostCart = 0;
+                                $handlingCostCart = 0;
+
+                                if ($estoreSettings) {
+                                    if (
+                                        is_array($estoreSettings->shipping_rules) &&
+                                        count($estoreSettings->shipping_rules) > 0
+                                    ) {
+                                        $shippingForQty = $estoreSettings->getShippingForQuantity((int) $cartTotalQty);
+                                        $shippingCostCart = (float) ($shippingForQty['shipping_cost'] ?? 0);
+                                        $handlingCostCart = (float) ($shippingForQty['delivery_cost'] ?? 0);
+                                    } else {
+                                        $shippingCostCart = (float) ($estoreSettings->shipping_cost ?? 0);
+                                        $handlingCostCart = (float) ($estoreSettings->delivery_cost ?? 0);
+                                    }
+                                }
+                                $finalTotalCart =
+                                    $total - ($promoDiscount ?? 0) + $shippingCostCart + $handlingCostCart;
+                            @endphp
+                            <div class="mb-1 bill_text">
+                                <ul class="">
+                                    <li>Total Quantity</li>
+                                    <li id="cart-total-qty">{{ $cartTotalQty }}x</li>
+                                </ul>
+                            </div>
                             <div class="bill_details">
                                 <h4>Bill Details</h4>
                                 <div class="bill_text">
+
                                     <ul>
                                         <li>Items Total</li>
                                         <li id="cart-total">${{ number_format($total, 2) }}</li>
@@ -223,14 +288,32 @@
                                     @if (isset($appliedPromoCode) && $appliedPromoCode && $promoDiscount > 0)
                                         <ul class="text-success">
                                             <li>Promo Discount ({{ $appliedPromoCode }})</li>
-                                            <li id="promo-discount">-${{ number_format($promoDiscount, 2) }}</li>
+                                            <li id="promo-discount" data-discount="{{ $promoDiscount }}">
+                                                -${{ number_format($promoDiscount, 2) }}</li>
+                                        </ul>
+                                    @endif
+
+                                    @if (
+                                        $estoreSettings &&
+                                            ((is_array($estoreSettings->shipping_rules) && count($estoreSettings->shipping_rules) > 0) ||
+                                                ($estoreSettings->shipping_cost ?? 0) > 0 ||
+                                                ($estoreSettings->delivery_cost ?? 0) > 0))
+                                        <ul>
+                                            <li>Shipping</li>
+                                            <li id="shipping-amount" data-value="{{ $shippingCostCart }}">
+                                                ${{ number_format($shippingCostCart, 2) }}</li>
+                                        </ul>
+                                        <ul>
+                                            <li>Handling</li>
+                                            <li id="handling-amount" data-value="{{ $handlingCostCart }}">
+                                                ${{ number_format($handlingCostCart, 2) }}</li>
                                         </ul>
                                     @endif
 
                                     <div class="total_payable">
                                         <div class="total_payable_l">Total Payable</div>
                                         <div class="total_payable_r" id="final-total">
-                                            ${{ number_format($total - ($promoDiscount ?? 0), 2) }}</div>
+                                            ${{ number_format($finalTotalCart, 2) }}</div>
                                     </div>
                                 </div>
 
@@ -262,6 +345,48 @@
                                     </a> --}}
                                 </div>
                             </div>
+
+                            @if ($estoreSettings && is_array($estoreSettings->shipping_rules) && count($estoreSettings->shipping_rules) > 0)
+                                <div class="bill_details mt-3">
+                                    <h4>Shipping &amp; Handling Costs by Quantity</h4>
+                                    <div class="bill_text">
+                                        <p class="small text-muted mb-2">
+                                            Based on your total item quantity. The active row updates as you change cart
+                                            quantities.
+                                        </p>
+                                        <div class="table-responsive">
+                                            <table class="table table-sm" id="shipping-rules-summary">
+                                                <thead>
+                                                    <tr>
+                                                        <th>Qty Range</th>
+                                                        <th>Shipping</th>
+                                                        <th>Handling</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    @foreach ($estoreSettings->shipping_rules as $rule)
+                                                        @php
+                                                            $minQty = (int) ($rule['min_qty'] ?? 0);
+                                                            $maxQty = $rule['max_qty'] ?? null;
+                                                            $rangeLabel = is_null($maxQty)
+                                                                ? $minQty . '+'
+                                                                : $minQty . ' - ' . (int) $maxQty;
+                                                        @endphp
+                                                        <tr data-min="{{ $minQty }}"
+                                                            data-max="{{ is_null($maxQty) ? '' : (int) $maxQty }}">
+                                                            <td>{{ $rangeLabel }}</td>
+                                                            <td>${{ number_format((float) ($rule['shipping_cost'] ?? 0), 2) }}
+                                                            </td>
+                                                            <td>${{ number_format((float) ($rule['delivery_cost'] ?? 0), 2) }}
+                                                            </td>
+                                                        </tr>
+                                                    @endforeach
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
+                            @endif
                         </div>
                     </div>
                 </div>
@@ -287,6 +412,188 @@
 @push('scripts')
     <script>
         $(document).ready(function() {
+            const shippingRules = {!! json_encode($estoreSettings->shipping_rules ?? []) !!};
+            const flatShipping = {{ (float) ($estoreSettings->shipping_cost ?? 0) }};
+            const flatHandling = {{ (float) ($estoreSettings->delivery_cost ?? 0) }};
+            const maxOrderQty = {{ $maxOrderQty ? (int) $maxOrderQty : 'null' }};
+
+            function formatMoney(amount) {
+                return '$' + (amount || 0).toLocaleString('en-US', {
+                    minimumFractionDigits: 2,
+                    maximumFractionDigits: 2
+                });
+            }
+
+            function getPromoCode() {
+                return $('#applied-promo-section').data('code') || null;
+            }
+
+            function getPromoDiscount() {
+                return parseFloat($('#applied-promo-section').data('discount')) || 0;
+            }
+
+            function setPromoDiscount(code, discount) {
+                var $promoSection = $('#applied-promo-section');
+                if (!$promoSection.length) {
+                    $('.promo-code-section').html(`
+                        <div class="applied-promo" id="applied-promo-section" data-code="${code}" data-discount="${discount}">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <span class="text-success">
+                                    <i class="fa-solid fa-check"></i> ${code}
+                                </span>
+                                <button type="button" class="btn btn-sm btn-outline-danger" id="remove-promo-btn">
+                                    Remove
+                                </button>
+                            </div>
+                            <small class="text-success">Discount: ${formatMoney(discount)}</small>
+                        </div>
+                    `);
+                } else {
+                    $promoSection.data('code', code).data('discount', discount);
+                    $promoSection.find('small').text(`Discount: ${formatMoney(discount)}`);
+                }
+
+                var $promoDiscount = $('#promo-discount');
+                if (!$promoDiscount.length) {
+                    $('<ul class="text-success">\n' +
+                        `    <li>Promo Discount (${code})</li>\n` +
+                        `    <li id="promo-discount" data-discount="${discount}">-${formatMoney(discount).replace('$', '')}</li>\n` +
+                        '</ul>'
+                    ).insertAfter($('#cart-total').closest('ul'));
+                } else {
+                    $promoDiscount
+                        .data('discount', discount)
+                        .text(`-${formatMoney(discount).replace('$', '')}`);
+                    $promoDiscount.closest('ul').find('li:first').text(`Promo Discount (${code})`);
+                }
+                calculateTotals();
+            }
+
+            function clearPromoDiscount() {
+                $('.promo-code-section').html(`
+                    <div class="promo-input-section" id="promo-input-section">
+                        <div class="input-group">
+                            <input type="text" class="form-control" id="promo-code-input" placeholder="Enter promo code">
+                            <button class="btn btn-outline-secondary" type="button" id="apply-promo-btn">Apply</button>
+                        </div>
+                        <div id="promo-message" class="mt-2"></div>
+                    </div>
+                `);
+                $('#promo-discount').closest('ul').remove();
+                calculateTotals();
+            }
+
+            function updateItemSubtotal($cartItem, quantity) {
+                var unitPrice = parseFloat($cartItem.find('.cart-quantity').data('price')) || 0;
+                var otherCharges = parseFloat($cartItem.find('.cart-quantity').data('other-charges')) || 0;
+                var subtotal = (unitPrice * quantity) + otherCharges;
+                $cartItem.find('.item-subtotal').text(formatMoney(subtotal));
+            }
+
+            function getTotalQty() {
+                var totalQty = 0;
+                $('.cart-quantity:not(:disabled)').each(function() {
+                    totalQty += parseInt($(this).val()) || 0;
+                });
+                return totalQty;
+            }
+
+            function updateMaxForInputs() {
+                if (!maxOrderQty) return;
+                var totalQty = getTotalQty();
+                $('.cart-quantity:not(:disabled)').each(function() {
+                    var $input = $(this);
+                    var itemQty = parseInt($input.val()) || 0;
+                    var warehouseMax = parseInt($input.attr('data-warehouse-max')) || parseInt($input.attr(
+                        'max')) || 9999;
+                    var remainingTotal = Math.max(maxOrderQty - (totalQty - itemQty), 0);
+                    var newMax = Math.min(warehouseMax, remainingTotal);
+                    $input.attr('max', newMax);
+                    syncQtyButtons($input);
+                });
+            }
+
+            function findShippingForQty(qty) {
+                if (!Array.isArray(shippingRules) || shippingRules.length === 0) {
+                    return {
+                        shipping: flatShipping,
+                        handling: flatHandling
+                    };
+                }
+
+                const sorted = [...shippingRules].sort((a, b) => (a.min_qty || 0) - (b.min_qty || 0));
+                for (let i = 0; i < sorted.length; i++) {
+                    const min = parseInt(sorted[i].min_qty || 0);
+                    const max = sorted[i].max_qty === null || sorted[i].max_qty === undefined || sorted[i]
+                        .max_qty === '' ?
+                        null :
+                        parseInt(sorted[i].max_qty || 0);
+                    if (qty >= min && (max === null || qty <= max)) {
+                        return {
+                            shipping: parseFloat(sorted[i].shipping_cost || 0),
+                            handling: parseFloat(sorted[i].delivery_cost || 0)
+                        };
+                    }
+                }
+
+                return {
+                    shipping: flatShipping,
+                    handling: flatHandling
+                };
+            }
+
+            function updateShippingRuleHighlight() {
+                var totalQty = 0;
+                $('.cart-quantity:not(:disabled)').each(function() {
+                    totalQty += parseInt($(this).val()) || 0;
+                });
+
+                var $rows = $('#shipping-rules-summary tbody tr');
+                if (!$rows.length) return;
+
+                $rows.removeClass('table-primary');
+                $rows.each(function() {
+                    var min = parseInt($(this).data('min')) || 0;
+                    var maxAttr = $(this).data('max');
+                    var max = maxAttr === '' || maxAttr === undefined || maxAttr === null ? null : parseInt(
+                        maxAttr);
+
+                    if (totalQty >= min && (max === null || totalQty <= max)) {
+                        $(this).addClass('table-primary');
+                        return false;
+                    }
+                });
+            }
+
+            function syncQtyButtons($input) {
+                var currentVal = parseInt($input.val());
+                var minVal = parseInt($input.attr('min')) || 1;
+                var maxVal = parseInt($input.attr('max')) || 9999;
+                $input.siblings('.qty-count--minus').attr('disabled', currentVal <= minVal);
+                $input.siblings('.qty-count--add').attr('disabled', currentVal >= maxVal);
+            }
+
+            function renderEmptyCart() {
+                $('.shopping_cart_sec .container').html(`
+                    <div class="row">
+                        <div class="col-12">
+                            <div class="empty-cart text-center py-5">
+                                <i class="fa-solid fa-shopping-cart" style="font-size: 4rem; color: #ccc; margin-bottom: 1rem;"></i>
+                                <h3>Your cart is empty</h3>
+                                <p class="mb-4">Looks like you haven't added any items to your cart yet.</p>
+                                <a href="{{ route('e-store.all-products') }}" class="red_btn">
+                                    <span>Start Shopping</span>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                `);
+            }
+
+            $(document).on('focus', '.cart-quantity', function() {
+                $(this).data('prev', parseInt($(this).val()) || 1);
+            });
+
             // Enable/disable checkout button based on terms agreement
             $('#terms_agreement').change(function() {
                 if ($(this).is(':checked')) {
@@ -319,7 +626,7 @@
                     // Disable add button if at max
                     if (newVal >= maxVal) {
                         $this.attr('disabled', true);
-                        toastr.warning('No more stock available on that item');
+                        // toastr.warning('No more stock available on that item');
                     }
 
                     // Enable minus button if above min
@@ -345,6 +652,11 @@
 
                 // Only update if value has changed
                 if (newVal !== currentVal) {
+                    if (maxOrderQty && (getTotalQty() - currentVal + newVal) > maxOrderQty) {
+                        toastr.warning(`Maximum total quantity is ${maxOrderQty}`);
+                        return;
+                    }
+                    $input.data('prev', currentVal);
                     $input.val(newVal);
                     updateCartItem($input);
                 }
@@ -355,6 +667,7 @@
                 var currentVal = parseInt($this.val());
                 var minVal = parseInt($this.attr('min')) || 1;
                 var maxVal = parseInt($this.attr('max')) || 9999;
+                var prevVal = parseInt($this.data('prev')) || currentVal;
 
                 // Enforce min/max constraints
                 if (isNaN(currentVal) || currentVal < minVal) {
@@ -370,13 +683,19 @@
                     $this.siblings('.qty-count--minus').attr('disabled', currentVal <= minVal);
                     $this.siblings('.qty-count--add').attr('disabled', currentVal >= maxVal);
                 }
-
+                if (maxOrderQty && getTotalQty() > maxOrderQty) {
+                    $this.val(prevVal);
+                    toastr.warning(`Maximum total quantity is ${maxOrderQty}`);
+                    syncQtyButtons($this);
+                }
+                $this.data('prev', prevVal);
                 updateCartItem($this);
             });
 
             function updateCartItem($input) {
                 var cartId = $input.data('id');
                 var quantity = parseInt($input.val());
+                var prevVal = parseInt($input.data('prev')) || quantity;
                 var $cartItem = $input.closest('.cart-item');
 
                 if (quantity < 1) {
@@ -394,13 +713,25 @@
                     },
                     success: function(response) {
                         if (response.status) {
-                            // Reload the page to get updated calculations from server
-                            location.reload();
+                            updateItemSubtotal($cartItem, quantity);
+                            calculateTotals();
+                            updateCartCount();
+
+                            var promoCode = getPromoCode();
+                            if (promoCode) {
+                                refreshPromoDiscount(promoCode);
+                            }
                         } else {
+                            $input.val(prevVal);
+                            syncQtyButtons($input);
+                            updateItemSubtotal($cartItem, prevVal);
                             toastr.error(response.message);
                         }
                     },
                     error: function() {
+                        $input.val(prevVal);
+                        syncQtyButtons($input);
+                        updateItemSubtotal($cartItem, prevVal);
                         toastr.error('Failed to update cart');
                     }
                 });
@@ -409,18 +740,52 @@
             function calculateTotals() {
                 var total = 0;
                 $('.item-subtotal').each(function() {
-                    var subtotalText = $(this).text().replace('$', '').replace(',', '');
+                    var subtotalText = $(this).text().replace('$', '').replace(/,/g, '');
                     total += parseFloat(subtotalText) || 0;
                 });
+                var discount = getPromoDiscount();
+                var totalQty = getTotalQty();
+                // update visible total quantity counter
+                if ($('#cart-total-qty').length) {
+                    $('#cart-total-qty').text(totalQty + 'x');
+                }
 
-                $('#cart-total').text('$' + total.toLocaleString('en-US', {
-                    minimumFractionDigits: 2,
-                    maximumFractionDigits: 2
-                }));
-                $('#final-total').text('$' + total.toLocaleString('en-US', {
-                    minimumFractionDigits: 2,
-                    maximumFractionDigits: 2
-                }));
+                var shippingInfo = findShippingForQty(totalQty);
+                if ($('#shipping-amount').length) {
+                    $('#shipping-amount')
+                        .text(formatMoney(shippingInfo.shipping))
+                        .attr('data-value', shippingInfo.shipping);
+                }
+                if ($('#handling-amount').length) {
+                    $('#handling-amount')
+                        .text(formatMoney(shippingInfo.handling))
+                        .attr('data-value', shippingInfo.handling);
+                }
+
+                var finalTotal = Math.max(total - discount + shippingInfo.shipping + shippingInfo.handling, 0);
+
+                $('#cart-total').text(formatMoney(total));
+                $('#final-total').text(formatMoney(finalTotal));
+                updateShippingRuleHighlight();
+                updateMaxForInputs();
+            }
+
+            function refreshPromoDiscount(code) {
+                if (!code) return;
+                $.ajax({
+                    url: '{{ route('e-store.apply-promo-code') }}',
+                    type: 'POST',
+                    data: {
+                        promo_code: code,
+                        _token: '{{ csrf_token() }}'
+                    },
+                    success: function(response) {
+                        if (response.status) {
+                            setPromoDiscount(response.promo_code, parseFloat(response
+                                .discount_amount) || 0);
+                        }
+                    }
+                });
             }
 
             // Remove item from cart with SweetAlert2
@@ -453,10 +818,14 @@
 
                                         // Check if cart is empty
                                         if ($('.cart-item').length === 0) {
-                                            location.reload();
+                                            renderEmptyCart();
                                         } else {
                                             calculateTotals();
                                             updateCartCount();
+                                            var promoCode = getPromoCode();
+                                            if (promoCode) {
+                                                refreshPromoDiscount(promoCode);
+                                            }
                                         }
                                     });
 
@@ -507,7 +876,8 @@
                                         timer: 2000,
                                         showConfirmButton: false
                                     }).then(() => {
-                                        location.reload();
+                                        renderEmptyCart();
+                                        updateCartCount();
                                     });
                                 } else {
                                     toastr.error(response.message);
@@ -522,12 +892,12 @@
             });
 
             // Apply promo code
-            $('#apply-promo-btn').on('click', function() {
+            $(document).on('click', '#apply-promo-btn', function() {
                 const promoCode = $('#promo-code-input').val().trim();
 
                 if (!promoCode) {
                     $('#promo-message').html(
-                    '<small class="text-danger">Please enter a promo code</small>');
+                        '<small class="text-danger">Please enter a promo code</small>');
                     return;
                 }
 
@@ -543,8 +913,8 @@
                     },
                     success: function(response) {
                         if (response.status) {
-                            // Reload page to update totals
-                            location.reload();
+                            setPromoDiscount(response.promo_code, parseFloat(response
+                                .discount_amount) || 0);
                         } else {
                             $('#promo-message').html('<small class="text-danger">' + response
                                 .message + '</small>');
@@ -561,7 +931,7 @@
             });
 
             // Remove promo code
-            $('#remove-promo-btn').on('click', function() {
+            $(document).on('click', '#remove-promo-btn', function() {
                 $.ajax({
                     url: '{{ route('e-store.remove-promo-code') }}',
                     type: 'POST',
@@ -570,7 +940,7 @@
                     },
                     success: function(response) {
                         if (response.status) {
-                            location.reload();
+                            clearPromoDiscount();
                         }
                     },
                     error: function() {
@@ -580,7 +950,7 @@
             });
 
             // Allow Enter key to apply promo code
-            $('#promo-code-input').on('keypress', function(e) {
+            $(document).on('keypress', '#promo-code-input', function(e) {
                 if (e.which === 13) {
                     $('#apply-promo-btn').click();
                 }
@@ -597,6 +967,23 @@
                     }
                 });
             }
+
+            // Clamp quantities to max on load and sync buttons
+            $('.cart-quantity').each(function() {
+                var $input = $(this);
+                var currentVal = parseInt($input.val()) || 1;
+                var maxVal = parseInt($input.attr('max')) || 9999;
+                if (currentVal > maxVal) {
+                    $input.data('prev', currentVal);
+                    $input.val(maxVal);
+                    updateCartItem($input);
+                } else {
+                    syncQtyButtons($input);
+                }
+            });
+
+            updateShippingRuleHighlight();
+            updateMaxForInputs();
         });
     </script>
 @endpush
