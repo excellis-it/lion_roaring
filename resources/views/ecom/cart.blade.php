@@ -72,9 +72,9 @@
                                                     <h4>{{ $item->product->name ?? '' }}</h4>
                                                     <h6>SKU: {{ $item->warehouseProduct->sku ?? '' }}</h6>
                                                     <!-- <h6>{{ $item->size ? 'Size: ' . $item->size?->size ?? '' : '' }}
-                                                                            &nbsp;&nbsp;
-                                                                            {{ $item->color ? 'Color: ' . $item->color?->color_name ?? '' : '' }}
-                                                                        </h6> -->
+                                                                                                &nbsp;&nbsp;
+                                                                                                {{ $item->color ? 'Color: ' . $item->color?->color_name ?? '' : '' }}
+                                                                                            </h6> -->
                                                     {{-- <span class="">{!! \Illuminate\Support\Str::limit($item->product->description, 50) !!}</span> --}}
 
                                                     <ul class="wl_price mb-1">
@@ -270,9 +270,16 @@
                                 $finalTotalCart =
                                     $total - ($promoDiscount ?? 0) + $shippingCostCart + $handlingCostCart;
                             @endphp
+                            <div class="mb-1 bill_text">
+                                <ul class="">
+                                    <li>Total Quantity</li>
+                                    <li id="cart-total-qty">{{ $cartTotalQty }}x</li>
+                                </ul>
+                            </div>
                             <div class="bill_details">
                                 <h4>Bill Details</h4>
                                 <div class="bill_text">
+
                                     <ul>
                                         <li>Items Total</li>
                                         <li id="cart-total">${{ number_format($total, 2) }}</li>
@@ -619,7 +626,7 @@
                     // Disable add button if at max
                     if (newVal >= maxVal) {
                         $this.attr('disabled', true);
-                       // toastr.warning('No more stock available on that item');
+                        // toastr.warning('No more stock available on that item');
                     }
 
                     // Enable minus button if above min
@@ -738,6 +745,10 @@
                 });
                 var discount = getPromoDiscount();
                 var totalQty = getTotalQty();
+                // update visible total quantity counter
+                if ($('#cart-total-qty').length) {
+                    $('#cart-total-qty').text(totalQty + 'x');
+                }
 
                 var shippingInfo = findShippingForQty(totalQty);
                 if ($('#shipping-amount').length) {
