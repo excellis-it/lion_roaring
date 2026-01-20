@@ -21,6 +21,10 @@
 @endpush
 
 @section('content')
+    @php
+        $estoreSettings = \App\Models\EstoreSetting::first();
+        $maxOrderQty = $estoreSettings->max_order_quantity ?? null;
+    @endphp
     <section class="inner_banner_sec"
         style="background-image: url({{ \App\Helpers\Helper::estorePageBannerUrl('cart') }}); background-position: center; background-repeat: no-repeat; background-size: cover">
         <div class="container">
@@ -57,8 +61,8 @@
                                             <div class="col-md-3">
                                                 <div class="cart_images">
 
-                                                        <img src="{{ Storage::url($item->product?->getProductFirstImage($item->color_id)) }}"
-                                                            alt="{{ $item->product->name ?? '' }}" />
+                                                    <img src="{{ Storage::url($item->product?->getProductFirstImage($item->color_id)) }}"
+                                                        alt="{{ $item->product->name ?? '' }}" />
 
                                                 </div>
                                             </div>
@@ -67,9 +71,9 @@
                                                     <h4>{{ $item->product->name ?? '' }}</h4>
                                                     <h6>SKU: {{ $item->warehouseProduct->sku ?? '' }}</h6>
                                                     <!-- <h6>{{ $item->size ? 'Size: ' . $item->size?->size ?? '' : '' }}
-                                                            &nbsp;&nbsp;
-                                                            {{ $item->color ? 'Color: ' . $item->color?->color_name ?? '' : '' }}
-                                                        </h6> -->
+                                                                &nbsp;&nbsp;
+                                                                {{ $item->color ? 'Color: ' . $item->color?->color_name ?? '' : '' }}
+                                                            </h6> -->
                                                     {{-- <span class="">{!! \Illuminate\Support\Str::limit($item->product->description, 50) !!}</span> --}}
 
                                                     <ul class="wl_price mb-1">
@@ -79,6 +83,12 @@
                                                                 $displayPrice =
                                                                     $item->price ??
                                                                     ($item->warehouseProduct->price ?? 0);
+                                                                $unitPrice =
+                                                                    $item->meta['current_price'] ?? $displayPrice;
+                                                                $otherChargesTotal =
+                                                                    $item->product?->otherCharges?->sum(
+                                                                        'charge_amount',
+                                                                    ) ?? 0;
                                                             @endphp
                                                             @if (isset($item->meta['price_changed']) && $item->meta['price_changed'])
                                                                 <span style="text-decoration: none;"
@@ -134,12 +144,21 @@
                                                                     @else
                                                                         <button class="cart-qty-count qty-count--minus"
                                                                             data-action="minus" type="button">-</button>
+                                                                        @php
+                                                                            $warehouseMax =
+                                                                                $item->warehouseProduct->quantity ?? 0;
+                                                                            $inputMax =
+                                                                                $maxOrderQty && $maxOrderQty > 0
+                                                                                    ? min($warehouseMax, $maxOrderQty)
+                                                                                    : $warehouseMax;
+                                                                        @endphp
                                                                         <input class="cart-quantity product-qty"
                                                                             type="number" min="1"
-                                                                            max="{{ $item->warehouseProduct->quantity ?? 0 }}"
+                                                                            max="{{ $inputMax }}"
                                                                             value="{{ $item['quantity'] }}"
                                                                             data-id="{{ $item['id'] }}"
-                                                                            data-price="{{ $item['price'] }}">
+                                                                            data-price="{{ $unitPrice }}"
+                                                                            data-other-charges="{{ $otherChargesTotal }}">
                                                                         <button class="cart-qty-count qty-count--add"
                                                                             data-action="add" type="button">+</button>
                                                                     @endif
@@ -183,7 +202,8 @@
                                 <h4>Promo Code</h4>
                                 <div class="promo-code-section">
                                     @if (isset($appliedPromoCode) && $appliedPromoCode)
-                                        <div class="applied-promo" id="applied-promo-section">
+                                        <div class="applied-promo" id="applied-promo-section"
+                                            data-code="{{ $appliedPromoCode }}" data-discount="{{ $promoDiscount ?? 0 }}">
                                             <div class="d-flex justify-content-between align-items-center">
                                                 <span class="text-success">
                                                     <i class="fa-solid fa-check"></i> {{ $appliedPromoCode }}
@@ -223,7 +243,8 @@
                                     @if (isset($appliedPromoCode) && $appliedPromoCode && $promoDiscount > 0)
                                         <ul class="text-success">
                                             <li>Promo Discount ({{ $appliedPromoCode }})</li>
-                                            <li id="promo-discount">-${{ number_format($promoDiscount, 2) }}</li>
+                                            <li id="promo-discount" data-discount="{{ $promoDiscount }}">
+                                                -${{ number_format($promoDiscount, 2) }}</li>
                                         </ul>
                                     @endif
 
@@ -287,6 +308,108 @@
 @push('scripts')
     <script>
         $(document).ready(function() {
+            function formatMoney(amount) {
+                return '$' + (amount || 0).toLocaleString('en-US', {
+                    minimumFractionDigits: 2,
+                    maximumFractionDigits: 2
+                });
+            }
+
+            function getPromoCode() {
+                return $('#applied-promo-section').data('code') || null;
+            }
+
+            function getPromoDiscount() {
+                return parseFloat($('#applied-promo-section').data('discount')) || 0;
+            }
+
+            function setPromoDiscount(code, discount) {
+                var $promoSection = $('#applied-promo-section');
+                if (!$promoSection.length) {
+                    $('.promo-code-section').html(`
+                        <div class="applied-promo" id="applied-promo-section" data-code="${code}" data-discount="${discount}">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <span class="text-success">
+                                    <i class="fa-solid fa-check"></i> ${code}
+                                </span>
+                                <button type="button" class="btn btn-sm btn-outline-danger" id="remove-promo-btn">
+                                    Remove
+                                </button>
+                            </div>
+                            <small class="text-success">Discount: ${formatMoney(discount)}</small>
+                        </div>
+                    `);
+                } else {
+                    $promoSection.data('code', code).data('discount', discount);
+                    $promoSection.find('small').text(`Discount: ${formatMoney(discount)}`);
+                }
+
+                var $promoDiscount = $('#promo-discount');
+                if (!$promoDiscount.length) {
+                    $('<ul class="text-success">\n' +
+                        `    <li>Promo Discount (${code})</li>\n` +
+                        `    <li id="promo-discount" data-discount="${discount}">-${formatMoney(discount).replace('$', '')}</li>\n` +
+                        '</ul>'
+                    ).insertAfter($('#cart-total').closest('ul'));
+                } else {
+                    $promoDiscount
+                        .data('discount', discount)
+                        .text(`-${formatMoney(discount).replace('$', '')}`);
+                    $promoDiscount.closest('ul').find('li:first').text(`Promo Discount (${code})`);
+                }
+                calculateTotals();
+            }
+
+            function clearPromoDiscount() {
+                $('.promo-code-section').html(`
+                    <div class="promo-input-section" id="promo-input-section">
+                        <div class="input-group">
+                            <input type="text" class="form-control" id="promo-code-input" placeholder="Enter promo code">
+                            <button class="btn btn-outline-secondary" type="button" id="apply-promo-btn">Apply</button>
+                        </div>
+                        <div id="promo-message" class="mt-2"></div>
+                    </div>
+                `);
+                $('#promo-discount').closest('ul').remove();
+                calculateTotals();
+            }
+
+            function updateItemSubtotal($cartItem, quantity) {
+                var unitPrice = parseFloat($cartItem.find('.cart-quantity').data('price')) || 0;
+                var otherCharges = parseFloat($cartItem.find('.cart-quantity').data('other-charges')) || 0;
+                var subtotal = (unitPrice * quantity) + otherCharges;
+                $cartItem.find('.item-subtotal').text(formatMoney(subtotal));
+            }
+
+            function syncQtyButtons($input) {
+                var currentVal = parseInt($input.val());
+                var minVal = parseInt($input.attr('min')) || 1;
+                var maxVal = parseInt($input.attr('max')) || 9999;
+                $input.siblings('.qty-count--minus').attr('disabled', currentVal <= minVal);
+                $input.siblings('.qty-count--add').attr('disabled', currentVal >= maxVal);
+            }
+
+            function renderEmptyCart() {
+                $('.shopping_cart_sec .container').html(`
+                    <div class="row">
+                        <div class="col-12">
+                            <div class="empty-cart text-center py-5">
+                                <i class="fa-solid fa-shopping-cart" style="font-size: 4rem; color: #ccc; margin-bottom: 1rem;"></i>
+                                <h3>Your cart is empty</h3>
+                                <p class="mb-4">Looks like you haven't added any items to your cart yet.</p>
+                                <a href="{{ route('e-store.all-products') }}" class="red_btn">
+                                    <span>Start Shopping</span>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                `);
+            }
+
+            $(document).on('focus', '.cart-quantity', function() {
+                $(this).data('prev', parseInt($(this).val()) || 1);
+            });
+
             // Enable/disable checkout button based on terms agreement
             $('#terms_agreement').change(function() {
                 if ($(this).is(':checked')) {
@@ -345,6 +468,7 @@
 
                 // Only update if value has changed
                 if (newVal !== currentVal) {
+                    $input.data('prev', currentVal);
                     $input.val(newVal);
                     updateCartItem($input);
                 }
@@ -355,6 +479,7 @@
                 var currentVal = parseInt($this.val());
                 var minVal = parseInt($this.attr('min')) || 1;
                 var maxVal = parseInt($this.attr('max')) || 9999;
+                var prevVal = parseInt($this.data('prev')) || currentVal;
 
                 // Enforce min/max constraints
                 if (isNaN(currentVal) || currentVal < minVal) {
@@ -370,13 +495,14 @@
                     $this.siblings('.qty-count--minus').attr('disabled', currentVal <= minVal);
                     $this.siblings('.qty-count--add').attr('disabled', currentVal >= maxVal);
                 }
-
+                $this.data('prev', prevVal);
                 updateCartItem($this);
             });
 
             function updateCartItem($input) {
                 var cartId = $input.data('id');
                 var quantity = parseInt($input.val());
+                var prevVal = parseInt($input.data('prev')) || quantity;
                 var $cartItem = $input.closest('.cart-item');
 
                 if (quantity < 1) {
@@ -394,13 +520,25 @@
                     },
                     success: function(response) {
                         if (response.status) {
-                            // Reload the page to get updated calculations from server
-                            location.reload();
+                            updateItemSubtotal($cartItem, quantity);
+                            calculateTotals();
+                            updateCartCount();
+
+                            var promoCode = getPromoCode();
+                            if (promoCode) {
+                                refreshPromoDiscount(promoCode);
+                            }
                         } else {
+                            $input.val(prevVal);
+                            syncQtyButtons($input);
+                            updateItemSubtotal($cartItem, prevVal);
                             toastr.error(response.message);
                         }
                     },
                     error: function() {
+                        $input.val(prevVal);
+                        syncQtyButtons($input);
+                        updateItemSubtotal($cartItem, prevVal);
                         toastr.error('Failed to update cart');
                     }
                 });
@@ -409,18 +547,32 @@
             function calculateTotals() {
                 var total = 0;
                 $('.item-subtotal').each(function() {
-                    var subtotalText = $(this).text().replace('$', '').replace(',', '');
+                    var subtotalText = $(this).text().replace('$', '').replace(/,/g, '');
                     total += parseFloat(subtotalText) || 0;
                 });
+                var discount = getPromoDiscount();
+                var finalTotal = Math.max(total - discount, 0);
 
-                $('#cart-total').text('$' + total.toLocaleString('en-US', {
-                    minimumFractionDigits: 2,
-                    maximumFractionDigits: 2
-                }));
-                $('#final-total').text('$' + total.toLocaleString('en-US', {
-                    minimumFractionDigits: 2,
-                    maximumFractionDigits: 2
-                }));
+                $('#cart-total').text(formatMoney(total));
+                $('#final-total').text(formatMoney(finalTotal));
+            }
+
+            function refreshPromoDiscount(code) {
+                if (!code) return;
+                $.ajax({
+                    url: '{{ route('e-store.apply-promo-code') }}',
+                    type: 'POST',
+                    data: {
+                        promo_code: code,
+                        _token: '{{ csrf_token() }}'
+                    },
+                    success: function(response) {
+                        if (response.status) {
+                            setPromoDiscount(response.promo_code, parseFloat(response
+                                .discount_amount) || 0);
+                        }
+                    }
+                });
             }
 
             // Remove item from cart with SweetAlert2
@@ -453,10 +605,14 @@
 
                                         // Check if cart is empty
                                         if ($('.cart-item').length === 0) {
-                                            location.reload();
+                                            renderEmptyCart();
                                         } else {
                                             calculateTotals();
                                             updateCartCount();
+                                            var promoCode = getPromoCode();
+                                            if (promoCode) {
+                                                refreshPromoDiscount(promoCode);
+                                            }
                                         }
                                     });
 
@@ -507,7 +663,8 @@
                                         timer: 2000,
                                         showConfirmButton: false
                                     }).then(() => {
-                                        location.reload();
+                                        renderEmptyCart();
+                                        updateCartCount();
                                     });
                                 } else {
                                     toastr.error(response.message);
@@ -522,12 +679,12 @@
             });
 
             // Apply promo code
-            $('#apply-promo-btn').on('click', function() {
+            $(document).on('click', '#apply-promo-btn', function() {
                 const promoCode = $('#promo-code-input').val().trim();
 
                 if (!promoCode) {
                     $('#promo-message').html(
-                    '<small class="text-danger">Please enter a promo code</small>');
+                        '<small class="text-danger">Please enter a promo code</small>');
                     return;
                 }
 
@@ -543,8 +700,8 @@
                     },
                     success: function(response) {
                         if (response.status) {
-                            // Reload page to update totals
-                            location.reload();
+                            setPromoDiscount(response.promo_code, parseFloat(response
+                                .discount_amount) || 0);
                         } else {
                             $('#promo-message').html('<small class="text-danger">' + response
                                 .message + '</small>');
@@ -561,7 +718,7 @@
             });
 
             // Remove promo code
-            $('#remove-promo-btn').on('click', function() {
+            $(document).on('click', '#remove-promo-btn', function() {
                 $.ajax({
                     url: '{{ route('e-store.remove-promo-code') }}',
                     type: 'POST',
@@ -570,7 +727,7 @@
                     },
                     success: function(response) {
                         if (response.status) {
-                            location.reload();
+                            clearPromoDiscount();
                         }
                     },
                     error: function() {
@@ -580,7 +737,7 @@
             });
 
             // Allow Enter key to apply promo code
-            $('#promo-code-input').on('keypress', function(e) {
+            $(document).on('keypress', '#promo-code-input', function(e) {
                 if (e.which === 13) {
                     $('#apply-promo-btn').click();
                 }
@@ -597,6 +754,20 @@
                     }
                 });
             }
+
+            // Clamp quantities to max on load and sync buttons
+            $('.cart-quantity').each(function() {
+                var $input = $(this);
+                var currentVal = parseInt($input.val()) || 1;
+                var maxVal = parseInt($input.attr('max')) || 9999;
+                if (currentVal > maxVal) {
+                    $input.data('prev', currentVal);
+                    $input.val(maxVal);
+                    updateCartItem($input);
+                } else {
+                    syncQtyButtons($input);
+                }
+            });
         });
     </script>
 @endpush
