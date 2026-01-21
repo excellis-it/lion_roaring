@@ -101,11 +101,26 @@ class EstoreSettingController extends Controller
             }
 
             if (!is_array($decoded)) {
-                return redirect()->back()->withErrors(['shipping_rules' => 'Shipping rules must be an array or JSON string.']);
+                return redirect()->back()->withErrors(['shipping_rules' => 'Shipping rules must be an array or JSON string.'])->withInput();
             }
 
-            // Validate each rule
-            $ruleValidator = \Illuminate\Support\Facades\Validator::make(['shipping_rules' => $decoded], [
+            // Normalize numeric fields and remove empty/default rules (defensive: users sometimes leave an empty row)
+            $normalized = array_map(function ($r) {
+                return [
+                    'min_qty' => isset($r['min_qty']) ? (int) $r['min_qty'] : 0,
+                    'max_qty' => isset($r['max_qty']) ? (int) $r['max_qty'] : 0,
+                    'shipping_cost' => isset($r['shipping_cost']) ? (float) $r['shipping_cost'] : 0,
+                    'delivery_cost' => isset($r['delivery_cost']) ? (float) $r['delivery_cost'] : 0,
+                ];
+            }, $decoded);
+
+            // Remove rules where all numeric values are zero (likely an empty row)
+            $normalized = array_values(array_filter($normalized, function ($r) {
+                return ($r['min_qty'] > 0) || ($r['max_qty'] > 0) || ($r['shipping_cost'] > 0) || ($r['delivery_cost'] > 0);
+            }));
+
+            // Validate each remaining rule
+            $ruleValidator = \Illuminate\Support\Facades\Validator::make(['shipping_rules' => $normalized], [
                 'shipping_rules.*.min_qty' => 'required|integer|min:0',
                 'shipping_rules.*.max_qty' => 'required|integer|min:0',
                 'shipping_rules.*.shipping_cost' => 'nullable|numeric|min:0',
@@ -116,7 +131,14 @@ class EstoreSettingController extends Controller
                 return redirect()->back()->withErrors($ruleValidator)->withInput();
             }
 
-            $validated['shipping_rules'] = $decoded;
+            // Ensure min <= max when max > 0
+            foreach ($normalized as $idx => $r) {
+                if ($r['max_qty'] > 0 && $r['min_qty'] > $r['max_qty']) {
+                    return redirect()->back()->withErrors(['shipping_rules' => "Rule #" . ($idx + 1) . ": min_qty cannot be greater than max_qty."])->withInput();
+                }
+            }
+
+            $validated['shipping_rules'] = $normalized;
         } else {
             $validated['shipping_rules'] = null;
         }

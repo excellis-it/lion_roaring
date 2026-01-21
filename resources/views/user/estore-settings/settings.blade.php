@@ -203,10 +203,10 @@
                 rules.forEach((r, idx) => {
                     const tr = document.createElement('tr');
                     tr.innerHTML = `
-                        <td><input type="number" min="0" step="1" class="form-control form-control-sm min-qty" value="${r.min_qty ?? 0}"></td>
-                        <td><input type="number" min="0" step="1" class="form-control form-control-sm max-qty" value="${r.max_qty ?? 0}" required></td>
-                        <td><input type="number" min="0" step="0.01" class="form-control form-control-sm shipping-cost" value="${r.shipping_cost ?? 0}"></td>
-                        <td><input type="number" min="0" step="0.01" class="form-control form-control-sm delivery-cost" value="${r.delivery_cost ?? 0}"></td>
+                        <td><input type="number" min="0" step="1" class="form-control form-control-sm min-qty" value="${r.min_qty ?? ''}"></td>
+                        <td><input type="number" min="0" step="1" class="form-control form-control-sm max-qty" value="${r.max_qty ?? ''}" required></td>
+                        <td><input type="number" min="0" step="0.01" class="form-control form-control-sm shipping-cost" value="${r.shipping_cost ?? ''}"></td>
+                        <td><input type="number" min="0" step="0.01" class="form-control form-control-sm delivery-cost" value="${r.delivery_cost ?? ''}"></td>
                         <td><button type="button" class="btn btn-sm btn-primary remove-row"><span class="fa fa-trash"></span></button></td>
                     `;
                     tableBody.appendChild(tr);
@@ -219,12 +219,14 @@
                     ['min-qty', 'max-qty', 'shipping-cost', 'delivery-cost'].forEach(cls => {
                         tr.querySelector('.' + cls).addEventListener('input', function() {
                             const rowIdx = Array.from(tableBody.children).indexOf(tr);
-                            const min = parseInt(tr.querySelector('.min-qty').value || 0, 10);
-                            const max = parseInt(tr.querySelector('.max-qty').value || '0', 10);
-                            const ship = parseFloat(tr.querySelector('.shipping-cost').value ||
-                                0);
-                            const del = parseFloat(tr.querySelector('.delivery-cost').value ||
-                                0);
+                            const min = tr.querySelector('.min-qty').value === '' ? '' :
+                                parseInt(tr.querySelector('.min-qty').value, 10);
+                            const max = tr.querySelector('.max-qty').value === '' ? '' :
+                                parseInt(tr.querySelector('.max-qty').value, 10);
+                            const ship = tr.querySelector('.shipping-cost').value === '' ? '' :
+                                parseFloat(tr.querySelector('.shipping-cost').value);
+                            const del = tr.querySelector('.delivery-cost').value === '' ? '' :
+                                parseFloat(tr.querySelector('.delivery-cost').value);
                             rules[rowIdx] = {
                                 min_qty: min,
                                 max_qty: max,
@@ -239,25 +241,41 @@
             }
 
             function updateHidden() {
+                // normalize numeric values and remove empty/default rules
+                const cleaned = rules.map(r => ({
+                    min_qty: parseInt(r.min_qty || 0, 10),
+                    max_qty: parseInt(r.max_qty || 0, 10),
+                    shipping_cost: parseFloat(r.shipping_cost || 0),
+                    delivery_cost: parseFloat(r.delivery_cost || 0)
+                })).filter(r => (r.min_qty > 0) || (r.max_qty > 0) || (r.shipping_cost > 0) || (r.delivery_cost >
+                    0));
+
                 // sort by min_qty asc
-                rules.sort((a, b) => (a.min_qty || 0) - (b.min_qty || 0));
+                cleaned.sort((a, b) => (a.min_qty || 0) - (b.min_qty || 0));
+
+                // replace rules with cleaned set (so UI will reflect removed empties when re-rendered)
+                rules = cleaned;
+
                 rulesInput.value = JSON.stringify(rules);
                 // toggle flat rates inputs when rules exist
                 const hasRules = rules.length > 0;
                 const shipInput = document.getElementById('shipping_cost');
                 const delInput = document.getElementById('delivery_cost');
                 const note = document.getElementById('flat-rates-note');
+                const note2 = document.getElementById('delivery-rates-note');
                 if (shipInput) shipInput.disabled = hasRules;
                 if (delInput) delInput.disabled = hasRules;
                 if (note) note.style.display = hasRules ? 'block' : 'none';
+                if (note2) note2.style.display = hasRules ? 'block' : 'none';
             }
 
             document.getElementById('add-shipping-rule').addEventListener('click', function() {
+                // create a blank rule (not pre-filled with zeros) so users don't accidentally save an empty rule
                 rules.push({
-                    min_qty: 0,
-                    max_qty: 0,
-                    shipping_cost: 0,
-                    delivery_cost: 0
+                    min_qty: '',
+                    max_qty: '',
+                    shipping_cost: '',
+                    delivery_cost: ''
                 });
                 render();
             });
