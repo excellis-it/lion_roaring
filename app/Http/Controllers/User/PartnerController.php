@@ -87,7 +87,7 @@ class PartnerController extends Controller
      * @return \Illuminate\Http\Response
      */
 
-    private function permissionsArray($allPermissions)
+    public function permissionsArray($allPermissions)
     {
         $categorizedPermissions = [
             'Profile' => ['Manage Profile', 'Manage My Profile'],
