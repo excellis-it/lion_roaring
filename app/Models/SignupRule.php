@@ -40,22 +40,25 @@ class SignupRule extends Model
         $failedRules = [];
         $criticalRuleFailed = false;
 
-        foreach ($rules as $rule) {
-            $fieldValue = $data[$rule->field_name] ?? null;
-            $rulePassed = self::checkRule($rule, $fieldValue);
+        if (count($rules) > 0) {
+            foreach ($rules as $rule) {
+                $fieldValue = $data[$rule->field_name] ?? null;
+                $rulePassed = self::checkRule($rule, $fieldValue);
 
-            if (!$rulePassed) {
-                $failedRules[] = [
-                    'field' => $rule->field_name,
-                    'message' => $rule->error_message ?? "Field {$rule->field_name} does not meet requirements",
-                    'is_critical' => $rule->is_critical,
-                ];
+                if (!$rulePassed) {
+                    $failedRules[] = [
+                        'field' => $rule->field_name,
+                        'message' => $rule->error_message ?? "Field {$rule->field_name} does not meet requirements",
+                        'is_critical' => $rule->is_critical,
+                    ];
 
-                if ($rule->is_critical) {
-                    $criticalRuleFailed = true;
+                    if ($rule->is_critical) {
+                        $criticalRuleFailed = true;
+                    }
                 }
             }
-        }
+        } 
+
 
         return [
             'passed' => empty($failedRules),
