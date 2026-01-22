@@ -5,6 +5,7 @@ namespace App\Http\Middleware;
 use Closure;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use App\Models\User;
 
 class Admin
 {
@@ -18,8 +19,9 @@ class Admin
     public function handle(Request $request, Closure $next)
     {
         if (Auth::check()) {
-            $user = auth()->user()->roles()->whereIn('type', [1])->first();
-            if ($user) {
+            $user = Auth::user();
+            $superAdmin = ($user->getFirstUserRoleType() && $user->getFirstUserRoleType() == 1 && $user->status == 1) ? true : false;
+            if ($superAdmin) {
                 return $next($request);
             } else {
                 return redirect()->route('admin.login')->with('error', 'You are not authorized to access this page');
