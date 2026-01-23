@@ -5,7 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class WarehouseProductImage extends Model
+class WarehouseProductImage extends BaseModel
 {
     use HasFactory;
     protected $fillable = ['warehouse_product_id', 'image_path'];

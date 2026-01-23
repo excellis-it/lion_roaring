@@ -7,7 +7,7 @@ use DateTimeZone;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Meeting extends Model
+class Meeting extends BaseModel
 {
     use HasFactory;
 

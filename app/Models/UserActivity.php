@@ -8,7 +8,7 @@ use Illuminate\Support\Facades\Log;
 use App\Models\User;
 use App\Helpers\Helper;
 
-class UserActivity extends Model
+class UserActivity extends BaseModel
 {
     use HasFactory;
 

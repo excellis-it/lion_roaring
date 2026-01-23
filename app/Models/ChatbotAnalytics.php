@@ -5,7 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class ChatbotAnalytics extends Model
+class ChatbotAnalytics extends BaseModel
 {
     use HasFactory;
 

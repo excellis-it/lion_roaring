@@ -7,7 +7,7 @@ use DateTimeZone;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Bulletin extends Model
+class Bulletin extends BaseModel
 {
     use HasFactory;
 

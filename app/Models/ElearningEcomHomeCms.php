@@ -5,7 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class ElearningEcomHomeCms extends Model
+class ElearningEcomHomeCms extends BaseModel
 {
     use HasFactory;
 

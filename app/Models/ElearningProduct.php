@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use App\Models\ElearningTopic;
 
-class ElearningProduct extends Model
+class ElearningProduct extends BaseModel
 {
     use HasFactory;
 

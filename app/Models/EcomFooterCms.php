@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 
-class EcomFooterCms extends Model
+class EcomFooterCms extends BaseModel
 {
     use HasFactory;
 

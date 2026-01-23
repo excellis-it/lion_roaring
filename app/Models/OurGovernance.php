@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 
-class OurGovernance extends Model
+class OurGovernance extends BaseModel
 {
     use HasFactory;
 

@@ -7,7 +7,7 @@ use DateTimeZone;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class TeamChat extends Model
+class TeamChat extends BaseModel
 {
     use HasFactory;
 

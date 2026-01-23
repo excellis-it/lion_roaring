@@ -7,7 +7,7 @@ use DateTimeZone;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class SendMail extends Model
+class SendMail extends BaseModel
 {
     use HasFactory;
 
