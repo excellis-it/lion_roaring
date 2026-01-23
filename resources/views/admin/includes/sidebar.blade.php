@@ -36,16 +36,16 @@
                             <li class="{{ Request::is('admin/password*') ? 'active' : ' ' }}"><a class="nav-link"
                                     href="{{ route('admin.password') }}">Change Password</a></li>
                         @endif
-                        {{-- @if (Gate::check('Manage Admin List'))
+                        @if (Gate::check('Manage Admin List'))
                             <li class="{{ Request::is('admin/password*') ? 'active' : ' ' }}"><a class="nav-link"
                                     href="{{ route('admin.index') }}">Admin List</a></li>
-                        @endif --}}
+                        @endif
 
                     </ul>
                 </li>
             @endif
 
-            {{--  
+            
             @if (Gate::check('Manage Donations'))
                 <li class="dropdown {{ Request::is('admin/donations*') ? 'active' : ' ' }}">
                     <a href="{{ route('donations.index') }}">
@@ -308,7 +308,7 @@
                     </ul>
                 </li>
             @endif
---}}
+
 
         </ul>
     </aside>
