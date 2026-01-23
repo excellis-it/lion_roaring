@@ -44,13 +44,21 @@ class MembershipController extends Controller
         return view('user.membership.manage', compact('tiers', 'measurement'));
     }
 
+
+
     public function create()
     {
         if (!auth()->user()->can('Create Membership')) {
             abort(403, 'Unauthorized');
         }
+
         $allPermissions = Permission::all();
-        return view('user.membership.create', compact('allPermissions'));
+        $partnerController = new PartnerController();
+        $data = $partnerController->permissionsArray($allPermissions);
+        $allPermsArray = $data['allPermsArray'];
+        $categorizedPermissions = $data['categorizedPermissions'];
+
+        return view('user.membership.create', compact('allPermissions', 'allPermsArray', 'categorizedPermissions'));
     }
 
     public function store(Request $request)
@@ -96,7 +104,13 @@ class MembershipController extends Controller
         $tier = $membership->load('benefits');
         $allPermissions = Permission::all();
         $currentPermissions = !empty($tier->permissions) ? explode(',', $tier->permissions) : [];
-        return view('user.membership.edit', compact('tier', 'allPermissions', 'currentPermissions'));
+
+        $partnerController = new PartnerController();
+        $data = $partnerController->permissionsArray($allPermissions);
+        $allPermsArray = $data['allPermsArray'];
+        $categorizedPermissions = $data['categorizedPermissions'];
+
+        return view('user.membership.edit', compact('tier', 'allPermissions', 'currentPermissions', 'allPermsArray', 'categorizedPermissions'));
     }
 
     public function updateTier(Request $request, MembershipTier $membership)

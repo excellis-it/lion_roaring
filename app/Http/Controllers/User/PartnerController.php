@@ -22,7 +22,7 @@ use Illuminate\Support\Facades\Mail;
 use Spatie\Permission\Models\Role;
 use App\Models\MembershipTier;
 use App\Models\UserSubscription;
-
+use Spatie\Permission\Models\Permission;
 
 class PartnerController extends Controller
 {
@@ -86,6 +86,244 @@ class PartnerController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
+
+    public function permissionsArray($allPermissions)
+    {
+        $categorizedPermissions = [
+            'Profile' => ['Manage Profile', 'Manage My Profile'],
+            'Password' => ['Manage Password', 'Manage My Password'],
+            'Chat' => ['Manage Chat'],
+            'Team' => ['Create Team', 'Delete Team', 'Manage Team'],
+            'Email' => ['Manage Email'],
+            'Becoming Sovereigns' => [
+                'Manage Becoming Sovereigns',
+                'View Becoming Sovereigns',
+                'Upload Becoming Sovereigns',
+                'Edit Becoming Sovereigns',
+                'Delete Becoming Sovereigns',
+                'Download Becoming Sovereigns',
+                'Manage Becomeing Sovereigns',
+            ],
+            'Becoming Christ Like' => [
+                'Manage Becoming Christ Like',
+                'View Becoming Christ Like',
+                'Upload Becoming Christ Like',
+                'Edit Becoming Christ Like',
+                'Delete Becoming Christ Like',
+                'Download Becoming Christ Like',
+            ],
+            'Becoming a Leader' => [
+                'Manage Becoming a Leader',
+                'View Becoming a Leader',
+                'Upload Becoming a Leader',
+                'Edit Becoming a Leader',
+                'Delete Becoming a Leader',
+                'Download Becoming a Leader',
+            ],
+            'Files' => ['Upload File', 'Delete File', 'View File', 'Edit File', 'Manage File'],
+            'Bulletin' => ['Manage Bulletin', 'Edit Bulletin', 'Create Bulletin', 'Delete Bulletin'],
+            'Job Postings' => [
+                'Manage Job Postings',
+                'View Job Postings',
+                'Create Job Postings',
+                'Edit Job Postings',
+                'Delete Job Postings',
+            ],
+            'Meeting Schedule' => [
+                'Manage Meeting Schedule',
+                'View Meeting Schedule',
+                'Create Meeting Schedule',
+                'Edit Meeting Schedule',
+                'Delete Meeting Schedule',
+            ],
+            'Event' => ['Manage Event', 'Create Event', 'Edit Event'],
+            'Partners' => ['Create Partners', 'Edit Partners', 'Delete Partners', 'Manage Partners', 'View Partners'],
+            'Help' => ['Manage Help'],
+            'Strategy' => [
+                'Manage Strategy',
+                'Upload Strategy',
+                'Download Strategy',
+                'View Strategy',
+                'Delete Strategy',
+            ],
+            'Topic' => ['Manage Topic', 'Edit Topic', 'Create Topic', 'Delete Topic'],
+            'Admin List' => ['Create Admin List', 'Delete Admin List', 'Manage Admin List', 'Edit Admin List'],
+            'Donations' => ['Manage Donations'],
+            'Contact Us Messages' => ['Manage Contact Us Messages', 'Delete Contact Us Messages'],
+            'Newsletters' => ['Manage Newsletters', 'Delete Newsletters'],
+            'Testimonials' => ['Create Testimonials', 'Delete Testimonials', 'Manage Testimonials', 'Edit Testimonials'],
+            'Our Governance' => [
+                'Create Our Governance',
+                'Delete Our Governance',
+                'Manage Our Governance',
+                'Edit Our Governance',
+            ],
+            'Our Organization' => [
+                'Create Our Organization',
+                'Delete Our Organization',
+                'Manage Our Organization',
+                'Edit Our Organization',
+            ],
+            'Organization Center' => [
+                'Create Organization Center',
+                'Delete Organization Center',
+                'Manage Organization Center',
+                'Edit Organization Center',
+            ],
+            'Pages' => [
+                'Manage Pages',
+                'Manage Home Page',
+                'Manage Details Page',
+                'Manage Organizations Page',
+                'Manage About Us Page',
+                'Manage Ecclesia Association Page',
+                'Manage Principle and Business Page',
+                'Manage Contact Us Page',
+                'Manage Article of Association Page',
+                'Manage Footer',
+                'Manage Register Page Agreement Page',
+                'Manage Member Privacy Policy Page',
+                'Manage PMA Terms Page',
+                'Manage Privacy Policy Page',
+                'Manage Terms and Conditions Page',
+            ],
+            'FAQ' => ['Manage Faq', 'Create Faq', 'Edit Faq', 'Delete Faq'],
+            'Gallery' => ['Manage Gallery', 'Create Gallery', 'Edit Gallery', 'Delete Gallery'],
+            'Users' => [
+                'Manage Members Access',
+                'Manage All Users',
+                'Create All Users',
+                'Edit All Users',
+                'Delete All Users',
+                'Manage All Members',
+            ],
+            'Roles & Permissions' => ['Manage Role Permission'],
+            'Policy' => ['Manage Policy', 'Upload Policy', 'Download Policy', 'View Policy', 'Delete Policy'],
+            'Warehouse' => ['Manage Warehouse Admin', 'Manage Assigned Warehouses', 'Manage Warehouse Manager'],
+            'Elearning CMS' => [
+                'Manage Elearning CMS',
+                'View Elearning CMS',
+                'Create Elearning CMS',
+                'Edit Elearning CMS',
+                'Delete Elearning CMS',
+            ],
+            'Elearning Category' => [
+                'Manage Elearning Category',
+                'View Elearning Category',
+                'Create Elearning Category',
+                'Edit Elearning Category',
+                'Delete Elearning Category',
+            ],
+            'Elearning Topic' => [
+                'Manage Elearning Topic',
+                'View Elearning Topic',
+                'Create Elearning Topic',
+                'Edit Elearning Topic',
+                'Delete Elearning Topic',
+            ],
+            'Elearning Product' => [
+                'Manage Elearning Product',
+                'View Elearning Product',
+                'Create Elearning Product',
+                'Edit Elearning Product',
+                'Delete Elearning Product',
+            ],
+            'Estore CMS' => [
+                'Manage Estore CMS',
+                'View Estore CMS',
+                'Create Estore CMS',
+                'Edit Estore CMS',
+                'Delete Estore CMS',
+            ],
+            'Estore Users' => ['Manage Estore Users', 'View Estore Users'],
+            'Estore Category' => [
+                'Manage Estore Category',
+                'View Estore Category',
+                'Create Estore Category',
+                'Edit Estore Category',
+                'Delete Estore Category',
+            ],
+            'Estore Sizes' => ['Manage Estore Sizes', 'View Estore Sizes', 'Create Estore Sizes', 'Edit Estore Sizes'],
+            'Estore Colors' => [
+                'Manage Estore Colors',
+                'View Estore Colors',
+                'Create Estore Colors',
+                'Edit Estore Colors',
+            ],
+            'Estore Products' => [
+                'Manage Estore Products',
+                'View Estore Products',
+                'Create Estore Products',
+                'Edit Estore Products',
+                'Delete Estore Products',
+            ],
+            'Estore Settings' => ['Manage Estore Settings', 'View Estore Settings', 'Edit Estore Settings'],
+            'Estore Warehouse' => [
+                'Manage Estore Warehouse',
+                'View Estore Warehouse',
+                'Create Estore Warehouse',
+                'Edit Estore Warehouse',
+                'Delete Estore Warehouse',
+            ],
+            'Estore Orders' => ['Manage Estore Orders', 'View Estore Orders', 'Edit Estore Orders'],
+            'Order Status' => ['Manage Order Status', 'Create Order Status', 'Edit Order Status', 'Delete Order Status'],
+            'Email Template' => [
+                'Manage Email Template',
+                'Create Email Template',
+                'Edit Email Template',
+                'Delete Email Template',
+            ],
+            'Private Collaboration' => [
+                'Manage Private Collaboration',
+                'View Private Collaboration',
+                'Create Private Collaboration',
+                'Edit Private Collaboration',
+                'Delete Private Collaboration',
+            ],
+            'User Activity' => [
+                'Manage User Activity',
+                'View User Activity',
+                'Create User Activity',
+                'Edit User Activity',
+                'Delete User Activity',
+            ],
+            'Membership' => [
+                'Manage Membership',
+                'View Membership',
+                'Create Membership',
+                'Edit Membership',
+                'Delete Membership',
+            ],
+            'Membership Settings' => [
+                'Manage Membership Settings',
+                'View Membership Settings',
+                'Edit Membership Settings',
+            ],
+            'Membership Members' => ['Manage Membership Members', 'View Membership Members'],
+            'Membership Payments' => ['Manage Membership Payments', 'View Membership Payments'],
+            'Chatbot' => ['Manage Chatbot', 'View Chatbot History', 'Manage Chatbot Keywords', 'View Chatbot Analytics'],
+            'Site Settings' => ['Manage Site Settings', 'Manage Menu Settings'],
+            'Signup Rules' => ['Manage Signup Rules', 'Create Signup Rules', 'Edit Signup Rules', 'Delete Signup Rules'],
+        ];
+
+        $allPermsArray = $allPermissions->pluck('name')->toArray();
+        $assignedPerms = collect($categorizedPermissions)->flatten()->toArray();
+        $otherPerms = array_diff($allPermsArray, $assignedPerms);
+
+        if (!empty($otherPerms)) {
+            $categorizedPermissions['Others'] = array_values($otherPerms);
+        }
+
+         $data['allPermsArray'] = $allPermsArray;
+         $data['categorizedPermissions'] = $categorizedPermissions;
+
+         return $data;
+
+    }
+
+
+
+
     public function create()
     {
         if (Auth::user()->can('Create Partners')) {
@@ -110,7 +348,7 @@ class PartnerController extends Controller
             $countries = Country::orderBy('name', 'asc')->get();
 
             // Load all permissions
-            $allPermissions = \Spatie\Permission\Models\Permission::all();
+            $allPermissions = Permission::all();
 
             // Load permissions for each role
             foreach ($roles as $role) {
@@ -124,7 +362,11 @@ class PartnerController extends Controller
 
             $membershipTiers = MembershipTier::all();
 
-            return view('user.partner.create')->with(compact('roles', 'eclessias', 'countries', 'allPermissions', 'membershipTiers'));
+            $data = $this->permissionsArray($allPermissions);
+            $allPermsArray = $data['allPermsArray'];
+            $categorizedPermissions = $data['categorizedPermissions'];
+
+            return view('user.partner.create')->with(compact('roles','allPermsArray', 'categorizedPermissions', 'eclessias', 'countries', 'allPermissions', 'membershipTiers'));
         } else {
             abort(403, 'You do not have permission to access this page.');
         }
@@ -342,7 +584,7 @@ class PartnerController extends Controller
             $countries = Country::orderBy('name', 'asc')->get();
 
             // Load all permissions
-            $allPermissions = \Spatie\Permission\Models\Permission::all();
+            $allPermissions = Permission::all();
 
             // Load permissions for each role
             foreach ($roles as $role) {
@@ -358,7 +600,12 @@ class PartnerController extends Controller
             $membershipTiers = MembershipTier::all();
             $currentTierId = $partner->userLastSubscription->plan_id ?? null;
 
-            return view('user.partner.edit', compact('partner', 'roles', 'eclessias', 'countries', 'allPermissions', 'currentPermissions', 'membershipTiers', 'currentTierId'));
+
+            $data = $this->permissionsArray($allPermissions);
+            $allPermsArray = $data['allPermsArray'];
+            $categorizedPermissions = $data['categorizedPermissions'];
+
+            return view('user.partner.edit', compact('partner','allPermsArray','categorizedPermissions', 'roles', 'eclessias', 'countries', 'allPermissions', 'currentPermissions', 'membershipTiers', 'currentTierId'));
         } else {
             abort(403, 'You do not have permission to access this page.');
         }

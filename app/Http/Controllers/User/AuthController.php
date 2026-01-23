@@ -237,6 +237,7 @@ class AuthController extends Controller
         // Validate signup data against field rules
         $signupValidation = SignupRule::validateSignupData($request->all());
 
+        // dd($signupValidation);
         $user = new User();
         $user->user_name = $request->user_name;
         $user->ecclesia_id = $request->ecclesia_id;
