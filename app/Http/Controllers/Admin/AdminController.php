@@ -64,8 +64,8 @@ class AdminController extends Controller
                 $admin->user_type_id = $superAdminType ? $superAdminType->id : 1; // Admin user type
                 $admin->user_type = 'Global';
                 $admin->save();
-              //  $admin->assignRole('SUPER ADMIN');
-              $this->assignAllPermissions($admin);
+                $admin->assignRole('SUPER ADMIN');
+                $this->assignAllPermissions($admin);
                 session()->flash('message', 'Admin account has been successfully created.');
                 return response()->json(['message' => 'Admin account has been successfully created.', 'status' => 'success']);
             }

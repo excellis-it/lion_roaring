@@ -9,15 +9,6 @@
             <a href="{{ route('admin.dashboard') }}"><span class="logo-fm"><img
                         src="{{ asset('admin_assets/img/logo_fm.png') }}" /></span> </a>
             <h5>
-                {{-- @if (Auth::user()->hasNewRole('SUPER ADMIN'))
-                    Super Admin
-                @elseif (Auth::user()->hasNewRole('ECCLESIA'))
-                    ECCLESIA - Admin
-                @elseif (Auth::user()->hasNewRole('TR LEADER'))
-                    TR LEADER - Admin
-                @elseif (Auth::user()->hasNewRole('Sub Admin'))
-                    Sub Admin
-                @endif --}}
                 {{ Auth::user()->getFirstUserRoleName() }}
             </h5>
         </div>
@@ -45,79 +36,16 @@
                             <li class="{{ Request::is('admin/password*') ? 'active' : ' ' }}"><a class="nav-link"
                                     href="{{ route('admin.password') }}">Change Password</a></li>
                         @endif
-                        @if (Gate::check('Manage Admin List'))
+                        {{-- @if (Gate::check('Manage Admin List'))
                             <li class="{{ Request::is('admin/password*') ? 'active' : ' ' }}"><a class="nav-link"
                                     href="{{ route('admin.index') }}">Admin List</a></li>
-                        @endif
+                        @endif --}}
 
                     </ul>
                 </li>
             @endif
 
-            {{-- @if (Auth::user()->hasNewRole('SUPER ADMIN'))
-                @if (Gate::check('Manage Admin List'))
-                    <li class="dropdown {{ Request::is('admin/detail*') ? 'active' : ' ' }}">
-                        <a href="{{ route('admin.index') }}">
-                            <i class="ph ph-identification-badge"></i>
-                            <span>Admin List</span>
-                        </a>
-                    </li>
-                @endif
-            @endif --}}
-            {{-- @if (Auth::user()->hasNewRole('SUPER ADMIN') || Auth::user()->hasNewRole('LEADER'))
-                <li class="dropdown {{ Request::is('admin/roles*') ? 'active' : ' ' }}">
-                    <a href="{{ route('admin.roles.index') }}">
-                        <i class="ph ph-shield-check"></i>
-                        <span>Role Permission</span>
-                    </a>
-                </li>
-            @endif --}}
-
-            {{-- @if (Auth::user()->getFirstUserRoleType() == 1)
-                <li class="dropdown {{ Request::is('admin/roles*') ? 'active' : ' ' }}">
-                    <a href="{{ route('admin.roles.index') }}">
-                        <i class="ph ph-shield-check"></i>
-                        <span>Admin Role Permission</span>
-                    </a>
-                </li>
-            @elseif(Auth::user()->getFirstUserRoleType() == 3)
-                <li class="dropdown {{ Request::is('admin/roles*') ? 'active' : ' ' }}">
-                    <a href="{{ route('admin.roles.index') }}">
-                        <i class="ph ph-shield-check"></i>
-                        <span>Role Permission</span>
-                    </a>
-                </li>
-            @endif --}}
-            {{-- <li class="dropdown">
-                <a href="javascript:void(0);"
-                    class="menu-toggle nav-link has-dropdown {{ Request::is('admin/customers*') ? 'active' : ' ' }}">
-                    <i class="ph ph-user-list"></i>
-                    <span> User Management</span>
-                </a>
-                <ul class="dropdown-menu">
-                    <li class="{{ Request::is('admin/customers/create') ? 'active' : ' ' }}"><a class="nav-link"
-                            href="{{ route('customers.create') }}">Create User</a></li>
-                    <li class="{{ Request::is('admin/customers') ? 'active' : ' ' }}"><a class="nav-link"
-                            href="{{ route('customers.index') }}"> User List</a></li>
-                </ul>
-            </li> --}}
-            {{-- @if (Gate::check('Manage All Users'))
-                <li class="dropdown {{ Request::is('admin/ecclessias*') ? 'active' : ' ' }}">
-                    <a href="{{ route('ecclessias.index') }}">
-                        <i class="ph ph-user-list"></i>
-                        <span>All Users</span>
-                    </a>
-                </li>
-            @endif
-
-            @if (Gate::check('Manage Members Access'))
-                <li class="dropdown {{ Request::is('admin/members*') ? 'active' : ' ' }}">
-                    <a href="{{ route('members.index') }}">
-                        <i class="ph ph-user-list"></i>
-                        <span>Members Access</span>
-                    </a>
-                </li>
-            @endif --}}
+            {{--  
             @if (Gate::check('Manage Donations'))
                 <li class="dropdown {{ Request::is('admin/donations*') ? 'active' : ' ' }}">
                     <a href="{{ route('donations.index') }}">
@@ -238,20 +166,7 @@
                     </ul>
                 </li>
             @endif
-            @if (Gate::check('Manage Home Page') ||
-                    Gate::check('Manage Details Page') ||
-                    Gate::check('Manage Organizations Page') ||
-                    Gate::check('Manage About Us Page') ||
-                    Gate::check('Manage Faq') ||
-                    Gate::check('Manage Gallery') ||
-                    Gate::check('Manage Ecclesia Association Page') ||
-                    Gate::check('Manage Principle and Business Page') ||
-                    Gate::check('Manage Contact Us Page') ||
-                    Gate::check('Manage Article of Association Page') ||
-                    Gate::check('Manage Footer') ||
-                    Gate::check('Manage Register Page Agreement Page') ||
-                    Gate::check('Manage Member Privacy Policy Page') ||
-                    Gate::check('Manage PMA Terms Page'))
+            @if (Gate::check('Manage Home Page') || Gate::check('Manage Details Page') || Gate::check('Manage Organizations Page') || Gate::check('Manage About Us Page') || Gate::check('Manage Faq') || Gate::check('Manage Gallery') || Gate::check('Manage Ecclesia Association Page') || Gate::check('Manage Principle and Business Page') || Gate::check('Manage Contact Us Page') || Gate::check('Manage Article of Association Page') || Gate::check('Manage Footer') || Gate::check('Manage Register Page Agreement Page') || Gate::check('Manage Member Privacy Policy Page') || Gate::check('Manage PMA Terms Page'))
                 <li class="dropdown">
                     <a href="javascript:void(0);"
                         class="menu-toggle nav-link has-dropdown {{ Request::is('admin/pages*') ? 'active' : '' }}">
@@ -343,12 +258,7 @@
                             </li>
                         @endif
 
-                        {{-- @if (Gate::check('Manage Member Privacy Policy Page'))
-                            <li class="{{ Request::is('admin/pages/members-privacy-policies') ? 'active' : '' }}">
-                                <a class="nav-link" href="{{ route('members-privacy-policies.index') }}"> MEMBERS
-                                    PRIVACY POLICIES </a>
-                            </li>
-                        @endif --}}
+
 
                         @if (Gate::check('Manage PMA Terms Page'))
                             <li class="{{ Request::is('admin/pages/pma-terms') ? 'active' : '' }}">
@@ -398,7 +308,7 @@
                     </ul>
                 </li>
             @endif
-
+--}}
 
         </ul>
     </aside>
