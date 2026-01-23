@@ -19,6 +19,7 @@ class DatabaseSeeder extends Seeder
             // StatesTableSeeder::class,
 
             // then run these
+            MigrateRolesToUserTypesSeeder::class,
             RolePermissionSeeder::class,
             assignAdminSeeder::class,
             AddSuperAdminGlobal::class,
@@ -31,7 +32,6 @@ class DatabaseSeeder extends Seeder
             ChatbotSeeder::class,
             CompressCategoryImagesSeeder::class,
             HomeCmsImageSeeder::class,
-            MigrateRolesToUserTypesSeeder::class,
             SignupRuleSeeder::class,
 
         ]);

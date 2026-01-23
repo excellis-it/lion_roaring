@@ -7,14 +7,18 @@ use App\Models\TeamMember;
 use Illuminate\Http\Request;
 use App\Models\User;
 use Illuminate\Support\Facades\Log;
+use App\Models\UserType;
+use Spatie\Permission\Models\Permission;
 
 class AdminController extends Controller
 {
     //
     public function index()
     {
+       // return $permissions = Permission::all()->pluck('name')->toArray();
         if (auth()->user()->can('Manage Admin List')) {
-            $admins = User::where('user_type_id', 1)->where('id', '!=', auth()->user()->id)->get();
+            $superAdminType = UserType::where('name', 'SUPER ADMIN')->first();
+            $admins = User::where('user_type_id', $superAdminType ? $superAdminType->id : 1)->where('id', '!=', auth()->user()->id)->get();
             return view('admin.admin.list')->with(compact('admins'));
         } else {
             abort(403, 'You do not have permission to access this page.');
@@ -42,6 +46,7 @@ class AdminController extends Controller
             if ($count > 0) {
                 return redirect()->back()->with('error', 'Email already exists');
             } else {
+                $superAdminType = UserType::where('name', 'SUPER ADMIN')->first();
                 $uniqueNumber = rand(1000, 9999);
                 $lr_email = strtolower(trim($request->first_name)) . strtolower(trim($request->middle_name)) . strtolower(trim($request->last_name)) . $uniqueNumber . '@lionroaring.us';
 
@@ -56,8 +61,11 @@ class AdminController extends Controller
                 $admin->phone = $request->country_code ? '+' . $request->country_code . ' ' . $request->phone : $request->phone;
                 $admin->status = true;
                 $admin->is_accept = 1;
+                $admin->user_type_id = $superAdminType ? $superAdminType->id : 1; // Admin user type
+                $admin->user_type = 'Global';
                 $admin->save();
-                $admin->assignRole('SUPER ADMIN');
+              //  $admin->assignRole('SUPER ADMIN');
+              $this->assignAllPermissions($admin);
                 session()->flash('message', 'Admin account has been successfully created.');
                 return response()->json(['message' => 'Admin account has been successfully created.', 'status' => 'success']);
             }
@@ -130,6 +138,17 @@ class AdminController extends Controller
             return redirect()->back()->with('error', 'Admin has been deleted!');
         } else {
             abort(403, 'You do not have permission to access this page.');
+        }
+    }
+
+    private function assignAllPermissions($user)
+    {
+        $permissions = Permission::all()->pluck('name')->toArray();
+
+        foreach ($permissions as $permission) {
+            if (!$user->can($permission)) {
+                $user->givePermissionTo($permission);
+            }
         }
     }
 }
