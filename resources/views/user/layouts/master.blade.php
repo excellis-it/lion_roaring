@@ -38,28 +38,28 @@
         <link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.4/css/select2.min.css" rel="stylesheet" />
         <link rel="stylesheet" type="text/css"
             href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
-        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/emojionearea@3.4.2/dist/emojionearea.min.css">
+        <link rel="stylesheet" href="{{ asset('user_assets/css/emojionearea.min.css') }}">
         <link href="https://cdnjs.cloudflare.com/ajax/libs/dropzone/4.3.0/dropzone.css" rel="stylesheet">
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/all.min.css"
             integrity="sha512-2SwdPD6INVrV/lHTZbO2nodKhrnDdJK9/kg2XD1r9uGqPo1cUbujc+IYdlYdEErWNu69gVcYgdxlmVmzTWnetw=="
             crossorigin="anonymous" referrerpolicy="no-referrer" />
-            <style>
-        .skiptranslate {
-            display: none !important;
-        }
+        <style>
+            .skiptranslate {
+                display: none !important;
+            }
 
-        body {
-            top: 0px !important;
-        }
+            body {
+                top: 0px !important;
+            }
 
-        .goog-logo-link {
-            display: none !important;
-        }
+            .goog-logo-link {
+                display: none !important;
+            }
 
-        .trans-section {
-            margin: 100px;
-        }
-    </style>
+            .trans-section {
+                margin: 100px;
+            }
+        </style>
         @stack('styles')
 
     </head>
@@ -104,7 +104,7 @@
         <script src="https://cdn.datatables.net/1.13.2/js/jquery.dataTables.min.js"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/limonte-sweetalert2/7.2.0/sweetalert2.all.min.js"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.4/js/select2.min.js"></script>
-        <script src="https://cdn.jsdelivr.net/npm/emojionearea@3.4.2/dist/emojionearea.min.js"></script>
+        <script src="{{ asset('user_assets/js/emojionearea.min.js') }}"></script>
         <script src="https://cdn.ckeditor.com/ckeditor5/39.0.0/classic/ckeditor.js"></script>
         {{-- trippy cdn link --}}
         <script src="https://unpkg.com/popper.js@1"></script>

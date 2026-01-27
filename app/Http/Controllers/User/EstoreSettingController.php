@@ -88,6 +88,7 @@ class EstoreSettingController extends Controller
             'credit_card_percentage' => 'nullable|numeric|min:0|max:100',
             'is_pickup_available' => 'required|boolean',
             'refund_max_days' => 'nullable|integer|min:0',
+            'cancel_within_hours' => 'nullable|integer|min:0',
             'max_order_quantity' => 'nullable|integer|min:1',
             'shipping_rules' => 'nullable', // accept array or JSON string
         ]);

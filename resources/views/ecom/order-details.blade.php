@@ -274,7 +274,14 @@
                                 $blockingSlugs = $order->is_pickup
                                     ? ['pickup_ready_for_pickup', 'pickup_picked_up']
                                     : ['shipped', 'out_for_delivery', 'delivered'];
+                                $cancelHours = optional($estoreSettings)->cancel_within_hours ?? 24;
+                                $elapsedMinutes = (int) $order->created_at->diffInMinutes(now());
+                                $isWithinCancelWindow = $elapsedMinutes < $cancelHours * 60;
+                                $minutesLeft = max(0, $cancelHours * 60 - $elapsedMinutes);
+                                $hoursLeft = floor($minutesLeft / 60);
+                                $minutesRem = $minutesLeft % 60;
                             @endphp
+
                             @if (in_array($statusSlug, $blockingSlugs, true))
                                 <button type="button" class="btn btn-outline-dark w-100" disabled>
                                     Order that has been {{ $order->is_pickup ? 'ready for picked up' : 'shipped' }} can't
@@ -282,10 +289,19 @@
                                 </button>
                             @endif
 
-                            @if (in_array(
-                                    $statusSlug,
-                                    $order->is_pickup ? ['pickup_pending', 'pickup_processing'] : ['pending', 'processing'],
-                                    true) && $order->created_at->diffInDays(now()) <= optional($estoreSettings)->refund_max_days)
+                            @php
+                                $allowedStatusList = $order->is_pickup
+                                    ? ['pickup_pending', 'pickup_processing']
+                                    : ['pending', 'processing'];
+                            @endphp
+
+                            @if (in_array($statusSlug, $allowedStatusList, true) && $isWithinCancelWindow)
+                                <div class="mb-2 small text-muted">
+                                    You have @if ($hoursLeft > 0)
+                                        {{ $hoursLeft }}h
+                                    @endif{{ $minutesRem }}m left to cancel this order.
+                                </div>
+
                                 <button type="button" class="btn btn-outline-danger w-100" data-bs-toggle="modal"
                                     data-bs-target="#cancelOrderModal">
                                     Cancel Order
@@ -328,6 +344,12 @@
                                             </form>
                                         </div>
                                     </div>
+                                </div>
+                            @elseif(in_array($statusSlug, $allowedStatusList, true) && !$isWithinCancelWindow)
+                                <div class="alert alert-danger mt-2">
+                                    Order cancellation is no longer available as the cancellation window of
+                                    {{ $cancelHours }}
+                                    hours has passed.
                                 </div>
                             @endif
                         </div>

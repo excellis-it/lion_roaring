@@ -694,7 +694,8 @@ class CheckoutController extends Controller
                 'cart_count' => $cartCount,
                 'max_refundable_days' => $max_refundable_days,
                 'estore_settings' => [
-                    'max_refundable_days' => $max_refundable_days,
+                    'max_refundable_days' => $max_refundable_days,                    
+                    'cancel_within_hours' => $estoreSettings->cancel_within_hours ?? 24,                    
                     'shipping_cost' => $estoreSettings->shipping_cost ?? 0,
                     'delivery_cost' => $estoreSettings->delivery_cost ?? 0,
                     'tax_percentage' => $estoreSettings->tax_percentage ?? 0,
@@ -750,17 +751,19 @@ class CheckoutController extends Controller
             }
         }
 
-        if (!$order) {
+        // Enforce cancellation window (use minutes for precise cutoff)
+        $estoreSettings = EstoreSetting::first();
+        $cancelHours = $estoreSettings->cancel_within_hours ?? 24;
+        $elapsedMinutes = (int) $order->created_at->diffInMinutes(now());
+        if ($order && $elapsedMinutes >= ($cancelHours * 60)) {
             return response()->json([
                 'status' => false,
-                'message' => 'Order not found or cannot be cancelled'
-            ], 404);
+                'message' => "Order cancellation is allowed only within {$cancelHours} hours from the order date."
+            ], 403);
         }
 
         DB::beginTransaction();
-
         try {
-            // Get cancelled status ID
             $cancelSlug = $order->is_pickup ? 'pickup_cancelled' : 'cancelled';
             $cancelledStatusId = OrderStatus::where('slug', $cancelSlug)
                 ->where('is_pickup', $order->is_pickup ? 1 : 0)

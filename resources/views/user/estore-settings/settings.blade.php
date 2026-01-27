@@ -116,6 +116,22 @@
                                 </div>
                             </div>
 
+                            {{-- Order Cancellation Window (hours) --}}
+                            <div class="col-md-6 mb-2">
+                                <div class="box_label">
+                                    <label for="cancel_within_hours">Order cancellation window (hours)</label>
+                                    <input type="number" step="1" min="0" name="cancel_within_hours"
+                                        id="cancel_within_hours"
+                                        class="form-control @error('cancel_within_hours') is-invalid @enderror"
+                                        value="{{ old('cancel_within_hours', $storeSetting->cancel_within_hours ?? 24) }}">
+                                    <small class="text-muted">Customers may cancel orders only within this many hours from
+                                        the order date.</small>
+                                    @error('cancel_within_hours')
+                                        <div class="invalid-feedback">{{ $message }}</div>
+                                    @enderror
+                                </div>
+                            </div>
+
                             {{-- Max Order Quantity --}}
                             <div class="col-md-6 mb-2">
                                 <div class="box_label">

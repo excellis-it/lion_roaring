@@ -22,14 +22,14 @@
                                 value="{{ $measurement->label ?? '' }}" placeholder="e.g., USD/year">
                         </div>
                     </div>
-                    <div class="col-md-6 mb-3">
+                    <div class="col-md-6 mb-3" hidden>
                         <div class="box_label">
                             <label>Yearly Dues</label>
                             <input name="yearly_dues" class="form-control" type="number" step="0.01"
                                 value="{{ $measurement->yearly_dues ?? '' }}">
                         </div>
                     </div>
-                    <div class="col-md-12 mb-3">
+                    <div class="col-md-12 mb-3" hidden>
                         <div class="box_label">
                             <label>Measurement Description</label>
                             <textarea name="description" class="form-control" rows="3">{{ $measurement->description ?? '' }}</textarea>
