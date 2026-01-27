@@ -136,6 +136,31 @@
                             </div>
                         </div>
                         <div class="card-body">
+
+                            @php
+                                $estoreSettingsGlobal = \App\Models\EstoreSetting::first();
+                                $cancelHoursGlobal = $estoreSettingsGlobal->cancel_within_hours ?? 24;
+                                $allowedAdminSlugs = $order->is_pickup
+                                    ? ['pickup_pending', 'pickup_processing']
+                                    : ['pending', 'processing'];
+                                // precise minute-based check so the window closes exactly at X hours
+                                $elapsedMinutesAdmin = (int) $order->created_at->diffInMinutes(now());
+                                $isWithinCancelWindowAdmin = $elapsedMinutesAdmin < $cancelHoursGlobal * 60;
+                                $minutesLeftAdmin = max(0, $cancelHoursGlobal * 60 - $elapsedMinutesAdmin);
+                                $hoursLeftAdmin = (int) floor($minutesLeftAdmin / 60);
+                                $minutesRemAdmin = $minutesLeftAdmin % 60;
+                            @endphp
+
+                            @if (in_array(optional($order->orderStatus)->slug, $allowedAdminSlugs, true) && $isWithinCancelWindowAdmin)
+                                <div class="alert alert-warning" style="background-color: #fff3cd; border-color: #ffeeba;">
+                                    <strong>Warning:</strong> This order is still within the {{ $cancelHoursGlobal }}-hour
+                                    cancellation window and may be canceled by the customer.
+                                    <div class="small mt-1">Time left: @if ($hoursLeftAdmin > 0)
+                                            {{ $hoursLeftAdmin }}h
+                                        @endif{{ $minutesRemAdmin }}m</div>
+                                </div>
+                            @endif
+
                             <div class="row">
                                 <div class="col-md-6">
                                     <h6>Customer Information</h6>
@@ -587,14 +612,14 @@
         }
 
         /* .timeline::before {
-                                                                            content: '';
-                                                                            position: absolute;
-                                                                            left: 15px;
-                                                                            top: 0;
-                                                                            bottom: 0;
-                                                                            width: 2px;
-                                                                            background: #e9ecef;
-                                                                        } */
+                                                                                            content: '';
+                                                                                            position: absolute;
+                                                                                            left: 15px;
+                                                                                            top: 0;
+                                                                                            bottom: 0;
+                                                                                            width: 2px;
+                                                                                            background: #e9ecef;
+                                                                                        } */
 
         .timeline-item {
             position: relative;

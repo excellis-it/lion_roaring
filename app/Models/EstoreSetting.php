@@ -18,6 +18,7 @@ class EstoreSetting extends BaseModel
         'refund_max_days',
         'shipping_rules',
         'max_order_quantity',
+        'cancel_within_hours',
     ];
 
     protected $casts = [

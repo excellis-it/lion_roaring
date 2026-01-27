@@ -1675,6 +1675,14 @@ class ProductController extends Controller
             }
         }
 
+        // Enforce cancellation window from settings (hours) — use minutes for accurate cutover
+        $estoreSettings = EstoreSetting::first();
+        $cancelHours = $estoreSettings->cancel_within_hours ?? 24;
+        $elapsedMinutes = (int) $order->created_at->diffInMinutes(now());
+        if ($order && $elapsedMinutes >= ($cancelHours * 60)) {
+            return redirect()->back()->with('warning', "Order cancellation is allowed only within {$cancelHours} hours from the order date.");
+        }
+
         //  return $order;
 
         if (!$order) {

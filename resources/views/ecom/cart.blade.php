@@ -72,9 +72,9 @@
                                                     <h4>{{ $item->product->name ?? '' }}</h4>
                                                     <h6>SKU: {{ $item->warehouseProduct->sku ?? '' }}</h6>
                                                     <!-- <h6>{{ $item->size ? 'Size: ' . $item->size?->size ?? '' : '' }}
-                                                                                                &nbsp;&nbsp;
-                                                                                                {{ $item->color ? 'Color: ' . $item->color?->color_name ?? '' : '' }}
-                                                                                            </h6> -->
+                                                                                                    &nbsp;&nbsp;
+                                                                                                    {{ $item->color ? 'Color: ' . $item->color?->color_name ?? '' : '' }}
+                                                                                                </h6> -->
                                                     {{-- <span class="">{!! \Illuminate\Support\Str::limit($item->product->description, 50) !!}</span> --}}
 
                                                     <ul class="wl_price mb-1">
@@ -321,8 +321,8 @@
                                     <div class="form-group">
                                         <input type="checkbox" id="terms_agreement" required>
                                         <label for="terms_agreement">By continuing, I agree to the <a
-                                                href="{{ route('terms-and-conditions') }}">Terms of use</a>
-                                            & <a href="{{ route('privacy-policy') }}">Privacy Policy</a></label>
+                                                href="{{ route('terms-and-conditions') }}">Terms and Conditions</a>
+                                        </label>
                                     </div>
 
                                     {{-- // if not auth then login button  --}}
