@@ -32,16 +32,48 @@ class PartnerController extends Controller
     public function index()
     {
         if (Auth::user()->can('Manage Partners')) {
-
-
             $user = Auth::user();
             $user_ecclesia_id = $user->ecclesia_id;
             $is_user_ecclesia_admin = $user->is_ecclesia_admin;
+
+            // Retrieve filters from session
+            $filters = session('partner_filters', []);
+            $query = isset($filters['query']) ? $filters['query'] : null;
+            $country_id = isset($filters['country_id']) ? $filters['country_id'] : null;
+            $sort_by = isset($filters['sortby']) ? $filters['sortby'] : 'id';
+            $sort_type = isset($filters['sorttype']) ? $filters['sorttype'] : 'desc';
+            // Set current page for pagination if exists
+            if (isset($filters['page'])) {
+                \Illuminate\Pagination\Paginator::currentPageResolver(function () use ($filters) {
+                    return $filters['page'];
+                });
+            }
 
             $partners = User::with(['ecclesia', 'userRole'])
                 ->whereHas('userRole', function ($q) {
                     $q->where('name', '!=', 'SUPER ADMIN')->where('name', '!=', 'ESTORE_USER');
                 });
+
+            // Apply search query filter
+            if ($query) {
+                $query_search = str_replace(" ", "%", $query);
+                $partners->where(function ($q) use ($query_search) {
+                    $q->where('id', 'like', "%{$query_search}%")
+                        ->orWhereRaw('CONCAT(COALESCE(first_name, ""), " ", COALESCE(middle_name, ""), " ", COALESCE(last_name, "")) LIKE ?', ["%{$query_search}%"])
+                        ->orWhere('email', 'like', "%{$query_search}%")
+                        ->orWhere('phone', 'like', "%{$query_search}%")
+                        ->orWhere('user_name', 'like', "%{$query_search}%")
+                        ->orWhere('user_type', 'like', "%{$query_search}%")
+                        ->orWhereHas('countries', function ($q) use ($query_search) {
+                            $q->where('name', 'like', "%{$query_search}%");
+                        });
+                });
+            }
+
+            // Apply country filter
+            if ($country_id) {
+                $partners->where('country', $country_id);
+            }
 
             if ($user->user_type == 'Global' || $user->hasNewRole('SUPER ADMIN')) {
                 $partners->whereHas('userRole', function ($q) {
@@ -73,12 +105,18 @@ class PartnerController extends Controller
                 });
             }
 
-            // Order and paginate results
-            $partners = $partners->orderBy('id', 'desc')->paginate(15);
+            // Order results
+            if ($sort_by == 'name') {
+                $partners->orderByRaw('CONCAT(COALESCE(first_name, ""), " ", COALESCE(middle_name, ""), " ", COALESCE(last_name, "")) ' . $sort_type);
+            } else {
+                $partners->orderBy($sort_by, $sort_type);
+            }
+
+            // Paginate results
+            $partners = $partners->paginate(15);
             $countries = Country::orderBy('name', 'asc')->get();
 
-
-            return view('user.partner.list', compact('partners', 'countries'));
+            return view('user.partner.list', compact('partners', 'countries', 'query', 'country_id', 'sort_by', 'sort_type'));
         } else {
             abort(403, 'You do not have permission to access this page.');
         }
@@ -92,7 +130,7 @@ class PartnerController extends Controller
 
     public function permissionsArray($allPermissions)
     {
-      
+
         $categorizedPermissions = [
             'Profile' => ['Manage Profile', 'Manage My Profile'],
             'Password' => ['Manage Password', 'Manage My Password'],
@@ -800,6 +838,16 @@ class PartnerController extends Controller
             $sort_by = $request->get('sortby', 'id'); // Default sorting by 'id'
             $sort_type = $request->get('sorttype', 'asc'); // Default sorting type
             $query = $request->get('query');
+
+            // Store filters in session
+            session(['partner_filters' => [
+                'query' => $query,
+                'country_id' => $request->country_id,
+                'sortby' => $sort_by,
+                'sorttype' => $sort_type,
+                'page' => $request->page
+            ]]);
+
             $query = str_replace(" ", "%", $query);
 
             $user = Auth::user();
@@ -807,9 +855,9 @@ class PartnerController extends Controller
             $user_ecclesia_id = $user->ecclesia_id;
 
             // Base query with roles filter
-            $partners = User::with(['ecclesia', 'roles'])
-                ->whereHas('roles', function ($q) {
-                    $q->where('name', '!=', 'SUPER ADMIN');
+            $partners = User::with(['ecclesia', 'userRole'])
+                ->whereHas('userRole', function ($q) {
+                    $q->where('name', '!=', 'SUPER ADMIN')->where('name', '!=', 'ESTORE_USER');
                 })
                 ->when($query, function ($query_builder) use ($query) {
                     $query_builder->where(function ($q) use ($query) {
@@ -834,13 +882,13 @@ class PartnerController extends Controller
 
             // Apply role, user_type and ecclesia filters
             if ($user->user_type == 'Global' || $user->hasNewRole('SUPER ADMIN')) {
-                $partners->whereHas('roles', function ($q) {
+                $partners->whereHas('userRole', function ($q) {
                     $q->whereIn('type', [2, 3]);
                 })
                     ->where('id', '!=', $user->id);
             } elseif ($user->user_type == 'Regional') {
                 $partners->where('country', $user->country)
-                    ->whereHas('roles', function ($q) {
+                    ->whereHas('userRole', function ($q) {
                         $q->whereIn('type', [2, 3]);
                     })
                     ->where('id', '!=', $user->id);
@@ -849,7 +897,7 @@ class PartnerController extends Controller
                     ? $user->manage_ecclesia
                     : explode(',', $user->manage_ecclesia);
 
-                $partners->whereHas('roles', function ($q) {
+                $partners->whereHas('userRole', function ($q) {
                     $q->whereIn('type', [2, 3]);
                 })
                     ->where(function ($q) use ($manage_ecclesia_ids, $user) {
@@ -875,6 +923,12 @@ class PartnerController extends Controller
 
             return response()->json(['data' => view('user.partner.table', compact('partners'))->render()]);
         }
+    }
+
+    public function resetFilters()
+    {
+        session()->forget('partner_filters');
+        return redirect()->route('partners.index');
     }
 
     public function changePartnerStatus(Request $request)

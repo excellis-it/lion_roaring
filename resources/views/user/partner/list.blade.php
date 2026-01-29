@@ -42,18 +42,22 @@
                                             <select name="country_filter" id="country_filter" class="form-control">
                                                 <option value="">All Countries</option>
                                                 @foreach ($countries as $country)
-                                                    <option value="{{ $country->id }}">{{ $country->name }}</option>
+                                                    <option value="{{ $country->id }}"
+                                                        {{ $country_id == $country->id ? 'selected' : '' }}>
+                                                        {{ $country->name }}</option>
                                                 @endforeach
                                             </select>
                                         @endif
                                     </div>
 
                                     <div class="col-md-5">
+                                        <a href="{{ route('partners.reset-filters') }}" class="btn btn-primary">Reset
+                                            Filters</a>
                                     </div>
                                     <div class="col-lg-4">
                                         <div class="search-field float-right">
                                             <input type="text" name="search" id="search" placeholder="search..."
-                                                required class="form-control">
+                                                required class="form-control" value="{{ $query }}">
                                             <button class="submit_search" id="search-button"> <span class=""><i
                                                         class="fa fa-search"></i></span></button>
                                         </div>
@@ -118,10 +122,12 @@
                                         </tbody>
 
                                     </table>
-                                    <input type="hidden" name="hidden_page" id="hidden_page" value="1" />
+                                    <input type="hidden" name="hidden_page" id="hidden_page"
+                                        value="{{ $partners->currentPage() }}" />
                                     <input type="hidden" name="hidden_column_name" id="hidden_column_name"
-                                        value="id" />
-                                    <input type="hidden" name="hidden_sort_type" id="hidden_sort_type" value="desc" />
+                                        value="{{ $sort_by }}" />
+                                    <input type="hidden" name="hidden_sort_type" id="hidden_sort_type"
+                                        value="{{ $sort_type }}" />
                                 </div>
                             </div>
                         </div>

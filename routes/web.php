@@ -895,6 +895,7 @@ Route::prefix('user')->middleware(['user', 'preventBackHistory', 'userActivity',
 
     Route::get('/changePartnerStatus', [PartnerController::class, 'changePartnerStatus'])->name('partners.change-status');
     Route::get('/partner-fetch-data', [PartnerController::class, 'fetchData'])->name('partners.fetch-data');
+    Route::get('/partner-reset-filters', [PartnerController::class, 'resetFilters'])->name('partners.reset-filters');
 
     // Mail
     Route::prefix('mail')->group(function () {
