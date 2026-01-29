@@ -237,6 +237,14 @@
                                 <div class="col-md-6 mb-3">
                                     <div class="info-item">
                                         <small class="text-muted d-block mb-1 info-label">
+                                            <i class="fa fa-id-badge"></i> Roar ID
+                                        </small>
+                                        <strong class="info-value">{{ $partner->lion_roaring_id ?? 'N/A' }}</strong>
+                                    </div>
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <div class="info-item">
+                                        <small class="text-muted d-block mb-1 info-label">
                                             <i class="fa fa-phone"></i> Phone Number
                                         </small>
                                         <strong class="info-value">{{ $partner->phone ?? 'N/A' }}</strong>
@@ -320,6 +328,51 @@
                                     <small class="text-muted">Signature was not provided during registration</small>
                                 </div>
                             @endif
+                        </div>
+                    </div>
+
+                    {{-- Registration Agreement PDF --}}
+                    <div class="card info-card mt-4">
+                        <div class="card-header card-header-gradient">
+                            <h5 class="mb-0 card-header-title">
+                                <i class="fa fa-file-pdf"></i> Registration Agreement
+                            </h5>
+                        </div>
+                        <div class="card-body card-body-padding">
+                            <div class="info-item">
+                                @if (
+                                    !empty($userAgreement) &&
+                                        !empty($userAgreement->pdf_path) &&
+                                        Storage::disk('public')->exists($userAgreement->pdf_path))
+                                    <div class="d-flex align-items-center justify-content-between flex-wrap gap-2">
+                                        <div>
+                                            <div class="fw-bold">Agreement PDF</div>
+                                            <small class="text-muted">
+                                                Signed by {{ $userAgreement->signer_name ?? $partner->full_name }}
+                                                @if (!empty($userAgreement->country_code))
+                                                    • {{ strtoupper($userAgreement->country_code) }}
+                                                @endif
+                                            </small>
+                                        </div>
+                                        <div class="d-flex gap-2">
+                                            <a class="btn btn-sm back-btn" target="_blank"
+                                                href="{{ Storage::url($userAgreement->pdf_path) }}">
+                                                <i class="fa fa-eye"></i> View PDF
+                                            </a>
+                                            <a class="btn btn-sm btn-outline-secondary" download
+                                                href="{{ Storage::url($userAgreement->pdf_path) }}">
+                                                <i class="fa fa-download"></i> Download
+                                            </a>
+                                        </div>
+                                    </div>
+                                @else
+                                    <div class="no-signature">
+                                        <i class="fa fa-file-circle-xmark no-signature-icon"></i>
+                                        <p class="text-muted mb-0 no-signature-text">No agreement PDF on file</p>
+                                        <small class="text-muted">Agreement was not captured during registration</small>
+                                    </div>
+                                @endif
+                            </div>
                         </div>
                     </div>
                 </div>

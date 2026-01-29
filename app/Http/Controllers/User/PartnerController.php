@@ -13,6 +13,7 @@ use App\Models\Team;
 use App\Models\TeamMember;
 use App\Models\User;
 use App\Models\UserType;
+use App\Models\UserRegisterAgreement;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Crypt;
@@ -539,7 +540,10 @@ class PartnerController extends Controller
         if (Auth::user()->can('View Partners')) {
             $id = Crypt::decrypt($id);
             $partner = User::findOrFail($id);
-            return view('user.partner.show', compact('partner'));
+            $userAgreement = UserRegisterAgreement::where('user_id', $partner->id)
+                ->orderBy('id', 'desc')
+                ->first();
+            return view('user.partner.show', compact('partner', 'userAgreement'));
         } else {
             abort(403, 'You do not have permission to access this page.');
         }
