@@ -24,6 +24,7 @@ use Spatie\Permission\Models\Role;
 use App\Models\MembershipTier;
 use App\Models\UserSubscription;
 use Spatie\Permission\Models\Permission;
+use App\Models\UserTypePermission;
 
 class PartnerController extends Controller
 {
@@ -315,11 +316,10 @@ class PartnerController extends Controller
             $categorizedPermissions['Others'] = array_values($otherPerms);
         }
 
-         $data['allPermsArray'] = $allPermsArray;
-         $data['categorizedPermissions'] = $categorizedPermissions;
+        $data['allPermsArray'] = $allPermsArray;
+        $data['categorizedPermissions'] = $categorizedPermissions;
 
-         return $data;
-
+        return $data;
     }
 
 
@@ -351,15 +351,14 @@ class PartnerController extends Controller
             // Load all permissions
             $allPermissions = Permission::all();
 
-            // Load permissions for each role
+            // Load permissions for each role from user_type_permissions
             foreach ($roles as $role) {
-                $roleModel = Role::where('name', $role->name)->first();
-                if ($roleModel) {
-                    $role->permissions = $roleModel->permissions;
-                } else {
-                    $role->permissions = collect();
-                }
+                $role->permissions = UserTypePermission::where('user_type_id', $role->id)
+                    ->join('permissions', 'user_type_permissions.permission_id', '=', 'permissions.id')
+                    ->select('permissions.*')
+                    ->get();
             }
+
 
             $membershipTiers = MembershipTier::all();
 
@@ -367,7 +366,7 @@ class PartnerController extends Controller
             $allPermsArray = $data['allPermsArray'];
             $categorizedPermissions = $data['categorizedPermissions'];
 
-            return view('user.partner.create')->with(compact('roles','allPermsArray', 'categorizedPermissions', 'eclessias', 'countries', 'allPermissions', 'membershipTiers'));
+            return view('user.partner.create')->with(compact('roles', 'allPermsArray', 'categorizedPermissions', 'eclessias', 'countries', 'allPermissions', 'membershipTiers'));
         } else {
             abort(403, 'You do not have permission to access this page.');
         }
@@ -590,14 +589,12 @@ class PartnerController extends Controller
             // Load all permissions
             $allPermissions = Permission::all();
 
-            // Load permissions for each role
+            // Load permissions for each role from user_type_permissions
             foreach ($roles as $role) {
-                $roleModel = Role::where('name', $role->name)->first();
-                if ($roleModel) {
-                    $role->permissions = $roleModel->permissions;
-                } else {
-                    $role->permissions = collect();
-                }
+                $role->permissions = UserTypePermission::where('user_type_id', $role->id)
+                    ->join('permissions', 'user_type_permissions.permission_id', '=', 'permissions.id')
+                    ->select('permissions.*')
+                    ->get();
             }
 
             $currentPermissions = $partner->getAllPermissions()->pluck('name');
@@ -609,7 +606,7 @@ class PartnerController extends Controller
             $allPermsArray = $data['allPermsArray'];
             $categorizedPermissions = $data['categorizedPermissions'];
 
-            return view('user.partner.edit', compact('partner','allPermsArray','categorizedPermissions', 'roles', 'eclessias', 'countries', 'allPermissions', 'currentPermissions', 'membershipTiers', 'currentTierId'));
+            return view('user.partner.edit', compact('partner', 'allPermsArray', 'categorizedPermissions', 'roles', 'eclessias', 'countries', 'allPermissions', 'currentPermissions', 'membershipTiers', 'currentTierId'));
         } else {
             abort(403, 'You do not have permission to access this page.');
         }

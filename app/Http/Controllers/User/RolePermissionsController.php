@@ -4,6 +4,7 @@ namespace App\Http\Controllers\User;
 
 use App\Http\Controllers\Controller;
 use App\Models\UserType;
+use App\Models\UserTypePermission;
 use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Auth;
@@ -44,8 +45,12 @@ class RolePermissionsController extends Controller
     public function create()
     {
         if (Auth::user()->getFirstUserRoleType() == 1 || Auth::user()->getFirstUserRoleType() == 2 || Auth::user()->getFirstUserRoleType() == 3) {
-
-            return view('user.role_permission.create');
+            $partnerController = new PartnerController();
+            $allPermissions = Permission::all();
+            $data = $partnerController->permissionsArray($allPermissions);
+            $allPermsArray = $data['allPermsArray'];
+            $categorizedPermissions = $data['categorizedPermissions'];
+            return view('user.role_permission.create', compact('allPermsArray', 'categorizedPermissions'));
         } else {
             abort(403, 'You do not have permission to access this page.');
         }
@@ -72,7 +77,17 @@ class RolePermissionsController extends Controller
         $role->is_ecclesia = $request['is_ecclesia'];
         $role->save();
 
-
+        if ($name != 'MEMBER_NON_SOVEREIGN' && $request->has('permissions')) {
+            foreach ($request->permissions as $permName) {
+                $permission = Permission::where('name', $permName)->first();
+                if ($permission) {
+                    UserTypePermission::create([
+                        'user_type_id' => $role->id,
+                        'permission_id' => $permission->id,
+                    ]);
+                }
+            }
+        }
 
         return redirect()->route('roles.index')->with('message', 'Role created successfully.');
     }
@@ -101,8 +116,18 @@ class RolePermissionsController extends Controller
             $role = UserType::findOrFail($id);
             $user = Auth::user();
 
+            $partnerController = new PartnerController();
+            $allPermissions = Permission::all();
+            $data = $partnerController->permissionsArray($allPermissions);
+            $allPermsArray = $data['allPermsArray'];
+            $categorizedPermissions = $data['categorizedPermissions'];
 
-            return view('user.role_permission.edit', compact('role', ));
+            $currentPermissions = UserTypePermission::where('user_type_id', $role->id)
+                ->join('permissions', 'user_type_permissions.permission_id', '=', 'permissions.id')
+                ->pluck('permissions.name')
+                ->toArray();
+
+            return view('user.role_permission.edit', compact('role', 'allPermsArray', 'categorizedPermissions', 'currentPermissions'));
         } else {
             abort(403, 'You do not have permission to access this page.');
         }
@@ -127,6 +152,21 @@ class RolePermissionsController extends Controller
         $role->name = $request->role_name;
         $role->is_ecclesia = $request['is_ecclesia'];
         $role->save();
+
+        if ($role->name != 'MEMBER_NON_SOVEREIGN') {
+            UserTypePermission::where('user_type_id', $role->id)->delete();
+            if ($request->has('permissions')) {
+                foreach ($request->permissions as $permName) {
+                    $permission = Permission::where('name', $permName)->first();
+                    if ($permission) {
+                        UserTypePermission::create([
+                            'user_type_id' => $role->id,
+                            'permission_id' => $permission->id,
+                        ]);
+                    }
+                }
+            }
+        }
 
         return redirect()->route('roles.index')->with('message', 'Role updated successfully.');
     }

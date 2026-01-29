@@ -21,4 +21,9 @@ class UserType extends BaseModel
     {
         return $this->hasMany(User::class);
     }
+
+    public function permissions()
+    {
+        return $this->hasMany(UserTypePermission::class, 'user_type_id');
+    }
 }
