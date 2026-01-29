@@ -45,7 +45,9 @@
                                         style="color: orange; font-variation-settings: 'FILL' 1;">grade</span></a>
                             @else
                                 <a href="javascript:void(0);" onclick="setMailStar(this, {{ $mail_details->id }})">
-                                    <span class="material-symbols-outlined">grade</span></a>
+                                    <!-- <span class="material-symbols-outlined">grade</span> -->
+                                     <i class="fa-regular fa-star"></i>
+                                </a>
                             @endif
 
                         </div>
@@ -127,7 +129,9 @@
                                             @else
                                                 <a href="javascript:void(0);"
                                                     onclick="setMailStar(this, {{ $mail_details->id }})">
-                                                    <span class="material-symbols-outlined">grade</span></a>
+                                                    <!-- <span class="material-symbols-outlined">grade</span> -->
+                                                     <i class="fa-regular fa-star"></i>
+                                                </a>
                                             @endif
                                         @endif --}}
                                     </div>

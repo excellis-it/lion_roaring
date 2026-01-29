@@ -14,7 +14,8 @@
                 @if ($isStar == 1)
                     <a href="javascript:void(0);" onclick="setMailStar(this, {{ $mail->id }})">
                         <span class="material-symbols-outlined"
-                            style="color: orange; font-variation-settings: 'FILL' 1;">grade</span></a>
+                            style="color: orange; font-variation-settings: 'FILL' 1;">grade</span>
+                        </a>
                 @else
                     <a href="javascript:void(0);" onclick="setMailStar(this, {{ $mail->id }})">
                         <span class="material-symbols-outlined">grade</span></a>

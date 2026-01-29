@@ -343,6 +343,23 @@
                 transform: translateY(-3px);
             }
         }
+
+
+        .loading-text-bottom {
+    position: absolute;
+    top: 220px;
+    left: 50%;
+    transform: translateX(-50%);
+    color: #d98b1c;
+    font-size: 20px;
+    font-weight: 600;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    white-space: nowrap;
+    font-family: 'EB Garamond', serif;
+    animation: fadeInOut 2s ease-in-out infinite;
+    text-shadow: 0 2px 10px rgba(217, 139, 28, 0.3);
+}
     </style>
 
     @stack('styles')
@@ -359,10 +376,12 @@
                 <i class="fas fa-crown loader-icon"></i>
             </div>
             <div class="loading-text">Lion Roaring</div>
+            
             <div class="particle"></div>
             <div class="particle"></div>
             <div class="particle"></div>
             <div class="particle"></div>
+            <div class="loading-text-bottom">Think Supernaturally, Act Locally</div>
         </section>
         @php
             use App\Helpers\Helper;

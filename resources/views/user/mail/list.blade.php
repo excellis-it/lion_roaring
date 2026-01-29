@@ -21,10 +21,10 @@
                         <div class="emailList__settings">
                             <div class="emailList__settingsLeft">
                                 <input type="checkbox" id="selectAll" />
-                                <span type="button" class="material-symbols-outlined"> arrow_drop_down </span>
-                                <span onclick="fetchLatestEmails()" type="button" class="material-symbols-outlined"> refresh
+                                <span type="button"><i class="fa-solid fa-caret-down"></i> </span>
+                                <span onclick="fetchLatestEmails()" type="button"><i class="fa-solid fa-arrows-rotate"></i>
                                 </span>
-                                <span type="button" class="material-symbols-outlined" id="delete"> delete </span>
+                                <span type="button" id="delete"><i class="fa-solid fa-trash"></i></span>
                             </div>
                             <div class="emailList__settingsRight d-flex">
                                 <span type="button" id="mailListPrevPage" class="material-symbols-outlined">chevron_left</span>
@@ -39,7 +39,8 @@
                         <!-- Section Starts -->
                         <div class="emailList__sections">
                             <div class="section section__selected">
-                                <span class="material-symbols-outlined"> inbox </span>
+                                <!-- <span class="material-symbols-outlined"> inbox </span> -->
+                                 <i class="fa-solid fa-inbox"></i>
                                 <h4>Primary</h4>
                             </div>
                             {{-- <div class="section">
