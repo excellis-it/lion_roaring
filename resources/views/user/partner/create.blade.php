@@ -451,7 +451,7 @@
                                 <div class="row">
                                     <div class="col-md-12">
                                         <div class="form-group">
-                                            <h5>Roles*</h5>
+                                            <h5>{{ App\Helpers\Helper::getMenuName('role_permission', 'Role Permission') }}*</h5>
 
 
                                             @foreach ($roles as $role)
@@ -581,7 +581,7 @@
                                     </div>
                                 </div>
 
-                          
+
 
                                 <div class="row mt-4" id="permissions-section">
                                     <div class="col-md-12">

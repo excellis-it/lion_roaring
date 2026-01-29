@@ -1,6 +1,6 @@
 @extends('user.layouts.master')
 @section('title')
-    Create Role - {{ env('APP_NAME') }}
+    Create {{ App\Helpers\Helper::getMenuName('role_permission', 'Role Permission') }} - {{ env('APP_NAME') }}
 @endsection
 @push('styles')
     <style>
@@ -167,14 +167,14 @@
                         <div class="row">
                             <div class="col-md-12">
                                 <div class="heading_box mb-5">
-                                    <h3>Create Role </h3>
+                                    <h3>Create {{ App\Helpers\Helper::getMenuName('role_permission', 'Role Permission') }} </h3>
                                 </div>
                             </div>
                         </div>
                         <div class="row">
                             <div class="col-md-4 mb-2">
                                 <div class="box_label">
-                                    <label>Role Name</label>
+                                    <label>{{ App\Helpers\Helper::getMenuName('role_permission', 'Role Permission') }} Name</label>
                                     <input type="text" class="form-control" id="role_name_input"
                                         value="{{ old('role_name') }}" placeholder="" name="role_name" required>
                                     @if ($errors->has('role_name'))

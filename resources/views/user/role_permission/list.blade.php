@@ -1,6 +1,6 @@
 @extends('user.layouts.master')
 @section('title')
-    Role List - {{ env('APP_NAME') }}
+    {{ App\Helpers\Helper::getMenuName('role_permission', 'Role Permission') }} List - {{ env('APP_NAME') }}
 @endsection
 @push('styles')
 @endpush
@@ -15,7 +15,7 @@
 
                                 <div class="row justify-content-between">
                                     <div class="col-lg-8">
-                                        <h3 class="mb-3">Role List</h3>
+                                        <h3 class="mb-3">{{ App\Helpers\Helper::getMenuName('role_permission', 'Role Permission') }} List</h3>
                                     </div>
 
                                     <div class="col-lg-4 text-end">
@@ -23,7 +23,7 @@
                                             House Of Ecclesia</a>
 
                                         <a href="{{ route('roles.create') }}" class="btn btn-primary ">+ Add
-                                            Role</a>
+                                            {{ App\Helpers\Helper::getMenuName('role_permission', 'Role Permission') }}</a>
                                     </div>
 
                                 </div>
@@ -43,7 +43,7 @@
                                         <thead class="color_head">
                                             <tr class="header-row">
                                                 <th>ID (#)</th>
-                                                <th>Role</th>
+                                                <th>{{ App\Helpers\Helper::getMenuName('role_permission', 'Role Permission') }}</th>
                                                 <th>Is ECCLESIA</th>
                                                 <th></th>
                                             </tr>
@@ -107,7 +107,7 @@
         $(document).on('click', '#delete', function(e) {
             swal({
                     title: "Are you sure?",
-                    text: "To delete this Role.",
+                    text: "To delete this {{ App\Helpers\Helper::getMenuName('role_permission', 'Role Permission') }}.",
                     type: "warning",
                     confirmButtonText: "Yes",
                     showCancelButton: true
@@ -125,5 +125,5 @@
                 })
         });
     </script>
-    
+
 @endpush

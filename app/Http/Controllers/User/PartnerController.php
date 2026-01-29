@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\User;
 
+use App\Helpers\Helper;
 use App\Http\Controllers\Controller;
 use App\Mail\ActiveUserMail;
 use App\Mail\InactiveUserMail;
@@ -91,6 +92,7 @@ class PartnerController extends Controller
 
     public function permissionsArray($allPermissions)
     {
+      
         $categorizedPermissions = [
             'Profile' => ['Manage Profile', 'Manage My Profile'],
             'Password' => ['Manage Password', 'Manage My Password'],
@@ -104,7 +106,6 @@ class PartnerController extends Controller
                 'Edit Becoming Sovereigns',
                 'Delete Becoming Sovereigns',
                 'Download Becoming Sovereigns',
-                'Manage Becomeing Sovereigns',
             ],
             'Becoming Christ Like' => [
                 'Manage Becoming Christ Like',
