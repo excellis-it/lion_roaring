@@ -335,6 +335,18 @@
                                                         @endif
                                                     </div>
                                                 </div>
+                                                <div class="col-lg-6 mb-3">
+                                                    <div class="login-username">
+                                                        <label for="lion_roaring_id">Roar ID</label>
+                                                        <input type="text" name="lion_roaring_id"
+                                                            id="lion_roaring_id" class="input"
+                                                            value="{{ old('lion_roaring_id') }}" required>
+                                                        @if ($errors->has('lion_roaring_id'))
+                                                            <div class="error" style="color:red;">
+                                                                {{ $errors->first('lion_roaring_id') }}</div>
+                                                        @endif
+                                                    </div>
+                                                </div>
                                                 {{-- eclessias --}}
                                                 <div class="col-lg-6 mb-3">
                                                     <div class="login-username">
@@ -1137,6 +1149,9 @@
                 });
 
                 $('#login-form').on('submit', function(e) {
+                    if ($(this).data('final-submit') === true) {
+                        return true;
+                    }
                     // If signature validation failed in previous handler, stop here
                     if (e.isDefaultPrevented()) {
                         return;
@@ -1280,6 +1295,7 @@
                             name: 'stripeToken',
                             value: 'free_tier'
                         }).appendTo('#login-form');
+                        $('#login-form').data('final-submit', true);
                         $('#login-form').submit();
                     }
                 });
@@ -1300,6 +1316,7 @@
                         value: '1'
                     }).appendTo('#login-form');
                     $('#tokenAgreeModal').modal('hide');
+                    $('#login-form').data('final-submit', true);
                     $('#login-form').submit();
                 });
 
@@ -1322,6 +1339,7 @@
                                 value: result.token.id
                             }).appendTo('#login-form');
                             $('#paymentModal').modal('hide');
+                            $('#login-form').data('final-submit', true);
                             $('#login-form').submit();
                         }
                     });

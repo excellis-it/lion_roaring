@@ -29,6 +29,7 @@ class User extends Authenticatable
         'first_name',
         'last_name',
         'created_id',
+        'lion_roaring_id',
         'user_name',
         'middle_name',
         'address',

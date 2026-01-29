@@ -362,7 +362,11 @@ Route::middleware(['userActivity'])->group(function () {
     // Redirect "/" to "/{cc}"
     Route::get('/', function () {
         $cc = strtolower(Helper::getVisitorCountryCode()); // e.g., "US" -> "us"
-        return $cc ? redirect('/' . $cc, 302) : app(CmsController::class)->index();
+        if ($cc) {
+            session()->reflash();
+            return redirect('/' . $cc, 302);
+        }
+        return app(CmsController::class)->index();
     })->name('home');
 
     // Country-code masked home (won't affect other routes due to tight constraint)
