@@ -43,4 +43,12 @@ return [
         'key' => env('METALPRICEAPI_KEY', '95735e9850d7d454adfac60f2a6c6984'),
     ],
 
+    'goldapi' => [
+        'base' => env('GOLD_API_BASE', 'https://api.gold-api.com'),
+    ],
+
+    'market_rates' => [
+        'primary' => env('MARKET_RATE_PRIMARY_API', 'metalpriceapi'),
+    ],
+
 ];

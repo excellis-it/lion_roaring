@@ -91,6 +91,9 @@ class EstoreSettingController extends Controller
             'cancel_within_hours' => 'nullable|integer|min:0',
             'max_order_quantity' => 'nullable|integer|min:1',
             'shipping_rules' => 'nullable', // accept array or JSON string
+            'market_rate_primary' => 'nullable|in:metalpriceapi,goldapi',
+            'market_rate_refresh_value' => 'nullable|integer|min:1',
+            'market_rate_refresh_unit' => 'nullable|in:minute,hour,day,month',
         ]);
 
         // Normalize and validate shipping_rules if provided (accepted as JSON string or array)

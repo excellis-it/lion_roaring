@@ -148,6 +148,68 @@
                                 </div>
                             </div>
 
+                            {{-- Market Rate Settings --}}
+                            <div class="col-12 mb-2">
+                                <div class="heading_box mb-2">
+                                    <h5>Market Rate Settings</h5>
+                                </div>
+                            </div>
+
+                            <div class="col-md-6 mb-2">
+                                <div class="box_label">
+                                    <label for="market_rate_primary">Primary Market API</label>
+                                    <select name="market_rate_primary" id="market_rate_primary"
+                                        class="form-control @error('market_rate_primary') is-invalid @enderror">
+                                        <option value="metalpriceapi"
+                                            {{ old('market_rate_primary', $storeSetting->market_rate_primary ?? 'metalpriceapi') == 'metalpriceapi' ? 'selected' : '' }}>
+                                            MetalPriceAPI
+                                        </option>
+                                        <option value="goldapi"
+                                            {{ old('market_rate_primary', $storeSetting->market_rate_primary ?? 'metalpriceapi') == 'goldapi' ? 'selected' : '' }}>
+                                            Gold API
+                                        </option>
+                                    </select>
+                                    @error('market_rate_primary')
+                                        <div class="invalid-feedback">{{ $message }}</div>
+                                    @enderror
+                                </div>
+                            </div>
+
+                            <div class="col-md-3 mb-2">
+                                <div class="box_label">
+                                    <label for="market_rate_refresh_value">Refresh Every</label>
+                                    <input type="number" step="1" min="1" name="market_rate_refresh_value"
+                                        id="market_rate_refresh_value"
+                                        class="form-control @error('market_rate_refresh_value') is-invalid @enderror"
+                                        value="{{ old('market_rate_refresh_value', $storeSetting->market_rate_refresh_value ?? 12) }}">
+                                    @error('market_rate_refresh_value')
+                                        <div class="invalid-feedback">{{ $message }}</div>
+                                    @enderror
+                                </div>
+                            </div>
+
+                            <div class="col-md-3 mb-2">
+                                <div class="box_label">
+                                    <label for="market_rate_refresh_unit">Unit</label>
+                                    <select name="market_rate_refresh_unit" id="market_rate_refresh_unit"
+                                        class="form-control @error('market_rate_refresh_unit') is-invalid @enderror">
+                                        @php
+                                            $unit = old(
+                                                'market_rate_refresh_unit',
+                                                $storeSetting->market_rate_refresh_unit ?? 'hour',
+                                            );
+                                        @endphp
+                                        <option value="minute" {{ $unit == 'minute' ? 'selected' : '' }}>Minute</option>
+                                        <option value="hour" {{ $unit == 'hour' ? 'selected' : '' }}>Hour</option>
+                                        <option value="day" {{ $unit == 'day' ? 'selected' : '' }}>Day</option>
+                                        <option value="month" {{ $unit == 'month' ? 'selected' : '' }}>Month</option>
+                                    </select>
+                                    @error('market_rate_refresh_unit')
+                                        <div class="invalid-feedback">{{ $message }}</div>
+                                    @enderror
+                                </div>
+                            </div>
+
                             {{-- Shipping Rules (quantity based) --}}
                             <div class="col-12 mb-3">
                                 <div class="box_label">

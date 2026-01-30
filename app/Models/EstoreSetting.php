@@ -19,6 +19,9 @@ class EstoreSetting extends BaseModel
         'shipping_rules',
         'max_order_quantity',
         'cancel_within_hours',
+        'market_rate_primary',
+        'market_rate_refresh_value',
+        'market_rate_refresh_unit',
     ];
 
     protected $casts = [
