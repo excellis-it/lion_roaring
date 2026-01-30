@@ -25,6 +25,14 @@
                                     @endif
                                 </div>
                                 <div class="row justify-content-end">
+                                    <div class="col-lg-3">
+                                        <select class="form-control rounded_search" name="category_id" id="category_id">
+                                            <option value="">All Categories</option>
+                                            @foreach ($categories as $category)
+                                                <option value="{{ $category->id }}">{{ $category->name }}</option>
+                                            @endforeach
+                                        </select>
+                                    </div>
                                     <div class="col-lg-4">
                                         <div class="search-field">
                                             <input type="text" name="search" id="search" placeholder="search..."
@@ -137,14 +145,15 @@
                 $('#sku_icon').html('');
             }
 
-            function fetch_data(page, sort_type, sort_by, query) {
+            function fetch_data(page, sort_type, sort_by, query, category_id) {
                 $.ajax({
                     url: "{{ route('products.fetch-data') }}",
                     data: {
                         page: page,
                         sortby: sort_by,
                         sorttype: sort_type,
-                        query: query
+                        query: query,
+                        category_id: category_id
                     },
                     success: function(data) {
                         $('tbody').html(data.data);
@@ -157,7 +166,18 @@
                 var column_name = $('#hidden_column_name').val();
                 var sort_type = $('#hidden_sort_type').val();
                 var page = $('#hidden_page').val();
-                fetch_data(page, sort_type, column_name, query);
+                var category_id = $('#category_id').val();
+                fetch_data(page, sort_type, column_name, query, category_id);
+            });
+
+            $(document).on('change', '#category_id', function() {
+                var query = $('#search').val();
+                var column_name = $('#hidden_column_name').val();
+                var sort_type = $('#hidden_sort_type').val();
+                var page = 1;
+                $('#hidden_page').val(page);
+                var category_id = $('#category_id').val();
+                fetch_data(page, sort_type, column_name, query, category_id);
             });
 
             $(document).on('click', '.sorting', function() {
@@ -182,7 +202,8 @@
                 $('#hidden_sort_type').val(reverse_order);
                 var page = $('#hidden_page').val();
                 var query = $('#search').val();
-                fetch_data(page, reverse_order, column_name, query);
+                var category_id = $('#category_id').val();
+                fetch_data(page, reverse_order, column_name, query, category_id);
             });
 
             $(document).on('click', '.pagination a', function(event) {
@@ -193,10 +214,11 @@
                 var sort_type = $('#hidden_sort_type').val();
 
                 var query = $('#search').val();
+                var category_id = $('#category_id').val();
 
                 $('li').removeClass('active');
                 $(this).parent().addClass('active');
-                fetch_data(page, sort_type, column_name, query);
+                fetch_data(page, sort_type, column_name, query, category_id);
             });
 
         });

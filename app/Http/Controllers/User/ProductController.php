@@ -57,7 +57,8 @@ class ProductController extends Controller
         // return User::with('roles')->where('id', auth()->id())->first();
         if (auth()->user()->can('Manage Estore Products') || auth()->user()->isWarehouseAdmin()) {
             $products = Product::where('is_deleted', false)->orderBy('id', 'desc')->paginate(10);
-            return view('user.product.list', compact('products'));
+            $categories = Category::orderBy('name')->get();
+            return view('user.product.list', compact('products', 'categories'));
         } else {
             abort(403, 'You do not have permission to access this page.');
         }
@@ -70,6 +71,7 @@ class ProductController extends Controller
             $sort_by = $request->get('sortby');
             $sort_type = $request->get('sorttype');
             $query = $request->get('query');
+            $categoryId = $request->get('category_id');
             $query = str_replace(" ", "%", $query);
 
             $products = Product::query();
@@ -98,6 +100,10 @@ class ProductController extends Controller
                             $subQ->where('name', 'like', '%' . $query . '%');
                         });
                 });
+            }
+
+            if (!empty($categoryId)) {
+                $products = $products->where('category_id', $categoryId);
             }
 
             // Apply sorting

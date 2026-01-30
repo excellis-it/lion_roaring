@@ -24,7 +24,8 @@ class ElearningController extends Controller
     {
         if (auth()->user()->can('Manage Elearning Product')) {
             $products = ElearningProduct::orderBy('id', 'desc')->paginate(10);
-            return view('user.elearning-product.list', compact('products'));
+            $categories = ElearningCategory::orderBy('name')->get();
+            return view('user.elearning-product.list', compact('products', 'categories'));
         } else {
             abort(403, 'You do not have permission to access this page.');
         }
@@ -36,10 +37,13 @@ class ElearningController extends Controller
             $sort_by = $request->get('sortby');
             $sort_type = $request->get('sorttype');
             $query = $request->get('query');
+            $categoryId = $request->get('category_id');
             $query = str_replace(" ", "%", $query);
 
-            $products = ElearningProduct::query()
-                ->where(function ($q) use ($query) {
+            $products = ElearningProduct::query();
+
+            if (!empty($query)) {
+                $products = $products->where(function ($q) use ($query) {
                     $q->where('id', 'like', '%' . $query . '%')
                         ->orWhere('name', 'like', '%' . $query . '%')
                         // ->orWhere('sku', 'like', '%' . $query . '%')
@@ -48,11 +52,14 @@ class ElearningController extends Controller
                         ->orWhere('slug', 'like', '%' . $query . '%');
                 })->orWhereHas('category', function ($q) use ($query) {
                     $q->where('name', 'like', '%' . $query . '%');
+                })->orWhereHas('elearningTopic', function ($q) use ($query) {
+                    $q->where('topic_name', 'like', '%' . $query . '%');
                 });
+            }
 
-            $products = $products->orWhereHas('elearningTopic', function ($q) use ($query) {
-                $q->where('topic_name', 'like', '%' . $query . '%');
-            });
+            if (!empty($categoryId)) {
+                $products = $products->where('category_id', $categoryId);
+            }
             if ($sort_by && $sort_type) {
                 $products = $products->orderBy($sort_by, $sort_type);
             }
