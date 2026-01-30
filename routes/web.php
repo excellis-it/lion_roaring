@@ -167,10 +167,10 @@ Route::get('dbmigrate', function () {
 });
 
 // // db seed
-// Route::get('dbseed', function () {
-//     Artisan::call('db:seed AddMembershipMenuItems');
-//     return "Database seeding has been successfully";
-// });
+Route::get('dbseed', function () {
+    Artisan::call('db:seed AddMembershipMenuItems');
+    return "Database seeding has been successfully";
+});
 
 
 Route::get('/admin', [AuthController::class, 'redirectAdminLogin']);
