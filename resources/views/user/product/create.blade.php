@@ -418,12 +418,14 @@
 
                                             <div class="col-md-3 mb-2">
                                                 <div class="box_label">
-                                                    <label for="use_market_price"> Select Market Price</label>
-                                                    <div class="form-check form-switch mt-3">
+                                                    <label for="use_market_price" style="position: relative; top: 0; left: 0;">
+                                                        Select Market Price</label>
+                                                    <div class="form-check form-switch mt-1">
                                                         <input class="form-check-input" type="checkbox"
                                                             name="use_market_price" id="use_market_price" value="1"
                                                             {{ old('use_market_price') ? 'checked' : '' }}>
                                                         <label class="form-check-label"
+                                                            style="position: relative; top: 0;"
                                                             for="use_market_price">Enable</label>
                                                     </div>
                                                 </div>
