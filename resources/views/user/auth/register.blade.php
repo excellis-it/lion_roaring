@@ -347,6 +347,17 @@
                                                         @endif
                                                     </div>
                                                 </div>
+                                                <div class="col-lg-6 mb-3">
+                                                    <div class="login-username">
+                                                        <label for="roar_id">Roar ID</label>
+                                                        <input type="text" name="roar_id" id="roar_id"
+                                                            class="input" value="{{ old('roar_id') }}" required>
+                                                        @if ($errors->has('roar_id'))
+                                                            <div class="error" style="color:red;">
+                                                                {{ $errors->first('roar_id') }}</div>
+                                                        @endif
+                                                    </div>
+                                                </div>
                                                 {{-- eclessias --}}
                                                 <div class="col-lg-6 mb-3">
                                                     <div class="login-username">

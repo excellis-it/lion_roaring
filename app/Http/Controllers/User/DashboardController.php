@@ -77,6 +77,8 @@ class DashboardController extends Controller
             'first_name' => 'required|string|max:255',
             'last_name' => 'required|string|max:255',
             'middle_name' => 'nullable|string|max:255',
+            'lion_roaring_id' => 'required|string|max:255|unique:users,lion_roaring_id,' . Auth::user()->id,
+            'roar_id' => 'required|string|max:255',
             'address' => 'required|string|max:255',
             'phone_number' => 'required',
             'country' => 'required',
@@ -97,6 +99,8 @@ class DashboardController extends Controller
             $data->first_name = $request->first_name;
             $data->last_name = $request->last_name;
             $data->middle_name = $request->middle_name;
+            $data->lion_roaring_id = $request->lion_roaring_id;
+            $data->roar_id = $request->roar_id;
             $data->address = $request->address;
             $data->address2 = $request->address2;
             $data->country = $request->country;

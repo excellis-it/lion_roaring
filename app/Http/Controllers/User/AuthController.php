@@ -123,6 +123,7 @@ class AuthController extends Controller
         $validator = Validator::make($request->all(), [
             'user_name' => 'required|string|max:255|unique:users',
             'lion_roaring_id' => 'required|string|max:255|unique:users,lion_roaring_id',
+            'roar_id' => 'required|string|max:255',
             'email' => 'required|string|email|max:255|unique:users',
             'ecclesia_id' => 'nullable',
             'first_name' => 'required|string|max:255',
@@ -242,6 +243,7 @@ class AuthController extends Controller
         $user = new User();
         $user->user_name = $request->user_name;
         $user->lion_roaring_id = $request->lion_roaring_id;
+        $user->roar_id = $request->roar_id;
         $user->ecclesia_id = $request->ecclesia_id;
         $user->email = $request->email;
         $user->personal_email = $lr_email ? str_replace(' ', '', $lr_email) : null;
@@ -409,6 +411,7 @@ class AuthController extends Controller
         $validator = Validator::make($request->all(), [
             'user_name' => 'required|string|max:255|unique:users',
             'lion_roaring_id' => 'required|string|max:255|unique:users,lion_roaring_id',
+            'roar_id' => 'required|string|max:255',
             'email' => 'required|string|email|max:255|unique:users',
             'ecclesia_id' => 'nullable',
             'first_name' => 'required|string|max:255',

@@ -245,6 +245,14 @@
                                 <div class="col-md-6 mb-3">
                                     <div class="info-item">
                                         <small class="text-muted d-block mb-1 info-label">
+                                            <i class="fa fa-id-badge"></i> Roar ID
+                                        </small>
+                                        <strong class="info-value">{{ $partner->roar_id ?? 'N/A' }}</strong>
+                                    </div>
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <div class="info-item">
+                                        <small class="text-muted d-block mb-1 info-label">
                                             <i class="fa fa-phone"></i> Phone Number
                                         </small>
                                         <strong class="info-value">{{ $partner->phone ?? 'N/A' }}</strong>

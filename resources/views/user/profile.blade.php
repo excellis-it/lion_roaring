@@ -70,6 +70,8 @@
                                         <p>Hello!</p>
                                         <h2> {{ Auth::user()->first_name }} {{ Auth::user()->last_name }}</h2>
                                         <p>{{ Auth::user()->email }}</p>
+                                        <p>Lion Roaring ID: {{ Auth::user()->lion_roaring_id ?? '' }}</p>
+                                        <p>Roar ID: {{ Auth::user()->roar_id ?? '' }}</p>
                                         <span>
 
                                             <b>
@@ -82,7 +84,9 @@
                                                 <p class="mb-1">Active:
                                                     <strong>{{ $user_subscription->subscription_name }}</strong> - Expires:
                                                     @php
-                                                        $exp = \Carbon\Carbon::parse($user_subscription->subscription_expire_date);
+                                                        $exp = \Carbon\Carbon::parse(
+                                                            $user_subscription->subscription_expire_date,
+                                                        );
                                                     @endphp
                                                     {{ $exp->format('M j, Y') }}
                                                     (
@@ -100,8 +104,8 @@
                                                 <a href="{{ route('user.membership.index') }}"
                                                     class="btn btn-sm btn-primary mt-2">Manage Membership</a>
                                             @else
-                                                <a href="{{ route('user.membership.index') }}"
-                                                    class="print_btn mt-2">Get Membership</a>
+                                                <a href="{{ route('user.membership.index') }}" class="print_btn mt-2">Get
+                                                    Membership</a>
                                             @endif
                                         </div>
                                     </div>
@@ -143,6 +147,30 @@
                                                 placeholder="Last Name" value="{{ Auth::user()->last_name }}">
                                             @if ($errors->has('last_name'))
                                                 <div class="error" style="color:red;">{{ $errors->first('last_name') }}
+                                                </div>
+                                            @endif
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6 mb-2">
+                                        <div class="box_label">
+                                            <label>Lion Roaring ID*</label>
+                                            <input type="text" class="form-control" id="lion_roaring_id"
+                                                name="lion_roaring_id" placeholder="Lion Roaring ID"
+                                                value="{{ Auth::user()->lion_roaring_id }}">
+                                            @if ($errors->has('lion_roaring_id'))
+                                                <div class="error" style="color:red;">
+                                                    {{ $errors->first('lion_roaring_id') }}
+                                                </div>
+                                            @endif
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6 mb-2">
+                                        <div class="box_label">
+                                            <label>Roar ID*</label>
+                                            <input type="text" class="form-control" id="roar_id" name="roar_id"
+                                                placeholder="Roar ID" value="{{ Auth::user()->roar_id }}">
+                                            @if ($errors->has('roar_id'))
+                                                <div class="error" style="color:red;">{{ $errors->first('roar_id') }}
                                                 </div>
                                             @endif
                                         </div>
