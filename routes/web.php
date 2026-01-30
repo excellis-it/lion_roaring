@@ -127,6 +127,7 @@ use App\Http\Controllers\User\ColorController;
 use App\Http\Controllers\User\SizeController;
 use App\Http\Controllers\User\EstorePromoCodeController;
 use App\Http\Controllers\User\EstoreSettingController;
+use App\Http\Controllers\User\MarketMaterialController;
 use App\Http\Controllers\User\OrderEmailTemplateController;
 use App\Http\Controllers\User\OrderStatusController;
 use App\Http\Controllers\User\WareHouseController;
@@ -741,6 +742,9 @@ Route::prefix('user')->middleware(['user', 'preventBackHistory', 'userActivity',
     Route::get('/store-promo-codes-delete/{id}', [EstorePromoCodeController::class, 'delete'])->name('store-promo-codes.delete');
     // estore setting management
     Route::resource('/store-settings', EstoreSettingController::class);
+
+    // market materials management
+    Route::resource('/market-materials', MarketMaterialController::class);
 
     // ware house management
     Route::resource('/ware-houses', WareHouseController::class);

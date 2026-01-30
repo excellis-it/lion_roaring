@@ -315,9 +315,10 @@
                                             <div class="form-check form-switch mt-3">
                                                 <label class="form-check-label" for="is_free">Mark as Free (Price becomes
                                                     0)</label>
-                                                <input class="form-check-input mt-3 mb-3" style="width: 60px; height: 30px;"
-                                                    type="checkbox" role="switch" id="is_free" name="is_free"
-                                                    value="1" {{ old('is_free') ? 'checked' : '' }}>
+                                                <input class="form-check-input mt-3 mb-3"
+                                                    style="width: 60px; height: 30px;" type="checkbox" role="switch"
+                                                    id="is_free" name="is_free" value="1"
+                                                    {{ old('is_free') ? 'checked' : '' }}>
 
                                             </div>
                                         </div>
@@ -417,6 +418,53 @@
 
                                             <div class="col-md-3 mb-2">
                                                 <div class="box_label">
+                                                    <label for="use_market_price"> Select Market Price</label>
+                                                    <div class="form-check form-switch mt-3">
+                                                        <input class="form-check-input" type="checkbox"
+                                                            name="use_market_price" id="use_market_price" value="1"
+                                                            {{ old('use_market_price') ? 'checked' : '' }}>
+                                                        <label class="form-check-label"
+                                                            for="use_market_price">Enable</label>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <div class="col-md-3 mb-2 market-price-fields" style="display:none;">
+                                                <div class="box_label">
+                                                    <label for="market_material_id"> Material <span
+                                                            class="text-danger">*</span></label>
+                                                    <select name="market_material_id" id="market_material_id"
+                                                        class="form-control">
+                                                        <option value="">Select Material</option>
+                                                        @foreach ($marketMaterials as $material)
+                                                            <option value="{{ $material->id }}"
+                                                                {{ old('market_material_id') == $material->id ? 'selected' : '' }}>
+                                                                {{ $material->name }}
+                                                            </option>
+                                                        @endforeach
+                                                    </select>
+                                                    @if ($errors->has('market_material_id'))
+                                                        <span
+                                                            class="error">{{ $errors->first('market_material_id') }}</span>
+                                                    @endif
+                                                </div>
+                                            </div>
+
+                                            <div class="col-md-3 mb-2 market-price-fields" style="display:none;">
+                                                <div class="box_label">
+                                                    <label for="market_grams"> Grams <span
+                                                            class="text-danger">*</span></label>
+                                                    <input type="number" step="any" name="market_grams"
+                                                        id="market_grams" class="form-control"
+                                                        value="{{ old('market_grams') }}" min="0.01">
+                                                    @if ($errors->has('market_grams'))
+                                                        <span class="error">{{ $errors->first('market_grams') }}</span>
+                                                    @endif
+                                                </div>
+                                            </div>
+
+                                            <div class="col-md-3 mb-2" id="price-field">
+                                                <div class="box_label">
                                                     <label for="price"> Price*</label>
                                                     <input type="number" step="any" name="price" id="price"
                                                         class="form-control" value="{{ old('price') }}">
@@ -426,7 +474,7 @@
                                                 </div>
                                             </div>
 
-                                            <div class="col-md-3 mb-2">
+                                            <div class="col-md-3 mb-2" id="sale-price-field">
                                                 <div class="box_label">
                                                     <label for="sale_price"> Sale Price</label>
                                                     <input type="number" step="any" name="sale_price"
@@ -978,15 +1026,32 @@
 
                 function togglePriceFields() {
                     const isFree = $('#is_free').is(':checked');
-                    if (isFree) {
-                        $('#price').prop('readonly', true).val('0');
+                    const useMarket = $('#use_market_price').is(':checked');
+
+                    if (useMarket) {
+                        $('#price-field').hide();
+                        $('#sale-price-field').hide();
+                        $('.market-price-fields').show();
+                        $('#price').prop('readonly', true).val('');
                         $('#sale_price').prop('readonly', true).val('');
+                        $('#is_free').prop('checked', false).prop('disabled', true);
                     } else {
-                        $('#price').prop('readonly', false);
-                        $('#sale_price').prop('readonly', false);
+                        $('#price-field').show();
+                        $('#sale-price-field').show();
+                        $('.market-price-fields').hide();
+                        $('#is_free').prop('disabled', false);
+
+                        if (isFree) {
+                            $('#price').prop('readonly', true).val('0');
+                            $('#sale_price').prop('readonly', true).val('');
+                        } else {
+                            $('#price').prop('readonly', false);
+                            $('#sale_price').prop('readonly', false);
+                        }
                     }
                 }
                 $('#is_free').on('change', togglePriceFields);
+                $('#use_market_price').on('change', togglePriceFields);
                 togglePriceFields();
 
 

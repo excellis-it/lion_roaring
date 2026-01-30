@@ -39,4 +39,8 @@ return [
         'maps_key' => env('GOOGLE_MAPS_API_KEY'),
     ],
 
+    'metalpriceapi' => [
+        'key' => env('METALPRICEAPI_KEY', '95735e9850d7d454adfac60f2a6c6984'),
+    ],
+
 ];

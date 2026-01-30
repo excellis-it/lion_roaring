@@ -8,6 +8,7 @@ use App\Models\UserActivity;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
 use App\Helpers\helper;
+use App\Services\MarketRateService;
 
 
 class UserActivityLogger
@@ -37,6 +38,9 @@ class UserActivityLogger
             if (!$request->isMethod('get')) {
                 return $response;
             }
+
+            // Refresh market rates at most every 12 hours
+            MarketRateService::refreshIfStale();
 
             $user = Auth::user();
             $ip = $request->ip();

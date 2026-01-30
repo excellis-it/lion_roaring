@@ -22,6 +22,8 @@ use App\Models\ProductVariation;
 use App\Models\ProductColorImage;
 use App\Models\Review;
 use App\Models\WarehouseProductVariation;
+use App\Models\MarketMaterial;
+use App\Services\MarketRateService;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rule;
 use Illuminate\Support\Str;
@@ -169,6 +171,7 @@ class ProductController extends Controller
         $categories = Category::where('status', 1)->get();
         $sizes = Size::where('status', 1)->get();
         $colors = Color::where('status', 1)->get();
+        $marketMaterials = MarketMaterial::where('is_active', true)->orderBy('sort_order')->orderBy('name')->get();
 
         // Get warehouses for assignment
         if (auth()->user()->hasNewRole('SUPER ADMIN') || auth()->user()->hasNewRole('ADMINISTRATOR')) {
@@ -179,7 +182,7 @@ class ProductController extends Controller
 
         if (auth()->user()->can('Create Estore Products') || auth()->user()->isWarehouseAdmin()) {
             return view('user.product.create')
-                ->with(compact('categories', 'sizes', 'colors', 'warehouses'));
+                ->with(compact('categories', 'sizes', 'colors', 'warehouses', 'marketMaterials'));
         } else {
             abort(403, 'You do not have permission to access this page.');
         }
@@ -211,6 +214,9 @@ class ProductController extends Controller
             'product_type'      => 'required|in:simple,variable',
             // toggles
             'is_free'           => 'nullable|in:0,1',
+            'use_market_price'  => 'nullable|in:0,1',
+            'market_material_id' => 'nullable|integer|exists:market_materials,id',
+            'market_grams'       => 'nullable|numeric|min:0.01',
             'status'            => 'nullable|in:0,1',
             // other charges (if present)
             'other_charges' => 'nullable|array',
@@ -223,10 +229,17 @@ class ProductController extends Controller
 
         // Conditional rules for simple product
         if ($request->input('product_type', 'simple') === 'simple') {
+            $useMarketPrice = $request->boolean('use_market_price');
+
+            if ($useMarketPrice) {
+                $rules['market_material_id'] = 'required|integer|exists:market_materials,id';
+                $rules['market_grams'] = 'required|numeric|min:0.01';
+            }
+
             // If product is marked free, price may be nullable (we'll set 0 server-side).
-            if ($request->boolean('is_free')) {
+            if (!$useMarketPrice && $request->boolean('is_free')) {
                 $rules['price'] = 'nullable|numeric|min:0';
-            } else {
+            } elseif (!$useMarketPrice) {
                 $rules['price'] = 'required|numeric|min:0';
             }
 
@@ -257,6 +270,9 @@ class ProductController extends Controller
             'images.required' => 'Please upload at least one gallery image.',
             'images.min' => 'Please upload at least one gallery image.',
             'price.required' => 'The price field is required for simple products (unless marked free).',
+            'market_material_id.required' => 'Please select a market material.',
+            'market_grams.required' => 'Please enter grams for market pricing.',
+            'market_grams.min' => 'Grams must be greater than 0.',
             // 'sku.required' => 'The SKU field is required for simple products.',
             // 'sku.unique' => 'The SKU has already been taken.',
             'quantity.required' => 'The stock quantity is required for simple products.',
@@ -291,6 +307,30 @@ class ProductController extends Controller
         // Validation passed - get validated data
         $validatedData = $validator->validated();
 
+        $useMarketPrice = $request->boolean('use_market_price');
+        if ($useMarketPrice && $request->boolean('is_free')) {
+            return response()->json([
+                'errors' => [
+                    'use_market_price' => ['Market pricing cannot be used with free products.'],
+                ],
+            ], 422);
+        }
+
+        $computedMarketPrice = null;
+        $marketRate = null;
+        if ($useMarketPrice && $request->input('product_type') === 'simple') {
+            $marketRate = MarketRateService::getLatestRateForMaterial((int) $request->market_material_id);
+            if (!$marketRate || !$marketRate->rate_per_gram) {
+                return response()->json([
+                    'errors' => [
+                        'market_material_id' => ['Market price is not available right now. Please try again.'],
+                    ],
+                ], 422);
+            }
+
+            $computedMarketPrice = (float) $marketRate->rate_per_gram * (float) $request->market_grams;
+        }
+
         // generate SKU with easy coded in the first 3-5 characters indicate the category. for example:  Agriculture - AGR+number, Science & Innovation - SCI+number, etc.
         $categoryName = Category::find($request->category_id)->name ?? 'GEN';
         $categoryPrefix = substr($categoryName, 0, 3) ?: 'GEN';
@@ -308,12 +348,17 @@ class ProductController extends Controller
         $product->product_type = $request->product_type; // 'simple' or 'variable'
         $product->sku = $generatedSKU;
         $product->quantity = $request->quantity ?? 0;
-        $product->price = $request->price;
-        $product->sale_price = $request->sale_price ?? null;
+        $product->price = $useMarketPrice ? $computedMarketPrice : $request->price;
+        $product->sale_price = $useMarketPrice ? null : ($request->sale_price ?? null);
         $product->slug = $request->slug;
         $product->feature_product = $request->feature_product;
         $product->is_new_product = $request->is_new_product;
-        $product->is_free = $request->has('is_free');
+        $product->is_free = $useMarketPrice ? false : $request->has('is_free');
+        $product->is_market_priced = $useMarketPrice;
+        $product->market_material_id = $useMarketPrice ? $request->market_material_id : null;
+        $product->market_grams = $useMarketPrice ? $request->market_grams : null;
+        $product->market_rate_per_gram = $useMarketPrice ? $marketRate?->rate_per_gram : null;
+        $product->market_rate_at = $useMarketPrice ? $marketRate?->fetched_at : null;
         if ($product->is_free) {
             $product->price = 0;
             $product->sale_price = null;
@@ -459,6 +504,7 @@ class ProductController extends Controller
         $categories = Category::where('status', 1)->get();
         $sizes = Size::where('status', 1)->get();
         $colors = Color::where('status', 1)->get();
+        $marketMaterials = MarketMaterial::where('is_active', true)->orderBy('sort_order')->orderBy('name')->get();
 
         // Get warehouses for assignment
         if (auth()->user()->hasNewRole('SUPER ADMIN') || auth()->user()->hasNewRole('ADMINISTRATOR')) {
@@ -474,7 +520,7 @@ class ProductController extends Controller
             $warehouseProducts = WarehouseProduct::where('product_id', $product->id)->get();
             $productSizes = $product->sizesWithDetails();
 
-            return view('user.product.edit', compact('product', 'categories', 'sizes', 'colors', 'warehouses', 'warehouseProducts', 'productSizes'));
+            return view('user.product.edit', compact('product', 'categories', 'sizes', 'colors', 'warehouses', 'warehouseProducts', 'productSizes', 'marketMaterials'));
         } else {
             abort(403, 'You do not have permission to access this page.');
         }
@@ -510,6 +556,9 @@ class ProductController extends Controller
                 'images.*'         => 'image|mimes:jpeg,png,jpg,gif,svg,webp',
                 'product_type'     => 'required|in:simple,variable',
                 'is_free'          => 'nullable|in:0,1',
+                'use_market_price' => 'nullable|in:0,1',
+                'market_material_id' => 'nullable|integer|exists:market_materials,id',
+                'market_grams'      => 'nullable|numeric|min:0.01',
                 'status'           => 'nullable|in:0,1',
                 // other charges (if present)
                 'other_charges'             => 'nullable|array',
@@ -532,6 +581,19 @@ class ProductController extends Controller
             //     ];
             //     $rules['quantity'] = 'required|integer|min:0';
             // }
+
+            if ($product->product_type === 'simple') {
+                $useMarketPrice = $request->boolean('use_market_price');
+
+                if ($useMarketPrice) {
+                    $rules['market_material_id'] = 'required|integer|exists:market_materials,id';
+                    $rules['market_grams'] = 'required|numeric|min:0.01';
+                }
+
+                if (!$useMarketPrice && !$request->boolean('is_free')) {
+                    $rules['price'] = 'required|numeric|min:0';
+                }
+            }
 
             // Conditional rules for variable product
             if ($product->product_type === 'variable') {
@@ -557,6 +619,10 @@ class ProductController extends Controller
                 'other_charges.*.charge_name.required_with' => 'Charge name is required when adding other charges.',
                 'product_type.required' => 'The product type field is required.',
                 'product_type.in' => 'The selected product type is invalid.',
+                'price.required' => 'The price field is required for simple products (unless marked free).',
+                'market_material_id.required' => 'Please select a market material.',
+                'market_grams.required' => 'Please enter grams for market pricing.',
+                'market_grams.min' => 'Grams must be greater than 0.',
             ];
 
             $validator = Validator::make($request->all(), $rules, $messages);
@@ -575,6 +641,30 @@ class ProductController extends Controller
 
             $validatedData = $validator->validate(); // throws 422 if fails
 
+            $useMarketPrice = $request->boolean('use_market_price');
+            if ($useMarketPrice && $request->boolean('is_free')) {
+                return response()->json([
+                    'errors' => [
+                        'use_market_price' => ['Market pricing cannot be used with free products.'],
+                    ],
+                ], 422);
+            }
+
+            $computedMarketPrice = null;
+            $marketRate = null;
+            if ($useMarketPrice && $product->product_type === 'simple') {
+                $marketRate = MarketRateService::getLatestRateForMaterial((int) $request->market_material_id);
+                if (!$marketRate || !$marketRate->rate_per_gram) {
+                    return response()->json([
+                        'errors' => [
+                            'market_material_id' => ['Market price is not available right now. Please try again.'],
+                        ],
+                    ], 422);
+                }
+
+                $computedMarketPrice = (float) $marketRate->rate_per_gram * (float) $request->market_grams;
+            }
+
 
             $product->category_id = $request->category_id;
             $product->name = $request->name;
@@ -589,19 +679,25 @@ class ProductController extends Controller
             $product->feature_product = $request->feature_product;
             $product->is_new_product = $request->is_new_product;
             $product->status = $request->status;
-            $product->is_free = $request->has('is_free');
-            if ($product->is_free) {
-                $product->price = 0;
-                ProductVariation::where('product_id', $product->id)->update([
-                    'price' => 0,
-                    'sale_price' => null,
-                    'before_sale_price' => null,
-                ]);
+            $product->is_market_priced = $useMarketPrice;
+            $product->market_material_id = $useMarketPrice ? $request->market_material_id : null;
+            $product->market_grams = $useMarketPrice ? $request->market_grams : null;
+            $product->market_rate_per_gram = $useMarketPrice ? $marketRate?->rate_per_gram : null;
+            $product->market_rate_at = $useMarketPrice ? $marketRate?->fetched_at : null;
 
-                WarehouseProduct::where('product_id', $product->id)->update([
-                    'price' => 0,
-                    'before_sale_price' => null,
-                ]);
+            if ($useMarketPrice && $product->product_type === 'simple') {
+                $product->price = $computedMarketPrice;
+                $product->sale_price = null;
+                $product->is_free = false;
+            } else {
+                $product->is_free = $request->has('is_free');
+                if ($product->is_free) {
+                    $product->price = 0;
+                    $product->sale_price = null;
+                } elseif ($product->product_type === 'simple') {
+                    $product->price = $request->price;
+                    $product->sale_price = $request->sale_price ?? null;
+                }
             }
 
 
@@ -616,6 +712,21 @@ class ProductController extends Controller
             }
 
             $product->save();
+
+            if ($product->product_type === 'simple') {
+                $variation = ProductVariation::where('product_id', $product->id)->first();
+                if ($variation) {
+                    $variation->price = $product->price;
+                    $variation->sale_price = $product->sale_price;
+                    $variation->before_sale_price = $product->sale_price ? $product->price : null;
+                    $variation->save();
+                }
+
+                WarehouseProduct::where('product_id', $product->id)->update([
+                    'price' => $product->sale_price ? $product->sale_price : $product->price,
+                    'before_sale_price' => $product->sale_price ? $product->price : null,
+                ]);
+            }
 
             if ($request->hasFile('image')) {
                 $image = ProductImage::where('product_id', $product->id)->where('featured_image', 1)->first();

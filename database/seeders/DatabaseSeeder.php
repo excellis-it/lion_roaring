@@ -33,6 +33,7 @@ class DatabaseSeeder extends Seeder
             CompressCategoryImagesSeeder::class,
             HomeCmsImageSeeder::class,
             SignupRuleSeeder::class,
+            MarketMaterialSeeder::class,
 
         ]);
     }
