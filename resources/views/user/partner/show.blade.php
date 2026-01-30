@@ -237,7 +237,7 @@
                                 <div class="col-md-6 mb-3">
                                     <div class="info-item">
                                         <small class="text-muted d-block mb-1 info-label">
-                                            <i class="fa fa-id-badge"></i> Roar ID
+                                            <i class="fa fa-id-badge"></i> Lion Roaring ID
                                         </small>
                                         <strong class="info-value">{{ $partner->lion_roaring_id ?? 'N/A' }}</strong>
                                     </div>

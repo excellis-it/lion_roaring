@@ -337,7 +337,7 @@
                                                 </div>
                                                 <div class="col-lg-6 mb-3">
                                                     <div class="login-username">
-                                                        <label for="lion_roaring_id">Roar ID</label>
+                                                        <label for="lion_roaring_id">Lion Roaring ID</label>
                                                         <input type="text" name="lion_roaring_id"
                                                             id="lion_roaring_id" class="input"
                                                             value="{{ old('lion_roaring_id') }}" required>
