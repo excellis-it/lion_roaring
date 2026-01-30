@@ -94,7 +94,12 @@
         justify-content: center;
         font-size: 20px;
     }
-
+.chatbot-widget-avatar img{
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    object-fit: contain;
+}
     .chatbot-widget-info h4 {
         margin: 0;
         font-size: 16px;
@@ -365,7 +370,9 @@
 <!-- Chat Window -->
 <div class="chatbot-window" id="chatbotWindow">
     <div class="chatbot-widget-header">
-        <div class="chatbot-widget-avatar">🦁</div>
+        <div class="chatbot-widget-avatar">
+            <img src="{{ asset('ecom_assets/images/chat-icon.png') }}" alt="Chatbot">
+        </div>
         <div class="chatbot-widget-info">
             <h4>Lion Roaring Assistant</h4>
             <div class="chatbot-widget-status">

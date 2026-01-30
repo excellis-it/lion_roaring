@@ -4185,7 +4185,7 @@ content: none !important;
   height: 100%;
   transition: transform 0.2s ease-out;
   transform-origin: center center;
-  object-fit: cover;
+  object-fit: contain;
 }
 .catagory_sec.product_details .slider_left .slider-nav .slick-prev{
     display: none !important;
