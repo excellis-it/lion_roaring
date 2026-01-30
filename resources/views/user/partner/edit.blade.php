@@ -203,6 +203,31 @@
                                             @endif
                                         </div>
                                     </div>
+                                    <div class="col-md-6 mb-2">
+                                        <div class="box_label">
+                                            <label>Lion Roaring ID *</label>
+                                            <input type="text" class="form-control" name="lion_roaring_id"
+                                                value="{{ old('lion_roaring_id', $partner->lion_roaring_id) }}"
+                                                placeholder="">
+                                            @if ($errors->has('lion_roaring_id'))
+                                                <div class="error" style="color:red !important;">
+                                                    {{ $errors->first('lion_roaring_id') }}
+                                                </div>
+                                            @endif
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6 mb-2">
+                                        <div class="box_label">
+                                            <label>Roar ID *</label>
+                                            <input type="text" class="form-control" name="roar_id"
+                                                value="{{ old('roar_id', $partner->roar_id) }}" placeholder="">
+                                            @if ($errors->has('roar_id'))
+                                                <div class="error" style="color:red !important;">
+                                                    {{ $errors->first('roar_id') }}
+                                                </div>
+                                            @endif
+                                        </div>
+                                    </div>
                                     {{-- user_type --}}
                                     <div class="col-md-6 mb-2">
                                         <div class="box_label">
@@ -479,7 +504,8 @@
                                 <div class="row">
                                     <div class="col-md-12">
                                         <div class="form-group">
-                                            <h5>{{ App\Helpers\Helper::getMenuName('role_permission', 'Role Permission') }}*</h5>
+                                            <h5>{{ App\Helpers\Helper::getMenuName('role_permission', 'Role Permission') }}*
+                                            </h5>
 
 
                                             @php

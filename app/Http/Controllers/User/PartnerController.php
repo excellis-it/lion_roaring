@@ -422,6 +422,8 @@ class PartnerController extends Controller
 
         $rules = [
             'user_name' => 'required|unique:users',
+            'lion_roaring_id' => 'required|string|max:255|unique:users,lion_roaring_id',
+            'roar_id' => 'required|string|max:255',
             'ecclesia_id' => 'nullable|exists:ecclesias,id',
             'role' => 'required',
             'first_name' => 'required',
@@ -509,6 +511,8 @@ class PartnerController extends Controller
         $data = new User();
         $data->created_id = Auth::user()->id;
         $data->user_name = $request->user_name;
+        $data->lion_roaring_id = $request->lion_roaring_id;
+        $data->roar_id = $request->roar_id;
         $data->first_name = $request->first_name;
         $data->last_name = $request->last_name;
         $data->middle_name = $request->middle_name;
@@ -668,6 +672,8 @@ class PartnerController extends Controller
                 'first_name' => 'required',
                 'last_name' => 'required',
                 'middle_name' => 'nullable',
+                'lion_roaring_id' => 'required|string|max:255|unique:users,lion_roaring_id,' . $id,
+                'roar_id' => 'required|string|max:255',
                 'email' => 'required|regex:/^([a-z0-9\+_\-]+)(\.[a-z0-9\+_\-]+)*@([a-z0-9\-]+\.)+[a-z]{2,6}$/ix|unique:users,email,' . $id,
                 'user_type' => 'required',
                 'address' => 'required',
@@ -717,6 +723,8 @@ class PartnerController extends Controller
             $data->first_name = $request->first_name;
             $data->last_name = $request->last_name;
             $data->middle_name = $request->middle_name;
+            $data->lion_roaring_id = $request->lion_roaring_id;
+            $data->roar_id = $request->roar_id;
             $data->email = $request->email;
             $data->user_type = $request->user_type;
             $data->user_type_id = $the_role->id; // SAVE USER_TYPE_ID
