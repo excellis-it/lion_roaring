@@ -47,17 +47,28 @@ class EventController extends Controller
     public function index(Request $request)
     {
         try {
-            // Fetch the search query from the request
-            $searchQuery = $request->get('search');
+            if (!auth()->user()->can('Manage Event')) {
+                return response()->json(['status' => false, 'message' => 'Permission denied.'], 403);
+            }
 
-            // Apply the search filter if searchQuery is provided
-            $events = Event::with('user')
+            // Fetch the search query from the request
+            $searchQuery = trim((string) $request->get('search', ''));
+            $searchQuery = $searchQuery !== '' ? $searchQuery : null;
+
+            $userType = auth()->user()->user_type ?? null;
+            $userCountry = auth()->user()->country ?? null;
+
+            $query = Event::with('user')
                 ->when($searchQuery, function ($query) use ($searchQuery) {
                     $query->where('title', 'like', "%{$searchQuery}%")
                         ->orWhere('description', 'like', "%{$searchQuery}%");
-                })
-                ->orderBy('id', 'desc')
-                ->paginate(15);
+                });
+
+            if ($userType !== 'Global') {
+                $query->where('country_id', $userCountry);
+            }
+
+            $events = $query->orderBy('id', 'desc')->paginate(15);
 
             return response()->json($events, 200);
         } catch (\Exception $e) {
@@ -92,31 +103,67 @@ class EventController extends Controller
      */
     public function store(Request $request)
     {
-        $validator = Validator::make($request->all(), [
-            'title' => 'required|string',
-            'description' => 'nullable|string',
+        if (!auth()->user()->can('Create Event')) {
+            return response()->json(['status' => false, 'message' => 'Permission denied.'], 403);
+        }
+
+        // Determine country based on user type
+        $countryId = auth()->user()->user_type === 'Global' ? $request->country_id : auth()->user()->country;
+
+        // Normalize send_notification checkbox variants
+        $sendNotification = $request->has('send_notification') && ($request->send_notification === 'on' || $request->send_notification === true || $request->send_notification === '1');
+
+        $request->merge(['country_id' => $countryId, 'send_notification' => $sendNotification]);
+
+        $rules = [
+            'title' => 'required|string|max:255',
+            'description' => 'required|string',
             'start' => 'required|date',
-            'end' => 'required|date|after:start'
-        ]);
+            'end' => 'required|date|after:start',
+            'country_id' => 'required|exists:countries,id',
+            'type' => 'required|in:free,paid',
+            'capacity' => 'nullable|integer|min:1',
+        ];
+
+        if ($request->type === 'paid') {
+            $rules['price'] = 'required|numeric|min:0.01';
+        }
+
+        $validator = Validator::make($request->all(), $rules);
 
         if ($validator->fails()) {
             return response()->json(['errors' => $validator->errors()], 201);
         }
 
         try {
-            $event = Event::create([
-                'user_id' => auth()->id(),
-                'title' => $request->title,
-                'description' => $request->description,
-                'start' => $request->start,
-                'end' => $request->end,
-            ]);
+            $event = new Event();
+            $event->user_id = Auth::id();
+            $event->time_zone = auth()->user()->time_zone;
+            $event->title = $request->title;
+            $event->description = $request->description;
+            $event->start = $request->start;
+            $event->end = $request->end;
+            $event->country_id = $request->country_id;
+            $event->type = $request->type;
+            $event->price = $request->type === 'paid' ? $request->price : null;
+            $event->capacity = $request->capacity;
+            $event->send_notification = $sendNotification;
 
-            // notify users
-            $userName = Auth::user()->getFullNameAttribute();
-            $noti = NotificationService::notifyAllUsers('New Live Event created by ' . $userName, 'live_event');
+            // Set encrypted event link if provided
+            if ($request->event_link) {
+                $event->setEncryptedLink($request->event_link);
+            }
 
-            return response()->json(['message' => 'event created successfully.', 'data' => $event], 200);
+            $event->save();
+
+            // Send notifications if enabled
+            if ($event->send_notification) {
+                $userName = Auth::user()->getFullNameAttribute();
+                $message = 'New Live Event created by ' . $userName . ': ' . $event->title;
+                $this->sendNotifications($event, $message);
+            }
+
+            return response()->json(['message' => 'Event created successfully.', 'event' => $event, 'status' => true], 200);
         } catch (\Exception $e) {
             return response()->json(['error' => 'Failed to create event.' . $e], 201);
         }
@@ -168,7 +215,14 @@ class EventController extends Controller
     public function show($id)
     {
         try {
-            $event = Event::with('user')->findOrFail($id);
+            $userType = auth()->user()->user_type ?? null;
+            $userCountry = auth()->user()->country ?? null;
+
+            if ($userType === 'Global') {
+                $event = Event::with('user')->findOrFail($id);
+            } else {
+                $event = Event::with('user')->where('country_id', $userCountry)->findOrFail($id);
+            }
 
             return response()->json(['data' => $event], 200);
         } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
@@ -194,23 +248,57 @@ class EventController extends Controller
      */
     public function update(Request $request, $id)
     {
-        $validator = Validator::make($request->all(), [
-            'title' => 'required|string',
-            'description' => 'nullable|string',
-            'start' => 'required|date',
-            'end' => 'required|date|after:start'
-        ]);
+        if (!auth()->user()->can('Edit Event')) {
+            return response()->json(['status' => false, 'message' => 'Permission denied.'], 403);
+        }
 
+        // Determine country based on user type
+        $countryId = auth()->user()->user_type === 'Global' ? $request->country_id : auth()->user()->country;
+        $request->merge(['country_id' => $countryId]);
+
+        $rules = [
+            'title' => 'required|string|max:255',
+            'description' => 'required|string',
+            'start' => 'required|date',
+            'end' => 'required|date|after:start',
+            'country_id' => 'required|exists:countries,id',
+            'type' => 'required|in:free,paid',
+            'capacity' => 'nullable|integer|min:1',
+        ];
+
+        if ($request->type === 'paid') {
+            $rules['price'] = 'required|numeric|min:0.01';
+        }
+
+        $validator = Validator::make($request->all(), $rules);
         if ($validator->fails()) {
             return response()->json(['errors' => $validator->errors()], 201);
         }
 
         try {
-            $event = Event::where('user_id', auth()->id())->findOrFail($id);
+            $event = Event::findOrFail($id);
 
-            $event->update($request->only(['title', 'description', 'start', 'end']));
+            if ($event->user_id != auth()->id() && !auth()->user()->hasNewRole('SUPER ADMIN')) {
+                return response()->json(['status' => false, 'message' => 'You can only edit your own events.'], 403);
+            }
 
-            return response()->json(['message' => 'event updated successfully.', 'data' => $event], 200);
+            $event->title = $request->title;
+            $event->time_zone = auth()->user()->time_zone;
+            $event->description = $request->description;
+            $event->start = $request->start;
+            $event->end = $request->end;
+            $event->country_id = $request->country_id;
+            $event->type = $request->type;
+            $event->price = $request->type === 'paid' ? $request->price : null;
+            $event->capacity = $request->capacity;
+
+            if ($request->has('event_link')) {
+                $event->setEncryptedLink($request->event_link);
+            }
+
+            $event->update();
+
+            return response()->json(['message' => 'Event updated successfully.', 'event' => $event, 'status' => true], 200);
         } catch (\Exception $e) {
             return response()->json(['error' => 'Failed to update event.'], 201);
         }
@@ -227,11 +315,22 @@ class EventController extends Controller
      */
     public function destroy($id)
     {
-        try {
-            $event = Event::where('user_id', auth()->id())->findOrFail($id);
-            $event->delete();
+        if (!auth()->user()->can('Delete Event')) {
+            return response()->json(['status' => false, 'message' => 'Permission denied.'], 403);
+        }
 
-            return response()->json(['message' => 'event deleted successfully.'], 200);
+        try {
+            $event = Event::findOrFail($id);
+
+            if ($event->user_id == auth()->id() || auth()->user()->hasNewRole('SUPER ADMIN')) {
+                Log::info($event->title . ' deleted by ' . auth()->user()->email . ' deleted at ' . now());
+                $event->delete();
+                return response()->json(['message' => 'Event deleted successfully.'], 200);
+            }
+
+            return response()->json(['status' => false, 'message' => 'You can only delete your own events.'], 403);
+        } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
+            return response()->json(['error' => 'event not found.'], 404);
         } catch (\Exception $e) {
             return response()->json(['error' => 'Failed to delete event.'], 201);
         }
@@ -282,7 +381,39 @@ class EventController extends Controller
     public function fetchCalenderData()
     {
         try {
-            $events = Event::orderBy('id', 'desc')->get(['id', 'title', 'description', 'start as start', 'end as end']);
+            if (!auth()->user()->can('Manage Event')) {
+                return response()->json(['status' => false, 'message' => 'Permission denied.'], 403);
+            }
+
+            $userType = auth()->user()->user_type ?? null;
+            $userCountry = auth()->user()->country ?? null;
+
+            $query = Event::orderBy('id', 'desc');
+            if ($userType !== 'Global') {
+                $query->where('country_id', $userCountry);
+            }
+
+            $events = $query->get()->map(function ($event) {
+                return [
+                    'id' => $event->id,
+                    'title' => $event->title,
+                    'description' => $event->description,
+                    'start' => $event->start,
+                    'end' => $event->end,
+                    'type' => $event->type ?? 'free',
+                    'price' => $event->price,
+                    'capacity' => $event->capacity,
+                    'country_id' => $event->country_id,
+                    'user_id' => $event->user_id,
+                    'decrypted_link' => $event->getDecryptedLink(),
+                    'is_host' => auth()->id() === $event->user_id,
+                    'user_rsvp_status' => \App\Models\EventRsvp::where('event_id', $event->id)->where('user_id', auth()->id())->value('status'),
+                    'formatted_start' => $event->formatted_start,
+                    'formatted_end' => $event->formatted_end,
+                    'timezone' => $event->time_zone,
+                ];
+            });
+
             return response()->json(['message' => 'Calender data fetched successfully.', 'data' => $events], 200);
         } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
             return response()->json(['error' => 'events not found.'], 404);

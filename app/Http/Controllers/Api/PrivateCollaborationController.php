@@ -53,10 +53,17 @@ class PrivateCollaborationController extends Controller
     public function index(Request $request)
     {
         try {
+            if (!auth()->user()->can('Manage Private Collaboration')) {
+                return response()->json(['status' => false, 'message' => 'Permission denied.'], 403);
+            }
+
             $searchQuery = trim((string) $request->get('search', ''));
             $searchQuery = $searchQuery !== '' ? $searchQuery : null;
 
-            $collaborations = PrivateCollaboration::with(['user', 'invitations.user'])
+            $userType = auth()->user()->user_type ?? null;
+            $userCountry = auth()->user()->country ?? null;
+
+            $query = PrivateCollaboration::with(['user', 'invitations.user'])
                 ->where(function ($query) {
                     $query->where('user_id', auth()->id())
                         ->orWhereHas('invitations', function ($q) {
@@ -68,9 +75,13 @@ class PrivateCollaborationController extends Controller
                         $sq->where('title', 'like', "%{$searchQuery}%")
                             ->orWhere('description', 'like', "%{$searchQuery}%");
                     });
-                })
-                ->orderBy('id', 'desc')
-                ->paginate(15);
+                });
+
+            if ($userType !== 'Global') {
+                $query->where('country_id', $userCountry);
+            }
+
+            $collaborations = $query->orderBy('id', 'desc')->paginate(15);
 
             return response()->json(['status' => true, 'data' => $collaborations], 200);
         } catch (\Exception $e) {
@@ -98,6 +109,14 @@ class PrivateCollaborationController extends Controller
      */
     public function store(Request $request)
     {
+        if (!auth()->user()->can('Create Private Collaboration')) {
+            return response()->json(['status' => false, 'message' => 'Permission denied.'], 403);
+        }
+
+        // Determine country based on user type
+        $countryId = auth()->user()->user_type === 'Global' ? $request->country_id : auth()->user()->country;
+        $request->merge(['country_id' => $countryId]);
+
         $validator = Validator::make($request->all(), [
             'title' => 'required|string',
             'description' => 'nullable|string',
@@ -105,7 +124,7 @@ class PrivateCollaborationController extends Controller
             'end_time' => 'required|date|after:start_time',
             'meeting_link' => 'nullable|url',
             'create_zoom' => 'nullable|boolean',
-            'country_id' => 'nullable|exists:countries,id',
+            'country_id' => 'required|exists:countries,id',
         ]);
 
         if ($validator->fails()) {
@@ -113,15 +132,8 @@ class PrivateCollaborationController extends Controller
         }
 
         try {
-
-            $countryId = $request->country_id ?? null;
-            if (!$countryId) {
-                $user = Auth::user();
-                $countryId = $user->country ?? null;
-            }
-
             $data = [
-                'country_id' => $countryId,
+                'country_id' => $request->country_id,
                 'user_id' => auth()->id(),
                 'title' => $request->title,
                 'description' => $request->description,
@@ -157,7 +169,7 @@ class PrivateCollaborationController extends Controller
             $userName = Auth::user()->full_name ?? (Auth::user()->first_name . ' ' . Auth::user()->last_name);
             NotificationService::notifyAllUsers('New collaboration created by ' . $userName, 'collaboration');
 
-            return response()->json(['status' => true, 'message' => 'Private collaboration created successfully.', 'data' => $collaboration], 200);
+            return response()->json(['status' => true, 'message' => 'Private collaboration created successfully and invitations sent.', 'data' => $collaboration], 200);
         } catch (\Exception $e) {
             Log::error('API - Private Collaboration store error: ' . $e->getMessage());
             return response()->json(['status' => false, 'message' => 'Failed to create collaboration.'], 201);
@@ -178,7 +190,18 @@ class PrivateCollaborationController extends Controller
     public function show($id)
     {
         try {
-            $collaboration = PrivateCollaboration::with(['user', 'invitations.user'])->findOrFail($id);
+            if (!auth()->user()->can('View Private Collaboration')) {
+                return response()->json(['status' => false, 'message' => 'Permission denied.'], 403);
+            }
+
+            $userType = auth()->user()->user_type ?? null;
+            $userCountry = auth()->user()->country ?? null;
+
+            if ($userType === 'Global') {
+                $collaboration = PrivateCollaboration::with(['user', 'invitations.user'])->findOrFail($id);
+            } else {
+                $collaboration = PrivateCollaboration::with(['user', 'invitations.user'])->where('country_id', $userCountry)->findOrFail($id);
+            }
 
             $isCreator = $collaboration->user_id == auth()->id();
             $invitation = $collaboration->invitations()->where('user_id', auth()->id())->first();
@@ -212,13 +235,21 @@ class PrivateCollaborationController extends Controller
      */
     public function update(Request $request, $id)
     {
+        if (!auth()->user()->can('Edit Private Collaboration')) {
+            return response()->json(['status' => false, 'message' => 'Permission denied.'], 403);
+        }
+
+        // Determine country based on user type
+        $countryId = auth()->user()->user_type === 'Global' ? $request->country_id : auth()->user()->country;
+        $request->merge(['country_id' => $countryId]);
+
         $validator = Validator::make($request->all(), [
             'title' => 'required|string|max:255',
             'description' => 'nullable|string',
             'start_time' => 'required|date',
             'end_time' => 'required|date|after:start_time',
             'meeting_link' => 'nullable|url',
-            'create_zoom' => 'nullable|boolean',
+            'country_id' => 'required|exists:countries,id',
         ]);
 
         if ($validator->fails()) {
@@ -226,9 +257,13 @@ class PrivateCollaborationController extends Controller
         }
 
         try {
-            $collaboration = PrivateCollaboration::where('user_id', auth()->id())->findOrFail($id);
+            $collaboration = PrivateCollaboration::findOrFail($id);
 
-            $data = $request->only(['title', 'description', 'start_time', 'end_time', 'meeting_link']);
+            if ($collaboration->user_id != auth()->id() && !auth()->user()->hasNewRole('SUPER ADMIN')) {
+                return response()->json(['status' => false, 'message' => 'You can only edit your own collaborations.'], 403);
+            }
+
+            $data = $request->only(['title', 'description', 'start_time', 'end_time', 'meeting_link', 'country_id']);
 
             if ($request->create_zoom ?? false) {
                 try {
@@ -267,10 +302,21 @@ class PrivateCollaborationController extends Controller
      */
     public function destroy($id)
     {
+        if (!auth()->user()->can('Delete Private Collaboration')) {
+            return response()->json(['status' => false, 'message' => 'Permission denied.'], 403);
+        }
+
         try {
-            $collaboration = PrivateCollaboration::where('user_id', auth()->id())->findOrFail($id);
-            $collaboration->delete();
-            return response()->json(['status' => true, 'message' => 'Private collaboration deleted successfully.'], 200);
+            $collaboration = PrivateCollaboration::findOrFail($id);
+
+            if ($collaboration->user_id == auth()->id() || auth()->user()->hasNewRole('SUPER ADMIN')) {
+                $collaboration->delete();
+                return response()->json(['status' => true, 'message' => 'Private collaboration deleted successfully.'], 200);
+            }
+
+            return response()->json(['status' => false, 'message' => 'You can only delete your own collaborations.'], 403);
+        } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
+            return response()->json(['status' => false, 'message' => 'Collaboration not found.'], 404);
         } catch (\Exception $e) {
             Log::error('API - Private Collaboration destroy error: ' . $e->getMessage());
             return response()->json(['status' => false, 'message' => 'Failed to delete collaboration.'], 201);
@@ -334,14 +380,26 @@ class PrivateCollaborationController extends Controller
     public function fetchCalenderData()
     {
         try {
-            $collaborations = PrivateCollaboration::with(['user', 'invitations.user'])
+            if (!auth()->user()->can('Manage Private Collaboration')) {
+                return response()->json(['status' => false, 'message' => 'Permission denied.'], 403);
+            }
+
+            $userType = auth()->user()->user_type ?? null;
+            $userCountry = auth()->user()->country ?? null;
+
+            $query = PrivateCollaboration::with(['user', 'invitations.user'])
                 ->where(function ($query) {
                     $query->where('user_id', auth()->id())
                         ->orWhereHas('invitations', function ($q) {
                             $q->where('user_id', auth()->id());
                         });
-                })
-                ->get()
+                });
+
+            if ($userType !== 'Global') {
+                $query->where('country_id', $userCountry);
+            }
+
+            $collaborations = $query->get()
                 ->map(function ($collaboration) {
                     $isCreator = $collaboration->user_id == auth()->id();
                     $invitation = $collaboration->invitations->where('user_id', auth()->id())->first();
@@ -393,6 +451,10 @@ class PrivateCollaborationController extends Controller
         }
 
         try {
+            if (!auth()->user()->can('View Private Collaboration')) {
+                return response()->json(['status' => false, 'message' => 'Permission denied.'], 403);
+            }
+
             $collaboration = PrivateCollaboration::findOrFail($request->collaboration_id);
             $meetingLink = $collaboration->meeting_link ?? '';
             if (!$this->isZoomLink($meetingLink)) {
