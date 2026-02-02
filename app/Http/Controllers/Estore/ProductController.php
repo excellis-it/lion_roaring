@@ -49,6 +49,8 @@ use Illuminate\Support\Facades\Mail;
 use App\Mail\OutOfStockNotificationMail;
 use Stripe\Climate\Order;
 use App\Models\ProductImage;
+use App\Models\MarketMaterial;
+use App\Models\MarketMaterialRate;
 
 class ProductController extends Controller
 {
@@ -131,8 +133,24 @@ class ProductController extends Controller
             ->where('product_id', $product->id)
             ->first();
 
+        $marketMaterials = collect();
+        $marketMaterialRates = collect();
+        if ($product && ($product->is_market_priced ?? false)) {
+            $marketMaterials = MarketMaterial::where('is_active', true)
+                ->orderBy('sort_order')
+                ->get();
 
-        return view('ecom.product-details')->with(compact('product', 'related_products', 'reviews', 'own_review', 'cartCount', 'cartItem', 'wareHouseHaveProductVariables'));
+            $marketMaterialRates = MarketMaterialRate::whereIn('id', function ($query) {
+                $query->select(DB::raw('MAX(id)'))
+                    ->from('market_material_rates')
+                    ->groupBy('market_material_id');
+            })
+                ->get()
+                ->keyBy('market_material_id');
+        }
+
+
+        return view('ecom.product-details')->with(compact('product', 'related_products', 'reviews', 'own_review', 'cartCount', 'cartItem', 'wareHouseHaveProductVariables', 'marketMaterials', 'marketMaterialRates'));
     }
 
     public function products(Request $request, $category_id = null)

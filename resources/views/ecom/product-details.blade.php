@@ -131,6 +131,43 @@
                             </div>
                         </div>
 
+                        @if (!empty($product->is_market_priced))
+                            <div class="mb-3">
+                                <div class="theme-text subtitle">Market Material Prices (Per Gram)</div>
+                                <div class="table-responsive mt-2">
+                                    <table class="table table-bordered">
+                                        <thead>
+                                            <tr>
+                                                <th>Material</th>
+                                                <th>Per Gram (USD)</th>
+                                                {{-- <th>Updated At</th> --}}
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            @forelse (($marketMaterials ?? collect()) as $material)
+                                                @php
+                                                    $rate = ($marketMaterialRates ?? collect())->get($material->id);
+                                                @endphp
+                                                <tr>
+                                                    <td>{{ $material->name }} </td>
+                                                    <td>
+                                                        {{ $rate?->rate_per_gram ? number_format($rate->rate_per_gram, 6) : '-' }}
+                                                    </td>
+                                                    {{-- <td>
+                                                        {{ $rate?->fetched_at ? \Carbon\Carbon::parse($rate->fetched_at)->format('M d, Y h:i A') : '-' }}
+                                                    </td> --}}
+                                                </tr>
+                                            @empty
+                                                <tr>
+                                                    <td colspan="3">No market materials available.</td>
+                                                </tr>
+                                            @endforelse
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        @endif
+
                         <input id="warehouse-product-id" type="hidden"
                             value="{{ $wareHouseHaveProductVariables?->id }}" />
                         <input id="product-variation-id" type="hidden"
