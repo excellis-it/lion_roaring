@@ -181,7 +181,9 @@ class MarketRateService
                 $usdPerOunce = (float) $data['price'];
                 $updatedAt = $data['updatedAt'] ?? null;
                 $apiTimestamp = $updatedAt ? strtotime($updatedAt) : null;
-                $fetchedAt = $updatedAt ? Carbon::parse($updatedAt) : now();
+                // Use the current time as the fetched_at so we don't repeatedly re-fetch
+                // when the API's reported updatedAt is older than our last fetch time.
+                $fetchedAt = now();
 
                 $result[$material->id] = [
                     'usd_per_ounce' => $usdPerOunce,
