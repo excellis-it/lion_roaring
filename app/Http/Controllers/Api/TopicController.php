@@ -78,8 +78,15 @@ class TopicController extends Controller
     public function index()
     {
         try {
+            $user_type = auth()->user()->user_type ?? 'Global';
+            $user_country = auth()->user()->country ?? null;
 
-            $topics = Topic::orderBy('id', 'desc')->get();
+            if ($user_type == 'Global') {
+                $topics = Topic::orderBy('id', 'desc')->paginate(15);
+            } else {
+                $topics = Topic::where('country_id', $user_country)->orderBy('id', 'desc')->paginate(15);
+            }
+
             return response()->json([
                 'data' => $topics,
                 'status' => true
@@ -113,21 +120,45 @@ class TopicController extends Controller
     public function store(Request $request)
     {
         try {
-            $request->validate([
-                'topic_name' => [
-                    'required',
-                    'string',
-                    'max:255',
-                    Rule::unique('topics')->where(function ($query) use ($request) {
-                        return $query->where('education_type', $request->education_type);
-                    }),
-                ],
-                'education_type' => 'required|string|max:255',
-            ]);
+            $user_type = auth()->user()->user_type ?? 'Global';
+            $user_country = auth()->user()->country ?? null;
+
+            if ($user_type === 'Global') {
+                $request->validate([
+                    'topic_name' => [
+                        'required',
+                        'string',
+                        'max:255',
+                        Rule::unique('topics')->where(function ($query) use ($request) {
+                            return $query->where('education_type', $request->education_type)
+                                ->where('country_id', $request->country_id);
+                        }),
+                    ],
+                    'education_type' => 'required|string|max:255',
+                    'country_id' => 'required|exists:countries,id',
+                ]);
+                $country_id = $request->country_id;
+            } else {
+                $request->merge(['country_id' => $user_country]);
+                $request->validate([
+                    'topic_name' => [
+                        'required',
+                        'string',
+                        'max:255',
+                        Rule::unique('topics')->where(function ($query) use ($request) {
+                            return $query->where('education_type', $request->education_type)
+                                ->where('country_id', $request->country_id);
+                        }),
+                    ],
+                    'education_type' => 'required|string|max:255',
+                ]);
+                $country_id = $user_country;
+            }
 
             $topic = new Topic();
             $topic->topic_name = $request->topic_name;
             $topic->education_type = $request->education_type;
+            $topic->country_id = $country_id;
             $topic->save();
 
             $userName = Auth::user()->getFullNameAttribute();
@@ -201,22 +232,45 @@ class TopicController extends Controller
     public function update(Request $request, $id)
     {
         try {
+            $user_type = auth()->user()->user_type ?? 'Global';
+            $user_country = auth()->user()->country ?? null;
 
-            $request->validate([
-                'topic_name' => [
-                    'required',
-                    'string',
-                    'max:255',
-                    Rule::unique('topics')->ignore($id)->where(function ($query) use ($request) {
-                        return $query->where('education_type', $request->education_type);
-                    }),
-                ],
-                'education_type' => 'required|string|max:255',
-            ]);
+            if ($user_type === 'Global') {
+                $request->validate([
+                    'topic_name' => [
+                        'required',
+                        'string',
+                        'max:255',
+                        Rule::unique('topics')->ignore($id)->where(function ($query) use ($request) {
+                            return $query->where('education_type', $request->education_type)
+                                ->where('country_id', $request->country_id);
+                        }),
+                    ],
+                    'education_type' => 'required|string|max:255',
+                    'country_id' => 'required|exists:countries,id',
+                ]);
+                $country_id = $request->country_id;
+            } else {
+                $request->merge(['country_id' => $user_country]);
+                $request->validate([
+                    'topic_name' => [
+                        'required',
+                        'string',
+                        'max:255',
+                        Rule::unique('topics')->ignore($id)->where(function ($query) use ($request) {
+                            return $query->where('education_type', $request->education_type)
+                                ->where('country_id', $request->country_id);
+                        }),
+                    ],
+                    'education_type' => 'required|string|max:255',
+                ]);
+                $country_id = $user_country;
+            }
 
             $topic = Topic::findOrFail($id);
             $topic->topic_name = $request->topic_name;
             $topic->education_type = $request->education_type;
+            $topic->country_id = $country_id;
             $topic->save();
 
             return response()->json([

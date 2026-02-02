@@ -120,22 +120,33 @@ class LeadershipDevelopmentController extends Controller
     public function index(Request $request)
     {
         try {
-
             $new_topic = $request->topic ?? '';
-            $filesQuery = File::orderBy('id', 'desc')->where('type', 'Becoming a Leader');
+
+            $user_type = auth()->user()->user_type ?? 'Global';
+            $user_country = auth()->user()->country ?? null;
+
+            $filesQuery = File::query()->where('type', 'Becoming a Leader');
 
             if ($new_topic) {
                 $filesQuery->where('topic_id', $new_topic);
             }
 
-            $files = $filesQuery->get()->map(function ($file) {
-                // Fetch the topic name for each file
+            if ($user_type !== 'Global' && $user_country) {
+                $filesQuery->where('country_id', $user_country);
+            }
+
+            $files = $filesQuery->orderBy('id', 'desc')->paginate(15);
+
+            $files->getCollection()->transform(function ($file) {
                 $file->file_topic_name = Topic::where('id', $file->topic_id)->value('topic_name');
                 return $file;
             });
 
-            // $files = $filesQuery->get();
-            $topics = Topic::orderBy('topic_name', 'asc')->where('education_type', 'Becoming a Leader')->get();
+            if ($user_type == 'Global') {
+                $topics = Topic::orderBy('topic_name', 'asc')->where('education_type', 'Becoming a Leader')->get();
+            } else {
+                $topics = Topic::orderBy('topic_name', 'asc')->where('education_type', 'Becoming a Leader')->where('country_id', $user_country)->get();
+            }
 
             return response()->json([
                 'data' => $files,
@@ -144,7 +155,7 @@ class LeadershipDevelopmentController extends Controller
                 'status' => true
             ], 200);
         } catch (\Exception $e) {
-            //    Log::error('Failed to fetch files: ' . $e->getMessage());
+            Log::error('Failed to fetch files: ' . $e->getMessage());
             return response()->json([
                 'message' => 'Failed to fetch files. Please try again later.',
                 'status' => false
@@ -210,6 +221,12 @@ class LeadershipDevelopmentController extends Controller
                 });
             }
 
+            $user_type = auth()->user()->user_type ?? 'Global';
+            $user_country = auth()->user()->country ?? null;
+            if ($user_type !== 'Global' && $user_country) {
+                $filesQuery->where('country_id', $user_country);
+            }
+
             // Order and paginate the results
             $files = $filesQuery->orderBy($sort_by, $sort_type)->paginate(15);
 
@@ -261,14 +278,21 @@ class LeadershipDevelopmentController extends Controller
     public function topics()
     {
         try {
-            $topics = Topic::orderBy('topic_name', 'asc')->where('education_type', 'Becoming a Leader')->get();
+            $user_type = auth()->user()->user_type ?? 'Global';
+            $user_country = auth()->user()->country ?? null;
+
+            if ($user_type == 'Global') {
+                $topics = Topic::orderBy('topic_name', 'asc')->where('education_type', 'Becoming a Leader')->get();
+            } else {
+                $topics = Topic::orderBy('topic_name', 'asc')->where('education_type', 'Becoming a Leader')->where('country_id', $user_country)->get();
+            }
 
             return response()->json([
                 'data' => $topics,
                 'status' => true
             ], 200);
         } catch (\Exception $e) {
-            //    Log::error('Failed to fetch topics: ' . $e->getMessage());
+            Log::error('Failed to fetch topics: ' . $e->getMessage());
             return response()->json([
                 'message' => 'Failed to fetch topics. Please try again later.',
                 'status' => false
@@ -316,10 +340,24 @@ class LeadershipDevelopmentController extends Controller
     public function store(Request $request)
     {
         try {
-            $validated = Validator::make($request->all(), [
-                'file' => 'required|file', // Ensure file validation
-                'topic_id' => 'required|exists:topics,id', // 'exists' checks if the value exists in the 'topics' table 'id' column
-            ]);
+            $user_type = auth()->user()->user_type ?? 'Global';
+            $user_country = auth()->user()->country ?? null;
+
+            if ($user_type === 'Global') {
+                $validated = Validator::make($request->all(), [
+                    'file' => 'required|file',
+                    'topic_id' => 'required|exists:topics,id',
+                    'country_id' => 'required|exists:countries,id',
+                ]);
+                $country_id = $request->get('country_id');
+            } else {
+                $validated = Validator::make($request->all(), [
+                    'file' => 'required|file',
+                    'topic_id' => 'required|exists:topics,id',
+                ]);
+                $country_id = $user_country;
+                $request->merge(['country_id' => $country_id]);
+            }
 
             // If validation fails
             if ($validated->fails()) {
@@ -337,9 +375,16 @@ class LeadershipDevelopmentController extends Controller
             $file_upload = $this->imageUpload($file, 'files');
 
             // Check if a file with the same name and extension already exists
-            $check = File::where('file_name', $file_name)
-                ->where('file_extension', $file_extension)
-                ->first();
+            if ($user_type === 'Global') {
+                $check = File::where('file_name', $file_name)
+                    ->where('file_extension', $file_extension)
+                    ->first();
+            } else {
+                $check = File::where('file_name', $file_name)
+                    ->where('file_extension', $file_extension)
+                    ->where('country_id', $country_id)
+                    ->first();
+            }
 
             if ($check) {
                 return response()->json([
@@ -354,6 +399,7 @@ class LeadershipDevelopmentController extends Controller
             $fileModel->file_name = $file_name;
             $fileModel->file_extension = $file_extension;
             $fileModel->topic_id = $request->topic_id;
+            $fileModel->country_id = $country_id;
             $fileModel->type = 'Becoming a Leader';
             $fileModel->file = $file_upload;
             $fileModel->save();
@@ -367,7 +413,7 @@ class LeadershipDevelopmentController extends Controller
                 'status' => true
             ], 200);
         } catch (\Exception $e) {
-            //   Log::error('File upload failed: ' . $e->getMessage());
+            Log::error('File upload failed: ' . $e->getMessage());
 
             return response()->json([
                 'message' => 'Something went wrong. Please try again later.',
@@ -407,13 +453,17 @@ class LeadershipDevelopmentController extends Controller
     public function view(Request $request, $id)
     {
         try {
-            // Find the file by ID, or fail if it doesn't exist
-            $file = File::findOrFail($id);
+            $user_type = auth()->user()->user_type ?? 'Global';
+            $user_country = auth()->user()->country ?? null;
 
-            // Check if a specific topic is provided (optional)
+            if ($user_type == 'Global') {
+                $file = File::findOrFail($id);
+            } else {
+                $file = File::where('country_id', $user_country)->findOrFail($id);
+            }
+
             $new_topic = $request->get('topic', '');
 
-            // Return file details in JSON format
             return response()->json([
                 'message' => 'File details retrieved successfully.',
                 'data' => $file,
@@ -467,24 +517,49 @@ class LeadershipDevelopmentController extends Controller
     public function update(Request $request, $id)
     {
         try {
-            // Validate topic_id and file fields
-            $validatedData = $request->validate([
-                'topic_id' => 'required|exists:topics,id',
-                'file' => 'file'  // File is optional in case only topic_id needs updating
-            ]);
+            $user_type = auth()->user()->user_type ?? 'Global';
+            $user_country = auth()->user()->country ?? null;
 
-            // Find the file or return a 404 error if not found
-            $file = File::findOrFail($id);
+            if ($user_type === 'Global') {
+                $validatedData = $request->validate([
+                    'topic_id' => 'required|exists:topics,id',
+                    'file' => 'file',
+                    'country_id' => 'required|exists:countries,id',
+                ]);
+                $country_id = $request->get('country_id');
+            } else {
+                $country_id = $user_country;
+                $request->merge(['country_id' => $country_id]);
+                $validatedData = $request->validate([
+                    'topic_id' => 'required|exists:topics,id',
+                    'file' => 'file',
+                ]);
+            }
+
+            // Find the file respecting country scope for non-global users
+            if ($user_type == 'Global') {
+                $file = File::findOrFail($id);
+            } else {
+                $file = File::where('country_id', $country_id)->findOrFail($id);
+            }
 
             if ($request->hasFile('file')) {
                 // Retrieve new file details
                 $file_name = $request->file('file')->getClientOriginalName();
                 $file_extension = $request->file('file')->getClientOriginalExtension();
 
-                // Check if a file with the same name and extension exists
-                $existingFile = File::where('file_name', $file_name)
-                    ->where('file_extension', $file_extension)
-                    ->first();
+                // Check if a file with the same name and extension exists (respect country scope)
+                if ($user_type === 'Global') {
+                    $existingFile = File::where('file_name', $file_name)
+                        ->where('file_extension', $file_extension)
+                        ->first();
+                } else {
+                    $existingFile = File::where('file_name', $file_name)
+                        ->where('file_extension', $file_extension)
+                        ->where('country_id', $country_id)
+                        ->first();
+                }
+
                 if ($existingFile) {
                     return response()->json([
                         'message' => 'Validation failed.',
@@ -500,8 +575,9 @@ class LeadershipDevelopmentController extends Controller
                 $file->file = $file_upload;
             }
 
-            // Update topic_id
+            // Update topic_id and country_id
             $file->topic_id = $request->topic_id;
+            $file->country_id = $country_id;
             $file->save();
 
             return response()->json([
@@ -547,9 +623,14 @@ class LeadershipDevelopmentController extends Controller
     public function delete(Request $request, $id)
     {
         try {
+            $user_type = auth()->user()->user_type ?? 'Global';
+            $user_country = auth()->user()->country ?? null;
 
-
-            $file = File::find($id);
+            if ($user_type == 'Global') {
+                $file = File::find($id);
+            } else {
+                $file = File::where('country_id', $user_country)->find($id);
+            }
 
             if (!$file) {
                 return response()->json([
@@ -558,7 +639,7 @@ class LeadershipDevelopmentController extends Controller
                 ], 404);
             }
 
-            // Delete file from database and storage
+            // Delete file from storage and database
             Storage::disk('public')->delete($file->file);
             Log::info($file->file_name . ' deleted by ' . auth()->user()->email . ' deleted at ' . now());
             $file->delete();

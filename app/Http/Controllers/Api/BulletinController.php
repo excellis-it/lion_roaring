@@ -40,18 +40,23 @@ class BulletinController extends Controller
             $searchQuery = $request->get('search');
 
             // Fetch bulletins with optional search filtering
+            $user_type = Auth::user()->user_type ?? 'Global';
+            $user_country = Auth::user()->country ?? null;
+
             $bulletins = Bulletin::when($searchQuery, function ($query) use ($searchQuery) {
                     $query->where(function ($subQuery) use ($searchQuery) {
                         $subQuery->where('title', 'like', "%{$searchQuery}%")
                             ->orWhere('description', 'like', "%{$searchQuery}%");
                     });
                 })
-                ->when(!Auth::user()->hasNewRole('SUPER ADMIN'), function ($query) {
+                ->when(!Auth::user()->hasNewRole('SUPER ADMIN'), function ($query) use ($user_type, $user_country) {
                     $query->where('user_id', Auth::id());
+                    if ($user_type !== 'Global' && $user_country) {
+                        $query->where('country_id', $user_country);
+                    }
                 })
                 ->orderBy('id', 'desc')
                 ->paginate(15);
-
             return response()->json($bulletins, 200);
         } catch (\Exception $e) {
             return response()->json(['error' => 'Failed to load bulletins.'], 500);
@@ -83,7 +88,18 @@ class BulletinController extends Controller
     public function show($id)
     {
         try {
-            $bulletin = Bulletin::find($id);
+            $user_type = Auth::user()->user_type ?? 'Global';
+            $user_country = Auth::user()->country ?? null;
+
+            if (Auth::user()->hasNewRole('SUPER ADMIN')) {
+                $bulletin = Bulletin::find($id);
+            } else {
+                if ($user_type == 'Global') {
+                    $bulletin = Bulletin::where('user_id', Auth::id())->find($id);
+                } else {
+                    $bulletin = Bulletin::where('user_id', Auth::id())->where('country_id', $user_country)->find($id);
+                }
+            }
 
             if (!$bulletin) {
                 return response()->json(['error' => 'Bulletin not found.'], 201);
@@ -214,10 +230,24 @@ class BulletinController extends Controller
      */
     public function store(Request $request)
     {
-        $validated = Validator::make($request->all(), [
-            'title' => 'required|string|max:255',
-            'description' => 'required|string',
-        ]);
+        $user_type = Auth::user()->user_type ?? 'Global';
+        $user_country = Auth::user()->country ?? null;
+
+        if ($user_type === 'Global') {
+            $validated = Validator::make($request->all(), [
+                'title' => 'required|string|max:255',
+                'description' => 'required|string',
+                'country_id' => 'required|exists:countries,id',
+            ]);
+            $country_id = $request->get('country_id');
+        } else {
+            $validated = Validator::make($request->all(), [
+                'title' => 'required|string|max:255',
+                'description' => 'required|string',
+            ]);
+            $country_id = $user_country;
+            $request->merge(['country_id' => $country_id]);
+        }
 
         if ($validated->fails()) {
             return response()->json(['error' => $validated->errors()], 201);
@@ -228,6 +258,7 @@ class BulletinController extends Controller
                 'user_id' => Auth::id(),
                 'title' => $request->title,
                 'description' => $request->description,
+                'country_id' => $country_id,
             ]);
 
             $userName = Auth::user()->getFullNameAttribute();
@@ -263,23 +294,48 @@ class BulletinController extends Controller
      */
     public function update(Request $request, $id)
     {
-        $validated = Validator::make($request->all(), [
-            'title' => 'string|max:255',
-            'description' => 'string',
-        ]);
+        $user_type = Auth::user()->user_type ?? 'Global';
+        $user_country = Auth::user()->country ?? null;
+
+        if ($user_type === 'Global') {
+            $validated = Validator::make($request->all(), [
+                'title' => 'string|max:255',
+                'description' => 'string',
+                'country_id' => 'required|exists:countries,id',
+            ]);
+            $country_id = $request->get('country_id');
+        } else {
+            $validated = Validator::make($request->all(), [
+                'title' => 'string|max:255',
+                'description' => 'string',
+            ]);
+            $country_id = $user_country;
+            $request->merge(['country_id' => $country_id]);
+        }
 
         if ($validated->fails()) {
             return response()->json(['error' => $validated->errors()], 201);
         }
 
         try {
-            $bulletin = Bulletin::where('id', $id)->where('user_id', Auth::id())->first();
+            if (Auth::user()->hasNewRole('SUPER ADMIN')) {
+                $bulletin = Bulletin::find($id);
+            } else {
+                if ($user_type == 'Global') {
+                    $bulletin = Bulletin::where('id', $id)->where('user_id', Auth::id())->first();
+                } else {
+                    $bulletin = Bulletin::where('id', $id)->where('user_id', Auth::id())->where('country_id', $user_country)->first();
+                }
+            }
 
             if (!$bulletin) {
                 return response()->json(['error' => 'Bulletin not found or unauthorized.'], 201);
             }
 
-            $bulletin->update($request->only('title', 'description'));
+            $bulletin->title = $request->title ?? $bulletin->title;
+            $bulletin->description = $request->description ?? $bulletin->description;
+            $bulletin->country_id = $country_id;
+            $bulletin->save();
 
             return response()->json(['message' => 'Bulletin updated successfully.', 'data' => $bulletin], 200);
         } catch (\Exception $e) {
@@ -302,7 +358,18 @@ class BulletinController extends Controller
     public function destroy($id)
     {
         try {
-            $bulletin = Bulletin::where('id', $id)->where('user_id', Auth::id())->first();
+            $user_type = Auth::user()->user_type ?? 'Global';
+            $user_country = Auth::user()->country ?? null;
+
+            if (Auth::user()->hasNewRole('SUPER ADMIN')) {
+                $bulletin = Bulletin::find($id);
+            } else {
+                if ($user_type == 'Global') {
+                    $bulletin = Bulletin::where('id', $id)->where('user_id', Auth::id())->first();
+                } else {
+                    $bulletin = Bulletin::where('id', $id)->where('user_id', Auth::id())->where('country_id', $user_country)->first();
+                }
+            }
 
             if (!$bulletin) {
                 return response()->json(['error' => 'Bulletin not found or unauthorized.'], 201);
