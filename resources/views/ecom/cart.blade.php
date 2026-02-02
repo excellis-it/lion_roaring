@@ -48,7 +48,7 @@
             @if (count($carts) > 0)
                 @if (isset($hasChanges) && $hasChanges)
                     <div class="alert alert-warning">
-                        Some items in your cart were sold out. Please review before
+                        Some items in your cart have updated. Please review before
                         proceeding to checkout.
                     </div>
                 @endif
