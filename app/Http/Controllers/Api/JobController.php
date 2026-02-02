@@ -73,13 +73,22 @@ class JobController extends Controller
             // Fetch the search query from the request
             $searchQuery = $request->get('search');
 
+            $user_type = auth()->user()->user_type ?? 'Global';
+            $user_country = auth()->user()->country ?? null;
+
             // Apply the search filter if searchQuery is provided
-            $jobs = Job::with('user')
+            $jobsQuery = Job::with('user')
                 ->when($searchQuery, function ($query) use ($searchQuery) {
                     $query->where('job_title', 'like', "%{$searchQuery}%")
                         ->orWhere('job_description', 'like', "%{$searchQuery}%");
-                })
-                ->paginate(15);
+                });
+
+            // Apply country scope for non-Global users
+            if ($user_type !== 'Global' && $user_country) {
+                $jobsQuery->where('country_id', $user_country);
+            }
+
+            $jobs = $jobsQuery->orderBy('id', 'desc')->paginate(15);
 
             return response()->json($jobs, 200);
         } catch (\Exception $e) {
@@ -122,7 +131,14 @@ class JobController extends Controller
     public function show($id)
     {
         try {
-            $job = Job::with('user')->findOrFail($id);
+            $user_type = auth()->user()->user_type ?? 'Global';
+            $user_country = auth()->user()->country ?? null;
+
+            if ($user_type == 'Global') {
+                $job = Job::with('user')->findOrFail($id);
+            } else {
+                $job = Job::with('user')->where('country_id', $user_country)->findOrFail($id);
+            }
 
             return response()->json(['data' => $job], 200);
         } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
@@ -178,19 +194,40 @@ class JobController extends Controller
     public function store(Request $request)
     {
         try {
-            // Validate the incoming request
-            $validated = $request->validate([
-                'job_title' => 'required',
-                'job_description' => 'required',
-                'job_type' => 'required',
-                'job_location' => 'required',
-                'job_salary' => 'nullable|numeric',
-                'currency' => 'nullable',
-                'job_experience' => 'nullable|numeric',
-                'contact_person' => 'nullable',
-                'contact_email' => 'nullable|email',
-                'list_of_values' => 'nullable',
-            ]);
+            $user_type = auth()->user()->user_type ?? 'Global';
+            $user_country = auth()->user()->country ?? null;
+
+            if ($user_type === 'Global') {
+                $validated = $request->validate([
+                    'job_title' => 'required',
+                    'job_description' => 'required',
+                    'job_type' => 'required',
+                    'job_location' => 'required',
+                    'job_salary' => 'nullable|numeric',
+                    'currency' => 'nullable',
+                    'job_experience' => 'nullable|numeric',
+                    'contact_person' => 'nullable',
+                    'contact_email' => 'nullable|email',
+                    'list_of_values' => 'nullable|required_with:job_salary',
+                    'country_id' => 'required|exists:countries,id',
+                ]);
+                $country_id = $request->get('country_id');
+            } else {
+                $request->merge(['country_id' => $user_country]);
+                $validated = $request->validate([
+                    'job_title' => 'required',
+                    'job_description' => 'required',
+                    'job_type' => 'required',
+                    'job_location' => 'required',
+                    'job_salary' => 'nullable|numeric',
+                    'currency' => 'nullable',
+                    'job_experience' => 'nullable|numeric',
+                    'contact_person' => 'nullable',
+                    'contact_email' => 'nullable|email',
+                    'list_of_values' => 'nullable|required_with:job_salary',
+                ]);
+                $country_id = $user_country;
+            }
 
             // Create a new job entry
             $job = new Job();
@@ -205,6 +242,7 @@ class JobController extends Controller
             $job->contact_person = $request->contact_person;
             $job->contact_email = $request->contact_email;
             $job->list_of_values = $request->list_of_values;
+            $job->country_id = $country_id;
             $job->save();
 
             $userName = Auth::user()->getFullNameAttribute();
@@ -275,22 +313,53 @@ class JobController extends Controller
     public function update(Request $request, $id)
     {
         try {
-            // Validate the incoming request
-            $validated = $request->validate([
-                'job_title' => 'required',
-                'job_description' => 'required',
-                'job_type' => 'required',
-                'job_location' => 'required',
-                'job_salary' => 'nullable|numeric',
-                'job_experience' => 'nullable|numeric',
-                'contact_person' => 'nullable',
-                'contact_email' => 'nullable|email',
-                'currency' => 'nullable',
-                'list_of_values' => 'nullable',
-            ]);
+            $user_type = auth()->user()->user_type ?? 'Global';
+            $user_country = auth()->user()->country ?? null;
 
-            // Find the job by ID
+            if ($user_type === 'Global') {
+                $validated = $request->validate([
+                    'job_title' => 'required',
+                    'job_description' => 'required',
+                    'job_type' => 'required',
+                    'job_location' => 'required',
+                    'job_salary' => 'nullable|numeric',
+                    'job_experience' => 'nullable|numeric',
+                    'contact_person' => 'nullable',
+                    'contact_email' => 'nullable|email',
+                    'currency' => 'nullable',
+                    'list_of_values' => 'nullable|required_with:job_salary',
+                    'country_id' => 'required|exists:countries,id',
+                ]);
+                $country_id = $request->get('country_id');
+            } else {
+                $request->merge(['country_id' => $user_country]);
+                $validated = $request->validate([
+                    'job_title' => 'required',
+                    'job_description' => 'required',
+                    'job_type' => 'required',
+                    'job_location' => 'required',
+                    'job_salary' => 'nullable|numeric',
+                    'job_experience' => 'nullable|numeric',
+                    'contact_person' => 'nullable',
+                    'contact_email' => 'nullable|email',
+                    'currency' => 'nullable',
+                    'list_of_values' => 'nullable|required_with:job_salary',
+                ]);
+                $country_id = $user_country;
+            }
+
+            // Find the job
             $job = Job::findOrFail($id);
+
+            // Only owner or SUPER ADMIN can edit
+            if ($job->created_by !== auth()->id() && !auth()->user()->hasNewRole('SUPER ADMIN')) {
+                return response()->json(['message' => 'Job not found or unauthorized.'], 201);
+            }
+
+            // For non-global users ensure country matches
+            if ($user_type !== 'Global' && $job->country_id != $country_id) {
+                return response()->json(['message' => 'Job not found or unauthorized.'], 201);
+            }
 
             // Update the job details
             $job->job_title = $request->job_title;
@@ -303,6 +372,7 @@ class JobController extends Controller
             $job->contact_person = $request->contact_person;
             $job->contact_email = $request->contact_email;
             $job->list_of_values = $request->list_of_values;
+            $job->country_id = $country_id;
             $job->save();
 
             // Return success response
@@ -339,8 +409,14 @@ class JobController extends Controller
     public function delete($id)
     {
         try {
-            // Find the job by ID and delete it
+            // Find the job by ID
             $job = Job::findOrFail($id);
+
+            // Only owner or SUPER ADMIN can delete
+            if ($job->created_by !== auth()->id() && !auth()->user()->hasNewRole('SUPER ADMIN')) {
+                return response()->json(['message' => 'Job not found or unauthorized.'], 201);
+            }
+
             $job->delete();
 
             // Return success response
@@ -406,7 +482,7 @@ class JobController extends Controller
             // }
 
             // Perform search query
-            $jobs = Job::query()
+            $jobsQuery = Job::query()
                 ->where(function ($q) use ($query) {
                     $q->where('id', 'like', '%' . $query . '%')
                         ->orWhere('job_title', 'like', '%' . $query . '%')
@@ -417,9 +493,16 @@ class JobController extends Controller
                         ->orWhere('job_experience', 'like', '%' . $query . '%')
                         ->orWhere('contact_person', 'like', '%' . $query . '%')
                         ->orWhere('contact_email', 'like', '%' . $query . '%');
-                })
-                ->orderBy($sort_by, $sort_type)
-                ->get(); // Get results
+                });
+
+            // Apply country scope for non-Global users
+            $user_type = auth()->user()->user_type ?? 'Global';
+            $user_country = auth()->user()->country ?? null;
+            if ($user_type !== 'Global' && $user_country) {
+                $jobsQuery->where('country_id', $user_country);
+            }
+
+            $jobs = $jobsQuery->orderBy($sort_by, $sort_type)->get(); // Get results
 
             return response()->json([
                 'data' => $jobs
