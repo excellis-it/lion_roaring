@@ -55,14 +55,22 @@ class MeetingController extends Controller
             // Fetch the search query from the request
             $searchQuery = $request->get('search');
 
+            $user_type = auth()->user()->user_type ?? 'Global';
+            $user_country = auth()->user()->country ?? null;
+
             // Apply the search filter if searchQuery is provided
-            $meetings = Meeting::with('user')
+            $meetingsQuery = Meeting::with('user')
                 ->when($searchQuery, function ($query) use ($searchQuery) {
                     $query->where('title', 'like', "%{$searchQuery}%")
                         ->orWhere('description', 'like', "%{$searchQuery}%");
-                })
-                ->orderBy('id', 'desc')
-                ->paginate(15);
+                });
+
+            // Apply country scope for non-Global users
+            if ($user_type !== 'Global' && $user_country) {
+                $meetingsQuery->where('country_id', $user_country);
+            }
+
+            $meetings = $meetingsQuery->orderBy('id', 'desc')->paginate(15);
 
             return response()->json($meetings, 200);
         } catch (\Exception $e) {
@@ -100,14 +108,32 @@ class MeetingController extends Controller
      */
     public function store(Request $request)
     {
-        $validator = Validator::make($request->all(), [
-            'title' => 'required|string',
-            'description' => 'nullable|string',
-            'start_time' => 'required|date',
-            'end_time' => 'required|date|after:start_time',
-            'meeting_link' => 'nullable|url',
-            'create_zoom' => 'nullable|boolean',
-        ]);
+        $user_type = auth()->user()->user_type ?? 'Global';
+        $user_country = auth()->user()->country ?? null;
+
+        if ($user_type === 'Global') {
+            $validator = Validator::make($request->all(), [
+                'title' => 'required|string',
+                'description' => 'nullable|string',
+                'start_time' => 'required|date',
+                'end_time' => 'required|date|after:start_time',
+                'meeting_link' => 'nullable|url',
+                'create_zoom' => 'nullable|boolean',
+                'country_id' => 'required|exists:countries,id',
+            ]);
+            $country_id = $request->get('country_id');
+        } else {
+            $validator = Validator::make($request->all(), [
+                'title' => 'required|string',
+                'description' => 'nullable|string',
+                'start_time' => 'required|date',
+                'end_time' => 'required|date|after:start_time',
+                'meeting_link' => 'nullable|url',
+                'create_zoom' => 'nullable|boolean',
+            ]);
+            $country_id = $user_country;
+            $request->merge(['country_id' => $country_id]);
+        }
 
         if ($validator->fails()) {
             return response()->json(['errors' => $validator->errors()], 201);
@@ -122,6 +148,7 @@ class MeetingController extends Controller
                 'start_time' => $request->start_time,
                 'end_time' => $request->end_time,
                 'meeting_link' => $request->meeting_link,
+                'country_id' => $country_id,
             ];
 
             // Create Zoom meeting if requested
@@ -151,6 +178,7 @@ class MeetingController extends Controller
 
             return response()->json(['message' => 'Meeting created successfully.', 'data' => $meeting], 200);
         } catch (\Exception $e) {
+            Log::error('Failed to create meeting (API): ' . $e->getMessage());
             return response()->json(['error' => 'Failed to create meeting.'], 201);
         }
     }
@@ -202,12 +230,20 @@ class MeetingController extends Controller
     public function show($id)
     {
         try {
-            $meeting = Meeting::with('user')->findOrFail($id);
+            $user_type = auth()->user()->user_type ?? 'Global';
+            $user_country = auth()->user()->country ?? null;
+
+            if ($user_type == 'Global') {
+                $meeting = Meeting::with('user')->findOrFail($id);
+            } else {
+                $meeting = Meeting::with('user')->where('country_id', $user_country)->findOrFail($id);
+            }
 
             return response()->json(['data' => $meeting], 200);
         } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
             return response()->json(['error' => 'Meeting not found.'], 404);
         } catch (\Exception $e) {
+            Log::error('Failed to load meeting details (API): ' . $e->getMessage());
             return response()->json(['error' => 'Failed to load meeting details.'], 201);
         }
     }
@@ -230,24 +266,52 @@ class MeetingController extends Controller
      */
     public function update(Request $request, $id)
     {
-        $validator = Validator::make($request->all(), [
-            'title' => 'required|string|max:255',
-            'description' => 'nullable|string',
-            'start_time' => 'required|date',
-            'end_time' => 'required|date|after:start_time',
-            'meeting_link' => 'nullable|url',
-            'create_zoom' => 'nullable|boolean',
-        ]);
+        $user_type = auth()->user()->user_type ?? 'Global';
+        $user_country = auth()->user()->country ?? null;
+
+        if ($user_type === 'Global') {
+            $validator = Validator::make($request->all(), [
+                'title' => 'required|string|max:255',
+                'description' => 'nullable|string',
+                'start_time' => 'required|date',
+                'end_time' => 'required|date|after:start_time',
+                'meeting_link' => 'nullable|url',
+                'create_zoom' => 'nullable|boolean',
+                'country_id' => 'required|exists:countries,id',
+            ]);
+            $country_id = $request->get('country_id');
+        } else {
+            $validator = Validator::make($request->all(), [
+                'title' => 'required|string|max:255',
+                'description' => 'nullable|string',
+                'start_time' => 'required|date',
+                'end_time' => 'required|date|after:start_time',
+                'meeting_link' => 'nullable|url',
+                'create_zoom' => 'nullable|boolean',
+            ]);
+            $country_id = $user_country;
+            $request->merge(['country_id' => $country_id]);
+        }
 
         if ($validator->fails()) {
             return response()->json(['errors' => $validator->errors()], 422); // Use 422 for validation errors
         }
 
         try {
-            $meeting = Meeting::where('user_id', auth()->id())->findOrFail($id);
+            // Allow updates by owner or SUPER ADMIN
+            $meeting = Meeting::findOrFail($id);
+            if ($meeting->user_id !== auth()->id() && !auth()->user()->hasNewRole('SUPER ADMIN')) {
+                return response()->json(['error' => 'Meeting not found.'], 404);
+            }
+
+            // Ensure country scope for non-Global
+            if ($user_type !== 'Global' && $meeting->country_id != $country_id) {
+                return response()->json(['error' => 'Meeting not found.'], 404);
+            }
 
             $data = $request->only(['title', 'description', 'start_time', 'end_time', 'meeting_link']);
             $data['time_zone'] = auth()->user()->time_zone;
+            $data['country_id'] = $country_id;
 
             // Optionally create Zoom meeting on update
             $createZoom = (bool)$request->input('create_zoom', false);
@@ -277,6 +341,7 @@ class MeetingController extends Controller
         } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
             return response()->json(['error' => 'Meeting not found.'], 404);
         } catch (\Exception $e) {
+            Log::error('Failed to update meeting (API): ' . $e->getMessage());
             return response()->json(['error' => 'Failed to update meeting.'], 500);
         }
     }
@@ -294,11 +359,20 @@ class MeetingController extends Controller
     public function destroy($id)
     {
         try {
-            $meeting = Meeting::where('user_id', auth()->id())->findOrFail($id);
+            $meeting = Meeting::findOrFail($id);
+
+            // Allow deletion by owner or SUPER ADMIN
+            if ($meeting->user_id !== auth()->id() && !auth()->user()->hasNewRole('SUPER ADMIN')) {
+                return response()->json(['error' => 'Meeting not found.'], 201);
+            }
+
             $meeting->delete();
 
             return response()->json(['message' => 'Meeting deleted successfully.'], 200);
+        } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
+            return response()->json(['error' => 'Meeting not found.'], 201);
         } catch (\Exception $e) {
+            Log::error('Failed to delete meeting (API): ' . $e->getMessage());
             return response()->json(['error' => 'Failed to delete meeting.'], 201);
         }
     }
@@ -352,11 +426,20 @@ class MeetingController extends Controller
     public function fetchCalenderData()
     {
         try {
-            $meetings = Meeting::orderBy('id', 'desc')->get(['id', 'title', 'description', 'start_time as start', 'end_time as end', 'meeting_link']);
+            $user_type = auth()->user()->user_type ?? 'Global';
+            $user_country = auth()->user()->country ?? null;
+
+            if ($user_type == 'Global') {
+                $meetings = Meeting::orderBy('id', 'desc')->get(['id', 'title', 'description', 'start_time as start', 'end_time as end', 'meeting_link']);
+            } else {
+                $meetings = Meeting::where('country_id', $user_country)->orderBy('id', 'desc')->get(['id', 'title', 'description', 'start_time as start', 'end_time as end', 'meeting_link']);
+            }
+
             return response()->json(['message' => 'Calender data fetched successfully.', 'data' => $meetings], 200);
         } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
             return response()->json(['error' => 'Meetings not found.'], 404);
         } catch (\Exception $e) {
+            Log::error('Failed to load meeting calender data (API): ' . $e->getMessage());
             return response()->json(['error' => 'Failed to load meeting calender data.'], 201);
         }
     }
@@ -392,7 +475,19 @@ class MeetingController extends Controller
                 return response()->json(['errors' => $validator->errors()], 201);
             }
 
-            $meeting = Meeting::findOrFail($request->meeting_id);
+            $user_type = auth()->user()->user_type ?? 'Global';
+            $user_country = auth()->user()->country ?? null;
+
+            if ($user_type == 'Global') {
+                $meeting = Meeting::findOrFail($request->meeting_id);
+            } else {
+                $meeting = Meeting::where('country_id', $user_country)->findOrFail($request->meeting_id);
+            }
+
+            if (!auth()->user()->can('View Meeting Schedule')) {
+                return response()->json(['status' => false, 'message' => 'You do not have permission to access this meeting.'], 201);
+            }
+
             $meetingLink = $meeting->meeting_link ?? '';
             if (!$this->isZoomLink($meetingLink)) {
                 return response()->json(['status' => false, 'message' => 'This meeting is not a Zoom meeting.'], 201);
@@ -442,6 +537,7 @@ class MeetingController extends Controller
                 'userEmail' => Auth::user()->email,
             ], 200);
         } catch (\Exception $e) {
+            Log::error('Failed to generate zoom signature (API): ' . $e->getMessage());
             return response()->json(['error' => 'Failed to generate zoom signature.'], 201);
         }
     }
