@@ -301,7 +301,7 @@
                             <div id="benefits">
                                 <div class="input-group mb-2">
                                     <input type="text" name="benefits[]" class="form-control">
-                                    <button type="button" class="btn btn-success add-benefit">+</button>
+                                    <button type="button" class="btn btn-primary add-benefit">+</button>
                                 </div>
                             </div>
                         </div>

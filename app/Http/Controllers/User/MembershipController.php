@@ -73,6 +73,10 @@ class MembershipController extends Controller
             'cost' => 'nullable|required_if:pricing_type,amount|numeric|min:0',
             'life_force_energy_tokens' => 'nullable|required_if:pricing_type,token|numeric|min:0',
             'agree_description' => 'nullable|required_if:pricing_type,token|string',
+            'benefits' => 'array',
+            'benefits.*' => 'nullable|string|max:250',
+        ], [
+            'benefits.*.max' => 'Each benefit text must not exceed 250 characters.',
         ]);
 
         $data = $request->only([
@@ -125,6 +129,10 @@ class MembershipController extends Controller
             'cost' => 'nullable|required_if:pricing_type,amount|numeric|min:0',
             'life_force_energy_tokens' => 'nullable|required_if:pricing_type,token|numeric|min:0',
             'agree_description' => 'nullable|required_if:pricing_type,token|string',
+            'benefits' => 'array',
+            'benefits.*' => 'nullable|string|max:250',
+        ], [
+            'benefits.*.max' => 'Each benefit text must not exceed 250 characters.',
         ]);
 
         $data = $request->only([

@@ -215,6 +215,12 @@
                                 value="{{ $tier->life_force_energy_tokens }}" type="number" step="0.01" min="0">
                         </div>
                     </div>
+                    <div class="col-md-12 mb-3 d-none" id="agree_desc_wrap">
+                        <div class="box_label">
+                            <label>Agree Description *</label>
+                            <textarea name="agree_description" class="form-control" rows="5">{{ $tier->agree_description }}</textarea>
+                        </div>
+                    </div>
                     <div class="col-md-12 mb-3">
                         <div class="permissions-card">
                             <div class="permissions-header">
@@ -305,7 +311,7 @@
                                     </div>
                                 @endforeach
                             </div>
-                            <div class="my-2"><button type="button" class="btn btn-success add-benefit">+ Add
+                            <div class="my-2"><button type="button" class="btn btn-primary add-benefit">+ Add
                                     Benefit</button></div>
                         </div>
                     </div>
