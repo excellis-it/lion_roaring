@@ -81,7 +81,15 @@
                                                 id="selectAll">
                                         </th>
                                         @foreach ($columns as $column)
-                                            <th>{{ ucfirst(str_replace('_', ' ', $column)) }}</th>
+                                            <th>
+                                                @if ($table === 'warehouse_products' && $column === 'product_id')
+                                                    Product Name
+                                                @elseif($table === 'warehouse_products' && $column === 'warehouse_id')
+                                                    Warehouse Name
+                                                @else
+                                                    {{ ucfirst(str_replace('_', ' ', $column)) }}
+                                                @endif
+                                            </th>
                                         @endforeach
                                         <th>Deleted At</th>
                                         <th style="width: 200px;" class="text-end">Actions</th>
@@ -98,6 +106,10 @@
                                                 <td>
                                                     @if ($column == 'id')
                                                         <strong class="text-primary">{{ $item->$column ?? 'N/A' }}</strong>
+                                                    @elseif($table === 'warehouse_products' && $column === 'product_id')
+                                                        {{ $item->product->name ?? 'N/A' }}
+                                                    @elseif($table === 'warehouse_products' && $column === 'warehouse_id')
+                                                        {{ $item->warehouse->name ?? 'N/A' }}
                                                     @elseif(in_array($column, ['created_at', 'updated_at']) && $item->$column)
                                                         <small
                                                             class="text-muted">{{ $item->$column->format('Y-m-d H:i') }}</small>

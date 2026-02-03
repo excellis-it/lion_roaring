@@ -16,10 +16,14 @@ use App\Models\MembershipTier;
 use App\Models\OurOrganization;
 use App\Models\Plan;
 use App\Models\Product;
+use App\Models\ProductImage;
+use App\Models\ProductOtherCharge;
+use App\Models\ProductVariation;
 use App\Models\Size;
 use App\Models\User;
 use App\Models\UserType;
 use App\Models\WarehouseProduct;
+use App\Models\WarehouseProductVariation;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
@@ -91,8 +95,14 @@ class RecycleBinController extends Controller
         $tableName = $this->getTableDisplayName($table);
 
         // Get deleted items with pagination
-        $deletedItems = $model::onlyTrashed()
-            ->orderBy('deleted_at', 'desc')
+        $query = $model::onlyTrashed();
+
+        // Load relationships for specific tables
+        if ($table === 'warehouse_products') {
+            $query->with(['product', 'warehouse']);
+        }
+
+        $deletedItems = $query->orderBy('deleted_at', 'desc')
             ->paginate(20);
 
         // Get columns for this table
@@ -117,7 +127,13 @@ class RecycleBinController extends Controller
             return response()->json(['success' => false, 'message' => 'Item not found'], 404);
         }
 
+        // Restore the item
         $item->restore();
+
+        // If restoring a product, also restore related data
+        if ($table === 'products') {
+            $this->restoreProductRelatedData($id);
+        }
 
         if ($request->ajax()) {
             return response()->json([
@@ -180,6 +196,12 @@ class RecycleBinController extends Controller
             $item = $model::onlyTrashed()->find($id);
             if ($item) {
                 $item->restore();
+
+                // If restoring a product, also restore related data
+                if ($table === 'products') {
+                    $this->restoreProductRelatedData($id);
+                }
+
                 $restored++;
             }
         }
@@ -300,5 +322,31 @@ class RecycleBinController extends Controller
         ];
 
         return $tableColumns[$table] ?? $defaultColumns;
+    }
+
+    /**
+     * Restore product related data
+     */
+    private function restoreProductRelatedData($productId)
+    {
+        // Restore product images
+        ProductImage::onlyTrashed()
+            ->where('product_id', $productId)
+            ->restore();
+
+        // Restore product other charges
+        ProductOtherCharge::onlyTrashed()
+            ->where('product_id', $productId)
+            ->restore();
+
+        // Restore product variations
+        ProductVariation::onlyTrashed()
+            ->where('product_id', $productId)
+            ->restore();
+
+        // Restore warehouse product variations
+        WarehouseProductVariation::onlyTrashed()
+            ->where('product_id', $productId)
+            ->restore();
     }
 }

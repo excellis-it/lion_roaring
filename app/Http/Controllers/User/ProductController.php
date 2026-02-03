@@ -805,15 +805,21 @@ class ProductController extends Controller
     {
         if (auth()->user()->can('Delete Estore Products')) {
             $product = Product::findOrFail($id);
-            // $product->is_deleted = true;
+
+            // Soft delete the product
             $product->delete();
 
-            EcomWishList::where('product_id', $product->id)->delete();
-            EstoreCart::where('product_id', $product->id)->delete();
-            Review::where('product_id', $product->id)->delete();
+            // Soft delete all related records (if they support SoftDeletes)
+            // These will be restored automatically when the product is restored
+            ProductImage::where('product_id', $product->id)->delete();
             ProductOtherCharge::where('product_id', $product->id)->delete();
             ProductVariation::where('product_id', $product->id)->delete();
             WarehouseProductVariation::where('product_id', $product->id)->delete();
+
+            // Hard delete cart and wishlist items (not needed after deletion)
+            EcomWishList::where('product_id', $product->id)->forceDelete();
+            EstoreCart::where('product_id', $product->id)->forceDelete();
+            Review::where('product_id', $product->id)->delete();
 
             return redirect()->route('products.index')->with('message', 'Product deleted successfully!');
         } else {
