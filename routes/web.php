@@ -141,7 +141,7 @@ use App\Http\Controllers\User\UserActivityController;
 use App\Http\Controllers\User\MembershipController as UserMembershipController;
 use App\Http\Controllers\User\RegisterAgreementPreviewController;
 use App\Http\Controllers\Frontend\MembershipController as FrontEndMembershipController;
-
+use App\Http\Controllers\User\RecycleBinController;
 
 /*
 |--------------------------------------------------------------------------
@@ -343,6 +343,8 @@ Route::group(['middleware' => ['admin'], 'prefix' => 'admin'], function () {
         Route::get('/', [MenuController::class, 'index'])->name('admin.menu.index');
         Route::post('/update', [MenuController::class, 'update'])->name('admin.menu.update');
     });
+
+
 });
 
 
@@ -503,6 +505,18 @@ Route::prefix('user')->middleware(['user', 'preventBackHistory', 'userActivity',
     Route::get('/notification-read/{type}/{id}', [UserDashboardController::class, 'notificationRead'])->name('notification.read');
     // notification.clear
     Route::get('/notification-clear', [UserDashboardController::class, 'notificationClear'])->name('notification.clear');
+
+    // Recycle Bin Routes (SUPER ADMIN Only)
+    Route::prefix('recycle-bin')->middleware('super_admin')->group(function () {
+        Route::get('/', [RecycleBinController::class, 'index'])->name('user.recycle-bin.index');
+        Route::get('/{table}', [RecycleBinController::class, 'show'])->name('user.recycle-bin.show');
+        Route::post('/{table}/{id}/restore', [RecycleBinController::class, 'restore'])->name('user.recycle-bin.restore');
+        Route::delete('/{table}/{id}/force-delete', [RecycleBinController::class, 'forceDelete'])->name('user.recycle-bin.force-delete');
+        Route::post('/{table}/bulk-restore', [RecycleBinController::class, 'bulkRestore'])->name('user.recycle-bin.bulk-restore');
+        Route::post('/{table}/bulk-force-delete', [RecycleBinController::class, 'bulkForceDelete'])->name('user.recycle-bin.bulk-force-delete');
+        Route::post('/{table}/restore-all', [RecycleBinController::class, 'restoreAll'])->name('user.recycle-bin.restore-all');
+        Route::delete('/{table}/empty-bin', [RecycleBinController::class, 'emptyBin'])->name('user.recycle-bin.empty-bin');
+    });
 
 
 

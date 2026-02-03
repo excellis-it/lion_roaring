@@ -703,7 +703,7 @@
                          <a class="sidebar-link {{ Request::is('user/signup-rules*') ? 'active' : '' }}"
                              href="{{ route('user.signup-rules.index') }}" aria-expanded="false">
                              <span>
-                                <img src="{{ asset('user_assets/images/signup-rule.png') }}" alt="">
+                                 <img src="{{ asset('user_assets/images/signup-rule.png') }}" alt="">
                              </span>
                              <span class="hide-menu">{{ Helper::getMenuName('signup_rules', 'Signup Rules') }}</span>
                          </a>
@@ -741,6 +741,18 @@
                      </a>
                  </li>
 
+                 {{-- Recycle Bin - SUPER ADMIN Only --}}
+                 @if (Auth::check() && Auth::user()->hasNewRole('SUPER ADMIN'))
+                     <li class="sidebar-item">
+                         <a class="sidebar-link {{ Request::is('user/recycle-bin*') ? 'active' : '' }}"
+                             href="{{ route('user.recycle-bin.index') }}" aria-expanded="false">
+                             <span>
+                                 <img src="{{ asset('user_assets/images/ICON/Recycle-bin.png') }}" alt="">
+                             </span>
+                             <span class="hide-menu">{{ Helper::getMenuName('recycle_bin', 'Recycle Bin') }}</span>
+                         </a>
+                     </li>
+                 @endif
 
                  {{-- //*********************************************** Admin Portal menu --}}
 
@@ -1211,18 +1223,21 @@
                              id="collapseChatbot">
                              <div class="menu_bb">
                                  <a href="{{ route('user.admin.chatbot.index') }}">
-                                     <span><img src="{{ asset('user_assets/images/dashboard.png') }}" alt=""></span>
+                                     <span><img src="{{ asset('user_assets/images/dashboard.png') }}"
+                                             alt=""></span>
                                      <span>{{ Helper::getMenuName('chatbot_dashboard', 'Dashboard') }}</span>
                                  </a>
                                  @if (Gate::check('Manage Chatbot Keywords'))
                                      <a href="{{ route('user.admin.chatbot.keywords') }}">
-                                         <span><img src="{{ asset('user_assets/images/keyword.png') }}" alt=""></span>
+                                         <span><img src="{{ asset('user_assets/images/keyword.png') }}"
+                                                 alt=""></span>
                                          <span>{{ Helper::getMenuName('chatbot_keywords', 'Keywords') }}</span>
                                      </a>
                                  @endif
                                  @if (Gate::check('View Chatbot History'))
                                      <a href="{{ route('user.admin.chatbot.conversations') }}">
-                                         <span><img src="{{ asset('user_assets/images/history.png') }}" alt=""></span>
+                                         <span><img src="{{ asset('user_assets/images/history.png') }}"
+                                                 alt=""></span>
                                          <span>{{ Helper::getMenuName('chatbot_history', 'History') }}</span>
                                      </a>
                                  @endif

@@ -5,10 +5,13 @@
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <meta name="description" content="">
-        <meta name="author" content="Mark Otto, Jacob Thornton, and Bootstrap contributors">
-        <meta name="generator" content="Hugo 0.84.0">
+        <meta name="author" content="">
+        <meta name="generator" content="">
+
         <meta name="csrf-token" content="{{ csrf_token() }}" />
         <title>@yield('title')</title>
+         <link rel="icon" href="{{ asset('frontend_assets/uploads/2023/04/cropped-logo-1-32x32.png') }}"
+            sizes="32x32" />
         <link rel="preconnect" href="https://fonts.googleapis.com">
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
         <link

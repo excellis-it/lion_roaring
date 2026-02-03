@@ -805,8 +805,8 @@ class ProductController extends Controller
     {
         if (auth()->user()->can('Delete Estore Products')) {
             $product = Product::findOrFail($id);
-            $product->is_deleted = true;
-            $product->save();
+            // $product->is_deleted = true;
+            $product->delete();
 
             EcomWishList::where('product_id', $product->id)->delete();
             EstoreCart::where('product_id', $product->id)->delete();
