@@ -163,7 +163,7 @@
     <style>
         /* Header Styling */
         .recycle-bin-header {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: #7851a9;
             padding: 2rem;
             border-radius: 12px;
             box-shadow: 0 10px 30px rgba(102, 126, 234, 0.2);
@@ -363,7 +363,7 @@
         }
 
         .clean-table-badge {
-            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            background: #7851a9;
             color: white;
             padding: 0.75rem 1rem;
             border-radius: 8px;

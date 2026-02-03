@@ -220,7 +220,7 @@
     <style>
         /* Page Header */
         .page-header {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: #7851a9;
             padding: 2rem;
             border-radius: 12px;
             box-shadow: 0 10px 30px rgba(102, 126, 234, 0.2);
