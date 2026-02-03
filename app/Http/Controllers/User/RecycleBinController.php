@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\User;
 
 use App\Http\Controllers\Controller;
+use App\Models\Bulletin;
 use App\Models\Category;
 use App\Models\ChatbotKeyword;
 use App\Models\Color;
@@ -11,7 +12,9 @@ use App\Models\Ecclesia;
 use App\Models\EcomCmsPage;
 use App\Models\EcomNewsletter;
 use App\Models\ElearningProduct;
+use App\Models\ElearningTopic;
 use App\Models\EstorePromoCode;
+use App\Models\File;
 use App\Models\MembershipTier;
 use App\Models\OurOrganization;
 use App\Models\Plan;
@@ -20,6 +23,7 @@ use App\Models\ProductImage;
 use App\Models\ProductOtherCharge;
 use App\Models\ProductVariation;
 use App\Models\Size;
+use App\Models\Topic;
 use App\Models\User;
 use App\Models\UserType;
 use App\Models\WarehouseProduct;
@@ -51,6 +55,9 @@ class RecycleBinController extends Controller
         'user_types' => UserType::class,
         'warehouse_products' => WarehouseProduct::class,
         'chatbot_keywords' => ChatbotKeyword::class,
+        'bulletins' => Bulletin::class,
+        'topics' => Topic::class,
+        'files' => File::class,
         // Note: 'roles' removed - Spatie Role model doesn't use SoftDeletes by default
     ];
 
@@ -319,6 +326,9 @@ class RecycleBinController extends Controller
             'user_types' => ['id', 'name', 'type'],
             'warehouse_products' => ['id', 'product_id', 'warehouse_id'],
             'chatbot_keywords' => ['id', 'keyword', 'response'],
+            'bulletins' => ['id', 'title', 'description'],
+            'topics' => ['id', 'topic_name', 'education_type'],
+            'files' => ['id', 'file_name', 'type'],
         ];
 
         return $tableColumns[$table] ?? $defaultColumns;
