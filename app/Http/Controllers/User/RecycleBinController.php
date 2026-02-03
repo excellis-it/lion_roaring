@@ -314,7 +314,7 @@ class RecycleBinController extends Controller
             'sizes' => ['id', 'name', 'code'],
             'categories' => ['id', 'name', 'slug'],
             'products' => ['id', 'name', 'product_type', 'price'],
-            'elearning_products' => ['id', 'title', 'price'],
+            'elearning_products' => ['id', 'name', 'affiliate_link'],
             'estore_promo_codes' => ['id', 'code', 'discount_type', 'discount_value'],
             'user_types' => ['id', 'name', 'type'],
             'warehouse_products' => ['id', 'product_id', 'warehouse_id'],
