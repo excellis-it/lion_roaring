@@ -741,7 +741,7 @@
                      </a>
                  </li>
 
-                 {{-- Recycle Bin - SUPER ADMIN Only --}}
+                 {{-- Restore - SUPER ADMIN Only --}}
                  @if (Auth::check() && Auth::user()->hasNewRole('SUPER ADMIN'))
                      <li class="sidebar-item">
                          <a class="sidebar-link {{ Request::is('user/recycle-bin*') ? 'active' : '' }}"
@@ -749,7 +749,7 @@
                              <span>
                                  <img src="{{ asset('user_assets/images/ICON/Recycle-bin.png') }}" alt="">
                              </span>
-                             <span class="hide-menu">{{ Helper::getMenuName('recycle_bin', 'Recycle Bin') }}</span>
+                             <span class="hide-menu">{{ Helper::getMenuName('recycle_bin', 'Restore') }}</span>
                          </a>
                      </li>
                  @endif

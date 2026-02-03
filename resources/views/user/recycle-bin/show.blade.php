@@ -1,5 +1,5 @@
 @extends('user.layouts.master')
-@section('title', $tableName . ' - Recycle Bin')
+@section('title', $tableName . ' - Restore')
 @section('content')
     <div class="container-fluid">
         <div class="bg_white_border py-4">
@@ -9,7 +9,7 @@
                     <div>
                         <a href="{{ route('user.recycle-bin.index') }}" class="btn-back mb-3">
                             <i class="fa fa-arrow-left"></i>
-                            <span>Back to Recycle Bin</span>
+                            <span>Back to Restore</span>
                         </a>
                         <div class="d-flex align-items-center gap-3">
                             <div class="table-icon">
@@ -207,7 +207,7 @@
                         <h4>This Table is Clean!</h4>
                         <p>No deleted items found in the recycle bin.</p>
                         <a href="{{ route('user.recycle-bin.index') }}" class="btn btn-primary rounded-pill px-4 mt-3">
-                            <i class="fa fa-arrow-left me-2"></i>Back to Recycle Bin
+                            <i class="fa fa-arrow-left me-2"></i>Back to Restore
                         </a>
                     </div>
                 @endif
@@ -674,7 +674,8 @@
             }).then((result) => {
                 if (result.value) {
                     $.ajax({
-                        url: `/user/recycle-bin/${tableName}/${id}/restore`,
+                        url: "{{ route('user.recycle-bin.restore', ['table' => ':table', 'id' => ':id']) }}"
+                            .replace(':table', tableName).replace(':id', id),
                         type: 'POST',
                         data: {
                             _token: csrfToken
@@ -705,7 +706,8 @@
             }).then((result) => {
                 if (result.value) {
                     $.ajax({
-                        url: `/user/recycle-bin/${tableName}/${id}/force-delete`,
+                        url: "{{ route('user.recycle-bin.force-delete', ['table' => ':table', 'id' => ':id']) }}"
+                            .replace(':table', tableName).replace(':id', id),
                         type: 'DELETE',
                         data: {
                             _token: csrfToken
@@ -745,7 +747,8 @@
             }).then((result) => {
                 if (result.value) {
                     $.ajax({
-                        url: `/user/recycle-bin/${tableName}/bulk-restore`,
+                        url: "{{ route('user.recycle-bin.bulk-restore', ['table' => ':table']) }}".replace(
+                            ':table', tableName),
                         type: 'POST',
                         data: {
                             _token: csrfToken,
@@ -786,7 +789,8 @@
             }).then((result) => {
                 if (result.value) {
                     $.ajax({
-                        url: `/user/recycle-bin/${tableName}/bulk-force-delete`,
+                        url: "{{ route('user.recycle-bin.bulk-force-delete', ['table' => ':table']) }}"
+                            .replace(':table', tableName),
                         type: 'POST',
                         data: {
                             _token: csrfToken,
@@ -817,7 +821,8 @@
                 showCancelButton: true
             }).then((result) => {
                 if (result.value) {
-                    window.location.href = `/user/recycle-bin/${tableName}/restore-all`;
+                    window.location.href = "{{ route('user.recycle-bin.restore-all', ['table' => ':table']) }}"
+                        .replace(':table', tableName);
                 }
             });
         }
@@ -825,7 +830,7 @@
         // Empty bin (delete all permanently)
         function emptyBin() {
             swal({
-                title: "Empty Recycle Bin?",
+                title: "Empty Restore?",
                 text: "All items will be PERMANENTLY deleted. This action cannot be undone!",
                 type: "warning",
                 confirmButtonText: "Yes, empty the bin!",
@@ -834,7 +839,8 @@
             }).then((result) => {
                 if (result.value) {
                     $.ajax({
-                        url: `/user/recycle-bin/${tableName}/empty-bin`,
+                        url: "{{ route('user.recycle-bin.empty-bin', ['table' => ':table']) }}".replace(
+                            ':table', tableName),
                         type: 'DELETE',
                         data: {
                             _token: csrfToken

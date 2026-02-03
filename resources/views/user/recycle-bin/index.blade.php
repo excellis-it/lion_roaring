@@ -1,5 +1,5 @@
 @extends('user.layouts.master')
-@section('title', 'Recycle Bin')
+@section('title', 'Restore')
 @section('content')
     <div class="container-fluid">
         <div class="bg_white_border py-4">
@@ -12,7 +12,7 @@
                                 <i class="fa fa-trash-restore-alt"></i>
                             </div>
                             <div>
-                                <h2 class="mb-0 fw-bold">Recycle Bin Management</h2>
+                                <h2 class="mb-0 fw-bold">Restore Management</h2>
                                 <p class="text-muted mb-0 small">Restore or permanently delete soft-deleted records</p>
                             </div>
                         </div>
@@ -148,7 +148,7 @@
                     <div class="empty-state-icon">
                         <i class="fa fa-check-circle"></i>
                     </div>
-                    <h3>Recycle Bin is Sparkling Clean!</h3>
+                    <h3>Restore is Sparkling Clean!</h3>
                     <p>All tables are clean. No deleted items to display.</p>
                     <div class="empty-state-decoration">
                         <i class="fa fa-trash-alt"></i>
