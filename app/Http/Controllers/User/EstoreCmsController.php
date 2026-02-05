@@ -34,7 +34,7 @@ use Stripe\Climate\Order;
 use Stripe\Refund;
 use Stripe\Stripe;
 use App\Helpers\Helper;
-
+use App\Models\EstoreSetting;
 
 class EstoreCmsController extends Controller
 {
@@ -677,6 +677,37 @@ class EstoreCmsController extends Controller
                 ->where('is_pickup', $isPickupOrder ? 1 : 0)
                 ->first();
             $cancelledStatusId = $cancelledStatus ? $cancelledStatus->id : null;
+
+            // CANCELLATION WINDOW VALIDATION
+            // Check if order is within the cancellation window
+            $estoreSettings = EstoreSetting::first();
+            $cancelHours = $estoreSettings->cancel_within_hours ?? 24;
+            $elapsedMinutes = (int) $orderPreview->created_at->diffInMinutes(now());
+            $isWithinCancelWindow = $elapsedMinutes < $cancelHours * 60;
+
+            // Define allowed statuses during cancellation window
+            $allowedCancelSlugs = $isPickupOrder
+                ? ['pickup_pending', 'pickup_processing']
+                : ['pending', 'processing'];
+
+            $currentStatusModel = OrderStatus::find($orderPreview->status);
+            $isInAllowedCancelStatus = $currentStatusModel && in_array($currentStatusModel->slug, $allowedCancelSlugs, true);
+
+            // If within cancellation window and in an allowed cancel status, only allow cancellation
+            if ($isWithinCancelWindow && $isInAllowedCancelStatus) {
+                if ($cancelledStatusId && $targetStatusId !== (int)$cancelledStatusId) {
+                    $minutesLeft = max(0, $cancelHours * 60 - $elapsedMinutes);
+                    $hoursLeft = (int) floor($minutesLeft / 60);
+                    $minutesRem = $minutesLeft % 60;
+                    $timeLeft = ($hoursLeft > 0 ? "{$hoursLeft}h " : "") . "{$minutesRem}m";
+
+                    $message = "This order is within the {$cancelHours}-hour cancellation window (Time left: {$timeLeft}). During this period, you can only cancel the order. Other status changes will be available after the cancellation window expires.";
+                    if ($request->ajax()) {
+                        return response()->json(['status' => false, 'message' => $message], 422);
+                    }
+                    return redirect()->back()->withErrors(['status' => $message])->withInput();
+                }
+            }
 
             if (!$isPickupOrder && $cancelledStatusId && $targetStatusId !== (int)$cancelledStatusId) {
                 if (empty($request->expected_delivery_date)) {

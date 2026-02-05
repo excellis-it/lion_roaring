@@ -1071,7 +1071,7 @@ class ProductController extends Controller
 
             $warehouseId = $carts->first()->warehouse_id ?? null;
             $wareHouse = WareHouse::find($warehouseId);
-            $statusSlug = $is_pickup ? 'pickup_processing' : 'processing';
+            $statusSlug = $is_pickup ? 'pickup_pending' : 'pending';
             $order_status = OrderStatus::where('slug', $statusSlug)
                 ->where('is_pickup', $is_pickup ? 1 : 0)
                 ->first();

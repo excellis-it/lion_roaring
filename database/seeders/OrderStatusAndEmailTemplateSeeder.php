@@ -11,6 +11,13 @@ class OrderStatusAndEmailTemplateSeeder extends Seeder
 {
     public function run(): void
     {
+        // truncate tables
+        DB::statement('SET FOREIGN_KEY_CHECKS=0;');
+        DB::statement('TRUNCATE TABLE order_statuses;');
+        DB::statement('TRUNCATE TABLE order_email_templates;');
+        DB::statement('SET FOREIGN_KEY_CHECKS=1;');
+
+
         DB::transaction(function () {
             // 1) Order statuses
             $statuses = [

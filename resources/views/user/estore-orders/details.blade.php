@@ -545,6 +545,14 @@
                         <input type="hidden" id="order-id" name="order_id" value="{{ $order->id }}">
                         <input type="hidden" id="current-status" name="current_status" value="{{ $order->status }}">
 
+                        <!-- Cancellation Window Warning -->
+                        <div class="alert alert-warning" id="cancel-window-warning" style="display: none;">
+                            <i class="fas fa-exclamation-triangle"></i>
+                            <strong>Cancellation Window Active:</strong> This order is within the cancellation period.
+                            You can only cancel the order at this time. Other status changes will be available after the
+                            cancellation window expires.
+                        </div>
+
                         <div class="mb-3">
                             <label for="order-status" class="form-label">Order Status</label>
                             <select class="form-control" id="order-status" name="status" required>
@@ -612,14 +620,14 @@
         }
 
         /* .timeline::before {
-                                                                                            content: '';
-                                                                                            position: absolute;
-                                                                                            left: 15px;
-                                                                                            top: 0;
-                                                                                            bottom: 0;
-                                                                                            width: 2px;
-                                                                                            background: #e9ecef;
-                                                                                        } */
+                                                                                                                    content: '';
+                                                                                                                    position: absolute;
+                                                                                                                    left: 15px;
+                                                                                                                    top: 0;
+                                                                                                                    bottom: 0;
+                                                                                                                    width: 2px;
+                                                                                                                    background: #e9ecef;
+                                                                                                                } */
 
         .timeline-item {
             position: relative;
@@ -708,6 +716,10 @@
         const FINAL_STATUS_ID =
             {{ $order_status->firstWhere('slug', $order->is_pickup ? 'pickup_picked_up' : 'delivered')?->id ?? 'null' }};
 
+        // Cancellation window check
+        const IS_WITHIN_CANCEL_WINDOW = {{ $isWithinCancelWindowAdmin ? 'true' : 'false' }};
+        const ALLOWED_CANCEL_SLUGS = @json($allowedAdminSlugs);
+
         function openUpdateStatusModal(orderId, currentStatus, currentPaymentStatus, notes, date, isPickup) {
             isPickup = parseInt(isPickup) === 1 ? 1 : 0;
             if ((FINAL_STATUS_ID && parseInt(currentStatus) === parseInt(FINAL_STATUS_ID)) ||
@@ -717,15 +729,38 @@
             }
             $('#order-id').val(orderId);
             $('#current-status').val(currentStatus);
-            $('#order-status option').each(function() {
-                $(this).prop('disabled', false);
-                const optionValue = $(this).val();
-                const optionIndex = STATUS_SEQUENCE.indexOf(optionValue);
-                const currentIndex = STATUS_SEQUENCE.indexOf(currentStatus);
-                const isPreviousStep = optionIndex !== -1 && optionIndex < currentIndex && optionValue !==
-                    currentStatus;
-                $(this).prop('disabled', isPreviousStep);
-            });
+
+            // Show/hide cancellation window warning
+            if (IS_WITHIN_CANCEL_WINDOW) {
+                $('#cancel-window-warning').show();
+            } else {
+                $('#cancel-window-warning').hide();
+            }
+
+            // If within cancellation window, only allow cancellation
+            if (IS_WITHIN_CANCEL_WINDOW) {
+                $('#order-status option').each(function() {
+                    const optionValue = $(this).val();
+                    // Disable all options except cancelled status
+                    if (parseInt(optionValue) !== parseInt(CANCELLED_STATUS_ID)) {
+                        $(this).prop('disabled', true);
+                    } else {
+                        $(this).prop('disabled', false);
+                    }
+                });
+            } else {
+                // Normal behavior: disable previous steps only
+                $('#order-status option').each(function() {
+                    $(this).prop('disabled', false);
+                    const optionValue = $(this).val();
+                    const optionIndex = STATUS_SEQUENCE.indexOf(optionValue);
+                    const currentIndex = STATUS_SEQUENCE.indexOf(currentStatus);
+                    const isPreviousStep = optionIndex !== -1 && optionIndex < currentIndex && optionValue !==
+                        currentStatus;
+                    $(this).prop('disabled', isPreviousStep);
+                });
+            }
+
             $('#order-status').val(currentStatus);
             $('#order-notes').val(notes || '');
             $('#updateStatusModal').modal('show');
