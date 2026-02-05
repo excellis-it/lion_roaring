@@ -389,9 +389,16 @@ class AuthController extends Controller
             'name' => $request->first_name . ' ' . $request->last_name,
             'email' => $request->email,
             'type' => 'Activated',
+            'status' => $user->status,
         ];
-        Mail::to($request->email)->send(new ActiveUserMail($maildata));
-        return redirect()->route('home')->with('message', 'Please wait for admin approval');
+
+        if ($user->status == 1) {
+            Mail::to($request->email)->send(new ActiveUserMail($maildata));
+            return redirect()->route('home')->with('message', 'Thank you for registering! You can now login');
+        } else {
+            Mail::to($request->email)->send(new ActiveUserMail($maildata));
+            return redirect()->route('home')->with('message', 'Please wait for admin approval');
+        }
     }
 
     public function logout()
