@@ -186,12 +186,39 @@ class RolePermissionsController extends Controller
     {
         $id = Crypt::decrypt($id);
         $role = UserType::findOrFail($id);
-        if ($role->name != 'SUPER ADMIN') {
-            Log::info($role->id . ' deleted by ' . auth()->user()->email . ' deleted at ' . now());
-            $role->delete();
-            return redirect()->back()->with('message', 'Role deleted successfully.');
-        } else {
-            return redirect()->back()->with('error', 'You can not delete this role.');
+
+        if ($role->name == 'SUPER ADMIN') {
+            if (request()->ajax()) {
+                return response()->json(['success' => false, 'message' => 'You cannot delete the SUPER ADMIN role.']);
+            }
+            return redirect()->back()->with('error', 'You cannot delete the SUPER ADMIN role.');
         }
+
+        // Check if any users are assigned to this user_type
+        $usersCount = \App\Models\User::where('user_type_id', $role->id)->count();
+
+        if ($usersCount > 0) {
+            $userWord = $usersCount == 1 ? 'user' : 'users';
+            $message = "Cannot delete this role. {$usersCount} {$userWord} currently assigned to this role. Please reassign or remove these users first before deleting the role.";
+
+            if (request()->ajax()) {
+                return response()->json(['success' => false, 'message' => $message]);
+            }
+            return redirect()->back()->with('error', $message);
+        }
+
+        // If no users assigned, proceed with deletion
+        Log::info($role->id . ' deleted by ' . auth()->user()->email . ' deleted at ' . now());
+
+        // Delete associated permissions
+        UserTypePermission::where('user_type_id', $role->id)->delete();
+
+        // Delete the role
+        $role->delete();
+
+        if (request()->ajax()) {
+            return response()->json(['success' => true, 'message' => 'Role deleted successfully.']);
+        }
+        return redirect()->back()->with('message', 'Role deleted successfully.');
     }
 }

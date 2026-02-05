@@ -15,7 +15,9 @@
 
                                 <div class="row justify-content-between">
                                     <div class="col-lg-8">
-                                        <h3 class="mb-3">{{ App\Helpers\Helper::getMenuName('role_permission', 'Role Permission') }} List</h3>
+                                        <h3 class="mb-3">
+                                            {{ App\Helpers\Helper::getMenuName('role_permission', 'Role Permission') }} List
+                                        </h3>
                                     </div>
 
                                     <div class="col-lg-4 text-end">
@@ -43,7 +45,8 @@
                                         <thead class="color_head">
                                             <tr class="header-row">
                                                 <th>ID (#)</th>
-                                                <th>{{ App\Helpers\Helper::getMenuName('role_permission', 'Role Permission') }}</th>
+                                                <th>{{ App\Helpers\Helper::getMenuName('role_permission', 'Role Permission') }}
+                                                </th>
                                                 <th>Is ECCLESIA</th>
                                                 <th></th>
                                             </tr>
@@ -105,25 +108,61 @@
 @push('scripts')
     <script>
         $(document).on('click', '#delete', function(e) {
+            e.preventDefault();
+            var deleteUrl = $(this).data('route');
+
             swal({
                     title: "Are you sure?",
                     text: "To delete this {{ App\Helpers\Helper::getMenuName('role_permission', 'Role Permission') }}.",
                     type: "warning",
-                    confirmButtonText: "Yes",
-                    showCancelButton: true
+                    confirmButtonText: "Yes, delete it!",
+                    showCancelButton: true,
+                    confirmButtonColor: '#d33',
+                    cancelButtonColor: '#3085d6',
                 })
                 .then((result) => {
                     if (result.value) {
-                        window.location = $(this).data('route');
+                        // Make AJAX call to delete
+                        $.ajax({
+                            url: deleteUrl,
+                            type: 'GET',
+                            dataType: 'json',
+                            success: function(response) {
+                                if (response.success) {
+                                    swal({
+                                        title: 'Deleted!',
+                                        text: response.message,
+                                        type: 'success',
+                                        confirmButtonText: 'OK'
+                                    }).then(() => {
+                                        window.location.reload();
+                                    });
+                                } else {
+                                    swal({
+                                        title: 'Error!',
+                                        text: response.message,
+                                        type: 'error',
+                                        confirmButtonText: 'OK'
+                                    });
+                                }
+                            },
+                            error: function(xhr, status, error) {
+                                swal({
+                                    title: 'Error!',
+                                    text: 'An error occurred while deleting the role.',
+                                    type: 'error',
+                                    confirmButtonText: 'OK'
+                                });
+                            }
+                        });
                     } else if (result.dismiss === 'cancel') {
                         swal(
                             'Cancelled',
-                            'Your stay here :)',
-                            'error'
+                            'Your role is safe :)',
+                            'info'
                         )
                     }
                 })
         });
     </script>
-
 @endpush

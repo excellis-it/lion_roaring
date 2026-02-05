@@ -170,21 +170,32 @@ class RolePermissionController extends Controller
         return redirect()->route('admin.roles.index')->with('message', 'Role updated successfully.');
     }
 
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
     public function destroy($id)
     {
         $id = Crypt::decrypt($id);
         $role = UserType::findOrFail($id);
-        if ($role->name != 'SUPER ADMIN') {
-            $role->delete();
-            return redirect()->back()->with('message', 'Role deleted successfully.');
-        } else {
-            return redirect()->back()->with('error', 'You can not delete this role.');
+
+        if ($role->name == 'SUPER ADMIN') {
+            return redirect()->back()->with('error', 'You cannot delete the SUPER ADMIN role.');
         }
+
+        // Check if any users are assigned to this user_type
+        $usersCount = \App\Models\User::where('user_type_id', $role->id)->count();
+
+        if ($usersCount > 0) {
+            $userWord = $usersCount == 1 ? 'user' : 'users';
+            return redirect()->back()->with('error', "Cannot delete this role. {$usersCount} {$userWord} currently assigned to this role. Please reassign or remove these users first before deleting the role.");
+        }
+
+        // If no users assigned, proceed with deletion
+        \Illuminate\Support\Facades\Log::info($role->id . ' deleted by ' . auth()->user()->email . ' deleted at ' . now());
+
+        // Delete associated permissions
+        \App\Models\UserTypePermission::where('user_type_id', $role->id)->delete();
+
+        // Delete the role
+        $role->delete();
+
+        return redirect()->back()->with('message', 'Role deleted successfully.');
     }
 }
