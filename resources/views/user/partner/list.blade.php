@@ -38,7 +38,20 @@
                                     </div> --}}
 
                                     <div class="col-md-3">
-                                        @if (auth()->user()->user_type == 'Global')
+                                        @if (auth()->user()->user_type == 'Regional')
+                                            {{-- Regional users can only see their own country --}}
+                                            <select name="country_filter" id="country_filter" class="form-control" disabled
+                                                style="background-color: #e9ecef; cursor: not-allowed;">
+                                                @foreach ($countries as $country)
+                                                    @if ($country->id == auth()->user()->country)
+                                                        <option value="{{ $country->id }}" selected>
+                                                            {{ $country->name }} (Your Region)
+                                                        </option>
+                                                    @endif
+                                                @endforeach
+                                            </select>
+                                        @else
+                                            {{-- Global and other users can filter by any country --}}
                                             <select name="country_filter" id="country_filter" class="form-control">
                                                 <option value="">All Countries</option>
                                                 @foreach ($countries as $country)
