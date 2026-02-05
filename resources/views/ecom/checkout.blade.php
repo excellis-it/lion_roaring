@@ -145,6 +145,35 @@
                                 </div>
                             </div>
 
+                            {{-- Warehouse Location Section (shown when Pickup is selected) --}}
+                            @if ($estoreSettings && $estoreSettings->is_pickup_available && $nearestWarehouse)
+                                <div class="bill_details mt-3" id="warehouse-location" style="display: none;">
+                                    <h4>Pickup Location</h4>
+                                    <div class="alert alert-info mb-0">
+                                        <h6 class="mb-2"><strong>{{ $nearestWarehouse->name }}</strong></h6>
+                                        <p class="mb-1">
+                                            <i class="fas fa-map-marker-alt me-1"></i>
+                                            {{ $nearestWarehouse->address }}
+                                            @if ($nearestWarehouse->country)
+                                                <br>{{ $nearestWarehouse->country->name }}
+                                            @endif
+                                        </p>
+                                        @if ($warehouseDistance)
+                                            <p class="mb-1">
+                                                <i class="fas fa-road me-1"></i>
+                                                Distance: {{ number_format($warehouseDistance, 2) }} km
+                                            </p>
+                                        @endif
+                                        @if ($nearestWarehouse->location_lat && $nearestWarehouse->location_lng)
+                                            <a href="https://www.google.com/maps?q={{ $nearestWarehouse->location_lat }},{{ $nearestWarehouse->location_lng }}"
+                                                target="_blank" class="btn btn-sm btn-primary mt-2">
+                                                <i class="fas fa-map me-1"></i> View on Map
+                                            </a>
+                                        @endif
+                                    </div>
+                                </div>
+                            @endif
+
                             <div class="bill_details">
                                 <h4>Bill Details</h4>
                                 <div class="bill_text">
@@ -378,9 +407,19 @@
             orderMethodRadios.forEach(radio => radio.addEventListener("change", function() {
                 // alert(this.value);
                 if (this.value === "1") {
-                    document.getElementById("change-text").textContent = "Pickup At";
+                    document.getElementById("change-text").textContent = "Bill To";
+                    // Show warehouse location section
+                    const warehouseSection = document.getElementById("warehouse-location");
+                    if (warehouseSection) {
+                        warehouseSection.style.display = "block";
+                    }
                 } else {
                     document.getElementById("change-text").textContent = "Delivery To";
+                    // Hide warehouse location section
+                    const warehouseSection = document.getElementById("warehouse-location");
+                    if (warehouseSection) {
+                        warehouseSection.style.display = "none";
+                    }
                 }
             }));
 

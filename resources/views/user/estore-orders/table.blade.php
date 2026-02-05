@@ -75,13 +75,13 @@
                             $finalSlugs = ['delivered', 'cancelled', 'pickup_picked_up', 'pickup_cancelled'];
                             $isFinalStatus = in_array(optional($order->orderStatus)->slug, $finalSlugs, true);
                         @endphp
-                        @if (auth()->user()->can('Edit Estore Orders') && !$isFinalStatus)
+                        {{-- @if (auth()->user()->can('Edit Estore Orders') && !$isFinalStatus)
                             <button type="button" class="btn btn-sm btn-warning"
                                 onclick="openUpdateStatusModal({{ $order->id }}, '{{ $order->status }}', '{{ $order->payment_status }}', '{{ $order->notes }}', '{{ $order->expected_delivery_date ? date('Y-m-d', strtotime($order->expected_delivery_date)) : '' }}', '{{ $order->is_pickup ? 1 : 0 }}')"
                                 title="Update Status">
                                 <i class="fas fa-edit"></i>
                             </button>
-                        @endif
+                        @endif --}}
                         {{-- <button type="button" class="btn btn-sm btn-danger" onclick="deleteOrder({{ $order->id }})"
                             title="Delete Order">
                             <i class="fas fa-trash"></i>

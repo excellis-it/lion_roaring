@@ -896,6 +896,38 @@ class ProductController extends Controller
 
         $total = $subtotal - $promoDiscount + $shippingCost + $deliveryCost + $taxAmount;
 
+        // Get nearest warehouse based on user location
+        $nearestWarehouse = null;
+        $warehouseDistance = null;
+
+        // Try to get location from user profile or session
+        $userLat = null;
+        $userLng = null;
+
+        if (auth()->check() && auth()->user()->location_lat && auth()->user()->location_lng) {
+            $userLat = auth()->user()->location_lat;
+            $userLng = auth()->user()->location_lng;
+        } elseif (session('location_lat') && session('location_lng')) {
+            $userLat = session('location_lat');
+            $userLng = session('location_lng');
+        }
+
+        // Get nearest warehouse if we have user coordinates
+        if ($userLat && $userLng) {
+            $warehouseData = \App\Helpers\Helper::getNearestWarehouse($userLat, $userLng);
+            if ($warehouseData) {
+                $nearestWarehouse = $warehouseData['warehouse'];
+                $warehouseDistance = $warehouseData['distance_km'];
+            }
+        }
+
+        // If no location available, get the first active warehouse as fallback
+        if (!$nearestWarehouse) {
+            $nearestWarehouse = WareHouse::where('is_active', 1)
+                ->whereHas('warehouseProducts')
+                ->with('country')
+                ->first();
+        }
 
         return view('ecom.checkout')->with(compact(
             'cartItems',
@@ -908,7 +940,9 @@ class ProductController extends Controller
             'estoreSettings',
             'hasChanges',
             'appliedPromoCode',
-            'promoDiscount'
+            'promoDiscount',
+            'nearestWarehouse',
+            'warehouseDistance'
         ));
     }
 
