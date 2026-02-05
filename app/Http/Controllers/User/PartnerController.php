@@ -117,7 +117,7 @@ class PartnerController extends Controller
             }
 
             if ($user->user_type == 'Regional') {
-                $partners->where('users.country', $user->country);
+                $partners->where('users.country', $user->country)->where('users.user_type', 'Regional');
             }
 
             // Order results
@@ -944,7 +944,7 @@ class PartnerController extends Controller
 
 
             if ($user->user_type == 'Regional') {
-                $partners->where('users.country', $user->country);
+                $partners->where('users.country', $user->country)->where('users.user_type', 'Regional');
             }
 
             // Sorting logic

@@ -34,7 +34,7 @@ use App\Models\EstoreCart;
 use App\Models\GlobalImage;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\DB;
-
+use Illuminate\Support\Facades\Log;
 
 class Helper
 {
@@ -551,6 +551,8 @@ class Helper
 
             $distance = self::haversineDistance($originLat, $originLng, $wh->location_lat, $wh->location_lng);
 
+
+
             $isAuth = auth()->check();
             $isUser = auth()->user();
             if ($isUser) {
@@ -563,8 +565,10 @@ class Helper
             $warehouses_location_country_name = $wh->country ? $wh->country->name : null;
 
             if ($user_location_country_name && $warehouses_location_country_name && $user_location_country_name == $warehouses_location_country_name) {
+                Log::info($user_location_country_name . ' ' . $warehouses_location_country_name . ' ' . $wh->name . 'Distance: ' . $distance);
 
                 if (is_null($minDistance) || $distance < $minDistance) {
+                    Log::info($minDistance . ' ' . $distance);
                     // if respecting service_range, ensure warehouse is within its service_range (if set)
                     if ($respectServiceRange && !is_null($wh->service_range) && $distance > $wh->service_range) {
                         // skip — out of range

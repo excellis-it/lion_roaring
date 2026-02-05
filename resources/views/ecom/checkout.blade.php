@@ -27,7 +27,7 @@
     <section class="shopping_cart_sec">
         <div class="container">
             <div class="heading_hp mb-3">
-                <h2>Deliver To</h2>
+                <h2 id="change-text">Deliver To</h2>
             </div>
             <form id="checkout-form">
                 @csrf
@@ -373,6 +373,16 @@
             // Attach listeners
             paymentRadios.forEach(radio => radio.addEventListener("change", calculateTotal));
             orderMethodRadios.forEach(radio => radio.addEventListener("change", calculateTotal));
+
+            // text change when radio button change
+            orderMethodRadios.forEach(radio => radio.addEventListener("change", function() {
+                // alert(this.value);
+                if (this.value === "1") {
+                    document.getElementById("change-text").textContent = "Pickup At";
+                } else {
+                    document.getElementById("change-text").textContent = "Delivery To";
+                }
+            }));
 
             // Initial run
             calculateTotal();

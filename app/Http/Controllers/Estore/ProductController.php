@@ -1688,7 +1688,7 @@ class ProductController extends Controller
                 ->pluck('id')
                 ->toArray();
 
-            if (!in_array($order->status, $allowedStatusIds, true)) {
+            if (!in_array((int)$order->status, $allowedStatusIds, true)) {
                 $order = null;
             }
         }
