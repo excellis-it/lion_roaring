@@ -506,7 +506,7 @@ Route::prefix('user')->middleware(['user', 'preventBackHistory', 'userActivity',
     // notification.clear
     Route::get('/notification-clear', [UserDashboardController::class, 'notificationClear'])->name('notification.clear');
 
-    // Recycle Bin Routes (SUPER ADMIN Only)
+    // Restore Routes (SUPER ADMIN Only)
     Route::prefix('recycle-bin')->middleware('super_admin')->group(function () {
         Route::get('/', [RecycleBinController::class, 'index'])->name('user.recycle-bin.index');
         Route::get('/{table}', [RecycleBinController::class, 'show'])->name('user.recycle-bin.show');

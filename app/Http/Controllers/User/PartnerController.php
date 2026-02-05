@@ -49,21 +49,28 @@ class PartnerController extends Controller
                 });
             }
 
+
             $partners = User::with(['ecclesia', 'userRole'])
-                ->whereHas('userRole', function ($q) {
-                    $q->where('name', '!=', 'SUPER ADMIN')->where('name', '!=', 'ESTORE_USER');
-                });
+                ->leftJoin('user_types as ut', 'users.user_type_id', '=', 'ut.id')
+                ->where(function ($q) {
+                    $q->whereNull('ut.id') // Include users with deleted user types
+                        ->orWhere(function ($subQ) {
+                            $subQ->where('ut.name', '!=', 'SUPER ADMIN')
+                                ->where('ut.name', '!=', 'ESTORE_USER');
+                        });
+                })
+                ->select('users.*'); // Only select user columns to avoid conflicts
 
             // Apply search query filter
             if ($query) {
                 $query_search = str_replace(" ", "%", $query);
                 $partners->where(function ($q) use ($query_search) {
-                    $q->where('id', 'like', "%{$query_search}%")
-                        ->orWhereRaw('CONCAT(COALESCE(first_name, ""), " ", COALESCE(middle_name, ""), " ", COALESCE(last_name, "")) LIKE ?', ["%{$query_search}%"])
-                        ->orWhere('email', 'like', "%{$query_search}%")
-                        ->orWhere('phone', 'like', "%{$query_search}%")
-                        ->orWhere('user_name', 'like', "%{$query_search}%")
-                        ->orWhere('user_type', 'like', "%{$query_search}%")
+                    $q->where('users.id', 'like', "%{$query_search}%")
+                        ->orWhereRaw('CONCAT(COALESCE(users.first_name, ""), " ", COALESCE(users.middle_name, ""), " ", COALESCE(users.last_name, "")) LIKE ?', ["%{$query_search}%"])
+                        ->orWhere('users.email', 'like', "%{$query_search}%")
+                        ->orWhere('users.phone', 'like', "%{$query_search}%")
+                        ->orWhere('users.user_name', 'like', "%{$query_search}%")
+                        ->orWhere('users.user_type', 'like', "%{$query_search}%")
                         ->orWhereHas('countries', function ($q) use ($query_search) {
                             $q->where('name', 'like', "%{$query_search}%");
                         });
@@ -72,37 +79,45 @@ class PartnerController extends Controller
 
             // Apply country filter
             if ($country_id) {
-                $partners->where('country', $country_id);
+                $partners->where('users.country', $country_id);
             }
 
-            if ($user->user_type == 'Global' || $user->hasNewRole('SUPER ADMIN')) {
-                $partners->whereHas('userRole', function ($q) {
-                    $q->whereIn('type', [2, 3]);
+
+            if ($user->hasNewRole('SUPER ADMIN')) {
+                $partners->where(function ($q) {
+                    // Include users with deleted user types OR users with type 2 or 3
+                    $q->whereNull('ut.id')
+                        ->orWhereHas('userRole', function ($subQ) {
+                            $subQ->whereIn('type', [2, 3]);
+                        });
                 })
-                    ->where('id', '!=', $user->id);
-            } elseif ($user->user_type == 'Regional') {
-                $partners->where('country', $user->country)
-                    ->whereHas('userRole', function ($q) {
-                        $q->whereIn('type', [2, 3]);
-                    })
-                    ->where('id', '!=', $user->id);
+                    ->where('users.id', '!=', $user->id);
             } elseif ($is_user_ecclesia_admin == 1) {
                 $manage_ecclesia_ids = is_array($user->manage_ecclesia)
                     ? $user->manage_ecclesia
                     : explode(',', $user->manage_ecclesia);
-
-                $partners->whereHas('userRole', function ($q) {
-                    $q->whereIn('type', [2, 3]);
+                // print_r($manage_ecclesia_ids);
+                // die;
+                $partners->where(function ($q) {
+                    // Include users with deleted user types OR users with type 2 or 3
+                    $q->whereNull('ut.id')
+                        ->orWhereHas('userRole', function ($subQ) {
+                            $subQ->whereIn('type', [2, 3]);
+                        });
                 })
                     ->where(function ($q) use ($manage_ecclesia_ids, $user) {
-                        $q->whereIn('ecclesia_id', $manage_ecclesia_ids)->whereNotNull('ecclesia_id')
-                            ->orWhere('created_id', $user->id)->orWhere('id', auth()->id());
+                        $q->whereIn('users.ecclesia_id', $manage_ecclesia_ids)->whereNotNull('users.ecclesia_id')
+                            ->orWhere('users.created_id', $user->id)->orWhere('users.id', auth()->id());
                     });
             } else {
                 $partners->where(function ($q) use ($user_ecclesia_id, $user) {
-                    $q->where('ecclesia_id', $user_ecclesia_id)->whereNotNull('ecclesia_id')
-                        ->orWhere('created_id', $user->id)->orWhere('id', auth()->id());
+                    $q->where('users.ecclesia_id', $user_ecclesia_id)->whereNotNull('users.ecclesia_id')
+                        ->orWhere('users.created_id', $user->id)->orWhere('users.id', auth()->id());
                 });
+            }
+
+            if ($user->user_type == 'Regional') {
+                $partners->where('users.country', $user->country);
             }
 
             // Order results
@@ -864,18 +879,24 @@ class PartnerController extends Controller
 
             // Base query with roles filter
             $partners = User::with(['ecclesia', 'userRole'])
-                ->whereHas('userRole', function ($q) {
-                    $q->where('name', '!=', 'SUPER ADMIN')->where('name', '!=', 'ESTORE_USER');
+                ->leftJoin('user_types as ut', 'users.user_type_id', '=', 'ut.id')
+                ->where(function ($q) {
+                    $q->whereNull('ut.id') // Include users with deleted user types
+                        ->orWhere(function ($subQ) {
+                            $subQ->where('ut.name', '!=', 'SUPER ADMIN')
+                                ->where('ut.name', '!=', 'ESTORE_USER');
+                        });
                 })
+                ->select('users.*') // Only select user columns to avoid conflicts
                 ->when($query, function ($query_builder) use ($query) {
                     $query_builder->where(function ($q) use ($query) {
-                        $q->where('id', 'like', "%{$query}%")
-                            ->orWhereRaw('CONCAT(COALESCE(first_name, ""), " ", COALESCE(middle_name, ""), " ", COALESCE(last_name, "")) LIKE ?', ["%{$query}%"])
-                            ->orWhere('email', 'like', "%{$query}%")
-                            ->orWhere('phone', 'like', "%{$query}%")
+                        $q->where('users.id', 'like', "%{$query}%")
+                            ->orWhereRaw('CONCAT(COALESCE(users.first_name, ""), " ", COALESCE(users.middle_name, ""), " ", COALESCE(users.last_name, "")) LIKE ?', ["%{$query}%"])
+                            ->orWhere('users.email', 'like', "%{$query}%")
+                            ->orWhere('users.phone', 'like', "%{$query}%")
                             //  ->orWhere('address', 'like', "%{$query}%")
-                            ->orWhere('user_name', 'like', "%{$query}%")
-                            ->orWhere('user_type', 'like', "%{$query}%")
+                            ->orWhere('users.user_name', 'like', "%{$query}%")
+                            ->orWhere('users.user_type', 'like', "%{$query}%")
                             //   ->orWhere('state', 'like', "%{$query}%")
                             ->orWhereHas('countries', function ($q) use ($query) {
                                 $q->where('name', 'like', "%{$query}%");
@@ -884,39 +905,46 @@ class PartnerController extends Controller
                 });
 
             if ($request->country_id) {
-                $partners->where('country', $request->country_id);
+                $partners->where('users.country', $request->country_id);
             }
 
 
             // Apply role, user_type and ecclesia filters
-            if ($user->user_type == 'Global' || $user->hasNewRole('SUPER ADMIN')) {
-                $partners->whereHas('userRole', function ($q) {
-                    $q->whereIn('type', [2, 3]);
+            if ($user->hasNewRole('SUPER ADMIN')) {
+                $partners->where(function ($q) {
+                    // Include users with deleted user types OR users with type 2 or 3
+                    $q->whereNull('ut.id')
+                        ->orWhereHas('userRole', function ($subQ) {
+                            $subQ->whereIn('type', [2, 3]);
+                        });
                 })
-                    ->where('id', '!=', $user->id);
-            } elseif ($user->user_type == 'Regional') {
-                $partners->where('country', $user->country)
-                    ->whereHas('userRole', function ($q) {
-                        $q->whereIn('type', [2, 3]);
-                    })
-                    ->where('id', '!=', $user->id);
+                    ->where('users.id', '!=', $user->id);
             } elseif ($is_user_ecclesia_admin == 1) {
                 $manage_ecclesia_ids = is_array($user->manage_ecclesia)
                     ? $user->manage_ecclesia
                     : explode(',', $user->manage_ecclesia);
 
-                $partners->whereHas('userRole', function ($q) {
-                    $q->whereIn('type', [2, 3]);
+                $partners->where(function ($q) {
+                    // Include users with deleted user types OR users with type 2 or 3
+                    $q->whereNull('ut.id')
+                        ->orWhereHas('userRole', function ($subQ) {
+                            $subQ->whereIn('type', [2, 3]);
+                        });
                 })
                     ->where(function ($q) use ($manage_ecclesia_ids, $user) {
-                        $q->whereIn('ecclesia_id', $manage_ecclesia_ids)->whereNotNull('ecclesia_id')
-                            ->orWhere('created_id', $user->id)->orWhere('id', auth()->id());
+                        $q->whereIn('users.ecclesia_id', $manage_ecclesia_ids)->whereNotNull('users.ecclesia_id')
+                            ->orWhere('users.created_id', $user->id)->orWhere('users.id', auth()->id());
                     });
             } else {
                 $partners->where(function ($q) use ($user_ecclesia_id, $user) {
-                    $q->where('ecclesia_id', $user_ecclesia_id)->whereNotNull('ecclesia_id')
-                        ->orWhere('created_id', $user->id)->orWhere('id', auth()->id());
+                    $q->where('users.ecclesia_id', $user_ecclesia_id)->whereNotNull('users.ecclesia_id')
+                        ->orWhere('users.created_id', $user->id)->orWhere('users.id', auth()->id());
                 });
+            }
+
+
+            if ($user->user_type == 'Regional') {
+                $partners->where('users.country', $user->country);
             }
 
             // Sorting logic
