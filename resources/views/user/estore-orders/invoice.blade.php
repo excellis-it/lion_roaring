@@ -194,6 +194,17 @@
                             </tr>
                         @endif
 
+                        @if (!empty($order->handling_amount) && $order->handling_amount > 0)
+                            <tr>
+                                <td style="text-align:right;font-size:15px;font-weight:bold;color:#333; height:35px;">
+                                    HANDLING:</td>
+                                <td
+                                    style="text-align:right;font-size:15px;border-bottom:2px solid #eaeaea;color:#333;padding-right:30px;">
+                                    ${{ number_format($order->handling_amount, 2) }}
+                                </td>
+                            </tr>
+                        @endif
+
                         @if (!empty($order->credit_card_fee) && $order->credit_card_fee > 0)
                             <tr>
                                 <td style="text-align:right;font-size:15px;font-weight:bold;color:#333; height:35px;">
