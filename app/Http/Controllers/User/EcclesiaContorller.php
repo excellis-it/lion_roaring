@@ -205,4 +205,16 @@ class EcclesiaContorller extends Controller
             return response()->json(['data' => view('user.ecclesias.table', compact('ecclesias'))->render()]);
         }
     }
+
+    public function getEcclesiasByCountry(Request $request)
+    {
+        $country = $request->input('country');
+        if ($country) {
+            $ecclesias = Ecclesia::with('countryName')->where('country', $country)->orderBy('name', 'asc')->get();
+        } else {
+            $ecclesias = Ecclesia::with('countryName')->orderBy('name', 'asc')->get();
+        }
+
+        return response()->json($ecclesias);
+    }
 }

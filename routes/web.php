@@ -455,6 +455,8 @@ Route::middleware(['userActivity'])->group(function () {
 
     // get.states
     Route::get('/get-states', [UserAuthController::class, 'getStates'])->name('get.states');
+    // get.ecclesias
+    Route::get('/get-ecclesias', [EcclesiaContorller::class, 'getEcclesiasByCountry'])->name('get.ecclesias');
 
     Route::post('/send-otp', [EmailVerificationController::class, 'sendOtp'])->name('send.otp');
     Route::post('/verify-otp', [EmailVerificationController::class, 'verifyOtp'])->name('verify.otp');

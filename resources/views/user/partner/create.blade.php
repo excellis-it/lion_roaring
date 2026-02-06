@@ -233,12 +233,11 @@
                                             <label>User Type *</label>
                                             <select class="form-control" name="user_type">
                                                 <option value="">Select User Type</option>
-                                                <option value="Regional"
-                                                    {{ old('user_type') == 'Regional' ? 'selected' : '' }}>Regional
-                                                </option>
-                                                <option value="Global"
-                                                    {{ old('user_type') == 'Global' ? 'selected' : '' }}>
-                                                    Global</option>
+                                                @foreach ($allowedUserTypes as $type)
+                                                    <option value="{{ $type }}"
+                                                        {{ old('user_type') == $type ? 'selected' : '' }}>
+                                                        {{ $type }}</option>
+                                                @endforeach
                                             </select>
                                             @if ($errors->has('user_type'))
                                                 <div class="error" style="color:red !important;">
@@ -866,12 +865,17 @@
     <script>
         $(document).ready(function() {
             getStates($('#country').val());
+            getEcclesias();
 
             $('#country').change(function() {
                 var country = $(this).val();
                 getStates(country);
+                getEcclesias();
             });
 
+            $('select[name="user_type"]').change(function() {
+                getEcclesias();
+            });
 
             function getStates(country) {
                 $.ajax({
@@ -888,6 +892,71 @@
                                 '</option>';
                         });
                         $('#state').html(html);
+                    }
+                });
+            }
+
+            function getEcclesias() {
+                var country = $('#country').val();
+                if (!userType) {
+                    $('select[name="ecclesia_id"]').html('<option value="">Select Ecclesia</option>');
+                    $('#hoe_row .row.g-3').html('');
+                    return;
+                }
+
+                if (userType === 'Regional' && !country) {
+                    $('select[name="ecclesia_id"]').html('<option value="">Select Ecclesia</option>');
+                    $('#hoe_row .row.g-3').html('');
+                    return;
+                }
+
+                // If Regional, we need a country to filter. If Global, we show all (country is null/empty for the request)
+                var filterCountry = (userType === 'Regional') ? country : '';
+
+                $.ajax({
+                    url: "{{ route('get.ecclesias') }}",
+                    type: "get",
+                    data: {
+                        country: filterCountry
+                    },
+                    success: function(response) {
+                        // Update the single select dropdown
+                        var selectHtml = '<option value="">Select Ecclesia</option>';
+                        // Update the checkboxes in hoe_row
+                        var checkboxHtml = '';
+
+                        response.forEach(eclessia => {
+                            // Dropdown
+                            selectHtml += '<option value="' + eclessia.id + '">' +
+                                eclessia.name + '(' + (eclessia.country_name ? eclessia
+                                    .country_name.name : '') + ')' + '</option>';
+
+                            // Checkboxes
+                            checkboxHtml += '<div class="col-xl-3 col-lg-4 col-md-6">' +
+                                '<div class="ecclesia-item p-2 mb-2 rounded border bg-white shadow-sm h-100 d-flex align-items-center" style="transition: all 0.2s;">' +
+                                '<div class="form-check mb-0">' +
+                                '<input id="data-eclessia-' + eclessia.id +
+                                '" class="form-check-input data-eclessia" type="checkbox" name="manage_ecclesia[]" value="' +
+                                eclessia.id +
+                                '" style="cursor: pointer; width: 1.25em; height: 1.25em;">' +
+                                '<label class="form-check-label ms-2" for="data-eclessia-' +
+                                eclessia.id + '" style="cursor: pointer; font-size: 0.9rem;">' +
+                                eclessia.name + '<br>' +
+                                '<small class="text-muted">' + (eclessia.country_name ? eclessia
+                                    .country_name.name : '') + '</small>' +
+                                '</label>' +
+                                '</div>' +
+                                '</div>' +
+                                '</div>';
+                        });
+
+                        $('select[name="ecclesia_id"]').html(selectHtml);
+                        $('#hoe_row .row.g-3').html(checkboxHtml);
+
+                        // Re-trigger count updates if necessary
+                        if (typeof updateSelectAllEcclesiasState === 'function') {
+                            updateSelectAllEcclesiasState();
+                        }
                     }
                 });
             }

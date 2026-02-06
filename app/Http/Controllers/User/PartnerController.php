@@ -121,7 +121,7 @@ class PartnerController extends Controller
                 if ($user->user_type == 'Regional') {
                     $partners->where('users.country', $user->country)->where('users.user_type', 'Regional');
                 } elseif ($user->user_type == 'Global') {
-                    $partners->where('users.user_type', '!=', 'Global');
+                    $partners->where('users.user_type', 'Global');
                 }
             }
 
@@ -387,30 +387,34 @@ class PartnerController extends Controller
     public function create()
     {
         if (Auth::user()->can('Create Partners')) {
-            // $roles = UserType::whereNotIn('type', [1, 3])->get();
-            $auth_user_ecclesia_id = Auth::user()->ecclesia_id;
-            if (Auth::user()->getFirstUserRoleType() == 1) {
+            $user = Auth::user();
+            $isSuperAdmin = $user->hasNewRole('SUPER ADMIN');
+            $auth_user_user_type = $user->user_type;
+            $auth_user_country = $user->country;
+
+            if ($isSuperAdmin || $auth_user_user_type == 'Global') {
                 $roles = UserType::whereIn('type', [2, 3])->get();
                 $eclessias = Ecclesia::orderBy('id', 'asc')->get();
-            } elseif (Auth::user()->getFirstUserRoleType() == 2 || Auth::user()->getFirstUserRoleType() == 3) {
+                $allowedUserTypes = $isSuperAdmin ? ['Global', 'Regional'] : ['Global'];
+            } else { // Regional
                 $roles = UserType::whereIn('type', [2, 3])->get();
-                if (Auth::user()->isEcclesiaUser()) {
-                    $eclessias = Auth::user()->getEcclesiaAccessAttribute();
+                $allowedUserTypes = ['Regional'];
+                if ($user->isEcclesiaUser()) {
+                    $eclessias = $user->getEcclesiaAccessAttribute();
                 } else {
-                    $eclessias = Ecclesia::where('id', $auth_user_ecclesia_id)->orderBy('id', 'asc')->get();
+                    $eclessias = Ecclesia::where('country', $auth_user_country)->orderBy('id', 'asc')->get();
                 }
-            } else {
-                $roles = UserType::whereIn('type', [2, 3])->get();
-                $eclessias = Ecclesia::orderBy('id', 'asc')->get();
             }
-            // $eclessias = User::role('ECCLESIA')->orderBy('id', 'desc')->get();
-            //   $eclessias = Ecclesia::orderBy('id', 'asc')->get();
-            $countries = Country::orderBy('name', 'asc')->get();
+
+            if (!$isSuperAdmin && $auth_user_user_type == 'Regional') {
+                $countries = Country::where('id', $auth_user_country)->orderBy('name', 'asc')->get();
+            } else {
+                $countries = Country::orderBy('name', 'asc')->get();
+            }
 
             // Load all permissions
             $allPermissions = Permission::all();
 
-            // Load permissions for each role from user_type_permissions
             foreach ($roles as $role) {
                 $role->permissions = UserTypePermission::where('user_type_id', $role->id)
                     ->join('permissions', 'user_type_permissions.permission_id', '=', 'permissions.id')
@@ -418,14 +422,13 @@ class PartnerController extends Controller
                     ->get();
             }
 
-
             $membershipTiers = MembershipTier::all();
 
             $data = $this->permissionsArray($allPermissions);
             $allPermsArray = $data['allPermsArray'];
             $categorizedPermissions = $data['categorizedPermissions'];
 
-            return view('user.partner.create')->with(compact('roles', 'allPermsArray', 'categorizedPermissions', 'eclessias', 'countries', 'allPermissions', 'membershipTiers'));
+            return view('user.partner.create')->with(compact('roles', 'allPermsArray', 'categorizedPermissions', 'eclessias', 'countries', 'allPermissions', 'membershipTiers', 'allowedUserTypes'));
         } else {
             abort(403, 'You do not have permission to access this page.');
         }
@@ -471,6 +474,18 @@ class PartnerController extends Controller
         $request->validate($rules, [
             'password.regex' => 'The password must be at least 8 characters long and include at least one special character from @$%&.',
         ]);
+
+        $auth_user = Auth::user();
+        if (!$auth_user->hasNewRole('SUPER ADMIN')) {
+            // Enforce user_type
+            if ($request->user_type !== $auth_user->user_type) {
+                return redirect()->back()->withErrors(['user_type' => 'You are not authorized to create partners of this type.'])->withInput();
+            }
+            // Enforce country for Regional users
+            if ($auth_user->user_type == 'Regional' && $request->country != $auth_user->country) {
+                return redirect()->back()->withErrors(['country' => 'You are not authorized to create partners in this country.'])->withInput();
+            }
+        }
 
         $phone_number = $request->full_phone_number;
         $phone_number_cleaned = preg_replace('/[\s\-\(\)]+/', '', $phone_number);
@@ -622,37 +637,34 @@ class PartnerController extends Controller
         if (Auth::user()->can('Edit Partners')) {
             $id = Crypt::decrypt($id);
             $partner = User::findOrFail($id);
-            // // $roles = UserType::whereNotIn('type', [1, 3])->get();
-            // if (Auth::user()->getFirstUserRoleType() == 1) {
-            //     $roles = UserType::whereIn('type', [2, 3])->get();
-            // } elseif (Auth::user()->getFirstUserRoleType() == 3) {
-            //     $roles = UserType::whereIn('type', [2, 3])->get();
-            // } else {
-            //     $roles = UserType::whereIn('type', [2, 3])->get();
-            // }
-            // // $ecclessias = User::role('ECCLESIA')->orderBy('id', 'desc')->get();
-            // $eclessias = Ecclesia::orderBy('id', 'asc')->get();
-            $auth_user_ecclesia_id = Auth::user()->ecclesia_id;
-            if (Auth::user()->getFirstUserRoleType() == 1) {
+            $user = Auth::user();
+            $isSuperAdmin = $user->hasNewRole('SUPER ADMIN');
+            $auth_user_user_type = $user->user_type;
+            $auth_user_country = $user->country;
+
+            if ($isSuperAdmin || $auth_user_user_type == 'Global') {
                 $roles = UserType::whereIn('type', [2, 3])->get();
                 $eclessias = Ecclesia::orderBy('id', 'asc')->get();
-            } elseif (Auth::user()->getFirstUserRoleType() == 2 || Auth::user()->getFirstUserRoleType() == 3) {
+                $allowedUserTypes = $isSuperAdmin ? ['Global', 'Regional'] : ['Global'];
+            } else { // Regional
                 $roles = UserType::whereIn('type', [2, 3])->get();
-                if (Auth::user()->isEcclesiaUser()) {
-                    $eclessias = Auth::user()->getEcclesiaAccessAttribute();
+                $allowedUserTypes = ['Regional'];
+                if ($user->isEcclesiaUser()) {
+                    $eclessias = $user->getEcclesiaAccessAttribute();
                 } else {
-                    $eclessias = Ecclesia::where('id', $auth_user_ecclesia_id)->orderBy('id', 'asc')->get();
+                    $eclessias = Ecclesia::where('country', $auth_user_country)->orderBy('id', 'asc')->get();
                 }
-            } else {
-                $roles = UserType::whereIn('type', [2, 3])->get();
-                $eclessias = Ecclesia::orderBy('id', 'asc')->get();
             }
-            $countries = Country::orderBy('name', 'asc')->get();
+
+            if (!$isSuperAdmin && $auth_user_user_type == 'Regional') {
+                $countries = Country::where('id', $auth_user_country)->orderBy('name', 'asc')->get();
+            } else {
+                $countries = Country::orderBy('name', 'asc')->get();
+            }
 
             // Load all permissions
             $allPermissions = Permission::all();
 
-            // Load permissions for each role from user_type_permissions
             foreach ($roles as $role) {
                 $role->permissions = UserTypePermission::where('user_type_id', $role->id)
                     ->join('permissions', 'user_type_permissions.permission_id', '=', 'permissions.id')
@@ -664,12 +676,11 @@ class PartnerController extends Controller
             $membershipTiers = MembershipTier::all();
             $currentTierId = $partner->userLastSubscription->plan_id ?? null;
 
-
             $data = $this->permissionsArray($allPermissions);
             $allPermsArray = $data['allPermsArray'];
             $categorizedPermissions = $data['categorizedPermissions'];
 
-            return view('user.partner.edit', compact('partner', 'allPermsArray', 'categorizedPermissions', 'roles', 'eclessias', 'countries', 'allPermissions', 'currentPermissions', 'membershipTiers', 'currentTierId'));
+            return view('user.partner.edit', compact('partner', 'allPermsArray', 'categorizedPermissions', 'roles', 'eclessias', 'countries', 'allPermissions', 'currentPermissions', 'membershipTiers', 'currentTierId', 'allowedUserTypes'));
         } else {
             abort(403, 'You do not have permission to access this page.');
         }
@@ -717,6 +728,18 @@ class PartnerController extends Controller
             $request->validate($rules, [
                 'password.regex' => 'The password must be at least 8 characters long and include at least one special character from @$%&.',
             ]);
+
+            $auth_user = Auth::user();
+            if (!$auth_user->hasNewRole('SUPER ADMIN')) {
+                // Enforce user_type
+                if ($request->user_type !== $auth_user->user_type) {
+                    return redirect()->back()->withErrors(['user_type' => 'You are not authorized to edit partners to this type.'])->withInput();
+                }
+                // Enforce country for Regional users
+                if ($auth_user->user_type == 'Regional' && $request->country != $auth_user->country) {
+                    return redirect()->back()->withErrors(['country' => 'You are not authorized to edit partners in this country.'])->withInput();
+                }
+            }
 
             $the_role = UserType::where('name', $request->role)->first();
 
@@ -953,7 +976,7 @@ class PartnerController extends Controller
                 if ($user->user_type == 'Regional') {
                     $partners->where('users.country', $user->country)->where('users.user_type', 'Regional');
                 } elseif ($user->user_type == 'Global') {
-                    $partners->where('users.user_type', '!=', 'Global');
+                    $partners->where('users.user_type', 'Global');
                 }
             }
             // Sorting logic
