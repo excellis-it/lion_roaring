@@ -42,17 +42,21 @@
                                                 <div class="text-start mt-2">
                                                     @php
                                                         $statusSlug = optional($order->orderStatus)->slug;
-                                                        $badgeClass = in_array(
+                                                        $isDelivered = in_array(
                                                             $statusSlug,
                                                             ['delivered', 'pickup_picked_up'],
                                                             true,
-                                                        )
+                                                        );
+                                                        $isCancelled = in_array(
+                                                            $statusSlug,
+                                                            ['cancelled', 'pickup_cancelled'],
+                                                            true,
+                                                        );
+                                                        $isRefunded = $order->payment_status === 'refunded';
+
+                                                        $badgeClass = $isDelivered
                                                             ? 'success'
-                                                            : (in_array(
-                                                                $statusSlug,
-                                                                ['cancelled', 'pickup_cancelled'],
-                                                                true,
-                                                            )
+                                                            : ($isCancelled
                                                                 ? 'danger'
                                                                 : 'primary');
                                                     @endphp
@@ -63,6 +67,38 @@
                                                         class="badge bg-{{ $order->payment_status == 'paid' ? 'success' : 'warning' }}">
                                                         {{ ucfirst($order->payment_status) }}
                                                     </span>
+
+                                                    <div class="mt-2 small">
+                                                        @if ($order->is_pickup)
+                                                            <span class="text-info"><i class="fas fa-store"></i>
+                                                                Pickup</span>
+                                                        @else
+                                                            <span class="text-primary"><i class="fas fa-truck"></i>
+                                                                Delivery</span>
+                                                        @endif
+                                                    </div>
+
+                                                    @if ($isRefunded)
+                                                        <div class="mt-1 small text-secondary">
+                                                            <strong>Refunded:</strong>
+                                                            {{ $order->updated_at->format('M d, Y h:i A') }}
+                                                        </div>
+                                                    @elseif ($isDelivered)
+                                                        <div class="mt-1 small text-success">
+                                                            <strong>Delivered:</strong>
+                                                            {{ $order->updated_at->format('M d, Y h:i A') }}
+                                                        </div>
+                                                    @elseif ($isCancelled)
+                                                        <div class="mt-1 small text-danger">
+                                                            <strong>Refund by:</strong>
+                                                            {{ $order->updated_at->addDays($max_refundable_days)->format('M d, Y') }}
+                                                        </div>
+                                                    @elseif (!$order->is_pickup && $order->expected_delivery_date)
+                                                        <div class="mt-1 small text-info">
+                                                            <strong>Expected Delivery:</strong>
+                                                            {{ \Carbon\Carbon::parse($order->expected_delivery_date)->format('M d, Y') }}
+                                                        </div>
+                                                    @endif
                                                 </div>
                                             </div>
 

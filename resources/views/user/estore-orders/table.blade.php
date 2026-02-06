@@ -9,8 +9,10 @@
             <th>Contact</th>
             <th>Items</th>
             <th>Total Amount</th>
+            <th>Type</th>
             <th>Status</th>
             <th>Payment</th>
+            <th>Expected Date</th>
             <th>Order Date</th>
             <th>Actions</th>
         </tr>
@@ -47,6 +49,13 @@
                     <strong>${{ number_format($order->total_amount, 2) }}</strong>
                 </td>
                 <td>
+                    @if ($order->is_pickup)
+                        <span class="badge bg-info">Pickup</span>
+                    @else
+                        <span class="badge bg-primary">Delivery</span>
+                    @endif
+                </td>
+                <td>
                     <span class=" {{ $order->status_badge_class }} p-1 rounded">
                         {{ ucfirst($order->orderStatus->name ?? '-') }}
                     </span>
@@ -55,6 +64,38 @@
                     <span class=" {{ $order->payment_status_badge_class }} p-1 rounded">
                         {{ ucfirst($order->payment_status) }}
                     </span>
+                </td>
+                <td>
+                    @php
+                        $statusSlug = optional($order->orderStatus)->slug;
+                        $isCancelled = in_array($statusSlug, ['cancelled', 'pickup_cancelled'], true);
+                        $isDelivered = in_array($statusSlug, ['delivered', 'pickup_picked_up'], true);
+                        $isRefunded = $order->payment_status === 'refunded';
+                    @endphp
+
+                    @if ($isRefunded)
+                        <div class="text-secondary small">
+                            <strong>Refunded:</strong><br>
+                            {{ \Carbon\Carbon::parse($order->updated_at)->timezone(auth()->user()->time_zone)->format('M d, Y h:i A') }}
+                        </div>
+                    @elseif ($isDelivered)
+                        <div class="text-success small">
+                            <strong>Delivered:</strong><br>
+                            {{ \Carbon\Carbon::parse($order->updated_at)->timezone(auth()->user()->time_zone)->format('M d, Y h:i A') }}
+                        </div>
+                    @elseif ($isCancelled)
+                        <div class="text-danger small">
+                            <strong>Refund by:</strong><br>
+                            {{ \Carbon\Carbon::parse($order->updated_at)->addDays($max_refundable_days)->format('M d, Y') }}
+                        </div>
+                    @elseif (!$order->is_pickup && $order->expected_delivery_date)
+                        <div class="text-info small">
+                            <strong>Expected:</strong><br>
+                            {{ \Carbon\Carbon::parse($order->expected_delivery_date)->format('M d, Y') }}
+                        </div>
+                    @else
+                        -
+                    @endif
                 </td>
                 <td>
                     <div>
@@ -91,7 +132,7 @@
             </tr>
         @empty
             <tr>
-                <td colspan="12" class="text-center">
+                <td colspan="14" class="text-center">
                     <div class="py-4">
                         <i class="fas fa-inbox fa-3x text-muted mb-3"></i>
                         <h5 class="text-muted">No orders found</h5>

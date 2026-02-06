@@ -544,8 +544,10 @@ class EstoreCmsController extends Controller
             }
 
             $orders = $orders->get();
+            $estoreSettings = EstoreSetting::first();
+            $max_refundable_days = $estoreSettings->refund_max_days ?? 10;
 
-            return view('user.estore-orders.table', compact('orders'))->render();
+            return view('user.estore-orders.table', compact('orders', 'max_refundable_days'))->render();
         }
     }
 

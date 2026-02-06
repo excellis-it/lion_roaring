@@ -1387,14 +1387,16 @@ class ProductController extends Controller
         }
         $orders = EstoreOrder::with('orderItems')
             ->where('user_id', auth()->id())
-            ->where('payment_status', 'paid')
+            ->whereIn('payment_status', ['paid', 'refunded'])
             ->orderBy('created_at', 'desc')
             ->paginate(10);
 
 
         $cartCount = EstoreCart::where('user_id', auth()->id())->count();
+        $estoreSettings = EstoreSetting::first();
+        $max_refundable_days = $estoreSettings->refund_max_days ?? 10;
 
-        return view('ecom.my-orders', compact('orders', 'cartCount'));
+        return view('ecom.my-orders', compact('orders', 'cartCount', 'max_refundable_days'));
     }
 
     // Order details
