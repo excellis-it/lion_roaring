@@ -31,29 +31,30 @@ class ChatController extends Controller
         if (auth()->user()->can('Manage Chat')) {
             $user_type = auth()->user()->user_type;
             $country_name = auth()->user()->country;
-            if ($user_type == 'Global') {
+            $usersQuery = User::with('roles', 'chatSender')
+                ->where('id', '!=', auth()->id())
+                ->where('status', 1)
+                ->whereHas('roles', function ($query) {
+                    $query->whereIn('type', [1, 2, 3]);
+                });
 
-                $users = User::with('roles', 'chatSender')
-                    ->where('id', '!=', auth()->id())
-                    ->where('status', 1)
-                    ->whereHas('roles', function ($query) {
-                        $query->whereIn('type', [1, 2, 3]);
-                    })
-                    ->get()
-                    ->toArray();
-            } else {
 
-                $users = User::with('roles', 'chatSender')
-                    ->where('id', '!=', auth()->id())
-                    ->where('status', 1)
-                    ->whereHas('roles', function ($query) {
-                        $query->whereIn('type', [1, 2, 3]);
-                    })
-                    ->where(function ($query) use ($country_name) {
+            $isSuperAdmin = auth()->user()->hasNewRole('SUPER ADMIN');
 
-                        // Same country users
-                        $query->where('country', $country_name)
-
+            if (!$isSuperAdmin) {
+                if ($user_type == 'Global') {
+                    $usersQuery->where(function ($query) {
+                        $query->where('user_type', 'Global')
+                            ->orWhereHas('chatSender', function ($q) {
+                                $q->where('reciver_id', auth()->id());
+                            });
+                    });
+                } else {
+                    $usersQuery->where(function ($query) use ($country_name) {
+                        // Same country users (Regional)
+                        $query->where(function ($q) use ($country_name) {
+                            $q->where('user_type', 'Regional')->where('country', $country_name);
+                        })
                             // OR Global users who already messaged me
                             ->orWhere(function ($q) {
                                 $q->where('user_type', 'Global')
@@ -61,10 +62,22 @@ class ChatController extends Controller
                                         $chat->where('reciver_id', auth()->id());
                                     });
                             });
-                    })
-                    ->get()
-                    ->toArray();
+                    });
+                }
+
+                // Exclude Super Admins from non-super-admin lists unless they have messaged
+                $usersQuery->where(function ($query) {
+                    $query->whereDoesntHave('roles', function ($q) {
+                        $q->where('name', 'SUPER ADMIN');
+                    })->orWhereHas('chatSender', function ($q) {
+                        $q->where('reciver_id', auth()->id());
+                    })->orWhereHas('chatReciver', function ($q) {
+                        $q->where('sender_id', auth()->id());
+                    });
+                });
             }
+
+            $users = $usersQuery->get()->toArray();
 
             // return user orderBy latest message
             $users = array_map(function ($user) {
@@ -103,9 +116,51 @@ class ChatController extends Controller
     public function chatsList()
     {
         if (auth()->user()->can('Manage Chat')) {
-            $users = User::with('roles', 'chatSender')->where('id', '!=', auth()->id())->where('status', 1)->whereHas('roles', function ($query) {
-                $query->whereIn('type', [1, 2, 3]);
-            })->get()->toArray();
+            $user_type = auth()->user()->user_type;
+            $country_name = auth()->user()->country;
+
+            $usersQuery = User::with('roles', 'chatSender')
+                ->where('id', '!=', auth()->id())
+                ->where('status', 1)
+                ->whereHas('roles', function ($query) {
+                    $query->whereIn('type', [1, 2, 3]);
+                });
+
+            $isSuperAdmin = auth()->user()->hasNewRole('SUPER ADMIN');
+
+            if (!$isSuperAdmin) {
+                if ($user_type == 'Global') {
+                    $usersQuery->where(function ($query) {
+                        $query->where('user_type', 'Global')
+                            ->orWhereHas('chatSender', function ($q) {
+                                $q->where('reciver_id', auth()->id());
+                            });
+                    });
+                } else {
+                    $usersQuery->where(function ($query) use ($country_name) {
+                        $query->where(function ($q) use ($country_name) {
+                            $q->where('user_type', 'Regional')->where('country', $country_name);
+                        })->orWhere(function ($q) {
+                            $q->where('user_type', 'Global')
+                                ->whereHas('chatSender', function ($chat) {
+                                    $chat->where('reciver_id', auth()->id());
+                                });
+                        });
+                    });
+                }
+
+                $usersQuery->where(function ($query) {
+                    $query->whereDoesntHave('roles', function ($q) {
+                        $q->where('name', 'SUPER ADMIN');
+                    })->orWhereHas('chatSender', function ($q) {
+                        $q->where('reciver_id', auth()->id());
+                    })->orWhereHas('chatReciver', function ($q) {
+                        $q->where('sender_id', auth()->id());
+                    });
+                });
+            }
+
+            $users = $usersQuery->get()->toArray();
             // return user orderBy latest message
             $users = array_map(function ($user) {
                 $user['last_message'] = Chat::where(function ($query) use ($user) {

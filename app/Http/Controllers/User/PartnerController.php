@@ -109,15 +109,20 @@ class PartnerController extends Controller
                         $q->whereIn('users.ecclesia_id', $manage_ecclesia_ids)->whereNotNull('users.ecclesia_id')
                             ->orWhere('users.created_id', $user->id)->orWhere('users.id', auth()->id());
                     });
-            } else {
-                $partners->where(function ($q) use ($user_ecclesia_id, $user) {
-                    $q->where('users.ecclesia_id', $user_ecclesia_id)->whereNotNull('users.ecclesia_id')
-                        ->orWhere('users.created_id', $user->id)->orWhere('users.id', auth()->id());
-                });
             }
 
-            if ($user->user_type == 'Regional') {
-                $partners->where('users.country', $user->country)->where('users.user_type', 'Regional');
+            // else {
+            //     $partners->where(function ($q) use ($user_ecclesia_id, $user) {
+            //         $q->where('users.ecclesia_id', $user_ecclesia_id)->whereNotNull('users.ecclesia_id')
+            //             ->orWhere('users.created_id', $user->id)->orWhere('users.id', auth()->id());
+            //     });
+            // }
+            if (!$user->hasNewRole('SUPER ADMIN')) {
+                if ($user->user_type == 'Regional') {
+                    $partners->where('users.country', $user->country)->where('users.user_type', 'Regional');
+                } elseif ($user->user_type == 'Global') {
+                    $partners->where('users.user_type', '!=', 'Global');
+                }
             }
 
             // Order results
@@ -935,18 +940,22 @@ class PartnerController extends Controller
                         $q->whereIn('users.ecclesia_id', $manage_ecclesia_ids)->whereNotNull('users.ecclesia_id')
                             ->orWhere('users.created_id', $user->id)->orWhere('users.id', auth()->id());
                     });
-            } else {
-                $partners->where(function ($q) use ($user_ecclesia_id, $user) {
-                    $q->where('users.ecclesia_id', $user_ecclesia_id)->whereNotNull('users.ecclesia_id')
-                        ->orWhere('users.created_id', $user->id)->orWhere('users.id', auth()->id());
-                });
             }
 
+            // else {
+            //     $partners->where(function ($q) use ($user_ecclesia_id, $user) {
+            //         $q->where('users.ecclesia_id', $user_ecclesia_id)->whereNotNull('users.ecclesia_id')
+            //             ->orWhere('users.created_id', $user->id)->orWhere('users.id', auth()->id());
+            //     });
+            // }
 
-            if ($user->user_type == 'Regional') {
-                $partners->where('users.country', $user->country)->where('users.user_type', 'Regional');
+            if (!$user->hasNewRole('SUPER ADMIN')) {
+                if ($user->user_type == 'Regional') {
+                    $partners->where('users.country', $user->country)->where('users.user_type', 'Regional');
+                } elseif ($user->user_type == 'Global') {
+                    $partners->where('users.user_type', '!=', 'Global');
+                }
             }
-
             // Sorting logic
             if ($sort_by == 'name') {
                 $partners->orderByRaw('CONCAT(COALESCE(first_name, ""), " ", COALESCE(middle_name, ""), " ", COALESCE(last_name, "")) ' . $sort_type);
