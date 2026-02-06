@@ -20,7 +20,18 @@ class EcclesiaContorller extends Controller
     public function index()
     {
         if (Auth::user()->can('Manage Role Permission')) {
-            $ecclesias = Ecclesia::orderBy('id', 'asc')->paginate(15);
+            $user = Auth::user();
+            $user_type = $user->user_type;
+            $country_name = $user->country;
+            $isSuperAdmin = $user->hasNewRole('SUPER ADMIN');
+
+            $ecclesiasQuery = Ecclesia::orderBy('id', 'asc');
+
+            if (!$isSuperAdmin && $user_type == 'Regional') {
+                $ecclesiasQuery->where('country', $country_name);
+            }
+
+            $ecclesias = $ecclesiasQuery->paginate(15);
             return view('user.ecclesias.list')->with('ecclesias', $ecclesias);
         } else {
             abort(403, 'You do not have permission to access this page.');
@@ -35,7 +46,18 @@ class EcclesiaContorller extends Controller
     public function create()
     {
         if (Auth::user()->can('Manage Role Permission')) {
-            $countries = Country::orderBy('name', 'asc')->get();
+            $user = Auth::user();
+            $user_type = $user->user_type;
+            $country_name = $user->country;
+            $isSuperAdmin = $user->hasNewRole('SUPER ADMIN');
+
+            $countriesQuery = Country::orderBy('name', 'asc');
+
+            if (!$isSuperAdmin && $user_type == 'Regional') {
+                $countriesQuery->where('id', $country_name);
+            }
+
+            $countries = $countriesQuery->get();
             return view('user.ecclesias.create')->with('countries', $countries);
         } else {
             abort(403, 'You do not have permission to access this page.');
@@ -83,8 +105,20 @@ class EcclesiaContorller extends Controller
     public function edit($id)
     {
         if (Auth::user()->can('Manage Role Permission')) {
+            $user = Auth::user();
+            $user_type = $user->user_type;
+            $country_name = $user->country;
+            $isSuperAdmin = $user->hasNewRole('SUPER ADMIN');
+
             $ecclesia = Ecclesia::findOrFail(Crypt::decrypt($id));
-            $countries = Country::orderBy('name', 'asc')->get();
+
+            $countriesQuery = Country::orderBy('name', 'asc');
+
+            if (!$isSuperAdmin && $user_type == 'Regional') {
+                $countriesQuery->where('id', $country_name);
+            }
+
+            $countries = $countriesQuery->get();
             return view('user.ecclesias.edit')->with(compact('ecclesia', 'countries'));
         } else {
             abort(403, 'You do not have permission to access this page.');
@@ -148,16 +182,25 @@ class EcclesiaContorller extends Controller
             $query = $request->get('query', '');
             $query = str_replace(" ", "%", $query);
 
-            $ecclesias = Ecclesia::query()
+            $user = Auth::user();
+            $user_type = $user->user_type;
+            $country_name = $user->country;
+            $isSuperAdmin = $user->hasNewRole('SUPER ADMIN');
+
+            $ecclesiasQuery = Ecclesia::query()
                 ->where(function ($q) use ($query) {
                     $q->where('id', 'like', '%' . $query . '%')
                         ->orWhere('name', 'like', '%' . $query . '%');
                 })
                 ->orWhereHas('countryName', function ($q) use ($query) {
                     $q->where('name', 'like', '%' . $query . '%');
-                })
-                ->orderBy($sort_by, $sort_type)
-                ->paginate(15);
+                });
+
+            if (!$isSuperAdmin && $user_type == 'Regional') {
+                $ecclesiasQuery->where('country', $country_name);
+            }
+
+            $ecclesias = $ecclesiasQuery->orderBy($sort_by, $sort_type)->paginate(15);
 
             return response()->json(['data' => view('user.ecclesias.table', compact('ecclesias'))->render()]);
         }
