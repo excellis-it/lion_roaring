@@ -125,4 +125,25 @@ class OrderStatusController extends Controller
 
         return redirect()->route('order-status.index')->with('message', 'Order status deleted successfully.');
     }
+
+    /**
+     * Update the order of statuses via AJAX.
+     */
+    public function updateOrder(Request $request)
+    {
+        if (!Auth::user()->can('Edit Order Status')) {
+            return response()->json(['success' => false, 'message' => 'Unauthorized'], 403);
+        }
+
+        $request->validate([
+            'order' => 'required|array',
+            'order.*' => 'required|integer|exists:order_statuses,id',
+        ]);
+
+        foreach ($request->order as $index => $id) {
+            OrderStatus::where('id', $id)->update(['sort_order' => $index]);
+        }
+
+        return response()->json(['success' => true, 'message' => 'Order updated successfully']);
+    }
 }

@@ -651,6 +651,9 @@ Route::prefix('user')->middleware(['user', 'preventBackHistory', 'userActivity',
     // Order Email Templates - Update Order
     Route::post('/order-email-templates/update-order', [OrderEmailTemplateController::class, 'updateOrder'])->name('order-email-templates.update-order');
 
+    // Order Status - Update Order
+    Route::post('/order-status/update-order', [OrderStatusController::class, 'updateOrder'])->name('order-status.update-order');
+
     // User Activity pages and AJAX routes
 
     // Separate list page (activities table)
