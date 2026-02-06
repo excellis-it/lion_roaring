@@ -1105,11 +1105,36 @@ class ProductController extends Controller
 
             $warehouseId = $carts->first()->warehouse_id ?? null;
             $wareHouse = WareHouse::find($warehouseId);
-            $statusSlug = $is_pickup ? 'pickup_pending' : 'pending';
+
+            // UC #1: Determine initial status
+            // If pickup, go straight to processing.
+            // If delivery, go to processing if cancel window is 0, otherwise pending.
+            $cancelHours = $estoreSettings->cancel_within_hours ?? 0;
+            if ($is_pickup) {
+                $statusSlug = 'pickup_processing';
+            } else {
+                $statusSlug = ($cancelHours == 0) ? 'processing' : 'pending';
+            }
+
             $order_status = OrderStatus::where('slug', $statusSlug)
                 ->where('is_pickup', $is_pickup ? 1 : 0)
                 ->first();
-            // dd($order_status);
+
+            // If the specific status wasn't found, fallback to the old logic
+            if (!$order_status) {
+                $statusSlug = $is_pickup ? 'pickup_pending' : 'pending';
+                $order_status = OrderStatus::where('slug', $statusSlug)
+                    ->where('is_pickup', $is_pickup ? 1 : 0)
+                    ->first();
+            }
+
+            // UC #1: Calculate expected delivery date for non-pickup orders
+            $expectedDeliveryDate = null;
+            if (!$is_pickup) {
+                $daysToAdd = $estoreSettings->expected_delivery_days ?? 7;
+                $expectedDeliveryDate = now()->addDays($daysToAdd);
+            }
+
             $order = EstoreOrder::create([
                 'warehouse_id' => $warehouseId,
                 'is_pickup' => $is_pickup,
@@ -1137,6 +1162,7 @@ class ProductController extends Controller
                 'warehouse_address' => $wareHouse->address ?? null,
                 'promo_code' => $appliedPromoCode,
                 'promo_discount' => $promoDiscount,
+                'expected_delivery_date' => $expectedDeliveryDate,
             ]);
             // dd($order);
 
@@ -1176,7 +1202,7 @@ class ProductController extends Controller
 
                 if ($warehouseProduct) {
                     $warehouseProduct->decrement('quantity', $cart->quantity);
-                    \Log::info('Warehouse product stock updated', ['product_id' => $warehouseProduct->id, 'new_quantity' => $warehouseProduct->quantity]);
+                    Log::info('Warehouse product stock updated', ['product_id' => $warehouseProduct->id, 'new_quantity' => $warehouseProduct->quantity]);
 
                     $wareHouseProductVariation = WarehouseProductVariation::where('warehouse_id', $cart->warehouse_id)
                         ->where('product_variation_id', $warehouseProduct->product_variation_id)
@@ -1188,12 +1214,12 @@ class ProductController extends Controller
                         $wareHouseProductVariation->warehouse_quantity = $newWarehouseQty;
                         $wareHouseProductVariation->updated_at = now();
                         $wareHouseProductVariation->save();
-                        \Log::info('Warehouse product variation stock updated', [
+                        Log::info('Warehouse product variation stock updated', [
                             'warehouse_product_variation_id' => $wareHouseProductVariation->id,
                             'new_quantity' => $newWarehouseQty
                         ]);
                     } else {
-                        \Log::warning('WarehouseProductVariation not found for order item', [
+                        Log::warning('WarehouseProductVariation not found for order item', [
                             'warehouse_id' => $cart->warehouse_id,
                             'warehouse_product_id' => $cart->warehouse_product_id,
                             'product_id' => $cart->product_id,
@@ -1652,7 +1678,7 @@ class ProductController extends Controller
     {
         if ($warehouseProduct->quantity <= 0) {
             // Notify super admin and the user assigned that warehouse about out of stock product
-            \Log::info('Product is out of stock', ['product_id' => $warehouseProduct->product_id]);
+            Log::info('Product is out of stock', ['product_id' => $warehouseProduct->product_id]);
 
             // product details
             $productDetails = [
@@ -1814,8 +1840,11 @@ class ProductController extends Controller
 
             DB::commit();
 
-            // return response()->json(['status' => true, 'message' => 'Order cancelled and payment refunded successfully']);
-            return redirect()->back()->with('message', 'Order cancelled successfully (if applicable, payment will be refunded)');
+            $refundDays = $estoreSettings->refund_max_days ?? 7;
+            $cancelMsg = "Order cancelled successfully. Refund is being processed within {$refundDays} business days.";
+
+            // return response()->json(['status' => true, 'message' => $cancelMsg]);
+            return redirect()->back()->with('message', $cancelMsg);
         } catch (\Exception $e) {
             DB::rollback();
             // return response()->json(['status' => false, 'message' => 'Failed to cancel order: ' . $e->getMessage()]);

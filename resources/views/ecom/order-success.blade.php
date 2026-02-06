@@ -36,6 +36,11 @@
                             <p><strong>Order Status:</strong>
                                 <span class="badge bg-primary">{{ ucfirst($order->orderStatus->name ?? '-') }}</span>
                             </p>
+                            @if ($order->expected_delivery_date && !$order->is_pickup)
+                                <p><strong>Expected Delivery Date:</strong>
+                                    {{ \Carbon\Carbon::parse($order->expected_delivery_date)->format('M d, Y') }}
+                                </p>
+                            @endif
                         </div>
 
                         <div class="order-items mb-4">

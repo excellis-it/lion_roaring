@@ -132,6 +132,22 @@
                                 </div>
                             </div>
 
+                            {{-- Expected Delivery Period (days) --}}
+                            <div class="col-md-6 mb-2">
+                                <div class="box_label">
+                                    <label for="expected_delivery_days">Expected delivery period (days)</label>
+                                    <input type="number" step="1" min="0" name="expected_delivery_days"
+                                        id="expected_delivery_days"
+                                        class="form-control @error('expected_delivery_days') is-invalid @enderror"
+                                        value="{{ old('expected_delivery_days', $storeSetting->expected_delivery_days ?? 7) }}">
+                                    <small class="text-muted">Expected delivery date will be calculated as (Order Date +
+                                        this many days).</small>
+                                    @error('expected_delivery_days')
+                                        <div class="invalid-feedback">{{ $message }}</div>
+                                    @enderror
+                                </div>
+                            </div>
+
                             {{-- Max Order Quantity --}}
                             <div class="col-md-6 mb-2">
                                 <div class="box_label">

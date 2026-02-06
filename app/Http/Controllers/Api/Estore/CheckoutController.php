@@ -247,10 +247,28 @@ class CheckoutController extends Controller
             // Create order
             $warehouseId = $carts->first()->warehouse_id ?? null;
             $wareHouse = WareHouse::find($warehouseId);
-            $statusSlug = $is_pickup ? 'pickup_processing' : 'processing';
+
+            // UC #1: Determine initial status
+            // If pickup, go straight to processing.
+            // If delivery, go to processing if cancel window is 0, otherwise pending.
+            $cancelHours = $estoreSettings->cancel_within_hours ?? 0;
+            if ($is_pickup) {
+                $statusSlug = 'pickup_processing';
+            } else {
+                $statusSlug = ($cancelHours == 0) ? 'processing' : 'pending';
+            }
+
             $order_status = OrderStatus::where('slug', $statusSlug)
                 ->where('is_pickup', $is_pickup ? 1 : 0)
                 ->first();
+
+            // If the specific status wasn't found, fallback
+            if (!$order_status) {
+                $statusSlug = $is_pickup ? 'pickup_pending' : 'pending';
+                $order_status = OrderStatus::where('slug', $statusSlug)
+                    ->where('is_pickup', $is_pickup ? 1 : 0)
+                    ->first();
+            }
 
             $order = EstoreOrder::create([
                 'warehouse_id' => $warehouseId,
@@ -279,6 +297,7 @@ class CheckoutController extends Controller
                 'warehouse_address' => $wareHouse->address ?? null,
                 'promo_code' => $appliedPromoCode,
                 'promo_discount' => $promoDiscount,
+                'expected_delivery_date' => (!$is_pickup) ? now()->addDays($estoreSettings->expected_delivery_days ?? 7) : null,
             ]);
 
             // Create order items and update stock
@@ -694,8 +713,8 @@ class CheckoutController extends Controller
                 'cart_count' => $cartCount,
                 'max_refundable_days' => $max_refundable_days,
                 'estore_settings' => [
-                    'max_refundable_days' => $max_refundable_days,                    
-                    'cancel_within_hours' => $estoreSettings->cancel_within_hours ?? 24,                    
+                    'max_refundable_days' => $max_refundable_days,
+                    'cancel_within_hours' => $estoreSettings->cancel_within_hours ?? 24,
                     'shipping_cost' => $estoreSettings->shipping_cost ?? 0,
                     'delivery_cost' => $estoreSettings->delivery_cost ?? 0,
                     'tax_percentage' => $estoreSettings->tax_percentage ?? 0,
@@ -843,9 +862,12 @@ class CheckoutController extends Controller
             // Reload order to get updated data
             $order->refresh();
 
+            $refundDays = $estoreSettings->refund_max_days ?? 7;
+            $cancelMsg = "Order cancelled successfully. Refund is being processed within {$refundDays} business days.";
+
             return response()->json([
                 'status' => true,
-                'message' => 'Order cancelled successfully. Refund request has been initiated and will be processed shortly.',
+                'message' => $cancelMsg,
                 'order' => $order,
                 'refund_initiated' => $payment ? true : false
             ], 200);

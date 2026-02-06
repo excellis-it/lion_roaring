@@ -89,6 +89,7 @@ class EstoreSettingController extends Controller
             'is_pickup_available' => 'required|boolean',
             'refund_max_days' => 'nullable|integer|min:0',
             'cancel_within_hours' => 'nullable|integer|min:0',
+            'expected_delivery_days' => 'nullable|integer|min:0',
             'max_order_quantity' => 'nullable|integer|min:1',
             'shipping_rules' => 'nullable', // accept array or JSON string
             'market_rate_primary' => 'nullable|in:metalpriceapi,goldapi',
