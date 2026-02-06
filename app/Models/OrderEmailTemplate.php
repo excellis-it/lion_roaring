@@ -19,6 +19,7 @@ class OrderEmailTemplate extends BaseModel
         'subject',
         'body',
         'is_active',
+        'sort_order',
     ];
 
     /**

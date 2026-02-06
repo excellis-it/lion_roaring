@@ -20,6 +20,7 @@ class OrderEmailTemplateController extends Controller
         }
 
         $templates = OrderEmailTemplate::with('orderStatus')
+            ->orderBy('sort_order', 'asc')
             ->orderBy('id', 'asc')
             ->get();
 
@@ -209,5 +210,26 @@ class OrderEmailTemplateController extends Controller
 
         return redirect()->route('order-email-templates.index')
             ->with('message', 'Email template deleted successfully.');
+    }
+
+    /**
+     * Update the order of templates via AJAX.
+     */
+    public function updateOrder(Request $request)
+    {
+        if (!Auth::user()->can('Edit Email Template')) {
+            return response()->json(['success' => false, 'message' => 'Unauthorized'], 403);
+        }
+
+        $request->validate([
+            'order' => 'required|array',
+            'order.*' => 'required|integer|exists:order_email_templates,id',
+        ]);
+
+        foreach ($request->order as $index => $id) {
+            OrderEmailTemplate::where('id', $id)->update(['sort_order' => $index]);
+        }
+
+        return response()->json(['success' => true, 'message' => 'Order updated successfully']);
     }
 }

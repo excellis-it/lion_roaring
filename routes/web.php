@@ -343,8 +343,6 @@ Route::group(['middleware' => ['admin'], 'prefix' => 'admin'], function () {
         Route::get('/', [MenuController::class, 'index'])->name('admin.menu.index');
         Route::post('/update', [MenuController::class, 'update'])->name('admin.menu.update');
     });
-
-
 });
 
 
@@ -649,6 +647,9 @@ Route::prefix('user')->middleware(['user', 'preventBackHistory', 'userActivity',
         'user-activity' => UserActivityController::class,
         // 'meetings' => MeetingSchedulingController::class,
     ]);
+
+    // Order Email Templates - Update Order
+    Route::post('/order-email-templates/update-order', [OrderEmailTemplateController::class, 'updateOrder'])->name('order-email-templates.update-order');
 
     // User Activity pages and AJAX routes
 
