@@ -446,6 +446,8 @@ class HomeController extends Controller
                 }
             }
         }
-        return view('ecom.order-tracking', compact('order', 'timelineStatuses', 'statusIndex'));
+        $estoreSettings = \App\Models\EstoreSetting::first();
+        $max_refundable_days = $estoreSettings->refund_max_days ?? 10;
+        return view('ecom.order-tracking', compact('order', 'timelineStatuses', 'statusIndex', 'estoreSettings', 'max_refundable_days'));
     }
 }

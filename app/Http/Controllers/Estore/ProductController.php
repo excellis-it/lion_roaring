@@ -1423,7 +1423,7 @@ class ProductController extends Controller
 
         // get max refundable days from EstoreSetting
         $estoreSettings = EstoreSetting::first();
-        $max_refundable_days = $estoreSettings->max_refundable_days ?? 10;
+        $max_refundable_days = $estoreSettings->refund_max_days ?? 10;
         $allStatuses = OrderStatus::where('is_active', 1)
             ->where('is_pickup', $order->is_pickup ? 1 : 0)
             ->orderBy('sort_order', 'asc')

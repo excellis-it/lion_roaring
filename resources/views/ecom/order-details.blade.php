@@ -345,7 +345,7 @@
                                         </div>
                                     </div>
                                 </div>
-                            @elseif(in_array($statusSlug, $allowedStatusList, true) && !$isWithinCancelWindow)
+                            @elseif(in_array($statusSlug, $allowedStatusList, true) && !$isWithinCancelWindow && $cancelHours > 0)
                                 <div class="alert alert-danger mt-2">
                                     Order cancellation is no longer available as the cancellation window of
                                     {{ $cancelHours }}
@@ -360,7 +360,8 @@
                                 @if ($payment->status == 'refunded')
                                     Your order has been cancelled and refunded.
                                 @else
-                                    Your order has been cancelled. Refund is being processed.
+                                    Your order has been cancelled. Refund is being processed within
+                                    {{ $max_refundable_days }} business days.
                                 @endif
                             </div>
                         @endif

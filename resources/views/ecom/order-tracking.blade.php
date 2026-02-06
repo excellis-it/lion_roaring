@@ -140,7 +140,8 @@
                                 <ul class="list-unstyled small mb-0">
                                     <li>Placed: <strong>{{ $createdAt->format('M d, Y h:i A') }}</strong></li>
                                     @if (in_array($order->orderStatus->slug ?? '', ['cancelled', 'pickup_cancelled'], true))
-                                        <li class="text-danger">Order was cancelled.</li>
+                                        <li class="text-danger">Order was cancelled. Refund is being processed within
+                                            {{ $max_refundable_days }} business days.</li>
                                     @endif
                                 </ul>
                             </div>
