@@ -170,14 +170,16 @@
                         <div class="row">
                             <div class="col-md-12">
                                 <div class="heading_box mb-5">
-                                    <h3>Update {{ App\Helpers\Helper::getMenuName('role_permission', 'Role Permission') }} </h3>
+                                    <h3>Update {{ App\Helpers\Helper::getMenuName('role_permission', 'Role Permission') }}
+                                    </h3>
                                 </div>
                             </div>
                         </div>
                         <div class="row">
                             <div class="col-md-4 mb-2">
                                 <div class="box_label">
-                                    <label>{{ App\Helpers\Helper::getMenuName('role_permission', 'Role Permission') }} Name</label>
+                                    <label>{{ App\Helpers\Helper::getMenuName('role_permission', 'Role Permission') }}
+                                        Name</label>
                                     <input type="text" class="form-control" id="role_name_input"
                                         value="{{ $role->name }}" name="role_name" placeholder=""
                                         {{ $role->name == 'MEMBER_NON_SOVEREIGN' || $role->name == 'WAREHOUSE_ADMIN' || $role->name == 'ESTORE_USER' || $role->name == 'ECCLESIA' ? 'readonly' : '' }}>
@@ -232,43 +234,101 @@
                                         </div>
                                     </div>
 
-                                    <div class="permissions-body">
-                                        @foreach ($categorizedPermissions as $category => $permissions)
+                                    <div class="permissions-body p-4">
+                                        @foreach ($categorizedPermissions as $mainCategory => $subCategories)
                                             @php
-                                                $availablePermissions = array_intersect($permissions, $allPermsArray);
+                                                $mainCategoryPermCount = 0;
+                                                foreach ($subCategories as $subPerms) {
+                                                    $mainCategoryPermCount += count(
+                                                        array_intersect($subPerms, $allPermsArray),
+                                                    );
+                                                }
                                             @endphp
-                                            @if (count($availablePermissions) > 0)
-                                                <div class="category-row" data-category="{{ strtolower($category) }}">
-                                                    <div class="category-trigger">
-                                                        <div class="form-check mb-0 me-3">
-                                                            <input class="form-check-input select-category-permissions"
-                                                                type="checkbox" id="cat-check-{{ Str::slug($category) }}">
+
+                                            @if ($mainCategoryPermCount > 0)
+                                                <div class="main-category-block mb-4 shadow-sm"
+                                                    style="border: 1px solid #e2e8f0; border-radius: 10px; overflow: hidden;">
+                                                    <div class="main-category-header p-3 d-flex justify-content-between align-items-center"
+                                                        style="background: #f8fafc; border-bottom: 1px solid #e2e8f0;">
+                                                        <h5 class="mb-0"
+                                                            style="color: #1e293b; font-size: 1.1rem; font-weight: 700;">
+                                                            <i class="fas fa-layer-group me-2" style="color: #64748b;"></i>
+                                                            {{ $mainCategory }}
+                                                        </h5>
+                                                        <div class="d-flex align-items-center gap-3">
+                                                            <span class="badge bg-soft-info text-info px-3 py-2"
+                                                                style="background-color: #e0f2fe; color: #0369a1; border-radius: 6px; font-size: 0.85rem;">
+                                                                {{ $mainCategoryPermCount }} total permissions
+                                                            </span>
+                                                            <button type="button"
+                                                                class="btn btn-sm btn-outline-secondary toggle-main-category"
+                                                                style="padding: 2px 8px;">
+                                                                <i class="fas fa-chevron-up"></i>
+                                                            </button>
                                                         </div>
-                                                        <div class="category-info">
-                                                            <span class="category-name">{{ $category }}</span>
-                                                            <span
-                                                                class="perm-count-badge">({{ count($availablePermissions) }}
-                                                                perms)</span>
-                                                        </div>
-                                                        <span class="selection-count-badge zero">0</span>
-                                                        <i class="fas fa-chevron-down arrow-icon"></i>
                                                     </div>
-                                                    <div class="permissions-grid">
-                                                        @foreach ($availablePermissions as $permName)
-                                                            <div class="perm-item" data-name="{{ strtolower($permName) }}">
-                                                                <div class="form-check mb-0">
-                                                                    <input class="form-check-input permission-checkbox"
-                                                                        type="checkbox" name="permissions[]"
-                                                                        value="{{ $permName }}"
-                                                                        id="perm-{{ Str::slug($permName) }}"
-                                                                        {{ in_array($permName, $currentPermissions) ? 'checked' : '' }}>
-                                                                    <label class="perm-label ms-1"
-                                                                        for="perm-{{ Str::slug($permName) }}"
-                                                                        title="{{ $permName }}">
-                                                                        {{ $permName }}
-                                                                    </label>
+                                                    <div class="main-category-content">
+                                                        @foreach ($subCategories as $subCategory => $permissions)
+                                                            @php
+                                                                $availablePermissions = array_intersect(
+                                                                    $permissions,
+                                                                    $allPermsArray,
+                                                                );
+                                                            @endphp
+                                                            @if (count($availablePermissions) > 0)
+                                                                <div class="category-row border-bottom"
+                                                                    data-category="{{ strtolower($subCategory) }}">
+                                                                    <div class="category-trigger py-3 px-4">
+                                                                        <div class="form-check mb-0 me-3">
+                                                                            <input
+                                                                                class="form-check-input select-category-permissions"
+                                                                                type="checkbox"
+                                                                                id="cat-check-{{ Str::slug($mainCategory . '-' . $subCategory) }}">
+                                                                        </div>
+                                                                        <div class="category-info">
+                                                                            <span class="category-name"
+                                                                                style="color: #334155; font-weight: 600;">{{ $subCategory }}</span>
+                                                                            <span class="perm-count-badge ms-2"
+                                                                                style="color: #64748b; font-size: 0.8rem;">({{ count($availablePermissions) }}
+                                                                                perms)</span>
+                                                                        </div>
+                                                                        <div class="d-flex align-items-center">
+                                                                            <span
+                                                                                class="selection-count-badge zero me-3">0</span>
+                                                                            <i class="fas fa-chevron-down arrow-icon"
+                                                                                style="color: #94a3b8;"></i>
+                                                                        </div>
+                                                                    </div>
+                                                                    <div class="permissions-grid px-5 pb-4">
+                                                                        @foreach ($availablePermissions as $permName)
+                                                                            @php
+                                                                                $perm = \Spatie\Permission\Models\Permission::where(
+                                                                                    'name',
+                                                                                    $permName,
+                                                                                )->first();
+                                                                                $permId = $perm ? $perm->id : 0;
+                                                                            @endphp
+                                                                            <div class="perm-item"
+                                                                                data-name="{{ strtolower($permName) }}">
+                                                                                <div class="form-check mb-0">
+                                                                                    <input
+                                                                                        class="form-check-input permission-checkbox"
+                                                                                        type="checkbox" name="permissions[]"
+                                                                                        value="{{ $permName }}"
+                                                                                        id="perm-{{ $permId }}"
+                                                                                        {{ in_array($permName, $currentPermissions) ? 'checked' : '' }}>
+                                                                                    <label class="perm-label ms-2"
+                                                                                        for="perm-{{ $permId }}"
+                                                                                        title="{{ $permName }}"
+                                                                                        style="font-size: 0.9rem; color: #475569;">
+                                                                                        {{ $permName }}
+                                                                                    </label>
+                                                                                </div>
+                                                                            </div>
+                                                                        @endforeach
+                                                                    </div>
                                                                 </div>
-                                                            </div>
+                                                            @endif
                                                         @endforeach
                                                     </div>
                                                 </div>
@@ -331,6 +391,14 @@
 
             // Init counts
             updateSelectionStates();
+
+            // Toggle Main Category
+            $(document).on('click', '.toggle-main-category', function() {
+                var $content = $(this).closest('.main-category-block').find('.main-category-content');
+                var $icon = $(this).find('i');
+                $content.slideToggle();
+                $icon.toggleClass('fa-chevron-up fa-chevron-down');
+            });
 
             // Toggle Accordion
             $(document).on('click', '.category-trigger', function(e) {
