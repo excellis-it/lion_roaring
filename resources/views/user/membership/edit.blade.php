@@ -173,19 +173,19 @@
                     <div class="col-md-6 mb-3">
                         <div class="box_label">
                             <label>Tier Name *</label>
-                            <input name="name" class="form-control" value="{{ $tier->name }}" required>
+                            <input name="name" class="form-control" value="{{ old('name', $tier->name) }}" required>
                         </div>
                     </div>
                     <div class="col-md-6 mb-3">
                         <div class="box_label">
                             <label>Slug *</label>
-                            <input name="slug" class="form-control" value="{{ $tier->slug }}" required>
+                            <input name="slug" class="form-control" value="{{ old('slug', $tier->slug) }}" required>
                         </div>
                     </div>
                     <div class="col-md-12 mb-3">
                         <div class="box_label">
                             <label>Description</label>
-                            <textarea name="description" class="form-control" rows="3">{{ $tier->description }}</textarea>
+                            <textarea name="description" class="form-control" rows="3">{{ old('description', $tier->description) }}</textarea>
                         </div>
                     </div>
                     <div class="col-md-6 mb-3">
@@ -193,10 +193,12 @@
                             <label>Plan Type *</label>
                             <select name="pricing_type" class="form-control" id="pricing_type" required>
                                 <option value="amount"
-                                    {{ ($tier->pricing_type ?? 'amount') === 'amount' ? 'selected' : '' }}>Amount (USD)
+                                    {{ old('pricing_type', $tier->pricing_type ?? 'amount') === 'amount' ? 'selected' : '' }}>
+                                    Amount (USD)
                                 </option>
                                 <option value="token"
-                                    {{ ($tier->pricing_type ?? 'amount') === 'token' ? 'selected' : '' }}>Life Force Energy
+                                    {{ old('pricing_type', $tier->pricing_type ?? 'amount') === 'token' ? 'selected' : '' }}>
+                                    Life Force Energy
                                     (Token)</option>
                             </select>
                         </div>
@@ -204,7 +206,7 @@
                     <div class="col-md-6 mb-3" id="amount_cost_wrap">
                         <div class="box_label">
                             <label>Amount (USD) *</label>
-                            <input name="cost" class="form-control" value="{{ $tier->cost }}" type="number"
+                            <input name="cost" class="form-control" value="{{ old('cost', $tier->cost) }}" type="number"
                                 step="0.01" min="0">
                         </div>
                     </div>
@@ -212,13 +214,14 @@
                         <div class="box_label">
                             <label>Life Force Energy Tokens *</label>
                             <input name="life_force_energy_tokens" class="form-control"
-                                value="{{ $tier->life_force_energy_tokens }}" type="number" step="0.01" min="0">
+                                value="{{ old('life_force_energy_tokens', $tier->life_force_energy_tokens) }}"
+                                type="number" step="0.01" min="0">
                         </div>
                     </div>
                     <div class="col-md-12 mb-3 d-none" id="agree_desc_wrap">
                         <div class="box_label">
                             <label>Agree Description *</label>
-                            <textarea name="agree_description" class="form-control" rows="5">{{ $tier->agree_description }}</textarea>
+                            <textarea name="agree_description" class="form-control" rows="5">{{ old('agree_description', $tier->agree_description) }}</textarea>
                         </div>
                     </div>
                     <div class="col-md-12 mb-3">
@@ -356,13 +359,31 @@
                         <div class="box_label">
                             <label>Benefits</label>
                             <div id="benefits">
-                                @foreach ($tier->benefits as $benefit)
+                                @php
+                                    $benefits = old('benefits');
+                                    if (is_null($benefits)) {
+                                        $benefits = $tier->benefits->pluck('benefit')->toArray();
+                                    }
+                                @endphp
+
+                                @if (is_array($benefits) && count($benefits) > 0)
+                                    @foreach ($benefits as $index => $benefit)
+                                        <div class="input-group mb-2">
+                                            <input type="text" name="benefits[]" class="form-control"
+                                                value="{{ is_object($benefit) ? $benefit->benefit : $benefit }}">
+                                            @if ($index == 0)
+                                                <button type="button" class="btn btn-primary add-benefit">+</button>
+                                            @else
+                                                <button type="button" class="btn btn-danger remove-benefit">-</button>
+                                            @endif
+                                        </div>
+                                    @endforeach
+                                @else
                                     <div class="input-group mb-2">
-                                        <input type="text" name="benefits[]" class="form-control"
-                                            value="{{ $benefit->benefit }}">
-                                        <button type="button" class="btn btn-danger remove-benefit">-</button>
+                                        <input type="text" name="benefits[]" class="form-control">
+                                        <button type="button" class="btn btn-primary add-benefit">+</button>
                                     </div>
-                                @endforeach
+                                @endif
                             </div>
                             <div class="my-2"><button type="button" class="btn btn-primary add-benefit">+ Add
                                     Benefit</button></div>
