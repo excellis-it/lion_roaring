@@ -520,7 +520,7 @@ Route::prefix('user')->middleware(['user', 'preventBackHistory', 'userActivity',
     });
 
 
-     Route::prefix('detail')->name('user.admin.')->group(function () {
+    Route::prefix('detail')->name('user.admin.')->group(function () {
         Route::get('/', [AdminAdminController::class, 'index'])->name('index');
         Route::get('/add', [AdminAdminController::class, 'add'])->name('add');
         Route::post('/store', [AdminAdminController::class, 'store'])->name('store');
@@ -931,6 +931,8 @@ Route::prefix('user')->middleware(['user', 'preventBackHistory', 'userActivity',
     Route::get('/changePartnerStatus', [PartnerController::class, 'changePartnerStatus'])->name('partners.change-status');
     Route::get('/partner-fetch-data', [PartnerController::class, 'fetchData'])->name('partners.fetch-data');
     Route::get('/partner-reset-filters', [PartnerController::class, 'resetFilters'])->name('partners.reset-filters');
+    Route::get('/partner-export-report', [PartnerController::class, 'exportReport'])->name('partners.export-report');
+    Route::get('/partner-agreement-details', [PartnerController::class, 'getAgreementDetails'])->name('partners.agreement-details');
 
     // Mail
     Route::prefix('mail')->group(function () {

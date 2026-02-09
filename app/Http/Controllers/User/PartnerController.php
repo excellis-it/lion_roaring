@@ -26,6 +26,7 @@ use App\Models\MembershipTier;
 use App\Models\UserSubscription;
 use Spatie\Permission\Models\Permission;
 use App\Models\UserTypePermission;
+use Illuminate\Support\Facades\Storage;
 
 class PartnerController extends Controller
 {
@@ -40,6 +41,7 @@ class PartnerController extends Controller
             $filters = session('partner_filters', []);
             $query = isset($filters['query']) ? $filters['query'] : null;
             $country_id = isset($filters['country_id']) ? $filters['country_id'] : null;
+            $has_agreement = isset($filters['has_agreement']) ? $filters['has_agreement'] : null;
             $sort_by = isset($filters['sortby']) ? $filters['sortby'] : 'id';
             $sort_type = isset($filters['sorttype']) ? $filters['sorttype'] : 'desc';
             // Set current page for pagination if exists
@@ -50,7 +52,7 @@ class PartnerController extends Controller
             }
 
 
-            $partners = User::with(['ecclesia', 'userRole'])
+            $partners = User::with(['ecclesia', 'userRole', 'userRegisterAgreement'])
                 ->leftJoin('user_types as ut', 'users.user_type_id', '=', 'ut.id')
                 ->where(function ($q) {
                     $q->whereNull('ut.id') // Include users with deleted user types
@@ -80,6 +82,13 @@ class PartnerController extends Controller
             // Apply country filter
             if ($country_id) {
                 $partners->where('users.country', $country_id);
+            }
+
+            // Apply registration agreement filter
+            if ($has_agreement == '1') {
+                $partners->whereHas('userRegisterAgreement');
+            } elseif ($has_agreement == '0') {
+                $partners->whereDoesntHave('userRegisterAgreement');
             }
 
 
@@ -136,7 +145,7 @@ class PartnerController extends Controller
             $partners = $partners->paginate(15);
             $countries = Country::orderBy('name', 'asc')->get();
 
-            return view('user.partner.list', compact('partners', 'countries', 'query', 'country_id', 'sort_by', 'sort_type'));
+            return view('user.partner.list', compact('partners', 'countries', 'query', 'country_id', 'has_agreement', 'sort_by', 'sort_type'));
         } else {
             abort(403, 'You do not have permission to access this page.');
         }
@@ -907,6 +916,7 @@ class PartnerController extends Controller
             session(['partner_filters' => [
                 'query' => $query,
                 'country_id' => $request->country_id,
+                'has_agreement' => $request->has_agreement,
                 'sortby' => $sort_by,
                 'sorttype' => $sort_type,
                 'page' => $request->page
@@ -919,7 +929,7 @@ class PartnerController extends Controller
             $user_ecclesia_id = $user->ecclesia_id;
 
             // Base query with roles filter
-            $partners = User::with(['ecclesia', 'userRole'])
+            $partners = User::with(['ecclesia', 'userRole', 'userRegisterAgreement'])
                 ->leftJoin('user_types as ut', 'users.user_type_id', '=', 'ut.id')
                 ->where(function ($q) {
                     $q->whereNull('ut.id') // Include users with deleted user types
@@ -947,6 +957,13 @@ class PartnerController extends Controller
 
             if ($request->country_id) {
                 $partners->where('users.country', $request->country_id);
+            }
+
+            // Apply registration agreement filter
+            if ($request->has_agreement == '1') {
+                $partners->whereHas('userRegisterAgreement');
+            } elseif ($request->has_agreement == '0') {
+                $partners->whereDoesntHave('userRegisterAgreement');
             }
 
 
@@ -1004,6 +1021,154 @@ class PartnerController extends Controller
 
             return response()->json(['data' => view('user.partner.table', compact('partners'))->render()]);
         }
+    }
+
+    public function exportReport(Request $request)
+    {
+        $sort_by = $request->get('sortby', 'id');
+        $sort_type = $request->get('sorttype', 'desc');
+        $query = $request->get('query');
+        $country_id = $request->get('country_id');
+        $has_agreement = $request->get('has_agreement');
+
+        $user = Auth::user();
+        $is_user_ecclesia_admin = $user->is_ecclesia_admin;
+
+        $partners = User::with(['ecclesia', 'userRole', 'userRegisterAgreement', 'countries'])
+            ->leftJoin('user_types as ut', 'users.user_type_id', '=', 'ut.id')
+            ->where(function ($q) {
+                $q->whereNull('ut.id')
+                    ->orWhere(function ($subQ) {
+                        $subQ->where('ut.name', '!=', 'SUPER ADMIN')
+                            ->where('ut.name', '!=', 'ESTORE_USER');
+                    });
+            })
+            ->select('users.*');
+
+        if ($query) {
+            $query_search = str_replace(" ", "%", $query);
+            $partners->where(function ($q) use ($query_search) {
+                $q->where('users.id', 'like', "%{$query_search}%")
+                    ->orWhereRaw('CONCAT(COALESCE(users.first_name, ""), " ", COALESCE(users.middle_name, ""), " ", COALESCE(users.last_name, "")) LIKE ?', ["%{$query_search}%"])
+                    ->orWhere('users.email', 'like', "%{$query_search}%")
+                    ->orWhere('users.phone', 'like', "%{$query_search}%")
+                    ->orWhere('users.user_name', 'like', "%{$query_search}%")
+                    ->orWhere('users.user_type', 'like', "%{$query_search}%")
+                    ->orWhereHas('countries', function ($q) use ($query_search) {
+                        $q->where('name', 'like', "%{$query_search}%");
+                    });
+            });
+        }
+
+        if ($country_id) {
+            $partners->where('users.country', $country_id);
+        }
+
+        if ($has_agreement == '1') {
+            $partners->whereHas('userRegisterAgreement');
+        } elseif ($has_agreement == '0') {
+            $partners->whereDoesntHave('userRegisterAgreement');
+        }
+
+        if ($user->hasNewRole('SUPER ADMIN')) {
+            $partners->where(function ($q) {
+                $q->whereNull('ut.id')
+                    ->orWhereHas('userRole', function ($subQ) {
+                        $subQ->whereIn('type', [2, 3]);
+                    });
+            })
+                ->where('users.id', '!=', $user->id);
+        } elseif ($is_user_ecclesia_admin == 1) {
+            $manage_ecclesia_ids = is_array($user->manage_ecclesia)
+                ? $user->manage_ecclesia
+                : explode(',', $user->manage_ecclesia);
+
+            $partners->where(function ($q) {
+                $q->whereNull('ut.id')
+                    ->orWhereHas('userRole', function ($subQ) {
+                        $subQ->whereIn('type', [2, 3]);
+                    });
+            })
+                ->where(function ($q) use ($manage_ecclesia_ids, $user) {
+                    $q->whereIn('users.ecclesia_id', $manage_ecclesia_ids)->whereNotNull('users.ecclesia_id')
+                        ->orWhere('users.created_id', $user->id)->orWhere('users.id', auth()->id());
+                });
+        }
+
+        if (!$user->hasNewRole('SUPER ADMIN')) {
+            if ($user->user_type == 'Regional') {
+                $partners->where('users.country', $user->country)->where('users.user_type', 'Regional');
+            } elseif ($user->user_type == 'Global') {
+                $partners->where('users.user_type', 'Global');
+            }
+        }
+
+        if ($sort_by == 'name') {
+            $partners->orderByRaw('CONCAT(COALESCE(first_name, ""), " ", COALESCE(middle_name, ""), " ", COALESCE(last_name, "")) ' . $sort_type);
+        } else {
+            $partners->orderBy($sort_by, $sort_type);
+        }
+
+        $results = $partners->get();
+
+        $headers = [
+            "Content-type"        => "text/csv",
+            "Content-Disposition" => "attachment; filename=partners_report_" . date('Ymd_His') . ".csv",
+            "Pragma"              => "no-cache",
+            "Cache-Control"       => "must-revalidate, post-check=0, pre-check=0",
+            "Expires"             => "0"
+        ];
+
+        $callback = function () use ($results) {
+            $file = fopen('php://output', 'w');
+            fputcsv($file, ['ID', 'Email', 'First Name', 'Middle Name', 'Last Name', 'User Type', 'Country', 'Role', 'House Of Ecclesia', 'Registration Agreement', 'Phone', 'Status']);
+            foreach ($results as $partner) {
+                fputcsv($file, [
+                    $partner->lion_roaring_id ?? $partner->id,
+                    $partner->email,
+                    $partner->first_name,
+                    $partner->middle_name,
+                    $partner->last_name,
+                    $partner->user_type,
+                    $partner->countries->name ?? '-',
+                    $partner->userRole->name ?? '',
+                    $partner->ecclesia->name ?? 'NO NAME',
+                    $partner->userRegisterAgreement ? 'Yes' : 'No',
+                    $partner->phone,
+                    $partner->status == 1 ? 'Active' : 'Inactive'
+                ]);
+            }
+
+            fclose($file);
+        };
+
+        return response()->stream($callback, 200, $headers);
+    }
+
+    public function getAgreementDetails(Request $request)
+    {
+        if (Auth::user()->can('View Partners')) {
+            $userAgreement = UserRegisterAgreement::where('user_id', $request->user_id)
+                ->orderBy('id', 'desc')
+                ->first();
+
+            if ($userAgreement) {
+                return response()->json([
+                    'success' => true,
+                    'data' => [
+                        'signer_name' => $userAgreement->signer_name,
+                        'signer_initials' => $userAgreement->signer_initials,
+                        'country_code' => strtoupper($userAgreement->country_code),
+                        'pdf_url' => Storage::url($userAgreement->pdf_path),
+                        'pdf_exists' => Storage::disk('public')->exists($userAgreement->pdf_path),
+                        'signed_at' => $userAgreement->created_at->format('d M Y, h:i A')
+                    ]
+                ]);
+            }
+
+            return response()->json(['success' => false, 'message' => 'Agreement not found.']);
+        }
+        return response()->json(['success' => false, 'message' => 'Unauthorized.'], 403);
     }
 
     public function resetFilters()

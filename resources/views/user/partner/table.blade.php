@@ -70,6 +70,14 @@
                     </div>
                 @endif
             </td>
+            <td class="text-center">
+                @if ($partner->userRegisterAgreement)
+                    <span class="badge bg-success view-agreement" data-user_id="{{ $partner->id }}"
+                        style="cursor: pointer;"><i class="ti ti-check"></i> Yes</span>
+                @else
+                    <span class="badge bg-danger"><i class="ti ti-x"></i> No</span>
+                @endif
+            </td>
             <td>
 
                 @if ($partner->warehouses->count() > 0)
