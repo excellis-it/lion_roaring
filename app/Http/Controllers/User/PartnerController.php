@@ -152,14 +152,14 @@ class PartnerController extends Controller
     {
 
         $categorizedPermissions = [
-            'Messaging' => [
-                'Chat' => ['Manage Chat'],
-                'Team' => ['Create Team', 'Delete Team', 'Manage Team'],
-                'Email' => ['Manage Email'],
+            Helper::getMenuName('messaging', 'Messaging') => [
+                Helper::getMenuName('chat', 'Chat') => ['Manage Chat'],
+                Helper::getMenuName('team', 'Team') => ['Create Team', 'Delete Team', 'Manage Team'],
+                Helper::getMenuName('email', 'Email') => ['Manage Email'],
             ],
-            'Education' => [
-                'Topic' => ['Manage Topic', 'Edit Topic', 'Create Topic', 'Delete Topic'],
-                'Becoming Sovereigns' => [
+            Helper::getMenuName('education', 'Education') => [
+                Helper::getMenuName('topic', 'Topic') => ['Manage Topic', 'Edit Topic', 'Create Topic', 'Delete Topic'],
+                Helper::getMenuName('becoming_sovereigns', 'Becoming Sovereigns') => [
                     'Manage Becoming Sovereigns',
                     'View Becoming Sovereigns',
                     'Upload Becoming Sovereigns',
@@ -167,7 +167,7 @@ class PartnerController extends Controller
                     'Delete Becoming Sovereigns',
                     'Download Becoming Sovereigns',
                 ],
-                'Becoming Christ Like' => [
+                Helper::getMenuName('becoming_christ_like', 'Becoming Christ Like') => [
                     'Manage Becoming Christ Like',
                     'View Becoming Christ Like',
                     'Upload Becoming Christ Like',
@@ -175,7 +175,7 @@ class PartnerController extends Controller
                     'Delete Becoming Christ Like',
                     'Download Becoming Christ Like',
                 ],
-                'Becoming a Leader' => [
+                Helper::getMenuName('becoming_a_leader', 'Becoming a Leader') => [
                     'Manage Becoming a Leader',
                     'View Becoming a Leader',
                     'Upload Becoming a Leader',
@@ -183,26 +183,26 @@ class PartnerController extends Controller
                     'Delete Becoming a Leader',
                     'Download Becoming a Leader',
                 ],
-                'Files' => ['Upload File', 'Delete File', 'View File', 'Edit File', 'Manage File'],
+                Helper::getMenuName('files', 'Files') => ['Upload File', 'Delete File', 'View File', 'Edit File', 'Manage File'],
             ],
-            'Bulletins' => [
-                'Bulletin' => ['Manage Bulletin', 'Edit Bulletin', 'Create Bulletin', 'Delete Bulletin'],
-                'Job Postings' => [
+            Helper::getMenuName('bulletins', 'Bulletins') => [
+                Helper::getMenuName('bulletin', 'Bulletin') => ['Manage Bulletin', 'Edit Bulletin', 'Create Bulletin', 'Delete Bulletin'],
+                Helper::getMenuName('job_postings', 'Job Postings') => [
                     'Manage Job Postings',
                     'View Job Postings',
                     'Create Job Postings',
                     'Edit Job Postings',
                     'Delete Job Postings',
                 ],
-                'Meeting Schedule' => [
+                Helper::getMenuName('meeting_schedule', 'Meeting Schedule') => [
                     'Manage Meeting Schedule',
                     'View Meeting Schedule',
                     'Create Meeting Schedule',
                     'Edit Meeting Schedule',
                     'Delete Meeting Schedule',
                 ],
-                'Event' => ['Manage Event', 'Create Event', 'Edit Event'],
-                'Private Collaboration' => [
+                Helper::getMenuName('event', 'Event') => ['Manage Event', 'Create Event', 'Edit Event'],
+                Helper::getMenuName('private_collaboration', 'Private Collaboration') => [
                     'Manage Private Collaboration',
                     'View Private Collaboration',
                     'Create Private Collaboration',
@@ -210,76 +210,76 @@ class PartnerController extends Controller
                     'Delete Private Collaboration',
                 ],
             ],
-            'E-Store' => [
-                'Estore CMS' => [
+            Helper::getMenuName('e_store', 'E-Store') => [
+                Helper::getMenuName('estore_cms', 'Estore CMS') => [
                     'Manage Estore CMS',
                     'View Estore CMS',
                     'Create Estore CMS',
                     'Edit Estore CMS',
                     'Delete Estore CMS',
                 ],
-                'Estore Users' => ['Manage Estore Users', 'View Estore Users'],
-                'Estore Category' => [
+                Helper::getMenuName('estore_users', 'Estore Users') => ['Manage Estore Users', 'View Estore Users'],
+                Helper::getMenuName('estore_category', 'Estore Category') => [
                     'Manage Estore Category',
                     'View Estore Category',
                     'Create Estore Category',
                     'Edit Estore Category',
                     'Delete Estore Category',
                 ],
-                'Estore Sizes' => ['Manage Estore Sizes', 'View Estore Sizes', 'Create Estore Sizes', 'Edit Estore Sizes'],
-                'Estore Colors' => [
+                Helper::getMenuName('estore_sizes', 'Estore Sizes') => ['Manage Estore Sizes', 'View Estore Sizes', 'Create Estore Sizes', 'Edit Estore Sizes'],
+                Helper::getMenuName('estore_colors', 'Estore Colors') => [
                     'Manage Estore Colors',
                     'View Estore Colors',
                     'Create Estore Colors',
                     'Edit Estore Colors',
                 ],
-                'Estore Settings' => ['Manage Estore Settings', 'View Estore Settings', 'Edit Estore Settings'],
-                'Order Status' => ['Manage Order Status', 'Create Order Status', 'Edit Order Status', 'Delete Order Status'],
-                'Email Template' => [
+                Helper::getMenuName('estore_settings', 'Estore Settings') => ['Manage Estore Settings', 'View Estore Settings', 'Edit Estore Settings'],
+                Helper::getMenuName('order_status', 'Order Status') => ['Manage Order Status', 'Create Order Status', 'Edit Order Status', 'Delete Order Status'],
+                Helper::getMenuName('email_template', 'Email Template') => [
                     'Manage Email Template',
                     'Create Email Template',
                     'Edit Email Template',
                     'Delete Email Template',
                 ],
-                'Estore Products' => [
+                Helper::getMenuName('estore_products', 'Estore Products') => [
                     'Manage Estore Products',
                     'View Estore Products',
                     'Create Estore Products',
                     'Edit Estore Products',
                     'Delete Estore Products',
                 ],
-                'Estore Warehouse' => [
+                Helper::getMenuName('estore_warehouse', 'Estore Warehouse') => [
                     'Manage Estore Warehouse',
                     'View Estore Warehouse',
                     'Create Estore Warehouse',
                     'Edit Estore Warehouse',
                     'Delete Estore Warehouse',
                 ],
-                'Estore Orders' => ['Manage Estore Orders', 'View Estore Orders', 'Edit Estore Orders'],
+                Helper::getMenuName('estore_orders', 'Estore Orders') => ['Manage Estore Orders', 'View Estore Orders', 'Edit Estore Orders'],
             ],
-            'E-Learning' => [
-                'Elearning CMS' => [
+            Helper::getMenuName('e_learning', 'E-Learning') => [
+                Helper::getMenuName('elearning_cms', 'Elearning CMS') => [
                     'Manage Elearning CMS',
                     'View Elearning CMS',
                     'Create Elearning CMS',
                     'Edit Elearning CMS',
                     'Delete Elearning CMS',
                 ],
-                'Elearning Category' => [
+                Helper::getMenuName('elearning_category', 'Elearning Category') => [
                     'Manage Elearning Category',
                     'View Elearning Category',
                     'Create Elearning Category',
                     'Edit Elearning Category',
                     'Delete Elearning Category',
                 ],
-                'Elearning Topic' => [
+                Helper::getMenuName('elearning_topic', 'Elearning Topic') => [
                     'Manage Elearning Topic',
                     'View Elearning Topic',
                     'Create Elearning Topic',
                     'Edit Elearning Topic',
                     'Delete Elearning Topic',
                 ],
-                'Elearning Product' => [
+                Helper::getMenuName('elearning_product', 'Elearning Product') => [
                     'Manage Elearning Product',
                     'View Elearning Product',
                     'Create Elearning Product',
@@ -287,23 +287,23 @@ class PartnerController extends Controller
                     'Delete Elearning Product',
                 ],
             ],
-            'Membership' => [
-                'Membership Plan' => [
+            Helper::getMenuName('membership', 'Membership') => [
+                Helper::getMenuName('membership_plan', 'Membership Plan') => [
                     'Manage Membership',
                     'View Membership',
                     'Create Membership',
                     'Edit Membership',
                     'Delete Membership',
                 ],
-                'Membership Settings' => [
+                Helper::getMenuName('membership_settings', 'Membership Settings') => [
                     'View Membership Settings',
                     'Edit Membership Settings',
                 ],
-                'Membership Members' => ['View Membership Members'],
-                'Membership Payments' => ['View Membership Payments'],
+                Helper::getMenuName('membership_members', 'Membership Members') => ['View Membership Members'],
+                Helper::getMenuName('membership_payments', 'Membership Payments') => ['View Membership Payments'],
             ],
-            'User Activity' => [
-                'User Activity' => [
+            Helper::getMenuName('user_activity', 'User Activity') => [
+                Helper::getMenuName('user_activity', 'User Activity') => [
                     'Manage User Activity',
                     'View User Activity',
                     'Create User Activity',
@@ -311,8 +311,8 @@ class PartnerController extends Controller
                     'Delete User Activity',
                 ],
             ],
-            'CMS Content' => [
-                'Pages' => [
+            Helper::getMenuName('cms_content', 'CMS Content') => [
+                Helper::getMenuName('pages', 'Pages') => [
                     'Manage Pages',
                     'Manage Home Page',
                     'Manage Details Page',
@@ -329,53 +329,53 @@ class PartnerController extends Controller
                     'Manage Privacy Policy Page',
                     'Manage Terms and Conditions Page',
                 ],
-                'FAQ' => ['Manage Faq', 'Create Faq', 'Edit Faq', 'Delete Faq'],
-                'Gallery' => ['Manage Gallery', 'Create Gallery', 'Edit Gallery', 'Delete Gallery'],
-                'Testimonials' => ['Create Testimonials', 'Delete Testimonials', 'Manage Testimonials', 'Edit Testimonials'],
+                Helper::getMenuName('faq', 'FAQ') => ['Manage Faq', 'Create Faq', 'Edit Faq', 'Delete Faq'],
+                Helper::getMenuName('gallery', 'Gallery') => ['Manage Gallery', 'Create Gallery', 'Edit Gallery', 'Delete Gallery'],
+                Helper::getMenuName('testimonials', 'Testimonials') => ['Create Testimonials', 'Delete Testimonials', 'Manage Testimonials', 'Edit Testimonials'],
             ],
-            'Site Settings' => [
-                'General Settings' => ['Manage Site Settings', 'Manage Menu Settings'],
-                'Chatbot' => ['Manage Chatbot', 'View Chatbot History', 'Manage Chatbot Keywords', 'View Chatbot Analytics'],
+            Helper::getMenuName('site_settings', 'Site Settings') => [
+                Helper::getMenuName('general_settings', 'General Settings') => ['Manage Site Settings', 'Manage Menu Settings'],
+                Helper::getMenuName('chatbot', 'Chatbot') => ['Manage Chatbot', 'View Chatbot History', 'Manage Chatbot Keywords', 'View Chatbot Analytics'],
             ],
-            'Management' => [
-                'Partners' => ['Create Partners', 'Edit Partners', 'Delete Partners', 'Manage Partners', 'View Partners'],
-                'Roles & Permissions' => ['Manage Role Permission'],
-                'Signup Rules' => ['Manage Signup Rules', 'Create Signup Rules', 'Edit Signup Rules', 'Delete Signup Rules'],
-                'Strategy' => [
+            Helper::getMenuName('management', 'Management') => [
+                Helper::getMenuName('all_members', 'All Members') => ['Create Partners', 'Edit Partners', 'Delete Partners', 'Manage Partners', 'View Partners'],
+                Helper::getMenuName('role_permission', 'Roles & Permissions') => ['Manage Role Permission'],
+                Helper::getMenuName('signup_rules', 'Signup Rules') => ['Manage Signup Rules', 'Create Signup Rules', 'Edit Signup Rules', 'Delete Signup Rules'],
+                Helper::getMenuName('strategy', 'Strategy') => [
                     'Manage Strategy',
                     'Upload Strategy',
                     'Download Strategy',
                     'View Strategy',
                     'Delete Strategy',
                 ],
-                'Policy' => ['Manage Policy', 'Upload Policy', 'Download Policy', 'View Policy', 'Delete Policy'],
-                'Donations' => ['Manage Donations'],
-                'Newsletters' => ['Manage Newsletters', 'Delete Newsletters'],
-                'Admin List' => ['Create Admin List', 'Delete Admin List', 'Manage Admin List', 'Edit Admin List'],
-                'Our Governance' => [
+                Helper::getMenuName('policy', 'Policy') => ['Manage Policy', 'Upload Policy', 'Download Policy', 'View Policy', 'Delete Policy'],
+                Helper::getMenuName('donations', 'Donations') => ['Manage Donations'],
+                Helper::getMenuName('newsletters', 'Newsletters') => ['Manage Newsletters', 'Delete Newsletters'],
+                Helper::getMenuName('admin_list', 'Admin List') => ['Create Admin List', 'Delete Admin List', 'Manage Admin List', 'Edit Admin List'],
+                Helper::getMenuName('our_governance', 'Our Governance') => [
                     'Create Our Governance',
                     'Delete Our Governance',
                     'Manage Our Governance',
                     'Edit Our Governance',
                 ],
-                'Our Organization' => [
+                Helper::getMenuName('our_organization', 'Our Organization') => [
                     'Create Our Organization',
                     'Delete Our Organization',
                     'Manage Our Organization',
                     'Edit Our Organization',
                 ],
-                'Organization Center' => [
+                Helper::getMenuName('organization_center', 'Organization Center') => [
                     'Create Organization Center',
                     'Delete Organization Center',
                     'Manage Organization Center',
                     'Edit Organization Center',
                 ],
             ],
-            'Others' => [
-                'Profile' => ['Manage Profile', 'Manage My Profile'],
-                'Password' => ['Manage Password', 'Manage My Password'],
-                'Contact Us Messages' => ['Manage Contact Us Messages', 'Delete Contact Us Messages'],
-                'General' => ['Manage Services', 'Manage Countries'],
+            Helper::getMenuName('others', 'Others') => [
+                Helper::getMenuName('profile', 'Profile') => ['Manage Profile', 'Manage My Profile'],
+                Helper::getMenuName('password', 'Password') => ['Manage Password', 'Manage My Password'],
+                Helper::getMenuName('contact_us_messages', 'Contact Us Messages') => ['Manage Contact Us Messages', 'Delete Contact Us Messages'],
+                Helper::getMenuName('general', 'General') => ['Manage Services', 'Manage Countries'],
             ],
         ];
 
