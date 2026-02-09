@@ -11,10 +11,31 @@ use Illuminate\Support\Facades\Log;
 class AdminController extends Controller
 {
     //
-    public function index()
+    public function index(Request $request)
     {
         if (auth()->user()->can('Manage Admin List')) {
-            $admins = User::where('user_type_id', 1)->where('id', '!=', auth()->user()->id)->get();
+            $query = User::where('user_type_id', 1)->where('id', '!=', auth()->user()->id);
+
+            if ($request->has('search') && !empty($request->search)) {
+                $search = $request->search;
+                $query->where(function ($q) use ($search) {
+                    $q->where('first_name', 'like', "%{$search}%")
+                        ->orWhere('last_name', 'like', "%{$search}%")
+                        ->orWhere('middle_name', 'like', "%{$search}%")
+                        ->orWhere('user_name', 'like', "%{$search}%")
+                        ->orWhere('email', 'like', "%{$search}%");
+                });
+            }
+
+            $admins = $query->get();
+
+            if ($request->ajax()) {
+                return response()->json([
+                    'status' => 'success',
+                    'data' => view('user.admin.admin.table', compact('admins'))->render(),
+                ]);
+            }
+
             return view('user.admin.admin.list')->with(compact('admins'));
         } else {
             abort(403, 'You do not have permission to access this page.');

@@ -1197,6 +1197,22 @@
                      </li>
                  @endif
 
+                 @if (Gate::check('Manage Admin List'))
+
+                 <li class="sidebar-item">
+                         <a class="sidebar-link {{ Request::is('user/detail*') ? 'active' : '' }}"
+                             href="{{ route('user.admin.index') }}" aria-expanded="false">
+                             <span>
+                                 <img src="{{ asset('user_assets/images/lion-roring-icon/lion-roring-icon/admin.png') }}"
+                                     alt="Admin">
+                             </span>
+                             <span class="hide-menu">{{ Helper::getMenuName('admin', 'Super Admin') }}</span>
+                         </a>
+                     </li>
+
+
+                 @endif
+
 
                  {{-- @if (Gate::check('Manage Help'))
                     <li class="sidebar-item">
