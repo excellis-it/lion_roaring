@@ -54,7 +54,7 @@
                                     <div class="form-group-div">
                                         <div class="form-group">
                                             <label for="floatingInputValue">Description*</label>
-                                            <textarea name="description[]" id="content_{{ $key }}" cols="30" rows="10" required
+                                            <textarea name="description[]" id="content_{{ $key }}" cols="30" rows="10"
                                                 placeholder="Description" class="form-control description">{{ $item->description }}</textarea>
                                             <span class="text-danger"
                                                 id="job_opportunity_description_{{ $key }}"></span>
@@ -80,7 +80,7 @@
                                 <div class="form-group-div">
                                     <div class="form-group">
                                         <label for="floatingInputValue">Image*</label>
-                                        <input type="file" class="form-control" id="floatingInputValue" required
+                                        <input type="file" class="form-control" id="floatingInputValue"
                                             accept="image/*" name="image[]" value="" placeholder="Title">
                                         <input type="hidden" name="image_id[]" value="">
                                     </div>
@@ -90,7 +90,7 @@
                                 <div class="form-group-div">
                                     <div class="form-group">
                                         <label for="floatingInputValue">Description*</label>
-                                        <textarea name="description[]" id="card_description_0" cols="30" rows="10" placeholder="Description" required
+                                        <textarea name="description[]" id="card_description_0" cols="30" rows="10" placeholder="Description"
                                             class="form-control description"></textarea>
                                         <span class="text-danger" id="job_opportunity_description_0"></span>
                                     </div>

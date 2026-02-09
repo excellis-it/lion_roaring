@@ -362,6 +362,7 @@
                     <div class="col-md-12">
                         <div class="w-100 text-end">
                             <button type="submit" class="print_btn">Create</button>
+                            <a href="{{ route('user.membership.index') }}" class="print_btn">Cancel</a>
                         </div>
                     </div>
                 </div>
