@@ -1203,8 +1203,8 @@
                          <a class="sidebar-link {{ Request::is('user/detail*') ? 'active' : '' }}"
                              href="{{ route('user.admin.index') }}" aria-expanded="false">
                              <span>
-                                 <img src="{{ asset('user_assets/images/lion-roring-icon/lion-roring-icon/admin.png') }}"
-                                     alt="Admin">
+                                 <img src="{{ asset('user_assets/images/lion-roring-icon/lion-roring-icon/super-admin.png') }}"
+                                     alt="">
                              </span>
                              <span class="hide-menu">{{ Helper::getMenuName('admin', 'Super Admin') }}</span>
                          </a>

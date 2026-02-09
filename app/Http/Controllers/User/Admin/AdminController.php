@@ -6,7 +6,10 @@ use App\Http\Controllers\Controller;
 use App\Models\TeamMember;
 use Illuminate\Http\Request;
 use App\Models\User;
+use App\Models\UserType;
 use Illuminate\Support\Facades\Log;
+use Spatie\Permission\Models\Permission;
+use Spatie\Permission\Models\Role;
 
 class AdminController extends Controller
 {
@@ -14,7 +17,8 @@ class AdminController extends Controller
     public function index(Request $request)
     {
         if (auth()->user()->can('Manage Admin List')) {
-            $query = User::where('user_type_id', 1)->where('id', '!=', auth()->user()->id);
+            $user_type = UserType::where('name', 'SUPER ADMIN')->first();
+            $query = User::where('user_type_id', $user_type->id)->where('id', '!=', auth()->user()->id);
 
             if ($request->has('search') && !empty($request->search)) {
                 $search = $request->search;
@@ -27,7 +31,7 @@ class AdminController extends Controller
                 });
             }
 
-            $admins = $query->get();
+            $admins = $query->orderBy('id', 'desc')->get();
 
             if ($request->ajax()) {
                 return response()->json([
@@ -65,6 +69,7 @@ class AdminController extends Controller
             } else {
                 $uniqueNumber = rand(1000, 9999);
                 $lr_email = strtolower(trim($request->first_name)) . strtolower(trim($request->middle_name)) . strtolower(trim($request->last_name)) . $uniqueNumber . '@lionroaring.us';
+                $user_type = UserType::where('name', 'SUPER ADMIN')->first();
 
                 $admin = new User();
                 $admin->first_name = $request->first_name;
@@ -77,8 +82,36 @@ class AdminController extends Controller
                 $admin->phone = $request->country_code ? '+' . $request->country_code . ' ' . $request->phone : $request->phone;
                 $admin->status = true;
                 $admin->is_accept = 1;
+                $admin->user_type = 'Global';
+                $admin->user_type_id = $user_type->id;
                 $admin->save();
-                $admin->assignRole('SUPER ADMIN');
+                //    create a role with
+
+                // Create a unique slug for the role name
+                $slug = \Illuminate\Support\Str::slug($request->user_name);
+
+                // Ensure slug is unique in roles table
+                $originalSlug = $slug;
+                $counter = 1;
+                while (Role::where('name', $slug)->exists()) {
+                    $slug = $originalSlug . '-' . $counter;
+                    $counter++;
+                }
+
+                // Create the new role
+                $newRole = Role::create([
+                    'name' => $slug,
+                    'type' => 1,
+                    'is_ecclesia' => 0,
+                    'guard_name' => 'web'
+                ]);
+
+                $permissions = Permission::all();
+                $newRole->syncPermissions($permissions);
+
+                $admin->assignRole($newRole);
+
+
                 session()->flash('message', 'Admin account has been successfully created.');
                 return response()->json(['message' => 'Admin account has been successfully created.', 'status' => 'success']);
             }
@@ -128,6 +161,7 @@ class AdminController extends Controller
         $admin->user_name = $request->edit_user_name;
         $admin->phone = $request->edit_country_code ? '+' . $request->edit_country_code . ' ' . $request->edit_phone : $request->edit_phone;
         $admin->is_accept = 1;
+        $admin->user_type = 'Global';
         $admin->save();
         session()->flash('message', 'Admin account has been successfully updated.');
         return response()->json(['message' => 'Admin account has been successfully updated.', 'status' => 'success']);

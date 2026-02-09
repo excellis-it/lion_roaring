@@ -9,8 +9,9 @@
         }
 
         .eye-btn-1 {
-            top: 39px;
-            right: 24px;
+            top: 33px;
+            right: 17px;
+            font-size: 18px;
         }
     </style>
 @endpush
@@ -83,21 +84,21 @@
                         </div>
                         <div class="row">
                             <div class="col-md-6">
-                                <div class="form-group">
+                                <div class="form-group position-relative" >
                                     <label>Password<span class="text-danger">*</span></label>
                                     <input type="password" class="form-control" name="password" id="password">
                                     <span class="eye-btn-1" id="eye-button-1">
-                                        <i class="ph ph-eye-slash" aria-hidden="true" id="togglePassword"></i>
+                                        <i class="fa fa-eye-slash" aria-hidden="true" id="togglePassword"></i>
                                     </span>
                                 </div>
                             </div>
                             <div class="col-md-6">
-                                <div class="form-group">
+                                <div class="form-group position-relative">
                                     <label>Confirm Password<span class="text-danger">*</span></label>
                                     <input type="password" class="form-control" name="confirm_password"
                                         id="confirm_password">
                                     <span class="eye-btn-1" id="eye-button-2">
-                                        <i class="ph ph-eye-slash" aria-hidden="true" id="togglePassword"></i>
+                                        <i class="fa fa-eye-slash" aria-hidden="true" id="togglePassword"></i>
                                     </span>
                                 </div>
                             </div>
@@ -201,12 +202,12 @@
             // Toggle password visibility
             $('#eye-button-1').click(function() {
                 $('#password').attr('type', $('#password').is(':password') ? 'text' : 'password');
-                $(this).find('i').toggleClass('ph-eye-slash ph-eye');
+                $(this).find('i').toggleClass('fa-eye-slash fa-eye');
             });
             $('#eye-button-2').click(function() {
                 $('#confirm_password').attr('type', $('#confirm_password').is(':password') ? 'text' :
                     'password');
-                $(this).find('i').toggleClass('ph-eye-slash ph-eye');
+                $(this).find('i').toggleClass('fa-eye-slash fa-eye');
             });
 
             // Close modals

@@ -538,7 +538,7 @@ class PartnerController extends Controller
         // Create the new role
         $newRole = Role::create([
             'name' => $slug,
-            'type' => $the_role->type ?? 2,
+            'type' => 2,
             'is_ecclesia' => $the_role->is_ecclesia ?? 0,
             'guard_name' => 'web'
         ]);
