@@ -324,14 +324,16 @@
                                                             class="form-control" value="{{ $variation->sku }}">
                                                     </div>
                                                     <div class="col-xxl-1 col-lg-1 col-md-6">
-                                                        <label class="small fw-semibold">Price <span
+                                                        <label
+                                                            class="small fw-semibold">{{ $product->is_market_priced == 1 ? 'Market Price' : 'Price' }}<span
                                                                 class="text-danger">*</span></label>
                                                         <input type="number" step="0.01"
                                                             name="variation_products[{{ $index }}][price]"
                                                             class="form-control" value="{{ $variation->price }}"
-                                                            {{ $product->is_free == 1 ? 'readonly' : '' }}>
+                                                            {{ $product->is_free == 1 || $product->is_market_priced == 1 ? 'readonly' : '' }}>
                                                     </div>
-                                                    <div class="col-xxl-2 col-lg-2 col-md-6">
+                                                    <div class="col-xxl-2 col-lg-2 col-md-6"
+                                                        {{ $product->is_market_priced == 1 ? 'hidden' : '' }}>
                                                         <label class="small fw-semibold">Sale Price (If Any)</label>
                                                         <input type="number" step="0.01"
                                                             name="variation_products[{{ $index }}][sale_price]"

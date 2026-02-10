@@ -45,7 +45,7 @@
                                             <th align="left">Item Description</th>
                                             <th align="center">Color</th>
                                             <th align="center">Size</th>
-                                            <th align="center">No. Of Items</th>
+                                            <th align="center">No. Of Quantity</th>
                                             <th align="right">Unit Price</th>
                                             <th align="right">Net Price</th>
                                         </tr>
