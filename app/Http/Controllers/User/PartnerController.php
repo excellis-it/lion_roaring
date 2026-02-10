@@ -799,7 +799,11 @@ class PartnerController extends Controller
             $data->city = $request->city;
             $data->zip = $request->zip;
             $data->address2 = $request->address2;
-            $data->ecclesia_id = $request->ecclesia_id;
+            if ($is_ecclesia_admin == 1) {
+                $data->ecclesia_id = null;
+            } else {
+                 $data->ecclesia_id = $request->ecclesia_id;
+            }
             $data->is_ecclesia_admin = $is_ecclesia_admin;
             $data->phone = $request->country_code ? '+' . $request->country_code . ' ' . $request->phone : $request->phone;
             $data->phone_country_code_name = $request->phone_country_code_name;
