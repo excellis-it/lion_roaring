@@ -438,6 +438,14 @@ class ProductController extends Controller
 
             $warehouseProductId = $request->warehouse_product_id;
             $warehouseProduct = WarehouseProduct::find($warehouseProductId);
+
+            if (!$warehouseProduct || $warehouseProduct->quantity <= 0) {
+                return response()->json([
+                    'status' => false,
+                    'message' => 'Product is currently out of stock in this warehouse'
+                ]);
+            }
+
             $wareHouse = Warehouse::find($warehouseProduct->warehouse_id);
 
             $wareHouseProductPrice = $warehouseProduct->price ?? 0;
@@ -460,6 +468,14 @@ class ProductController extends Controller
             if ($existingCart) {
                 // Update quantity instead of creating new entry
                 $newTotalQty = $existingCart->quantity + $request->quantity;
+
+                // Check against available stock
+                if ($newTotalQty > $warehouseProduct->quantity) {
+                    return response()->json([
+                        'status' => false,
+                        'message' => "Only {$warehouseProduct->quantity} items available in stock in this warehouse"
+                    ]);
+                }
 
                 // Check against max order quantity (total cart quantity)
                 if ($maxOrderQty && $maxOrderQty > 0) {
@@ -505,6 +521,14 @@ class ProductController extends Controller
             }
 
             // return $sizeId;
+
+            // Check against available stock for new item
+            if ($request->quantity > $warehouseProduct->quantity) {
+                return response()->json([
+                    'status' => false,
+                    'message' => "Only {$warehouseProduct->quantity} items available in stock in this warehouse"
+                ]);
+            }
 
             $cart = new EstoreCart();
             $cart->user_id = auth()->id();
@@ -622,6 +646,15 @@ class ProductController extends Controller
                         'message' => "Maximum order quantity is {$maxOrderQty} for your cart"
                     ]);
                 }
+            }
+
+            // Check against available stock
+            $warehouseProduct = WarehouseProduct::find($cart->warehouse_product_id);
+            if ($warehouseProduct && $request->quantity > $warehouseProduct->quantity) {
+                return response()->json([
+                    'status' => false,
+                    'message' => "Only {$warehouseProduct->quantity} items available in stock in this warehouse"
+                ]);
             }
 
             $cart->quantity = $request->quantity;
