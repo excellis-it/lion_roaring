@@ -84,6 +84,7 @@ class CategoryController extends Controller
             'slug' => 'required|string|max:255|unique:categories',
             'image' => 'required|image|mimes:jpeg,png,jpg,gif,svg,webp',
             'background_image' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg,webp',
+            'size_measurements_image' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg,webp',
             'meta_title' => 'nullable|string|max:255',
             'meta_description' => 'nullable|string|max:255',
             'status' => 'required|boolean',
@@ -103,6 +104,10 @@ class CategoryController extends Controller
 
         if ($request->hasFile('background_image')) {
             $category->background_image = $this->imageUpload($request->file('background_image'), 'category', true); // compressed
+        }
+
+        if ($request->hasFile('size_measurements_image')) {
+            $category->size_measurements_image = $this->imageUpload($request->file('size_measurements_image'), 'category', true);
         }
 
         $category->save();
@@ -156,6 +161,7 @@ class CategoryController extends Controller
                 'slug' => 'required|string|max:255|unique:categories,slug,' . $category->id,
                 'image' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg,webp',
                 'background_image' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg,webp',
+                'size_measurements_image' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg,webp',
                 'meta_title' => 'nullable|string|max:255',
                 'meta_description' => 'nullable|string|max:255',
                 'status' => 'required|boolean',
@@ -176,6 +182,10 @@ class CategoryController extends Controller
 
             if ($request->hasFile('background_image')) {
                 $category->background_image = $this->imageUpload($request->file('background_image'), 'category', true); // compressed
+            }
+
+            if ($request->hasFile('size_measurements_image')) {
+                $category->size_measurements_image = $this->imageUpload($request->file('size_measurements_image'), 'category', true);
             }
 
             $category->save();
