@@ -203,17 +203,35 @@
                                             @endif
                                         </div>
                                     </div>
+                                    @php
+                                        $existing_id = $partner->lion_roaring_id;
+                                        $current_prefix = $generated_id_part;
+                                        $current_suffix = '';
+
+                                        if (strlen($existing_id) >= 14 && substr($existing_id, 0, 2) === 'LR') {
+                                            $current_prefix = substr($existing_id, 0, 14);
+                                            $current_suffix = substr($existing_id, 14);
+                                        } else {
+                                            $current_suffix = $existing_id;
+                                        }
+                                    @endphp
                                     <div class="col-md-6 mb-2">
                                         <div class="box_label">
                                             <label>Lion Roaring ID *</label>
-                                            <input type="text" class="form-control" name="lion_roaring_id"
-                                                value="{{ old('lion_roaring_id', $partner->lion_roaring_id) }}"
-                                                placeholder="">
-                                            @if ($errors->has('lion_roaring_id'))
+                                            <div class="input-group">
+                                                <span
+                                                    class="input-group-text">{{ old('generated_id_part', $current_prefix) }}</span>
+                                                <input type="text" class="form-control" name="lion_roaring_id_suffix"
+                                                    value="{{ old('lion_roaring_id_suffix', $current_suffix) }}"
+                                                    placeholder="Enter last 4 digits" maxlength="4">
+                                            </div>
+                                            @if ($errors->has('lion_roaring_id_suffix'))
                                                 <div class="error" style="color:red !important;">
-                                                    {{ $errors->first('lion_roaring_id') }}
+                                                    {{ $errors->first('lion_roaring_id_suffix') }}
                                                 </div>
                                             @endif
+                                            <input type="hidden" name="generated_id_part"
+                                                value="{{ old('generated_id_part', $current_prefix) }}">
                                         </div>
                                     </div>
                                     <div class="col-md-6 mb-2">

@@ -206,13 +206,19 @@
                                     <div class="col-md-6 mb-2">
                                         <div class="box_label">
                                             <label>Lion Roaring ID *</label>
-                                            <input type="text" class="form-control" name="lion_roaring_id"
-                                                value="{{ old('lion_roaring_id') }}" placeholder="">
-                                            @if ($errors->has('lion_roaring_id'))
+                                            <div class="input-group">
+                                                <span class="input-group-text"
+                                                    id="basic-addon1">{{ $generated_id_part }}</span>
+                                                <input type="text" class="form-control" name="lion_roaring_id_suffix"
+                                                    value="{{ old('lion_roaring_id_suffix') }}"
+                                                    placeholder="Enter last 4 digits" maxlength="4">
+                                            </div>
+                                            @if ($errors->has('lion_roaring_id_suffix'))
                                                 <div class="error" style="color:red !important;">
-                                                    {{ $errors->first('lion_roaring_id') }}
+                                                    {{ $errors->first('lion_roaring_id_suffix') }}
                                                 </div>
                                             @endif
+                                            <input type="hidden" name="generated_id_part" value="{{ $generated_id_part }}">
                                         </div>
                                     </div>
                                     <div class="col-md-6 mb-2">
@@ -281,7 +287,8 @@
                                         <div class="box_label position-relative">
                                             <label>Confirm Password *</label>
                                             <input type="password" class="form-control" name="confirm_password"
-                                                id="confirm_password" value="{{ old('confirm_password') }}" placeholder="">
+                                                id="confirm_password" value="{{ old('confirm_password') }}"
+                                                placeholder="">
                                             <span class="eye-btn-1" id="eye-button-2">
                                                 <i class="fa fa-eye-slash" aria-hidden="true" id="togglePassword"></i>
                                             </span>

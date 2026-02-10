@@ -151,17 +151,35 @@
                                             @endif
                                         </div>
                                     </div>
+                                    @php
+                                        $existing_id = Auth::user()->lion_roaring_id;
+                                        $current_prefix = $generated_id_part;
+                                        $current_suffix = '';
+
+                                        if (strlen($existing_id) >= 14 && substr($existing_id, 0, 2) === 'LR') {
+                                            $current_prefix = substr($existing_id, 0, 14);
+                                            $current_suffix = substr($existing_id, 14);
+                                        } else {
+                                            $current_suffix = $existing_id;
+                                        }
+                                    @endphp
                                     <div class="col-md-6 mb-2">
                                         <div class="box_label">
                                             <label>Lion Roaring ID*</label>
-                                            <input type="text" class="form-control" id="lion_roaring_id"
-                                                name="lion_roaring_id" placeholder="Lion Roaring ID"
-                                                value="{{ Auth::user()->lion_roaring_id }}">
-                                            @if ($errors->has('lion_roaring_id'))
-                                                <div class="error" style="color:red;">
-                                                    {{ $errors->first('lion_roaring_id') }}
+                                            <div class="input-group">
+                                                <span
+                                                    class="input-group-text">{{ old('generated_id_part', $current_prefix) }}</span>
+                                                <input type="text" class="form-control" name="lion_roaring_id_suffix"
+                                                    value="{{ old('lion_roaring_id_suffix', $current_suffix) }}"
+                                                    placeholder="Enter last 4 digits" maxlength="4">
+                                            </div>
+                                            @if ($errors->has('lion_roaring_id_suffix'))
+                                                <div class="error" style="color:red !important;">
+                                                    {{ $errors->first('lion_roaring_id_suffix') }}
                                                 </div>
                                             @endif
+                                            <input type="hidden" name="generated_id_part"
+                                                value="{{ old('generated_id_part', $current_prefix) }}">
                                         </div>
                                     </div>
                                     <div class="col-md-6 mb-2">
@@ -175,6 +193,13 @@
                                             @endif
                                         </div>
                                     </div>
+                                    <div class="col-md-6 mb-2">
+                                        <div class="box_label">
+                                            <label>Member since</label>
+                                            <input type="text" class="form-control"
+                                                value="{{ Auth::user()->created_at->format('d/m/Y') }}" readonly>
+                                        </div>
+                                    </div>
                                     {{-- phone number --}}
                                     <div class="col-md-6 mb-2">
                                         <div class="box_label">
@@ -182,7 +207,8 @@
                                             <input type="tel" class="form-control" id="mobile_code" name="phone_number"
                                                 placeholder="Enter Phone Number" value="{{ Auth::user()->phone }}">
                                             @if ($errors->has('phone_number'))
-                                                <div class="error" style="color:red;">{{ $errors->first('phone_number') }}
+                                                <div class="error" style="color:red;">
+                                                    {{ $errors->first('phone_number') }}
                                                 </div>
                                             @endif
                                         </div>

@@ -428,7 +428,13 @@ class PartnerController extends Controller
             $allPermsArray = $data['allPermsArray'];
             $categorizedPermissions = $data['categorizedPermissions'];
 
-            return view('user.partner.create')->with(compact('roles', 'allPermsArray', 'categorizedPermissions', 'eclessias', 'countries', 'allPermissions', 'membershipTiers', 'allowedUserTypes'));
+            // Calculate auto-generated part for Lion Roaring ID: LR + 0000 (sequence) + MMDDYYYY
+            $todayCount = User::withTrashed()->whereDate('created_at', now()->toDateString())->count();
+            $sequence = str_pad($todayCount + 1, 4, '0', STR_PAD_LEFT);
+            $datePart = now()->format('mdY');
+            $generated_id_part = 'LR' . $sequence . $datePart;
+
+            return view('user.partner.create')->with(compact('roles', 'allPermsArray', 'categorizedPermissions', 'eclessias', 'countries', 'allPermissions', 'membershipTiers', 'allowedUserTypes', 'generated_id_part'));
         } else {
             abort(403, 'You do not have permission to access this page.');
         }
@@ -445,7 +451,8 @@ class PartnerController extends Controller
 
         $rules = [
             'user_name' => 'required|unique:users',
-            'lion_roaring_id' => 'required|string|max:255|unique:users,lion_roaring_id',
+            'lion_roaring_id_suffix' => 'required|digits:4',
+            'generated_id_part' => 'required|string',
             'roar_id' => 'required|string|max:255',
             'ecclesia_id' => 'nullable|exists:ecclesias,id',
             'role' => 'required',
@@ -474,6 +481,11 @@ class PartnerController extends Controller
         $request->validate($rules, [
             'password.regex' => 'The password must be at least 8 characters long and include at least one special character from @$%&.',
         ]);
+
+        $full_lion_roaring_id = $request->generated_id_part . $request->lion_roaring_id_suffix;
+        if (User::where('lion_roaring_id', $full_lion_roaring_id)->exists()) {
+            return redirect()->back()->withErrors(['lion_roaring_id_suffix' => 'This Lion Roaring ID already exists.'])->withInput();
+        }
 
         $auth_user = Auth::user();
         if (!$auth_user->hasNewRole('SUPER ADMIN')) {
@@ -546,7 +558,7 @@ class PartnerController extends Controller
         $data = new User();
         $data->created_id = Auth::user()->id;
         $data->user_name = $request->user_name;
-        $data->lion_roaring_id = $request->lion_roaring_id;
+        $data->lion_roaring_id = $full_lion_roaring_id;
         $data->roar_id = $request->roar_id;
         $data->first_name = $request->first_name;
         $data->last_name = $request->last_name;
@@ -680,7 +692,13 @@ class PartnerController extends Controller
             $allPermsArray = $data['allPermsArray'];
             $categorizedPermissions = $data['categorizedPermissions'];
 
-            return view('user.partner.edit', compact('partner', 'allPermsArray', 'categorizedPermissions', 'roles', 'eclessias', 'countries', 'allPermissions', 'currentPermissions', 'membershipTiers', 'currentTierId', 'allowedUserTypes'));
+            // Calculate auto-generated part for Lion Roaring ID (if they want to regenerate or for display)
+            $todayCount = User::whereDate('created_at', now()->toDateString())->count();
+            $sequence = str_pad($todayCount + 1, 4, '0', STR_PAD_LEFT);
+            $datePart = now()->format('mdY');
+            $generated_id_part = 'LR' . $sequence . $datePart;
+
+            return view('user.partner.edit', compact('partner', 'allPermsArray', 'categorizedPermissions', 'roles', 'eclessias', 'countries', 'allPermissions', 'currentPermissions', 'membershipTiers', 'currentTierId', 'allowedUserTypes', 'generated_id_part'));
         } else {
             abort(403, 'You do not have permission to access this page.');
         }
@@ -703,7 +721,8 @@ class PartnerController extends Controller
                 'first_name' => 'required',
                 'last_name' => 'required',
                 'middle_name' => 'nullable',
-                'lion_roaring_id' => 'required|string|max:255|unique:users,lion_roaring_id,' . $id,
+                'lion_roaring_id_suffix' => 'required|digits:4',
+                'generated_id_part' => 'required|string',
                 'roar_id' => 'required|string|max:255',
                 'email' => 'required|regex:/^([a-z0-9\+_\-]+)(\.[a-z0-9\+_\-]+)*@([a-z0-9\-]+\.)+[a-z]{2,6}$/ix|unique:users,email,' . $id,
                 'user_type' => 'required',
@@ -728,6 +747,11 @@ class PartnerController extends Controller
             $request->validate($rules, [
                 'password.regex' => 'The password must be at least 8 characters long and include at least one special character from @$%&.',
             ]);
+
+            $full_lion_roaring_id = $request->generated_id_part . $request->lion_roaring_id_suffix;
+            if (User::where('lion_roaring_id', $full_lion_roaring_id)->where('id', '!=', $id)->exists()) {
+                return redirect()->back()->withErrors(['lion_roaring_id_suffix' => 'This Lion Roaring ID already exists.'])->withInput();
+            }
 
             $auth_user = Auth::user();
             if (!$auth_user->hasNewRole('SUPER ADMIN')) {
@@ -766,7 +790,7 @@ class PartnerController extends Controller
             $data->first_name = $request->first_name;
             $data->last_name = $request->last_name;
             $data->middle_name = $request->middle_name;
-            $data->lion_roaring_id = $request->lion_roaring_id;
+            $data->lion_roaring_id = $full_lion_roaring_id;
             $data->roar_id = $request->roar_id;
             $data->email = $request->email;
             $data->user_type = $request->user_type;
