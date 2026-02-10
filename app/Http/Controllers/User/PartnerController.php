@@ -120,12 +120,12 @@ class PartnerController extends Controller
                     });
             }
 
-            // else {
-            //     $partners->where(function ($q) use ($user_ecclesia_id, $user) {
-            //         $q->where('users.ecclesia_id', $user_ecclesia_id)->whereNotNull('users.ecclesia_id')
-            //             ->orWhere('users.created_id', $user->id)->orWhere('users.id', auth()->id());
-            //     });
-            // }
+            else {
+                $partners->where(function ($q) use ($user_ecclesia_id, $user) {
+                    $q->where('users.ecclesia_id', $user_ecclesia_id)->whereNotNull('users.ecclesia_id')
+                        ->orWhere('users.created_id', $user->id)->orWhere('users.id', auth()->id());
+                });
+            }
             if (!$user->hasNewRole('SUPER ADMIN')) {
                 if ($user->user_type == 'Regional') {
                     $partners->where('users.country', $user->country)->where('users.user_type', 'Regional');
@@ -999,12 +999,12 @@ class PartnerController extends Controller
                     });
             }
 
-            // else {
-            //     $partners->where(function ($q) use ($user_ecclesia_id, $user) {
-            //         $q->where('users.ecclesia_id', $user_ecclesia_id)->whereNotNull('users.ecclesia_id')
-            //             ->orWhere('users.created_id', $user->id)->orWhere('users.id', auth()->id());
-            //     });
-            // }
+            else {
+                $partners->where(function ($q) use ($user_ecclesia_id, $user) {
+                    $q->where('users.ecclesia_id', $user_ecclesia_id)->whereNotNull('users.ecclesia_id')
+                        ->orWhere('users.created_id', $user->id)->orWhere('users.id', auth()->id());
+                });
+            }
 
             if (!$user->hasNewRole('SUPER ADMIN')) {
                 if ($user->user_type == 'Regional') {

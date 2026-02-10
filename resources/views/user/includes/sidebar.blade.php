@@ -68,7 +68,7 @@
                              <div class="count_chat_sidebar count_chat_sidebar_count_all" style="display: none;"></div>
                          </a>
                          {{-- collapse --}}
-                         <div class="collapse {{ Request::is('user/chats*') || Request::is('user/page/Team*') || Request::is('user/mail*') ? 'show' : '' }}"
+                         <div class="collapse {{ Request::is('user/chats*') || Request::is('user/page/Team*') || Request::is('user/team-chats*') || Request::is('user/mail*') ? 'show' : '' }}"
                              id="collapseExample">
                              <div class="menu_bb">
                                  @if (Gate::check('Manage Chat'))
