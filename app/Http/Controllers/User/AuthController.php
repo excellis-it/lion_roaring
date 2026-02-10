@@ -33,6 +33,7 @@ use Spatie\Permission\Models\Permission;
 use App\Models\UserType;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Log;
 
 class AuthController extends Controller
 {
@@ -115,6 +116,7 @@ class AuthController extends Controller
         $eclessias = Ecclesia::orderBy('id', 'asc')->get();
         $countries = Country::all();
         $tiers = MembershipTier::with('benefits')->get();
+
         return view('user.auth.register')->with(compact('eclessias', 'countries', 'tiers'));
     }
 
@@ -122,7 +124,7 @@ class AuthController extends Controller
     {
         $validator = Validator::make($request->all(), [
             'user_name' => 'required|string|max:255|unique:users',
-            'lion_roaring_id' => 'required|string|max:255|unique:users,lion_roaring_id',
+            'lion_roaring_id' => 'required|digits:4',
             'roar_id' => 'required|string|max:255',
             'email' => 'required|string|email|max:255|unique:users',
             'ecclesia_id' => 'nullable',
@@ -164,6 +166,7 @@ class AuthController extends Controller
             }
 
             $tier = MembershipTier::find($request->tier_id);
+
             if (!$tier) {
                 return;
             }
@@ -183,8 +186,8 @@ class AuthController extends Controller
             }
         });
 
-
         if ($validator->fails()) {
+            Log::error('' . $validator->errors()->first());
             return redirect()->back()
                 ->withErrors($validator)
                 ->withInput();
@@ -240,9 +243,23 @@ class AuthController extends Controller
         $signupValidation = SignupRule::validateSignupData($request->all());
 
         // dd($signupValidation);
+        // Generate Lion Roaring ID: LR + 4-digit sequence + MMDDYYYY + user input (last 4 digits)
+        $todayCount = User::withTrashed()->whereDate('created_at', now()->toDateString())->count();
+        $computerGenerated = str_pad($todayCount + 1, 4, '0', STR_PAD_LEFT);
+        $currentDate = now()->format('mdY'); // MMDDYYYY
+        $userInputDigits = str_pad($request->lion_roaring_id, 4, '0', STR_PAD_LEFT);
+        $fullLionRoaringId = 'LR' . $computerGenerated . $currentDate . $userInputDigits;
+
+        // Ensure uniqueness (extremely unlikely to fail with sequence, but safer)
+        while (User::where('lion_roaring_id', $fullLionRoaringId)->exists()) {
+            $todayCount++;
+            $computerGenerated = str_pad($todayCount + 1, 4, '0', STR_PAD_LEFT);
+            $fullLionRoaringId = 'LR' . $computerGenerated . $currentDate . $userInputDigits;
+        }
+
         $user = new User();
         $user->user_name = $request->user_name;
-        $user->lion_roaring_id = $request->lion_roaring_id;
+        $user->lion_roaring_id = $fullLionRoaringId;
         $user->roar_id = $request->roar_id;
         $user->ecclesia_id = $request->ecclesia_id;
         $user->email = $request->email;
@@ -417,7 +434,7 @@ class AuthController extends Controller
     {
         $validator = Validator::make($request->all(), [
             'user_name' => 'required|string|max:255|unique:users',
-            'lion_roaring_id' => 'required|string|max:255|unique:users,lion_roaring_id',
+            'lion_roaring_id' => 'required|digits:4',
             'roar_id' => 'required|string|max:255',
             'email' => 'required|string|email|max:255|unique:users',
             'ecclesia_id' => 'nullable',
