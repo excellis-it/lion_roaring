@@ -32,6 +32,8 @@ class Product extends BaseModel
         'price',
         'sale_price',
         'quantity',
+        'market_grams',
+        'market_unit',
     ];
 
     protected $appends = [

@@ -210,7 +210,14 @@ class MarketRateService
                 continue;
             }
 
-            $newPrice = (float) $ratePerGram * (float) $product->market_grams;
+            // Determine quantity in grams depending on unit (default is grams 'g')
+            $unit = strtolower($product->market_unit ?? 'g');
+            $gramsQty = (float) $product->market_grams;
+            if ($unit === 'oz') {
+                $gramsQty = $gramsQty * self::GRAMS_PER_TROY_OUNCE; // convert ounces to grams
+            }
+
+            $newPrice = (float) $ratePerGram * $gramsQty;
 
             $product->price = $newPrice;
             $product->sale_price = null;

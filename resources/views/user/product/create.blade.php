@@ -479,13 +479,31 @@
 
                                             <div class="col-md-3 mb-2 market-price-fields" style="display:none;">
                                                 <div class="box_label">
-                                                    <label for="market_grams"> Grams <span
+                                                    <label for="market_grams"> Quantity <span
                                                             class="text-danger">*</span></label>
                                                     <input type="number" step="any" name="market_grams"
                                                         id="market_grams" class="form-control"
                                                         value="{{ old('market_grams') }}" min="0.01">
                                                     @if ($errors->has('market_grams'))
                                                         <span class="error">{{ $errors->first('market_grams') }}</span>
+                                                    @endif
+                                                </div>
+                                            </div>
+
+                                            <div class="col-md-2 mb-2 market-price-fields" style="display:none;">
+                                                <div class="box_label">
+                                                    <label for="market_unit"> Unit <span
+                                                            class="text-danger">*</span></label>
+                                                    <select name="market_unit" id="market_unit" class="form-control">
+                                                        <option value="g"
+                                                            {{ old('market_unit') == 'g' ? 'selected' : '' }}>Gram (g)
+                                                        </option>
+                                                        <option value="oz"
+                                                            {{ old('market_unit') == 'oz' ? 'selected' : '' }}>Ounce (oz)
+                                                        </option>
+                                                    </select>
+                                                    @if ($errors->has('market_unit'))
+                                                        <span class="error">{{ $errors->first('market_unit') }}</span>
                                                     @endif
                                                 </div>
                                             </div>
