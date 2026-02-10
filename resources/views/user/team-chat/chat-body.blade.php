@@ -231,6 +231,11 @@
                 </div>
             </div>
 
+            <!-- Pasted/Selected Files Preview Container -->
+            <div id="file-name-display"
+                style="display: none; padding: 10px; background: #f8f9fa; border-radius: 8px; margin-bottom: 10px;">
+            </div>
+
             <form id="TeamMessageForm" enctype="multipart/form-data">
                 @csrf
                 <div class="file-upload">
@@ -242,6 +247,8 @@
                                 clip-rule="evenodd" style="color:black"></path>
                         </svg>
                     </span>
+                    <input type="file" id="team-file2" style="display: none;" multiple
+                        accept="image/*,video/*,application/pdf,.doc,.docx,.xls,.xlsx,.ppt,.pptx,.txt">
                 </div>
 
                 <textarea type="text" id="TeamMessageInput" placeholder="Type a message..." rows="1" class="form-control"></textarea>

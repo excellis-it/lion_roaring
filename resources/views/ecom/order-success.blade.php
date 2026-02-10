@@ -36,7 +36,11 @@
                             <p><strong>Order Status:</strong>
                                 <span class="badge bg-primary">{{ ucfirst($order->orderStatus->name ?? '-') }}</span>
                             </p>
-                            @if ($order->expected_delivery_date && !$order->is_pickup)
+                            @php
+                                $statusSlug = optional($order->orderStatus)->slug;
+                                $isFinalCancelled = in_array($statusSlug, ['cancelled', 'pickup_cancelled'], true);
+                            @endphp
+                            @if ($order->expected_delivery_date && !$order->is_pickup && !$isFinalCancelled)
                                 <p><strong>Expected Delivery Date:</strong>
                                     {{ \Carbon\Carbon::parse($order->expected_delivery_date)->format('M d, Y') }}
                                 </p>

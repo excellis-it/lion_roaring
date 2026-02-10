@@ -791,7 +791,8 @@ class CheckoutController extends Controller
             // Update order status
             $order->update([
                 'status' => $cancelledStatusId,
-                'notes' => $request->cancellation_reason ?? null
+                'notes' => $request->cancellation_reason ?? null,
+                'expected_delivery_date' => null,
             ]);
 
             // Create refund record if payment exists
@@ -854,6 +855,52 @@ class CheckoutController extends Controller
                             'new_quantity' => $wareHouseProductVariation->warehouse_quantity
                         ]);
                     }
+                }
+            }
+
+            // Send email if template exists for this status
+            $template = OrderEmailTemplate::where('order_status_id', $cancelledStatusId)
+                ->where('is_active', 1)
+                ->where('is_pickup', $order->is_pickup ? 1 : 0)
+                ->first();
+
+            if (!$template) {
+                $template = OrderEmailTemplate::where('order_status_id', $cancelledStatusId)
+                    ->where('is_active', 1)
+                    ->first();
+            }
+
+            if ($template) {
+                try {
+                    $orderList = view('user.emails.order_list_table', ['order' => $order])->render();
+                    $orderDetailsUrl = route('e-store.order-details', $order->id);
+                    $orderDetailsUrlButton = '<a href="' . $orderDetailsUrl . '" style="
+                        display: inline-block;
+                        padding: 10px 20px;
+                        font-size: 16px;
+                        color: #ffffff;
+                        background-color: #643271;
+                        text-decoration: none;
+                        border-radius: 5px;
+                    ">View Order Details</a>';
+
+                    $body = str_replace(
+                        ['{customer_name}', '{customer_email}', '{order_list}', '{order_id}', '{arriving_date}', '{total_order_value}', '{order_details_url_button}'],
+                        [
+                            ($order->first_name ?? '') . ' ' . ($order->last_name ?? ''),
+                            $order->email ?? '',
+                            $orderList,
+                            $order->order_number ?? '',
+                            $order->expected_delivery_date ? Carbon::parse($order->expected_delivery_date)->format('M d, Y') : '',
+                            number_format($order->total_amount ?? 0, 2),
+                            $orderDetailsUrlButton
+                        ],
+                        $template->body
+                    );
+
+                    Mail::to($order->email)->send(new OrderStatusUpdatedMail($order, $body));
+                } catch (\Throwable $th) {
+                    Log::error('Failed to send order cancellation status email (API): ' . $th->getMessage());
                 }
             }
 

@@ -141,6 +141,7 @@ use App\Http\Controllers\User\UserActivityController;
 use App\Http\Controllers\User\MembershipController as UserMembershipController;
 use App\Http\Controllers\User\RegisterAgreementPreviewController;
 use App\Http\Controllers\Frontend\MembershipController as FrontEndMembershipController;
+use App\Http\Controllers\User\Admin\AdminController as AdminAdminController;
 use App\Http\Controllers\User\RecycleBinController;
 
 /*
@@ -516,6 +517,16 @@ Route::prefix('user')->middleware(['user', 'preventBackHistory', 'userActivity',
         Route::post('/{table}/bulk-force-delete', [RecycleBinController::class, 'bulkForceDelete'])->name('user.recycle-bin.bulk-force-delete');
         Route::post('/{table}/restore-all', [RecycleBinController::class, 'restoreAll'])->name('user.recycle-bin.restore-all');
         Route::delete('/{table}/empty-bin', [RecycleBinController::class, 'emptyBin'])->name('user.recycle-bin.empty-bin');
+    });
+
+
+    Route::prefix('detail')->name('user.admin.')->group(function () {
+        Route::get('/', [AdminAdminController::class, 'index'])->name('index');
+        Route::get('/add', [AdminAdminController::class, 'add'])->name('add');
+        Route::post('/store', [AdminAdminController::class, 'store'])->name('store');
+        Route::post('/edit/{id}', [AdminAdminController::class, 'edit'])->name('edit');
+        Route::get('/delete/{id}', [AdminAdminController::class, 'delete'])->name('delete');
+        Route::post('/update', [AdminAdminController::class, 'update'])->name('admin.update');
     });
 
 
@@ -920,6 +931,8 @@ Route::prefix('user')->middleware(['user', 'preventBackHistory', 'userActivity',
     Route::get('/changePartnerStatus', [PartnerController::class, 'changePartnerStatus'])->name('partners.change-status');
     Route::get('/partner-fetch-data', [PartnerController::class, 'fetchData'])->name('partners.fetch-data');
     Route::get('/partner-reset-filters', [PartnerController::class, 'resetFilters'])->name('partners.reset-filters');
+    Route::get('/partner-export-report', [PartnerController::class, 'exportReport'])->name('partners.export-report');
+    Route::get('/partner-agreement-details', [PartnerController::class, 'getAgreementDetails'])->name('partners.agreement-details');
 
     // Mail
     Route::prefix('mail')->group(function () {

@@ -68,7 +68,7 @@
                              <div class="count_chat_sidebar count_chat_sidebar_count_all" style="display: none;"></div>
                          </a>
                          {{-- collapse --}}
-                         <div class="collapse {{ Request::is('user/chats*') || Request::is('user/page/Team*') || Request::is('user/mail*') ? 'show' : '' }}"
+                         <div class="collapse {{ Request::is('user/chats*') || Request::is('user/page/Team*') || Request::is('user/team-chats*') || Request::is('user/mail*') ? 'show' : '' }}"
                              id="collapseExample">
                              <div class="menu_bb">
                                  @if (Gate::check('Manage Chat'))
@@ -1195,6 +1195,22 @@
                              </div>
                          </div>
                      </li>
+                 @endif
+
+                 @if (Gate::check('Manage Admin List'))
+
+                 <li class="sidebar-item">
+                         <a class="sidebar-link {{ Request::is('user/detail*') ? 'active' : '' }}"
+                             href="{{ route('user.admin.index') }}" aria-expanded="false">
+                             <span>
+                                 <img src="{{ asset('user_assets/images/lion-roring-icon/lion-roring-icon/super-admin.png') }}"
+                                     alt="">
+                             </span>
+                             <span class="hide-menu">{{ Helper::getMenuName('admin', 'Super Admin') }}</span>
+                         </a>
+                     </li>
+
+
                  @endif
 
 

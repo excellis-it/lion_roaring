@@ -90,6 +90,8 @@ class AddSidebarMenuItems extends Seeder
             ['key' => 'membership_all_payments', 'default_name' => 'All Payments'],
             ['key' => 'membership_settings', 'default_name' => 'Settings'],
 
+            // admin
+            ['key' => 'admin', 'default_name' => 'Super Admin'],
 
         ];
 
@@ -105,6 +107,11 @@ class AddSidebarMenuItems extends Seeder
                     'name' => $menu['default_name'],
                     'type' => 'Panel Menu',
                     'created_at' => now(),
+                    'updated_at' => now(),
+                ]);
+            } else {
+                DB::table('menu_items')->where('key', $menu['key'])->update([
+                    'name' => $menu['default_name'],
                     'updated_at' => now(),
                 ]);
             }
