@@ -106,4 +106,22 @@ class SettingsController extends Controller
 
         return redirect()->route('user.admin.settings.edit')->with('message', 'Settings updated successfully');
     }
+
+    public function toggleStatus(Request $request)
+    {
+        if (!auth()->user()->can('Manage Site Settings')) {
+            return response()->json(['status' => false, 'message' => 'You do not have permission to perform this action.'], 403);
+        }
+
+        $settings = SiteSetting::first();
+        if (!$settings) {
+            return response()->json(['status' => false, 'message' => 'Settings not found.'], 404);
+        }
+
+        $settings->SITE_UPDATE = $request->status;
+        $settings->save();
+
+        $statusText = $settings->SITE_UPDATE == 1 ? 'Active' : 'Inactive';
+        return response()->json(['status' => true, 'message' => 'Site status updated to ' . $statusText]);
+    }
 }

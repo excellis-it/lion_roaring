@@ -22,6 +22,31 @@
 
         <ul class="navbar-nav flex-row ms-auto align-items-center justify-content-center">
             <li class="nav-item m-3">
+                <style>
+                    .blink {
+                        animation: blinker 1s linear infinite;
+                        color: #ffffff;
+                        background-color: #ff0000;
+                        padding: 3px 8px;
+                        border-radius: 4px;
+                        margin-right: 5px;
+                        font-weight: bold;
+                        font-size: 11px;
+                        text-transform: uppercase;
+                        display: inline-block;
+                        vertical-align: middle;
+                    }
+
+                    @keyframes blinker {
+                        50% {
+                            opacity: 0;
+                        }
+                    }
+                </style>
+                <span id="siteUpdateBlink" class="blink"
+                    style="{{ isset(Helper::getSettings()->SITE_UPDATE) && Helper::getSettings()->SITE_UPDATE == 1 ? '' : 'display: none;' }}">
+                    update is in progress
+                </span>
 
                 <a href="{{ route('e-learning') }}" class="btn btn-primary"> <img
                         src="{{ asset('user_assets/images/e-learning.png') }}" alt="e-Learning">
