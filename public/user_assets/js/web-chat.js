@@ -93,14 +93,19 @@ $(document).ready(function () {
     // Setup clipboard paste functionality for images
     function setupClipboardPaste() {
         const messageInput = document.querySelector("#MessageInput");
-        const emojiArea = document.querySelector(".emojionearea-editor");
 
-        // Listen to paste event on both the textarea and emoji area
-        [messageInput, emojiArea].forEach((element) => {
-            if (element) {
-                element.addEventListener("paste", handlePaste);
+        // Add paste listener to original textarea if it exists
+        if (messageInput) {
+            messageInput.addEventListener("paste", handlePaste);
+        }
+
+        // EmojiOneArea creates the editor after initialization, so we need to wait a bit
+        setTimeout(function() {
+            const emojiArea = document.querySelector(".emojionearea-editor");
+            if (emojiArea) {
+                emojiArea.addEventListener("paste", handlePaste);
             }
-        });
+        }, 500); // Wait 500ms for emoji area to be created
     }
 
     function handlePaste(e) {
@@ -129,11 +134,12 @@ $(document).ready(function () {
 
     function displayPastedFiles() {
         const $fileNameDisplay = $("#file-name-display");
-        let displayContent = "";
+
+        // Clear the display container first
+        $fileNameDisplay.empty();
 
         if (pastedFiles.length > 0) {
-            displayContent =
-                '<div style="display: flex; flex-wrap: wrap; gap: 10px;">';
+            let displayContent = '<div style="display: flex; flex-wrap: wrap; gap: 10px; align-items: center;">';
 
             pastedFiles.forEach((file, index) => {
                 const reader = new FileReader();
@@ -141,10 +147,10 @@ $(document).ready(function () {
                     const imagePreview = `
                         <div class="pasted-file-preview" data-index="${index}" style="position: relative; display: inline-block;">
                             <img src="${e.target.result}" alt="Pasted image"
-                                style="max-width: 100px; max-height: 100px; border: 1px solid #ddd; border-radius: 4px;" />
-                            <i class="fas fa-times remove-pasted-file" data-index="${index}"
-                                style="position: absolute; top: -5px; right: -5px; cursor: pointer; color: red;
-                                background: white; border-radius: 50%; padding: 2px 5px;"></i>
+                                style="max-width: 100px; max-height: 100px; border: 1px solid #ddd; border-radius: 8px; object-fit: cover;" />
+                            <i class="fas fa-times-circle remove-pasted-file" data-index="${index}"
+                                style="position: absolute; top: -8px; right: -8px; cursor: pointer; color: #dc3545;
+                                background: white; border-radius: 50%; font-size: 20px; box-shadow: 0 2px 4px rgba(0,0,0,0.2);"></i>
                         </div>
                     `;
                     $fileNameDisplay.append(imagePreview);
@@ -153,7 +159,7 @@ $(document).ready(function () {
             });
 
             displayContent += "</div>";
-            $fileNameDisplay.html(displayContent).show();
+            $fileNameDisplay.show();
         } else {
             $fileNameDisplay.hide();
         }

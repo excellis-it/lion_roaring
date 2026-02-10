@@ -80,11 +80,13 @@ class TeamChatController extends Controller
                 });
 
             if (!$isSuperAdmin) {
-                if ($user_type == 'Global') {
-                    $membersQuery->where('user_type', 'Global');
-                } else {
+                    if ($user_type == 'Global') {
+                    $membersQuery->where('user_type', 'Global')->whereHas('userRole', function ($query) {
+                        $query->where('name', '!=', 'SUPER ADMIN');
+                        });
+                    } else {
                     $membersQuery->where('user_type', 'Regional')->where('country', $country_name);
-                }
+                    }
             }
 
             $members = $membersQuery->get();
@@ -103,7 +105,7 @@ class TeamChatController extends Controller
             'description' => 'required|max:255',
             'members' => 'required|array|min:1', // Ensure members is an array with at least one member
             'members.*' => 'required|exists:users,id', // Ensure each member is a valid user
-            'group_image' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+            'group_image' => 'required|image|mimes:jpeg,png,jpg,gif,svg,webp|max:2048',
         ]);
 
         // Create the new team
@@ -403,11 +405,13 @@ class TeamChatController extends Controller
                 });
 
             if (!$isSuperAdmin) {
-                if ($user_type == 'Global') {
-                    $membersQuery->where('user_type', 'Global');
-                } else {
+                    if ($user_type == 'Global') {
+                    $membersQuery->where('user_type', 'Global')->whereHas('userRole', function ($query) {
+                        $query->where('name', '!=', 'SUPER ADMIN');
+                        });
+                    } else {
                     $membersQuery->where('user_type', 'Regional')->where('country', $country_name);
-                }
+                    }
             }
 
             $members = $membersQuery->get();

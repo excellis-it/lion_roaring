@@ -14,7 +14,9 @@
 
 
             <td>
+                @if (isset($partner->userRole) && $partner->userRole->is_ecclesia == 0)
                 {{ isset($partner->ecclesia) ? $partner->ecclesia->name . ' (' . $partner->ecclesia->countryName->name . ')' : 'NO NAME' }}
+                @endif
 
                 @if ($partner->is_ecclesia_admin == 1)
                     {{-- @dd($partner) --}}
@@ -68,6 +70,14 @@
                             </div>
                         </div>
                     </div>
+                @endif
+            </td>
+            <td class="text-center">
+                @if ($partner->userRegisterAgreement)
+                    <span class="badge bg-success view-agreement" data-user_id="{{ $partner->id }}"
+                        style="cursor: pointer;"><i class="ti ti-check"></i> Yes</span>
+                @else
+                    <span class="badge bg-danger"><i class="ti ti-x"></i> No</span>
                 @endif
             </td>
             <td>

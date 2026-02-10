@@ -2538,7 +2538,7 @@ section {
 }
 
 .emailRow__options input {
-    display: none;
+    /* display: none; */
 }
 
 .emailRow__options .material-symbols-outlined {

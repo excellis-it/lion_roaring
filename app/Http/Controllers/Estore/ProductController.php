@@ -438,6 +438,14 @@ class ProductController extends Controller
 
             $warehouseProductId = $request->warehouse_product_id;
             $warehouseProduct = WarehouseProduct::find($warehouseProductId);
+
+            if (!$warehouseProduct || $warehouseProduct->quantity <= 0) {
+                return response()->json([
+                    'status' => false,
+                    'message' => 'Product is currently out of stock in this warehouse'
+                ]);
+            }
+
             $wareHouse = Warehouse::find($warehouseProduct->warehouse_id);
 
             $wareHouseProductPrice = $warehouseProduct->price ?? 0;
@@ -460,6 +468,14 @@ class ProductController extends Controller
             if ($existingCart) {
                 // Update quantity instead of creating new entry
                 $newTotalQty = $existingCart->quantity + $request->quantity;
+
+                // Check against available stock
+                if ($newTotalQty > $warehouseProduct->quantity) {
+                    return response()->json([
+                        'status' => false,
+                        'message' => "Only {$warehouseProduct->quantity} items available in stock in this warehouse"
+                    ]);
+                }
 
                 // Check against max order quantity (total cart quantity)
                 if ($maxOrderQty && $maxOrderQty > 0) {
@@ -505,6 +521,14 @@ class ProductController extends Controller
             }
 
             // return $sizeId;
+
+            // Check against available stock for new item
+            if ($request->quantity > $warehouseProduct->quantity) {
+                return response()->json([
+                    'status' => false,
+                    'message' => "Only {$warehouseProduct->quantity} items available in stock in this warehouse"
+                ]);
+            }
 
             $cart = new EstoreCart();
             $cart->user_id = auth()->id();
@@ -622,6 +646,15 @@ class ProductController extends Controller
                         'message' => "Maximum order quantity is {$maxOrderQty} for your cart"
                     ]);
                 }
+            }
+
+            // Check against available stock
+            $warehouseProduct = WarehouseProduct::find($cart->warehouse_product_id);
+            if ($warehouseProduct && $request->quantity > $warehouseProduct->quantity) {
+                return response()->json([
+                    'status' => false,
+                    'message' => "Only {$warehouseProduct->quantity} items available in stock in this warehouse"
+                ]);
             }
 
             $cart->quantity = $request->quantity;
@@ -1782,6 +1815,7 @@ class ProductController extends Controller
             $order->update([
                 'status' => $cancelledStatusId,
                 'notes' => $request->cancellation_reason ?? null,
+                'expected_delivery_date' => null,
             ]);
 
             // Refund payment if applicable
@@ -1837,6 +1871,52 @@ class ProductController extends Controller
                         $wareHouseProductVariation->updated_at = now();
                         $wareHouseProductVariation->save();
                     }
+                }
+            }
+
+            // Send email if template exists for this status
+            $template = OrderEmailTemplate::where('order_status_id', $cancelledStatusId)
+                ->where('is_active', 1)
+                ->where('is_pickup', $order->is_pickup ? 1 : 0)
+                ->first();
+
+            if (!$template) {
+                $template = OrderEmailTemplate::where('order_status_id', $cancelledStatusId)
+                    ->where('is_active', 1)
+                    ->first();
+            }
+
+            if ($template) {
+                $orderList = view('user.emails.order_list_table', ['order' => $order])->render();
+                $orderDetailsUrl = route('e-store.order-details', $order->id);
+                $orderDetailsUrlButton = '<a href="' . $orderDetailsUrl . '" style="
+                    display: inline-block;
+                    padding: 10px 20px;
+                    font-size: 16px;
+                    color: #ffffff;
+                    background-color: #643271;
+                    text-decoration: none;
+                    border-radius: 5px;
+                ">View Order Details</a>';
+
+                $body = str_replace(
+                    ['{customer_name}', '{customer_email}', '{order_list}', '{order_id}', '{arriving_date}', '{total_order_value}', '{order_details_url_button}'],
+                    [
+                        ($order->first_name ?? '') . ' ' . ($order->last_name ?? ''),
+                        $order->email ?? '',
+                        $orderList,
+                        $order->order_number ?? '',
+                        $order->expected_delivery_date ? Carbon::parse($order->expected_delivery_date)->format('M d, Y') : '',
+                        number_format($order->total_amount ?? 0, 2),
+                        $orderDetailsUrlButton
+                    ],
+                    $template->body
+                );
+
+                try {
+                    Mail::to($order->email)->send(new OrderStatusUpdatedMail($order, $body));
+                } catch (\Throwable $th) {
+                    Log::error('Failed to send order cancellation status email: ' . $th->getMessage());
                 }
             }
 

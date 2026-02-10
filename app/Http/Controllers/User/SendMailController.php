@@ -101,7 +101,9 @@ class SendMailController extends Controller
 
             if (!$isSuperAdmin) {
                 if ($user_type == 'Global') {
-                    $allMailIdsQuery->where('user_type', 'Global');
+                    $allMailIdsQuery->where('user_type', 'Global')->whereHas('userRole', function ($query) {
+                        $query->where('name', '!=', 'SUPER ADMIN');
+                    });
                 } else {
                     $allMailIdsQuery->where('user_type', 'Regional')->where('country', $country_name);
                 }
@@ -131,7 +133,9 @@ class SendMailController extends Controller
 
             if (!$isSuperAdmin) {
                 if ($user_type == 'Global') {
-                    $allMailIdsQuery->where('user_type', 'Global');
+                    $allMailIdsQuery->where('user_type', 'Global')->whereHas('userRole', function ($query) {
+                        $query->where('name', '!=', 'SUPER ADMIN');
+                    });
                 } else {
                     $allMailIdsQuery->where('user_type', 'Regional')->where('country', $country_name);
                 }
@@ -474,7 +478,9 @@ class SendMailController extends Controller
 
         if (!$isSuperAdmin) {
             if ($user_type == 'Global') {
-                $allMailIdsQuery->where('user_type', 'Global');
+                $allMailIdsQuery->where('user_type', 'Global')->whereHas('userRole', function ($query) {
+                    $query->where('name', '!=', 'SUPER ADMIN');
+                });
             } else {
                 $allMailIdsQuery->where('user_type', 'Regional')->where('country', $country_name);
             }
@@ -534,7 +540,9 @@ class SendMailController extends Controller
 
             if (!$isSuperAdmin) {
                 if ($user_type == 'Global') {
-                    $usersQuery->where('user_type', 'Global');
+                    $usersQuery->where('user_type', 'Global')->whereHas('userRole', function ($query) {
+                        $query->where('name', '!=', 'SUPER ADMIN');
+                    });
                 } else {
                     $usersQuery->where('user_type', 'Regional')->where('country', $country_name);
                 }

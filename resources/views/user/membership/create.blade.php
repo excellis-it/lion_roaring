@@ -173,47 +173,50 @@
                     <div class="col-md-6 mb-3">
                         <div class="box_label">
                             <label>Tier Name *</label>
-                            <input name="name" class="form-control" required>
+                            <input name="name" class="form-control" value="{{ old('name') }}" >
                         </div>
                     </div>
                     <div class="col-md-6 mb-3">
                         <div class="box_label">
                             <label>Slug *</label>
-                            <input name="slug" class="form-control" required>
+                            <input name="slug" class="form-control" value="{{ old('slug') }}" >
                         </div>
                     </div>
                     <div class="col-md-12 mb-3">
                         <div class="box_label">
                             <label>Description</label>
-                            <textarea name="description" class="form-control" rows="3"></textarea>
+                            <textarea name="description" class="form-control" rows="3">{{ old('description') }}</textarea>
                         </div>
                     </div>
                     <div class="col-md-6 mb-3">
                         <div class="box_label">
                             <label>Plan Type *</label>
-                            <select name="pricing_type" class="form-control" id="pricing_type" required>
-                                <option value="amount" selected>Amount (USD)</option>
-                                <option value="token">Life Force Energy (Token)</option>
+                            <select name="pricing_type" class="form-control" id="pricing_type" >
+                                <option value="amount" {{ old('pricing_type') == 'amount' ? 'selected' : '' }}>Amount (USD)
+                                </option>
+                                <option value="token" {{ old('pricing_type') == 'token' ? 'selected' : '' }}>Life Force
+                                    Energy (Token)</option>
                             </select>
                         </div>
                     </div>
                     <div class="col-md-6 mb-3" id="amount_cost_wrap">
                         <div class="box_label">
                             <label>Amount (USD) *</label>
-                            <input name="cost" class="form-control" type="number" step="0.01" min="0">
+                            <input name="cost" class="form-control" type="number" step="0.01" min="0"
+                                value="{{ old('cost') }}">
                         </div>
                     </div>
                     <div class="col-md-6 mb-3 d-none" id="token_value_wrap">
                         <div class="box_label">
                             <label>Life Force Energy Tokens *</label>
                             <input name="life_force_energy_tokens" class="form-control" type="number" step="0.01"
-                                min="0">
+                                min="0" value="{{ old('life_force_energy_tokens') }}">
                         </div>
                     </div>
                     <div class="col-md-12 mb-3 d-none" id="agree_desc_wrap">
                         <div class="box_label">
                             <label>Agree Description *</label>
-                            <textarea name="agree_description" class="form-control" rows="5"></textarea>
+                            <textarea name="agree_description" class="form-control" rows="5">{{ old('agree_description') }}</textarea>
                         </div>
                     </div>
 
@@ -241,44 +244,97 @@
                                 </div>
                             </div>
 
-                            <div class="permissions-body">
-                                @foreach ($categorizedPermissions as $category => $permissions)
+                            <div class="permissions-body p-4">
+                                @foreach ($categorizedPermissions as $mainCategory => $subCategories)
                                     @php
-                                        $availablePermissions = array_intersect($permissions, $allPermsArray);
+                                        $mainCategoryPermCount = 0;
+                                        foreach ($subCategories as $subPerms) {
+                                            $mainCategoryPermCount += count(array_intersect($subPerms, $allPermsArray));
+                                        }
                                     @endphp
-                                    @if (count($availablePermissions) > 0)
-                                        <div class="category-row" data-category="{{ strtolower($category) }}">
-                                            <div class="category-trigger">
-                                                <div class="form-check mb-0 me-3">
-                                                    <input class="form-check-input select-category-permissions"
-                                                        type="checkbox" id="cat-check-{{ Str::slug($category) }}">
+
+                                    @if ($mainCategoryPermCount > 0)
+                                        <div class="main-category-block mb-4 shadow-sm"
+                                            style="border: 1px solid #e2e8f0; border-radius: 10px; overflow: hidden;">
+                                            <div class="main-category-header p-3 d-flex justify-content-between align-items-center"
+                                                style="background: #f8fafc; border-bottom: 1px solid #e2e8f0;">
+                                                <h5 class="mb-0"
+                                                    style="color: #1e293b; font-size: 1.1rem; font-weight: 700;">
+                                                    <i class="fas fa-layer-group me-2" style="color: #64748b;"></i>
+                                                    {{ $mainCategory }}
+                                                </h5>
+                                                <div class="d-flex align-items-center gap-3">
+                                                    <span class="badge bg-soft-info text-info px-3 py-2"
+                                                        style="background-color: #e0f2fe; color: #0369a1; border-radius: 6px; font-size: 0.85rem;">
+                                                        {{ $mainCategoryPermCount }} total permissions
+                                                    </span>
+                                                    <button type="button"
+                                                        class="btn btn-sm btn-outline-secondary toggle-main-category"
+                                                        style="padding: 2px 8px;">
+                                                        <i class="fas fa-chevron-up"></i>
+                                                    </button>
                                                 </div>
-                                                <div class="category-info">
-                                                    <span class="category-name">{{ $category }}</span>
-                                                    <span class="perm-count-badge">({{ count($availablePermissions) }}
-                                                        perms)</span>
-                                                </div>
-                                                <span class="selection-count-badge zero">0</span>
-                                                <i class="fas fa-chevron-down arrow-icon"></i>
                                             </div>
-                                            <div class="permissions-grid">
-                                                @foreach ($availablePermissions as $permName)
+                                            <div class="main-category-content">
+                                                @foreach ($subCategories as $subCategory => $permissions)
                                                     @php
-                                                        $permId = $allPermissions->where('name', $permName)->first()
-                                                            ->id;
+                                                        $availablePermissions = array_intersect(
+                                                            $permissions,
+                                                            $allPermsArray,
+                                                        );
                                                     @endphp
-                                                    <div class="perm-item" data-name="{{ strtolower($permName) }}">
-                                                        <div class="form-check mb-0">
-                                                            <input class="form-check-input permission-checkbox"
-                                                                type="checkbox" name="permissions[]"
-                                                                value="{{ $permName }}" id="perm-{{ $permId }}"
-                                                                {{ is_array(old('permissions')) && in_array($permName, old('permissions')) ? 'checked' : '' }}>
-                                                            <label class="perm-label ms-1" for="perm-{{ $permId }}"
-                                                                title="{{ $permName }}">
-                                                                {{ $permName }}
-                                                            </label>
+                                                    @if (count($availablePermissions) > 0)
+                                                        <div class="category-row border-bottom"
+                                                            data-category="{{ strtolower($subCategory) }}">
+                                                            <div class="category-trigger py-3 px-4">
+                                                                <div class="form-check mb-0 me-3">
+                                                                    <input
+                                                                        class="form-check-input select-category-permissions"
+                                                                        type="checkbox"
+                                                                        id="cat-check-{{ Str::slug($mainCategory . '-' . $subCategory) }}">
+                                                                </div>
+                                                                <div class="category-info">
+                                                                    <span class="category-name"
+                                                                        style="color: #334155; font-weight: 600;">{{ $subCategory }}</span>
+                                                                    <span class="perm-count-badge ms-2"
+                                                                        style="color: #64748b; font-size: 0.8rem;">({{ count($availablePermissions) }}
+                                                                        perms)</span>
+                                                                </div>
+                                                                <div class="d-flex align-items-center">
+                                                                    <span class="selection-count-badge zero me-3">0</span>
+                                                                    <i class="fas fa-chevron-down arrow-icon"
+                                                                        style="color: #94a3b8;"></i>
+                                                                </div>
+                                                            </div>
+                                                            <div class="permissions-grid px-5 pb-4">
+                                                                @foreach ($availablePermissions as $permName)
+                                                                    @php
+                                                                        $perm = $allPermissions
+                                                                            ->where('name', $permName)
+                                                                            ->first();
+                                                                        $permId = $perm ? $perm->id : 0;
+                                                                    @endphp
+                                                                    <div class="perm-item"
+                                                                        data-name="{{ strtolower($permName) }}">
+                                                                        <div class="form-check mb-0">
+                                                                            <input
+                                                                                class="form-check-input permission-checkbox"
+                                                                                type="checkbox" name="permissions[]"
+                                                                                value="{{ $permName }}"
+                                                                                id="perm-{{ $permId }}"
+                                                                                {{ is_array(old('permissions')) && in_array($permName, old('permissions')) ? 'checked' : '' }}>
+                                                                            <label class="perm-label ms-2"
+                                                                                for="perm-{{ $permId }}"
+                                                                                title="{{ $permName }}"
+                                                                                style="font-size: 0.9rem; color: #475569;">
+                                                                                {{ $permName }}
+                                                                            </label>
+                                                                        </div>
+                                                                    </div>
+                                                                @endforeach
+                                                            </div>
                                                         </div>
-                                                    </div>
+                                                    @endif
                                                 @endforeach
                                             </div>
                                         </div>
@@ -299,16 +355,31 @@
                         <div class="box_label">
                             <label>Benefits</label>
                             <div id="benefits">
-                                <div class="input-group mb-2">
-                                    <input type="text" name="benefits[]" class="form-control">
-                                    <button type="button" class="btn btn-primary add-benefit">+</button>
-                                </div>
+                                @if (is_array(old('benefits')) && count(old('benefits')) > 0)
+                                    @foreach (old('benefits') as $index => $benefit)
+                                        <div class="input-group mb-2">
+                                            <input type="text" name="benefits[]" class="form-control"
+                                                value="{{ $benefit }}">
+                                            @if ($index == 0)
+                                                <button type="button" class="btn btn-primary add-benefit">+</button>
+                                            @else
+                                                <button type="button" class="btn btn-danger remove-benefit">-</button>
+                                            @endif
+                                        </div>
+                                    @endforeach
+                                @else
+                                    <div class="input-group mb-2">
+                                        <input type="text" name="benefits[]" class="form-control">
+                                        <button type="button" class="btn btn-primary add-benefit">+</button>
+                                    </div>
+                                @endif
                             </div>
                         </div>
                     </div>
                     <div class="col-md-12">
                         <div class="w-100 text-end">
                             <button type="submit" class="print_btn">Create</button>
+                            <a href="{{ route('user.membership.index') }}" class="print_btn">Cancel</a>
                         </div>
                     </div>
                 </div>
@@ -377,6 +448,14 @@
 
             // Init counts
             updateSelectionStates();
+
+            // Toggle Main Category
+            $(document).on('click', '.toggle-main-category', function() {
+                var $content = $(this).closest('.main-category-block').find('.main-category-content');
+                var $icon = $(this).find('i');
+                $content.slideToggle();
+                $icon.toggleClass('fa-chevron-up fa-chevron-down');
+            });
 
             // Toggle Accordion
             $(document).on('click', '.category-trigger', function(e) {
