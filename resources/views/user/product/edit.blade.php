@@ -278,6 +278,40 @@
                                         </div>
                                     </div>
 
+                                    {{-- Size measurements image --}}
+                                    <div class="col-xxl-3 col-md-5 mb-2">
+                                        <div class="box_label">
+                                            <label for="size_measurements_image"> Size Measurements Image</label>
+                                            <input type="file" name="size_measurements_image"
+                                                id="size_measurements_image" class="form-control"
+                                                value="{{ old('size_measurements_image') }}" accept="image/*">
+                                            <span class="text-sm ms-2 text-muted" style="font-size:12px;">(optional - max
+                                                2MB)</span>
+                                            @if ($errors->has('size_measurements_image'))
+                                                <span
+                                                    class="error">{{ $errors->first('size_measurements_image') }}</span>
+                                            @endif
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-1 mb-2">
+                                        <div class="box_label" id="size_measurements_preview_wrapper">
+                                            @if ($product->size_measurements_image)
+                                                <a href="{{ Storage::url($product->size_measurements_image ?? '') }}"
+                                                    target="_blank" id="size_measurements_image_preview_anchor">
+                                                    <img style="height: 50px; width: 50px; object-fit: cover;"
+                                                        id="size_measurements_image_preview"
+                                                        src="{{ Storage::url($product->size_measurements_image ?? '') }}"
+                                                        alt="Size measurements Image" class="img-fluid">
+                                                </a>
+                                            @else
+                                                <div
+                                                    style="height: 50px; width: 50px; background: #f0f0f0; border: 1px dashed #ccc;">
+                                                </div>
+                                            @endif
+                                        </div>
+                                    </div>
+
                                     {{-- short_description --}}
                                     <div class="col-md-12 mb-2">
                                         <div class="box_label">
@@ -353,7 +387,7 @@
 
 
                                     <!-- <div class="col-md-2 mb-2">
-                                                                    </div> -->
+                                                                        </div> -->
 
                                     {{-- is_free --}}
                                     <div class="col-md-4 mb-2">
@@ -905,6 +939,18 @@
                 });
             });
         </script>
+        <script>
+            $(document).ready(function() {
+                $('#size_measurements_image').on('change', function() {
+                    const file = this.files[0];
+                    if (!file) return;
+                    const url = URL.createObjectURL(file);
+                    $('#size_measurements_image_preview').attr('src', url);
+                    $('#size_measurements_image_preview_anchor').attr('href', url);
+                });
+            });
+        </script>
+
         <script>
             ClassicEditor.create(document.querySelector("#description"));
             ClassicEditor.create(document.querySelector("#specification"));

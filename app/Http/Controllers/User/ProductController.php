@@ -207,6 +207,7 @@ class ProductController extends Controller
             'slug'              => 'required|string|unique:products,slug|regex:/^[a-z0-9]+(?:-[a-z0-9]+)*$/',
             'image'             => 'required|image|mimes:jpeg,png,jpg,gif,svg,webp',
             'background_image'  => 'nullable|image|mimes:jpeg,png,jpg,gif,svg,webp',
+            'size_measurements_image' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg,webp',
             // gallery: at least 1 image (your form label requires at least 1)
             'images'            => 'nullable|array|min:1',
             'images.*'          => 'image|mimes:jpeg,png,jpg,gif,svg,webp',
@@ -368,6 +369,11 @@ class ProductController extends Controller
         // background_image
         if ($request->hasFile('background_image')) {
             $product->background_image = $this->imageUpload($request->file('background_image'), 'product', true);
+        }
+
+        // size measurements image (optional)
+        if ($request->hasFile('size_measurements_image')) {
+            $product->size_measurements_image = $this->imageUpload($request->file('size_measurements_image'), 'product', true);
         }
 
         $product->save();
@@ -552,6 +558,7 @@ class ProductController extends Controller
                 ],
                 'image'            => 'nullable|image|mimes:jpeg,png,jpg,gif,svg,webp',
                 'background_image' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg,webp',
+                'size_measurements_image' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg,webp',
                 'images'           => 'nullable|array|min:1',
                 'images.*'         => 'image|mimes:jpeg,png,jpg,gif,svg,webp',
                 'product_type'     => 'required|in:simple,variable',
@@ -709,6 +716,14 @@ class ProductController extends Controller
                     unlink(storage_path('app/public/' . $product->background_image));
                 }
                 $product->background_image = $this->imageUpload($request->file('background_image'), 'product', true);
+            }
+
+            // size measurements image
+            if ($request->hasFile('size_measurements_image')) {
+                if ($product->size_measurements_image && file_exists(storage_path('app/public/' . $product->size_measurements_image))) {
+                    unlink(storage_path('app/public/' . $product->size_measurements_image));
+                }
+                $product->size_measurements_image = $this->imageUpload($request->file('size_measurements_image'), 'product', true);
             }
 
             $product->save();

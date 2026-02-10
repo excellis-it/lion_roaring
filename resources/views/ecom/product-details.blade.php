@@ -376,6 +376,44 @@
                 </div>
             </div>
         </div>
+        {{-- Size measurements block --}}
+        @if (!empty($product->size_measurements_image))
+            <div class="container mt-3">
+                <div class="row">
+                    <div class="col-12">
+                        <h5 class="mb-2">Size Measurements</h5>
+                        @php
+                            $sizeImg = $product->size_measurements_image;
+                            if (\Illuminate\Support\Str::startsWith($sizeImg, 'http')) {
+                                $sizeUrl = $sizeImg;
+                            } elseif (\Illuminate\Support\Str::startsWith($sizeImg, 'storage/')) {
+                                $sizeUrl = asset($sizeImg);
+                            } else {
+                                $sizeUrl = Storage::url($sizeImg);
+                            }
+                        @endphp
+
+                        <a href="#" data-bs-toggle="modal" data-bs-target="#sizeMeasurementsModal">
+                            <img src="{{ $sizeUrl }}" alt="Size measurements" class="img-fluid rounded"
+                                style="max-width:800px; border:1px solid #ddd;" />
+                        </a>
+
+                        <!-- Modal -->
+                        <div class="modal fade" id="sizeMeasurementsModal" tabindex="-1" aria-hidden="true">
+                            <div class="modal-dialog modal-dialog-centered modal-lg">
+                                <div class="modal-content">
+                                    <div class="modal-body p-0">
+                                        <img src="{{ $sizeUrl }}" alt="Size measurements"
+                                            class="img-fluid w-100" />
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        @endif
+
     </section>
     @if (count($related_products) > 0)
         <section class="feature_sec">
