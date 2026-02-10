@@ -388,14 +388,15 @@
                 </div>
             </div>
         </div>
-        {{-- Size measurements block --}}
-        @if (!empty($product->size_measurements_image))
+        {{-- Size measurements block (category-level) --}}
+        @php $categorySizeImage = optional($product->category)->size_measurements_image; @endphp
+        @if (!empty($categorySizeImage))
             <div class="container mt-3">
                 <div class="row">
                     <div class="col-12">
                         <h5 class="mb-2">Size Measurements</h5>
                         @php
-                            $sizeImg = $product->size_measurements_image;
+                            $sizeImg = $categorySizeImage;
                             if (\Illuminate\Support\Str::startsWith($sizeImg, 'http')) {
                                 $sizeUrl = $sizeImg;
                             } elseif (\Illuminate\Support\Str::startsWith($sizeImg, 'storage/')) {

@@ -233,24 +233,10 @@
 
                                     <div class="col-md-6 mb-2">
                                         <div class="box_label">
-
-                                            {{-- Size measurements image --}}
-                                            <label for="size_measurements_image">Size Measurements
-                                                Image</label>
-                                            <input type="file" name="size_measurements_image"
-                                                id="size_measurements_image" class="form-control"
-                                                value="{{ old('size_measurements_image') }}" accept="image/*">
-                                            <span class="text-sm ms-2 text-muted">(optional - max 2MB)</span>
-                                            @if ($errors->has('size_measurements_image'))
-                                                <span class="error">{{ $errors->first('size_measurements_image') }}</span>
-                                            @endif
-
-                                            <!-- Preview for size measurements image -->
-                                            <div class="image-preview" id="size-measurements-preview-container"
-                                                style="display:none;">
-                                                <img id="size-measurements-preview" src="#"
-                                                    alt="Size measurements preview" />
-                                            </div>
+                                            <label> Size Measurements Image (managed per category)</label>
+                                            <p class="text-muted">Size measurements image is now managed at the
+                                                <strong>Category</strong> level. Set or update it from <a
+                                                    href="{{ route('categories.index') }}">Category settings</a>.</p>
                                         </div>
                                     </div>
 
@@ -842,17 +828,6 @@
 
         <script>
             $(document).ready(function() {
-                $('#size_measurements_image').on('change', function() {
-                    const file = this.files[0];
-                    if (!file) return;
-                    const url = URL.createObjectURL(file);
-                    $('#size-measurements-preview').attr('src', url);
-                    $('#size-measurements-preview-container').show();
-                });
-            });
-        </script>
-        <script>
-            $(document).ready(function() {
 
                 $('#productCreateForm').on('submit', function(e) {
                     e.preventDefault();
@@ -1275,10 +1250,6 @@
                     const $bgPreview = $('#background-image-preview');
                     const $bgContainer = $('#background-image-preview-container');
 
-                    const $sizeInput = $('#size_measurements_image');
-                    const $sizePreview = $('#size-measurements-preview');
-                    const $sizeContainer = $('#size-measurements-preview-container');
-
                     const $galleryInput = $('#image-upload');
                     const $galleryContainer = $('#gallery-previews');
 
@@ -1288,10 +1259,6 @@
 
                     $bgInput.on('change', function() {
                         readSingleImage(this, $bgPreview, $bgContainer);
-                    });
-
-                    $sizeInput.on('change', function() {
-                        readSingleImage(this, $sizePreview, $sizeContainer);
                     });
 
                     $galleryInput.on('change', function() {

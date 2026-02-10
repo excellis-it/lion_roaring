@@ -16,7 +16,6 @@ class Product extends BaseModel
         'product_type',
         'name',
         'background_image',
-        'size_measurements_image',
         'description',
         'short_description',
         'slug',

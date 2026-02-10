@@ -109,6 +109,20 @@
                                 </div>
                             </div>
 
+                            {{-- size measurements image (category level) --}}
+                            <div class="col-md-6 mb-2">
+                                <div class="box_label">
+                                    <label for="size_measurements_image"> Size Measurements Image (per category)</label>
+                                    <input type="file" name="size_measurements_image" id="size_measurements_image"
+                                        class="form-control" value="{{ old('size_measurements_image') }}" accept="image/*">
+                                    <span class="text-sm ms-2 text-muted">(optional - recommended size: 800x800, max
+                                        2MB)</span>
+                                    @if ($errors->has('size_measurements_image'))
+                                        <span class="error">{{ $errors->first('size_measurements_image') }}</span>
+                                    @endif
+                                </div>
+                            </div>
+
                             {{-- status --}}
                             <div class="col-md-6 mb-2">
                                 <div class="box_label">

@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class AddSizeMeasurementsImageToProductsTable extends Migration
+class AddSizeImageToCategories extends Migration
 {
     /**
      * Run the migrations.
@@ -13,10 +13,10 @@ class AddSizeMeasurementsImageToProductsTable extends Migration
      */
     public function up()
     {
-        Schema::table('products', function (Blueprint $table) {
-            //
-                $table->string('size_measurements_image')->nullable()->after('background_image');
+        Schema::table('categories', function (Blueprint $table) {
+            $table->string('size_measurements_image')->nullable()->after('background_image');
         });
+
     }
 
     /**
@@ -26,9 +26,8 @@ class AddSizeMeasurementsImageToProductsTable extends Migration
      */
     public function down()
     {
-        Schema::table('products', function (Blueprint $table) {
-            //
-                $table->dropColumn('size_measurements_image');
+        Schema::table('categories', function (Blueprint $table) {
+            $table->dropColumn('size_measurements_image');
         });
     }
 }
