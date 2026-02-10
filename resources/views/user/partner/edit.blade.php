@@ -1026,6 +1026,7 @@
 
             function getEcclesias() {
                 var country = $('#country').val();
+                var userType = $('select[name="user_type"]').val();
                 if (!userType) {
                     $('select[name="ecclesia_id"]').html('<option value="">Select Ecclesia</option>');
                     $('#hoe_row .row.g-3').html('');
