@@ -336,9 +336,10 @@
                                             </div>
                                             <div class="col-lg-6 mb-3">
                                                 <div class="login-username">
-                                                    <label for="lion_roaring_id">Lion Roaring ID</label>
+                                                    <label for="lion_roaring_id">Lion Roaring ID (Last 4 digits)</label>
                                                     <input type="text" name="lion_roaring_id" id="lion_roaring_id"
-                                                        class="input" value="{{ old('lion_roaring_id') }}" required>
+                                                        class="input" value="{{ old('lion_roaring_id') }}"
+                                                        maxlength="4" placeholder="e.g. 1234" required>
                                                     @if ($errors->has('lion_roaring_id'))
                                                         <div class="error" style="color:red;">
                                                             {{ $errors->first('lion_roaring_id') }}</div>
