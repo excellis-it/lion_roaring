@@ -143,9 +143,12 @@
                                                 </button>
                                             @else
                                                 @if (($currentMethod ?? 'amount') === 'amount' && floatval($tier->cost) > $currentPrice)
-                                                    <a href="{{ route('user.membership.checkout', $tier->id) }}"
-                                                        class="btn btn-upgrade btn-primary">Upgrade to
-                                                        {{ $tier->name }}</a>
+                                                    <button type="button"
+                                                        class="btn btn-upgrade btn-primary js-promo-checkout"
+                                                        data-tier-id="{{ $tier->id }}"
+                                                        data-tier-name="{{ $tier->name }}"
+                                                        data-tier-cost="{{ $tier->cost }}">Upgrade to
+                                                        {{ $tier->name }}</button>
                                                 @else
                                                     <span class="btn btn-sm btn-outline-primary disabled"></span>
                                                 @endif
@@ -159,8 +162,11 @@
                                                     Subscribe to {{ $tier->name }}
                                                 </button>
                                             @else
-                                                <a href="{{ route('user.membership.checkout', $tier->id) }}"
-                                                    class="btn btn-primary">Subscribe to {{ $tier->name }}</a>
+                                                <button type="button" class="btn btn-primary js-promo-checkout"
+                                                    data-tier-id="{{ $tier->id }}"
+                                                    data-tier-name="{{ $tier->name }}"
+                                                    data-tier-cost="{{ $tier->cost }}">Subscribe to
+                                                    {{ $tier->name }}</button>
                                             @endif
                                         @endif
                                     </div>
@@ -191,6 +197,49 @@
                         @csrf
                         <button type="submit" class="btn btn-primary">Accept</button>
                     </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Promo Code Modal -->
+    <div class="modal fade" id="promoCodeModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="promoCodeModalTitle">Checkout</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <h6 id="selectedPlan"></h6>
+                        <div class="d-flex justify-content-between align-items-center mb-2">
+                            <span>Original Price:</span>
+                            <strong id="originalPrice"></strong>
+                        </div>
+                        <div class="d-flex justify-content-between align-items-center mb-2 text-success" id="discountRow"
+                            style="display: none !important;">
+                            <span>Discount:</span>
+                            <strong id="discountAmount"></strong>
+                        </div>
+                        <div class="d-flex justify-content-between align-items-center mb-3">
+                            <span><strong>Final Price:</strong></span>
+                            <strong class="text-primary" id="finalPrice"></strong>
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <label for="promoCodeInput" class="form-label">Promo Code (Optional)</label>
+                        <div class="input-group">
+                            <input type="text" class="form-control" id="promoCodeInput"
+                                placeholder="Enter promo code">
+                            <button class="btn btn-outline-secondary" type="button" id="applyPromoBtn">Apply</button>
+                        </div>
+                        <div class="form-text" id="promoMessage"></div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="button" class="btn btn-primary" id="proceedToCheckout">Proceed to Checkout</button>
                 </div>
             </div>
         </div>
@@ -305,6 +354,7 @@
 
 @push('scripts')
     <script>
+        // Existing functionality
         $(document).on('click', '.toggle-benefits', function(e) {
             e.preventDefault();
             var el = $(this).prev('.benefits-list');
@@ -327,6 +377,115 @@
             } else {
                 $('#tokenAgreeModal').modal('show');
             }
+        });
+
+        // Promo Code Modal Functionality
+        var currentTierId = null;
+        var currentTierName = '';
+        var currentTierCost = 0;
+        var appliedPromoCode = '';
+        var finalAmount = 0;
+
+        $(document).on('click', '.js-promo-checkout', function() {
+            currentTierId = $(this).data('tier-id');
+            currentTierName = $(this).data('tier-name');
+            currentTierCost = parseFloat($(this).data('tier-cost'));
+            appliedPromoCode = '';
+            finalAmount = currentTierCost;
+
+            // Reset modal
+            $('#promoCodeModalTitle').text('Checkout - ' + currentTierName);
+            $('#selectedPlan').text(currentTierName + ' Membership');
+            $('#originalPrice').text('$' + currentTierCost.toFixed(2));
+            $('#finalPrice').text('$' + currentTierCost.toFixed(2));
+            $('#discountRow').hide();
+            $('#discountAmount').text('');
+            $('#promoCodeInput').val('');
+            $('#promoMessage').text('').removeClass('text-success text-danger');
+
+            // Show modal
+            if (window.bootstrap && bootstrap.Modal) {
+                var modal = new bootstrap.Modal(document.getElementById('promoCodeModal'));
+                modal.show();
+            } else {
+                $('#promoCodeModal').modal('show');
+            }
+        });
+
+        // Apply promo code
+        $('#applyPromoBtn').on('click', function() {
+            var promoCode = $('#promoCodeInput').val().trim();
+
+            if (!promoCode) {
+                $('#promoMessage').text('Please enter a promo code').removeClass('text-success').addClass(
+                    'text-danger');
+                return;
+            }
+
+            // Show loading
+            $(this).prop('disabled', true).text('Validating...');
+            $('#promoMessage').text('Validating promo code...').removeClass('text-success text-danger');
+
+            // AJAX validation
+            $.ajax({
+                url: '{{ route('user.promo-codes.validate') }}',
+                method: 'POST',
+                data: {
+                    _token: '{{ csrf_token() }}',
+                    code: promoCode,
+                    tier_id: currentTierId
+                },
+                success: function(response) {
+                    if (response.valid) {
+                        appliedPromoCode = promoCode;
+                        var discount = parseFloat(response.discount);
+                        finalAmount = parseFloat(response.final_price);
+
+                        // Update UI
+                        $('#discountAmount').text('-$' + discount.toFixed(2));
+                        $('#finalPrice').text('$' + finalAmount.toFixed(2));
+                        $('#discountRow').show();
+                        $('#promoMessage').text('✓ Promo code applied successfully!').removeClass(
+                            'text-danger').addClass('text-success');
+                        $('#promoCodeInput').prop('readonly', true);
+                        $('#applyPromoBtn').text('Applied').addClass('btn-success').removeClass(
+                            'btn-outline-secondary');
+                    } else {
+                        $('#promoMessage').text(response.message || 'Invalid promo code').removeClass(
+                            'text-success').addClass('text-danger');
+                    }
+                },
+                error: function(xhr) {
+                    var message = 'Failed to validate promo code';
+                    if (xhr.responseJSON && xhr.responseJSON.message) {
+                        message = xhr.responseJSON.message;
+                    }
+                    $('#promoMessage').text(message).removeClass('text-success').addClass(
+                    'text-danger');
+                },
+                complete: function() {
+                    $('#applyPromoBtn').prop('disabled', false).text('Apply');
+                }
+            });
+        });
+
+        // Allow Enter key to apply promo code
+        $('#promoCodeInput').on('keypress', function(e) {
+            if (e.which === 13) {
+                e.preventDefault();
+                $('#applyPromoBtn').click();
+            }
+        });
+
+        // Proceed to checkout
+        $('#proceedToCheckout').on('click', function() {
+            var checkoutUrl = '{{ url('user/membership/checkout') }}/' + currentTierId;
+
+            if (appliedPromoCode) {
+                checkoutUrl += '?promo_code=' + encodeURIComponent(appliedPromoCode);
+            }
+
+            window.location.href = checkoutUrl;
         });
 
         @if (session('success'))

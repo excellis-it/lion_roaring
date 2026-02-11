@@ -34,6 +34,22 @@
         .eye-btn-1 {
             top: 29px;
         }
+
+        /* Validation Error Styles */
+        .input.is-invalid,
+        .form-control.is-invalid,
+        select.is-invalid {
+            border-color: #dc3545 !important;
+            border-width: 2px;
+            background-color: #fff5f5;
+        }
+
+        .input.is-invalid:focus,
+        .form-control.is-invalid:focus,
+        select.is-invalid:focus {
+            border-color: #dc3545 !important;
+            box-shadow: 0 0 0 0.2rem rgba(220, 53, 69, 0.25);
+        }
     </style>
 
     <style>
@@ -339,7 +355,7 @@
                                                     <label for="lion_roaring_id">Lion Roaring ID (Last 4 digits)</label>
                                                     <input type="text" name="lion_roaring_id" id="lion_roaring_id"
                                                         class="input" value="{{ old('lion_roaring_id') }}"
-                                                        maxlength="4" placeholder="e.g. 1234" required>
+                                                        maxlength="4" placeholder="e.g. 1234">
                                                     @if ($errors->has('lion_roaring_id'))
                                                         <div class="error" style="color:red;">
                                                             {{ $errors->first('lion_roaring_id') }}</div>
@@ -350,7 +366,7 @@
                                                 <div class="login-username">
                                                     <label for="roar_id">Roar ID</label>
                                                     <input type="text" name="roar_id" id="roar_id" class="input"
-                                                        value="{{ old('roar_id') }}" required>
+                                                        value="{{ old('roar_id') }}">
                                                     @if ($errors->has('roar_id'))
                                                         <div class="error" style="color:red;">
                                                             {{ $errors->first('roar_id') }}</div>
@@ -531,6 +547,7 @@
                                                     @endif
                                                 </div>
                                             </div>
+
                                         </div>
 
                                         {{-- E-Signature Section --}}
@@ -1128,12 +1145,61 @@
                     </button>
                 </div>
                 <div class="modal-body">
+                    <!-- Promo Code Discount Display -->
+                    <div id="promo-discount-section"
+                        style="display: none; background: #e7f4e7; border: 1px solid #4caf50; border-radius: 8px; padding: 15px; margin-bottom: 20px;">
+                        <div style="display: flex; justify-content: space-between; align-items: center;">
+                            <div>
+                                <i class="fa fa-tag" style="color: #4caf50; margin-right: 8px;"></i>
+                                <strong style="color: #2e7d32;">Promo Code Applied:</strong>
+                                <span id="applied-promo-code" style="color: #555;"></span>
+                            </div>
+                            <button type="button" id="remove-promo"
+                                style="background: none; border: none; color: #d32f2f; cursor: pointer; font-size: 14px;">
+                                <i class="fa fa-times"></i> Remove
+                            </button>
+                        </div>
+                    </div>
+
                     <div class="payment-amount-box">
+                        <div id="original-amount-section" style="display: none; margin-bottom: 10px;">
+                            <div
+                                style="display: flex; justify-content: space-between; color: #999; text-decoration: line-through;">
+                                <span>Original Amount:</span>
+                                <span id="original-amount-display">$0.00</span>
+                            </div>
+                            <div
+                                style="display: flex; justify-content: space-between; color: #4caf50; font-weight: 600;">
+                                <span>Discount:</span>
+                                <span id="discount-amount-display">-$0.00</span>
+                            </div>
+                            <hr style="margin: 10px 0;">
+                        </div>
                         <h4>Total Amount</h4>
                         <span class="amount" id="payment-amount-display">$0.00</span>
                     </div>
 
                     <form id="payment-form">
+                        <!-- Promo Code Field -->
+                        <div class="form-group mb-4">
+                            <label for="promo_code"
+                                style="font-weight: 600; color: #555; margin-bottom: 10px; display: block;">
+                                <i class="fa fa-tag" style="color: #643271; margin-right: 5px;"></i>
+                                Promo Code (Optional)
+                            </label>
+                            <div style="display: flex; gap: 10px; align-items: stretch;">
+                                <input type="text" name="promo_code" id="promo_code" class="form-control"
+                                    placeholder="Enter promo code"
+                                    style="flex: 1; padding: 12px; border: 1px solid #ddd; border-radius: 6px; font-size: 15px;">
+                                <button type="button" id="validate-promo-btn" class="btn"
+                                    style="background: #643271; color: white; padding: 0 20px; border: none; border-radius: 6px; white-space: nowrap; font-weight: 500;"
+                                    disabled>
+                                    Validate
+                                </button>
+                            </div>
+                            <div id="promo-code-feedback" class="mt-2" style="font-size: 13px;"></div>
+                        </div>
+
                         <div class="form-group mb-4">
                             <label for="card-element"
                                 style="font-weight: 600; color: #555; margin-bottom: 10px; display: block;">Credit
@@ -1198,6 +1264,33 @@
                 } else {
                     displayError.textContent = '';
                 }
+            });
+
+            // Reset validation errors and promo code when modals are opened/closed
+            $('#tierModal').on('show.bs.modal shown.bs.modal', function() {
+                // Clear all validation errors when tier modal opens
+                $('.error').remove();
+                $('.input, .form-control, select').removeClass('is-invalid');
+            });
+
+            $('#paymentModal').on('show.bs.modal shown.bs.modal', function() {
+                // Clear validation errors
+                $('.error').remove();
+                $('.input, .form-control, select').removeClass('is-invalid');
+
+                // Reset promo code feedback (but keep the value if already validated)
+                // Only clear if user hasn't validated yet
+                if (!promoCodeData) {
+                    $('#promo-code-feedback').html('');
+                }
+            });
+
+            // When going back from payment to tier modal, reset promo validation state
+            $('.back-btn').on('click', function() {
+                // Clear promo code validation state (user can re-validate after choosing new tier)
+                $('#promo-code-feedback').html('');
+                var promoCode = $('#promo_code').val().trim();
+                $('#validate-promo-btn').text('Validate').prop('disabled', promoCode === '');
             });
 
             $('#login-form').on('submit', function(e) {
@@ -1271,21 +1364,44 @@
                         } else {
                             // Validation Failed
                             var errors = response.errors;
-                            var errorMsg = '';
-                            $.each(errors, function(key, value) {
-                                errorMsg += value[0] + '\n';
+
+                            // Clear all previous error messages
+                            $('.error').remove();
+                            $('.input, .form-control, select').removeClass('is-invalid');
+
+                            // Display errors inline next to fields
+                            $.each(errors, function(field, messages) {
+                                var $field = $('[name="' + field + '"]');
+                                if ($field.length) {
+                                    $field.addClass('is-invalid');
+                                    var errorHtml =
+                                        '<div class="error" style="color:red; font-size: 13px; margin-top: 5px;">' +
+                                        messages[0] + '</div>';
+                                    $field.closest('.login-username, .form-group')
+                                        .append(errorHtml);
+                                }
                             });
 
-                            if (typeof Swal !== 'undefined') {
-                                Swal.fire({
-                                    icon: 'error',
+                            // Scroll to first error
+                            var firstError = $('.is-invalid').first();
+                            if (firstError.length) {
+                                $('html, body').animate({
+                                    scrollTop: firstError.offset().top - 100
+                                }, 500);
+                            }
+
+                            // Show summary alert
+                            if (typeof swal !== 'undefined') {
+                                swal({
                                     title: 'Validation Error',
-                                    text: errorMsg
+                                    text: 'Please check the highlighted fields and correct the errors.',
+                                    type: 'error',
+                                    confirmButtonText: 'OK'
                                 });
                             } else if (typeof toastr !== 'undefined') {
-                                toastr.error(errorMsg);
-                            } else {
-                                alert(errorMsg);
+                                toastr.error(
+                                    'Please check the highlighted fields and correct the errors.'
+                                );
                             }
                         }
                     },
@@ -1294,6 +1410,12 @@
                         alert('An error occurred during validation. Please try again.');
                     }
                 });
+            });
+
+            // Clear error state when user starts typing
+            $('input, select, textarea').on('input change', function() {
+                $(this).removeClass('is-invalid');
+                $(this).closest('.login-username, .form-group').find('.error').remove();
             });
 
             // Handle Tier Selection
@@ -1390,11 +1512,244 @@
                             name: 'stripeToken',
                             value: result.token.id
                         }).appendTo('#login-form');
+
+                        // Add promo code if validated
+                        $('#promo_code_input').remove();
+                        if (promoCodeData && promoCodeData.code) {
+                            $('<input>').attr({
+                                type: 'hidden',
+                                id: 'promo_code_input',
+                                name: 'promo_code',
+                                value: promoCodeData.code
+                            }).appendTo('#login-form');
+                        }
+
                         $('#paymentModal').modal('hide');
                         $('#login-form').data('final-submit', true);
                         $('#login-form').submit();
                     }
                 });
+            });
+
+            // Promo Code Validation System
+            var promoCodeData = null;
+            var selectedTierId = null;
+            var originalAmount = 0;
+            var promoWarningTimeout = null; // Track delayed warning message
+
+            // Enable validate button when promo code is entered
+            $('#promo_code').on('input', function() {
+                var code = $(this).val().trim();
+                if (code.length > 0) {
+                    $('#validate-promo-btn').prop('disabled', false);
+                    // Reset promo data if code changed
+                    if (promoCodeData && promoCodeData.code !== code) {
+                        promoCodeData = null;
+                        $('#promo-code-feedback').html('');
+                    }
+                } else {
+                    $('#validate-promo-btn').prop('disabled', true);
+                    promoCodeData = null;
+                    $('#promo-code-feedback').html('');
+                }
+            });
+
+            // Validate Promo Code
+            $('#validate-promo-btn').on('click', function() {
+                var code = $('#promo_code').val().trim();
+                if (!code) return;
+
+                // Clear any pending warning timeout
+                if (promoWarningTimeout) {
+                    clearTimeout(promoWarningTimeout);
+                    promoWarningTimeout = null;
+                }
+
+                var btn = $(this);
+                btn.prop('disabled', true).text('Validating...');
+
+                $.ajax({
+                    url: '{{ route('user.promo-codes.validate') }}',
+                    type: 'POST',
+                    data: {
+                        _token: '{{ csrf_token() }}',
+                        code: code,
+                        tier_id: selectedTierId
+                    },
+                    success: function(response) {
+                        console.log('Promo validation response:', response);
+
+                        if (response.valid) {
+                            promoCodeData = {
+                                code: code,
+                                discount: response.discount,
+                                final_price: response.final_price,
+                                is_percentage: response.is_percentage,
+                                discount_amount: response.discount_amount
+                            };
+
+                            var discountText = response.is_percentage ?
+                                response.discount_amount + '%' :
+                                '$' + parseFloat(response.discount_amount).toFixed(2);
+
+                            $('#promo-code-feedback').html(
+                                '<div style="color: #4caf50; background: #e7f4e7; padding: 8px; border-radius: 4px; border-left: 3px solid #4caf50;">' +
+                                '<i class="fa fa-check-circle"></i> <strong>Valid!</strong> You\'ll save ' +
+                                discountText + ' on this membership.' +
+                                '</div>'
+                            );
+
+                            // Update payment modal if already open
+                            updatePaymentDisplay();
+
+                            console.log('Success message should be visible now');
+                        } else {
+                            promoCodeData = null;
+                            $('#promo-code-feedback').html(
+                                '<div style="color: #f44336; background: #ffebee; padding: 8px; border-radius: 4px; border-left: 3px solid #f44336;">' +
+                                '<i class="fa fa-times-circle"></i> ' + (response.message ||
+                                    'Invalid promo code') +
+                                '</div>'
+                            );
+                        }
+
+                        // Reset button state
+                        btn.prop('disabled', false).text('Validate');
+                        console.log('Button reset to: Validate');
+                    },
+                    error: function(xhr) {
+                        promoCodeData = null;
+                        var errorMsg = 'Unable to validate promo code. Please try again.';
+                        if (xhr.responseJSON && xhr.responseJSON.message) {
+                            errorMsg = xhr.responseJSON.message;
+                        }
+                        $('#promo-code-feedback').html(
+                            '<div style="color: #f44336; background: #ffebee; padding: 8px; border-radius: 4px; border-left: 3px solid #f44336;">' +
+                            '<i class="fa fa-times-circle"></i> ' + errorMsg +
+                            '</div>'
+                        );
+                        btn.prop('disabled', false).text('Validate');
+                    }
+                });
+            });
+
+            // Remove promo code
+            $('#remove-promo').on('click', function() {
+                promoCodeData = null;
+                $('#promo_code').val('');
+                $('#promo-code-feedback').html('');
+                $('#validate-promo-btn').prop('disabled', true);
+                updatePaymentDisplay();
+            });
+
+            // Update payment display with promo code
+            function updatePaymentDisplay() {
+                if (originalAmount > 0) {
+                    if (promoCodeData && promoCodeData.discount > 0) {
+                        $('#original-amount-display').text('$' + originalAmount.toFixed(2));
+                        $('#discount-amount-display').text('-$' + promoCodeData.discount.toFixed(2));
+                        $('#payment-amount-display').text('$' + promoCodeData.final_price.toFixed(2));
+                        $('#applied-promo-code').text(promoCodeData.code);
+                        $('#original-amount-section').show();
+                        $('#promo-discount-section').show();
+                    } else {
+                        $('#payment-amount-display').text('$' + originalAmount.toFixed(2));
+                        $('#original-amount-section').hide();
+                        $('#promo-discount-section').hide();
+                    }
+                }
+            }
+
+            // Modified tier selection to track tier and validate promo
+            $('.select-tier-btn').off('click').on('click', function() {
+                var tierId = $(this).data('id');
+                var cost = parseFloat($(this).data('cost'));
+                var pricingType = $(this).data('pricing-type') || 'amount';
+                var tierName = $(this).data('tier-name') || 'Tier';
+                var agree = $(this).data('agree-description') || '';
+
+                selectedTierId = tierId;
+                originalAmount = cost;
+
+                // Remove existing input if any
+                $('#tier_id').remove();
+                $('<input>').attr({
+                    type: 'hidden',
+                    id: 'tier_id',
+                    name: 'tier_id',
+                    value: tierId
+                }).appendTo('#login-form');
+
+                $('#tier_pricing_type').remove();
+                $('<input>').attr({
+                    type: 'hidden',
+                    id: 'tier_pricing_type',
+                    name: 'tier_pricing_type',
+                    value: pricingType
+                }).appendTo('#login-form');
+
+                // Reset previous state
+                $('#agree_accepted').remove();
+                $('#stripeToken').remove();
+
+                // Clear promo code validation if tier changed
+                // User needs to re-validate promo for new tier
+                var promoCode = $('#promo_code').val().trim();
+                if (promoCodeData || promoCode) {
+                    // Reset validation data
+                    promoCodeData = null;
+
+                    // Clear all promo visual feedback
+                    $('#promo-code-feedback').html('');
+                    $('#promo-discount-section').hide();
+                    $('#original-amount-section').hide();
+                    $('#applied-promo-code').text('');
+
+                    // If user had entered a code, show message to re-validate
+                    if (promoCode) {
+                        // Clear any existing timeout first
+                        if (promoWarningTimeout) {
+                            clearTimeout(promoWarningTimeout);
+                        }
+
+                        promoWarningTimeout = setTimeout(function() {
+                            $('#promo-code-feedback').html(
+                                '<div style="color: #ff9800; background: #fff3e0; padding: 8px; border-radius: 4px; border-left: 3px solid #ff9800;">' +
+                                '<i class="fa fa-info-circle"></i> You changed the membership tier. Please validate your promo code again for this tier.' +
+                                '</div>'
+                            );
+                            promoWarningTimeout = null; // Clear reference after execution
+                        }, 500); // Delay so it shows after modal opens
+                    }
+
+                    // Reset validate button text and state
+                    $('#validate-promo-btn').text('Validate').prop('disabled', !promoCode);
+                }
+
+
+                $('#tierModal').modal('hide');
+
+                if (pricingType === 'token') {
+                    $('#tokenAgreeModalTitle').text(tierName + ' Tier - Agreement');
+                    $('#tokenAgreeModalBody').text(agree);
+                    $('#tokenAgreeModal').modal('show');
+                    return;
+                }
+
+                if (cost > 0) {
+                    updatePaymentDisplay();
+                    $('#paymentModal').modal('show');
+                } else {
+                    // Free Tier
+                    $('<input>').attr({
+                        type: 'hidden',
+                        id: 'stripeToken',
+                        name: 'stripeToken',
+                        value: 'free_tier'
+                    }).appendTo('#login-form');
+                    $('#login-form').data('final-submit', true);
+                    $('#login-form').submit();
+                }
             });
         });
     </script>

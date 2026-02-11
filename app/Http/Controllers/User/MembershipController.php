@@ -7,6 +7,8 @@ use Illuminate\Http\Request;
 use App\Models\MembershipTier;
 use App\Models\MembershipMeasurement;
 use App\Models\MembershipBenefit;
+use App\Models\MembershipPromoCode;
+use App\Models\MembershipPromoUsage;
 use App\Models\UserSubscription;
 use App\Models\SubscriptionPayment;
 use Illuminate\Support\Facades\Auth;
@@ -223,8 +225,67 @@ class MembershipController extends Controller
         if (!auth()->user()->can('View Membership Payments')) {
             abort(403, 'Unauthorized');
         }
-        $date_after =  '2025-11-01';
-        $payments = SubscriptionPayment::where('created_at', '>', $date_after)->with(['user', 'userSubscription'])->orderBy('id', 'desc')->paginate(20);
+
+        $date_after = '2025-11-01';
+        $query = SubscriptionPayment::where('created_at', '>', $date_after)
+            ->with(['user', 'userSubscription']);
+
+        // Search filter
+        if ($request->filled('search')) {
+            $search = $request->search;
+            $query->where(function ($q) use ($search) {
+                $q->where('transaction_id', 'like', "%{$search}%")
+                    ->orWhere('promo_code', 'like', "%{$search}%")
+                    ->orWhereHas('user', function ($q2) use ($search) {
+                        $q2->where('first_name', 'like', "%{$search}%")
+                            ->orWhere('last_name', 'like', "%{$search}%")
+                            ->orWhere('email', 'like', "%{$search}%");
+                    });
+            });
+        }
+
+        // Status filter
+        if ($request->filled('status')) {
+            $query->where('payment_status', $request->status);
+        }
+
+        // Payment method filter
+        if ($request->filled('method')) {
+            $query->where('payment_method', $request->method);
+        }
+
+        // Promo code filter
+        if ($request->filled('has_promo')) {
+            if ($request->has_promo == 'yes') {
+                $query->whereNotNull('promo_code');
+            } elseif ($request->has_promo == 'no') {
+                $query->whereNull('promo_code');
+            }
+        }
+
+        // Date range filter
+        if ($request->filled('date_from')) {
+            $query->whereDate('created_at', '>=', $request->date_from);
+        }
+        if ($request->filled('date_to')) {
+            $query->whereDate('created_at', '<=', $request->date_to);
+        }
+
+        // Sorting
+        $sortBy = $request->get('sort_by', 'id');
+        $sortOrder = $request->get('sort_order', 'desc');
+        $query->orderBy($sortBy, $sortOrder);
+
+        $payments = $query->paginate(15);
+
+        // AJAX response
+        if ($request->ajax()) {
+            return response()->json([
+                'html' => view('user.membership.partials.payments_table', compact('payments'))->render(),
+                'pagination' => view('user.membership.partials.pagination', compact('payments'))->render(),
+            ]);
+        }
+
         return view('user.membership.payments_all', compact('payments'));
     }
 
@@ -288,9 +349,37 @@ class MembershipController extends Controller
         if ($userSub && ($userSub->subscription_method ?? 'amount') === 'amount' && floatval($tier->cost) <= floatval($userSub->subscription_price)) {
             return redirect()->route('user.membership.index')->with('error', 'You can only upgrade to a higher tier.');
         }
+
+        // Handle promo code if provided
+        $promoCode = null;
+        $discount = 0;
+        $finalPrice = $tier->cost;
+
+        if ($request->has('promo_code') && !empty($request->promo_code)) {
+            $promoCode = MembershipPromoCode::where('code', $request->promo_code)->first();
+
+            if ($promoCode && $promoCode->canBeUsedByUser($user->id) && $promoCode->canBeAppliedToTier($tier->id)) {
+                $discount = $promoCode->calculateDiscount($tier->cost);
+                $finalPrice = max(0, $tier->cost - $discount);
+            } else {
+                return redirect()->route('user.membership.index')->with('error', 'Invalid or expired promo code.');
+            }
+        }
+
         try {
             $stripe = new StripeClient(env('STRIPE_SECRET'));
             $successUrl = route('membership.checkout.success') . '?session_id={CHECKOUT_SESSION_ID}&tier_id=' . $tier->id;
+
+            if ($promoCode) {
+                $successUrl .= '&promo_code=' . urlencode($promoCode->code);
+            }
+
+            $metadata = ['user_id' => $user->id, 'tier_id' => $tier->id];
+            if ($promoCode) {
+                $metadata['promo_code'] = $promoCode->code;
+                $metadata['discount'] = $discount;
+            }
+
             $session = $stripe->checkout->sessions->create([
                 'success_url' => $successUrl,
                 'cancel_url' => route('user.membership.index'),
@@ -300,13 +389,13 @@ class MembershipController extends Controller
                 'line_items' => [[
                     'price_data' => [
                         'product_data' => ['name' => $tier->name . ' Membership'],
-                        'unit_amount' => (int) ($tier->cost * 100),
+                        'unit_amount' => (int) ($finalPrice * 100),
                         'currency' => 'usd',
                     ],
                     'quantity' => 1,
                 ]],
                 'mode' => 'payment',
-                'metadata' => ['user_id' => $user->id, 'tier_id' => $tier->id],
+                'metadata' => $metadata,
             ]);
             return redirect($session->url);
         } catch (\Throwable $th) {
@@ -332,6 +421,16 @@ class MembershipController extends Controller
                 return redirect()->route('user.membership.index')->with('error', 'Invalid session data');
             }
             $isRenew = ($session->metadata->renew ?? null) == '1' || $request->query('renew') == '1';
+
+            // Get promo code from metadata
+            $promoCodeStr = $session->metadata->promo_code ?? $request->query('promo_code') ?? null;
+            $discount = $session->metadata->discount ?? 0;
+            $promoCode = null;
+
+            if ($promoCodeStr) {
+                $promoCode = MembershipPromoCode::where('code', $promoCodeStr)->first();
+            }
+
             // check duplicates
             $exists = SubscriptionPayment::where('transaction_id', $session->id)->first();
             if ($exists) {
@@ -353,6 +452,9 @@ class MembershipController extends Controller
                 $user_subscription->subscription_method = 'amount';
                 $user_subscription->subscription_name = $tier->name;
                 $user_subscription->subscription_price = $tier->cost;
+                $user_subscription->promo_code = $promoCode ? $promoCode->code : null;
+                $user_subscription->discount_amount = $discount;
+                $user_subscription->final_price = isset($session->amount_total) ? ($session->amount_total / 100) : $tier->cost;
                 $user_subscription->life_force_energy_tokens = null;
                 $user_subscription->agree_accepted_at = null;
                 $user_subscription->agree_description_snapshot = null;
@@ -370,8 +472,21 @@ class MembershipController extends Controller
             $payment->transaction_id = $session->id;
             $payment->payment_method = 'Stripe';
             $payment->payment_amount = isset($session->amount_total) ? ($session->amount_total / 100) : $tier->cost;
+            $payment->promo_code = $promoCode ? $promoCode->code : null;
+            $payment->discount_amount = $discount;
             $payment->payment_status = 'Success';
             $payment->save();
+
+            // Record promo code usage and increment count
+            if ($promoCode) {
+                \App\Models\MembershipPromoUsage::create([
+                    'promo_code_id' => $promoCode->id,
+                    'user_id' => $user->id,
+                    'user_subscription_id' => $user_subscription->id,
+                    'discount_applied' => $discount,
+                ]);
+                $promoCode->incrementUsage();
+            }
 
             return redirect()->route('user.membership.index')->with('success', 'Membership upgraded successfully via Stripe');
         } catch (\Throwable $th) {

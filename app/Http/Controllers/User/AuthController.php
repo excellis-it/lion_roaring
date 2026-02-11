@@ -19,6 +19,7 @@ use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\Crypt;
 use App\Mail\OtpMail;
+use App\Models\MembershipPromoCode;
 use App\Models\VerifyOTP;
 use Illuminate\Support\Facades\Hash;
 use App\Models\UserActivity;
@@ -143,6 +144,7 @@ class AuthController extends Controller
             'password_confirmation' => 'required|same:password',
             'signature' => 'required|string',
             'tier_id' => 'required|exists:membership_tiers,id',
+            'promo_code' => 'nullable|string|max:50',
         ], [
             'password.regex' => 'The password must be at least 8 characters long and include at least one special character from @$%&.',
             'signature.required' => 'Please provide your signature before submitting the form.',
@@ -215,22 +217,37 @@ class AuthController extends Controller
         $payment_status = 'Pending';
         $transaction_id = null;
         $payment_amount = 0;
+        $promoCode = null;
+        $discount = 0;
+        $finalPrice = $tier->cost;
+
+        // Handle promo code if provided during registration
+        if ($request->has('promo_code') && !empty($request->promo_code)) {
+            $promoCode = MembershipPromoCode::where('code', $request->promo_code)->first();
+            if ($promoCode && $promoCode->isValid()) {
+                // For registration, we don't have user_id yet, but we can check tier scope
+                if ($promoCode->canBeAppliedToTier($tier->id)) {
+                    $discount = $promoCode->calculateDiscount($tier->cost);
+                    $finalPrice = max(0, $tier->cost - $discount);
+                }
+            }
+        }
 
         // Process Payment
-        if (($tier->pricing_type ?? 'amount') === 'amount' && floatval($tier->cost) > 0) {
+        if (($tier->pricing_type ?? 'amount') === 'amount' && floatval($finalPrice) > 0) {
             try {
                 \Stripe\Stripe::setApiKey(env('STRIPE_SECRET'));
                 $charge = \Stripe\Charge::create([
-                    'amount' => $tier->cost * 100,
+                    'amount' => (int) ($finalPrice * 100),
                     'currency' => 'usd',
                     'source' => $request->stripeToken,
-                    'description' => 'Membership Registration - ' . $tier->name,
+                    'description' => 'Membership Registration - ' . $tier->name . ($promoCode ? ' (Promo: ' . $promoCode->code . ')' : ''),
                 ]);
 
                 if ($charge->status == 'succeeded') {
                     $payment_status = 'Success';
                     $transaction_id = $charge->id;
-                    $payment_amount = $tier->cost;
+                    $payment_amount = $finalPrice;
                 } else {
                     return redirect()->back()->withErrors(['stripeToken' => 'Payment failed.'])->withInput();
                 }
@@ -369,6 +386,9 @@ class AuthController extends Controller
         } else {
             $user_subscription->subscription_method = 'amount';
             $user_subscription->subscription_price = $tier->cost;
+            $user_subscription->promo_code = $promoCode ? $promoCode->code : null;
+            $user_subscription->discount_amount = $discount;
+            $user_subscription->final_price = $payment_amount;
             $user_subscription->life_force_energy_tokens = null;
             $user_subscription->agree_accepted_at = null;
             $user_subscription->agree_description_snapshot = null;
@@ -384,10 +404,24 @@ class AuthController extends Controller
             $payment->user_id = $user->id;
             $payment->user_subscription_id = $user_subscription->id;
             $payment->transaction_id = $transaction_id;
-            $payment->payment_method = 'Stripe';
+            $payment->payment_method = $payment_amount > 0 ? 'Stripe' : 'Promo';
             $payment->payment_amount = $payment_amount;
+            $payment->promo_code = $promoCode ? $promoCode->code : null;
+            $payment->discount_amount = $discount;
             $payment->payment_status = 'Success';
             $payment->save();
+
+            // Record promo code usage
+            if ($promoCode) {
+                \App\Models\MembershipPromoUsage::create([
+                    'promo_code_id' => $promoCode->id,
+                    'user_id' => $user->id,
+                    'subscription_id' => $user_subscription->id,
+                    'discount_applied' => $discount,
+                    'used_at' => now(),
+                ]);
+                $promoCode->incrementUsage();
+            }
         }
 
         // $maildata = [
@@ -410,9 +444,19 @@ class AuthController extends Controller
         ];
 
         if ($user->status == 1) {
+            // Store promo code in session for later use
+            if ($request->has('promo_code') && !empty($request->promo_code)) {
+                Session::put('registration_promo_code', $request->promo_code);
+            }
+
             Mail::to($request->email)->send(new ActiveUserMail($maildata));
             return redirect()->route('home')->with('message', 'Thank you for registering! You can now login');
         } else {
+            // Store promo code in session for later use
+            if ($request->has('promo_code') && !empty($request->promo_code)) {
+                Session::put('registration_promo_code', $request->promo_code);
+            }
+
             Mail::to($request->email)->send(new ActiveUserMail($maildata));
             return redirect()->route('home')->with('message', 'Please wait for admin approval');
         }

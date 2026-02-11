@@ -142,6 +142,7 @@ use App\Http\Controllers\User\MembershipController as UserMembershipController;
 use App\Http\Controllers\User\RegisterAgreementPreviewController;
 use App\Http\Controllers\Frontend\MembershipController as FrontEndMembershipController;
 use App\Http\Controllers\User\Admin\AdminController as AdminAdminController;
+use App\Http\Controllers\User\PromoCodeController;
 use App\Http\Controllers\User\RecycleBinController;
 
 /*
@@ -494,6 +495,18 @@ Route::prefix('user')->middleware(['user', 'preventBackHistory', 'userActivity',
         Route::get('/members/{user}/payments', [UserMembershipController::class, 'memberPayments'])->name('user.membership.member.payments');
         Route::get('/payments', [UserMembershipController::class, 'payments'])->name('user.membership.payments');
     });
+
+    // Promo Code Management Routes
+    Route::prefix('promo-codes')->group(function () {
+        Route::get('/', [PromoCodeController::class, 'index'])->name('user.promo-codes.index');
+        Route::get('/create', [PromoCodeController::class, 'create'])->name('user.promo-codes.create');
+        Route::post('/', [PromoCodeController::class, 'store'])->name('user.promo-codes.store');
+        Route::get('/{promoCode}/edit', [PromoCodeController::class, 'edit'])->name('user.promo-codes.edit');
+        Route::put('/{promoCode}', [PromoCodeController::class, 'update'])->name('user.promo-codes.update');
+        Route::delete('/{promoCode}', [PromoCodeController::class, 'destroy'])->name('user.promo-codes.destroy');
+
+    });
+
 
 
     // Route::get('/dashboard', [UserDashboardController::class, 'dashboard'])->name('user.dashboard');
@@ -1319,3 +1332,5 @@ Route::post('/stripe/webhook', [\App\Http\Controllers\Webhook\StripeWebhookContr
 
 // Public success URL for Stripe Checkout (so Stripe redirect doesn't require auth)
 Route::get('/membership/checkout/success', [UserMembershipController::class, 'checkoutSuccess'])->name('membership.checkout.success');
+
+ Route::post('/promo-codes/validate', [PromoCodeController::class, 'validatePromoCode'])->name('user.promo-codes.validate');
