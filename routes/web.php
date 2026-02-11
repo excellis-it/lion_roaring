@@ -1018,6 +1018,7 @@ Route::prefix('user')->middleware(['user', 'preventBackHistory', 'userActivity',
 
         Route::get('settings', [UserAdminSettingsController::class, 'edit'])->name('user.admin.settings.edit');
         Route::post('settings', [UserAdminSettingsController::class, 'update'])->name('user.admin.settings.update');
+        Route::post('settings/toggle-status', [UserAdminSettingsController::class, 'toggleStatus'])->name('user.admin.settings.toggle-status');
 
 
 

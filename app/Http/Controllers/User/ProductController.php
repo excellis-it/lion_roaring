@@ -217,6 +217,8 @@ class ProductController extends Controller
             'use_market_price'  => 'nullable|in:0,1',
             'market_material_id' => 'nullable|integer|exists:market_materials,id',
             'market_grams'       => 'nullable|numeric|min:0.01',
+            // unit for market quantity: 'g' grams (default) or 'oz' ounces
+            'market_unit'        => 'nullable|in:g,oz',
             'status'            => 'nullable|in:0,1',
             // other charges (if present)
             'other_charges' => 'nullable|array',
@@ -233,6 +235,8 @@ class ProductController extends Controller
 
             if ($useMarketPrice) {
                 $rules['market_material_id'] = 'required|integer|exists:market_materials,id';
+                $rules['market_grams'] = 'required|numeric|min:0.01';
+                $rules['market_unit'] = 'required|in:g,oz';
                 $rules['market_grams'] = 'required|numeric|min:0.01';
             }
 
@@ -271,8 +275,10 @@ class ProductController extends Controller
             'images.min' => 'Please upload at least one gallery image.',
             'price.required' => 'The price field is required for simple products (unless marked free).',
             'market_material_id.required' => 'Please select a market material.',
-            'market_grams.required' => 'Please enter grams for market pricing.',
-            'market_grams.min' => 'Grams must be greater than 0.',
+            'market_grams.required' => 'Please enter quantity for market pricing.',
+            'market_grams.min' => 'Quantity must be greater than 0.',
+            'market_unit.required' => 'Please select unit (g or oz) for market pricing.',
+            'market_unit.in' => 'Selected unit is invalid. Choose g or oz.',
             // 'sku.required' => 'The SKU field is required for simple products.',
             // 'sku.unique' => 'The SKU has already been taken.',
             'quantity.required' => 'The stock quantity is required for simple products.',
@@ -328,7 +334,13 @@ class ProductController extends Controller
                 ], 422);
             }
 
-            $computedMarketPrice = (float) $marketRate->rate_per_gram * (float) $request->market_grams;
+            // If unit is ounces, convert to grams before multiplying by rate_per_gram
+            $unit = strtolower($request->market_unit ?? 'g');
+            $gramsQty = (float) $request->market_grams;
+            if ($unit === 'oz') {
+                $gramsQty = $gramsQty * 31.1034768; // troy ounce -> grams
+            }
+            $computedMarketPrice = (float) $marketRate->rate_per_gram * $gramsQty;
         }
 
         // generate SKU with easy coded in the first 3-5 characters indicate the category. for example:  Agriculture - AGR+number, Science & Innovation - SCI+number, etc.
@@ -357,6 +369,7 @@ class ProductController extends Controller
         $product->is_market_priced = $useMarketPrice;
         $product->market_material_id = $useMarketPrice ? $request->market_material_id : null;
         $product->market_grams = $useMarketPrice ? $request->market_grams : null;
+        $product->market_unit = $useMarketPrice ? ($request->market_unit ?? 'g') : null;
         $product->market_rate_per_gram = $useMarketPrice ? $marketRate?->rate_per_gram : null;
         $product->market_rate_at = $useMarketPrice ? $marketRate?->fetched_at : null;
         if ($product->is_free) {
@@ -369,6 +382,7 @@ class ProductController extends Controller
         if ($request->hasFile('background_image')) {
             $product->background_image = $this->imageUpload($request->file('background_image'), 'product', true);
         }
+
 
         $product->save();
 
@@ -559,6 +573,8 @@ class ProductController extends Controller
                 'use_market_price' => 'nullable|in:0,1',
                 'market_material_id' => 'nullable|integer|exists:market_materials,id',
                 'market_grams'      => 'nullable|numeric|min:0.01',
+                // unit for market quantity: 'g' grams (default) or 'oz' ounces
+                'market_unit'       => 'nullable|in:g,oz',
                 'status'           => 'nullable|in:0,1',
                 // other charges (if present)
                 'other_charges'             => 'nullable|array',
@@ -588,6 +604,7 @@ class ProductController extends Controller
                 if ($useMarketPrice) {
                     $rules['market_material_id'] = 'required|integer|exists:market_materials,id';
                     $rules['market_grams'] = 'required|numeric|min:0.01';
+                    $rules['market_unit'] = 'required|in:g,oz';
                 }
 
                 if (!$useMarketPrice && !$request->boolean('is_free')) {
@@ -621,8 +638,10 @@ class ProductController extends Controller
                 'product_type.in' => 'The selected product type is invalid.',
                 'price.required' => 'The price field is required for simple products (unless marked free).',
                 'market_material_id.required' => 'Please select a market material.',
-                'market_grams.required' => 'Please enter grams for market pricing.',
-                'market_grams.min' => 'Grams must be greater than 0.',
+                'market_grams.required' => 'Please enter quantity for market pricing.',
+                'market_grams.min' => 'Quantity must be greater than 0.',
+                'market_unit.required' => 'Please select unit (g or oz) for market pricing.',
+                'market_unit.in' => 'Selected unit is invalid. Choose g or oz.',
             ];
 
             $validator = Validator::make($request->all(), $rules, $messages);
@@ -662,7 +681,13 @@ class ProductController extends Controller
                     ], 422);
                 }
 
-                $computedMarketPrice = (float) $marketRate->rate_per_gram * (float) $request->market_grams;
+                // If unit is ounces, convert to grams before multiplying by rate_per_gram
+                $unit = strtolower($request->market_unit ?? 'g');
+                $gramsQty = (float) $request->market_grams;
+                if ($unit === 'oz') {
+                    $gramsQty = $gramsQty * 31.1034768; // troy ounce -> grams
+                }
+                $computedMarketPrice = (float) $marketRate->rate_per_gram * $gramsQty;
             }
 
 
@@ -682,6 +707,7 @@ class ProductController extends Controller
             $product->is_market_priced = $useMarketPrice;
             $product->market_material_id = $useMarketPrice ? $request->market_material_id : null;
             $product->market_grams = $useMarketPrice ? $request->market_grams : null;
+            $product->market_unit = $useMarketPrice ? ($request->market_unit ?? 'g') : null;
             $product->market_rate_per_gram = $useMarketPrice ? $marketRate?->rate_per_gram : null;
             $product->market_rate_at = $useMarketPrice ? $marketRate?->fetched_at : null;
 
@@ -710,6 +736,7 @@ class ProductController extends Controller
                 }
                 $product->background_image = $this->imageUpload($request->file('background_image'), 'product', true);
             }
+
 
             $product->save();
 

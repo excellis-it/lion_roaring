@@ -7,6 +7,8 @@
                 value="{{ $variation->id }}">
             <div class="row">
 
+                {{-- <span>Product is : {{ $product->is_market_priced }}</span> --}}
+
 
                 <div class="col-xxl-2 col-lg-4 col-md-6 mb-2">
                     <div class="box_label">
@@ -18,13 +20,14 @@
 
                 <div class="col-xxl-1 col-lg-4 col-md-6 mb-2">
                     <div class="box_label">
-                        <label>Price <span class="text-danger"></span></label>
+                        <label> {{ $product->is_market_priced == 1 ? 'Market Price' : 'Price' }} <span
+                                class="text-danger"></span></label>
                         <input type="number" step="0.01" name="variation_products[{{ $index }}][price]"
                             class="form-control" value="{{ $variation->warehouse_price }}" readonly>
                     </div>
                 </div>
 
-                <div class="col-xxl-1 col-lg-4 col-md-6 mb-2">
+                <div class="col-xxl-1 col-lg-4 col-md-6 mb-2" {{ $product->is_market_priced == 1 ? 'hidden' : '' }}>
                     <div class="box_label">
                         <label>Before Price </label>
 
@@ -34,7 +37,8 @@
                     </div>
                 </div>
 
-                <div class="col-xxl-1 col-lg-4 col-md-6 mb-2">
+                <div class="col-xxl-1 col-lg-4 col-md-6 mb-2"
+                    {{ $product->product_type == 'simple' || $product->is_market_priced == 1 ? 'hidden' : '' }}>
                     <div class="box_label">
                         <label>Color</label>
                         <input type="hidden" name="variation_products[{{ $index }}][color_id]"
@@ -44,7 +48,8 @@
                     </div>
                 </div>
 
-                <div class="col-xxl-1 col-lg-4 col-md-6 mb-2">
+                <div class="col-xxl-1 col-lg-4 col-md-6 mb-2"
+                    {{ $product->product_type == 'simple' || $product->is_market_priced == 1 ? 'hidden' : '' }}>
                     <div class="box_label">
                         <label>Size</label>
                         <input type="hidden" name="variation_products[{{ $index }}][size_id]"

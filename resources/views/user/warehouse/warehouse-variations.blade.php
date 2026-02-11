@@ -73,6 +73,7 @@
                 <h5>Product {{ $product->product_type == 'simple' ? 'stock' : 'variations' }} for Warehouse :
                     <strong>{{ $wareHouse->name }}</strong>
                 </h5>
+                <h5>Product Type : <strong>{{ $product->product_type == 'simple' ? 'Simple' : 'Variable' }}</strong></h5>
 
             </div>
 

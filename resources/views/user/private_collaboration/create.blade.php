@@ -3,10 +3,41 @@
     Create Private Collaboration - {{ env('APP_NAME') }}
 @endsection
 @push('styles')
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/css/select2.min.css" rel="stylesheet" />
     <style>
         .ck-placeholder {
             color: #a1a1a1;
             height: 250px !important;
+        }
+
+        .select2-container--default .select2-selection--multiple {
+            min-height: 45px;
+        }
+
+        /* Selected tag styling for invitees (purple theme) */
+        .select2-container--default .select2-selection--multiple .select2-selection__choice {
+            background-color: #7851a9;
+            border: 1px solid #5f3b86;
+            color: #ffffff;
+            padding-left: 8px;
+            padding-right: 6px;
+            border-radius: 6px;
+            font-weight: 500;
+        }
+
+        .select2-container--default .select2-selection--multiple .select2-selection__choice__remove {
+            color: rgba(255, 255, 255, 0.9);
+            margin-right: 6px;
+            font-weight: 700;
+        }
+
+        .select2-container--default .select2-selection--multiple .select2-selection__choice__remove:hover {
+            color: #fff;
+        }
+
+        /* Make the selected item text more readable */
+        .select2-container--default .select2-selection--multiple .select2-selection__choice span {
+            color: #ffffff;
         }
     </style>
 @endpush
@@ -30,7 +61,7 @@
                         </div>
                         <div class="row">
 
-                             @if (auth()->user()->user_type == 'Global')
+                            @if (auth()->user()->user_type == 'Global')
                                 {{-- country --}}
                                 <div class="col-md-6 mb-2">
                                     <div class="box_label">
@@ -49,7 +80,7 @@
                                     </div>
                                 </div>
                             @endif
-                            
+
                             <div class="col-md-6 mb-2">
                                 <div class="box_label">
                                     <label>Title <span style="color:red">*</span></label>
@@ -79,6 +110,23 @@
                                     <span class="text-danger" id="meeting_link_error"></span>
                                 </div>
                             </div>
+
+                            @if (isset($eligibleUsers) && $eligibleUsers->count())
+                                <div class="col-md-12 mb-2">
+                                    <div class="box_label">
+                                        <label>Invite Users <small>(Select multiple users)</small></label>
+                                        <select name="invitees[]" id="invitees" class="form-control select2-multi"
+                                            multiple="multiple" required aria-required="true">
+                                            <option></option>
+                                            @foreach ($eligibleUsers as $user)
+                                                <option value="{{ $user->id }}">{{ $user->full_name }}
+                                                    &lt;{{ $user->email }}&gt;</option>
+                                            @endforeach
+                                        </select>
+                                        <span class="text-danger" id="invitees_error"></span>
+                                    </div>
+                                </div>
+                            @endif
 
                             <div class="col-md-6 mb-2">
                                 <div class="box_label">
@@ -148,6 +196,18 @@
             $('#createCollaboration').on('submit', function(e) {
                 e.preventDefault();
                 var form = $(this);
+
+                // Client-side validation: ensure at least one invitee selected
+                if ($('#invitees').length) {
+                    var selected = $('#invitees').val();
+                    if (!selected || selected.length === 0) {
+                        $('#invitees_error').text('Please select at least one user to invite.');
+                        return;
+                    } else {
+                        $('#invitees_error').text('');
+                    }
+                }
+
                 var url = form.attr('action');
                 var type = form.attr('method');
                 var data = form.serialize();
@@ -160,7 +220,11 @@
                     success: function(response) {
                         if (response.status == true) {
                             toastr.success(response.message);
+                            // clear form and select2 selection
                             $('#createCollaboration')[0].reset();
+                            if ($('#invitees').length && typeof $.fn.select2 !== 'undefined') {
+                                $('#invitees').val(null).trigger('change');
+                            }
                             $('#loading').removeClass('loading');
                             $('#loading-content').removeClass('loading-content');
 
@@ -170,7 +234,7 @@
                             });
 
                             window.location.href =
-                            "{{ route('private-collaborations.index') }}";
+                                "{{ route('private-collaborations.index') }}";
                         } else {
                             toastr.error(response.message);
                             $('#loading').removeClass('loading');
@@ -181,12 +245,54 @@
                         $('#loading').removeClass('loading');
                         $('#loading-content').removeClass('loading-content');
                         $('.text-danger').text('');
+                        if (xhr.responseJSON && xhr.responseJSON.message) {
+                            toastr.error(xhr.responseJSON.message);
+                        }
                         $.each(xhr.responseJSON.errors || {}, function(key, item) {
                             $('#' + key + '_error').text(item[0]);
                         });
                     }
                 });
             });
+
+            // Initialize Select2 for invitees with better UX
+            function initInviteesSelect() {
+                var renderTemplate = function(data) {
+                    if (!data.id) return data.text;
+                    // data.text is like "First Middle Last <email@domain.com>"
+                    var m = data.text.match(/^(.*) <(.*)>$/);
+                    if (m) {
+                        var $container = $("<div class='invite-template'><div><strong>" + m[1] +
+                            "</strong></div><div style='font-size:90%;color:#6c757d;'>" + m[2] +
+                            "</div></div>");
+                        return $container;
+                    }
+                    return data.text;
+                };
+
+                $('#invitees').select2({
+                    placeholder: 'Select users to invite',
+                    allowClear: true,
+                    width: '100%',
+                    closeOnSelect: false,
+                    templateResult: renderTemplate,
+                    templateSelection: function(data) {
+                        return data.text;
+                    }
+                });
+            }
+
+            if ($('#invitees').length) {
+                // load select2 script dynamically if not present
+                if (typeof $.fn.select2 === 'undefined') {
+                    $.getScript('https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/select2.min.js')
+                        .done(function() {
+                            initInviteesSelect();
+                        });
+                } else {
+                    initInviteesSelect();
+                }
+            }
         });
     </script>
 @endpush

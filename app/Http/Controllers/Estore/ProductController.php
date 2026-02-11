@@ -136,7 +136,7 @@ class ProductController extends Controller
         $marketMaterials = collect();
         $marketMaterialRates = collect();
         if ($product && ($product->is_market_priced ?? false)) {
-            $marketMaterials = MarketMaterial::where('is_active', true)
+            $marketMaterials = MarketMaterial::where('is_active', true)->where('id', $product->market_material_id)
                 ->orderBy('sort_order')
                 ->get();
 

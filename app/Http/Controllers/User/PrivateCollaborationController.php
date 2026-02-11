@@ -24,10 +24,13 @@ class PrivateCollaborationController extends Controller
      */
     public function index()
     {
-        if (auth()->user()->can('Manage Private Collaboration')) {
-            $user_type = auth()->user()->user_type;
-            $user_country = auth()->user()->country;
-            // return $user_country;
+        if (!auth()->check()) {
+            abort(403, 'You do not have permission to access this page.');
+        }
+
+        $user_type = auth()->user()->user_type;
+        $user_country = auth()->user()->country;
+        // return $user_country;
 
             if ($user_type == 'Global') {
 
@@ -54,9 +57,6 @@ class PrivateCollaborationController extends Controller
             }
 
             return view('user.private_collaboration.list', compact('collaborations'));
-        } else {
-            abort(403, 'You do not have permission to access this page.');
-        }
     }
 
     /**
@@ -66,7 +66,11 @@ class PrivateCollaborationController extends Controller
     {
         if (auth()->user()->can('Create Private Collaboration')) {
             $countries = Country::orderBy('name', 'asc')->get();
-            return view('user.private_collaboration.create', compact('countries'));
+            // Eligible users who can be invited (users with Manage Private Collaboration permission)
+            $eligibleUsers = User::whereHas('roles.permissions', function ($query) {
+                $query->where('name', 'Manage Private Collaboration');
+            })->where('id', '!=', auth()->id())->orderBy('first_name')->orderBy('last_name')->get();
+            return view('user.private_collaboration.create', compact('countries', 'eligibleUsers'));
         } else {
             abort(403, 'You do not have permission to access this page.');
         }
@@ -92,7 +96,25 @@ class PrivateCollaborationController extends Controller
                 'end_time' => 'required|date|after:start_time',
                 'create_zoom' => 'nullable|boolean',
                 'country_id' => 'required|exists:countries,id',
+                'invitees' => 'required|array|min:1',
+                'invitees.*' => 'integer|exists:users,id',
             ]);
+
+            // Ensure selected invitees are eligible (have "Manage Private Collaboration" permission)
+            $invitees = $request->input('invitees', []);
+            $eligibleCount = User::whereIn('id', $invitees)
+                ->whereHas('roles.permissions', function ($q) {
+                    $q->where('name', 'Manage Private Collaboration');
+                })
+                ->where('id', '!=', auth()->id())
+                ->count();
+
+            if (count($invitees) !== $eligibleCount) {
+                return response()->json([
+                    'status' => false,
+                    'message' => 'One or more selected invitees are not eligible for invitation.'
+                ], 422);
+            }
 
             $data = $request->only(['title', 'description', 'meeting_link', 'start_time', 'end_time', 'country_id']);
             $data['user_id'] = auth()->id();
@@ -125,12 +147,19 @@ class PrivateCollaborationController extends Controller
 
             $collaboration = PrivateCollaboration::create($data);
 
-            // Send invitations to all users with "Manage Private Collaboration" permission
-            $this->sendInvitationsToEligibleUsers($collaboration);
+            // Send invitations to selected users (invitees[] from the form)
+            $invitees = $request->input('invitees', []);
+            $this->sendInvitationsToSelectedUsers($collaboration, $invitees);
 
-            // notify users
+            // notify selected users via in-app notification
             $userName = Auth::user()->getFullNameAttribute();
-            $noti = NotificationService::notifyAllUsers('New collaboration created by ' . $userName, 'collaboration');
+            foreach ($invitees as $uid) {
+                try {
+                    NotificationService::notifyUser($uid, 'New collaboration created by ' . $userName, 'collaboration');
+                } catch (\Exception $e) {
+                    Log::error('Failed to send in-app notification to user ' . $uid . ': ' . $e->getMessage());
+                }
+            }
 
             session()->flash('message', 'Collaboration scheduled successfully.');
 
@@ -149,34 +178,32 @@ class PrivateCollaborationController extends Controller
      */
     public function show($id)
     {
-        if (auth()->user()->can('View Private Collaboration')) {
-            $user_type = auth()->user()->user_type;
-            $user_country = auth()->user()->country;
-
-            if ($user_type == 'Global') {
-                $collaboration = PrivateCollaboration::with(['user', 'invitations.user'])->findOrFail($id);
-            } else {
-                $collaboration = PrivateCollaboration::with(['user', 'invitations.user'])->where('country_id', $user_country)->findOrFail($id);
-            }
-
-
-
-            // Check if user is creator or has been invited
-            $isCreator = $collaboration->user_id == auth()->id();
-            $invitation = $collaboration->invitations()->where('user_id', auth()->id())->first();
-            $hasAccepted = $invitation && $invitation->status == 'accepted';
-
-            if (!$isCreator && !$invitation) {
-                abort(403, 'You do not have access to this collaboration.');
-            }
-
-            $isZoom = $this->isZoomLink($collaboration->meeting_link);
-            $zoomMeetingId = $isZoom ? $this->parseZoomMeetingIdFromUrl($collaboration->meeting_link) : null;
-
-            return view('user.private_collaboration.show', compact('collaboration', 'isCreator', 'hasAccepted', 'isZoom', 'zoomMeetingId'));
-        } else {
+        if (!auth()->check()) {
             abort(403, 'You do not have permission to access this page.');
         }
+
+        $user_type = auth()->user()->user_type;
+        $user_country = auth()->user()->country;
+
+        if ($user_type == 'Global') {
+            $collaboration = PrivateCollaboration::with(['user', 'invitations.user'])->findOrFail($id);
+        } else {
+            $collaboration = PrivateCollaboration::with(['user', 'invitations.user'])->where('country_id', $user_country)->findOrFail($id);
+        }
+
+        // Check if user is creator or has been invited
+        $isCreator = $collaboration->user_id == auth()->id();
+        $invitation = $collaboration->invitations()->where('user_id', auth()->id())->first();
+        $hasAccepted = $invitation && $invitation->status == 'accepted';
+
+        if (!$isCreator && !$invitation && !auth()->user()->can('View Private Collaboration')) {
+            abort(403, 'You do not have access to this collaboration.');
+        }
+
+        $isZoom = $this->isZoomLink($collaboration->meeting_link);
+        $zoomMeetingId = $isZoom ? $this->parseZoomMeetingIdFromUrl($collaboration->meeting_link) : null;
+
+        return view('user.private_collaboration.show', compact('collaboration', 'isCreator', 'hasAccepted', 'isZoom', 'zoomMeetingId'));
     }
 
     /**
@@ -381,34 +408,34 @@ class PrivateCollaborationController extends Controller
      */
     public function viewCalender()
     {
-        if (auth()->user()->can('Manage Private Collaboration')) {
-            $user_type = auth()->user()->user_type;
-            $user_country = auth()->user()->country;
-
-            if ($user_type == 'Global') {
-                $collaborations = PrivateCollaboration::with(['user', 'invitations.user'])
-                    ->where(function ($query) {
-                        $query->where('user_id', auth()->id())
-                            ->orWhereHas('invitations', function ($q) {
-                                $q->where('user_id', auth()->id());
-                            });
-                    })
-                    ->get();
-            } else {
-                $collaborations = PrivateCollaboration::with(['user', 'invitations.user'])
-                    ->where(function ($query) {
-                        $query->where('user_id', auth()->id())
-                            ->orWhereHas('invitations', function ($q) {
-                                $q->where('user_id', auth()->id());
-                            });
-                    })
-                    ->where('country_id', $user_country)
-                    ->get();
-            }
-            return view('user.private_collaboration.calender', compact('collaborations'));
-        } else {
+        if (!auth()->check()) {
             abort(403, 'You do not have permission to access this page.');
         }
+
+        $user_type = auth()->user()->user_type;
+        $user_country = auth()->user()->country;
+
+        if ($user_type == 'Global') {
+            $collaborations = PrivateCollaboration::with(['user', 'invitations.user'])
+                ->where(function ($query) {
+                    $query->where('user_id', auth()->id())
+                        ->orWhereHas('invitations', function ($q) {
+                            $q->where('user_id', auth()->id());
+                        });
+                })
+                ->get();
+        } else {
+            $collaborations = PrivateCollaboration::with(['user', 'invitations.user'])
+                ->where(function ($query) {
+                    $query->where('user_id', auth()->id())
+                        ->orWhereHas('invitations', function ($q) {
+                            $q->where('user_id', auth()->id());
+                        });
+                })
+                ->where('country_id', $user_country)
+                ->get();
+        }
+        return view('user.private_collaboration.calender', compact('collaborations'));
     }
 
     /**
@@ -416,95 +443,103 @@ class PrivateCollaborationController extends Controller
      */
     public function fetchCalenderData()
     {
-        if (auth()->user()->can('Manage Private Collaboration')) {
-            $user_type = auth()->user()->user_type;
-            $user_country = auth()->user()->country;
-
-            if ($user_type == 'Global') {
-                $collaborations = PrivateCollaboration::with(['user', 'invitations.user'])
-                    ->where(function ($query) {
-                        $query->where('user_id', auth()->id())
-                            ->orWhereHas('invitations', function ($q) {
-                                $q->where('user_id', auth()->id());
-                            });
-                    })
-                    ->get()
-                    ->map(function ($collaboration) {
-                        $isCreator = $collaboration->user_id == auth()->id();
-                        $invitation = $collaboration->invitations->where('user_id', auth()->id())->first();
-                        $hasAccepted = $invitation && $invitation->status == 'accepted';
-
-                        return [
-                            'id' => $collaboration->id,
-                            'title' => $collaboration->title,
-                            'start' => $collaboration->start_time,
-                            'end' => $collaboration->end_time,
-                            'description' => $collaboration->description,
-                            'meeting_link' => ($isCreator || $hasAccepted) ? $collaboration->meeting_link : null,
-                            'is_creator' => $isCreator,
-                            'has_accepted' => $hasAccepted,
-                            'is_zoom' => $collaboration->is_zoom,
-                            'created_by' => $collaboration->user->full_name ?? 'N/A',
-                        ];
-                    });
-                return response()->json($collaborations);
-            } else {
-                $collaborations = PrivateCollaboration::with(['user', 'invitations.user'])
-                    ->where(function ($query) {
-                        $query->where('user_id', auth()->id())
-                            ->orWhereHas('invitations', function ($q) {
-                                $q->where('user_id', auth()->id());
-                            });
-                    })
-                    ->where('country_id', $user_country)
-                    ->get()
-                    ->map(function ($collaboration) {
-                        $isCreator = $collaboration->user_id == auth()->id();
-                        $invitation = $collaboration->invitations->where('user_id', auth()->id())->first();
-                        $hasAccepted = $invitation && $invitation->status == 'accepted';
-
-                        return [
-                            'id' => $collaboration->id,
-                            'title' => $collaboration->title,
-                            'start' => $collaboration->start_time,
-                            'end' => $collaboration->end_time,
-                            'description' => $collaboration->description,
-                            'meeting_link' => ($isCreator || $hasAccepted) ? $collaboration->meeting_link : null,
-                            'is_creator' => $isCreator,
-                            'has_accepted' => $hasAccepted,
-                            'is_zoom' => $collaboration->is_zoom,
-                            'created_by' => $collaboration->user->full_name ?? 'N/A',
-                        ];
-                    });
-                return response()->json($collaborations);
-            }
-        } else {
+        if (!auth()->check()) {
             abort(403, 'You do not have permission to access this page.');
+        }
+
+        $user_type = auth()->user()->user_type;
+        $user_country = auth()->user()->country;
+
+        if ($user_type == 'Global') {
+            $collaborations = PrivateCollaboration::with(['user', 'invitations.user'])
+                ->where(function ($query) {
+                    $query->where('user_id', auth()->id())
+                        ->orWhereHas('invitations', function ($q) {
+                            $q->where('user_id', auth()->id());
+                        });
+                })
+                ->get()
+                ->map(function ($collaboration) {
+                    $isCreator = $collaboration->user_id == auth()->id();
+                    $invitation = $collaboration->invitations->where('user_id', auth()->id())->first();
+                    $hasAccepted = $invitation && $invitation->status == 'accepted';
+
+                    return [
+                        'id' => $collaboration->id,
+                        'title' => $collaboration->title,
+                        'start' => $collaboration->start_time,
+                        'end' => $collaboration->end_time,
+                        'description' => $collaboration->description,
+                        'meeting_link' => ($isCreator || $hasAccepted) ? $collaboration->meeting_link : null,
+                        'is_creator' => $isCreator,
+                        'has_accepted' => $hasAccepted,
+                        'is_zoom' => $collaboration->is_zoom,
+                        'created_by' => $collaboration->user->full_name ?? 'N/A',
+                    ];
+                });
+            return response()->json($collaborations);
+        } else {
+            $collaborations = PrivateCollaboration::with(['user', 'invitations.user'])
+                ->where(function ($query) {
+                    $query->where('user_id', auth()->id())
+                        ->orWhereHas('invitations', function ($q) {
+                            $q->where('user_id', auth()->id());
+                        });
+                })
+                ->where('country_id', $user_country)
+                ->get()
+                ->map(function ($collaboration) {
+                    $isCreator = $collaboration->user_id == auth()->id();
+                    $invitation = $collaboration->invitations->where('user_id', auth()->id())->first();
+                    $hasAccepted = $invitation && $invitation->status == 'accepted';
+
+                    return [
+                        'id' => $collaboration->id,
+                        'title' => $collaboration->title,
+                        'start' => $collaboration->start_time,
+                        'end' => $collaboration->end_time,
+                        'description' => $collaboration->description,
+                        'meeting_link' => ($isCreator || $hasAccepted) ? $collaboration->meeting_link : null,
+                        'is_creator' => $isCreator,
+                        'has_accepted' => $hasAccepted,
+                        'is_zoom' => $collaboration->is_zoom,
+                        'created_by' => $collaboration->user->full_name ?? 'N/A',
+                    ];
+                });
+            return response()->json($collaborations);
         }
     }
 
     /**
-     * Send invitations to all users who have "Manage Private Collaboration" permission
+     * Send invitations to selected users (invitees)
      */
-    protected function sendInvitationsToEligibleUsers($collaboration)
+    protected function sendInvitationsToSelectedUsers($collaboration, array $userIds = [])
     {
-        $users = User::whereHas('roles.permissions', function ($query) {
-            $query->where('name', 'Manage Private Collaboration');
-        })->where('id', '!=', auth()->id())->get();
+        if (empty($userIds)) {
+            return;
+        }
+
+        $users = User::whereIn('id', $userIds)->where('id', '!=', auth()->id())->get();
 
         foreach ($users as $user) {
-            // Create invitation record
-            CollaborationInvitation::create([
-                'collaboration_id' => $collaboration->id,
-                'user_id' => $user->id,
-                'status' => 'pending',
-            ]);
+            // Create or update invitation record
+            CollaborationInvitation::updateOrCreate(
+                ['collaboration_id' => $collaboration->id, 'user_id' => $user->id],
+                ['status' => 'pending']
+            );
 
             // Send email invitation
             try {
                 Mail::to($user->email)->send(new CollaborationInvitationMail($collaboration, $user));
             } catch (\Exception $e) {
                 Log::error('Failed to send invitation email to user ' . $user->id . ': ' . $e->getMessage());
+            }
+
+            // Send in-app notification
+            try {
+                NotificationService::notifyUser($user->id, 'You have been invited to a collaboration: ' . $collaboration->title, 'collaboration');
+            } catch (\Exception $e) {
+                Log::error('Failed to send in-app notification to user ' . $user->id . ': ' . $e->getMessage());
             }
         }
     }
