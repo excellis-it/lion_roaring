@@ -231,14 +231,7 @@
                                         </div>
                                     </div>
 
-                                    <div class="col-md-6 mb-2">
-                                        <div class="box_label">
-                                            <label> Size Measurements Image (managed per category)</label>
-                                            <p class="text-muted">Size measurements image is now managed at the
-                                                <strong>Category</strong> level. Set or update it from <a
-                                                    href="{{ route('categories.index') }}">Category settings</a>.</p>
-                                        </div>
-                                    </div>
+                                   
 
                                     {{-- short_description --}}
                                     <div class="col-md-12 mb-2">
