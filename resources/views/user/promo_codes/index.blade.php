@@ -19,7 +19,7 @@
                     </div>
                 </div>
 
-              
+
 
                 <div class="table-responsive mt-3">
                     <table class="table align-middle bg-white color_body_text">
@@ -93,7 +93,7 @@
                                     </td>
                                     <td>
                                         @if ($promoCode->status)
-                                            @if ($promoCode->end_date && $promoCode->end_date->isPast())
+                                            @if ($promoCode->end_date && $promoCode->end_date->endOfDay()->isPast())
                                                 <span class="badge bg-danger">Expired</span>
                                             @elseif ($promoCode->usage_limit && $promoCode->usage_count >= $promoCode->usage_limit)
                                                 <span class="badge bg-warning">Limit Reached</span>
