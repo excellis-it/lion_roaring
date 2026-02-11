@@ -209,6 +209,10 @@ class MembershipController extends Controller
         $query = UserSubscription::where('created_at', '>', $date_after)
             ->with(['user', 'payments']);
 
+        if (!auth()->user()->hasNewRole('SUPER ADMIN')) {
+            $query->where('user_id', auth()->id());
+        }
+
         // Search Filter
         if ($request->filled('search')) {
             $search = $request->search;
@@ -255,6 +259,11 @@ class MembershipController extends Controller
         if (!auth()->user()->can('View Membership Payments')) {
             abort(403, 'Unauthorized');
         }
+
+        if (!auth()->user()->hasNewRole('SUPER ADMIN') && $user->id != auth()->id()) {
+            abort(403, 'Unauthorized');
+        }
+
         $date_after =  '2025-11-01';
         $payments = SubscriptionPayment::where('user_id', $user->id)->where('created_at', '>', $date_after)->with('userSubscription')->orderBy('id', 'desc')->get();
         return view('user.membership.payments', compact('payments', 'user'));
@@ -269,6 +278,10 @@ class MembershipController extends Controller
         $date_after = '2025-11-01';
         $query = SubscriptionPayment::where('created_at', '>', $date_after)
             ->with(['user', 'userSubscription']);
+
+        if (!auth()->user()->hasNewRole('SUPER ADMIN')) {
+            $query->where('user_id', auth()->id());
+        }
 
         // Search filter
         if ($request->filled('search')) {
