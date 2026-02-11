@@ -97,10 +97,10 @@
         width: 45%;
     }
         .for-mobile-use {
-        width: 50%;
+        width: 40%;
     }
     .right_top {
-    width: 50%;
+    width: 60%;
 }
 .slider, .slide {
     height: 750px;
@@ -549,6 +549,9 @@
     }
     .slide__img img.overlay-image {
         height: 45%;
+    }
+    .login_prf a{
+        font-size: 13px;
     }
 }
 
