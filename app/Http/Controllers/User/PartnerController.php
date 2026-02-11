@@ -1224,6 +1224,7 @@ class PartnerController extends Controller
                 'name' => $user->full_name,
                 'email' => $user->email,
                 'type' => 'Deactivated',
+                'status' => $request->status,
             ];
             Mail::to($user->email)->send(new InactiveUserMail($maildata));
             $message = 'Status deactivated successfully.';
@@ -1232,6 +1233,7 @@ class PartnerController extends Controller
                 'name' => $user->full_name,
                 'email' => $user->email,
                 'type' => 'Activated',
+                'status' => $request->status,
             ];
             Mail::to($user->email)->send(new ActiveUserMail($maildata));
             $message = 'Status activated successfully.';

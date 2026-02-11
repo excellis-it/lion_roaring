@@ -1194,7 +1194,7 @@
                                 <button type="button" id="validate-promo-btn" class="btn"
                                     style="background: #643271; color: white; padding: 0 20px; border: none; border-radius: 6px; white-space: nowrap; font-weight: 500;"
                                     disabled>
-                                    Validate
+                                    Apply
                                 </button>
                             </div>
                             <div id="promo-code-feedback" class="mt-2" style="font-size: 13px;"></div>
@@ -1290,7 +1290,7 @@
                 // Clear promo code validation state (user can re-validate after choosing new tier)
                 $('#promo-code-feedback').html('');
                 var promoCode = $('#promo_code').val().trim();
-                $('#validate-promo-btn').text('Validate').prop('disabled', promoCode === '');
+                $('#validate-promo-btn').text('Apply').prop('disabled', promoCode === '');
             });
 
             $('#login-form').on('submit', function(e) {
@@ -1323,7 +1323,7 @@
 
                 e.preventDefault();
 
-                // Validate Signature
+                // Apply Signature
                 if ($('#signature-data').val() === '') {
                     if (!document.getElementById('login-form').checkValidity()) {
                         document.getElementById('login-form').reportValidity();
@@ -1554,7 +1554,7 @@
                 }
             });
 
-            // Validate Promo Code
+            // Apply Promo Code
             $('#validate-promo-btn').on('click', function() {
                 var code = $('#promo_code').val().trim();
                 if (!code) return;
@@ -1566,7 +1566,7 @@
                 }
 
                 var btn = $(this);
-                btn.prop('disabled', true).text('Validating...');
+                btn.prop('disabled', true).text('Applying...');
 
                 $.ajax({
                     url: '{{ route('user.promo-codes.validate') }}',
@@ -1614,8 +1614,8 @@
                         }
 
                         // Reset button state
-                        btn.prop('disabled', false).text('Validate');
-                        console.log('Button reset to: Validate');
+                        btn.prop('disabled', false).text('Apply');
+                        console.log('Button reset to: Apply');
                     },
                     error: function(xhr) {
                         promoCodeData = null;
@@ -1628,7 +1628,7 @@
                             '<i class="fa fa-times-circle"></i> ' + errorMsg +
                             '</div>'
                         );
-                        btn.prop('disabled', false).text('Validate');
+                        btn.prop('disabled', false).text('Apply');
                     }
                 });
             });
@@ -1723,7 +1723,7 @@
                     }
 
                     // Reset validate button text and state
-                    $('#validate-promo-btn').text('Validate').prop('disabled', !promoCode);
+                    $('#validate-promo-btn').text('Apply').prop('disabled', !promoCode);
                 }
 
 
