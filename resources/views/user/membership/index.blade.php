@@ -179,67 +179,140 @@
         </div>
     </div>
 
-    <!-- Token agree description modal -->
-    <div class="modal fade" id="tokenAgreeModal" tabindex="-1" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="tokenAgreeModalTitle">Tier - Agreement</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+    <!-- Token agree description modal (Premium Redesign Fixed) -->
+    <div class="modal fade" id="tokenAgreeModal" tabindex="-1" role="dialog" aria-labelledby="tokenAgreeModalTitle"
+        aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content shadow-lg border-0"
+                style="border-radius: 20px; overflow: hidden; background-color: #ffffff;">
+                <!-- Header with Purple Gradient -->
+                <div class="modal-header border-0 p-4 pb-0 position-relative d-block"
+                    style="background: linear-gradient(135deg, #6f42c1 0%, #4e2a84 100%); min-height: 110px;">
+                    <button type="button" class="btn-close btn-close-white position-absolute" data-bs-dismiss="modal"
+                        aria-label="Close" style="top: 20px; right: 20px; z-index: 10;"></button>
+                    <div class="position-relative" style="z-index: 1;">
+                        <h4 class="modal-title text-white fw-bold mb-0" id="tokenAgreeModalTitle">Tier - Agreement</h4>
+                        <p class="text-white-50 mb-0 small"><i class="fa fa-file-signature me-1"></i> Terms & Conditions</p>
+                    </div>
                 </div>
-                <div class="modal-body">
-                    <div class="mb-2 text-muted small">Please review and accept to subscribe.</div>
-                    <div class="border rounded p-3" style="white-space: pre-wrap;" id="tokenAgreeModalBody"></div>
+
+                <div class="modal-body p-4" style="margin-top: -30px; position: relative; z-index: 2;">
+                    <!-- Agreement Content Card -->
+                    <div class="card border-0 shadow-sm p-4"
+                        style="border-radius: 15px; border: 1px solid rgba(0,0,0,0.05) !important;">
+                        <div class="mb-3 text-muted small fw-bold text-uppercase" style="letter-spacing: 0.5px;"> Please
+                            review and accept to subscribe.</div>
+                        <div class="bg-light p-3 rounded-3"
+                            style="white-space: pre-wrap; font-size: 0.9rem; color: #444; max-height: 250px; overflow-y: auto; border: 1px solid #eee;"
+                            id="tokenAgreeModalBody"></div>
+                    </div>
                 </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Reject</button>
-                    <form method="POST" id="tokenAgreeForm">
+
+                <div class="modal-footer border-0 p-4 pt-0 d-flex gap-2">
+                    <button type="button" class="btn btn-light rounded-pill flex-grow-1 py-2 fw-bold text-muted border-0"
+                        data-bs-dismiss="modal" style="background: #f8f9fa;">
+                        Reject
+                    </button>
+                    <form method="POST" id="tokenAgreeForm" class="flex-grow-1">
                         @csrf
-                        <button type="submit" class="btn btn-primary">Accept</button>
+                        <button type="submit" class="btn btn-primary w-100 rounded-pill py-2 fw-bold shadow-sm"
+                            style="background: #6f42c1; border: none;">
+                            Accept & Subscribe <i class="fa fa-check-circle ms-2 small"></i>
+                        </button>
                     </form>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- Promo Code Modal -->
-    <div class="modal fade" id="promoCodeModal" tabindex="-1" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="promoCodeModalTitle">Checkout</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                    <div class="mb-3">
-                        <h6 id="selectedPlan"></h6>
-                        <div class="d-flex justify-content-between align-items-center mb-2">
-                            <span>Original Price:</span>
-                            <strong id="originalPrice"></strong>
-                        </div>
-                        <div class="d-flex justify-content-between align-items-center mb-2 text-success" id="discountRow"
-                            style="display: none !important;">
-                            <span>Discount:</span>
-                            <strong id="discountAmount"></strong>
-                        </div>
-                        <div class="d-flex justify-content-between align-items-center mb-3">
-                            <span><strong>Final Price:</strong></span>
-                            <strong class="text-primary" id="finalPrice"></strong>
-                        </div>
+    <!-- Promo Code Modal (Premium Redesign Fixed) -->
+    <div class="modal fade" id="promoCodeModal" tabindex="-1" role="dialog" aria-labelledby="promoCodeModalTitle"
+        aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content shadow-lg border-0"
+                style="border-radius: 20px; overflow: hidden; background-color: #ffffff;">
+                <!-- Header with Premium Gradient -->
+                <div class="modal-header border-0 p-4 pb-0 position-relative d-block"
+                    style="background: linear-gradient(135deg, #6f42c1 0%, #4e2a84 100%); min-height: 120px;">
+                    <button type="button" class="btn-close btn-close-white position-absolute" data-bs-dismiss="modal"
+                        aria-label="Close" style="top: 20px; right: 20px; z-index: 10;"></button>
+                    <div class="position-relative" style="z-index: 1;">
+                        <h4 class="modal-title text-white fw-bold mb-0" id="promoCodeModalTitle">Checkout</h4>
+                        <p class="text-white-50 mb-0 small"><i class="fa fa-shield-alt me-1"></i> Secure Checkout</p>
                     </div>
-                    <div class="mb-3">
-                        <label for="promoCodeInput" class="form-label">Promo Code (Optional)</label>
-                        <div class="input-group">
-                            <input type="text" class="form-control" id="promoCodeInput"
-                                placeholder="Enter promo code">
-                            <button class="btn btn-outline-secondary" type="button" id="applyPromoBtn">Apply</button>
-                        </div>
-                        <div class="form-text" id="promoMessage"></div>
+                    <!-- Decorative Circle -->
+                    <div class="position-absolute"
+                        style="width: 140px; height: 140px; background: rgba(255,255,255,0.1); border-radius: 50%; top: -40px; right: -30px; z-index: 0;">
                     </div>
                 </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                    <button type="button" class="btn btn-primary" id="proceedToCheckout">Proceed to Checkout</button>
+
+                <div class="modal-body p-4" style="margin-top: -40px; position: relative; z-index: 2;">
+                    <!-- Summary Card -->
+                    <div class="card border-0 shadow-sm mb-4"
+                        style="border-radius: 15px; border: 1px solid rgba(0,0,0,0.05) !important;">
+                        <div class="card-body p-4 text-dark">
+                            <div class="d-flex align-items-center mb-3">
+                                <div class="rounded-circle bg-light p-2 me-3 d-flex align-items-center justify-content-center"
+                                    style="width: 48px; height: 48px; background-color: rgba(111, 66, 193, 0.1) !important;">
+                                    <i class="fa fa-crown text-primary"
+                                        style="font-size: 20px; color: #6f42c1 !important;"></i>
+                                </div>
+                                <div class="flex-grow-1">
+                                    <h6 class="mb-0 fw-bold" id="selectedPlan">Plan Name</h6>
+                                    <span class="text-muted small">Subscription Plan</span>
+                                </div>
+                            </div>
+
+                            <div class="p-3 rounded-3" style="background: #fdfbff; border: 1px solid #eee;">
+                                <div class="d-flex justify-content-between align-items-center mb-2">
+                                    <span class="text-muted small">Original Price</span>
+                                    <span class="fw-bold" id="originalPrice">$0.00</span>
+                                </div>
+                                <div class="d-flex justify-content-between align-items-center mb-2 text-success"
+                                    id="discountRow" style="display: none !important;">
+                                    <span class="small"><i class="fa fa-tag me-1"></i> Discount</span>
+                                    <span class="fw-bold" id="discountAmount">-$0.00</span>
+                                </div>
+                                <hr class="my-2 opacity-10">
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <h6 class="mb-0 fw-bold">Total Due</h6>
+                                    <h5 class="mb-0 fw-bold text-primary" id="finalPrice"
+                                        style="color: #6f42c1 !important;">$0.00</h5>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Promo Code -->
+                    <div class="px-2">
+                        <label class="form-label fw-bold small text-muted text-uppercase mb-2">
+                            <i class="fa fa-ticket-alt me-1"></i> Promo Code
+                        </label>
+                        <div class="input-group mb-2 border rounded-pill p-1 bg-white shadow-sm overflow-hidden">
+                            <input type="text" class="form-control border-0 bg-transparent px-3" id="promoCodeInput"
+                                placeholder="Enter code here..." style="box-shadow: none;">
+                            <button class="btn px-4 fw-bold rounded-pill text-white" type="button" id="applyPromoBtn"
+                                style="background: #6f42c1; transition: all 0.3s;">
+                                Apply
+                            </button>
+                        </div>
+                        <div id="promoMessage" class="small mt-1 ms-3"></div>
+                    </div>
+                </div>
+
+                <div class="modal-footer border-0 p-4 pt-0 d-flex gap-2">
+                    <button type="button" class="btn btn-light rounded-pill flex-grow-1 py-2 fw-bold text-muted border-0"
+                        data-bs-dismiss="modal" style="background: #f8f9fa;">
+                        Cancel
+                    </button>
+                    <button type="button" class="btn btn-primary rounded-pill flex-grow-1 py-2 fw-bold shadow-sm"
+                        id="proceedToCheckout" style="background: #6f42c1; border: none;">
+                        Checkout <i class="fa fa-arrow-right ms-2 small"></i>
+                    </button>
+                </div>
+                <div class="text-center pb-3">
+                    <span class="text-muted" style="font-size: 11px;"><i class="fa fa-lock me-1"></i> Secure 256-bit SSL
+                        Encryption</span>
                 </div>
             </div>
         </div>
@@ -344,6 +417,43 @@
             width: 100%;
         }
 
+        .flex-grow-2 {
+            flex-grow: 2;
+        }
+
+        .bg-theme-10 {
+            background-color: rgba(111, 66, 193, 0.1);
+        }
+
+        .text-theme {
+            color: var(--theme) !important;
+        }
+
+        .btn-theme {
+            background-color: var(--theme);
+            color: white;
+            border: none;
+        }
+
+        .btn-theme:hover {
+            background-color: var(--theme-75);
+            color: white;
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(111, 66, 193, 0.2);
+        }
+
+        .transition-all {
+            transition: all 0.3s ease;
+        }
+
+        .scale-effect {
+            transition: transform 0.2s ease;
+        }
+
+        .scale-effect:hover {
+            transform: scale(1.02);
+        }
+
         @media (max-width: 767px) {
             .membership-current-card {
                 margin-bottom: 1rem;
@@ -441,15 +551,17 @@
                         var discount = parseFloat(response.discount);
                         finalAmount = parseFloat(response.final_price);
 
-                        // Update UI
                         $('#discountAmount').text('-$' + discount.toFixed(2));
                         $('#finalPrice').text('$' + finalAmount.toFixed(2));
                         $('#discountRow').show();
-                        $('#promoMessage').text('✓ Promo code applied successfully!').removeClass(
+                        $('#promoMessage').html(
+                            '<i class="fa fa-check-circle me-1"></i> Promo code applied successfully!'
+                        ).removeClass(
                             'text-danger').addClass('text-success');
                         $('#promoCodeInput').prop('readonly', true);
-                        $('#applyPromoBtn').text('Applied').addClass('btn-success').removeClass(
-                            'btn-outline-secondary');
+                        $('#applyPromoBtn').text('Applied').addClass('btn-success text-white')
+                            .removeClass(
+                                'btn-theme');
                     } else {
                         $('#promoMessage').text(response.message || 'Invalid promo code').removeClass(
                             'text-success').addClass('text-danger');
@@ -461,7 +573,7 @@
                         message = xhr.responseJSON.message;
                     }
                     $('#promoMessage').text(message).removeClass('text-success').addClass(
-                    'text-danger');
+                        'text-danger');
                 },
                 complete: function() {
                     $('#applyPromoBtn').prop('disabled', false).text('Apply');
