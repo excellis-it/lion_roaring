@@ -130,11 +130,12 @@
                     <div class="d-flex">
                         @if (Auth::user()->can('Edit Partners'))
                             {{-- @if (auth()->user()->hasNewRole('SUPER ADMIN') || $partner->created_id == auth()->user()->id || (auth()->user()->roles()->first()->is_ecclesia == 1 && auth()->id() != $partner->id)) --}}
-                            <a href="{{ route('partners.edit', Crypt::encrypt($partner->id)) }}"
-                                class="edit_icon me-2">
-                                <i class="ti ti-edit"></i>
-                            </a>
-                            {{-- @endif --}}
+                            @if (auth()->id() != $partner->id)
+                                <a href="{{ route('partners.edit', Crypt::encrypt($partner->id)) }}"
+                                    class="edit_icon me-2">
+                                    <i class="ti ti-edit"></i>
+                                </a>
+                            @endif
                         @endif
 
                         @if (Auth::user()->can('View Partners'))
@@ -145,12 +146,13 @@
                         @endif
                         @if (Auth::user()->can('Delete Partners'))
                             {{-- @if (auth()->user()->hasNewRole('SUPER ADMIN') || $partner->created_id == auth()->user()->id || (auth()->user()->roles()->first()->is_ecclesia == 1 && auth()->id() != $partner->id)) --}}
+                            @if (auth()->id() != $partner->id)
                             <a href="javascript:void(0);"
                                 data-route="{{ route('partners.delete', Crypt::encrypt($partner->id)) }}"
                                 class="delete_icon" id="delete">
                                 <i class="ti ti-trash"></i>
                             </a>
-                            {{-- @endif --}}
+                            @endif
                         @endif
 
                     </div>
