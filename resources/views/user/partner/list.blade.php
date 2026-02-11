@@ -204,6 +204,20 @@
                             </div>
                         </div>
 
+                        <!-- Signature Section -->
+                        <div id="modal-signature-section" class="mt-3 d-none">
+                            <div class="p-3 bg-light rounded-3 border-start border-4 border-primary shadow-sm">
+                                <label class="text-muted small text-uppercase fw-bold mb-2 d-block">
+                                    <i class="ti ti-pencil me-1 text-primary"></i> Member Signature
+                                </label>
+                                <div class="bg-white rounded-2 border p-2 text-center"
+                                    style="min-height: 100px; display: flex; align-items: center; justify-content: center;">
+                                    <img id="modal-signature-img" src="" alt="Signature"
+                                        style="max-height: 120px; max-width: 100%; object-fit: contain;">
+                                </div>
+                            </div>
+                        </div>
+
                         <!-- Action Section -->
                         <div class="text-center py-4 bg-light rounded-3 border shadow-sm mt-3"
                             style="border-style: dashed !important;">
@@ -441,6 +455,13 @@
                             $('#modal-signer-name').text(response.data.signer_name || '-');
                             $('#modal-signed-at').text(response.data.signed_at || '-');
                             $('#modal-country-code').text(response.data.country_code || '-');
+
+                            if (response.data.signature) {
+                                $('#modal-signature-img').attr('src', response.data.signature);
+                                $('#modal-signature-section').removeClass('d-none');
+                            } else {
+                                $('#modal-signature-section').addClass('d-none');
+                            }
 
                             if (response.data.pdf_exists) {
                                 $('#modal-view-pdf').attr('href', response.data.pdf_url)

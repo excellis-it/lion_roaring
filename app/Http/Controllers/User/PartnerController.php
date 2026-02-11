@@ -1179,6 +1179,7 @@ class PartnerController extends Controller
                 ->first();
 
             if ($userAgreement) {
+                $user = User::find($userAgreement->user_id);
                 return response()->json([
                     'success' => true,
                     'data' => [
@@ -1187,7 +1188,8 @@ class PartnerController extends Controller
                         'country_code' => strtoupper($userAgreement->country_code),
                         'pdf_url' => Storage::url($userAgreement->pdf_path),
                         'pdf_exists' => Storage::disk('public')->exists($userAgreement->pdf_path),
-                        'signed_at' => $userAgreement->created_at->format('d M Y, h:i A')
+                        'signed_at' => $userAgreement->created_at->format('d M Y, h:i A'),
+                        'signature' => $user ? $user->signature : null
                     ]
                 ]);
             }
