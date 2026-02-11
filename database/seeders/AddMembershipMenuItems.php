@@ -22,6 +22,8 @@ class AddMembershipMenuItems extends Seeder
             ['key' => 'membership_members', 'default_name' => 'Members'],
             ['key' => 'membership_all_payments', 'default_name' => 'All Payments'],
             ['key' => 'membership_settings', 'default_name' => 'Settings'],
+            // membership_promo_codes
+            ['key' => 'membership_promo_codes', 'default_name' => 'Promo Codes'],
         ];
 
         foreach ($membershipMenus as $menu) {

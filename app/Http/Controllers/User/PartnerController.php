@@ -302,6 +302,7 @@ class PartnerController extends Controller
                     'Create Membership',
                     'Edit Membership',
                     'Delete Membership',
+
                 ],
                 Helper::getMenuName('membership_settings', 'Membership Settings') => [
                     'View Membership Settings',
@@ -309,6 +310,12 @@ class PartnerController extends Controller
                 ],
                 Helper::getMenuName('membership_members', 'Membership Members') => ['View Membership Members'],
                 Helper::getMenuName('membership_payments', 'Membership Payments') => ['View Membership Payments'],
+                Helper::getMenuName('membership_promo_codes', 'Membership Promo Codes') => [
+                    'View Promo Codes',
+                    'Create Promo Code',
+                    'Edit Promo Code',
+                    'Delete Promo Code',
+                ],
             ],
             Helper::getMenuName('user_activity', 'User Activity') => [
                 Helper::getMenuName('user_activity', 'User Activity') => [
