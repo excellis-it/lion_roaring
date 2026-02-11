@@ -204,9 +204,49 @@ class MembershipController extends Controller
         if (!auth()->user()->can('View Membership Members')) {
             abort(403, 'Unauthorized');
         }
-        $date_after =  '2025-11-01';
-        $members = UserSubscription::where('created_at', '>', $date_after)->with(['user', 'payments'])->orderBy('subscription_start_date', 'desc')->paginate(20);
+
+        $date_after = '2025-11-01';
+        $query = UserSubscription::where('created_at', '>', $date_after)
+            ->with(['user', 'payments']);
+
+        // Search Filter
+        if ($request->filled('search')) {
+            $search = $request->search;
+            $query->where(function ($q) use ($search) {
+                $q->where('subscription_name', 'like', "%{$search}%")
+                    ->orWhere('promo_code', 'like', "%{$search}%")
+                    ->orWhereHas('user', function ($uq) use ($search) {
+                        $uq->where('first_name', 'like', "%{$search}%")
+                            ->orWhere('last_name', 'like', "%{$search}%")
+                            ->orWhere('email', 'like', "%{$search}%");
+                    });
+            });
+        }
+
+        // Method Filter (Amount/Token)
+        if ($request->filled('method')) {
+            $query->where('subscription_method', $request->method);
+        }
+
+        // Date From Filter
+        if ($request->filled('date_from')) {
+            $query->whereDate('subscription_start_date', '>=', $request->date_from);
+        }
+
+        // Date To Filter
+        if ($request->filled('date_to')) {
+            $query->whereDate('subscription_start_date', '<=', $request->date_to);
+        }
+
+        $members = $query->orderBy('subscription_start_date', 'desc')->paginate(15);
         $measurement = MembershipMeasurement::first();
+
+        if ($request->ajax()) {
+            return response()->json([
+                'html' => view('user.membership.partials.members_table', compact('members', 'measurement'))->render(),
+            ]);
+        }
+
         return view('user.membership.members', compact('members', 'measurement'));
     }
 
