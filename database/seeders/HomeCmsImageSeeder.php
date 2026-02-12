@@ -4,7 +4,7 @@ namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Storage;
-use Intervention\Image\ImageManagerStatic as Image;
+use Intervention\Image\ImageManager;
 use App\Models\EcomHomeCms;
 use App\Models\GlobalImage;
 
@@ -150,7 +150,12 @@ class HomeCmsImageSeeder extends Seeder
         $fullPath = storage_path('app/public/' . $originalPath);
 
         try {
-            $img = Image::make($fullPath);
+            if (extension_loaded('imagick')) {
+                $manager = ImageManager::imagick();
+            } else {
+                $manager = ImageManager::gd();
+            }
+            $img = $manager->read($fullPath);
         } catch (\Exception $e) {
             $this->command->error("Intervention failed to read file: {$originalPath} — " . $e->getMessage());
             // Still store original to GlobalImage (since user wanted original path stored)
@@ -203,7 +208,12 @@ class HomeCmsImageSeeder extends Seeder
         $compressedPath = ($dirname ? ($dirname . '/') : '') . $compressedFilename;
 
         try {
-            $disk->put($compressedPath, (string) $img->encode($targetExt, $quality));
+            if ($targetExt === 'png') {
+                $enc = new \Intervention\Image\Encoders\PngEncoder();
+            } else {
+                $enc = new \Intervention\Image\Encoders\JpegEncoder($quality);
+            }
+            $disk->put($compressedPath, (string) $img->encode($enc));
         } catch (\Exception $e) {
             $this->command->error("Failed to write compressed file for {$originalPath}: " . $e->getMessage());
             // still save original path
@@ -218,7 +228,8 @@ class HomeCmsImageSeeder extends Seeder
         try {
             $webpFilename = 'compressed_' . $baseFilename . '.webp';
             $webpPath = ($dirname ? ($dirname . '/') : '') . $webpFilename;
-            $disk->put($webpPath, (string) $img->encode('webp', 60));
+            $webpEnc = new \Intervention\Image\Encoders\WebpEncoder(60);
+            $disk->put($webpPath, (string) $img->encode($webpEnc));
             // prefer webp
             $finalPath = $webpPath;
         } catch (\Exception $e) {
