@@ -9,7 +9,7 @@ This file defines practical, actionable rules for contributing to this Laravel p
 ## You are assisting in a Laravel project that contains major modules:
 
 - User Panel (PMA Panel)
-- E-commerce
+- E-commerce (E-store)
 - E-learning
 - Admin Panel
 - Frontend
