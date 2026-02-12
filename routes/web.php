@@ -504,7 +504,6 @@ Route::prefix('user')->middleware(['user', 'preventBackHistory', 'userActivity',
         Route::get('/{promoCode}/edit', [PromoCodeController::class, 'edit'])->name('user.promo-codes.edit');
         Route::put('/{promoCode}', [PromoCodeController::class, 'update'])->name('user.promo-codes.update');
         Route::delete('/{promoCode}', [PromoCodeController::class, 'destroy'])->name('user.promo-codes.destroy');
-
     });
 
 
@@ -731,6 +730,7 @@ Route::prefix('user')->middleware(['user', 'preventBackHistory', 'userActivity',
     Route::get('/products-image-delete', [ProductController::class, 'imageDelete'])->name('products.image.delete');
     Route::get('/warehouse-product-image-delete', [ProductController::class, 'warehouseImageDelete'])->name('warehouse-product.image.delete');
     Route::get('/products-fetch-data', [ProductController::class, 'fetchData'])->name('products.fetch-data');
+    Route::post('/products/upload-digital-file', [ProductController::class, 'uploadDigitalFile'])->name('products.upload-digital-file');
     Route::post('/products-slug-check', [ProductController::class, 'checkSlug'])->name('products.slug.check');
 
 
@@ -1334,4 +1334,4 @@ Route::post('/stripe/webhook', [\App\Http\Controllers\Webhook\StripeWebhookContr
 // Public success URL for Stripe Checkout (so Stripe redirect doesn't require auth)
 Route::get('/membership/checkout/success', [UserMembershipController::class, 'checkoutSuccess'])->name('membership.checkout.success');
 
- Route::post('/promo-codes/validate', [PromoCodeController::class, 'validatePromoCode'])->name('user.promo-codes.validate');
+Route::post('/promo-codes/validate', [PromoCodeController::class, 'validatePromoCode'])->name('user.promo-codes.validate');

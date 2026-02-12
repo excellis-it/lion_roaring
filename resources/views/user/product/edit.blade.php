@@ -101,6 +101,111 @@
         .text-danger {
             color: red !important;
         }
+
+        /* Digital Product File Upload Styles */
+        .digital-file-upload-area {
+            border: 2px dashed #007bff;
+            border-radius: 8px;
+            padding: 40px 20px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            background: #f8f9fa;
+        }
+
+        .digital-file-upload-area:hover {
+            border-color: #0056b3;
+            background: #e7f3ff;
+        }
+
+        .digital-file-upload-area.dragover {
+            border-color: #28a745;
+            background: #d4edda;
+        }
+
+        .digital-files-preview {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .digital-file-card {
+            border: 1px solid #dee2e6;
+            border-radius: 8px;
+            padding: 15px;
+            background: white;
+            position: relative;
+        }
+
+        .digital-file-card .file-remove {
+            position: absolute;
+            top: 5px;
+            right: 5px;
+            background: #dc3545;
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 25px;
+            height: 25px;
+            cursor: pointer;
+            font-size: 18px;
+            line-height: 1;
+        }
+
+        .digital-file-card .file-icon {
+            font-size: 40px;
+            color: #007bff;
+            margin-bottom: 10px;
+        }
+
+        .digital-file-card .file-name {
+            font-weight: 500;
+            margin-bottom: 5px;
+            word-break: break-word;
+        }
+
+        .digital-file-card .file-size {
+            color: #6c757d;
+            font-size: 0.875rem;
+            margin-bottom: 10px;
+        }
+
+        .digital-file-card .file-progress {
+            height: 4px;
+            background: #e9ecef;
+            border-radius: 2px;
+            overflow: hidden;
+            margin-bottom: 10px;
+        }
+
+        .digital-file-card .file-progress-bar {
+            height: 100%;
+            background: #007bff;
+            transition: width 0.3s ease;
+        }
+
+        .digital-file-card .file-status {
+            font-size: 0.875rem;
+            padding: 4px 8px;
+            border-radius: 4px;
+            display: inline-block;
+        }
+
+        .digital-file-card .file-status.uploading {
+            background: #fff3cd;
+            color: #856404;
+        }
+
+        .digital-file-card .file-status.success {
+            background: #d4edda;
+            color: #155724;
+        }
+
+        .digital-file-card .file-status.error {
+            background: #f8d7da;
+            color: #721c24;
+        }
     </style>
 @endpush
 @section('content')
@@ -360,7 +465,7 @@
 
 
                                     <!-- <div class="col-md-2 mb-2">
-                                                                                    </div> -->
+                                                                                                    </div> -->
 
                                     {{-- is_free --}}
                                     <div class="col-md-4 mb-2">
@@ -560,6 +665,13 @@
                                             <label class="form-check-label" for="variable_product">Variable
                                                 Product</label>
                                         </div>
+                                        <div class="form-check form-check-inline">
+                                            <input class="form-check-input" type="radio" name="product_type"
+                                                id="digital_product" value="digital"
+                                                {{ $product->product_type == 'digital' ? 'checked' : '' }}>
+                                            <label class="form-check-label" for="digital_product">Digital
+                                                Product</label>
+                                        </div>
                                     </div>
 
 
@@ -598,6 +710,88 @@
                                     </div>
                                 @endif
 
+
+
+                                {{-- Digital Product Section --}}
+                                @if ($product->product_type == 'digital')
+                                    <div class="row mb-5" id="digital-product-section">
+                                        <div class="col-md-12">
+                                            <div class="heading_box mb-3">
+                                                <h3>Digital Product Details</h3>
+                                            </div>
+                                        </div>
+
+                                        <div class="col-md-6 mb-3">
+                                            <div class="box_label">
+                                                <label for="digital_price">Price*</label>
+                                                <input type="number" step="any" name="digital_price"
+                                                    id="digital_price" class="form-control"
+                                                    value="{{ old('digital_price', $product->price) }}" min="0">
+                                                <span class="text-danger" id="digital_price_error"></span>
+                                            </div>
+                                        </div>
+
+                                        <div class="col-md-6 mb-3">
+                                            <div class="box_label">
+                                                <label for="digital_sale_price">Sale Price</label>
+                                                <input type="number" step="any" name="digital_sale_price"
+                                                    id="digital_sale_price" class="form-control"
+                                                    value="{{ old('digital_sale_price', $product->sale_price) }}"
+                                                    min="0">
+                                                <span class="text-danger" id="digital_sale_price_error"></span>
+                                            </div>
+                                        </div>
+
+                                        <div class="col-md-12 mb-3">
+                                            <div class="box_label">
+                                                <label>Digital Product Files*</label>
+                                                <br>
+                                                <p class="text-muted small mb-2">Upload files that customers will
+                                                    receive after purchase (PDF, ZIP, MP4, etc. - Max 100MB per file)
+                                                </p>
+                                                <div class="digital-file-upload-area" id="digital-file-upload-area">
+                                                    <input type="file" id="digital-file-input" multiple
+                                                        accept=".pdf,.zip,.mp4,.mp3,.docx,.xlsx,.doc,.xls,.avi,.mov,.rar,.7z"
+                                                        style="display: none;">
+                                                    <i class="fas fa-cloud-upload-alt"
+                                                        style="font-size: 48px; color: #007bff;"></i>
+                                                    <p class="mb-0 mt-2"><strong>Click to upload</strong> or drag and drop
+                                                    </p>
+                                                    <p class="text-muted small">PDF, ZIP, MP4, MP3, DOCX, XLSX, etc. (Max
+                                                        100MB per file)</p>
+                                                </div>
+                                                <span class="text-danger" id="digital_files_error"></span>
+                                                <div id="digital-files-hidden-inputs"></div>
+                                            </div>
+                                        </div>
+
+                                        {{-- Preview uploaded files --}}
+                                        <div class="col-md-12">
+                                            <div id="digital-files-preview" class="digital-files-preview"
+                                                style="display: none;"></div>
+                                        </div>
+
+                                        {{-- Existing Files --}}
+                                        @if ($product->files && $product->files->count() > 0)
+                                            <div class="col-md-12 mt-3">
+                                                <h5>Existing Files</h5>
+                                                <div class="digital-files-preview">
+                                                    @foreach ($product->files as $file)
+                                                        <div class="digital-file-card"
+                                                            data-existing-file-id="{{ $file->id }}">
+                                                            <button type="button" class="file-remove"
+                                                                onclick="removeExistingDigitalFile({{ $file->id }})">×</button>
+                                                            <div class="file-icon"><i class="fas fa-file"></i></div>
+                                                            <div class="file-name">{{ basename($file->file_location) }}
+                                                            </div>
+                                                            <div class="file-status success">Uploaded</div>
+                                                        </div>
+                                                    @endforeach
+                                                </div>
+                                            </div>
+                                        @endif
+                                    </div>
+                                @endif
 
 
                                 <!-- Other Charges Section -->
@@ -1297,6 +1491,234 @@
                     });
                 });
 
+            });
+        </script>
+
+        {{-- Digital Product JavaScript --}}
+        <script>
+            $(document).ready(function() {
+                // Digital File Upload Functionality
+                let uploadedFiles = [];
+                const maxFileSize = 100 * 1024 * 1024; // 100MB in bytes
+                const allowedExtensions = ['pdf', 'zip', 'mp4', 'mp3', 'docx', 'xlsx', 'doc', 'xls', 'avi', 'mov',
+                    'rar', '7z'
+                ];
+
+                const $uploadArea = $('#digital-file-upload-area');
+                const $fileInput = $('#digital-file-input');
+                const $preview = $('#digital-files-preview');
+                const $hiddenInputs = $('#digital-files-hidden-inputs');
+                const $errorSpan = $('#digital_files_error');
+
+                // Click to upload - prevent infinite loop by checking target
+                $uploadArea.on('click', function(e) {
+                    // Don't trigger if clicking on the file input itself
+                    if (e.target !== $fileInput[0]) {
+                        $fileInput.click();
+                    }
+                });
+
+                // Prevent file input click from bubbling
+                $fileInput.on('click', function(e) {
+                    e.stopPropagation();
+                });
+
+                // File input change
+                $fileInput.on('change', function(e) {
+                    handleFiles(e.target.files);
+                });
+
+                // Drag and drop
+                $uploadArea.on('dragover', function(e) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    $(this).addClass('dragover');
+                });
+
+                $uploadArea.on('dragleave', function(e) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    $(this).removeClass('dragover');
+                });
+
+                $uploadArea.on('drop', function(e) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    $(this).removeClass('dragover');
+                    handleFiles(e.originalEvent.dataTransfer.files);
+                });
+
+                function handleFiles(files) {
+                    $errorSpan.text('');
+
+                    Array.from(files).forEach(file => {
+                        // Validate file
+                        const fileExt = file.name.split('.').pop().toLowerCase();
+
+                        if (!allowedExtensions.includes(fileExt)) {
+                            $errorSpan.text(
+                                `File "${file.name}" has an unsupported format. Allowed: ${allowedExtensions.join(', ')}`
+                            );
+                            return;
+                        }
+
+                        if (file.size > maxFileSize) {
+                            $errorSpan.text(`File "${file.name}" exceeds the maximum size of 100MB`);
+                            return;
+                        }
+
+                        // Upload file
+                        uploadFile(file);
+                    });
+                }
+
+                function uploadFile(file) {
+                    const fileId = 'file_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
+
+                    // Create file card
+                    const $fileCard = createFileCard(file, fileId);
+                    $preview.append($fileCard).show();
+
+                    // Prepare form data
+                    const formData = new FormData();
+                    formData.append('file', file);
+                    formData.append('_token', '{{ csrf_token() }}');
+
+                    // Upload via AJAX
+                    $.ajax({
+                        url: '{{ route('products.upload-digital-file') }}',
+                        type: 'POST',
+                        data: formData,
+                        processData: false,
+                        contentType: false,
+                        xhr: function() {
+                            const xhr = new window.XMLHttpRequest();
+                            xhr.upload.addEventListener('progress', function(e) {
+                                if (e.lengthComputable) {
+                                    const percent = Math.round((e.loaded / e.total) * 100);
+                                    updateProgress(fileId, percent);
+                                }
+                            });
+                            return xhr;
+                        },
+                        success: function(response) {
+                            if (response.success) {
+                                updateFileStatus(fileId, 'success', 'Uploaded');
+                                addHiddenInput(fileId, response.path);
+                                uploadedFiles.push({
+                                    id: fileId,
+                                    path: response.path,
+                                    name: response.filename
+                                });
+                            } else {
+                                updateFileStatus(fileId, 'error', response.message || 'Upload failed');
+                            }
+                        },
+                        error: function(xhr) {
+                            let errorMsg = 'Upload failed';
+                            if (xhr.responseJSON && xhr.responseJSON.message) {
+                                errorMsg = xhr.responseJSON.message;
+                            }
+                            updateFileStatus(fileId, 'error', errorMsg);
+                        }
+                    });
+                }
+
+                function createFileCard(file, fileId) {
+                    const fileSize = formatFileSize(file.size);
+                    const fileIcon = getFileIcon(file.name);
+
+                    return $(`
+                        <div class="digital-file-card" data-file-id="${fileId}">
+                            <button type="button" class="file-remove" onclick="removeDigitalFile('${fileId}')">×</button>
+                            <div class="file-icon"><i class="${fileIcon}"></i></div>
+                            <div class="file-name">${file.name}</div>
+                            <div class="file-size">${fileSize}</div>
+                            <div class="file-progress">
+                                <div class="file-progress-bar" style="width: 0%"></div>
+                            </div>
+                            <div class="file-status uploading">Uploading...</div>
+                        </div>
+                    `);
+                }
+
+                function updateProgress(fileId, percent) {
+                    const $card = $(`.digital-file-card[data-file-id="${fileId}"]`);
+                    $card.find('.file-progress-bar').css('width', percent + '%');
+                }
+
+                function updateFileStatus(fileId, status, message) {
+                    const $card = $(`.digital-file-card[data-file-id="${fileId}"]`);
+                    const $status = $card.find('.file-status');
+
+                    $status.removeClass('uploading success error').addClass(status);
+                    $status.text(message);
+
+                    if (status === 'success') {
+                        $card.find('.file-progress').hide();
+                    }
+                }
+
+                function addHiddenInput(fileId, filePath) {
+                    $hiddenInputs.append(
+                        `<input type="hidden" name="digital_files[]" value="${filePath}" data-file-id="${fileId}">`);
+                }
+
+                function formatFileSize(bytes) {
+                    if (bytes === 0) return '0 Bytes';
+                    const k = 1024;
+                    const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+                    const i = Math.floor(Math.log(bytes) / Math.log(k));
+                    return Math.round(bytes / Math.pow(k, i) * 100) / 100 + ' ' + sizes[i];
+                }
+
+                function getFileIcon(filename) {
+                    const ext = filename.split('.').pop().toLowerCase();
+                    const iconMap = {
+                        'pdf': 'fas fa-file-pdf',
+                        'zip': 'fas fa-file-archive',
+                        'rar': 'fas fa-file-archive',
+                        '7z': 'fas fa-file-archive',
+                        'mp4': 'fas fa-file-video',
+                        'avi': 'fas fa-file-video',
+                        'mov': 'fas fa-file-video',
+                        'mp3': 'fas fa-file-audio',
+                        'docx': 'fas fa-file-word',
+                        'doc': 'fas fa-file-word',
+                        'xlsx': 'fas fa-file-excel',
+                        'xls': 'fas fa-file-excel'
+                    };
+                    return iconMap[ext] || 'fas fa-file';
+                }
+
+                // Make removeDigitalFile global
+                window.removeDigitalFile = function(fileId) {
+                    // Remove from uploaded files array
+                    uploadedFiles = uploadedFiles.filter(f => f.id !== fileId);
+
+                    // Remove hidden input
+                    $(`input[data-file-id="${fileId}"]`).remove();
+
+                    // Remove file card
+                    $(`.digital-file-card[data-file-id="${fileId}"]`).remove();
+
+                    // Hide preview if no files
+                    if (uploadedFiles.length === 0) {
+                        $preview.hide();
+                    }
+                };
+
+                // Remove existing digital file
+                window.removeExistingDigitalFile = function(fileId) {
+                    if (confirm('Are you sure you want to remove this file?')) {
+                        // Add hidden input to mark for deletion
+                        $hiddenInputs.append(
+                            `<input type="hidden" name="delete_digital_files[]" value="${fileId}">`);
+
+                        // Remove file card from UI
+                        $(`.digital-file-card[data-existing-file-id="${fileId}"]`).remove();
+                    }
+                };
             });
         </script>
     @endpush

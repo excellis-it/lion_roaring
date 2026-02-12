@@ -111,6 +111,11 @@ class Product extends BaseModel
     {
         return $this->hasMany(Review::class);
     }
+
+    public function files()
+    {
+        return $this->hasMany(ProductFile::class);
+    }
     // review count of approved reviews
     public function getReviewCountAttribute()
     {

@@ -276,10 +276,17 @@
                                     !$showOutOfStock && !is_null($remainingOrderQty) && $remainingOrderQty <= 0;
                                 $showQtySelect = !$showOutOfStock && $maxAllowed > 0;
                             @endphp
-                            <div id="out-of-stock-message" class="text-danger me-2"
+                            {{-- <div id="out-of-stock-message" class="text-danger me-2"
                                 style="display: {{ $showOutOfStock ? 'block' : 'none' }};">
                                 <span class="h5">Out of Stock</span>
-                            </div>
+                            </div> --}}
+                            {{-- New code When I add Digital product it show out of stock message --}}
+                            @if ($product->product_type !== 'digital' && $showOutOfStock)
+                                <div id="out-of-stock-message" class="text-danger me-2">
+                                    <span class="h5">Out of Stock</span>
+                                </div>
+                            @endif
+                            {{-- Code End --}}
 
                             <div id="max-order-qty-message" class="text-danger me-2"
                                 style="display: {{ $showMaxOrderMessage ? 'block' : 'none' }};">
@@ -319,6 +326,14 @@
                                 <a href="javascript:void(0);" class="red_btn w-100 text-center "><span>Add to
                                         Cart</span></a>
                             </div>
+                            @if ($product->product_type === 'digital')
+                                <div class="mt-3 ">
+                                    <button type="button" class="red_btn w-100 text-center"
+                                        data-product-id="{{ $product->id }}">
+                                        Checkout
+                                    </button>
+                                </div>
+                            @endif
 
                         </div>
                     </div>
