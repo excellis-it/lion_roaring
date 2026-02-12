@@ -332,7 +332,7 @@
                                 @endif
                             </div>
                             <div class="heading_hp">
-                                <h2 id="greeting">Request Private Member Access</h2>
+                                <h2 id="greeting">Request Private Member Access </h2>
                                 <div class="admin-form">
                                     <form name="login-form" id="login-form" action="{{ route('register.check') }}"
                                         method="post">
@@ -352,14 +352,22 @@
                                             </div>
                                             <div class="col-lg-6 mb-3">
                                                 <div class="login-username">
-                                                    <label for="lion_roaring_id">Lion Roaring ID (Last 4 digits)</label>
-                                                    <input type="text" name="lion_roaring_id" id="lion_roaring_id"
-                                                        class="input" value="{{ old('lion_roaring_id') }}"
-                                                        maxlength="4" placeholder="e.g. 1234">
-                                                    @if ($errors->has('lion_roaring_id'))
+                                                    <label for="lion_roaring_id">Lion Roaring ID *</label>
+                                                    <div class="input-group" style="display: flex; flex-wrap: nowrap;">
+                                                        <span class="input-group-text" id="basic-addon1"
+                                                            style="border-radius: 4px 0 0 4px; border-right: 0; background-color: #f8f9fa; padding: 10px 15px; white-space: nowrap;">{{ $generated_id_part }}</span>
+                                                        <input type="text" name="lion_roaring_id_suffix"
+                                                            id="lion_roaring_id" class="input"
+                                                            value="{{ old('lion_roaring_id_suffix') }}" maxlength="4"
+                                                            placeholder="Enter last 4 digits"
+                                                            style="border-radius: 0 4px 4px 0; border-left: 0; flex: 1;">
+                                                    </div>
+                                                    @if ($errors->has('lion_roaring_id_suffix'))
                                                         <div class="error" style="color:red;">
-                                                            {{ $errors->first('lion_roaring_id') }}</div>
+                                                            {{ $errors->first('lion_roaring_id_suffix') }}</div>
                                                     @endif
+                                                    <input type="hidden" name="generated_id_part"
+                                                        value="{{ $generated_id_part }}">
                                                 </div>
                                             </div>
                                             <div class="col-lg-6 mb-3">
