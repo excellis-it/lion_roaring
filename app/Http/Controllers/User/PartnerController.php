@@ -101,6 +101,8 @@ class PartnerController extends Controller
                         });
                 })
                     ->where('users.id', '!=', $user->id);
+            } elseif ($user->user_type == 'Global') {
+                $partners->where('users.user_type', 'Global');
             } elseif ($is_user_ecclesia_admin == 1) {
                 $manage_ecclesia_ids = is_array($user->manage_ecclesia)
                     ? $user->manage_ecclesia
@@ -125,11 +127,9 @@ class PartnerController extends Controller
             //             ->orWhere('users.created_id', $user->id)->orWhere('users.id', auth()->id());
             //     });
             // }
-            if (!$user->hasNewRole('SUPER ADMIN')) {
+            if (!$user->hasNewRole('SUPER ADMIN') && $user->user_type != 'Global') {
                 if ($user->user_type == 'Regional') {
                     $partners->where('users.country', $user->country)->where('users.user_type', 'Regional');
-                } elseif ($user->user_type == 'Global') {
-                    $partners->where('users.user_type', 'Global');
                 }
             }
 
@@ -1111,6 +1111,8 @@ class PartnerController extends Controller
                     });
             })
                 ->where('users.id', '!=', $user->id);
+        } elseif ($user->user_type == 'Global') {
+            $partners->where('users.user_type', 'Global');
         } elseif ($is_user_ecclesia_admin == 1) {
             $manage_ecclesia_ids = is_array($user->manage_ecclesia)
                 ? $user->manage_ecclesia
@@ -1128,11 +1130,9 @@ class PartnerController extends Controller
                 });
         }
 
-        if (!$user->hasNewRole('SUPER ADMIN')) {
+        if (!$user->hasNewRole('SUPER ADMIN') && $user->user_type != 'Global') {
             if ($user->user_type == 'Regional') {
                 $partners->where('users.country', $user->country)->where('users.user_type', 'Regional');
-            } elseif ($user->user_type == 'Global') {
-                $partners->where('users.user_type', 'Global');
             }
         }
 
