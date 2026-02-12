@@ -359,7 +359,7 @@
                                                         <input type="text" name="lion_roaring_id_suffix"
                                                             id="lion_roaring_id" class="input"
                                                             value="{{ old('lion_roaring_id_suffix') }}" maxlength="4"
-                                                            placeholder="Enter last 4 digits"
+                                                            placeholder="Enter last 4 digit ID/SSN"
                                                             style="border-radius: 0 4px 4px 0; border-left: 0; flex: 1;">
                                                     </div>
                                                     @if ($errors->has('lion_roaring_id_suffix'))

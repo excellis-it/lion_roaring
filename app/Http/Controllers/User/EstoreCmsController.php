@@ -779,7 +779,7 @@ class EstoreCmsController extends Controller
                 ">View Order Details</a>';
 
                 $body = str_replace(
-                    ['{customer_name}', '{customer_email}', '{order_list}', '{order_id}', '{arriving_date}', '{total_order_value}', '{order_details_url_button}'],
+                    ['{customer_name}', '{customer_email}', '{order_list}', '{order_id}', '{arriving_date}', '{total_order_value}', '{order_details_url_button}', '{order_note}'],
                     [
                         $order->first_name ?? '' . ' ' . $order->last_name ?? '',
                         $order->email ?? '',
@@ -787,7 +787,8 @@ class EstoreCmsController extends Controller
                         $order->order_number ?? '',
                         $order->expected_delivery_date ? Carbon::parse($order->expected_delivery_date)->format('M d, Y') : '',
                         number_format($order->total_amount ?? 0, 2),
-                        $orderDetailsUrlButton
+                        $orderDetailsUrlButton,
+                        $order->notes ?? ''
                     ],
                     $template->body
                 );

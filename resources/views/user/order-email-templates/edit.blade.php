@@ -27,6 +27,7 @@
                                         '{arriving_date}',
                                         '{total_order_value}',
                                         '{order_details_url_button}',
+                                        '{order_note}',
                                     ];
                                 @endphp
 
@@ -54,7 +55,7 @@
                         <div class="row">
                             <div class="col-md-12">
                                 <div class="heading_box mb-5">
-                                    <h3>Edit Email Template</h3>
+                                    <h3>Edit Email Template111</h3>
                                 </div>
                             </div>
                         </div>
@@ -131,10 +132,10 @@
                                     <label for="body" class="form-label">Email Body <span
                                             class="text-danger">*</span></label>
                                     <textarea name="body" id="body" class="form-control" rows="8"
-                                        placeholder="Use placeholders like {customer_name}, {order_id}, {order_list}, {total_order_value},{order_details_url_button}">{{ old('body', $template->body) }}</textarea>
+                                        placeholder="Use placeholders like {customer_name}, {order_id}, {order_list}, {total_order_value},{order_details_url_button},{order_note}">{{ old('body', $template->body) }}</textarea>
                                     <small class="text-muted">HTML is allowed. Use placeholders: {customer_name},
                                         {customer_email}, {order_list}, {order_id}, {arriving_date},
-                                        {total_order_value}, {order_details_url_button}</small>
+                                        {total_order_value}, {order_details_url_button},{order_note}</small>
                                     @error('body')
                                         <span class="text-danger">{{ $message }}</span>
                                     @enderror

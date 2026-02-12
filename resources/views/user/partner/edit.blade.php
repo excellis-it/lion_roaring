@@ -223,7 +223,7 @@
                                                     class="input-group-text">{{ old('generated_id_part', $current_prefix) }}</span>
                                                 <input type="text" class="form-control" name="lion_roaring_id_suffix"
                                                     value="{{ old('lion_roaring_id_suffix', $current_suffix) }}"
-                                                    placeholder="Enter last 4 digits" maxlength="4">
+                                                    placeholder="Enter last 4 digit ID/SSN" maxlength="4">
                                             </div>
                                             @if ($errors->has('lion_roaring_id_suffix'))
                                                 <div class="error" style="color:red !important;">
