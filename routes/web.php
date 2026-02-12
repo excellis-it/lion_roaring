@@ -988,6 +988,7 @@ Route::prefix('user')->middleware(['user', 'preventBackHistory', 'userActivity',
         Route::post('/store', [LiveEventController::class, 'store'])->name('events.store');
         Route::put('/update/{id}', [LiveEventController::class, 'update'])->name('events.update');
         Route::delete('/destroy/{id}', [LiveEventController::class, 'destroy'])->name('events.destroy');
+        Route::post('/{id}/notify-rsvps', [LiveEventController::class, 'updateDetailsAndNotifyRsvps'])->name('events.notify-rsvps');
 
         // RSVP and payment management routes
         Route::get('/{id}/rsvps', [LiveEventController::class, 'viewRsvps'])->name('events.rsvps');

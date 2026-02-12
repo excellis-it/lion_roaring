@@ -247,12 +247,12 @@
                             <div class="mb-3">
                                 <label for="modalEventLink" class="col-form-label">Event Link (URL):</label>
                                 <input type="url" class="form-control" id="modalEventLink" name="event_link"
-                                    placeholder="https://zoom.us/j/example or any meeting link">
+                                    placeholder="https://zoom.us/j/example or any link">
                                 <small class="text-muted">This link will be encrypted and only visible to registered
-                                    users</small>
+                                    users, link can be changed anytime.</small>
                             </div>
 
-                            <div class="mb-3">
+                            <div class="mb-3" hidden>
                                 <div class="form-check">
                                     <input class="form-check-input" type="checkbox" id="modalSendNotification"
                                         name="send_notification" checked>

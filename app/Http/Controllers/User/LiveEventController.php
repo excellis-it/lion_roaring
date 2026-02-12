@@ -13,7 +13,9 @@ use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
 use App\Services\NotificationService;
 use App\Mail\EventInvitation;
+use App\Mail\EventRsvpConfirmation;
 use Illuminate\Support\Str;
+use App\Models\User;
 
 class LiveEventController extends Controller
 {
@@ -256,6 +258,66 @@ class LiveEventController extends Controller
     }
 
     /**
+     * Update event details and notify all registered RSVP users.
+     */
+    public function updateDetailsAndNotifyRsvps(Request $request, $id)
+    {
+        $event = Event::findOrFail($id);
+
+        if (!Auth::user()->can('Manage Event') || (int) $event->user_id !== (int) Auth::id()) {
+            abort(403, 'Unauthorized access');
+        }
+
+        $validated = $request->validate([
+            'start' => 'required|date',
+            'end' => 'required|date|after:start',
+            'event_link' => 'nullable|url|max:2048',
+        ]);
+
+        $event->start = $validated['start'];
+        $event->end = $validated['end'];
+        $event->time_zone = auth()->user()->time_zone;
+
+        if ($request->has('event_link')) {
+            $event->setEncryptedLink($validated['event_link'] ?? null);
+        }
+
+        $event->save();
+
+        $rsvps = EventRsvp::with(['user'])
+            ->where('event_id', $event->id)
+            ->whereIn('status', ['confirmed', 'pending'])
+            ->get();
+
+        $notificationMessage = 'Live event updated: ' . $event->title . '. Please check the latest schedule and access details.';
+
+        $inAppCount = 0;
+        $emailCount = 0;
+
+        foreach ($rsvps as $rsvp) {
+            if (!$rsvp->user) {
+                continue;
+            }
+
+            try {
+                NotificationService::saveNotification($rsvp->user->id, $notificationMessage, 'live_event');
+                $inAppCount++;
+            } catch (\Exception $e) {
+                Log::error('Failed to send in-app event update notification to user ' . $rsvp->user->id . ': ' . $e->getMessage());
+            }
+
+            try {
+                Mail::to($rsvp->user->email)->queue(new EventRsvpConfirmation($rsvp));
+                $emailCount++;
+            } catch (\Exception $e) {
+                Log::error('Failed to queue RSVP update email to ' . $rsvp->user->email . ': ' . $e->getMessage());
+            }
+        }
+
+        return redirect()->back()->with('success', 'Event updated successfully. Notifications sent to ' . $inAppCount . ' RSVP users.');
+    }
+
+    /**
      * View event payments
      *
      * @group Event Management
@@ -302,7 +364,7 @@ class LiveEventController extends Controller
     protected function sendNotifications(Event $event, string $message)
     {
         // Get all active users based on event country
-        $query = \App\Models\User::where('status', 1)->where('is_accept', 1);
+        $query = User::where('status', 1)->where('is_accept', 1);
 
         // Filter by country if event is country-specific
         if ($event->country_id) {
