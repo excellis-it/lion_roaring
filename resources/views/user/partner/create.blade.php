@@ -223,7 +223,7 @@
                                     </div>
                                     <div class="col-md-6 mb-2">
                                         <div class="box_label">
-                                            <label>Roar ID *</label>
+                                            <label>Roar ID</label>
                                             <input type="text" class="form-control" name="roar_id"
                                                 value="{{ old('roar_id') }}" placeholder="">
                                             @if ($errors->has('roar_id'))

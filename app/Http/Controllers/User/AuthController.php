@@ -118,15 +118,22 @@ class AuthController extends Controller
         $countries = Country::all();
         $tiers = MembershipTier::with('benefits')->get();
 
-        return view('user.auth.register')->with(compact('eclessias', 'countries', 'tiers'));
+        // Calculate auto-generated part for Lion Roaring ID: LR + 0000 (sequence) + MMDDYYYY
+        $todayCount = User::withTrashed()->whereDate('created_at', now()->toDateString())->count();
+        $sequence = str_pad($todayCount + 1, 4, '0', STR_PAD_LEFT);
+        $datePart = now()->format('mdY');
+        $generated_id_part = 'LR' . $sequence . $datePart;
+
+        return view('user.auth.register')->with(compact('eclessias', 'countries', 'tiers', 'generated_id_part'));
     }
 
     public function registerCheck(Request $request)
     {
         $validator = Validator::make($request->all(), [
             'user_name' => 'required|string|max:255|unique:users',
-            'lion_roaring_id' => 'required|digits:4',
-            'roar_id' => 'required|string|max:255',
+            'generated_id_part' => 'required|string',
+            'lion_roaring_id_suffix' => 'required|digits:4',
+            'roar_id' => 'nullable|string|max:255',
             'email' => 'required|string|email|max:255|unique:users',
             'ecclesia_id' => 'nullable',
             'first_name' => 'required|string|max:255',
@@ -149,6 +156,8 @@ class AuthController extends Controller
             'password.regex' => 'The password must be at least 8 characters long and include at least one special character from @$%&.',
             'signature.required' => 'Please provide your signature before submitting the form.',
             'tier_id.required' => 'Please select a membership tier.',
+            'lion_roaring_id_suffix.required' => 'Please enter the last 4 digits for your Lion Roaring ID.',
+            'lion_roaring_id_suffix.digits' => 'Lion Roaring ID suffix must be exactly 4 digits.',
         ]);
 
         $validator->after(function ($validator) use ($request) {
@@ -260,18 +269,12 @@ class AuthController extends Controller
         $signupValidation = SignupRule::validateSignupData($request->all());
 
         // dd($signupValidation);
-        // Generate Lion Roaring ID: LR + 4-digit sequence + MMDDYYYY + user input (last 4 digits)
-        $todayCount = User::withTrashed()->whereDate('created_at', now()->toDateString())->count();
-        $computerGenerated = str_pad($todayCount + 1, 4, '0', STR_PAD_LEFT);
-        $currentDate = now()->format('mdY'); // MMDDYYYY
-        $userInputDigits = str_pad($request->lion_roaring_id, 4, '0', STR_PAD_LEFT);
-        $fullLionRoaringId = 'LR' . $computerGenerated . $currentDate . $userInputDigits;
+        // Generate Lion Roaring ID: generated_id_part + user input (last 4 digits)
+        $fullLionRoaringId = $request->generated_id_part . $request->lion_roaring_id_suffix;
 
-        // Ensure uniqueness (extremely unlikely to fail with sequence, but safer)
-        while (User::where('lion_roaring_id', $fullLionRoaringId)->exists()) {
-            $todayCount++;
-            $computerGenerated = str_pad($todayCount + 1, 4, '0', STR_PAD_LEFT);
-            $fullLionRoaringId = 'LR' . $computerGenerated . $currentDate . $userInputDigits;
+        // Ensure uniqueness
+        if (User::where('lion_roaring_id', $fullLionRoaringId)->exists()) {
+            return redirect()->back()->withErrors(['lion_roaring_id_suffix' => 'This Lion Roaring ID is already taken. Please try different last 4 digits.'])->withInput();
         }
 
         $user = new User();
@@ -478,8 +481,9 @@ class AuthController extends Controller
     {
         $validator = Validator::make($request->all(), [
             'user_name' => 'required|string|max:255|unique:users',
-            'lion_roaring_id' => 'required|digits:4',
-            'roar_id' => 'required|string|max:255',
+            'generated_id_part' => 'required|string',
+            'lion_roaring_id_suffix' => 'required|digits:4',
+            'roar_id' => 'nullable|string|max:255',
             'email' => 'required|string|email|max:255|unique:users',
             'ecclesia_id' => 'nullable',
             'first_name' => 'required|string|max:255',
@@ -499,6 +503,8 @@ class AuthController extends Controller
         ], [
             'password.regex' => 'The password must be at least 8 characters long and include at least one special character from @$%&.',
             'signature.required' => 'Please provide your signature before submitting the form.',
+            'lion_roaring_id_suffix.required' => 'Please enter the last 4 digits for your Lion Roaring ID.',
+            'lion_roaring_id_suffix.digits' => 'Lion Roaring ID suffix must be exactly 4 digits.',
         ]);
 
         if ($validator->fails()) {
