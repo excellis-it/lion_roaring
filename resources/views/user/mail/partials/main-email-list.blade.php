@@ -1,3 +1,8 @@
+<style>
+    .mail_read {
+        background: #9ab6df !important;
+    }
+</style>
 @if ($mails->type == 'sent')
     <style>
         .mail_read {
@@ -38,7 +43,7 @@
                     @else
                         <a href="javascript:void(0);" onclick="setMailStar(this, {{ $mail->id }})">
                             <!-- <span class="material-symbols-outlined">grade</span> -->
-                             <i class="fa-regular fa-star"></i>
+                            <i class="fa-regular fa-star"></i>
                         </a>
                     @endif
                 </div>
