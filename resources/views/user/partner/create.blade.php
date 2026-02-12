@@ -330,26 +330,7 @@
 
                                         </div>
                                     </div> --}}
-                                    {{-- eclessias --}}
-                                    <div class="col-md-4 mb-2" id="ecclesia_main_input">
-                                        <div class="box_label">
-                                            <label>Ecclesias </label>
-                                            <select class="form-control" name="ecclesia_id">
-                                                <option value="">Select Ecclesia</option>
-                                                @foreach ($eclessias as $item)
-                                                    <option value="{{ $item->id }}"
-                                                        {{ old('ecclesia_id') == $item->id ? 'selected' : '' }}>
-                                                        {{ $item->name . '(' . $item->countryName->name . ')' ?? '' }}
-                                                    </option>
-                                                @endforeach
-                                            </select>
-                                            @if ($errors->has('ecclesia_id'))
-                                                <div class="error" style="color:red !important;">
-                                                    {{ $errors->first('ecclesia_id') }}
-                                                </div>
-                                            @endif
-                                        </div>
-                                    </div>
+
 
 
                                     <div class="col-md-4 mb-2">
@@ -391,7 +372,7 @@
                                         </div>
                                     </div>
                                     {{-- country --}}
-                                    <div class="col-md-6 mb-2">
+                                    <div class="col-md-4 mb-2">
                                         <div class="box_label">
                                             <label>Country *</label>
                                             <select name="country" id="country" class="form-control">
@@ -412,7 +393,7 @@
                                         </div>
                                     </div>
                                     {{-- state --}}
-                                    <div class="col-md-6 mb-2">
+                                    <div class="col-md-4 mb-2">
                                         <div class="box_label">
                                             <label>State *</label>
                                             <select name="state" id="state" class="form-control">
@@ -421,6 +402,26 @@
                                             @if ($errors->has('state'))
                                                 <div class="error" style="color:red !important;">
                                                     {{ $errors->first('state') }}
+                                                </div>
+                                            @endif
+                                        </div>
+                                    </div>
+                                     {{-- eclessias --}}
+                                    <div class="col-md-4 mb-2" id="ecclesia_main_input">
+                                        <div class="box_label">
+                                            <label>Ecclesias </label>
+                                            <select class="form-control" name="ecclesia_id">
+                                                <option value="">Select Ecclesia</option>
+                                                @foreach ($eclessias as $item)
+                                                    <option value="{{ $item->id }}"
+                                                        {{ old('ecclesia_id') == $item->id ? 'selected' : '' }}>
+                                                        {{ $item->name . '(' . $item->countryName->name . ')' ?? '' }}
+                                                    </option>
+                                                @endforeach
+                                            </select>
+                                            @if ($errors->has('ecclesia_id'))
+                                                <div class="error" style="color:red !important;">
+                                                    {{ $errors->first('ecclesia_id') }}
                                                 </div>
                                             @endif
                                         </div>
@@ -494,14 +495,18 @@
                                                         value="{{ $role->name }}"
                                                         data-permissions="{{ json_encode($role->permissions->pluck('name')) }}"
                                                         data-isecclesia="{{ $role->is_ecclesia }}"
-                                                        {{ old('role') == $role->name ? 'checked' : '' }} required>
+                                                        {{ old('role') == $role->name ? 'checked' : '' }}>
                                                     <label class="form-check-label"
                                                         for="data-roles-{{ $role->id }}">{{ $role->name }}
                                                         <small>{{ $role->is_ecclesia == 1 ? '(ECCLESIA)' : '' }}</small></label>
                                                 </div>
                                             @endforeach
 
-
+                                            @if ($errors->has('role'))
+                                                <div class="error" style="color:red !important;">
+                                                    {{ $errors->first('role') }}
+                                                </div>
+                                            @endif
                                         </div>
                                     </div>
 
@@ -917,6 +922,9 @@
 
     <script>
         $(document).ready(function() {
+            var currentEcclesiaId = {{ old('ecclesia_id') ?? 'null' }};
+            var currentManageEcclesia = {!! json_encode(old('manage_ecclesia') ?? []) !!};
+
             getStates($('#country').val());
             getEcclesias();
 
@@ -981,18 +989,22 @@
 
                         response.forEach(eclessia => {
                             // Dropdown
-                            selectHtml += '<option value="' + eclessia.id + '">' +
+                            var selected = eclessia.id == currentEcclesiaId ? 'selected' : '';
+                            selectHtml += '<option value="' + eclessia.id + '" ' + selected +
+                                '>' +
                                 eclessia.name + '(' + (eclessia.country_name ? eclessia
                                     .country_name.name : '') + ')' + '</option>';
 
                             // Checkboxes
+                            var checked = currentManageEcclesia.includes(eclessia.id
+                                .toString()) ? 'checked' : '';
                             checkboxHtml += '<div class="col-xl-3 col-lg-4 col-md-6">' +
                                 '<div class="ecclesia-item p-2 mb-2 rounded border bg-white shadow-sm h-100 d-flex align-items-center" style="transition: all 0.2s;">' +
                                 '<div class="form-check mb-0">' +
                                 '<input id="data-eclessia-' + eclessia.id +
                                 '" class="form-check-input data-eclessia" type="checkbox" name="manage_ecclesia[]" value="' +
-                                eclessia.id +
-                                '" style="cursor: pointer; width: 1.25em; height: 1.25em;">' +
+                                eclessia.id + '" ' + checked +
+                                ' style="cursor: pointer; width: 1.25em; height: 1.25em;">' +
                                 '<label class="form-check-label ms-2" for="data-eclessia-' +
                                 eclessia.id + '" style="cursor: pointer; font-size: 0.9rem;">' +
                                 eclessia.name + '<br>' +
@@ -1014,10 +1026,7 @@
                     }
                 });
             }
-        });
-    </script>
-    <script>
-        $(document).ready(function() {
+
             // Function to update "Select All" state for ecclesias
             function updateSelectAllEcclesiasState() {
                 var total = $('.data-eclessia').length;
@@ -1163,6 +1172,7 @@
 
             $(".data-roles").change(function(e) {
                 e.preventDefault();
+                getEcclesias(); // Trigger ecclesia fetching on role change
                 var permissions = $(this).data('permissions');
                 var is_ecclesia = $(this).data('isecclesia');
 
@@ -1204,6 +1214,7 @@
             }
 
             $(document).on('change', 'input[name="role"]', function() {
+                getEcclesias(); // Trigger ecclesia fetching on role change
                 togglePermissionsAndMembership();
                 var is_ecclesia = $(this).data(
                     'isecclesia'); // Corrected from 'is-ecclesia' to 'isecclesia'

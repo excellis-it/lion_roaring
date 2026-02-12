@@ -270,7 +270,7 @@
                                         <div class="box_label">
                                             <label>Phone*</label>
                                             <input type="tel" class="form-control" name="phone" id="mobile_code"
-                                                value="{{ old('phone', $partner->phone) }}"
+                                                value="{{ old('full_phone_number', $partner->phone) }}"
                                                 placeholder="Enter Phone Number">
                                             @if ($errors->has('phone'))
                                                 <div class="error" style="color:red !important;">
@@ -364,25 +364,7 @@
                                         </div>
                                     </div> --}}
 
-                                    <div class="col-md-4 mb-2" id="ecclesia_main_input">
-                                        <div class="box_label">
-                                            <label>Ecclesias </label>
-                                            <select class="form-control" name="ecclesia_id">
-                                                <option value="">Select Ecclesia</option>
-                                                @foreach ($eclessias as $item)
-                                                    <option value="{{ $item->id }}"
-                                                        {{ old('ecclesia_id', $partner->ecclesia_id) == $item->id ? 'selected' : '' }}>
-                                                        {{ $item->name . '(' . $item->countryName->name . ')' ?? '' }}
-                                                    </option>
-                                                @endforeach
-                                            </select>
-                                            @if ($errors->has('ecclesia_id'))
-                                                <div class="error" style="color:red !important;">
-                                                    {{ $errors->first('ecclesia_id') }}
-                                                </div>
-                                            @endif
-                                        </div>
-                                    </div>
+
 
 
                                     <div class="col-md-4 mb-2">
@@ -425,7 +407,7 @@
                                     </div>
 
                                     {{-- country --}}
-                                    <div class="col-md-6 mb-2">
+                                    <div class="col-md-4 mb-2">
                                         <div class="box_label">
                                             <label>Country *</label>
                                             <select name="country" id="country" class="form-control">
@@ -445,7 +427,7 @@
                                         </div>
                                     </div>
                                     {{-- state --}}
-                                    <div class="col-md-6 mb-2">
+                                    <div class="col-md-4 mb-2">
                                         <div class="box_label">
                                             <label>State</label>
                                             <select name="state" id="state" class="form-control">
@@ -454,6 +436,25 @@
                                             @if ($errors->has('state'))
                                                 <div class="error" style="color:red !important;">
                                                     {{ $errors->first('state') }}
+                                                </div>
+                                            @endif
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4 mb-2" id="ecclesia_main_input">
+                                        <div class="box_label">
+                                            <label>Ecclesias </label>
+                                            <select class="form-control" name="ecclesia_id">
+                                                <option value="">Select Ecclesia</option>
+                                                @foreach ($eclessias as $item)
+                                                    <option value="{{ $item->id }}"
+                                                        {{ old('ecclesia_id', $partner->ecclesia_id) == $item->id ? 'selected' : '' }}>
+                                                        {{ $item->name . '(' . $item->countryName->name . ')' ?? '' }}
+                                                    </option>
+                                                @endforeach
+                                            </select>
+                                            @if ($errors->has('ecclesia_id'))
+                                                <div class="error" style="color:red !important;">
+                                                    {{ $errors->first('ecclesia_id') }}
                                                 </div>
                                             @endif
                                         </div>
@@ -537,13 +538,17 @@
                                                         value="{{ $role->name }}"
                                                         data-permissions="{{ json_encode($role->permissions->pluck('name')) }}"
                                                         data-isecclesia="{{ $role->is_ecclesia }}"
-                                                        {{ $currentRoleName == $role->name ? 'checked' : '' }} required>
+                                                        {{ $currentRoleName == $role->name ? 'checked' : '' }}>
                                                     <label class="form-check-label"
                                                         for="data-roles-{{ $role->id }}">{{ $role->name }}
                                                         <small>{{ $role->is_ecclesia == 1 ? '(ECCLESIA)' : '' }}</small></label>
                                                 </div>
                                             @endforeach
-
+                                            @if ($errors->has('role'))
+                                                <div class="error" style="color:red !important;">
+                                                    {{ $errors->first('role') }}
+                                                </div>
+                                            @endif
 
                                         </div>
                                     </div>
@@ -990,13 +995,17 @@
         $(document).ready(function() {
             var country = $('#country').val();
             var state = {{ is_numeric($partner->state) && $partner->state != null ? $partner->state : 0 }};
+            var currentEcclesiaId = {{ old('ecclesia_id', $partner->ecclesia_id) ?? 'null' }};
+            var currentManageEcclesia = {!! json_encode(
+                old('manage_ecclesia', isset($partner->manage_ecclesia) ? explode(',', $partner->manage_ecclesia) : []),
+            ) !!};
 
             getStates(country, state);
 
             $('#country').change(function() {
+                getEcclesias();
                 var country = $(this).val();
                 getStates(country);
-                getEcclesias();
             });
 
             $('select[name="user_type"]').change(function() {
@@ -1091,54 +1100,7 @@
             }
 
             getEcclesias();
-        });
-    </script>
-    {{-- <script>
-        $(document).ready(function() {
-            $(".data-roles").change(function(e) {
-                e.preventDefault();
-                var permissions = $(this).data('permissions');
-                var role_name = $(this).val();
-                console.log(permissions);
-                $("#Role_Name").text(role_name);
 
-                var col1 = $('<div class="col-6"></div>');
-                var col2 = $('<div class="col-6"></div>');
-
-                // Create an unordered list to hold the permissions for each column
-                var permissionsList1 = $('<ul></ul>');
-                var permissionsList2 = $('<ul></ul>');
-
-                // Divide the permissions list into two arrays
-                var half = Math.ceil(permissions.length / 2); // To split the list into two equal parts
-                var firstHalf = permissions.slice(0, half);
-                var secondHalf = permissions.slice(half);
-
-                // Add permissions to the first column
-                $.each(firstHalf, function(index, permission) {
-                    var listItem = $('<li></li>').text(permission.name);
-                    permissionsList1.append(listItem);
-                });
-
-                // Add permissions to the second column
-                $.each(secondHalf, function(index, permission) {
-                    var listItem = $('<li></li>').text(permission.name);
-                    permissionsList2.append(listItem);
-                });
-
-                // Append the lists to the respective columns
-                col1.append(permissionsList1);
-                col2.append(permissionsList2);
-
-                // Append the columns to the container row, replacing the content
-                $('#permissions-container').html(col1).append(col2);
-
-            });
-
-        });
-    </script> --}}
-    <script>
-        $(document).ready(function() {
             // Function to update "Select All" state for ecclesias
             function updateSelectAllEcclesiasState() {
                 var total = $('.data-eclessia').length;
@@ -1331,6 +1293,7 @@
 
             // Combined Roles Change Handler
             $(document).on('change', 'input[name="role"]', function() {
+                getEcclesias(); // Trigger ecclesia fetching on role change
                 var permissions = $(this).data('permissions');
                 var is_ecclesia = $(this).data('isecclesia');
 
