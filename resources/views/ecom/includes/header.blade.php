@@ -67,7 +67,7 @@
                         @endif
                     </div>
                 </div>
-                
+
                 <div class="menu-with-login-right">
                     <div class="right_btm order-4 order-lg-3">
                         <div id="cssmenu">
@@ -236,7 +236,8 @@
                                 <div class="col-12">
                                     <label class="form-label">Street Address</label>
                                     <input type="text" id="lr_address_line1" class="form-control"
-                                        placeholder="House no, street" />
+                                        placeholder="House no, street" aria-required="true" required />
+                                    <div class="invalid-feedback">Street address is required.</div>
                                 </div>
 
                                 <div class="col-12">
@@ -256,13 +257,15 @@
 
                                 <div class="col-md-6">
                                     <label class="form-label">Zip Code</label>
-                                    <input type="text" id="lr_postal_code" class="form-control"
-                                        placeholder="ZIP" />
+                                    <input type="text" id="lr_postal_code" class="form-control" placeholder="ZIP"
+                                        aria-required="true" required />
+                                    <div class="invalid-feedback">ZIP / postal code is required.</div>
                                 </div>
                                 <div class="col-md-6">
                                     <label class="form-label">Country</label>
-                                    <input type="text" id="lr_country" class="form-control"
-                                        placeholder="Country" />
+                                    <input type="text" id="lr_country" class="form-control" placeholder="Country"
+                                        aria-required="true" required />
+                                    <div class="invalid-feedback">Country is required.</div>
                                 </div>
 
                                 <div class="col-12">
@@ -338,11 +341,11 @@
                             }
                             return null;
                         }
-
+                        
                         // Get user's timezone based on IP address
                         $ip = $_SERVER['REMOTE_ADDR'];
                         $timezone = getTimezoneFromIp($ip);
-
+                        
                         if ($timezone) {
                             // Set the default timezone
                             date_default_timezone_set($timezone);
@@ -350,10 +353,10 @@
                             // Fallback timezone
                             date_default_timezone_set('UTC');
                         }
-
+                        
                         // Get the current hour in 24-hour format
                         $time = date('H');
-
+                        
                         // Determine greeting based on time
                         if ($time < '12') {
                             echo 'Perfect morning';
@@ -954,8 +957,8 @@
                                     <div class="small text-muted">Click to edit</div>
                                 </div>
                                ${a.is_default ? '' : `<button type="button" class="btn btn-link p-0 text-danger lr-delete-btn" aria-label="Delete address" title="Delete">
-                                                <i class="fa-solid fa-trash"></i>
-                                            </button>`}
+                                                    <i class="fa-solid fa-trash"></i>
+                                                </button>`}
                             </div>
                         `;
 
@@ -1208,17 +1211,44 @@
                     return;
                 }
 
+                // Frontend validation for required fields
+                const requiredFields = [{
+                        el: line1El,
+                        name: 'Street address'
+                    },
+                    {
+                        el: zipEl,
+                        name: 'ZIP / postal code'
+                    },
+                    {
+                        el: countryEl,
+                        name: 'Country'
+                    },
+                ];
+
+                const missing = requiredFields.filter(f => !f.el || !String(f.el.value || '').trim());
+                // clear previous invalid state
+                requiredFields.forEach(f => f.el && f.el.classList.remove('is-invalid'));
+
+                if (missing.length) {
+                    missing.forEach(f => f.el && f.el.classList.add('is-invalid'));
+                    const labels = missing.map(m => m.name).join(', ');
+                    toastr.error('Please fill required fields: ' + labels);
+                    if (missing[0] && missing[0].el) missing[0].el.focus();
+                    return;
+                }
+
                 const payload = {
                     _token: csrf,
                     latitude: p.lat,
                     longitude: p.lng,
                     label: getSelectedLabel(),
-                    address_line1: line1El ? line1El.value : null,
-                    address_line2: line2El ? line2El.value : null,
-                    city: cityEl ? cityEl.value : null,
-                    state: stateEl ? stateEl.value : null,
-                    postal_code: zipEl ? zipEl.value : null,
-                    country: countryEl ? countryEl.value : null,
+                    address_line1: line1El ? line1El.value.trim() : null,
+                    address_line2: line2El ? line2El.value.trim() : null,
+                    city: cityEl ? cityEl.value.trim() : null,
+                    state: stateEl ? stateEl.value.trim() : null,
+                    postal_code: zipEl ? zipEl.value.trim() : null,
+                    country: countryEl ? countryEl.value.trim() : null,
                     formatted_address: formattedEl ? (formattedEl.value || buildFormattedAddress()) :
                         buildFormattedAddress(),
                 };
@@ -1282,7 +1312,8 @@
             [line1El, line2El, cityEl, stateEl, zipEl, countryEl].forEach(el => {
                 if (!el) return;
                 el.addEventListener('input', function() {
-                    // If user edits street/landmark etc, keep full address in sync
+                    // remove validation state when user types and keep full address in sync
+                    el.classList.remove('is-invalid');
                     syncFormattedAddressFromFields();
                 });
             });

@@ -1217,8 +1217,8 @@ Route::prefix('e-store')->middleware(['user', 'preventBackHistory', 'userActivit
     // user addresses (multi-address location picker)
     Route::get('/addresses', [EstoreUserAddressController::class, 'index'])->name('e-store.addresses.index')->middleware('user');
     Route::post('/addresses', [EstoreUserAddressController::class, 'store'])->name('e-store.addresses.store');
-    Route::post('/addresses/{address}', [EstoreUserAddressController::class, 'update'])->name('e-store.addresses.update')->middleware('user');
-    Route::post('/addresses/{address}/delete', [EstoreUserAddressController::class, 'destroy'])->name('e-store.addresses.delete')->middleware('user');
+    Route::post('/addresses/{address}', [EstoreUserAddressController::class, 'update'])->name('e-store.addresses.update')->whereNumber('address')->middleware('user');
+    Route::post('/addresses/{address}/delete', [EstoreUserAddressController::class, 'destroy'])->name('e-store.addresses.delete')->whereNumber('address')->middleware('user');
     Route::post('/addresses/default', [EstoreUserAddressController::class, 'setDefault'])->name('e-store.addresses.default')->middleware('user');
 
     // Backward-compat: location updater now saves into user_addresses (or session for guests)
