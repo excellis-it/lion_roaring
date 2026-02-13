@@ -283,10 +283,10 @@
                             @endphp
 
                             @if (in_array($statusSlug, $blockingSlugs, true))
-                                <button type="button" class="btn btn-outline-dark w-100" disabled>
+                                {{-- <button type="button" class="btn btn-outline-dark w-100" disabled>
                                     Order that has been {{ $order->is_pickup ? 'ready for picked up' : 'shipped' }} can't
                                     be cancelled.
-                                </button>
+                                </button> --}}
                             @endif
 
                             @php
@@ -471,7 +471,7 @@
                         @endphp
 
                         <div class="d-details">
-                            @if ($deliveredAt && !$order->is_pickup)
+                            @if ($deliveredAt && !$order->is_pickup && !$isFinalCancelled)
                                 <div
                                     style="margin-top:15px;margin-bottom:5px; padding:10px 15px; border-left:4px solid #0d6efd; background:#f8f9fa; border-radius:5px; display:inline-block;">
                                     <h6 style="margin:0; font-size:14px; color:#495057;">

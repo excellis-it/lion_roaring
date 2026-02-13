@@ -28,7 +28,14 @@ class DashboardController extends Controller
     {
         if (auth()->user()->can('Manage Profile')) {
             $countries = Country::orderBy('name', 'asc')->get();
-            return view('user.profile')->with('countries', $countries);
+
+            // Calculate auto-generated part for Lion Roaring ID
+            $todayCount = ModelsUser::withTrashed()->whereDate('created_at', now()->toDateString())->count();
+            $sequence = str_pad($todayCount + 1, 4, '0', STR_PAD_LEFT);
+            $datePart = now()->format('mdY');
+            $generated_id_part = 'LR' . $sequence . $datePart;
+
+            return view('user.profile')->with(compact('countries', 'generated_id_part'));
         } else {
             abort(403, 'You do not have permission to access this page.');
         }
@@ -77,7 +84,8 @@ class DashboardController extends Controller
             'first_name' => 'required|string|max:255',
             'last_name' => 'required|string|max:255',
             'middle_name' => 'nullable|string|max:255',
-            'lion_roaring_id' => 'required|string|max:255|unique:users,lion_roaring_id,' . Auth::user()->id,
+            'lion_roaring_id_suffix' => 'required|digits:4',
+            'generated_id_part' => 'required|string',
             'roar_id' => 'required|string|max:255',
             'address' => 'required|string|max:255',
             'phone_number' => 'required',
@@ -95,11 +103,17 @@ class DashboardController extends Controller
             if ($check > 0) {
                 return redirect()->back()->with('error', 'Phone number already exists.');
             }
+
+            $full_lion_roaring_id = $request->generated_id_part . $request->lion_roaring_id_suffix;
+            if (ModelsUser::where('lion_roaring_id', $full_lion_roaring_id)->where('id', '!=', Auth::user()->id)->exists()) {
+                return redirect()->back()->withErrors(['lion_roaring_id_suffix' => 'This Lion Roaring ID already exists.'])->withInput();
+            }
+
             $data = ModelsUser::find(Auth::user()->id);
             $data->first_name = $request->first_name;
             $data->last_name = $request->last_name;
             $data->middle_name = $request->middle_name;
-            $data->lion_roaring_id = $request->lion_roaring_id;
+            $data->lion_roaring_id = $full_lion_roaring_id;
             $data->roar_id = $request->roar_id;
             $data->address = $request->address;
             $data->address2 = $request->address2;

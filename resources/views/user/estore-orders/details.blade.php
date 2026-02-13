@@ -421,7 +421,7 @@
                             </div>
 
                             {{-- Expected Delivery Date --}}
-                            @if (!empty($order->expected_delivery_date) && !$order->is_pickup)
+                            @if (!empty($order->expected_delivery_date) && !$order->is_pickup && !$isFinalCancelled)
                                 <div class="text-center mb-3">
                                     <span class="badge bg-info text-dark p-2">
                                         <i class="fa-solid fa-calendar-day me-1"></i>
@@ -620,14 +620,14 @@
         }
 
         /* .timeline::before {
-                                                                                                                        content: '';
-                                                                                                                        position: absolute;
-                                                                                                                        left: 15px;
-                                                                                                                        top: 0;
-                                                                                                                        bottom: 0;
-                                                                                                                        width: 2px;
-                                                                                                                        background: #e9ecef;
-                                                                                                                    } */
+                                                                                                                            content: '';
+                                                                                                                            position: absolute;
+                                                                                                                            left: 15px;
+                                                                                                                            top: 0;
+                                                                                                                            bottom: 0;
+                                                                                                                            width: 2px;
+                                                                                                                            background: #e9ecef;
+                                                                                                                        } */
 
         .timeline-item {
             position: relative;

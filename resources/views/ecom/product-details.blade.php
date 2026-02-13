@@ -110,6 +110,14 @@
                                 $<span
                                     id="warehouse-product-price">{{ $wareHouseHaveProductVariables?->price ?? '' }}</span>
                             @endif
+
+
+                        </div>
+                        <div class="mb-2">
+                            @if (!empty($product->is_market_priced))
+                                <span class="fw-bold">{{ $product->market_grams ?? '' }}
+                                    {{ $product->market_unit ?? '' }}</span>
+                            @endif
                         </div>
                         <div class=" mb-2">
                             <div class="theme-text subtitle">Description:</div>
@@ -133,13 +141,14 @@
 
                         @if (!empty($product->is_market_priced))
                             <div class="mb-3">
-                                <div class="theme-text subtitle">Market Material Prices (Per Gram)</div>
+                                <div class="theme-text subtitle">Market Material Prices</div>
                                 <div class="table-responsive mt-2">
                                     <table class="table table-bordered">
                                         <thead>
                                             <tr>
                                                 <th>Material</th>
                                                 <th>Per Gram (USD)</th>
+                                                <th>Per Ounce (USD)</th>
                                                 {{-- <th>Updated At</th> --}}
                                             </tr>
                                         </thead>
@@ -152,6 +161,9 @@
                                                     <td>{{ $material->name }} </td>
                                                     <td>
                                                         {{ $rate?->rate_per_gram ? number_format($rate->rate_per_gram, 6) : '-' }}
+                                                    </td>
+                                                    <td>
+                                                        {{ $rate?->usd_per_ounce ? number_format($rate->usd_per_ounce, 6) : '-' }}
                                                     </td>
                                                     {{-- <td>
                                                         {{ $rate?->fetched_at ? \Carbon\Carbon::parse($rate->fetched_at)->format('M d, Y h:i A') : '-' }}
@@ -376,6 +388,45 @@
                 </div>
             </div>
         </div>
+        {{-- Size measurements block (category-level) --}}
+        @php $categorySizeImage = optional($product->category)->size_measurements_image; @endphp
+        @if (!empty($categorySizeImage))
+            <div class="container mt-3">
+                <div class="row">
+                    <div class="col-12">
+                        <h5 class="mb-2">Size Measurements</h5>
+                        @php
+                            $sizeImg = $categorySizeImage;
+                            if (\Illuminate\Support\Str::startsWith($sizeImg, 'http')) {
+                                $sizeUrl = $sizeImg;
+                            } elseif (\Illuminate\Support\Str::startsWith($sizeImg, 'storage/')) {
+                                $sizeUrl = asset($sizeImg);
+                            } else {
+                                $sizeUrl = Storage::url($sizeImg);
+                            }
+                        @endphp
+
+                        <a href="#" data-bs-toggle="modal" data-bs-target="#sizeMeasurementsModal">
+                            <img src="{{ $sizeUrl }}" alt="Size measurements" class="img-fluid rounded"
+                                style="max-width:800px; border:1px solid #ddd;" />
+                        </a>
+
+                        <!-- Modal -->
+                        <div class="modal fade" id="sizeMeasurementsModal" tabindex="-1" aria-hidden="true">
+                            <div class="modal-dialog modal-dialog-centered modal-lg">
+                                <div class="modal-content">
+                                    <div class="modal-body p-0">
+                                        <img src="{{ $sizeUrl }}" alt="Size measurements"
+                                            class="img-fluid w-100" />
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        @endif
+
     </section>
     @if (count($related_products) > 0)
         <section class="feature_sec">

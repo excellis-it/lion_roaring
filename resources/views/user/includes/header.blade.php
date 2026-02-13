@@ -22,15 +22,42 @@
 
         <ul class="navbar-nav flex-row ms-auto align-items-center justify-content-center">
             <li class="nav-item m-3">
+                <style>
+                    .blink {
+                        animation: blinker 1s linear infinite;
+                        color: #ffffff;
+                        background-color: #ff0000;
+                        padding: 3px 8px;
+                        border-radius: 4px;
+                        margin-right: 5px;
+                        font-weight: bold;
+                        font-size: 11px;
+                        text-transform: uppercase;
+                        display: inline-block;
+                        vertical-align: middle;
+                    }
+
+                    @keyframes blinker {
+                        50% {
+                            opacity: 0;
+                        }
+                    }
+                </style>
+                <span id="siteUpdateBlink" class="blink"
+                    style="{{ isset(Helper::getSettings()->SITE_UPDATE) && Helper::getSettings()->SITE_UPDATE == 1 ? '' : 'display: none;' }}">
+                    update is in progress
+                </span>
 
                 <a href="{{ route('e-learning') }}" class="btn btn-primary"> <img
-                        src="{{ asset('user_assets/images/e-learning.png') }}" alt="e-Learning"> e-Learning</a>
+                        src="{{ asset('user_assets/images/e-learning.png') }}" alt="e-Learning">
+                    {{ Helper::getMenuName('elearning', 'e-Learning') }}</a>
             </li>
 
             <li class="nav-item m-3">
 
                 <a href="{{ route('e-store') }}" class="btn btn-primary"> <img
-                        src="{{ asset('user_assets/images/bag.png') }}" alt="e-store"> e-Store</a>
+                        src="{{ asset('user_assets/images/bag.png') }}" alt="e-store">
+                    {{ Helper::getMenuName('estore', 'e-Store') }}</a>
             </li>
 
             <li class="nav-item dropdown">
@@ -44,7 +71,8 @@
                 <div class="dropdown-menu content-dd dropdown-menu-end dropdown-menu-animate-up notification-dropdown"
                     aria-labelledby="drop2" data-bs-popper="static">
                     <div class="d-flex align-items-center justify-content-between py-3 px-7">
-                        <h5 class="mb-0 fs-5 fw-semibold">Notifications</h5>
+                        <h5 class="mb-0 fs-5 fw-semibold">{{ Helper::getMenuName('notifications', 'Notifications') }}
+                        </h5>
                         <span class="badge bg-primary rounded-4 px-3 py-1 lh-sm clear-all-notification"
                             style="color: red; font-size:medium; cursor:pointer">Clear All</span>
                     </div>
@@ -101,7 +129,8 @@
                                             width="24" height="24">
                                     </span>
                                     <div class="w-75 d-inline-block v-middle ps-3">
-                                        <h6 class="mb-1 bg-hover-primary fw-semibold"> My Profile </h6>
+                                        <h6 class="mb-1 bg-hover-primary fw-semibold">
+                                            {{ Helper::getMenuName('my_profile', 'My Profile') }} </h6>
                                         <span class="d-block text-dark">Account Settings</span>
                                     </div>
                                 </a>
@@ -116,14 +145,16 @@
                                             width="24" height="24">
                                     </span>
                                     <div class="w-75 d-inline-block v-middle ps-3">
-                                        <h6 class="mb-1 bg-hover-primary fw-semibold">Change Password</h6>
+                                        <h6 class="mb-1 bg-hover-primary fw-semibold">
+                                            {{ Helper::getMenuName('change_password', 'Change Password') }}</h6>
                                         {{-- <span class="d-block text-dark">Messages &amp; Emails</span> --}}
                                     </div>
                                 </a>
                             @endif
                         </div>
                         <div class="d-grid py-4 px-7 pt-8">
-                            <a href="{{ route('logout') }}" class="btn btn-primary">Log Out</a>
+                            <a href="{{ route('logout') }}"
+                                class="btn btn-primary">{{ Helper::getMenuName('logout', 'Log Out') }}</a>
                         </div>
                     </div>
                 </div>

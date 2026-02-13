@@ -1349,7 +1349,7 @@ class EstoreCmsController extends Controller
     public function downloadInvoice(EstoreOrder $order)
     {
         // Ensure only delivered & paid orders can generate invoice
-        if ($order->status != 4 || $order->payment_status !== 'paid') {
+        if ($order->payment_status !== 'paid') {
             abort(403, 'Invoice not available.');
         }
 

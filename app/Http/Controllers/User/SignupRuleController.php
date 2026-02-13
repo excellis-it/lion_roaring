@@ -48,7 +48,21 @@ class SignupRuleController extends Controller
         $validator = Validator::make($request->all(), [
             'field_name' => 'required|string|max:255',
             'rule_type' => 'required|string|max:255',
-            'rule_value' => 'nullable|string',
+            'rule_value' => [
+                'nullable',
+                'string',
+                function ($attribute, $value, $fail) use ($request) {
+                    if ($request->rule_type === 'regex' && !empty($value)) {
+                        $pattern = $value;
+                        if (@preg_match($pattern, '') === false) {
+                            $wrapped = '/' . str_replace('/', '\/', $pattern) . '/';
+                            if (@preg_match($wrapped, '') === false) {
+                                $fail('The provided regular expression is invalid.');
+                            }
+                        }
+                    }
+                }
+            ],
             'error_message' => 'nullable|string',
             'description' => 'nullable|string',
             'is_active' => 'boolean',
@@ -119,7 +133,21 @@ class SignupRuleController extends Controller
         $validator = Validator::make($request->all(), [
             'field_name' => 'required|string|max:255',
             'rule_type' => 'required|string|max:255',
-            'rule_value' => 'nullable|string',
+            'rule_value' => [
+                'nullable',
+                'string',
+                function ($attribute, $value, $fail) use ($request) {
+                    if ($request->rule_type === 'regex' && !empty($value)) {
+                        $pattern = $value;
+                        if (@preg_match($pattern, '') === false) {
+                            $wrapped = '/' . str_replace('/', '\/', $pattern) . '/';
+                            if (@preg_match($wrapped, '') === false) {
+                                $fail('The provided regular expression is invalid.');
+                            }
+                        }
+                    }
+                }
+            ],
             'error_message' => 'nullable|string',
             'description' => 'nullable|string',
             'is_active' => 'boolean',

@@ -68,7 +68,7 @@
                              <div class="count_chat_sidebar count_chat_sidebar_count_all" style="display: none;"></div>
                          </a>
                          {{-- collapse --}}
-                         <div class="collapse {{ Request::is('user/chats*') || Request::is('user/page/Team*') || Request::is('user/mail*') ? 'show' : '' }}"
+                         <div class="collapse {{ Request::is('user/chats*') || Request::is('user/page/Team*') || Request::is('user/team-chats*') || Request::is('user/mail*') ? 'show' : '' }}"
                              id="collapseExample">
                              <div class="menu_bb">
                                  @if (Gate::check('Manage Chat'))
@@ -581,7 +581,8 @@
                  @if (Gate::check('Manage Membership') ||
                          Gate::check('View Membership Members') ||
                          Gate::check('View Membership Payments') ||
-                         Gate::check('View Membership Settings'))
+                         Gate::check('View Membership Settings') ||
+                         Gate::check('View Promo Codes'))
                      <li class="sidebar-item">
                          <a class="sidebar-link" href="#" aria-expanded="false" data-bs-toggle="collapse"
                              data-bs-target="#collapseMembershipManagement">
@@ -593,7 +594,7 @@
                                  class="hide-menu">{{ Helper::getMenuName('membership_management', 'Membership Management') }}</span>
                          </a>
                          {{-- Collapse content --}}
-                         <div class="collapse {{ Request::is('user/membership/manage*') || Request::is('user/membership/create*') || Request::is('user/membership/edit*') || Request::is('user/membership/members*') || Request::is('user/membership/payments*') || Request::is('user/membership/settings*') ? 'show' : '' }}"
+                         <div class="collapse {{ Request::is('user/membership/manage*') || Request::is('user/membership/create*') || Request::is('user/membership/edit*') || Request::is('user/membership/members*') || Request::is('user/membership/payments*') || Request::is('user/membership/settings*') || Request::is('user/promo-codes*') ? 'show' : '' }}"
                              id="collapseMembershipManagement">
                              <div class="menu_bb">
                                  @if (Gate::check('Manage Membership'))
@@ -626,6 +627,14 @@
                                              <i class="ti ti-credit-card"></i>
                                          </span>
                                          <span>{{ Helper::getMenuName('membership_all_payments', 'All Payments') }}</span>
+                                     </a>
+                                 @endif
+                                 @if (Gate::check('View Promo Codes'))
+                                     <a href="{{ route('user.promo-codes.index') }}">
+                                         <span>
+                                             <i class="ti ti-discount"></i>
+                                         </span>
+                                         <span>{{ Helper::getMenuName('membership_promo_codes', 'Promo Codes') }}</span>
                                      </a>
                                  @endif
                                  @if (Gate::check('View Membership Settings'))
@@ -1194,6 +1203,19 @@
                                  @endif
                              </div>
                          </div>
+                     </li>
+                 @endif
+
+                 @if (Gate::check('Manage Admin List'))
+                     <li class="sidebar-item">
+                         <a class="sidebar-link {{ Request::is('user/detail*') ? 'active' : '' }}"
+                             href="{{ route('user.admin.index') }}" aria-expanded="false">
+                             <span>
+                                 <img src="{{ asset('user_assets/images/lion-roring-icon/lion-roring-icon/super-admin.png') }}"
+                                     alt="">
+                             </span>
+                             <span class="hide-menu">{{ Helper::getMenuName('admin', 'Super Admin') }}</span>
+                         </a>
                      </li>
                  @endif
 

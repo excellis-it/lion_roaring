@@ -5,7 +5,7 @@ namespace App\Traits;
 use App\Models\GlobalImage;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
-use Intervention\Image\Facades\Image;
+use Intervention\Image\ImageManager;
 
 trait ImageTrait
 {
@@ -43,9 +43,13 @@ trait ImageTrait
             }
 
             try {
-                // Read original with Intervention
-                $img = \Intervention\Image\ImageManagerStatic::make($file->getRealPath());
-
+                // Use ImageManager (Intervention v3+)
+                if (extension_loaded('imagick')) {
+                    $manager = ImageManager::imagick();
+                } else {
+                    $manager = ImageManager::gd();
+                }
+                $img = $manager->read($file->getRealPath());
                 // Get original properties
                 $origWidth  = $img->width();
                 $origHeight = $img->height();
@@ -80,8 +84,21 @@ trait ImageTrait
                     $quality = 60;
                 }
 
+                // Choose encoder instance per output extension
+                if ($outputExt === 'png') {
+                    $encoder = new \Intervention\Image\Encoders\PngEncoder();
+                } elseif ($outputExt === 'jpg' || $outputExt === 'jpeg') {
+                    $encoder = new \Intervention\Image\Encoders\JpegEncoder($quality);
+                } elseif ($outputExt === 'gif') {
+                    $encoder = new \Intervention\Image\Encoders\GifEncoder();
+                } elseif ($outputExt === 'bmp') {
+                    $encoder = new \Intervention\Image\Encoders\BmpEncoder();
+                } else {
+                    $encoder = new \Intervention\Image\Encoders\AutoEncoder();
+                }
+
                 // Encode compressed image
-                $imgStream = $img->encode($outputExt, $quality);
+                $imgStream = $img->encode($encoder);
                 $compressedFilename = 'compressed_' . pathinfo($filename, PATHINFO_FILENAME) . '.' . $outputExt;
                 $disk->put("$path/$compressedFilename", (string) $imgStream);
                 $compressedPath = "$path/$compressedFilename";
@@ -89,7 +106,8 @@ trait ImageTrait
                 // Optional: produce a WebP; if errors, ignore silently
                 try {
                     $webpQuality = 60;
-                    $webpStream = $img->encode('webp', $webpQuality);
+                    $webpEncoder = new \Intervention\Image\Encoders\WebpEncoder($webpQuality);
+                    $webpStream = $img->encode($webpEncoder);
                     $webpFilename = 'compressed_' . pathinfo($filename, PATHINFO_FILENAME) . '.webp';
                     $disk->put("$path/$webpFilename", (string) $webpStream);
                     $compressedPath = "$path/$webpFilename";

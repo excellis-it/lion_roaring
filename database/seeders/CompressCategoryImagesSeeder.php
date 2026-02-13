@@ -104,8 +104,12 @@ class CompressCategoryImagesSeeder extends Seeder
             }
 
             try {
-                $img = \Intervention\Image\ImageManagerStatic::make($file->getRealPath());
-
+                if (extension_loaded('imagick')) {
+                    $manager = \Intervention\Image\ImageManager::imagick();
+                } else {
+                    $manager = \Intervention\Image\ImageManager::gd();
+                }
+                $img = $manager->read($file->getRealPath());
                 $origWidth  = $img->width();
                 $origHeight = $img->height();
                 $origSize   = $file->getSize();
@@ -136,14 +140,23 @@ class CompressCategoryImagesSeeder extends Seeder
                     $quality = 60;
                 }
 
-                $imgStream = $img->encode($outputExt, $quality);
+                if ($outputExt === 'png') {
+                    $encoder = new \Intervention\Image\Encoders\PngEncoder();
+                } elseif ($outputExt === 'jpg' || $outputExt === 'jpeg') {
+                    $encoder = new \Intervention\Image\Encoders\JpegEncoder($quality);
+                } else {
+                    $encoder = new \Intervention\Image\Encoders\AutoEncoder();
+                }
+
+                $imgStream = $img->encode($encoder);
                 $compressedFilename = 'compressed_' . pathinfo($filename, PATHINFO_FILENAME) . '.' . $outputExt;
                 $disk->put("$path/$compressedFilename", (string) $imgStream);
                 $compressedPath = "$path/$compressedFilename";
 
                 try {
                     $webpQuality = 60;
-                    $webpStream = $img->encode('webp', $webpQuality);
+                    $webpEncoder = new \Intervention\Image\Encoders\WebpEncoder($webpQuality);
+                    $webpStream = $img->encode($webpEncoder);
                     $webpFilename = 'compressed_' . pathinfo($filename, PATHINFO_FILENAME) . '.webp';
                     $disk->put("$path/$webpFilename", (string) $webpStream);
                     $compressedPath = "$path/$webpFilename";

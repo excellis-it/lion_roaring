@@ -14,7 +14,9 @@
 
 
             <td>
+                @if (isset($partner->userRole) && $partner->userRole->is_ecclesia == 0)
                 {{ isset($partner->ecclesia) ? $partner->ecclesia->name . ' (' . $partner->ecclesia->countryName->name . ')' : 'NO NAME' }}
+                @endif
 
                 @if ($partner->is_ecclesia_admin == 1)
                     {{-- @dd($partner) --}}
@@ -70,6 +72,14 @@
                     </div>
                 @endif
             </td>
+            <td class="text-center">
+                @if ($partner->userRegisterAgreement)
+                    <span class="badge bg-success view-agreement" data-user_id="{{ $partner->id }}"
+                        style="cursor: pointer;"><i class="ti ti-check"></i> Yes</span>
+                @else
+                    <span class="badge bg-danger"><i class="ti ti-x"></i> No</span>
+                @endif
+            </td>
             <td>
 
                 @if ($partner->warehouses->count() > 0)
@@ -120,11 +130,12 @@
                     <div class="d-flex">
                         @if (Auth::user()->can('Edit Partners'))
                             {{-- @if (auth()->user()->hasNewRole('SUPER ADMIN') || $partner->created_id == auth()->user()->id || (auth()->user()->roles()->first()->is_ecclesia == 1 && auth()->id() != $partner->id)) --}}
-                            <a href="{{ route('partners.edit', Crypt::encrypt($partner->id)) }}"
-                                class="edit_icon me-2">
-                                <i class="ti ti-edit"></i>
-                            </a>
-                            {{-- @endif --}}
+                            @if (auth()->id() != $partner->id)
+                                <a href="{{ route('partners.edit', Crypt::encrypt($partner->id)) }}"
+                                    class="edit_icon me-2">
+                                    <i class="ti ti-edit"></i>
+                                </a>
+                            @endif
                         @endif
 
                         @if (Auth::user()->can('View Partners'))
@@ -135,12 +146,13 @@
                         @endif
                         @if (Auth::user()->can('Delete Partners'))
                             {{-- @if (auth()->user()->hasNewRole('SUPER ADMIN') || $partner->created_id == auth()->user()->id || (auth()->user()->roles()->first()->is_ecclesia == 1 && auth()->id() != $partner->id)) --}}
+                            @if (auth()->id() != $partner->id)
                             <a href="javascript:void(0);"
                                 data-route="{{ route('partners.delete', Crypt::encrypt($partner->id)) }}"
                                 class="delete_icon" id="delete">
                                 <i class="ti ti-trash"></i>
                             </a>
-                            {{-- @endif --}}
+                            @endif
                         @endif
 
                     </div>

@@ -31,6 +31,9 @@ class Product extends BaseModel
         'price',
         'sale_price',
         'quantity',
+        'market_grams',
+        'market_unit',
+        'is_market_priced',
     ];
 
     protected $appends = [
@@ -230,7 +233,6 @@ class Product extends BaseModel
     }
 
     // in products map main image, to get in api response
-
 
 
 }

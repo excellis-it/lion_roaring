@@ -57,7 +57,7 @@ class SignupRule extends BaseModel
                     }
                 }
             }
-        } 
+        }
 
 
         return [
@@ -81,7 +81,22 @@ class SignupRule extends BaseModel
                 return !empty($value);
 
             case 'regex':
-                return preg_match($rule->rule_value, $value);
+                $pattern = $rule->rule_value;
+                if (empty($pattern)) {
+                    return true;
+                }
+
+                // Try the pattern as provided
+                $result = @preg_match($pattern, (string)$value);
+
+                // If it failed (returned false), it might be missing delimiters
+                if ($result === false) {
+                    // Wrap in / and escape existing / characters
+                    $wrappedPattern = '/' . str_replace('/', '\/', $pattern) . '/';
+                    $result = @preg_match($wrappedPattern, (string)$value);
+                }
+
+                return $result === 1;
 
             case 'min_length':
                 return strlen($value) >= intval($rule->rule_value);

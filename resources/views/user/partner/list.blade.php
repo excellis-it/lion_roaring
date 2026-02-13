@@ -18,14 +18,16 @@
 
                                 <div class="row mb-3">
                                     <div class="col-md-10">
-                                        <h3 class="mb-3">Members List</h3>
+                                        <h2 class="mb-3">Members List</h2>
                                     </div>
-                                    <div class="col-md-2 float-right">
+                                    <div class="col-md-5 float-right text-end">
                                         @if (auth()->user()->can('Create Partners'))
-                                            <a href="{{ route('partners.create') }}" class="btn btn-primary w-100">+ Add
+                                            <a href="{{ route('partners.create') }}" class="btn btn-primary">+ Add
                                                 Members</a>
                                         @endif
-
+                                        <a href="javascript:void(0);" id="export-report" class="btn btn-primary">
+                                            <i class="ti ti-download"></i> Export Report
+                                        </a>
                                     </div>
                                 </div>
                                 <div class="row ">
@@ -63,7 +65,16 @@
                                         @endif
                                     </div>
 
-                                    <div class="col-md-5">
+                                    <div class="col-md-3">
+                                        <select name="has_agreement" id="has_agreement" class="form-control">
+                                            <option value="">Registration Agreement (All)</option>
+                                            <option value="1" {{ $has_agreement == '1' ? 'selected' : '' }}>Yes
+                                            </option>
+                                            <option value="0" {{ $has_agreement == '0' ? 'selected' : '' }}>No</option>
+                                        </select>
+                                    </div>
+
+                                    <div class="col-md-2">
                                         <a href="{{ route('partners.reset-filters') }}" class="btn btn-primary">Reset
                                             Filters</a>
                                     </div>
@@ -103,6 +114,7 @@
                                                 </th>
                                                 <th class="p-3">Role</th>
                                                 <th class="p-3">House Of Ecclesia</th>
+                                                <th class="p-3 text-center">Registration Agreement</th>
                                                 <th class="p-3">Manage Warehouses</th>
 
                                                 {{-- <th>
@@ -148,6 +160,102 @@
                     </div>
                 </div>
             </form>
+        </div>
+    </div>
+    <!-- Registration Agreement Modal -->
+    <div class="modal fade" id="agreementModal" tabindex="-1" aria-labelledby="agreementModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg modal-dialog-centered">
+            <div class="modal-content shadow-lg border-0">
+                <div class="modal-header  text-white py-3" style="background: #643271; color:#fff !important ">
+                    <h5 class="modal-title d-flex align-items-center fw-bold" id="agreementModalLabel">
+                        <i class="ti ti-file-text fs-6 me-2 text-white"></i>
+                        Registration Agreement Details
+                    </h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"
+                        aria-label="Close"></button>
+                </div>
+                <div class="modal-body p-4">
+                    <div id="agreement-content">
+                        <!-- Info Grid -->
+                        <div class="row g-4 mb-4">
+                            <div class="col-md-6">
+                                <div class="p-3 bg-light rounded-3 border-start border-4 border-primary shadow-sm h-100">
+                                    <label class="text-muted small text-uppercase fw-bold mb-2 d-block">
+                                        <i class="ti ti-user me-1 text-primary"></i> Signer Name
+                                    </label>
+                                    <p id="modal-signer-name" class="h6 mb-0 text-dark fw-bold">-</p>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="p-3 bg-light rounded-3 border-start border-4 border-primary shadow-sm h-100">
+                                    <label class="text-muted small text-uppercase fw-bold mb-2 d-block">
+                                        <i class="ti ti-calendar me-1 text-primary"></i> Signed Date
+                                    </label>
+                                    <p id="modal-signed-at" class="h6 mb-0 text-dark fw-bold">-</p>
+                                </div>
+                            </div>
+                            <div class="col-md-12">
+                                <div class="p-3 bg-light rounded-3 border-start border-4 border-primary shadow-sm h-100">
+                                    <label class="text-muted small text-uppercase fw-bold mb-2 d-block">
+                                        <i class="ti ti-world me-1 text-primary"></i> Country
+                                    </label>
+                                    <p id="modal-country-code" class="h6 mb-0 text-dark fw-bold">-</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Signature Section -->
+                        <div id="modal-signature-section" class="mt-3 d-none">
+                            <div class="p-3 bg-light rounded-3 border-start border-4 border-primary shadow-sm">
+                                <label class="text-muted small text-uppercase fw-bold mb-2 d-block">
+                                    <i class="ti ti-pencil me-1 text-primary"></i> Member Signature
+                                </label>
+                                <div class="bg-white rounded-2 border p-2 text-center"
+                                    style="min-height: 100px; display: flex; align-items: center; justify-content: center;">
+                                    <img id="modal-signature-img" src="" alt="Signature"
+                                        style="max-height: 120px; max-width: 100%; object-fit: contain;">
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Action Section -->
+                        <div class="text-center py-4 bg-light rounded-3 border shadow-sm mt-3"
+                            style="border-style: dashed !important;">
+                            <h6 class="text-muted mb-3 fw-bold"><i class="ti ti-file-type-pdf me-1 text-danger"></i>
+                                Agreement Document</h6>
+                            <div class="d-flex justify-content-center gap-3">
+                                <a id="modal-view-pdf" href="#" target="_blank"
+                                    class="btn btn-primary d-flex align-items-center px-4 fw-bold d-none">
+                                    <i class="ti ti-eye fs-5 me-2"></i> View PDF
+                                </a>
+                                <a id="modal-download-pdf" href="#" download
+                                    class="btn btn-primary d-flex align-items-center px-4 fw-bold d-none">
+                                    <i class="ti ti-download fs-5 me-2"></i> Download PDF
+                                </a>
+                            </div>
+
+                            <!-- No PDF found message -->
+                            <div id="modal-no-pdf" class="d-none px-3">
+                                <div class="alert alert-warning mb-0 d-inline-block border-2">
+                                    <i class="ti ti-alert-triangle text-warning fs-5 me-1"></i>
+                                    Registration Agreement PDF file not found on the server.
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Loading State -->
+                    <div id="modal-loading" class="text-center d-none py-5">
+                        <div class="spinner-grow text-primary" role="status" style="width: 3rem; height: 3rem;">
+                            <span class="visually-hidden">Loading...</span>
+                        </div>
+                        <p class="mt-3 text-muted fw-bold fs-5">Fetching Agreement Details...</p>
+                    </div>
+                </div>
+                <div class="modal-footer bg-light border-0">
+                    <button type="button" class="btn btn-primary px-4 fw-bold" data-bs-dismiss="modal">Close</button>
+                </div>
+            </div>
         </div>
     </div>
 @endsection
@@ -211,8 +319,6 @@
             }
 
             function fetch_data(page, sort_type, sort_by, query, is_paginate_click = 0) {
-
-                // if query empty or null then set page no else set page no to null
                 if (query == '' || query == null) {
                     page = page;
                 } else {
@@ -220,12 +326,11 @@
                 }
 
                 if (is_paginate_click == 1) {
-
                     page = $('#hidden_page').val();
                 }
 
-                // var user_type = $('#user_type_filter').val();
                 var country_id = $('#country_filter').val();
+                var has_agreement = $('#has_agreement').val();
 
                 $.ajax({
                     url: "{{ route('partners.fetch-data') }}",
@@ -234,8 +339,8 @@
                         sortby: sort_by,
                         sorttype: sort_type,
                         query: query,
-                        // user_type: user_type,
-                        country_id: country_id
+                        country_id: country_id,
+                        has_agreement: has_agreement
                     },
                     success: function(data) {
                         $('tbody').html(data.data);
@@ -251,13 +356,13 @@
                 fetch_data(page, sort_type, column_name, query, 0);
             });
 
-            // $(document).on('change', '#user_type_filter', function() {
-            //     var query = $('#search').val();
-            //     var column_name = $('#hidden_column_name').val();
-            //     var sort_type = $('#hidden_sort_type').val();
-            //     var page = $('#hidden_page').val();
-            //     fetch_data(page, sort_type, column_name, query, 0);
-            // });
+            $(document).on('change', '#has_agreement', function() {
+                var query = $('#search').val();
+                var column_name = $('#hidden_column_name').val();
+                var sort_type = $('#hidden_sort_type').val();
+                var page = $('#hidden_page').val();
+                fetch_data(page, sort_type, column_name, query, 0);
+            });
 
             $(document).on('change', '#country_filter', function() {
                 var query = $('#search').val();
@@ -275,15 +380,13 @@
                     $(this).data('sorting_type', 'desc');
                     reverse_order = 'desc';
                     clear_icon();
-                    $('#' + column_name + '_icon').html(
-                        '<i class="fa fa-arrow-down"></i>');
+                    $('#' + column_name + '_icon').html('<i class="fa fa-arrow-down"></i>');
                 }
                 if (order_type == 'desc') {
                     $(this).data('sorting_type', 'asc');
                     reverse_order = 'asc';
                     clear_icon();
-                    $('#' + column_name + '_icon').html(
-                        '<i class="fa fa-arrow-up"></i>');
+                    $('#' + column_name + '_icon').html('<i class="fa fa-arrow-up"></i>');
                 }
                 $('#hidden_column_name').val(column_name);
                 $('#hidden_sort_type').val(reverse_order);
@@ -298,12 +401,87 @@
                 $('#hidden_page').val(page);
                 var column_name = $('#hidden_column_name').val();
                 var sort_type = $('#hidden_sort_type').val();
-
                 var query = $('#search').val();
 
                 $('li').removeClass('active');
                 $(this).parent().addClass('active');
                 fetch_data(page, sort_type, column_name, query, 1);
+            });
+
+            $(document).on('click', '#export-report', function() {
+                var query = $('#search').val();
+                var country_id = $('#country_filter').val();
+                var has_agreement = $('#has_agreement').val();
+                var sort_by = $('#hidden_column_name').val();
+                var sort_type = $('#hidden_sort_type').val();
+
+                var url = "{{ route('partners.export-report') }}";
+                url += "?query=" + encodeURIComponent(query || '') +
+                    "&country_id=" + encodeURIComponent(country_id || '') +
+                    "&has_agreement=" + encodeURIComponent(has_agreement || '') +
+                    "&sortby=" + encodeURIComponent(sort_by || '') +
+                    "&sorttype=" + encodeURIComponent(sort_type || '');
+
+                window.open(url, '_blank');
+            });
+
+            $(document).on('click', '.view-agreement', function() {
+                var userId = $(this).data('user_id');
+                var modal = new bootstrap.Modal(document.getElementById('agreementModal'));
+
+                // Reset modal content
+                $('#modal-signer-name').text('-');
+                $('#modal-signed-at').text('-');
+                $('#modal-country-code').text('-');
+                $('#modal-view-pdf').addClass('d-none');
+                $('#modal-download-pdf').addClass('d-none');
+                $('#modal-no-pdf').addClass('d-none');
+                $('#agreement-content').addClass('d-none');
+                $('#modal-loading').removeClass('d-none');
+
+                modal.show();
+
+                $.ajax({
+                    url: "{{ route('partners.agreement-details') }}",
+                    type: "GET",
+                    data: {
+                        user_id: userId
+                    },
+                    success: function(response) {
+                        $('#modal-loading').addClass('d-none');
+                        $('#agreement-content').removeClass('d-none');
+
+                        if (response.success) {
+                            $('#modal-signer-name').text(response.data.signer_name || '-');
+                            $('#modal-signed-at').text(response.data.signed_at || '-');
+                            $('#modal-country-code').text(response.data.country_code || '-');
+
+                            if (response.data.signature) {
+                                $('#modal-signature-img').attr('src', response.data.signature);
+                                $('#modal-signature-section').removeClass('d-none');
+                            } else {
+                                $('#modal-signature-section').addClass('d-none');
+                            }
+
+                            if (response.data.pdf_exists) {
+                                $('#modal-view-pdf').attr('href', response.data.pdf_url)
+                                    .removeClass('d-none');
+                                $('#modal-download-pdf').attr('href', response.data.pdf_url)
+                                    .removeClass('d-none');
+                            } else {
+                                $('#modal-no-pdf').removeClass('d-none');
+                            }
+                        } else {
+                            alert(response.message);
+                            modal.hide();
+                        }
+                    },
+                    error: function() {
+                        $('#modal-loading').addClass('d-none');
+                        alert('Something went wrong. Please try again.');
+                        modal.hide();
+                    }
+                });
             });
 
         });

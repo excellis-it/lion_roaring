@@ -10,8 +10,8 @@
     <meta name="csrf-token" content="{{ csrf_token() }}">
     @yield('meta')
     <title>@yield('title')</title>
-     <link rel="icon" href="{{ asset('frontend_assets/uploads/2023/04/cropped-logo-1-32x32.png') }}"
-            sizes="32x32" />
+    <link rel="icon" href="{{ asset('frontend_assets/uploads/2023/04/cropped-logo-1-32x32.png') }}"
+        sizes="32x32" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css" />
     <!--<link-->
     <!--    href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400..900;1,400..900&family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&display=swap"-->
@@ -121,11 +121,238 @@
             margin: 100px;
         }
     </style>
+    <style>
+        /* Prevent body scroll while loading */
+        body.loading {
+            overflow: hidden;
+        }
+
+        #loading {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, #643271 0%, #4a2454 50%, #643271 100%);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 99999;
+            opacity: 1;
+            visibility: visible;
+            transition: opacity 0.5s ease-out, visibility 0.5s ease-out;
+        }
+
+        #loading.fade-out {
+            opacity: 0;
+            visibility: hidden;
+        }
+
+        #loading-content {
+            position: relative;
+            width: 150px;
+            height: 150px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        /* Golden rotating circle */
+        #loading-content::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            border: 6px solid transparent;
+            border-top: 6px solid #d98b1c;
+            border-right: 6px solid #d98b1c;
+            border-radius: 50%;
+            animation: spin 1.2s linear infinite;
+            box-shadow: 0 0 20px rgba(217, 139, 28, 0.3);
+        }
+
+        /* Inner purple pulsing circle */
+        #loading-content::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 100px;
+            height: 100px;
+            background: linear-gradient(135deg, rgba(217, 139, 28, 0.2) 0%, rgba(100, 50, 113, 0.3) 100%);
+            border: 3px solid rgba(217, 139, 28, 0.4);
+            border-radius: 50%;
+            animation: pulse 1.8s ease-in-out infinite;
+        }
+
+        /* Lion icon in center */
+        .loader-icon {
+            position: relative;
+            z-index: 10;
+            font-size: 50px;
+            color: #d98b1c;
+            animation: roar 2s ease-in-out infinite;
+            text-shadow: 0 0 20px rgba(217, 139, 28, 0.5);
+        }
+
+        @keyframes spin {
+            0% {
+                transform: rotate(0deg);
+            }
+
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+
+        @keyframes pulse {
+
+            0%,
+            100% {
+                transform: translate(-50%, -50%) scale(0.85);
+                opacity: 0.6;
+                border-color: rgba(217, 139, 28, 0.4);
+            }
+
+            50% {
+                transform: translate(-50%, -50%) scale(1.1);
+                opacity: 1;
+                border-color: rgba(217, 139, 28, 0.8);
+            }
+        }
+
+        @keyframes roar {
+
+            0%,
+            100% {
+                transform: scale(1);
+                filter: brightness(1);
+            }
+
+            50% {
+                transform: scale(1.15);
+                filter: brightness(1.3);
+            }
+        }
+
+        /* Loading text */
+        .loading-text {
+            position: absolute;
+            top: 180px;
+            left: 50%;
+            transform: translateX(-50%);
+            color: #d98b1c;
+            font-size: 20px;
+            font-weight: 600;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            white-space: nowrap;
+            font-family: 'EB Garamond', serif;
+            animation: fadeInOut 2s ease-in-out infinite;
+            text-shadow: 0 2px 10px rgba(217, 139, 28, 0.3);
+        }
+
+        @keyframes fadeInOut {
+
+            0%,
+            100% {
+                opacity: 0.6;
+            }
+
+            50% {
+                opacity: 1;
+            }
+        }
+
+        .loading-text-bottom {
+            position: absolute;
+            top: 220px;
+            left: 50%;
+            transform: translateX(-50%);
+            color: #d98b1c;
+            font-size: 20px;
+            font-weight: 600;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            white-space: nowrap;
+            font-family: 'EB Garamond', serif;
+            animation: fadeInOut 2s ease-in-out infinite;
+            text-shadow: 0 2px 10px rgba(217, 139, 28, 0.3);
+        }
+
+        /* Decorative particles */
+        .particle {
+            position: absolute;
+            width: 4px;
+            height: 4px;
+            background: #d98b1c;
+            border-radius: 50%;
+            opacity: 0;
+            animation: float 3s ease-in-out infinite;
+        }
+
+        .particle:nth-child(1) {
+            top: 20%;
+            left: 20%;
+            animation-delay: 0s;
+        }
+
+        .particle:nth-child(2) {
+            top: 30%;
+            right: 20%;
+            animation-delay: 0.5s;
+        }
+
+        .particle:nth-child(3) {
+            bottom: 30%;
+            left: 25%;
+            animation-delay: 1s;
+        }
+
+        .particle:nth-child(4) {
+            bottom: 25%;
+            right: 25%;
+            animation-delay: 1.5s;
+        }
+
+        @keyframes float {
+
+            0%,
+            100% {
+                opacity: 0;
+                transform: translateY(0) scale(0);
+            }
+
+            50% {
+                opacity: 0.8;
+                transform: translateY(-20px) scale(1.5);
+            }
+        }
+    </style>
     @stack('styles')
 </head>
 
-<body>
+<body class="loading">
+    <script>
+        // Ensure loader is visible immediately
+        document.body.classList.add('loading');
+    </script>
     <main>
+        <div id="loading">
+            <div id="loading-content">
+                <i class="fas fa-crown loader-icon"></i>
+            </div>
+            <div class="loading-text">Lion Roaring</div>
+
+            <div class="particle"></div>
+            <div class="particle"></div>
+            <div class="particle"></div>
+            <div class="particle"></div>
+            <div class="loading-text-bottom">Think Supernaturally, Act Locally</div>
+        </div>
         @include('ecom.includes.header')
         @yield('content')
 
@@ -297,6 +524,40 @@
                 });
             });
         });
+    </script>
+    <script>
+        // Hide loader when page is fully loaded
+        window.addEventListener('load', function() {
+            const loader = document.getElementById('loading');
+            const body = document.body;
+
+            if (loader) {
+                // Remove loading class from body
+                body.classList.remove('loading');
+
+                // Add fade-out class to loader
+                loader.classList.add('fade-out');
+
+                // Remove from DOM after transition completes
+                setTimeout(function() {
+                    loader.style.display = 'none';
+                }, 500);
+            }
+        });
+
+        // Fallback: Hide loader after 5 seconds if page hasn't fully loaded
+        setTimeout(function() {
+            const loader = document.getElementById('loading');
+            const body = document.body;
+
+            if (loader && !loader.classList.contains('fade-out')) {
+                body.classList.remove('loading');
+                loader.classList.add('fade-out');
+                setTimeout(function() {
+                    loader.style.display = 'none';
+                }, 500);
+            }
+        }, 5000);
     </script>
     @stack('scripts')
     @include('frontend.includes.google_translate')

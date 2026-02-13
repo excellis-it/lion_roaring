@@ -515,8 +515,29 @@ class EstoreProductController extends Controller
                     ->first();
             }
 
+            $estoreSettings = \App\Models\EstoreSetting::first();
+            $maxOrderQty = $estoreSettings->max_order_quantity ?? null;
+
             if ($existingCart) {
-                $existingCart->quantity += $request->quantity;
+                $newTotalQty = $existingCart->quantity + $request->quantity;
+
+                // Check against available stock
+                if ($newTotalQty > $warehouseProduct->quantity) {
+                    return response()->json([
+                        'status' => false,
+                        'message' => "Only {$warehouseProduct->quantity} items available in stock in this warehouse"
+                    ], 201);
+                }
+
+                // Check against max order quantity
+                if ($maxOrderQty && $maxOrderQty > 0 && $newTotalQty > $maxOrderQty) {
+                    return response()->json([
+                        'status' => false,
+                        'message' => "Maximum order quantity of {$maxOrderQty} exceeded"
+                    ], 201);
+                }
+
+                $existingCart->quantity = $newTotalQty;
                 if ($product->is_free) {
                     $existingCart->old_price = $existingCart->price;
                     $existingCart->price = 0;
@@ -530,6 +551,14 @@ class EstoreProductController extends Controller
                     'cart_item_id' => $existingCart->id,
                     'quantity' => $existingCart->quantity
                 ]);
+            }
+
+            // Check against max order quantity for new item
+            if ($maxOrderQty && $maxOrderQty > 0 && $request->quantity > $maxOrderQty) {
+                return response()->json([
+                    'status' => false,
+                    'message' => "Maximum order quantity of {$maxOrderQty} exceeded"
+                ], 201);
             }
 
             // set defaults for size/color if not provided (same as website)
@@ -635,6 +664,27 @@ class EstoreProductController extends Controller
             }
             $cartItem = EstoreCart::find($request->cart_id);
             if (!$cartItem) return response()->json(['message' => 'Cart item not found', 'status' => false], 201);
+
+            $estoreSettings = \App\Models\EstoreSetting::first();
+            $maxOrderQty = $estoreSettings->max_order_quantity ?? null;
+
+            // Check against max order quantity
+            if ($maxOrderQty && $maxOrderQty > 0 && $request->quantity > $maxOrderQty) {
+                return response()->json([
+                    'status' => false,
+                    'message' => "Maximum order quantity of {$maxOrderQty} exceeded"
+                ], 201);
+            }
+
+            // Check against available stock
+            $warehouseProduct = WarehouseProduct::find($cartItem->warehouse_product_id);
+            if ($warehouseProduct && $request->quantity > $warehouseProduct->quantity) {
+                return response()->json([
+                    'status' => false,
+                    'message' => "Only {$warehouseProduct->quantity} items available in stock in this warehouse"
+                ], 201);
+            }
+
             $cartItem->quantity = $request->quantity;
             $cartItem->save();
 

@@ -55,6 +55,7 @@ class User extends Authenticatable
         'location_country',
         'location_state',
         'profile_picture',
+        'signature',
     ];
     protected $appends = ['ecclesia_access', 'full_name']; // Add this line
 
@@ -211,5 +212,10 @@ class User extends Authenticatable
     public function defaultDeliveryAddress()
     {
         return $this->hasOne(UserAddress::class)->where('is_default', true);
+    }
+
+    public function userRegisterAgreement()
+    {
+        return $this->hasOne(UserRegisterAgreement::class, 'user_id');
     }
 }

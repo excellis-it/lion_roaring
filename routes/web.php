@@ -141,6 +141,8 @@ use App\Http\Controllers\User\UserActivityController;
 use App\Http\Controllers\User\MembershipController as UserMembershipController;
 use App\Http\Controllers\User\RegisterAgreementPreviewController;
 use App\Http\Controllers\Frontend\MembershipController as FrontEndMembershipController;
+use App\Http\Controllers\User\Admin\AdminController as AdminAdminController;
+use App\Http\Controllers\User\PromoCodeController;
 use App\Http\Controllers\User\RecycleBinController;
 
 /*
@@ -494,6 +496,18 @@ Route::prefix('user')->middleware(['user', 'preventBackHistory', 'userActivity',
         Route::get('/payments', [UserMembershipController::class, 'payments'])->name('user.membership.payments');
     });
 
+    // Promo Code Management Routes
+    Route::prefix('promo-codes')->group(function () {
+        Route::get('/', [PromoCodeController::class, 'index'])->name('user.promo-codes.index');
+        Route::get('/create', [PromoCodeController::class, 'create'])->name('user.promo-codes.create');
+        Route::post('/', [PromoCodeController::class, 'store'])->name('user.promo-codes.store');
+        Route::get('/{promoCode}/edit', [PromoCodeController::class, 'edit'])->name('user.promo-codes.edit');
+        Route::put('/{promoCode}', [PromoCodeController::class, 'update'])->name('user.promo-codes.update');
+        Route::delete('/{promoCode}', [PromoCodeController::class, 'destroy'])->name('user.promo-codes.destroy');
+
+    });
+
+
 
     // Route::get('/dashboard', [UserDashboardController::class, 'dashboard'])->name('user.dashboard');
     Route::get('/profile', [UserDashboardController::class, 'profile'])->name('user.profile');
@@ -516,6 +530,16 @@ Route::prefix('user')->middleware(['user', 'preventBackHistory', 'userActivity',
         Route::post('/{table}/bulk-force-delete', [RecycleBinController::class, 'bulkForceDelete'])->name('user.recycle-bin.bulk-force-delete');
         Route::post('/{table}/restore-all', [RecycleBinController::class, 'restoreAll'])->name('user.recycle-bin.restore-all');
         Route::delete('/{table}/empty-bin', [RecycleBinController::class, 'emptyBin'])->name('user.recycle-bin.empty-bin');
+    });
+
+
+    Route::prefix('detail')->name('user.admin.')->group(function () {
+        Route::get('/', [AdminAdminController::class, 'index'])->name('index');
+        Route::get('/add', [AdminAdminController::class, 'add'])->name('add');
+        Route::post('/store', [AdminAdminController::class, 'store'])->name('store');
+        Route::post('/edit/{id}', [AdminAdminController::class, 'edit'])->name('edit');
+        Route::get('/delete/{id}', [AdminAdminController::class, 'delete'])->name('delete');
+        Route::post('/update', [AdminAdminController::class, 'update'])->name('admin.update');
     });
 
 
@@ -920,6 +944,8 @@ Route::prefix('user')->middleware(['user', 'preventBackHistory', 'userActivity',
     Route::get('/changePartnerStatus', [PartnerController::class, 'changePartnerStatus'])->name('partners.change-status');
     Route::get('/partner-fetch-data', [PartnerController::class, 'fetchData'])->name('partners.fetch-data');
     Route::get('/partner-reset-filters', [PartnerController::class, 'resetFilters'])->name('partners.reset-filters');
+    Route::get('/partner-export-report', [PartnerController::class, 'exportReport'])->name('partners.export-report');
+    Route::get('/partner-agreement-details', [PartnerController::class, 'getAgreementDetails'])->name('partners.agreement-details');
 
     // Mail
     Route::prefix('mail')->group(function () {
@@ -962,6 +988,7 @@ Route::prefix('user')->middleware(['user', 'preventBackHistory', 'userActivity',
         Route::post('/store', [LiveEventController::class, 'store'])->name('events.store');
         Route::put('/update/{id}', [LiveEventController::class, 'update'])->name('events.update');
         Route::delete('/destroy/{id}', [LiveEventController::class, 'destroy'])->name('events.destroy');
+        Route::post('/{id}/notify-rsvps', [LiveEventController::class, 'updateDetailsAndNotifyRsvps'])->name('events.notify-rsvps');
 
         // RSVP and payment management routes
         Route::get('/{id}/rsvps', [LiveEventController::class, 'viewRsvps'])->name('events.rsvps');
@@ -992,6 +1019,7 @@ Route::prefix('user')->middleware(['user', 'preventBackHistory', 'userActivity',
 
         Route::get('settings', [UserAdminSettingsController::class, 'edit'])->name('user.admin.settings.edit');
         Route::post('settings', [UserAdminSettingsController::class, 'update'])->name('user.admin.settings.update');
+        Route::post('settings/toggle-status', [UserAdminSettingsController::class, 'toggleStatus'])->name('user.admin.settings.toggle-status');
 
 
 
@@ -1189,8 +1217,8 @@ Route::prefix('e-store')->middleware(['user', 'preventBackHistory', 'userActivit
     // user addresses (multi-address location picker)
     Route::get('/addresses', [EstoreUserAddressController::class, 'index'])->name('e-store.addresses.index')->middleware('user');
     Route::post('/addresses', [EstoreUserAddressController::class, 'store'])->name('e-store.addresses.store');
-    Route::post('/addresses/{address}', [EstoreUserAddressController::class, 'update'])->name('e-store.addresses.update')->middleware('user');
-    Route::post('/addresses/{address}/delete', [EstoreUserAddressController::class, 'destroy'])->name('e-store.addresses.delete')->middleware('user');
+    Route::post('/addresses/{address}', [EstoreUserAddressController::class, 'update'])->name('e-store.addresses.update')->whereNumber('address')->middleware('user');
+    Route::post('/addresses/{address}/delete', [EstoreUserAddressController::class, 'destroy'])->name('e-store.addresses.delete')->whereNumber('address')->middleware('user');
     Route::post('/addresses/default', [EstoreUserAddressController::class, 'setDefault'])->name('e-store.addresses.default')->middleware('user');
 
     // Backward-compat: location updater now saves into user_addresses (or session for guests)
@@ -1306,3 +1334,5 @@ Route::post('/stripe/webhook', [\App\Http\Controllers\Webhook\StripeWebhookContr
 
 // Public success URL for Stripe Checkout (so Stripe redirect doesn't require auth)
 Route::get('/membership/checkout/success', [UserMembershipController::class, 'checkoutSuccess'])->name('membership.checkout.success');
+
+ Route::post('/promo-codes/validate', [PromoCodeController::class, 'validatePromoCode'])->name('user.promo-codes.validate');

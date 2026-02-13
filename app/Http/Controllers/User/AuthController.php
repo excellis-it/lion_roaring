@@ -19,6 +19,7 @@ use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\Crypt;
 use App\Mail\OtpMail;
+use App\Models\MembershipPromoCode;
 use App\Models\VerifyOTP;
 use Illuminate\Support\Facades\Hash;
 use App\Models\UserActivity;
@@ -33,6 +34,7 @@ use Spatie\Permission\Models\Permission;
 use App\Models\UserType;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Log;
 
 class AuthController extends Controller
 {
@@ -115,15 +117,23 @@ class AuthController extends Controller
         $eclessias = Ecclesia::orderBy('id', 'asc')->get();
         $countries = Country::all();
         $tiers = MembershipTier::with('benefits')->get();
-        return view('user.auth.register')->with(compact('eclessias', 'countries', 'tiers'));
+
+        // Calculate auto-generated part for Lion Roaring ID: LR + 0000 (sequence) + MMDDYYYY
+        $todayCount = User::withTrashed()->whereDate('created_at', now()->toDateString())->count();
+        $sequence = str_pad($todayCount + 1, 4, '0', STR_PAD_LEFT);
+        $datePart = now()->format('mdY');
+        $generated_id_part = 'LR' . $sequence . $datePart;
+
+        return view('user.auth.register')->with(compact('eclessias', 'countries', 'tiers', 'generated_id_part'));
     }
 
     public function registerCheck(Request $request)
     {
         $validator = Validator::make($request->all(), [
             'user_name' => 'required|string|max:255|unique:users',
-            'lion_roaring_id' => 'required|string|max:255|unique:users,lion_roaring_id',
-            'roar_id' => 'required|string|max:255',
+            'generated_id_part' => 'required|string',
+            'lion_roaring_id_suffix' => 'required|digits:4',
+            'roar_id' => 'nullable|string|max:255',
             'email' => 'required|string|email|max:255|unique:users',
             'ecclesia_id' => 'nullable',
             'first_name' => 'required|string|max:255',
@@ -141,10 +151,13 @@ class AuthController extends Controller
             'password_confirmation' => 'required|same:password',
             'signature' => 'required|string',
             'tier_id' => 'required|exists:membership_tiers,id',
+            'promo_code' => 'nullable|string|max:50',
         ], [
             'password.regex' => 'The password must be at least 8 characters long and include at least one special character from @$%&.',
             'signature.required' => 'Please provide your signature before submitting the form.',
             'tier_id.required' => 'Please select a membership tier.',
+            'lion_roaring_id_suffix.required' => 'Please enter the last 4 digits for your Lion Roaring ID.',
+            'lion_roaring_id_suffix.digits' => 'Lion Roaring ID suffix must be exactly 4 digits.',
         ]);
 
         $validator->after(function ($validator) use ($request) {
@@ -164,6 +177,7 @@ class AuthController extends Controller
             }
 
             $tier = MembershipTier::find($request->tier_id);
+
             if (!$tier) {
                 return;
             }
@@ -183,8 +197,8 @@ class AuthController extends Controller
             }
         });
 
-
         if ($validator->fails()) {
+            Log::error('' . $validator->errors()->first());
             return redirect()->back()
                 ->withErrors($validator)
                 ->withInput();
@@ -212,22 +226,37 @@ class AuthController extends Controller
         $payment_status = 'Pending';
         $transaction_id = null;
         $payment_amount = 0;
+        $promoCode = null;
+        $discount = 0;
+        $finalPrice = $tier->cost;
+
+        // Handle promo code if provided during registration
+        if ($request->has('promo_code') && !empty($request->promo_code)) {
+            $promoCode = MembershipPromoCode::where('code', $request->promo_code)->first();
+            if ($promoCode && $promoCode->isValid()) {
+                // For registration, we don't have user_id yet, but we can check tier scope
+                if ($promoCode->canBeAppliedToTier($tier->id)) {
+                    $discount = $promoCode->calculateDiscount($tier->cost);
+                    $finalPrice = max(0, $tier->cost - $discount);
+                }
+            }
+        }
 
         // Process Payment
-        if (($tier->pricing_type ?? 'amount') === 'amount' && floatval($tier->cost) > 0) {
+        if (($tier->pricing_type ?? 'amount') === 'amount' && floatval($finalPrice) > 0) {
             try {
                 \Stripe\Stripe::setApiKey(env('STRIPE_SECRET'));
                 $charge = \Stripe\Charge::create([
-                    'amount' => $tier->cost * 100,
+                    'amount' => (int) ($finalPrice * 100),
                     'currency' => 'usd',
                     'source' => $request->stripeToken,
-                    'description' => 'Membership Registration - ' . $tier->name,
+                    'description' => 'Membership Registration - ' . $tier->name . ($promoCode ? ' (Promo: ' . $promoCode->code . ')' : ''),
                 ]);
 
                 if ($charge->status == 'succeeded') {
                     $payment_status = 'Success';
                     $transaction_id = $charge->id;
-                    $payment_amount = $tier->cost;
+                    $payment_amount = $finalPrice;
                 } else {
                     return redirect()->back()->withErrors(['stripeToken' => 'Payment failed.'])->withInput();
                 }
@@ -240,9 +269,17 @@ class AuthController extends Controller
         $signupValidation = SignupRule::validateSignupData($request->all());
 
         // dd($signupValidation);
+        // Generate Lion Roaring ID: generated_id_part + user input (last 4 digits)
+        $fullLionRoaringId = $request->generated_id_part . $request->lion_roaring_id_suffix;
+
+        // Ensure uniqueness
+        if (User::where('lion_roaring_id', $fullLionRoaringId)->exists()) {
+            return redirect()->back()->withErrors(['lion_roaring_id_suffix' => 'This Lion Roaring ID is already taken. Please try different last 4 digits.'])->withInput();
+        }
+
         $user = new User();
         $user->user_name = $request->user_name;
-        $user->lion_roaring_id = $request->lion_roaring_id;
+        $user->lion_roaring_id = $fullLionRoaringId;
         $user->roar_id = $request->roar_id;
         $user->ecclesia_id = $request->ecclesia_id;
         $user->email = $request->email;
@@ -352,6 +389,9 @@ class AuthController extends Controller
         } else {
             $user_subscription->subscription_method = 'amount';
             $user_subscription->subscription_price = $tier->cost;
+            $user_subscription->promo_code = $promoCode ? $promoCode->code : null;
+            $user_subscription->discount_amount = $discount;
+            $user_subscription->final_price = $payment_amount;
             $user_subscription->life_force_energy_tokens = null;
             $user_subscription->agree_accepted_at = null;
             $user_subscription->agree_description_snapshot = null;
@@ -367,10 +407,24 @@ class AuthController extends Controller
             $payment->user_id = $user->id;
             $payment->user_subscription_id = $user_subscription->id;
             $payment->transaction_id = $transaction_id;
-            $payment->payment_method = 'Stripe';
+            $payment->payment_method = $payment_amount > 0 ? 'Stripe' : 'Promo';
             $payment->payment_amount = $payment_amount;
+            $payment->promo_code = $promoCode ? $promoCode->code : null;
+            $payment->discount_amount = $discount;
             $payment->payment_status = 'Success';
             $payment->save();
+
+            // Record promo code usage
+            if ($promoCode) {
+                \App\Models\MembershipPromoUsage::create([
+                    'promo_code_id' => $promoCode->id,
+                    'user_id' => $user->id,
+                    'subscription_id' => $user_subscription->id,
+                    'discount_applied' => $discount,
+                    'used_at' => now(),
+                ]);
+                $promoCode->incrementUsage();
+            }
         }
 
         // $maildata = [
@@ -393,9 +447,19 @@ class AuthController extends Controller
         ];
 
         if ($user->status == 1) {
+            // Store promo code in session for later use
+            if ($request->has('promo_code') && !empty($request->promo_code)) {
+                Session::put('registration_promo_code', $request->promo_code);
+            }
+
             Mail::to($request->email)->send(new ActiveUserMail($maildata));
             return redirect()->route('home')->with('message', 'Thank you for registering! You can now login');
         } else {
+            // Store promo code in session for later use
+            if ($request->has('promo_code') && !empty($request->promo_code)) {
+                Session::put('registration_promo_code', $request->promo_code);
+            }
+
             Mail::to($request->email)->send(new ActiveUserMail($maildata));
             return redirect()->route('home')->with('message', 'Please wait for admin approval');
         }
@@ -417,8 +481,9 @@ class AuthController extends Controller
     {
         $validator = Validator::make($request->all(), [
             'user_name' => 'required|string|max:255|unique:users',
-            'lion_roaring_id' => 'required|string|max:255|unique:users,lion_roaring_id',
-            'roar_id' => 'required|string|max:255',
+            'generated_id_part' => 'required|string',
+            'lion_roaring_id_suffix' => 'required|digits:4',
+            'roar_id' => 'nullable|string|max:255',
             'email' => 'required|string|email|max:255|unique:users',
             'ecclesia_id' => 'nullable',
             'first_name' => 'required|string|max:255',
@@ -438,6 +503,8 @@ class AuthController extends Controller
         ], [
             'password.regex' => 'The password must be at least 8 characters long and include at least one special character from @$%&.',
             'signature.required' => 'Please provide your signature before submitting the form.',
+            'lion_roaring_id_suffix.required' => 'Please enter the last 4 digits for your Lion Roaring ID.',
+            'lion_roaring_id_suffix.digits' => 'Lion Roaring ID suffix must be exactly 4 digits.',
         ]);
 
         if ($validator->fails()) {

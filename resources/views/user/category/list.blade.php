@@ -46,6 +46,9 @@
                                                     Background Image
                                                 </th>
                                                 <th>
+                                                    Size Measurements Image
+                                                </th>
+                                                <th>
                                                     Parent Category
                                                 </th>
                                                 <th class="sorting" data-tippy-content="Sort by Category Name"

@@ -292,10 +292,12 @@
                             <div id="card-errors" class="text-danger mt-2"></div>
 
                             <!-- Submit -->
-                            <div class="col-md-12 mt-3 text-end">
+                            <div class="col-md-12 mt-3  d-flex align-item-center justify-content-end gap-2">
                                 <button type="submit" class="red_btn text-center border-0" id="submit-payment">
                                     <span>PLACE ORDER</span>
                                 </button>
+                                {{-- add a cancel to back to cart page --}}
+                                <a href="{{ route('e-store.cart') }}" class="red_btn text-center border-0 "><span>Cancel</span></a>
                             </div>
                         </div>
                     </div>

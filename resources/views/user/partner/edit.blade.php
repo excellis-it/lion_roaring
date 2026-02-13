@@ -203,17 +203,35 @@
                                             @endif
                                         </div>
                                     </div>
+                                    @php
+                                        $existing_id = $partner->lion_roaring_id;
+                                        $current_prefix = $generated_id_part;
+                                        $current_suffix = '';
+
+                                        if (strlen($existing_id) >= 14 && substr($existing_id, 0, 2) === 'LR') {
+                                            $current_prefix = substr($existing_id, 0, 14);
+                                            $current_suffix = substr($existing_id, 14);
+                                        } else {
+                                            $current_suffix = $existing_id;
+                                        }
+                                    @endphp
                                     <div class="col-md-6 mb-2">
                                         <div class="box_label">
                                             <label>Lion Roaring ID *</label>
-                                            <input type="text" class="form-control" name="lion_roaring_id"
-                                                value="{{ old('lion_roaring_id', $partner->lion_roaring_id) }}"
-                                                placeholder="">
-                                            @if ($errors->has('lion_roaring_id'))
+                                            <div class="input-group">
+                                                <span
+                                                    class="input-group-text">{{ old('generated_id_part', $current_prefix) }}</span>
+                                                <input type="text" class="form-control" name="lion_roaring_id_suffix"
+                                                    value="{{ old('lion_roaring_id_suffix', $current_suffix) }}"
+                                                    placeholder="Enter last 4 digits" maxlength="4">
+                                            </div>
+                                            @if ($errors->has('lion_roaring_id_suffix'))
                                                 <div class="error" style="color:red !important;">
-                                                    {{ $errors->first('lion_roaring_id') }}
+                                                    {{ $errors->first('lion_roaring_id_suffix') }}
                                                 </div>
                                             @endif
+                                            <input type="hidden" name="generated_id_part"
+                                                value="{{ old('generated_id_part', $current_prefix) }}">
                                         </div>
                                     </div>
                                     <div class="col-md-6 mb-2">
@@ -252,7 +270,7 @@
                                         <div class="box_label">
                                             <label>Phone*</label>
                                             <input type="tel" class="form-control" name="phone" id="mobile_code"
-                                                value="{{ old('phone', $partner->phone) }}"
+                                                value="{{ old('full_phone_number', $partner->phone) }}"
                                                 placeholder="Enter Phone Number">
                                             @if ($errors->has('phone'))
                                                 <div class="error" style="color:red !important;">
@@ -346,25 +364,7 @@
                                         </div>
                                     </div> --}}
 
-                                    <div class="col-md-4 mb-2" id="ecclesia_main_input">
-                                        <div class="box_label">
-                                            <label>Ecclesias </label>
-                                            <select class="form-control" name="ecclesia_id">
-                                                <option value="">Select Ecclesia</option>
-                                                @foreach ($eclessias as $item)
-                                                    <option value="{{ $item->id }}"
-                                                        {{ old('ecclesia_id', $partner->ecclesia_id) == $item->id ? 'selected' : '' }}>
-                                                        {{ $item->name . '(' . $item->countryName->name . ')' ?? '' }}
-                                                    </option>
-                                                @endforeach
-                                            </select>
-                                            @if ($errors->has('ecclesia_id'))
-                                                <div class="error" style="color:red !important;">
-                                                    {{ $errors->first('ecclesia_id') }}
-                                                </div>
-                                            @endif
-                                        </div>
-                                    </div>
+
 
 
                                     <div class="col-md-4 mb-2">
@@ -407,7 +407,7 @@
                                     </div>
 
                                     {{-- country --}}
-                                    <div class="col-md-6 mb-2">
+                                    <div class="col-md-4 mb-2">
                                         <div class="box_label">
                                             <label>Country *</label>
                                             <select name="country" id="country" class="form-control">
@@ -427,7 +427,7 @@
                                         </div>
                                     </div>
                                     {{-- state --}}
-                                    <div class="col-md-6 mb-2">
+                                    <div class="col-md-4 mb-2">
                                         <div class="box_label">
                                             <label>State</label>
                                             <select name="state" id="state" class="form-control">
@@ -436,6 +436,25 @@
                                             @if ($errors->has('state'))
                                                 <div class="error" style="color:red !important;">
                                                     {{ $errors->first('state') }}
+                                                </div>
+                                            @endif
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4 mb-2" id="ecclesia_main_input">
+                                        <div class="box_label">
+                                            <label>Ecclesias </label>
+                                            <select class="form-control" name="ecclesia_id">
+                                                <option value="">Select Ecclesia</option>
+                                                @foreach ($eclessias as $item)
+                                                    <option value="{{ $item->id }}"
+                                                        {{ old('ecclesia_id', $partner->ecclesia_id) == $item->id ? 'selected' : '' }}>
+                                                        {{ $item->name . '(' . $item->countryName->name . ')' ?? '' }}
+                                                    </option>
+                                                @endforeach
+                                            </select>
+                                            @if ($errors->has('ecclesia_id'))
+                                                <div class="error" style="color:red !important;">
+                                                    {{ $errors->first('ecclesia_id') }}
                                                 </div>
                                             @endif
                                         </div>
@@ -519,13 +538,17 @@
                                                         value="{{ $role->name }}"
                                                         data-permissions="{{ json_encode($role->permissions->pluck('name')) }}"
                                                         data-isecclesia="{{ $role->is_ecclesia }}"
-                                                        {{ $currentRoleName == $role->name ? 'checked' : '' }} required>
+                                                        {{ $currentRoleName == $role->name ? 'checked' : '' }}>
                                                     <label class="form-check-label"
                                                         for="data-roles-{{ $role->id }}">{{ $role->name }}
                                                         <small>{{ $role->is_ecclesia == 1 ? '(ECCLESIA)' : '' }}</small></label>
                                                 </div>
                                             @endforeach
-
+                                            @if ($errors->has('role'))
+                                                <div class="error" style="color:red !important;">
+                                                    {{ $errors->first('role') }}
+                                                </div>
+                                            @endif
 
                                         </div>
                                     </div>
@@ -693,62 +716,108 @@
                                                 </div>
                                             </div>
 
-                                            <div class="permissions-body">
-                                                @foreach ($categorizedPermissions as $category => $permissions)
+                                            <div class="permissions-body p-4">
+                                                @foreach ($categorizedPermissions as $mainCategory => $subCategories)
                                                     @php
-                                                        $availablePermissions = array_intersect(
-                                                            $permissions,
-                                                            $allPermsArray,
-                                                        );
+                                                        $mainCategoryPermCount = 0;
+                                                        foreach ($subCategories as $subPerms) {
+                                                            $mainCategoryPermCount += count(
+                                                                array_intersect($subPerms, $allPermsArray),
+                                                            );
+                                                        }
                                                     @endphp
-                                                    @if (count($availablePermissions) > 0)
-                                                        <div class="category-row"
-                                                            data-category="{{ strtolower($category) }}">
-                                                            <div class="category-trigger">
-                                                                <div class="form-check mb-0 me-3">
-                                                                    <input
-                                                                        class="form-check-input select-category-permissions"
-                                                                        type="checkbox"
-                                                                        id="cat-check-{{ Str::slug($category) }}">
+
+                                                    @if ($mainCategoryPermCount > 0)
+                                                        <div class="main-category-block mb-4 shadow-sm"
+                                                            style="border: 1px solid #e2e8f0; border-radius: 10px; overflow: hidden;">
+                                                            <div class="main-category-header p-3 d-flex justify-content-between align-items-center"
+                                                                style="background: #f8fafc; border-bottom: 1px solid #e2e8f0;">
+                                                                <h5 class="mb-0"
+                                                                    style="color: #1e293b; font-size: 1.1rem; font-weight: 700;">
+                                                                    <i class="fas fa-layer-group me-2"
+                                                                        style="color: #64748b;"></i>
+                                                                    {{ $mainCategory }}
+                                                                </h5>
+                                                                <div class="d-flex align-items-center gap-3">
+                                                                    <span class="badge bg-soft-info text-info px-3 py-2"
+                                                                        style="background-color: #e0f2fe; color: #0369a1; border-radius: 6px; font-size: 0.85rem;">
+                                                                        {{ $mainCategoryPermCount }} total permissions
+                                                                    </span>
+                                                                    <button type="button"
+                                                                        class="btn btn-sm btn-outline-secondary toggle-main-category"
+                                                                        style="padding: 2px 8px;">
+                                                                        <i class="fas fa-chevron-up"></i>
+                                                                    </button>
                                                                 </div>
-                                                                <div class="category-info">
-                                                                    <span class="category-name">{{ $category }}</span>
-                                                                    <span
-                                                                        class="perm-count-badge">({{ count($availablePermissions) }}
-                                                                        perms)</span>
-                                                                </div>
-                                                                <span class="selection-count-badge zero">0</span>
-                                                                <i class="fas fa-chevron-down arrow-icon"></i>
                                                             </div>
-                                                            <div class="permissions-grid">
-                                                                @foreach ($availablePermissions as $permName)
+                                                            <div class="main-category-content">
+                                                                @foreach ($subCategories as $subCategory => $permissions)
                                                                     @php
-                                                                        $permId = $allPermissions
-                                                                            ->where('name', $permName)
-                                                                            ->first()->id;
+                                                                        $availablePermissions = array_intersect(
+                                                                            $permissions,
+                                                                            $allPermsArray,
+                                                                        );
                                                                     @endphp
-                                                                    <div class="perm-item"
-                                                                        data-name="{{ strtolower($permName) }}">
-                                                                        <div class="form-check mb-0">
-                                                                            <input
-                                                                                class="form-check-input permission-checkbox"
-                                                                                type="checkbox" name="permissions[]"
-                                                                                value="{{ $permName }}"
-                                                                                id="perm-{{ $permId }}"
-                                                                                {{ old('role') || old('permissions') || old('manage_ecclesia') || old('first_name')
-                                                                                    ? (is_array(old('permissions')) && in_array($permName, old('permissions'))
-                                                                                        ? 'checked'
-                                                                                        : '')
-                                                                                    : ($currentPermissions->contains($permName)
-                                                                                        ? 'checked'
-                                                                                        : '') }}>
-                                                                            <label class="perm-label ms-1"
-                                                                                for="perm-{{ $permId }}"
-                                                                                title="{{ $permName }}">
-                                                                                {{ $permName }}
-                                                                            </label>
+                                                                    @if (count($availablePermissions) > 0)
+                                                                        <div class="category-row border-bottom"
+                                                                            data-category="{{ strtolower($subCategory) }}">
+                                                                            <div class="category-trigger py-3 px-4">
+                                                                                <div class="form-check mb-0 me-3">
+                                                                                    <input
+                                                                                        class="form-check-input select-category-permissions"
+                                                                                        type="checkbox"
+                                                                                        id="cat-check-{{ Str::slug($mainCategory . '-' . $subCategory) }}">
+                                                                                </div>
+                                                                                <div class="category-info">
+                                                                                    <span class="category-name"
+                                                                                        style="color: #334155; font-weight: 600;">{{ $subCategory }}</span>
+                                                                                    <span class="perm-count-badge ms-2"
+                                                                                        style="color: #64748b; font-size: 0.8rem;">({{ count($availablePermissions) }}
+                                                                                        perms)</span>
+                                                                                </div>
+                                                                                <div class="d-flex align-items-center">
+                                                                                    <span
+                                                                                        class="selection-count-badge zero me-3">0</span>
+                                                                                    <i class="fas fa-chevron-down arrow-icon"
+                                                                                        style="color: #94a3b8;"></i>
+                                                                                </div>
+                                                                            </div>
+                                                                            <div class="permissions-grid px-5 pb-4">
+                                                                                @foreach ($availablePermissions as $permName)
+                                                                                    @php
+                                                                                        $perm = $allPermissions
+                                                                                            ->where('name', $permName)
+                                                                                            ->first();
+                                                                                        $permId = $perm ? $perm->id : 0;
+                                                                                    @endphp
+                                                                                    <div class="perm-item"
+                                                                                        data-name="{{ strtolower($permName) }}">
+                                                                                        <div class="form-check mb-0">
+                                                                                            <input
+                                                                                                class="form-check-input permission-checkbox"
+                                                                                                type="checkbox"
+                                                                                                name="permissions[]"
+                                                                                                value="{{ $permName }}"
+                                                                                                id="perm-{{ $permId }}"
+                                                                                                {{ old('role') || old('permissions') || old('manage_ecclesia') || old('first_name')
+                                                                                                    ? (is_array(old('permissions')) && in_array($permName, old('permissions'))
+                                                                                                        ? 'checked'
+                                                                                                        : '')
+                                                                                                    : ($currentPermissions->contains($permName)
+                                                                                                        ? 'checked'
+                                                                                                        : '') }}>
+                                                                                            <label class="perm-label ms-2"
+                                                                                                for="perm-{{ $permId }}"
+                                                                                                title="{{ $permName }}"
+                                                                                                style="font-size: 0.9rem; color: #475569;">
+                                                                                                {{ $permName }}
+                                                                                            </label>
+                                                                                        </div>
+                                                                                    </div>
+                                                                                @endforeach
+                                                                            </div>
                                                                         </div>
-                                                                    </div>
+                                                                    @endif
                                                                 @endforeach
                                                             </div>
                                                         </div>
@@ -926,13 +995,17 @@
         $(document).ready(function() {
             var country = $('#country').val();
             var state = {{ is_numeric($partner->state) && $partner->state != null ? $partner->state : 0 }};
+            var currentEcclesiaId = {{ old('ecclesia_id', $partner->ecclesia_id) ?? 'null' }};
+            var currentManageEcclesia = {!! json_encode(
+                old('manage_ecclesia', isset($partner->manage_ecclesia) ? explode(',', $partner->manage_ecclesia) : []),
+            ) !!};
 
             getStates(country, state);
 
             $('#country').change(function() {
+                getEcclesias();
                 var country = $(this).val();
                 getStates(country);
-                getEcclesias();
             });
 
             $('select[name="user_type"]').change(function() {
@@ -962,6 +1035,7 @@
 
             function getEcclesias() {
                 var country = $('#country').val();
+                var userType = $('select[name="user_type"]').val();
                 if (!userType) {
                     $('select[name="ecclesia_id"]').html('<option value="">Select Ecclesia</option>');
                     $('#hoe_row .row.g-3').html('');
@@ -1026,54 +1100,7 @@
             }
 
             getEcclesias();
-        });
-    </script>
-    {{-- <script>
-        $(document).ready(function() {
-            $(".data-roles").change(function(e) {
-                e.preventDefault();
-                var permissions = $(this).data('permissions');
-                var role_name = $(this).val();
-                console.log(permissions);
-                $("#Role_Name").text(role_name);
 
-                var col1 = $('<div class="col-6"></div>');
-                var col2 = $('<div class="col-6"></div>');
-
-                // Create an unordered list to hold the permissions for each column
-                var permissionsList1 = $('<ul></ul>');
-                var permissionsList2 = $('<ul></ul>');
-
-                // Divide the permissions list into two arrays
-                var half = Math.ceil(permissions.length / 2); // To split the list into two equal parts
-                var firstHalf = permissions.slice(0, half);
-                var secondHalf = permissions.slice(half);
-
-                // Add permissions to the first column
-                $.each(firstHalf, function(index, permission) {
-                    var listItem = $('<li></li>').text(permission.name);
-                    permissionsList1.append(listItem);
-                });
-
-                // Add permissions to the second column
-                $.each(secondHalf, function(index, permission) {
-                    var listItem = $('<li></li>').text(permission.name);
-                    permissionsList2.append(listItem);
-                });
-
-                // Append the lists to the respective columns
-                col1.append(permissionsList1);
-                col2.append(permissionsList2);
-
-                // Append the columns to the container row, replacing the content
-                $('#permissions-container').html(col1).append(col2);
-
-            });
-
-        });
-    </script> --}}
-    <script>
-        $(document).ready(function() {
             // Function to update "Select All" state for ecclesias
             function updateSelectAllEcclesiasState() {
                 var total = $('.data-eclessia').length;
@@ -1112,6 +1139,14 @@
 
             // Init counts
             updateSelectionStates();
+
+            // Toggle Main Category
+            $(document).on('click', '.toggle-main-category', function() {
+                var $content = $(this).closest('.main-category-block').find('.main-category-content');
+                var $icon = $(this).find('i');
+                $content.slideToggle();
+                $icon.toggleClass('fa-chevron-up fa-chevron-down');
+            });
 
             // Toggle Accordion
             $(document).on('click', '.category-trigger', function(e) {
@@ -1258,6 +1293,7 @@
 
             // Combined Roles Change Handler
             $(document).on('change', 'input[name="role"]', function() {
+                getEcclesias(); // Trigger ecclesia fetching on role change
                 var permissions = $(this).data('permissions');
                 var is_ecclesia = $(this).data('isecclesia');
 

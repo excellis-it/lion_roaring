@@ -278,6 +278,9 @@
                                         </div>
                                     </div>
 
+
+
+
                                     {{-- short_description --}}
                                     <div class="col-md-12 mb-2">
                                         <div class="box_label">
@@ -319,10 +322,12 @@
                                             <select name="feature_product" id="feature_product" class="form-control">
                                                 <option value="">Select Feature Product</option>
                                                 <option value="1"
-                                                    {{ $product->feature_product == 1 ? 'selected' : '' }}>Yes
+                                                    {{ $product->feature_product == 1 ? 'selected' : '' }}>
+                                                    Yes
                                                 </option>
                                                 <option value="0"
-                                                    {{ $product->feature_product == 0 ? 'selected' : '' }}>No
+                                                    {{ $product->feature_product == 0 ? 'selected' : '' }}>
+                                                    No
                                                 </option>
                                             </select>
 
@@ -339,10 +344,12 @@
                                             <select name="is_new_product" id="is_new_product" class="form-control">
                                                 <option value="">Select New Product</option>
                                                 <option value="1"
-                                                    {{ $product->is_new_product == 1 ? 'selected' : '' }}>Yes
+                                                    {{ $product->is_new_product == 1 ? 'selected' : '' }}>
+                                                    Yes
                                                 </option>
                                                 <option value="0"
-                                                    {{ $product->is_new_product == 0 ? 'selected' : '' }}>No
+                                                    {{ $product->is_new_product == 0 ? 'selected' : '' }}>
+                                                    No
                                                 </option>
                                             </select>
                                             @if ($errors->has('is_new_product'))
@@ -353,7 +360,7 @@
 
 
                                     <!-- <div class="col-md-2 mb-2">
-                                                                    </div> -->
+                                                                                    </div> -->
 
                                     {{-- is_free --}}
                                     <div class="col-md-4 mb-2">
@@ -432,7 +439,7 @@
 
                                                 <div class="col-md-3 mb-2 market-price-fields" style="display:none;">
                                                     <div class="box_label">
-                                                        <label for="market_grams"> Grams <span
+                                                        <label for="market_grams"> Quantity <span
                                                                 class="text-danger">*</span></label>
                                                         <input type="number" step="any" name="market_grams"
                                                             id="market_grams" class="form-control"
@@ -441,6 +448,25 @@
                                                         @if ($errors->has('market_grams'))
                                                             <span
                                                                 class="error">{{ $errors->first('market_grams') }}</span>
+                                                        @endif
+                                                    </div>
+                                                </div>
+
+                                                <div class="col-md-2 mb-2 market-price-fields" style="display:none;">
+                                                    <div class="box_label">
+                                                        <label for="market_unit"> Unit <span
+                                                                class="text-danger">*</span></label>
+                                                        <select name="market_unit" id="market_unit" class="form-control">
+                                                            <option value="g"
+                                                                {{ old('market_unit', $product->market_unit) == 'g' ? 'selected' : '' }}>
+                                                                Gram (g)</option>
+                                                            <option value="oz"
+                                                                {{ old('market_unit', $product->market_unit) == 'oz' ? 'selected' : '' }}>
+                                                                Ounce (oz)</option>
+                                                        </select>
+                                                        @if ($errors->has('market_unit'))
+                                                            <span
+                                                                class="error">{{ $errors->first('market_unit') }}</span>
                                                         @endif
                                                     </div>
                                                 </div>
@@ -905,6 +931,7 @@
                 });
             });
         </script>
+
         <script>
             ClassicEditor.create(document.querySelector("#description"));
             ClassicEditor.create(document.querySelector("#specification"));

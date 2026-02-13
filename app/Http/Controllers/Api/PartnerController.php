@@ -612,6 +612,7 @@ class PartnerController extends Controller
                 'name' => $user->full_name,
                 'email' => $user->email,
                 'type' => $request->status == 1 ? 'Activated' : 'Deactivated',
+                'status' => $request->status,
             ];
 
             if ($request->status == 0) {

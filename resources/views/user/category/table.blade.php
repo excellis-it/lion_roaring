@@ -18,6 +18,14 @@
                 </div>
             </td>
             <td>
+                <div class="d-flex">
+                    @if ($category->size_measurements_image)
+                        <img src="{{ Storage::url($category->size_measurements_image) }}" alt="{{ $category->name }}"
+                            style="width: 50px; height: 50px; object-fit: cover;">
+                    @endif
+                </div>
+            </td>
+            <td>
                 {{ $category->parent_tree ?: '—' }}
             </td>
 

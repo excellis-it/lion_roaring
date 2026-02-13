@@ -65,10 +65,13 @@ class ChatController extends Controller
                     });
                 }
 
-                // Exclude Super Admins from non-super-admin lists unless they have messaged
+                // Exclude Global Super Admins from non-super-admin lists unless they have messaged
                 $usersQuery->where(function ($query) {
-                    $query->whereDoesntHave('roles', function ($q) {
-                        $q->where('name', 'SUPER ADMIN');
+                    $query->where(function ($q) {
+                        $q->where('user_type', '!=', 'Global')
+                            ->orWhereDoesntHave('userRole', function ($q) {
+                                $q->where('name', 'SUPER ADMIN');
+                            });
                     })->orWhereHas('chatSender', function ($q) {
                         $q->where('reciver_id', auth()->id());
                     })->orWhereHas('chatReciver', function ($q) {
@@ -149,9 +152,13 @@ class ChatController extends Controller
                     });
                 }
 
+                // Exclude Global Super Admins from non-super-admin lists unless they have messaged
                 $usersQuery->where(function ($query) {
-                    $query->whereDoesntHave('roles', function ($q) {
-                        $q->where('name', 'SUPER ADMIN');
+                    $query->where(function ($q) {
+                        $q->where('user_type', '!=', 'Global')
+                            ->orWhereDoesntHave('userRole', function ($q) {
+                                $q->where('name', 'SUPER ADMIN');
+                            });
                     })->orWhereHas('chatSender', function ($q) {
                         $q->where('reciver_id', auth()->id());
                     })->orWhereHas('chatReciver', function ($q) {

@@ -8,6 +8,30 @@
             background-color: yellow;
             font-weight: bold;
         }
+
+        .user-search-box {
+            padding: 10px;
+            background: #fff;
+            border-bottom: 1px solid #eee;
+        }
+
+        .user-search-box .search-field {
+            position: relative;
+        }
+
+        .user-search-box .search-field input {
+            border-radius: 20px;
+            padding-right: 35px;
+            border: 1px solid #ddd;
+        }
+
+        .user-search-box .search-field i {
+            position: absolute;
+            right: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #999;
+        }
     </style>
 @endpush
 @section('content')
@@ -28,6 +52,12 @@
                 </div>
                 <div class="SideNavhead">
                     <h2>Chat</h2>
+                </div>
+                <div class="user-search-box">
+                    <div class="search-field">
+                        <input type="text" id="user-search" placeholder="Search users..." class="form-control">
+                        <i class="fa fa-search"></i>
+                    </div>
                 </div>
                 <input type="hidden" id="last_activate_user" value="0">
                 <div class="main">
@@ -160,6 +190,28 @@
                         currentIndex = (currentIndex + 1) % highlighted.length;
                         scrollToHighlighted(highlighted.eq(currentIndex));
                     }
+                }
+            });
+
+            // User search functionality
+            $(document).on('keyup', '#user-search', function() {
+                var value = $(this).val().toLowerCase();
+                $(".user-list").each(function() {
+                    var userName = $(this).find('.GroupName').text().toLowerCase();
+                    if (userName.indexOf(value) > -1) {
+                        $(this).attr('style', 'display: grid !important');
+                    } else {
+                        $(this).attr('style', 'display: none !important');
+                    }
+                });
+
+                if ($(".user-list:visible").length === 0) {
+                    if ($("#no-user-found").length === 0) {
+                        $(".main-sidebar-chat-list").append(
+                            '<p id="no-user-found" class="p-3 text-center">No users found</p>');
+                    }
+                } else {
+                    $("#no-user-found").remove();
                 }
             });
         });

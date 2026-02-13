@@ -19,4 +19,9 @@ class UserRegisterAgreement extends BaseModel
         'agreement_description_snapshot',
         'checkbox_text_snapshot',
     ];
+
+    public function user()
+    {
+        return $this->belongsTo(User::class);
+    }
 }
