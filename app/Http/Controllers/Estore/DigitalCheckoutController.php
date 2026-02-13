@@ -143,20 +143,6 @@ class DigitalCheckoutController extends Controller
             return response()->json(['status' => false, 'message' => 'Please login to continue']);
         }
 
-        $request->validate([
-            'product_id' => 'required|exists:products,id',
-            'first_name' => 'required|string|max:255',
-            'last_name' => 'required|string|max:255',
-            'email' => 'required|email|max:255',
-            'phone' => 'required|string|max:20',
-            'address_line_1' => 'required|string|max:500',
-            'address_line_2' => 'nullable|string|max:500',
-            'city' => 'required|string|max:255',
-            'payment_method_id' => 'required',
-            'payment_type' => 'required',
-            'terms_agreement' => 'required|accepted', // Added T&C validation
-        ]);
-
         $product = Product::findOrFail($request->product_id);
 
         if ($product->product_type !== 'digital') {
@@ -179,11 +165,39 @@ class DigitalCheckoutController extends Controller
         $deliveryCost = 0;
 
         $withAmount = $taxableAmount + $shippingCost + $deliveryCost + $taxAmount;
-        $creditCardFee = ($request->payment_type === 'credit')
-            ? ($withAmount * ($estoreSettings->credit_card_percentage ?? 0)) / 100
+
+        // Initially check total without credit card fee
+        $tempTotal = $withAmount;
+
+        // Update validation rules based on tempTotal
+        $rules = [
+            'product_id' => 'required|exists:products,id',
+            'first_name' => 'required|string|max:255',
+            'last_name' => 'required|string|max:255',
+            'email' => 'required|email|max:255',
+            'phone' => 'required|string|max:20',
+            'address_line_1' => 'required|string|max:500',
+            'address_line_2' => 'nullable|string|max:500',
+            'city' => 'required|string|max:255',
+            'pincode' => 'required|string|max:255',
+            'state' => 'required|string|max:255',
+            'country' => 'required|string|max:255',
+            'terms_agreement' => 'required|accepted',
+        ];
+
+        if ($tempTotal > 0) {
+            $rules['payment_method_id'] = 'required';
+            $rules['payment_type'] = 'required';
+        }
+
+        $request->validate($rules);
+
+        // Finalize credit card fee and total amount if not free
+        $creditCardFee = ($tempTotal > 0 && $request->payment_type === 'credit')
+            ? ($tempTotal * ($estoreSettings->credit_card_percentage ?? 0)) / 100
             : 0;
 
-        $totalAmount = $withAmount + $creditCardFee;
+        $totalAmount = $tempTotal + $creditCardFee;
 
         // Determine initial status
         $statusSlug = 'pending';
@@ -193,6 +207,7 @@ class DigitalCheckoutController extends Controller
 
         try {
             // Payment Processing
+            $paymentIntent = null;
             if ($totalAmount > 0) {
                 Stripe::setApiKey(env('STRIPE_SECRET'));
                 $paymentIntent = PaymentIntent::create([
@@ -225,9 +240,9 @@ class DigitalCheckoutController extends Controller
             $order->state = $request->state;
             $order->pincode = $request->pincode;
             $order->country = $request->country ?? 'USA';
-            $order->status =  null;
+            $order->status =  $order_status ? $order_status->id : 1;
             $order->payment_status = 'paid';
-            $order->payment_type = $request->payment_type; // Use payment_type instead of payment_method
+            $order->payment_type = $totalAmount > 0 ? $request->payment_type : 'free';
             $order->subtotal = (float) $subtotal;
             $order->tax_amount = (float) $taxAmount;
             $order->shipping_amount = (float) $shippingCost; // Use shipping_amount instead of shipping_cost

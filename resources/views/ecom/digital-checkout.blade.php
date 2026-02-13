@@ -127,40 +127,42 @@
                     </div>
                     <div class="col-lg-4">
                         <div class="cart_right">
-                            <div class="bill_details mb-3">
-                                <h4>Promo Code</h4>
-                                <div class="promo-code-section">
-                                    @if (isset($appliedPromoCode) && $appliedPromoCode)
-                                        <div class="applied-promo" id="applied-promo-section"
-                                            data-code="{{ $appliedPromoCode }}"
-                                            data-discount="{{ $promoDiscount ?? 0 }}">
-                                            <div class="d-flex justify-content-between align-items-center">
-                                                <span class="text-success">
-                                                    <i class="fa-solid fa-check"></i> {{ $appliedPromoCode }}
-                                                </span>
-                                                <button type="button" class="btn btn-sm btn-outline-danger"
-                                                    id="remove-promo-btn">
-                                                    Remove
-                                                </button>
+                            @if ($total > 0)
+                                <div class="bill_details mb-3">
+                                    <h4>Promo Code</h4>
+                                    <div class="promo-code-section">
+                                        @if (isset($appliedPromoCode) && $appliedPromoCode)
+                                            <div class="applied-promo" id="applied-promo-section"
+                                                data-code="{{ $appliedPromoCode }}"
+                                                data-discount="{{ $promoDiscount ?? 0 }}">
+                                                <div class="d-flex justify-content-between align-items-center">
+                                                    <span class="text-success">
+                                                        <i class="fa-solid fa-check"></i> {{ $appliedPromoCode }}
+                                                    </span>
+                                                    <button type="button" class="btn btn-sm btn-outline-danger"
+                                                        id="remove-promo-btn">
+                                                        Remove
+                                                    </button>
+                                                </div>
+                                                <small class="text-success">Discount:
+                                                    ${{ number_format($promoDiscount ?? 0, 2) }}</small>
                                             </div>
-                                            <small class="text-success">Discount:
-                                                ${{ number_format($promoDiscount ?? 0, 2) }}</small>
-                                        </div>
-                                    @else
-                                        <div class="promo-input-section" id="promo-input-section">
-                                            <div class="input-group">
-                                                <input type="text" class="form-control" id="promo-code-input"
-                                                    placeholder="Enter promo code">
-                                                <button class="btn btn-outline-secondary" type="button"
-                                                    id="apply-promo-btn">
-                                                    Apply
-                                                </button>
+                                        @else
+                                            <div class="promo-input-section" id="promo-input-section">
+                                                <div class="input-group">
+                                                    <input type="text" class="form-control" id="promo-code-input"
+                                                        placeholder="Enter promo code">
+                                                    <button class="btn btn-outline-secondary" type="button"
+                                                        id="apply-promo-btn">
+                                                        Apply
+                                                    </button>
+                                                </div>
+                                                <div id="promo-message" class="mt-2"></div>
                                             </div>
-                                            <div id="promo-message" class="mt-2"></div>
-                                        </div>
-                                    @endif
+                                        @endif
+                                    </div>
                                 </div>
-                            </div>
+                            @endif
 
                             <div class="bill_details">
                                 <h4>Order Summary</h4>
@@ -217,7 +219,7 @@
                 </div>
 
                 {{-- Payment Method (credit/debit + card fields) --}}
-                <div class="row mt-4">
+                <div class="row mt-4" id="payment-method-container" style="{{ $total > 0 ? '' : 'display: none;' }}">
                     <div class="col-lg-12">
                         <div class="cart_right p-4 border rounded shadow-sm bg-white">
                             <h5 class="mb-3 fw-bold">Payment Method</h5>
@@ -227,7 +229,7 @@
                                 <label class="form-label d-block">Choose Payment Type</label>
                                 <div class="form-check form-check-inline">
                                     <input class="form-check-input payment-type-radio" type="radio" name="payment_type"
-                                        id="credit_card" value="credit" checked>
+                                        id="credit_card" value="credit" {{ $total > 0 ? 'checked' : '' }}>
                                     <label class="form-check-label" for="credit_card">Credit Card</label>
                                 </div>
                                 <div class="form-check form-check-inline">
@@ -240,7 +242,14 @@
                             <!-- Stripe Card Element -->
                             <div id="card-element" class="form-control p-3"></div>
                             <div id="card-errors" class="text-danger mt-2"></div>
+                        </div>
+                    </div>
+                </div>
 
+                {{-- Terms and Submit --}}
+                <div class="row mt-4">
+                    <div class="col-lg-12">
+                        <div class="cart_right p-4 border rounded shadow-sm bg-white">
                             <!-- Terms and Conditions -->
                             <div class="mb-3">
                                 <div class="form-check">
@@ -257,7 +266,7 @@
                             <!-- Submit -->
                             <div class="col-md-12 mt-3  d-flex align-item-center justify-content-end gap-2">
                                 <button type="submit" class="red_btn text-center border-0" id="submit-payment">
-                                    <span>PLACE ORDER</span>
+                                    <span id="submit-text">{{ $total > 0 ? 'PLACE ORDER' : 'GET IT FREE' }}</span>
                                 </button>
                                 {{-- add a cancel to back to product page --}}
                                 <a href="{{ route('e-store.product-details', $product->slug) }}"
@@ -308,16 +317,25 @@
 
                 let finalTotal = baseTotal;
 
-                if (document.getElementById("credit_card").checked && creditCardPercentage > 0) {
-                    const fee = (baseTotal * creditCardPercentage) / 100;
-                    ccFeeElement.textContent = `$${fee.toFixed(2)}`;
-                    creditCardFeeRow.style.display = "flex";
-                    finalTotal += fee;
+                if (baseTotal > 0) {
+                    if (document.getElementById("credit_card").checked && creditCardPercentage > 0) {
+                        const fee = (baseTotal * creditCardPercentage) / 100;
+                        ccFeeElement.textContent = `$${fee.toFixed(2)}`;
+                        creditCardFeeRow.style.display = "flex";
+                        finalTotal += fee;
+                    } else {
+                        creditCardFeeRow.style.display = "none";
+                    }
+                    document.getElementById("payment-method-container").style.display = "block";
+                    document.getElementById("submit-text").textContent = "PLACE ORDER";
                 } else {
                     creditCardFeeRow.style.display = "none";
+                    document.getElementById("payment-method-container").style.display = "none";
+                    document.getElementById("submit-text").textContent = "GET IT FREE";
                 }
 
                 totalAmountElement.textContent = `$${finalTotal.toFixed(2)}`;
+                totalAmountElement.setAttribute('data-current-total', finalTotal);
             }
 
             // Promo Code Handlers
@@ -422,51 +440,66 @@
                 return;
             }
 
-            $('#submit-payment').prop('disabled', true).find('span').text('Processing...');
+            const totalAmountElement = document.getElementById("total-amount");
+            const currentTotal = parseFloat(totalAmountElement.getAttribute('data-current-total')) || 0;
+            let paymentMethodId = null;
 
-            // Create payment method in Stripe
-            const {
-                paymentMethod,
-                error
-            } = await stripe.createPaymentMethod({
-                type: 'card',
-                card: card,
-                billing_details: {
-                    name: $('#first_name').val() + ' ' + $('#last_name').val(),
-                    email: $('#email').val(),
-                    phone: $('#phone').val(),
-                    address: {
-                        line1: $('#address_line_1').val(),
-                        line2: $('#address_line_2').val(),
-                        city: $('#city').val(),
-                        state: $('#state').val(),
-                        postal_code: $('#pincode').val(),
-                        // country: $('#country').val().toUpperCase(), // must be ISO code (e.g. "FR")
+            if (currentTotal > 0) {
+                $('#submit-payment').prop('disabled', true).find('span').text('Processing...');
+
+                // Create payment method in Stripe
+                const {
+                    paymentMethod,
+                    error
+                } = await stripe.createPaymentMethod({
+                    type: 'card',
+                    card: card,
+                    billing_details: {
+                        name: $('#first_name').val() + ' ' + $('#last_name').val(),
+                        email: $('#email').val(),
+                        phone: $('#phone').val(),
+                        address: {
+                            line1: $('#address_line_1').val(),
+                            line2: $('#address_line_2').val(),
+                            city: $('#city').val(),
+                            state: $('#state').val(),
+                            postal_code: $('#pincode').val(),
+                        }
                     }
+                });
+
+                if (error) {
+                    $('#card-errors').text(error.message);
+                    $('#submit-payment').prop('disabled', false).find('span').text('PLACE ORDER');
+                    return;
                 }
-            });
 
-            if (error) {
-                $('#card-errors').text(error.message);
-                $('#submit-payment').prop('disabled', false).find('span').text('PLACE ORDER');
-                return;
-            }
+                // ✅ Correct way to detect debit/credit card
+                const selectedType = $('input[name="payment_type"]:checked').val(); // "credit" or "debit"
+                const detectedType = paymentMethod.card.funding; // will be "credit", "debit", or "prepaid"
 
-            // ✅ Correct way to detect debit/credit card
-            const selectedType = $('input[name="payment_type"]:checked').val(); // "credit" or "debit"
-            const detectedType = paymentMethod.card.funding; // will be "credit", "debit", or "prepaid"
+                if (detectedType && (selectedType === 'credit' && detectedType === 'debit' || selectedType ===
+                        'debit' && detectedType === 'credit')) {
+                    toastr.error(
+                        `This card is a ${detectedType} card, but you selected ${selectedType}. Please choose the correct type.`
+                    );
+                    $('#submit-payment').prop('disabled', false).find('span').text('PLACE ORDER');
+                    return;
+                }
 
-            if (detectedType && selectedType !== detectedType) {
-                toastr.error(
-                    `This card is a ${detectedType} card, but you selected ${selectedType}. Please choose the correct type.`
-                );
-                $('#submit-payment').prop('disabled', false).find('span').text('PLACE ORDER');
-                return;
+                paymentMethodId = paymentMethod.id;
+            } else {
+                $('#submit-payment').prop('disabled', true).find('span').text('Placing Order...');
             }
 
             // Send to backend for payment processing
             const formData = new FormData(this);
-            formData.append('payment_method_id', paymentMethod.id);
+            if (paymentMethodId) {
+                formData.append('payment_method_id', paymentMethodId);
+            } else {
+                formData.append('payment_type', 'free');
+                formData.append('payment_method_id', 'free');
+            }
 
             $.ajax({
                 url: '{{ route('e-store.process-digital-checkout') }}',

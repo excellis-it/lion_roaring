@@ -262,7 +262,11 @@ class ProductController extends Controller
 
         // Conditional rules for digital product
         if ($request->input('product_type') === 'digital') {
-            $rules['digital_price'] = 'required|numeric|min:0';
+            if ($request->boolean('is_free')) {
+                $rules['digital_price'] = 'nullable|numeric|min:0';
+            } else {
+                $rules['digital_price'] = 'required|numeric|min:0';
+            }
             $rules['digital_sale_price'] = 'nullable|numeric|min:0';
             $rules['digital_files'] = 'required|array|min:1';
             $rules['digital_files.*'] = 'string'; // File paths from AJAX upload
@@ -652,7 +656,11 @@ class ProductController extends Controller
 
             // Conditional rules for digital product
             if ($product->product_type === 'digital') {
-                $rules['digital_price'] = 'required|numeric|min:0';
+                if ($request->boolean('is_free')) {
+                    $rules['digital_price'] = 'nullable|numeric|min:0';
+                } else {
+                    $rules['digital_price'] = 'required|numeric|min:0';
+                }
                 $rules['digital_sale_price'] = 'nullable|numeric|min:0';
                 $rules['digital_files'] = 'nullable|array';
                 $rules['digital_files.*'] = 'string';

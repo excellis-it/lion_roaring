@@ -1257,6 +1257,10 @@
                         $('#price').prop('readonly', true).val('');
                         $('#sale_price').prop('readonly', true).val('');
                         $('#is_free').prop('checked', false).prop('disabled', true);
+
+                        // Handle digital price fields just in case
+                        $('#digital_price').prop('readonly', true).val('');
+                        $('#digital_sale_price').prop('readonly', true).val('');
                     } else {
                         $('#price-field').show();
                         $('#sale-price-field').show();
@@ -1266,9 +1270,17 @@
                         if (isFree) {
                             $('#price').prop('readonly', true).val('0');
                             $('#sale_price').prop('readonly', true).val('');
+
+                            // Handle digital price fields
+                            $('#digital_price').prop('readonly', true).val('0');
+                            $('#digital_sale_price').prop('readonly', true).val('');
                         } else {
                             $('#price').prop('readonly', false);
                             $('#sale_price').prop('readonly', false);
+
+                            // Handle digital price fields
+                            $('#digital_price').prop('readonly', false);
+                            $('#digital_sale_price').prop('readonly', false);
                         }
                     }
                 }

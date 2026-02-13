@@ -465,7 +465,7 @@
 
 
                                     <!-- <div class="col-md-2 mb-2">
-                                                                                                    </div> -->
+                                                                                                            </div> -->
 
                                     {{-- is_free --}}
                                     <div class="col-md-4 mb-2">
@@ -1255,7 +1255,11 @@
                 const marketFields = document.querySelectorAll('.market-price-fields');
 
                 function togglePriceFields() {
-                    if (!priceInput) return;
+                    const digitalPriceInput = document.getElementById('digital_price');
+                    const digitalSalePriceInput = document.getElementById('digital_sale_price');
+                    const salePriceInput = document.getElementById('sale_price');
+
+                    if (!priceInput && !digitalPriceInput) return;
                     const isFree = isFreeCheckbox && isFreeCheckbox.checked;
                     const useMarket = useMarketCheckbox && useMarketCheckbox.checked;
 
@@ -1263,10 +1267,27 @@
                         if (priceField) priceField.style.display = 'none';
                         if (salePriceField) salePriceField.style.display = 'none';
                         marketFields.forEach(el => (el.style.display = 'block'));
-                        priceInput.disabled = true;
+                        if (priceInput) {
+                            priceInput.disabled = true;
+                            priceInput.value = '';
+                        }
+                        if (salePriceInput) {
+                            salePriceInput.disabled = true;
+                            salePriceInput.value = '';
+                        }
                         if (isFreeCheckbox) {
                             isFreeCheckbox.checked = false;
                             isFreeCheckbox.disabled = true;
+                        }
+
+                        // Digital price fields
+                        if (digitalPriceInput) {
+                            digitalPriceInput.disabled = true;
+                            digitalPriceInput.value = '';
+                        }
+                        if (digitalSalePriceInput) {
+                            digitalSalePriceInput.disabled = true;
+                            digitalSalePriceInput.value = '';
                         }
                     } else {
                         if (priceField) priceField.style.display = 'block';
@@ -1275,15 +1296,36 @@
                         if (isFreeCheckbox) isFreeCheckbox.disabled = false;
 
                         if (isFree) {
-                            priceInput.disabled = true;
-                            priceInput.value = '0';
+                            if (priceInput) {
+                                priceInput.readOnly = true;
+                                priceInput.value = '0';
+                            }
+                            if (salePriceInput) {
+                                salePriceInput.readOnly = true;
+                                salePriceInput.value = '';
+                            }
+
+                            // Digital price fields
+                            if (digitalPriceInput) {
+                                digitalPriceInput.readOnly = true;
+                                digitalPriceInput.value = '0';
+                            }
+                            if (digitalSalePriceInput) {
+                                digitalSalePriceInput.readOnly = true;
+                                digitalSalePriceInput.value = '';
+                            }
                         } else {
-                            priceInput.disabled = false;
+                            if (priceInput) priceInput.readOnly = false;
+                            if (salePriceInput) salePriceInput.readOnly = false;
+
+                            // Digital price fields
+                            if (digitalPriceInput) digitalPriceInput.readOnly = false;
+                            if (digitalSalePriceInput) digitalSalePriceInput.readOnly = false;
                         }
                     }
 
                     document.querySelectorAll('[name^="warehouse_products"][name$="[price]"]').forEach(inp => {
-                        inp.disabled = isFree || useMarket;
+                        inp.readOnly = isFree || useMarket;
                         if (isFree) {
                             inp.value = inp.value || 0;
                         }
