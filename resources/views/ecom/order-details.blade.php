@@ -19,7 +19,7 @@
         <div class="container">
             <div class="row">
                 <div class="col-lg-8">
-                    <div class="order-details-card p-4">
+                    <div class="order-details-card p-4 mb-3">
                         <!-- Order Header -->
                         <div class="order-header bg-light rounded mb-4">
                             <div class="row">
@@ -51,12 +51,19 @@
                                             class="btn btn-sm btn-primary">
                                             <i class="fas fa-download"></i> Download Invoice
                                         </a>
+                                    @elseif($orderHasDigitalProduct)
+                                        <a href="{{ route('user.store-orders.invoice', $order->id) }}" target="_blank"
+                                            class="btn btn-sm btn-primary">
+                                            <i class="fas fa-download"></i> Download Invoice
+                                        </a>
                                     @endif
                                 </div>
                                 <div class="col-md-6 text-end">
-                                    <span class="badge bg-{{ $statusBadgeClass }} mb-1">
-                                        {{ ucfirst($order->orderStatus->name ?? '-') }}
-                                    </span><br>
+                                    @if (!$orderHasDigitalProduct)
+                                        <span class="badge bg-{{ $statusBadgeClass }} mb-1">
+                                            {{ ucfirst($order->orderStatus->name ?? '-') }}
+                                        </span><br>
+                                    @endif
                                     <span class="badge bg-{{ $order->payment_status == 'paid' ? 'success' : 'warning' }}">
                                         Payment {{ ucfirst($order->payment_status) }}
                                     </span>
@@ -81,9 +88,9 @@
                                 </div>
                             </div>
                         @else
-                            <!-- Shipping Address -->
+                            <!-- Shipping Address/Billing Details -->
                             <div class="shipping-address mb-4">
-                                <h5>Shipping Address</h5>
+                                <h5>{{ $orderHasDigitalProduct ? 'Billing Details' : 'Shipping Address' }}</h5>
                                 <div class="bg-light rounded">
                                     <p class="mb-1"><strong>{{ $order->full_name }}</strong></p>
                                     <p class="mb-1">{{ $order->email }}</p>
@@ -99,9 +106,18 @@
                             @php
                                 $all_other_charges = [];
                                 $subtotal = 0;
+                                // $orderHasDigitalProduct is now passed from the controller, so we don't reset it here
+// But we can still keep the detection logic for robustness if needed,
+// just don't re-initialize it to false if it's already true.
+                                if (!isset($orderHasDigitalProduct)) {
+                                    $orderHasDigitalProduct = false;
+                                }
                             @endphp
                             @foreach ($order->orderItems as $item)
                                 @php
+                                    if (optional($item->product)->product_type === 'digital') {
+                                        $orderHasDigitalProduct = true;
+                                    }
                                     $charges = $item->other_charges ? json_decode($item->other_charges, true) : [];
                                     $otherChargesTotal = 0;
 
@@ -137,6 +153,18 @@
                                         <div class="col-md-6">
                                             <h6>{{ $item->product_name }}</h6>
                                             <p class="text-muted mb-0">Quantity: {{ $item->quantity }}</p>
+
+                                            @if (optional($item->product)->product_type === 'digital' && $item->product->files->count() > 0)
+                                                <div class="mt-2">
+                                                    @foreach ($item->product->files as $file)
+                                                        <a href="{{ route('e-store.download-file', $file->id) }}"
+                                                            class="btn btn-sm btn-outline-primary mt-1">
+                                                            <i class="fa-solid fa-download me-1"></i> Download
+                                                            {{ $item->product->files->count() > 1 ? 'Asset ' . $loop->iteration : 'Product' }}
+                                                        </a>
+                                                    @endforeach
+                                                </div>
+                                            @endif
                                         </div>
                                         <div class="col-md-2 text-center">
                                             <p class="mb-0">${{ number_format($item->price, 2) }}</p>
@@ -152,7 +180,152 @@
                                 </div>
                             @endforeach
                         </div>
+
+                        {{-- @if ($orderHasDigitalProduct)
+                            <div class="alert alert-info border-0 shadow-sm d-flex align-items-center mt-4">
+                                <div class="me-3">
+                                    <i class="fa-solid fa-cloud-download-alt fa-2x text-info"></i>
+                                </div>
+                                <div>
+                                    <h6 class="mb-1">Digital Product Ready</h6>
+                                    <p class="mb-0 small">Please go to your <a href="{{ route('e-store.my-orders') }}"
+                                            class="fw-bold text-decoration-none">My Orders Page</a> to access and download
+                                        your product.</p>
+                                </div>
+                            </div>
+                        @endif --}}
                     </div>
+
+                    @if (!$orderHasDigitalProduct)
+                        {{-- <div class="row mt-3">
+                    <div class="col-md-8"> --}}
+
+                        @php
+                            if ($order->is_pickup == 1) {
+                                $labels = [
+                                    'pickup_pending' => 'Ordered',
+                                    'pickup_processing' => 'Processing',
+                                    'pickup_ready_for_pickup' => 'Ready for Pickup',
+                                    'pickup_picked_up' => 'Picked Up',
+                                    'pickup_cancelled' => 'Cancelled',
+                                ];
+                            } else {
+                                $labels = [
+                                    'pending' => 'Ordered',
+                                    'processing' => 'Processing',
+                                    'shipped' => 'Shipped',
+                                    'out_for_delivery' => 'Out for Delivery',
+                                    'delivered' => 'Delivered',
+                                    'cancelled' => 'Cancelled',
+                                ];
+                            }
+                        @endphp
+
+                        <div class="delevry-sumry shadow p-3">
+                            <div class="info-del mb-3">
+                                <h4 class="mb-1">Order Tracking</h4>
+                                <p class="mb-0">Order <strong>#{{ $order->order_number }}</strong></p>
+                            </div>
+
+                            <div class="d-position mb-4">
+                                <ul class="list-unstyled d-flex flex-wrap gap-3" style="row-gap:1.5rem;">
+                                    @foreach ($timelineStatuses as $idx => $status)
+                                        {{-- Show "cancelled" only when order is actually cancelled --}}
+                                        @if (in_array($status->slug ?? '', ['cancelled', 'pickup_cancelled'], true) &&
+                                                !in_array($statusSlug, ['cancelled', 'pickup_cancelled'], true))
+                                            @continue
+                                        @endif
+
+                                        @php
+                                            $reached = $idx <= $statusIndex;
+                                            $isCurrent = $idx === $statusIndex;
+                                            $cancelled = in_array(
+                                                $status->slug ?? '',
+                                                ['cancelled', 'pickup_cancelled'],
+                                                true,
+                                            );
+
+                                            $colorClass = $cancelled
+                                                ? 'btn-danger'
+                                                : ($reached
+                                                    ? (in_array($status->slug, ['delivered', 'pickup_picked_up'], true)
+                                                        ? 'btn-success'
+                                                        : ($isCurrent
+                                                            ? 'btn-primary'
+                                                            : 'btn-secondary'))
+                                                    : 'btn-outline-secondary');
+
+                                            $label =
+                                                $labels[$status->slug] ?? ($status->name ?? ucfirst($status->slug));
+                                        @endphp
+                                        @if (!in_array($status->slug ?? '', ['cancelled', 'pickup_cancelled'], true) || $isCurrent)
+                                            <li class="text-center" style="min-width:90px;">
+                                                <span
+                                                    class="btn {{ $colorClass }} rounded-circle d-inline-flex align-items-center justify-content-center"
+                                                    style="width:42px;height:42px;">
+                                                    @if ($reached)
+                                                        <i class="fa-solid fa-check"></i>
+                                                    @else
+                                                        <i class="fa-solid fa-ellipsis"></i>
+                                                    @endif
+                                                </span>
+
+                                                <p
+                                                    class="mb-0 mt-2 small fw-semibold {{ $isCurrent ? 'text-primary' : 'text-muted' }}">
+                                                    {{ $label }}
+                                                </p>
+                                            </li>
+                                        @endif
+                                    @endforeach
+
+                                </ul>
+                            </div>
+
+                            @php
+                                $createdAt = $order->created_at;
+                                // if you have a status history table use that; otherwise approximate
+                                $deliveredAt = $order->expected_delivery_date ?? null;
+                            @endphp
+
+                            <div class="d-details">
+                                @if ($deliveredAt && !$order->is_pickup && !$isFinalCancelled)
+                                    <div
+                                        style="margin-top:15px;margin-bottom:5px; padding:10px 15px; border-left:4px solid #0d6efd; background:#f8f9fa; border-radius:5px; display:inline-block;">
+                                        <h6 style="margin:0; font-size:14px; color:#495057;">
+                                            <strong style="color:#0d6efd;">Expected Delivery Date:</strong>
+                                            <span style="font-weight:bold; color:#212529;">
+                                                {{ \Carbon\Carbon::parse($deliveredAt)->format('M d, Y') }}
+                                            </span>
+                                        </h6>
+                                    </div>
+                                @endif
+
+                                <h5 class="h6 mb-1">Current Status: <span
+                                        class="fw-bold">{{ $order->orderStatus->name ?? ucfirst($order->status) }}</span>
+                                </h5>
+                                <p class="mb-2 small text-muted">Last updated
+                                    {{ \Carbon\Carbon::parse($order->updated_at)->timezone(auth()->user()->time_zone)->format('M d, Y h:i A') }}
+                                </p>
+                                <ul class="list-unstyled small mb-0">
+                                    {{-- {{ auth()->user()->time_zone }} <br>
+                                {{ \Carbon\Carbon::parse($createdAt)->timezone(auth()->user()->time_zone)->format('M d, Y h:i A') }} --}}
+                                    <li>Placed:
+                                        <strong>{{ \Carbon\Carbon::parse($createdAt)->timezone(auth()->user()->time_zone)->format('M d, Y h:i A') }}</strong>
+                                    </li>
+
+                                    @if (($order->orderStatus->slug ?? $order->status) === 'cancelled')
+                                        <li class="text-danger">Order was cancelled.</li>
+                                    @endif
+                                </ul>
+                            </div>
+                        </div>
+
+
+
+                        {{-- </div>
+
+                </div> --}}
+                    @endif
                 </div>
 
                 <div class="col-lg-4">
@@ -241,7 +414,6 @@
 
                             </div>
                         </div>
-
 
                         <!-- Payment Information -->
                         @if ($order->payments->count() > 0)
@@ -381,133 +553,7 @@
                 </div>
             </div>
 
-            <div class="row mt-3">
-                <div class="col-md-8">
 
-                    @php
-                        if ($order->is_pickup == 1) {
-                            $labels = [
-                                'pickup_pending' => 'Ordered',
-                                'pickup_processing' => 'Processing',
-                                'pickup_ready_for_pickup' => 'Ready for Pickup',
-                                'pickup_picked_up' => 'Picked Up',
-                                'pickup_cancelled' => 'Cancelled',
-                            ];
-                        } else {
-                            $labels = [
-                                'pending' => 'Ordered',
-                                'processing' => 'Processing',
-                                'shipped' => 'Shipped',
-                                'out_for_delivery' => 'Out for Delivery',
-                                'delivered' => 'Delivered',
-                                'cancelled' => 'Cancelled',
-                            ];
-                        }
-                    @endphp
-
-                    <div class="delevry-sumry shadow p-3">
-                        <div class="info-del mb-3">
-                            <h4 class="mb-1">Order Tracking</h4>
-                            <p class="mb-0">Order <strong>#{{ $order->order_number }}</strong></p>
-                        </div>
-
-                        <div class="d-position mb-4">
-                            <ul class="list-unstyled d-flex flex-wrap gap-3" style="row-gap:1.5rem;">
-                                @foreach ($timelineStatuses as $idx => $status)
-                                    {{-- Show "cancelled" only when order is actually cancelled --}}
-                                    @if (in_array($status->slug ?? '', ['cancelled', 'pickup_cancelled'], true) &&
-                                            !in_array($statusSlug, ['cancelled', 'pickup_cancelled'], true))
-                                        @continue
-                                    @endif
-
-                                    @php
-                                        $reached = $idx <= $statusIndex;
-                                        $isCurrent = $idx === $statusIndex;
-                                        $cancelled = in_array(
-                                            $status->slug ?? '',
-                                            ['cancelled', 'pickup_cancelled'],
-                                            true,
-                                        );
-
-                                        $colorClass = $cancelled
-                                            ? 'btn-danger'
-                                            : ($reached
-                                                ? (in_array($status->slug, ['delivered', 'pickup_picked_up'], true)
-                                                    ? 'btn-success'
-                                                    : ($isCurrent
-                                                        ? 'btn-primary'
-                                                        : 'btn-secondary'))
-                                                : 'btn-outline-secondary');
-
-                                        $label = $labels[$status->slug] ?? ($status->name ?? ucfirst($status->slug));
-                                    @endphp
-                                    @if (!in_array($status->slug ?? '', ['cancelled', 'pickup_cancelled'], true) || $isCurrent)
-                                        <li class="text-center" style="min-width:90px;">
-                                            <span
-                                                class="btn {{ $colorClass }} rounded-circle d-inline-flex align-items-center justify-content-center"
-                                                style="width:42px;height:42px;">
-                                                @if ($reached)
-                                                    <i class="fa-solid fa-check"></i>
-                                                @else
-                                                    <i class="fa-solid fa-ellipsis"></i>
-                                                @endif
-                                            </span>
-
-                                            <p
-                                                class="mb-0 mt-2 small fw-semibold {{ $isCurrent ? 'text-primary' : 'text-muted' }}">
-                                                {{ $label }}
-                                            </p>
-                                        </li>
-                                    @endif
-                                @endforeach
-
-                            </ul>
-                        </div>
-
-                        @php
-                            $createdAt = $order->created_at;
-                            // if you have a status history table use that; otherwise approximate
-                            $deliveredAt = $order->expected_delivery_date ?? null;
-                        @endphp
-
-                        <div class="d-details">
-                            @if ($deliveredAt && !$order->is_pickup && !$isFinalCancelled)
-                                <div
-                                    style="margin-top:15px;margin-bottom:5px; padding:10px 15px; border-left:4px solid #0d6efd; background:#f8f9fa; border-radius:5px; display:inline-block;">
-                                    <h6 style="margin:0; font-size:14px; color:#495057;">
-                                        <strong style="color:#0d6efd;">Expected Delivery Date:</strong>
-                                        <span style="font-weight:bold; color:#212529;">
-                                            {{ \Carbon\Carbon::parse($deliveredAt)->format('M d, Y') }}
-                                        </span>
-                                    </h6>
-                                </div>
-                            @endif
-
-                            <h5 class="h6 mb-1">Current Status: <span
-                                    class="fw-bold">{{ $order->orderStatus->name ?? ucfirst($order->status) }}</span>
-                            </h5>
-                            <p class="mb-2 small text-muted">Last updated
-                                {{ \Carbon\Carbon::parse($order->updated_at)->timezone(auth()->user()->time_zone)->format('M d, Y h:i A') }}
-                            </p>
-                            <ul class="list-unstyled small mb-0">
-                                {{-- {{ auth()->user()->time_zone }} <br>
-                                {{ \Carbon\Carbon::parse($createdAt)->timezone(auth()->user()->time_zone)->format('M d, Y h:i A') }} --}}
-                                <li>Placed:
-                                    <strong>{{ \Carbon\Carbon::parse($createdAt)->timezone(auth()->user()->time_zone)->format('M d, Y h:i A') }}</strong>
-                                </li>
-
-                                @if (($order->orderStatus->slug ?? $order->status) === 'cancelled')
-                                    <li class="text-danger">Order was cancelled.</li>
-                                @endif
-                            </ul>
-                        </div>
-                    </div>
-
-
-
-                </div>
-
-            </div>
 
         </div>
     </section>

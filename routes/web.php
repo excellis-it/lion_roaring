@@ -33,6 +33,7 @@ use App\Http\Controllers\User\Admin\ChatbotController as UserAdminChatbotControl
 
 use App\Http\Controllers\Estore\HomeController;
 use App\Http\Controllers\Estore\ProductController as EstoreProductController;
+use App\Http\Controllers\Estore\DigitalCheckoutController;
 use App\Http\Controllers\Estore\UserAddressController as EstoreUserAddressController;
 use App\Http\Controllers\Elearning\ElearningHomeController;
 use App\Http\Controllers\Elearning\ElearningProductController as ElearningProductController;
@@ -1184,12 +1185,22 @@ Route::prefix('e-store')->middleware(['user', 'preventBackHistory', 'userActivit
     Route::post('/remove-promo-code', [EstoreProductController::class, 'removePromoCode'])->name('e-store.remove-promo-code');
 
     Route::post('/process-checkout', [EstoreProductController::class, 'processCheckout'])->name('e-store.process-checkout');
+
+    // Digital Checkout Routes
+    Route::post('/initiate-digital-checkout', [DigitalCheckoutController::class, 'initiateCheckout'])->name('e-store.initiate-digital-checkout');
+    Route::get('/digital-checkout', [DigitalCheckoutController::class, 'checkout'])->name('e-store.digital-checkout');
+    Route::post('/process-digital-checkout', [DigitalCheckoutController::class, 'processCheckout'])->name('e-store.process-digital-checkout');
+
+    // Digital Promo Code
+    Route::post('/digital/apply-promo-code', [DigitalCheckoutController::class, 'applyPromoCode'])->name('e-store.digital.apply-promo-code');
+    Route::post('/digital/remove-promo-code', [DigitalCheckoutController::class, 'removePromoCode'])->name('e-store.digital.remove-promo-code');
     Route::get('/payment-success', [EstoreProductController::class, 'paymentSuccess'])->name('e-store.payment-success');
     Route::get('/payment-cancelled', [EstoreProductController::class, 'paymentCancelled'])->name('e-store.payment-cancelled');
 
     Route::get('/order-success/{orderId}', [EstoreProductController::class, 'orderSuccess'])->name('e-store.order-success');
     Route::get('/my-orders', [EstoreProductController::class, 'myOrders'])->name('e-store.my-orders')->middleware('user');
     Route::get('/order-details/{orderId}', [EstoreProductController::class, 'orderDetails'])->name('e-store.order-details')->middleware('user');
+    Route::get('/download-file/{fileId}', [EstoreProductController::class, 'downloadFile'])->name('e-store.download-file')->middleware('user');
 
     // profile and change password page
     Route::get('/estore-profile', [HomeController::class, 'profile'])->name('e-store.profile')->middleware('user');

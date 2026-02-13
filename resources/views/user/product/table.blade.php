@@ -57,6 +57,7 @@
                                 title="Simple Product Stock" data-bs-toggle="tooltip" data-bs-placement="top">
                                 <i class="fa-solid fa-box-open"></i>
                             </a> &nbsp; &nbsp;
+                        @elseif($product->product_type == 'digital')
                         @else
                             <a href="{{ route('products.variations', $product->id) }}" class="edit_icon"
                                 title="Product Variations" data-bs-toggle="tooltip" data-bs-placement="top">
@@ -67,14 +68,16 @@
 
 
                     @if (auth()->user()->isWarehouseAdmin())
-                        <div class="d-flex">
+                        @if ($product->product_type != 'digital')
+                            <div class="d-flex">
 
-                            <a href="{{ route('ware-houses.select-warehouse', $product->id) }}" class="edit_icon"
-                                title="Warehouse Product Stocks" data-bs-toggle="tooltip" data-bs-placement="top">
-                                <i class="fa-solid fa-th-list"></i>
-                            </a> &nbsp; &nbsp;
+                                <a href="{{ route('ware-houses.select-warehouse', $product->id) }}" class="edit_icon"
+                                    title="Warehouse Product Stocks" data-bs-toggle="tooltip" data-bs-placement="top">
+                                    <i class="fa-solid fa-th-list"></i>
+                                </a> &nbsp; &nbsp;
 
-                        </div>
+                            </div>
+                        @endif
                     @endif
 
                     @if (auth()->user()->can('Edit Estore Products'))

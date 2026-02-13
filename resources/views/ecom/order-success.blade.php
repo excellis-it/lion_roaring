@@ -33,19 +33,35 @@
                             <p><strong>Payment Status:</strong>
                                 <span class="badge bg-success">{{ ucfirst($order->payment_status) }}</span>
                             </p>
-                            <p><strong>Order Status:</strong>
-                                <span class="badge bg-primary">{{ ucfirst($order->orderStatus->name ?? '-') }}</span>
-                            </p>
+                            @if (!$orderHasDigitalProduct)
+                                <p><strong>Order Status:</strong>
+                                    <span class="badge bg-primary">{{ ucfirst($order->orderStatus->name ?? '-') }}</span>
+                                </p>
+                            @endif
                             @php
                                 $statusSlug = optional($order->orderStatus)->slug;
                                 $isFinalCancelled = in_array($statusSlug, ['cancelled', 'pickup_cancelled'], true);
                             @endphp
-                            @if ($order->expected_delivery_date && !$order->is_pickup && !$isFinalCancelled)
+                            @if (!$orderHasDigitalProduct && $order->expected_delivery_date && !$order->is_pickup && !$isFinalCancelled)
                                 <p><strong>Expected Delivery Date:</strong>
                                     {{ \Carbon\Carbon::parse($order->expected_delivery_date)->format('M d, Y') }}
                                 </p>
                             @endif
                         </div>
+
+                        @if ($orderHasDigitalProduct)
+                            <div class="alert alert-info border-0 shadow-sm d-flex align-items-center mt-4 text-start">
+                                <div class="me-3">
+                                    <i class="fa-solid fa-cloud-download-alt fa-2x text-info"></i>
+                                </div>
+                                <div>
+                                    <h6 class="mb-1">Digital Product Ready</h6>
+                                    <p class="mb-0 small">Please go to your <a href="{{ route('e-store.my-orders') }}"
+                                            class="fw-bold text-decoration-none">My Orders Page</a> to access and download
+                                        your product.</p>
+                                </div>
+                            </div>
+                        @endif
 
                         <div class="order-items mb-4">
                             <h5>Items Ordered</h5>

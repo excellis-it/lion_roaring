@@ -131,10 +131,11 @@ class Product extends BaseModel
     }
 
 
-    public function isInWishlist()
+    public function isInWishlist($productId = null)
     {
+        $id = $productId ?? $this->id;
         if (auth()->check()) {
-            return EcomWishList::where('product_id', $this->id)
+            return EcomWishList::where('product_id', $id)
                 ->where('user_id', auth()->id())
                 ->exists();
         }
