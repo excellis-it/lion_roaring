@@ -26,6 +26,7 @@
                             <h2>New Arrivals</h2>
                         @else
                             <h2>{{ $category_name ?? 'Our Collection' }}</h2>
+                            <p class="text-dark">{{ $category['description'] ?? '' }}</p>
                         @endif
                     </div>
                 </div>
@@ -93,8 +94,7 @@
                                                             $html .=
                                                                 '<button type="button" class="btn btn-sm btn-light toggle-children me-2" data-state="collapsed" aria-label="Expand children" style="padding:2px 6px;">+</button>';
                                                         } else {
-                                                            $html .=
-                                                                '<span></span>';
+                                                            $html .= '<span></span>';
                                                         }
                                                         $html .= '<div class="form-check">';
                                                         $html .=
@@ -187,9 +187,9 @@
                     });
                     var latestFilter = $('#latest_filter').val();
 
-                        $('.category-checkbox:checked').each(function() {
-                            category_id.push($(this).val()); 
-                        });
+                    $('.category-checkbox:checked').each(function() {
+                        category_id.push($(this).val());
+                    });
 
                     showLoading();
                     loadMoreProducts(page, prices, category_id, latestFilter, search);
@@ -213,9 +213,9 @@
                 });
                 var latestFilter = $('#latest_filter').val();
 
-                    $('.category-checkbox:checked').each(function() {
-                        category_id.push($(this).val());
-                    });
+                $('.category-checkbox:checked').each(function() {
+                    category_id.push($(this).val());
+                });
 
                 showLoading();
                 page = 1;
@@ -233,9 +233,9 @@
                 });
                 var latestFilter = $('#latest_filter').val();
 
-                    $('.category-checkbox:checked').each(function() {
-                        category_id.push($(this).val());
-                    });
+                $('.category-checkbox:checked').each(function() {
+                    category_id.push($(this).val());
+                });
                 page = 1;
                 $('#products').html('');
                 loadMoreProducts(page, prices, category_id, latestFilter, search);
@@ -250,9 +250,9 @@
                 });
                 var latestFilter = $('#latest_filter').val();
 
-                    $('.category-checkbox:checked').each(function() {
-                        category_id.push($(this).val());
-                    });
+                $('.category-checkbox:checked').each(function() {
+                    category_id.push($(this).val());
+                });
                 page = 1;
                 $('#products').html('');
                 loadMoreProducts(page, prices, category_id, latestFilter, search);

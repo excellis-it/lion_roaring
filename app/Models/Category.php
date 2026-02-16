@@ -9,7 +9,7 @@ class Category extends BaseModel
 {
     use HasFactory;
 
-    protected $fillable = ['name', 'slug', 'status', 'image', 'meta_title', 'meta_description', 'main', 'size_measurements_image'];
+    protected $fillable = ['name', 'slug', 'status', 'image', 'meta_title', 'meta_description', 'main', 'size_measurements_image', 'description'];
 
     public function children()
     {
