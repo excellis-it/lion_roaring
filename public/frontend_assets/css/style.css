@@ -3148,6 +3148,7 @@ li.slick-active button {
     border: none;
     background-color: #fff;
     box-sizing: border-box;
+    min-width: 120px;
 }
 
 /* .project p{
