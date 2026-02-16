@@ -87,6 +87,7 @@ class CategoryController extends Controller
             'size_measurements_image' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg,webp',
             'meta_title' => 'nullable|string|max:255',
             'meta_description' => 'nullable|string|max:255',
+            'description' => 'nullable|string',
             'status' => 'required|boolean',
         ]);
 
@@ -96,6 +97,7 @@ class CategoryController extends Controller
         $category->slug = $request->slug;
         $category->meta_title = $request->meta_title;
         $category->meta_description = $request->meta_description;
+        $category->description = $request->description;
         $category->status = $request->status;
 
         if ($request->hasFile('image')) {
@@ -164,6 +166,7 @@ class CategoryController extends Controller
                 'size_measurements_image' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg,webp',
                 'meta_title' => 'nullable|string|max:255',
                 'meta_description' => 'nullable|string|max:255',
+                'description' => 'nullable|string',
                 'status' => 'required|boolean',
             ]);
 
@@ -174,6 +177,7 @@ class CategoryController extends Controller
             }
             $category->meta_title = $request->meta_title;
             $category->meta_description = $request->meta_description;
+            $category->description = $request->description;
             $category->status = $request->status;
 
             if ($request->hasFile('image')) {

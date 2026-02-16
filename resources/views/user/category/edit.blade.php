@@ -191,6 +191,18 @@
 
                         </div>
                         <div class="row">
+                            <div class="col-md-12 mb-2">
+                                <div class="box_label">
+                                    <label for="description">Description</label>
+                                    <textarea name="description" id="description" class="form-control" rows="5" cols="30"
+                                        placeholder="Enter Category Description">{{ $category->description }}</textarea>
+                                    @if ($errors->has('description'))
+                                        <span class="error">{{ $errors->first('description') }}</span>
+                                    @endif
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
                             <div class="col-md-12">
                                 <div class="heading_box mb-5">
                                     <h3>Seo Section</h3>

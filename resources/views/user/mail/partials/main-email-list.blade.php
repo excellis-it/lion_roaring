@@ -14,19 +14,15 @@
     @foreach ($mails as $mail)
         @php
             // $mailUser = $mail->mailUsers()->where('user_id', auth()->id())->first();
-            $mailUser = $mail->ownUserMailInfo;
-            $isRead = isset($mailUser['is_read']) && $mailUser['is_read'] == 1;
+            // Determine read state from thread-level unread_count (keeps UI consistent with sidebar)
+            // treat the thread as "read" only when unread_count == 0
+            $isRead = (int) ($mail->unread_count ?? 0) === 0;
 
-            // $isStar = $mailUser->is_starred;
-
-            $mainMailId = $mail->reply_of ?? $mail->id;
-
-            // Fetch MailUser record for the authenticated user for the main mail
-            $mainMailUser = \App\Models\MailUser::where('send_mail_id', $mainMailId)
-                ->where('user_id', auth()->id())
+            // Keep star state from main mail's MailUser record
+$mainMailId = $mail->reply_of ?? $mail->id;
+$mainMailUser = \App\Models\MailUser::where('send_mail_id', $mainMailId)
+    ->where('user_id', auth()->id())
                 ->first();
-
-            // Determine the read and star statuses
             $isStar = $mainMailUser ? $mainMailUser->is_starred : false;
 
         @endphp
@@ -69,6 +65,12 @@
                         <span class="emailRow__description"> - {!! substr(strip_tags($mail->lastReplyMessage), 0, 100) !!} </span>
 
                     </h4>
+                </div>
+
+                <div class="emailRow__unread-count">
+                    @if (isset($mail->unread_count) && $mail->unread_count > 0)
+                        <span class="badge bg-danger">{{ $mail->unread_count }} new</span>
+                    @endif
                 </div>
             </div>
 

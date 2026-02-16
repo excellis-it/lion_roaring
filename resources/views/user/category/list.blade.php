@@ -60,6 +60,7 @@
                                                     data-sorting_type="desc" data-column_name="slug"
                                                     style="cursor: pointer">Category Slug <span id="slug_icon"><i
                                                             class="fa fa-arrow-down"></i></span></th>
+                                                <th>Description</th>
                                                 <th></th>
                                             </tr>
                                         </thead>

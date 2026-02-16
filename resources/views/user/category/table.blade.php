@@ -31,6 +31,7 @@
 
             <td> {{ $category->name }}</td>
             <td> {{ $category->slug }}</td>
+            <td> {{ $category->description }}</td>
             <td>
                 <div class="d-flex">
                     @if (auth()->user()->can('Edit Estore Category'))
