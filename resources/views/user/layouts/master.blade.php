@@ -10,7 +10,7 @@
 
         <meta name="csrf-token" content="{{ csrf_token() }}" />
         <title>@yield('title')</title>
-         <link rel="icon" href="{{ asset('frontend_assets/uploads/2023/04/cropped-logo-1-32x32.png') }}"
+        <link rel="icon" href="{{ asset('frontend_assets/uploads/2023/04/cropped-logo-1-32x32.png') }}"
             sizes="32x32" />
         <link rel="preconnect" href="https://fonts.googleapis.com">
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -897,6 +897,11 @@
                         } else {
                             $('#mailListNextPage').removeClass('hide');
                         }
+
+                        // Keep sidebar badge/count in sync after list refresh
+                        if (typeof getSidebarNotiCounts === 'function') {
+                            getSidebarNotiCounts();
+                        }
                     },
                     error: function(xhr) {
                         toastr.error('Failed to fetch latest emails.');
@@ -928,6 +933,11 @@
                             $('#mailListNextPage').addClass('hide');
                         } else {
                             $('#mailListNextPage').removeClass('hide');
+                        }
+
+                        // Keep sidebar badge/count in sync after list refresh
+                        if (typeof getSidebarNotiCounts === 'function') {
+                            getSidebarNotiCounts();
                         }
                     },
                     error: function(xhr) {
@@ -961,6 +971,11 @@
                         } else {
                             $('#mailListNextPage').removeClass('hide');
                         }
+
+                        // Keep sidebar badge/count in sync after list refresh
+                        if (typeof getSidebarNotiCounts === 'function') {
+                            getSidebarNotiCounts();
+                        }
                     },
                     error: function(xhr) {
                         toastr.error('Failed to fetch latest emails.');
@@ -992,6 +1007,11 @@
                             $('#mailListNextPage').addClass('hide');
                         } else {
                             $('#mailListNextPage').removeClass('hide');
+                        }
+
+                        // Keep sidebar badge/count in sync after list refresh
+                        if (typeof getSidebarNotiCounts === 'function') {
+                            getSidebarNotiCounts();
                         }
                     },
                     error: function(xhr) {
@@ -1030,6 +1050,11 @@
                             toastr.success(response.message);
                             fetchLatestEmails();
                             fetchStarEmails();
+
+                            // make sure the sidebar count is refreshed after star change
+                            if (typeof getSidebarNotiCounts === 'function') {
+                                getSidebarNotiCounts();
+                            }
                         } else {
                             swal('Error', response.message, 'error');
                         }

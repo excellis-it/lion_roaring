@@ -1,11 +1,12 @@
 @if ($mails->count() > 0)
     @foreach ($mails as $mail)
         @php
-            // $mailUser = $mail->mailUsers()->where('user_id', auth()->id())->first();
-            $mailUser = $mail->userMail;
-            $isRead = isset($mailUser['is_read']) && $mailUser['is_read'] == 1;
+            // Prefer controller-provided user info for the thread; fall back to userMail if present
+            $mailUser = $mail->ownUserMailInfo ?? ($mail->userMail ?? null);
+            // Row is considered read only when the thread has no unread messages
+            $isRead = (int) ($mail->unread_count ?? 0) === 0;
             $latestReply = $mail->replies->first();
-            $isStar = $mailUser->is_starred;
+            $isStar = $mailUser ? $mailUser->is_starred : 0;
         @endphp
         <div class="emailRow {{ $isRead ? '' : 'mail_read' }}">
             <div class="emailRow__options">
@@ -18,17 +19,19 @@
                 @else
                     <a href="javascript:void(0);" onclick="setMailStar(this, {{ $mail->id }})">
                         <!-- <span class="material-symbols-outlined">grade</span> -->
-                         <i class="fa-regular fa-star"></i>
+                        <i class="fa-regular fa-star"></i>
                     </a>
                 @endif
             </div>
 
 
-            <h3 class="emailRow__title view-mail" data-route="{{ route('mail.view', base64_encode(!empty($mail->reply_of) ? $mail->reply_of : $mail->id)) }}">
+            <h3 class="emailRow__title view-mail"
+                data-route="{{ route('mail.view', base64_encode(!empty($mail->reply_of) ? $mail->reply_of : $mail->id)) }}">
                 {{ $mail->user->full_name ?? '' }}
             </h3>
 
-            <div class="emailRow__message view-mail" data-route="{{ route('mail.view', base64_encode(!empty($mail->reply_of) ? $mail->reply_of : $mail->id)) }}">
+            <div class="emailRow__message view-mail"
+                data-route="{{ route('mail.view', base64_encode(!empty($mail->reply_of) ? $mail->reply_of : $mail->id)) }}">
                 <h4>
                     {{ !empty($mail->reply_of) ? 'RE:' : '' }} {{ $mail->subject }}
                     @if ($latestReply)
@@ -46,7 +49,8 @@
                 @endif
             </div>
 
-            <p class="emailRow__time view-mail" data-route="{{ route('mail.view', base64_encode(!empty($mail->reply_of) ? $mail->reply_of : $mail->id)) }}">
+            <p class="emailRow__time view-mail"
+                data-route="{{ route('mail.view', base64_encode(!empty($mail->reply_of) ? $mail->reply_of : $mail->id)) }}">
                 {{ $latestReply ? $latestReply->created_at->diffForHumans() : $mail->created_at->diffForHumans() }}
             </p>
         </div>

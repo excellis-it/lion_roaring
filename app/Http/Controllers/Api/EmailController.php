@@ -50,7 +50,8 @@ class EmailController extends Controller
      *       "ownUserMailInfo": {
      *         "is_read": true,
      *         "is_delete": false
-     *       }
+     *       },
+     *       "unread_count": 2
      *     }
      *   ],
      *   "total": 25,
@@ -112,6 +113,15 @@ class EmailController extends Controller
                     ->where('user_id', auth()->id())
                     ->first();
 
+                // Provide unread_count for API consumers (count all messages in the thread where user is recipient)
+                $mail->unread_count = MailUser::whereIn('send_mail_id', function ($q) use ($fetch_mailId) {
+                        $q->select('id')->from('send_mails')->where('id', $fetch_mailId)->orWhere('reply_of', $fetch_mailId);
+                    })
+                    ->where('user_id', auth()->id())
+                    ->where('is_to', 1)
+                    ->where('is_read', 0)
+                    ->count();
+
                 $emails = explode(',', $mail->to);
 
                 $lastReply = $mail->lastReply->first();
@@ -165,7 +175,8 @@ class EmailController extends Controller
      *       "ownUserMailInfo": {
      *         "is_read": true,
      *         "is_delete": false
-     *       }
+     *       },
+     *       "unread_count": 0
      *     }
      *   ],
      *   "total": 30,
@@ -224,6 +235,15 @@ class EmailController extends Controller
                     ->where('user_id', auth()->id())
                     ->first();
 
+                // Provide unread_count for API consumers (count all messages in the thread where user is recipient)
+                $mail->unread_count = MailUser::whereIn('send_mail_id', function ($q) use ($fetch_mailId) {
+                        $q->select('id')->from('send_mails')->where('id', $fetch_mailId)->orWhere('reply_of', $fetch_mailId);
+                    })
+                    ->where('user_id', auth()->id())
+                    ->where('is_to', 1)
+                    ->where('is_read', 0)
+                    ->count();
+
                 $emails = explode(',', $mail->to);
 
                 $lastReply = $mail->lastReply->first();
@@ -279,7 +299,8 @@ class EmailController extends Controller
      *       "ownUserMailInfo": {
      *         "is_read": true,
      *         "is_delete": false
-     *       }
+     *       },
+     *       "unread_count": 1
      *     }
      *   ],
      *   "total": 10,
@@ -338,6 +359,15 @@ class EmailController extends Controller
                     ->where('user_id', auth()->id())
                     ->first();
 
+                // Provide unread_count for API consumers (count all messages in the thread where user is recipient)
+                $mail->unread_count = MailUser::whereIn('send_mail_id', function ($q) use ($fetch_mailId) {
+                        $q->select('id')->from('send_mails')->where('id', $fetch_mailId)->orWhere('reply_of', $fetch_mailId);
+                    })
+                    ->where('user_id', auth()->id())
+                    ->where('is_to', 1)
+                    ->where('is_read', 0)
+                    ->count();
+
                 $emails = explode(',', $mail->to);
 
                 $lastReply = $mail->lastReply->first();
@@ -393,7 +423,8 @@ class EmailController extends Controller
      *       "ownUserMailInfo": {
      *         "is_read": true,
      *         "is_delete": true
-     *       }
+     *       },
+     *       "unread_count": 0
      *     }
      *   ],
      *   "total": 5,
@@ -450,6 +481,15 @@ class EmailController extends Controller
                 $mail->ownUserMailInfo = MailUser::where('send_mail_id', $fetch_mailId)
                     ->where('user_id', auth()->id())
                     ->first();
+
+                // Provide unread_count for API consumers (count all messages in the thread where user is recipient)
+                $mail->unread_count = MailUser::whereIn('send_mail_id', function ($q) use ($fetch_mailId) {
+                        $q->select('id')->from('send_mails')->where('id', $fetch_mailId)->orWhere('reply_of', $fetch_mailId);
+                    })
+                    ->where('user_id', auth()->id())
+                    ->where('is_to', 1)
+                    ->where('is_read', 0)
+                    ->count();
 
                 $emails = explode(',', $mail->to);
 

@@ -2,10 +2,11 @@
     @foreach ($mails as $mail)
         @php
             // $mailUser = $mail->mailUsers()->where('user_id', auth()->id())->first();
-            $mailUser = $mail->ownUserMailInfo;
-            $isRead = isset($mailUser['is_read']) && $mailUser['is_read'] == 1;
+            $mailUser = $mail->ownUserMailInfo ?? null;
+            // Use thread-level unread_count for the read state so it matches the sidebar total
+            $isRead = (int) ($mail->unread_count ?? 0) === 0;
             $latestReply = $mail->replies->first();
-            $isStar = $mailUser->is_starred;
+            $isStar = $mailUser ? $mailUser->is_starred : 0;
         @endphp
         <div class="emailRow {{ $isRead ? '' : 'mail_read' }}">
             <div class="emailRow__options">
@@ -15,7 +16,7 @@
                     <a href="javascript:void(0);" onclick="setMailStar(this, {{ $mail->id }})">
                         <span class="material-symbols-outlined"
                             style="color: orange; font-variation-settings: 'FILL' 1;">grade</span>
-                        </a>
+                    </a>
                 @else
                     <a href="javascript:void(0);" onclick="setMailStar(this, {{ $mail->id }})">
                         <span class="material-symbols-outlined">grade</span></a>
@@ -23,11 +24,13 @@
             </div>
 
 
-            <h3 class="emailRow__title view-mail" data-route="{{ route('mail.view', base64_encode(!empty($mail->reply_of) ? $mail->reply_of : $mail->id)) }}">
+            <h3 class="emailRow__title view-mail"
+                data-route="{{ route('mail.view', base64_encode(!empty($mail->reply_of) ? $mail->reply_of : $mail->id)) }}">
                 {{ $mail->user->full_name ?? '' }}
             </h3>
 
-            <div class="emailRow__message view-mail" data-route="{{ route('mail.view', base64_encode(!empty($mail->reply_of) ? $mail->reply_of : $mail->id)) }}">
+            <div class="emailRow__message view-mail"
+                data-route="{{ route('mail.view', base64_encode(!empty($mail->reply_of) ? $mail->reply_of : $mail->id)) }}">
                 <h4>
                     {{ !empty($mail->reply_of) ? 'RE:' : '' }} {{ $mail->subject }}
                     @if ($latestReply)
@@ -45,7 +48,8 @@
                 @endif
             </div>
 
-            <p class="emailRow__time view-mail" data-route="{{ route('mail.view', base64_encode(!empty($mail->reply_of) ? $mail->reply_of : $mail->id)) }}">
+            <p class="emailRow__time view-mail"
+                data-route="{{ route('mail.view', base64_encode(!empty($mail->reply_of) ? $mail->reply_of : $mail->id)) }}">
                 {{ $latestReply ? $latestReply->created_at->diffForHumans() : $mail->created_at->diffForHumans() }}
             </p>
         </div>
@@ -54,7 +58,6 @@
     <div class="pagination-links float-end mt-2" hidden>
         {{ $mails->links() }}
     </div>
-
 @else
     <div class="mt-3 text-center">
         <h3 class="emailRow__title">No mail found</h3>

@@ -174,9 +174,24 @@ class SendMailController extends Controller
             ->paginate(15);
 
         $mails->each(function ($mail) {
-            $mail->ownUserMailInfo = MailUser::where('send_mail_id', $mail->id)->where('user_id', auth()->id())->first();
+            // Determine the main mail's ID (use parent mail if this is a reply)
+            $init_mail = SendMail::findOrFail($mail->id);
+            $fetch_mailId = !empty($init_mail->reply_of) ? $init_mail->reply_of : $mail->id;
+
+            // Attach the MailUser record for the main mail (this determines read/star/delete for the thread)
+            $mail->ownUserMailInfo = MailUser::where('send_mail_id', $fetch_mailId)->where('user_id', auth()->id())->first();
+
+            // Provide unread_count for the UI badge (consistent with Helper::unreadMessagesCount)
+            $mail->unread_count = MailUser::whereIn('send_mail_id', function ($q) use ($fetch_mailId) {
+                    $q->select('id')->from('send_mails')->where('id', $fetch_mailId)->orWhere('reply_of', $fetch_mailId);
+                })
+                ->where('user_id', auth()->id())
+                ->where('is_to', 1) // only count when the authenticated user is a recipient
+                ->where('is_read', 0)
+                ->where('is_delete', 0)
+                ->count();
+
             $emails = explode(',', $mail->to);
-            // dd($mail->userSender);
             // Extract the last reply message and date
             $lastReply = $mail->lastReply->first(); // Use the defined relationship
             $mail->lastReplyMessage = $lastReply ? $lastReply->message : $mail->message;
@@ -230,7 +245,22 @@ class SendMailController extends Controller
             ->paginate(15);
 
         $mails->each(function ($mail) {
-            $mail->ownUserMailInfo = MailUser::where('send_mail_id', $mail->id)->where('user_id', auth()->id())->first();
+            // Determine the main mail's ID (use parent mail if this is a reply)
+            $init_mail = SendMail::findOrFail($mail->id);
+            $fetch_mailId = !empty($init_mail->reply_of) ? $init_mail->reply_of : $mail->id;
+
+            // Attach the MailUser record for the main mail
+            $mail->ownUserMailInfo = MailUser::where('send_mail_id', $fetch_mailId)->where('user_id', auth()->id())->first();
+
+            // Provide unread_count for the UI badge (count all messages in the thread where user is recipient)
+            $mail->unread_count = MailUser::whereIn('send_mail_id', function ($q) use ($fetch_mailId) {
+                    $q->select('id')->from('send_mails')->where('id', $fetch_mailId)->orWhere('reply_of', $fetch_mailId);
+                })
+                ->where('user_id', auth()->id())
+                ->where('is_to', 1)
+                ->where('is_read', 0)
+                ->count();
+
             $emails = explode(',', $mail->to);
             // Extract the last reply message and date
             $lastReply = $mail->lastReply->first(); // Use the defined relationship
@@ -285,7 +315,22 @@ class SendMailController extends Controller
             ->paginate(15);
 
         $mails->each(function ($mail) {
-            $mail->ownUserMailInfo = MailUser::where('send_mail_id', $mail->id)->where('user_id', auth()->id())->first();
+            // Determine the main mail's ID (use parent mail if this is a reply)
+            $init_mail = SendMail::findOrFail($mail->id);
+            $fetch_mailId = !empty($init_mail->reply_of) ? $init_mail->reply_of : $mail->id;
+
+            // Attach the MailUser record for the main mail
+            $mail->ownUserMailInfo = MailUser::where('send_mail_id', $fetch_mailId)->where('user_id', auth()->id())->first();
+
+            // Provide unread_count for the UI badge (count all messages in the thread where user is recipient)
+            $mail->unread_count = MailUser::whereIn('send_mail_id', function ($q) use ($fetch_mailId) {
+                    $q->select('id')->from('send_mails')->where('id', $fetch_mailId)->orWhere('reply_of', $fetch_mailId);
+                })
+                ->where('user_id', auth()->id())
+                ->where('is_to', 1)
+                ->where('is_read', 0)
+                ->count();
+
             $emails = explode(',', $mail->to);
 
             // Extract the last reply message and date
@@ -344,7 +389,22 @@ class SendMailController extends Controller
             ->paginate(15);
 
         $mails->each(function ($mail) {
-            $mail->ownUserMailInfo = MailUser::where('send_mail_id', $mail->id)->where('user_id', auth()->id())->first(); // Add the MailUser instance to each mail
+            // Determine the main mail's ID (use parent mail if this is a reply)
+            $init_mail = SendMail::findOrFail($mail->id);
+            $fetch_mailId = !empty($init_mail->reply_of) ? $init_mail->reply_of : $mail->id;
+
+            // Attach the MailUser record for the main mail
+            $mail->ownUserMailInfo = MailUser::where('send_mail_id', $fetch_mailId)->where('user_id', auth()->id())->first(); // Add the MailUser instance to each mail
+
+            // Provide unread_count for the UI badge (count all messages in the thread where user is recipient)
+            $mail->unread_count = MailUser::whereIn('send_mail_id', function ($q) use ($fetch_mailId) {
+                    $q->select('id')->from('send_mails')->where('id', $fetch_mailId)->orWhere('reply_of', $fetch_mailId);
+                })
+                ->where('user_id', auth()->id())
+                ->where('is_to', 1) // only count when user is a recipient
+                ->where('is_read', 0)
+                ->count();
+
             $emails = explode(',', $mail->to);
             // Extract the last reply message and date
             $lastReply = $mail->lastReply->first(); // Use the defined relationship
@@ -435,13 +495,14 @@ class SendMailController extends Controller
         }
 
         // Get the user's info for this mail
-        $init_ownUserMailInfo = MailUser::where('send_mail_id', $id)->where('user_id', auth()->id())->first();
-
-        // Mark the mail as read if it's the user's mail
-        if ($init_ownUserMailInfo) {
-            $init_ownUserMailInfo->is_read = 1;
-            $init_ownUserMailInfo->save();
-        }
+        // Mark entire mail thread (main + replies) as read for this user (keeps behavior consistent with API controller)
+        MailUser::whereIn('send_mail_id', function ($query) use ($fetch_mailId) {
+            $query->select('id')
+                ->from('send_mails')
+                ->where('id', $fetch_mailId)
+                ->orWhere('reply_of', $fetch_mailId);
+        })->where('user_id', auth()->id())
+            ->update(['is_read' => 1]);
 
         // Fetch the main mail details
         $mail_details = SendMail::with('user')->findOrFail($fetch_mailId);
