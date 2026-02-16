@@ -19,6 +19,11 @@
     </thead>
     <tbody>
         @forelse($orders as $index => $order)
+            @php
+                $hasDigitalItems = $order->orderItems->contains(function ($i) {
+                    return optional($i->product)->product_type === 'digital';
+                });
+            @endphp
             <tr>
                 <td>
                     <input type="checkbox" class="order-checkbox" value="{{ $order->id }}">
@@ -49,16 +54,22 @@
                     <strong>${{ number_format($order->total_amount, 2) }}</strong>
                 </td>
                 <td>
-                    @if ($order->is_pickup)
-                        <span class="badge bg-info">Pickup</span>
+                    @if ($hasDigitalItems)
+                        <span class="badge bg-success">Digital</span>
                     @else
-                        <span class="badge bg-primary">Delivery</span>
+                        @if ($order->is_pickup)
+                            <span class="badge bg-info">Pickup</span>
+                        @else
+                            <span class="badge bg-primary">Delivery</span>
+                        @endif
                     @endif
                 </td>
                 <td>
-                    <span class=" {{ $order->status_badge_class }} p-1 rounded">
-                        {{ ucfirst($order->orderStatus->name ?? '-') }}
-                    </span>
+                    @if (!$hasDigitalItems)
+                        <span class=" {{ $order->status_badge_class }} p-1 rounded">
+                            {{ ucfirst($order->orderStatus->name ?? '-') }}
+                        </span>
+                    @endif
                 </td>
                 <td>
                     <span class=" {{ $order->payment_status_badge_class }} p-1 rounded">

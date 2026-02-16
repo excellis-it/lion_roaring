@@ -156,14 +156,18 @@
                                 $minutesRemAdmin = $minutesLeftAdmin % 60;
                             @endphp
 
-                            @if (in_array(optional($order->orderStatus)->slug, $allowedAdminSlugs, true) && $isWithinCancelWindowAdmin)
-                                <div class="alert alert-warning" style="background-color: #fff3cd; border-color: #ffeeba;">
-                                    <strong>Warning:</strong> This order is still within the {{ $cancelHoursGlobal }}-hour
-                                    cancellation window and may be canceled by the customer.
-                                    <div class="small mt-1">Time left: @if ($hoursLeftAdmin > 0)
-                                            {{ $hoursLeftAdmin }}h
-                                        @endif{{ $minutesRemAdmin }}m</div>
-                                </div>
+                            @if (!$hasDigitalProduct)
+                                @if (in_array(optional($order->orderStatus)->slug, $allowedAdminSlugs, true) && $isWithinCancelWindowAdmin)
+                                    <div class="alert alert-warning"
+                                        style="background-color: #fff3cd; border-color: #ffeeba;">
+                                        <strong>Warning:</strong> This order is still within the
+                                        {{ $cancelHoursGlobal }}-hour
+                                        cancellation window and may be canceled by the customer.
+                                        <div class="small mt-1">Time left: @if ($hoursLeftAdmin > 0)
+                                                {{ $hoursLeftAdmin }}h
+                                            @endif{{ $minutesRemAdmin }}m</div>
+                                    </div>
+                                @endif
                             @endif
 
                             <div class="row">
@@ -177,30 +181,43 @@
                                     @endif
                                 </div>
 
-                                @if ($order->is_pickup == 1)
-                                    <div class="col-md-6">
-                                        <h6>Warehouse - Pickup Location:</h6>
-                                        <p>{{ $order->warehouse_name ?? 'N/A' }}, {{ $order->warehouse_address ?? '' }}
-                                        </p>
+                                @if (!$hasDigitalProduct)
+                                    @if ($order->is_pickup == 1)
+                                        <div class="col-md-6">
+                                            <h6>Warehouse - Pickup Location:</h6>
+                                            <p>{{ $order->warehouse_name ?? 'N/A' }},
+                                                {{ $order->warehouse_address ?? '' }}
+                                            </p>
 
-                                    </div>
+                                        </div>
+                                    @else
+                                        <div class="col-md-6">
+                                            <h6>Warehouse:</h6>
+                                            <p>{{ $order->warehouse_name ?? 'N/A' }},
+                                                {{ $order->warehouse_address ?? '' }}
+                                            </p>
+                                            <h6>Shipping Address</h6>
+                                            <address>
+                                                {{ $order->address_line_1 }}<br>
+                                                @if ($order->address_line_2)
+                                                    {{ $order->address_line_2 }}<br>
+                                                @endif
+                                                {{ $order->city }}, {{ $order->state }} {{ $order->pincode }}<br>
+                                                {{ $order->country }}
+                                            </address>
+                                        </div>
+                                    @endif
                                 @else
                                     <div class="col-md-6">
-                                        <h6>Warehouse:</h6>
-                                        <p>{{ $order->warehouse_name ?? 'N/A' }}, {{ $order->warehouse_address ?? '' }}
-                                        </p>
-                                        <h6>Shipping Address</h6>
-                                        <address>
-                                            {{ $order->address_line_1 }}<br>
-                                            @if ($order->address_line_2)
-                                                {{ $order->address_line_2 }}<br>
-                                            @endif
-                                            {{ $order->city }}, {{ $order->state }} {{ $order->pincode }}<br>
-                                            {{ $order->country }}
-                                        </address>
+                                        <h6>Note:</h6>
+                                        <p>This order contains digital products.</p>
                                     </div>
+
                                 @endif
+
+
                             </div>
+
 
                             <div class="row mt-3">
                                 <div class="col-md-6">
@@ -629,14 +646,14 @@
         }
 
         /* .timeline::before {
-                                                                                                                                                    content: '';
-                                                                                                                                                    position: absolute;
-                                                                                                                                                    left: 15px;
-                                                                                                                                                    top: 0;
-                                                                                                                                                    bottom: 0;
-                                                                                                                                                    width: 2px;
-                                                                                                                                                    background: #e9ecef;
-                                                                                                                                                } */
+                                                                                                                                                            content: '';
+                                                                                                                                                            position: absolute;
+                                                                                                                                                            left: 15px;
+                                                                                                                                                            top: 0;
+                                                                                                                                                            bottom: 0;
+                                                                                                                                                            width: 2px;
+                                                                                                                                                            background: #e9ecef;
+                                                                                                                                                        } */
 
         .timeline-item {
             position: relative;

@@ -439,92 +439,95 @@
                             </div>
                         @endif
 
-                        <!-- Actions Order Cancellation button with modal confirm with note area and cancel button -->
-                        <div class="order-cancellation mt-4">
+                        @if (!$orderHasDigitalProduct)
+                            <!-- Actions Order Cancellation button with modal confirm with note area and cancel button -->
+                            <div class="order-cancellation mt-4">
 
-                            @php
-                                $blockingSlugs = $order->is_pickup
-                                    ? ['pickup_ready_for_pickup', 'pickup_picked_up']
-                                    : ['shipped', 'out_for_delivery', 'delivered'];
-                                $cancelHours = optional($estoreSettings)->cancel_within_hours ?? 24;
-                                $elapsedMinutes = (int) $order->created_at->diffInMinutes(now());
-                                $isWithinCancelWindow = $elapsedMinutes < $cancelHours * 60;
-                                $minutesLeft = max(0, $cancelHours * 60 - $elapsedMinutes);
-                                $hoursLeft = floor($minutesLeft / 60);
-                                $minutesRem = $minutesLeft % 60;
-                            @endphp
+                                @php
+                                    $blockingSlugs = $order->is_pickup
+                                        ? ['pickup_ready_for_pickup', 'pickup_picked_up']
+                                        : ['shipped', 'out_for_delivery', 'delivered'];
+                                    $cancelHours = optional($estoreSettings)->cancel_within_hours ?? 24;
+                                    $elapsedMinutes = (int) $order->created_at->diffInMinutes(now());
+                                    $isWithinCancelWindow = $elapsedMinutes < $cancelHours * 60;
+                                    $minutesLeft = max(0, $cancelHours * 60 - $elapsedMinutes);
+                                    $hoursLeft = floor($minutesLeft / 60);
+                                    $minutesRem = $minutesLeft % 60;
+                                @endphp
 
-                            @if (in_array($statusSlug, $blockingSlugs, true))
-                                {{-- <button type="button" class="btn btn-outline-dark w-100" disabled>
+                                @if (in_array($statusSlug, $blockingSlugs, true))
+                                    {{-- <button type="button" class="btn btn-outline-dark w-100" disabled>
                                     Order that has been {{ $order->is_pickup ? 'ready for picked up' : 'shipped' }} can't
                                     be cancelled.
                                 </button> --}}
-                            @endif
+                                @endif
 
-                            @php
-                                $allowedStatusList = $order->is_pickup
-                                    ? ['pickup_pending', 'pickup_processing']
-                                    : ['pending', 'processing'];
-                            @endphp
+                                @php
+                                    $allowedStatusList = $order->is_pickup
+                                        ? ['pickup_pending', 'pickup_processing']
+                                        : ['pending', 'processing'];
+                                @endphp
 
-                            @if (in_array($statusSlug, $allowedStatusList, true) && $isWithinCancelWindow)
-                                <div class="mb-2 small text-muted">
-                                    You have @if ($hoursLeft > 0)
-                                        {{ $hoursLeft }}h
-                                    @endif{{ $minutesRem }}m left to cancel this order.
-                                </div>
+                                @if (in_array($statusSlug, $allowedStatusList, true) && $isWithinCancelWindow)
+                                    <div class="mb-2 small text-muted">
+                                        You have @if ($hoursLeft > 0)
+                                            {{ $hoursLeft }}h
+                                        @endif{{ $minutesRem }}m left to cancel this order.
+                                    </div>
 
-                                <button type="button" class="btn btn-outline-danger w-100" data-bs-toggle="modal"
-                                    data-bs-target="#cancelOrderModal">
-                                    Cancel Order
-                                </button>
+                                    <button type="button" class="btn btn-outline-danger w-100" data-bs-toggle="modal"
+                                        data-bs-target="#cancelOrderModal">
+                                        Cancel Order
+                                    </button>
 
-                                <!-- Cancel Order Modal -->
-                                <div class="modal fade" id="cancelOrderModal" tabindex="-1"
-                                    aria-labelledby="cancelOrderModalLabel" aria-hidden="true">
-                                    <div class="modal-dialog">
-                                        <div class="modal-content">
-                                            <div class="modal-header">
-                                                <h5 class="modal-title" id="cancelOrderModalLabel">Cancel Order
-                                                    #{{ $order->order_number }}</h5>
-                                                <button type="button" class="btn-close" data-bs-dismiss="modal"
-                                                    aria-label="Close"></button>
+                                    <!-- Cancel Order Modal -->
+                                    <div class="modal fade" id="cancelOrderModal" tabindex="-1"
+                                        aria-labelledby="cancelOrderModalLabel" aria-hidden="true">
+                                        <div class="modal-dialog">
+                                            <div class="modal-content">
+                                                <div class="modal-header">
+                                                    <h5 class="modal-title" id="cancelOrderModalLabel">Cancel Order
+                                                        #{{ $order->order_number }}</h5>
+                                                    <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                                        aria-label="Close"></button>
+                                                </div>
+                                                <form action="{{ route('e-store.cancel-order') }}" method="POST">
+                                                    @csrf
+                                                    <input type="hidden" name="order_id" value="{{ $order->id }}">
+                                                    <div class="modal-body">
+                                                        <div class="mb-3">
+                                                            <label for="cancellation_reason" class="form-label">Reason for
+                                                                Cancellation (optional):</label>
+                                                            <textarea class="form-control" id="cancellation_reason" name="cancellation_reason" rows="3"></textarea>
+                                                        </div>
+                                                        <p>Are you sure you want to cancel this order?</p>
+                                                        <div class="form-check">
+                                                            <input class="form-check-input" type="checkbox"
+                                                                id="confirmCancellation" required>
+                                                            <label class="form-check-label" for="confirmCancellation">
+                                                                I confirm the cancellation of this order.
+                                                            </label>
+                                                        </div>
+                                                    </div>
+                                                    <div class="modal-footer">
+                                                        <button type="button" class="btn btn-secondary"
+                                                            data-bs-dismiss="modal">Close</button>
+                                                        <button type="submit" class="btn btn-danger">Cancel
+                                                            Order</button>
+                                                    </div>
+                                                </form>
                                             </div>
-                                            <form action="{{ route('e-store.cancel-order') }}" method="POST">
-                                                @csrf
-                                                <input type="hidden" name="order_id" value="{{ $order->id }}">
-                                                <div class="modal-body">
-                                                    <div class="mb-3">
-                                                        <label for="cancellation_reason" class="form-label">Reason for
-                                                            Cancellation (optional):</label>
-                                                        <textarea class="form-control" id="cancellation_reason" name="cancellation_reason" rows="3"></textarea>
-                                                    </div>
-                                                    <p>Are you sure you want to cancel this order?</p>
-                                                    <div class="form-check">
-                                                        <input class="form-check-input" type="checkbox"
-                                                            id="confirmCancellation" required>
-                                                        <label class="form-check-label" for="confirmCancellation">
-                                                            I confirm the cancellation of this order.
-                                                        </label>
-                                                    </div>
-                                                </div>
-                                                <div class="modal-footer">
-                                                    <button type="button" class="btn btn-secondary"
-                                                        data-bs-dismiss="modal">Close</button>
-                                                    <button type="submit" class="btn btn-danger">Cancel Order</button>
-                                                </div>
-                                            </form>
                                         </div>
                                     </div>
-                                </div>
-                            @elseif(in_array($statusSlug, $allowedStatusList, true) && !$isWithinCancelWindow && $cancelHours > 0)
-                                <div class="alert alert-danger mt-2">
-                                    Order cancellation is no longer available as the cancellation window of
-                                    {{ $cancelHours }}
-                                    hours has passed.
-                                </div>
-                            @endif
-                        </div>
+                                @elseif(in_array($statusSlug, $allowedStatusList, true) && !$isWithinCancelWindow && $cancelHours > 0)
+                                    <div class="alert alert-danger mt-2">
+                                        Order cancellation is no longer available as the cancellation window of
+                                        {{ $cancelHours }}
+                                        hours has passed.
+                                    </div>
+                                @endif
+                            </div>
+                        @endif
 
                         @if ($isFinalCancelled)
                             <div class="alert alert-danger mt-3">
