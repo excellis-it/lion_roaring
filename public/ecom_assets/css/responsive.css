@@ -9,9 +9,25 @@
     --heading-font: "Nunito", sans-serif;
     --button-font: "Nunito", sans-serif;
 }
+@media (max-width:1800px){
+    .feature_img .sales{
+        left: -90px;
+    }
+    .feature_img{
+        height: 270px;
+    }
+}
 @media (max-width:1700px){
+    .feature_img{
+        height: 250px;
+    }
+}
+@media (max-width:1699px){
 .feature_img .sales{
-    left: -103px;
+    left: -140px;
+}
+.feature_img{
+    height: 400px;
 }
 }
 @media (max-width:1600px){
@@ -29,7 +45,7 @@
         height: 400px;
     }
     .feature_img .sales{
-        left: -90px;
+        left: -130px;
     }
 }
 @media (max-width:1440px){
@@ -43,7 +59,7 @@
         font-size: 45px;
     }
     .feature_img .sales {
-        left: -88px;
+        left: -110px;
         top: 17px;
     }
     .filter_resilt{
@@ -84,8 +100,8 @@
         height: 300px;
     }
     .feature_img .sales {
-        left: -84px;
-        top: 15px;
+        /*left: -84px;*/
+        /*top: 15px;*/
     }
     .filter .padding_filter {
         padding: 20px 20px 20px 20px;
@@ -122,12 +138,18 @@
         padding: 10px;
     }
     .feature_img .sales {
-        left: -77px;
-        top: 15px;
+        /*left: -77px;*/
+        /*top: 15px;*/
     }
     /* .shopping_cart_sec .d-position ul li::before{
         left: -90px;
     } */
+}
+
+@media (max-width:1200px){
+    .feature_img .sales {
+        left: -90px;
+    }
 }
 @media (max-width:1024px){
     .logo {
@@ -176,6 +198,9 @@
         height: 100px;
         top: -65px;
         left: 19px;
+    }
+        .feature_img .sales {
+        left: -110px;
     }
 }
 @media (max-width:991px){
@@ -320,7 +345,7 @@
         width: 70px;
     }
     .feature_img .sales {
-        left: -85px;
+        left: -130px;
         top: 15px;
     }
 }
@@ -401,7 +426,7 @@
         padding-left: 0px;
     }
     .feature_img .sales {
-        left: -313px;
+        left: -292px;
         top: 15px;
     }
     /* .d-position ul li::before {
@@ -612,6 +637,7 @@
         left: -187px;
         top: 15px;
     }
+    
     .inner-product-list nav{
         display: inline-table;
     }
@@ -753,8 +779,11 @@
 
 @media (max-width:380px){
   .feature_img .sales {
-        left: -133px;
+        left: -120px;
         top: 25px;
+    }
+        .feature_img {
+        height: 350px;
     }
 }
 @media (max-width:375.98px){

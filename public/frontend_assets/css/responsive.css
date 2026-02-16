@@ -97,10 +97,10 @@
         width: 45%;
     }
         .for-mobile-use {
-        width: 40%;
+        width: 50%;
     }
     .right_top {
-    width: 60%;
+    width: 50%;
 }
 .slider, .slide {
     height: 750px;
@@ -229,6 +229,9 @@
     .left-book-sec {
         padding: 25px 0px 25px 40px;
     }
+    .goog-te-gadget .goog-te-combo{
+            min-width: 100px;
+    }
 }
 @media (max-width:1200px){
 
@@ -238,12 +241,12 @@
         .heading_hp h2 {
         font-size: 36px;
     }
-    /* .right_top {
-        width: 65%;
+        .right_top {
+        width: 60%;
     }
-    .for-mobile-use {
-        width: 30%;
-    } */
+        .for-mobile-use {
+        width: 40%;
+    }
 }
 @media (max-width:1170px){
 .left-book-sec .left-sec-img{
@@ -550,9 +553,6 @@
     .slide__img img.overlay-image {
         height: 45%;
     }
-    .login_prf a{
-        font-size: 13px;
-    }
 }
 
 @media (max-width:767px){
@@ -710,6 +710,9 @@
     .goog-te-gadget .goog-te-combo{
         padding: 9px 3px;
     }
+        .goog-te-gadget .goog-te-combo {
+        min-width: 80px;
+    }
 }
 
 @media (max-width:576px){
@@ -738,7 +741,7 @@
 }
 .goog-te-gadget .goog-te-combo {
     padding: 9px 0px;
-    width: 112px;
+    /*width: 112px;*/
     border: none;
 }
 .button_container{
