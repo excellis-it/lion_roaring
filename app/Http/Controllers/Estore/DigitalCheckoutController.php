@@ -15,11 +15,16 @@ use App\Models\EstorePayment;
 use App\Services\PromoCodeService;
 use App\Mail\OrderStatusUpdatedMail;
 use App\Models\OrderEmailTemplate;
+use App\Models\User;
+use App\Models\Notification;
+use App\Mail\OrderNotificationMail;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\Log;
 use Stripe\Stripe;
 use Stripe\PaymentIntent;
+use Carbon\Carbon;
 
 class DigitalCheckoutController extends Controller
 {
@@ -283,6 +288,56 @@ class DigitalCheckoutController extends Controller
 
             // Clear digital checkout session
             session()->forget(['digital_checkout_product_id', 'digital_applied_promo_code', 'digital_promo_discount']);
+
+            // Send notifications to super admins
+            $superAdminIds = User::where('user_type_id', 1)->pluck('id')->toArray();
+
+            if (!empty($superAdminIds)) {
+                $notifications = [];
+                $recipientUsers = User::whereIn('id', $superAdminIds)->get();
+
+                foreach ($recipientUsers as $user) {
+                    $notifications[] = [
+                        'user_id' => $user->id,
+                        'chat_id' => $order->id,
+                        'message' => 'New digital order #' . $order->order_number . ' placed for ' . $product->name . '.',
+                        'type' => 'Order',
+                        'created_at' => now(),
+                        'updated_at' => now(),
+                    ];
+
+                    // Send email to admin
+                    if ($user->email) {
+                        try {
+                            Mail::to($user->email)->queue(new OrderNotificationMail($order, $user, []));
+                        } catch (\Throwable $th) {
+                            Log::error('Failed to send digital order notification email to admin', [
+                                'error' => $th->getMessage()
+                            ]);
+                        }
+                    }
+                }
+
+                // Insert notifications in bulk
+                Notification::insert($notifications);
+            }
+
+            // Send order confirmation email to customer (Direct Mail for Digital)
+            try {
+                $orderList = view('user.emails.order_list_table', ['order' => $order])->render();
+                $myOrdersUrl = route('e-store.my-orders');
+
+                $body = "<p>Hello " . ($order->first_name . ' ' . $order->last_name) . ",</p>";
+                $body .= "<p>Thank you for your order. Your payment has been successfully received. You can now download the product and view the full details in your order history.</p>";
+                $body .= "<p><strong>Order Number:</strong> " . $order->order_number . "</p>";
+                $body .= $orderList;
+                $body .= "<p><strong>Total Amount:</strong> $" . number_format($order->total_amount, 2) . "</p>";
+                $body .= "<p><a href='" . $myOrdersUrl . "' style='display:inline-block;padding:10px 20px;background:#000;color:#fff;text-decoration:none;border-radius:5px;'>View Order History</a></p>";
+
+                Mail::to($order->email)->send(new OrderStatusUpdatedMail($order, $body));
+            } catch (\Throwable $th) {
+                Log::error('Failed to send digital order status email to customer: ' . $th->getMessage());
+            }
 
             DB::commit();
 
