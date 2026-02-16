@@ -7,7 +7,7 @@ use Illuminate\Http\Request;
 use App\Models\UserActivity;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
-use App\Helpers\helper;
+use App\Helpers\Helper;
 use App\Services\MarketRateService;
 
 
@@ -44,8 +44,8 @@ class UserActivityLogger
 
             $user = Auth::user();
             $ip = $request->ip();
-            $countryCode = helper::getVisitorCountryCode();
-            $countryName = helper::getVisitorCountryName();
+            $countryCode = Helper::getVisitorCountryCode();
+            $countryName = Helper::getVisitorCountryName();
             $url = $request->fullUrl();
             $ua = $request->header('User-Agent');
 

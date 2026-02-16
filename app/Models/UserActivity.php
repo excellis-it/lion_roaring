@@ -39,8 +39,8 @@ class UserActivity extends BaseModel
         try {
             $user = auth()->user();
             $ip = request()->ip();
-            $countryCode = helper::getVisitorCountryCode(); // existing helper
-            $countryName = helper::getVisitorCountryName();
+            $countryCode = Helper::getVisitorCountryCode(); // existing helper
+            $countryName = Helper::getVisitorCountryName();
 
             $userRoles = $user ? implode(',', $user->getRoleNames()->toArray()) : null;
 
