@@ -324,27 +324,45 @@
         //     loadOrdersTable();
         // }, 5000);
 
-        function loadOrdersTable() {
+        function loadOrdersTable(page = 1) {
             // validate date filters before making request
             if (!validateDateFilters()) return;
+            const requestData = {
+                status: $('#status-filter').val(),
+                payment_status: $('#payment-status-filter').val(),
+                date_from: $('#date-from').val(),
+                date_to: $('#date-to').val(),
+                search: $('#search-filter').val(),
+                page: page
+            };
             $.ajax({
                 url: '{{ route('user.store-orders.fetch-data') }}',
                 type: 'GET',
-                data: {
-                    status: $('#status-filter').val(),
-                    payment_status: $('#payment-status-filter').val(),
-                    date_from: $('#date-from').val(),
-                    date_to: $('#date-to').val(),
-                    search: $('#search-filter').val()
-                },
+                data: requestData,
                 success: function(response) {
                     $('#orders-table-container').html(response);
+                    // reset select-all checkbox state after table refresh
+                    $('#select-all').prop('checked', false);
                 },
                 error: function() {
                     toastr.error('Failed to load orders');
                 }
             });
         }
+
+        // Handle pagination links inside the AJAX-loaded table (preserve current filters)
+        $(document).on('click', '#orders-table-container .pagination a', function(e) {
+            e.preventDefault();
+            const href = $(this).attr('href') || '';
+            let page = 1;
+            const m = href.match(/page=(\d+)/);
+            if (m && m[1]) page = m[1];
+            loadOrdersTable(page);
+            // scroll to table after page change
+            $('html, body').animate({
+                scrollTop: $('#orders-table-container').offset().top - 100
+            }, 200);
+        });
 
         function deleteOrder(orderId) {
             Swal.fire({

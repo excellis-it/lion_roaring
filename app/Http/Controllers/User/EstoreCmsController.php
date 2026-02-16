@@ -543,7 +543,9 @@ class EstoreCmsController extends Controller
                 });
             }
 
-            $orders = $orders->get();
+            $orders = $orders->paginate(15);
+            // preserve active filters in pagination links
+            $orders->appends($request->except('page'));
             $estoreSettings = EstoreSetting::first();
             $max_refundable_days = $estoreSettings->refund_max_days ?? 10;
 

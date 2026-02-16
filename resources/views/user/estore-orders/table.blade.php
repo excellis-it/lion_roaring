@@ -28,7 +28,7 @@
                 <td>
                     <input type="checkbox" class="order-checkbox" value="{{ $order->id }}">
                 </td>
-                <td>{{ $index + 1 }}</td>
+                <td>{{ ($orders->firstItem() ?? 0) + $index }}</td>
                 <td>
                     <strong>{{ $order->order_number }}</strong>
                 </td>
@@ -155,10 +155,14 @@
     </tbody>
 </table>
 
-@if ($orders->count() > 0)
-    <div class="row mt-3">
+@if ($orders->total() > 0)
+    <div class="row mt-3 align-items-center">
         <div class="col-md-6">
-            <p class="text-muted">Showing {{ $orders->count() }} orders</p>
+            <p class="text-muted">Showing {{ $orders->firstItem() ?? 0 }} to {{ $orders->lastItem() ?? 0 }} of
+                {{ $orders->total() }} orders</p>
+        </div>
+        <div class="col-md-6 text-end">
+            {!! $orders->withQueryString()->links('pagination::bootstrap-4') !!}
         </div>
     </div>
 @endif
