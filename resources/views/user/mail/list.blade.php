@@ -8,42 +8,43 @@
     <section id="loading">
         <div id="loading-content"></div>
     </section>
-        <div class="container-fluid">
-            <div class="bg_white_border mail-body">
-                <!-- Main Body Starts -->
-                <div class="main__body">
-                    <!-- Sidebar Starts -->
-                    @include('user.mail.partials.sidebar')
-                    <!-- Sidebar Ends -->
-                    <!-- Email List Starts -->
-                    <div class="emailList">
-                        <!-- Settings Starts -->
-                        <div class="emailList__settings">
-                            <div class="emailList__settingsLeft">
-                                <input type="checkbox" id="selectAll" />
-                                <span type="button"><i class="fa-solid fa-caret-down"></i> </span>
-                                <span onclick="fetchLatestEmails()" type="button"><i class="fa-solid fa-arrows-rotate"></i>
-                                </span>
-                                <span type="button" id="delete"><i class="fa-solid fa-trash"></i></span>
-                            </div>
-                            <div class="emailList__settingsRight d-flex">
-                                <span type="button" id="mailListPrevPage" class="material-symbols-outlined">chevron_left</span>
-                                <span id="paginationInfo"></span>
-                                <span type="button" id="mailListNextPage" class="material-symbols-outlined">chevron_right</span>
-                            </div>
-
-
+    <div class="container-fluid">
+        <div class="bg_white_border mail-body">
+            <!-- Main Body Starts -->
+            <div class="main__body">
+                <!-- Sidebar Starts -->
+                @include('user.mail.partials.sidebar')
+                <!-- Sidebar Ends -->
+                <!-- Email List Starts -->
+                <div class="emailList">
+                    <!-- Settings Starts -->
+                    <div class="emailList__settings">
+                        <div class="emailList__settingsLeft">
+                            <input type="checkbox" id="selectAll" />
+                            <span type="button"><i class="fa-solid fa-caret-down"></i> </span>
+                            <span onclick="fetchLatestEmails()" type="button"><i class="fa-solid fa-arrows-rotate"></i>
+                            </span>
+                            <span type="button" id="delete"><i class="fa-solid fa-trash"></i></span>
                         </div>
-                        <!-- Settings Ends -->
+                        <div class="emailList__settingsRight d-flex">
+                            <span type="button" id="mailListPrevPage" class="material-symbols-outlined">chevron_left</span>
+                            <span id="paginationInfo"></span>
+                            <span type="button" id="mailListNextPage"
+                                class="material-symbols-outlined">chevron_right</span>
+                        </div>
 
-                        <!-- Section Starts -->
-                        <div class="emailList__sections">
-                            <div class="section section__selected">
-                                <!-- <span class="material-symbols-outlined"> inbox </span> -->
-                                 <i class="fa-solid fa-inbox"></i>
-                                <h4>Primary</h4>
-                            </div>
-                            {{-- <div class="section">
+
+                    </div>
+                    <!-- Settings Ends -->
+
+                    <!-- Section Starts -->
+                    <div class="emailList__sections">
+                        <div class="section section__selected">
+                            <!-- <span class="material-symbols-outlined"> inbox </span> -->
+                            <i class="fa-solid fa-inbox"></i>
+                            <h4>Primary</h4>
+                        </div>
+                        {{-- <div class="section">
                             <span class="material-symbols-outlined"> people </span>
                             <h4>Social</h4>
                         </div>
@@ -54,28 +55,28 @@
                         </div> --}}
 
 
-                        </div>
-                        <div class="emailList__list" id="inbox-email-list-{{ auth()->id() }}">
-                            {{-- @include('user.mail.partials.inbox-email-list') --}}
+                    </div>
+                    <div class="emailList__list" id="inbox-email-list-{{ auth()->id() }}">
+                        {{-- @include('user.mail.partials.inbox-email-list') --}}
 
-                        </div>
                     </div>
                 </div>
-
-                @include('user.mail.partials.create-mail')
-
-
             </div>
+
+            @include('user.mail.partials.create-mail')
 
 
         </div>
+
+
+    </div>
     <!-- </div> -->
 @endsection
 
 @push('scripts')
     <script>
         $(document).ready(function() {
-           // let currentMailPage_inbox = 1;
+            // let currentMailPage_inbox = 1;
             fetchLatestEmails();
 
             $('#mailListPrevPage').on('click', function() {

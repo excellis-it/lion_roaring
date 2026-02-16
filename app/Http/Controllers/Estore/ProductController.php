@@ -47,6 +47,7 @@ use App\Models\ProductColorImage;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Mail;
 use App\Mail\OutOfStockNotificationMail;
+use App\Models\ProductFile;
 use Stripe\Climate\Order;
 use App\Models\ProductImage;
 use App\Models\MarketMaterial;
@@ -1418,7 +1419,7 @@ class ProductController extends Controller
         if (!auth()->check()) {
             return redirect()->route('home')->with('error', 'Please login to view your orders');
         }
-        $orders = EstoreOrder::with('orderItems')
+        $orders = EstoreOrder::with(['orderItems.product', 'orderStatus'])
             ->where('user_id', auth()->id())
             ->whereIn('payment_status', ['paid', 'refunded'])
             ->orderBy('created_at', 'desc')
@@ -1438,7 +1439,7 @@ class ProductController extends Controller
         if (!auth()->check()) {
             return redirect()->route('home')->with('error', 'Please login to view your orders');
         }
-        $order = EstoreOrder::with(['orderItems', 'payments'])
+        $order = EstoreOrder::with(['orderItems.product.files', 'payments'])
             ->where('id', $orderId)
             ->where('user_id', auth()->id())
             ->first();
@@ -1528,13 +1529,57 @@ class ProductController extends Controller
                 $statusIndex = -1;
             }
         }
-        return view('ecom.order-details', compact('order', 'cartCount', 'max_refundable_days', 'estoreSettings', 'timelineStatuses', 'statusIndex'));
+        $orderHasDigitalProduct = $order->orderItems->contains(function ($item) {
+            return optional($item->product)->product_type === 'digital';
+        });
+
+        return view('ecom.order-details', compact('order', 'cartCount', 'max_refundable_days', 'estoreSettings', 'timelineStatuses', 'statusIndex', 'orderHasDigitalProduct'));
     }
 
-    // orderSuccess
+    /**
+     * Securely download a digital product file.
+     */
+    public function downloadFile($fileId)
+    {
+        if (!auth()->check()) {
+            return redirect()->route('login')->with('error', 'Please login to download your files');
+        }
+
+        $productFile = ProductFile::with('product')->find($fileId);
+
+        if (!$productFile) {
+            return back()->with('error', 'File not found');
+        }
+
+        $product = $productFile->product;
+
+        if (!$product) {
+            return back()->with('error', 'Product association not found');
+        }
+
+        // Verify purchase
+        if (!$product->isPurchasedByUser(auth()->id())) {
+            return back()->with('error', 'You must purchase this product before downloading its files.');
+        }
+
+        $filePath = $productFile->file_location;
+
+        if (\Illuminate\Support\Facades\Storage::disk('public')->exists($filePath)) {
+            $fullPath = storage_path('app/public/' . $filePath);
+            return response()->download($fullPath);
+        }
+
+        if (\Illuminate\Support\Facades\Storage::exists($filePath)) {
+            $fullPath = storage_path('app/' . $filePath);
+            return response()->download($fullPath);
+        }
+
+        return back()->with('error', 'Physical file not found on server.');
+    }
+
     public function orderSuccess($orderId)
     {
-        $order = EstoreOrder::with(['orderItems', 'payments'])
+        $order = EstoreOrder::with(['orderItems.product', 'payments', 'orderStatus'])
             ->where('id', $orderId)
             ->where('user_id', auth()->id())
             ->first();
@@ -1545,7 +1590,11 @@ class ProductController extends Controller
 
         $cartCount = EstoreCart::where('user_id', auth()->id())->count();
 
-        return view('ecom.order-success', compact('order', 'cartCount'));
+        $orderHasDigitalProduct = $order->orderItems->contains(function ($item) {
+            return optional($item->product)->product_type === 'digital';
+        });
+
+        return view('ecom.order-success', compact('order', 'cartCount', 'orderHasDigitalProduct'));
     }
 
     // Add to wishlist with toggle if have then remove either set null

@@ -24,6 +24,7 @@ use App\Models\Review;
 use App\Models\WarehouseProductVariation;
 use App\Models\MarketMaterial;
 use App\Services\MarketRateService;
+use App\Models\ProductFile;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rule;
 use Illuminate\Support\Str;
@@ -211,7 +212,7 @@ class ProductController extends Controller
             'images'            => 'nullable|array|min:1',
             'images.*'          => 'image|mimes:jpeg,png,jpg,gif,svg,webp',
             // product type
-            'product_type'      => 'required|in:simple,variable',
+            'product_type'      => 'required|in:simple,variable,digital',
             // toggles
             'is_free'           => 'nullable|in:0,1',
             'use_market_price'  => 'nullable|in:0,1',
@@ -259,6 +260,18 @@ class ProductController extends Controller
             $rules['sizes.*'] = 'integer|exists:sizes,id';
         }
 
+        // Conditional rules for digital product
+        if ($request->input('product_type') === 'digital') {
+            if ($request->boolean('is_free')) {
+                $rules['digital_price'] = 'nullable|numeric|min:0';
+            } else {
+                $rules['digital_price'] = 'required|numeric|min:0';
+            }
+            $rules['digital_sale_price'] = 'nullable|numeric|min:0';
+            $rules['digital_files'] = 'required|array|min:1';
+            $rules['digital_files.*'] = 'string'; // File paths from AJAX upload
+        }
+
         // Custom messages
         $messages = [
             'category_id.required' => 'The category field is required.',
@@ -288,6 +301,10 @@ class ProductController extends Controller
             'other_charges.*.charge_amount.min' => 'Charge amount must be at least 0.',
             'product_type.required' => 'The product type field is required.',
             'product_type.in' => 'The selected product type is invalid.',
+            'digital_price.required' => 'The price field is required for digital products.',
+            'digital_sale_price.numeric' => 'The sale price must be a valid number.',
+            'digital_files.required' => 'Please upload at least one digital file.',
+            'digital_files.min' => 'Please upload at least one digital file.',
         ];
 
         // Run validator (returns JSON errors for AJAX)
@@ -483,6 +500,25 @@ class ProductController extends Controller
             }
         }
 
+        // Handle digital product
+        if ($product->product_type == 'digital') {
+            // Set digital product pricing
+            $product->price = $request->digital_price;
+            $product->sale_price = $request->digital_sale_price ?? null;
+            $product->quantity = 0; // Digital products have no stock quantity
+            $product->save();
+
+            // Save digital files
+            if ($request->filled('digital_files')) {
+                foreach ($request->digital_files as $filePath) {
+                    ProductFile::create([
+                        'product_id' => $product->id,
+                        'file_location' => $filePath
+                    ]);
+                }
+            }
+        }
+
 
 
 
@@ -568,7 +604,7 @@ class ProductController extends Controller
                 'background_image' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg,webp',
                 'images'           => 'nullable|array|min:1',
                 'images.*'         => 'image|mimes:jpeg,png,jpg,gif,svg,webp',
-                'product_type'     => 'required|in:simple,variable',
+                'product_type'     => 'required|in:simple,variable,digital',
                 'is_free'          => 'nullable|in:0,1',
                 'use_market_price' => 'nullable|in:0,1',
                 'market_material_id' => 'nullable|integer|exists:market_materials,id',
@@ -616,6 +652,20 @@ class ProductController extends Controller
             if ($product->product_type === 'variable') {
                 $rules['sizes'] = 'required|array|min:1';
                 $rules['sizes.*'] = 'integer|exists:sizes,id';
+            }
+
+            // Conditional rules for digital product
+            if ($product->product_type === 'digital') {
+                if ($request->boolean('is_free')) {
+                    $rules['digital_price'] = 'nullable|numeric|min:0';
+                } else {
+                    $rules['digital_price'] = 'required|numeric|min:0';
+                }
+                $rules['digital_sale_price'] = 'nullable|numeric|min:0';
+                $rules['digital_files'] = 'nullable|array';
+                $rules['digital_files.*'] = 'string';
+                $rules['delete_digital_files'] = 'nullable|array';
+                $rules['delete_digital_files.*'] = 'integer|exists:product_files,id';
             }
 
             $messages = [
@@ -723,6 +773,10 @@ class ProductController extends Controller
                 } elseif ($product->product_type === 'simple') {
                     $product->price = $request->price;
                     $product->sale_price = $request->sale_price ?? null;
+                } elseif ($product->product_type === 'digital') {
+                    $product->price = $request->digital_price;
+                    $product->sale_price = $request->digital_sale_price ?? null;
+                    $product->quantity = 0;
                 }
             }
 
@@ -739,6 +793,33 @@ class ProductController extends Controller
 
 
             $product->save();
+
+            // Handle digital files
+            if ($product->product_type === 'digital') {
+                // Delete removed files
+                if ($request->filled('delete_digital_files')) {
+                    $filesToDelete = ProductFile::whereIn('id', $request->delete_digital_files)
+                        ->where('product_id', $product->id)
+                        ->get();
+
+                    foreach ($filesToDelete as $file) {
+                        if (\Storage::disk('public')->exists($file->file_location)) {
+                            \Storage::disk('public')->delete($file->file_location);
+                        }
+                        $file->delete();
+                    }
+                }
+
+                // Add new files
+                if ($request->filled('digital_files')) {
+                    foreach ($request->digital_files as $filePath) {
+                        ProductFile::create([
+                            'product_id' => $product->id,
+                            'file_location' => $filePath
+                        ]);
+                    }
+                }
+            }
 
             if ($product->product_type === 'simple') {
                 $variation = ProductVariation::where('product_id', $product->id)->first();
@@ -1306,6 +1387,59 @@ class ProductController extends Controller
             || auth()->user()->can('Edit Estore Products')
             || auth()->user()->isWarehouseAdmin())) {
             abort(403, 'You do not have permission to access this page.');
+        }
+    }
+
+    /**
+     * Upload digital product file via AJAX
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response
+     */
+    public function uploadDigitalFile(Request $request)
+    {
+        try {
+            $validator = Validator::make($request->all(), [
+                'file' => 'required|file|max:102400|mimes:pdf,zip,mp4,mp3,docx,xlsx,doc,xls,avi,mov,rar,7z',
+            ], [
+                'file.required' => 'Please select a file to upload.',
+                'file.max' => 'File size must not exceed 100MB.',
+                'file.mimes' => 'Invalid file type. Allowed types: PDF, ZIP, MP4, MP3, DOCX, XLSX, DOC, XLS, AVI, MOV, RAR, 7Z.',
+            ]);
+
+            if ($validator->fails()) {
+                return response()->json([
+                    'success' => false,
+                    'message' => $validator->errors()->first('file')
+                ], 422);
+            }
+
+            if ($request->hasFile('file')) {
+                $file = $request->file('file');
+                $originalName = $file->getClientOriginalName();
+                $extension = $file->getClientOriginalExtension();
+                $filename = time() . '_' . uniqid() . '.' . $extension;
+
+                // Store in storage/app/public/digital_products/
+                $path = $file->storeAs('digital_products', $filename, 'public');
+
+                return response()->json([
+                    'success' => true,
+                    'path' => $path,
+                    'filename' => $originalName,
+                    'message' => 'File uploaded successfully'
+                ]);
+            }
+
+            return response()->json([
+                'success' => false,
+                'message' => 'No file was uploaded'
+            ], 400);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'File upload failed: ' . $e->getMessage()
+            ], 500);
         }
     }
 }

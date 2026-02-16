@@ -27,9 +27,6 @@
                         @foreach ($orders as $order)
                             <div class="order-card mb-4 p-4 border rounded shadow">
                                 <div class="row">
-                                    <!--<div class="col-md-3">-->
-
-                                    <!--</div>-->
                                     <div class="col-md-12">
                                         <div class="order-header d-flex justify-content-between align-items-start mb-3">
                                             <div>
@@ -38,7 +35,11 @@
                                                     {{ $order->created_at->format('M d, Y') }}</p>
                                                 <p class="text-muted mb-0">Total:
                                                     ${{ number_format($order->total_amount, 2) }}</p>
-
+                                                @php
+                                                    $hasDigital = $order->orderItems->contains(function ($i) {
+                                                        return optional($i->product)->product_type === 'digital';
+                                                    });
+                                                @endphp
                                                 <div class="text-start mt-2">
                                                     @php
                                                         $statusSlug = optional($order->orderStatus)->slug;
@@ -60,22 +61,31 @@
                                                                 ? 'danger'
                                                                 : 'primary');
                                                     @endphp
-                                                    <span class="badge bg-{{ $badgeClass }} mb-1">
-                                                        {{ ucfirst($order->orderStatus->name ?? '-') }}
-                                                    </span>
+                                                    @if (!$hasDigital)
+                                                        <span class="badge bg-{{ $badgeClass }} mb-1">
+                                                            {{ ucfirst($order->orderStatus->name ?? '-') }}
+                                                        </span>
+                                                    @endif
                                                     <span
                                                         class="badge bg-{{ $order->payment_status == 'paid' ? 'success' : 'warning' }}">
                                                         {{ ucfirst($order->payment_status) }}
                                                     </span>
 
                                                     <div class="mt-2 small">
-                                                        @if ($order->is_pickup)
-                                                            <span class="text-info"><i class="fas fa-store"></i>
-                                                                Pickup</span>
+
+                                                        @if ($hasDigital)
+                                                            <span class="text-success ms-2"><i class="fas fa-download"></i>
+                                                                Downloadable</span>
                                                         @else
-                                                            <span class="text-primary"><i class="fas fa-truck"></i>
-                                                                Delivery</span>
+                                                            @if ($order->is_pickup)
+                                                                <span class="text-info"><i class="fas fa-store"></i>
+                                                                    Pickup</span>
+                                                            @else
+                                                                <span class="text-primary"><i class="fas fa-truck"></i>
+                                                                    Delivery</span>
+                                                            @endif
                                                         @endif
+
                                                     </div>
 
                                                     @if ($isRefunded)

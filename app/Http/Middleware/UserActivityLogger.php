@@ -93,10 +93,10 @@ class UserActivityLogger
                 'device_mac'         => $deviceMac,
                 'device_type'        => $deviceType,
                 'browser'            => $this->getBrowserName($ua),
-                'url'                => $url,
+                'url'                => substr($url, 0, 1000),
                 'permission_access'  => $permissionAccess,
                 'activity_type'      => $activityType ?? '-',
-                'activity_description' => 'Visited: ' . $url,
+                'activity_description' => substr('Visited: ' . $url, 0, 1000),
                 'activity_date'      => now(),
             ]);
         } catch (\Throwable $e) {

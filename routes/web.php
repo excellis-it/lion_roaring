@@ -33,6 +33,7 @@ use App\Http\Controllers\User\Admin\ChatbotController as UserAdminChatbotControl
 
 use App\Http\Controllers\Estore\HomeController;
 use App\Http\Controllers\Estore\ProductController as EstoreProductController;
+use App\Http\Controllers\Estore\DigitalCheckoutController;
 use App\Http\Controllers\Estore\UserAddressController as EstoreUserAddressController;
 use App\Http\Controllers\Elearning\ElearningHomeController;
 use App\Http\Controllers\Elearning\ElearningProductController as ElearningProductController;
@@ -504,7 +505,6 @@ Route::prefix('user')->middleware(['user', 'preventBackHistory', 'userActivity',
         Route::get('/{promoCode}/edit', [PromoCodeController::class, 'edit'])->name('user.promo-codes.edit');
         Route::put('/{promoCode}', [PromoCodeController::class, 'update'])->name('user.promo-codes.update');
         Route::delete('/{promoCode}', [PromoCodeController::class, 'destroy'])->name('user.promo-codes.destroy');
-
     });
 
 
@@ -731,6 +731,7 @@ Route::prefix('user')->middleware(['user', 'preventBackHistory', 'userActivity',
     Route::get('/products-image-delete', [ProductController::class, 'imageDelete'])->name('products.image.delete');
     Route::get('/warehouse-product-image-delete', [ProductController::class, 'warehouseImageDelete'])->name('warehouse-product.image.delete');
     Route::get('/products-fetch-data', [ProductController::class, 'fetchData'])->name('products.fetch-data');
+    Route::post('/products/upload-digital-file', [ProductController::class, 'uploadDigitalFile'])->name('products.upload-digital-file');
     Route::post('/products-slug-check', [ProductController::class, 'checkSlug'])->name('products.slug.check');
 
 
@@ -1185,12 +1186,22 @@ Route::prefix('e-store')->middleware(['user', 'preventBackHistory', 'userActivit
     Route::post('/remove-promo-code', [EstoreProductController::class, 'removePromoCode'])->name('e-store.remove-promo-code');
 
     Route::post('/process-checkout', [EstoreProductController::class, 'processCheckout'])->name('e-store.process-checkout');
+
+    // Digital Checkout Routes
+    Route::post('/initiate-digital-checkout', [DigitalCheckoutController::class, 'initiateCheckout'])->name('e-store.initiate-digital-checkout');
+    Route::get('/digital-checkout', [DigitalCheckoutController::class, 'checkout'])->name('e-store.digital-checkout');
+    Route::post('/process-digital-checkout', [DigitalCheckoutController::class, 'processCheckout'])->name('e-store.process-digital-checkout');
+
+    // Digital Promo Code
+    Route::post('/digital/apply-promo-code', [DigitalCheckoutController::class, 'applyPromoCode'])->name('e-store.digital.apply-promo-code');
+    Route::post('/digital/remove-promo-code', [DigitalCheckoutController::class, 'removePromoCode'])->name('e-store.digital.remove-promo-code');
     Route::get('/payment-success', [EstoreProductController::class, 'paymentSuccess'])->name('e-store.payment-success');
     Route::get('/payment-cancelled', [EstoreProductController::class, 'paymentCancelled'])->name('e-store.payment-cancelled');
 
     Route::get('/order-success/{orderId}', [EstoreProductController::class, 'orderSuccess'])->name('e-store.order-success');
     Route::get('/my-orders', [EstoreProductController::class, 'myOrders'])->name('e-store.my-orders')->middleware('user');
     Route::get('/order-details/{orderId}', [EstoreProductController::class, 'orderDetails'])->name('e-store.order-details')->middleware('user');
+    Route::get('/download-file/{fileId}', [EstoreProductController::class, 'downloadFile'])->name('e-store.download-file')->middleware('user');
 
     // profile and change password page
     Route::get('/estore-profile', [HomeController::class, 'profile'])->name('e-store.profile')->middleware('user');
@@ -1335,4 +1346,4 @@ Route::post('/stripe/webhook', [\App\Http\Controllers\Webhook\StripeWebhookContr
 // Public success URL for Stripe Checkout (so Stripe redirect doesn't require auth)
 Route::get('/membership/checkout/success', [UserMembershipController::class, 'checkoutSuccess'])->name('membership.checkout.success');
 
- Route::post('/promo-codes/validate', [PromoCodeController::class, 'validatePromoCode'])->name('user.promo-codes.validate');
+Route::post('/promo-codes/validate', [PromoCodeController::class, 'validatePromoCode'])->name('user.promo-codes.validate');

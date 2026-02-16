@@ -30,6 +30,7 @@
                                         '{arriving_date}',
                                         '{total_order_value}',
                                         '{order_details_url_button}',
+                                        '{order_note}',
                                     ];
                                 @endphp
 
@@ -123,10 +124,10 @@
                                     <label for="body" class="form-label">Email Body <span
                                             class="text-danger">*</span></label>
                                     <textarea name="body" id="body" class="form-control" rows="8"
-                                        placeholder="Use placeholders like {customer_name}, {order_id}, {order_list}, {total_order_value},{order_details_url_button} ">{{ old('body') }}</textarea>
+                                        placeholder="Use placeholders like {customer_name}, {order_id}, {order_list}, {total_order_value},{order_details_url_button},{order_note} ">{{ old('body') }}</textarea>
                                     <small class="text-muted">HTML is allowed. Use placeholders: {customer_name},
                                         {customer_email}, {order_list}, {order_id}, {arriving_date},
-                                        {total_order_value},{order_details_url_button}</small>
+                                        {total_order_value},{order_details_url_button},{order_note}</small>
                                     @error('body')
                                         <span class="text-danger">{{ $message }}</span>
                                     @enderror

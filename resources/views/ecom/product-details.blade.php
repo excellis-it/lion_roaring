@@ -125,19 +125,31 @@
                                 {!! $product->description !!}
                             </div>
                         </div>
+                        {{-- @dd($product); --}}
+                        @if ($product->product_type != 'digital')
+                            <div class="d-flex mb-2">
+                                <div class="theme-text subtitle">Warehouse:</div>
+                                <div class="subtitle ms-2">
+                                    {{ $wareHouseHaveProductVariables?->warehouse?->name ?? '' }}
+                                </div>
+                            </div>
 
-                        <div class="d-flex mb-2">
-                            <div class="theme-text subtitle">Warehouse:</div>
-                            <div class="subtitle ms-2">
-                                {{ $wareHouseHaveProductVariables?->warehouse?->name ?? '' }}
+                            <div class="d-flex mb-2">
+                                <div class="theme-text subtitle">SKU:</div>
+                                <div class="subtitle ms-2" id="product-sku">
+                                    {{ $wareHouseHaveProductVariables?->sku ?? '' }}
+                                </div>
                             </div>
-                        </div>
-                        <div class="d-flex mb-2">
-                            <div class="theme-text subtitle">SKU:</div>
-                            <div class="subtitle ms-2" id="product-sku">
-                                {{ $wareHouseHaveProductVariables?->sku ?? '' }}
+                        @else
+                            <div class="d-flex mb-2">
+                                <div class="theme-text subtitle">SKU:</div>
+                                <div class="subtitle ms-2">
+                                    {{ $product->sku ?? '' }}
+
+                                </div>
                             </div>
-                        </div>
+                        @endif
+
 
                         @if (!empty($product->is_market_priced))
                             <div class="mb-3">
@@ -276,10 +288,17 @@
                                     !$showOutOfStock && !is_null($remainingOrderQty) && $remainingOrderQty <= 0;
                                 $showQtySelect = !$showOutOfStock && $maxAllowed > 0;
                             @endphp
-                            <div id="out-of-stock-message" class="text-danger me-2"
+                            {{-- <div id="out-of-stock-message" class="text-danger me-2"
                                 style="display: {{ $showOutOfStock ? 'block' : 'none' }};">
                                 <span class="h5">Out of Stock</span>
-                            </div>
+                            </div> --}}
+                            {{-- New code When I add Digital product it show out of stock message --}}
+                            @if ($product->product_type !== 'digital' && $showOutOfStock)
+                                <div id="out-of-stock-message" class="text-danger me-2">
+                                    <span class="h5">Out of Stock</span>
+                                </div>
+                            @endif
+                            {{-- Code End --}}
 
                             <div id="max-order-qty-message" class="text-danger me-2"
                                 style="display: {{ $showMaxOrderMessage ? 'block' : 'none' }};">
@@ -305,7 +324,8 @@
                                                 @endphp
                                                 @if ($maxAllowed >= 1)
                                                     @for ($i = 1; $i <= $maxAllowed; $i++)
-                                                        <option value="{{ $i }}">{{ $i }}</option>
+                                                        <option value="{{ $i }}">{{ $i }}
+                                                        </option>
                                                     @endfor
                                                 @endif
                                             </select>
@@ -319,6 +339,18 @@
                                 <a href="javascript:void(0);" class="red_btn w-100 text-center "><span>Add to
                                         Cart</span></a>
                             </div>
+                            @if ($product->product_type === 'digital')
+                                <div class="mt-3 ">
+                                    <form action="{{ route('e-store.initiate-digital-checkout') }}" method="POST">
+                                        @csrf
+                                        <input type="hidden" name="product_id" value="{{ $product->id }}">
+                                        <button type="submit" class="red_btn w-100 text-center border-0"
+                                            style="text-decoration: none; display: block;">
+                                            <span>Checkout</span>
+                                        </button>
+                                    </form>
+                                </div>
+                            @endif
 
                         </div>
                     </div>

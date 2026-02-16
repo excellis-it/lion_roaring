@@ -459,7 +459,7 @@ class CheckoutController extends Controller
                     $orderList = view('user.emails.order_list_table', ['order' => $order])->render();
 
                     $body = str_replace(
-                        ['{customer_name}', '{customer_email}', '{order_list}', '{order_id}', '{arriving_date}', '{total_order_value}'],
+                        ['{customer_name}', '{customer_email}', '{order_list}', '{order_id}', '{arriving_date}', '{total_order_value}', '{order_note}'],
                         [
                             $order->first_name . ' ' . $order->last_name,
                             $order->email ?? '',
@@ -467,6 +467,7 @@ class CheckoutController extends Controller
                             $order->order_number ?? '',
                             $order->expected_delivery_date ? Carbon::parse($order->expected_delivery_date)->format('M d, Y') : '',
                             number_format($order->total_amount ?? 0, 2),
+                            $order->notes ?? '',
                         ],
                         $template->body
                     );
@@ -885,7 +886,7 @@ class CheckoutController extends Controller
                     ">View Order Details</a>';
 
                     $body = str_replace(
-                        ['{customer_name}', '{customer_email}', '{order_list}', '{order_id}', '{arriving_date}', '{total_order_value}', '{order_details_url_button}'],
+                        ['{customer_name}', '{customer_email}', '{order_list}', '{order_id}', '{arriving_date}', '{total_order_value}', '{order_details_url_button}', '{order_note}'],
                         [
                             ($order->first_name ?? '') . ' ' . ($order->last_name ?? ''),
                             $order->email ?? '',
@@ -893,7 +894,8 @@ class CheckoutController extends Controller
                             $order->order_number ?? '',
                             $order->expected_delivery_date ? Carbon::parse($order->expected_delivery_date)->format('M d, Y') : '',
                             number_format($order->total_amount ?? 0, 2),
-                            $orderDetailsUrlButton
+                            $orderDetailsUrlButton,
+                            $order->notes ?? '',
                         ],
                         $template->body
                     );

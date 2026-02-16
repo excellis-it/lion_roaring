@@ -75,6 +75,11 @@
     </style>
 @endpush
 @section('content')
+    @php
+        $hasDigitalProduct = $order->orderItems->contains(function ($i) {
+            return optional($i->product)->product_type === 'digital';
+        });
+    @endphp
     <div class="container-fluid">
         <div class="bg_white_border">
             <div class="row">
@@ -364,83 +369,86 @@
                                 ];
                             }
                         @endphp
-
-                        <div class="card-body">
-                            {{-- Order Info --}}
-                            <div class="mb-4">
-                                <h4 class="mb-1 fw-bold">Order Tracking</h4>
-                                <p class="mb-0 text-muted">Order <strong>#{{ $order->order_number }}</strong></p>
-                            </div>
-
-                            {{-- Timeline --}}
-                            <div class="timeline d-flex justify-content-between align-items-center position-relative mb-4"
-                                style="gap:1rem;">
-                                @foreach ($timelineStatuses as $idx => $status)
-                                    @php
-                                        $reached = $idx <= $statusIndex;
-                                        $isCurrent = $idx === $statusIndex;
-                                        $cancelled = in_array(
-                                            $status->slug ?? '',
-                                            ['cancelled', 'pickup_cancelled'],
-                                            true,
-                                        );
-                                        $colorClass = $cancelled
-                                            ? 'bg-danger'
-                                            : ($reached
-                                                ? (in_array($status->slug, ['delivered', 'pickup_picked_up'], true)
-                                                    ? 'bg-success'
-                                                    : ($isCurrent
-                                                        ? 'bg-primary'
-                                                        : 'bg-secondary'))
-                                                : 'bg-light');
-                                        $label = $labels[$status->slug] ?? ($status->name ?? ucfirst($status->slug));
-                                    @endphp
-
-                                    <div class="timeline-item text-center position-relative flex-fill">
-                                        {{-- Circle --}}
-                                        <div class="timeline-circle {{ $reached ? 'text-white' : 'text-muted' }} {{ $cancelled ? 'bg-danger' : ($reached ? (in_array($status->slug, ['delivered', 'pickup_picked_up'], true) ? 'bg-success' : ($isCurrent ? 'bg-primary' : 'bg-secondary')) : 'bg-light') }}"
-                                            style="width:50px; height:50px; border-radius:50%; display:flex; align-items:center; justify-content:center; margin:auto; font-size:1.2rem; background-color:#ccc !important;">
-                                            @if ($reached)
-                                                <i class="fa-solid fa-check"></i>
-                                            @else
-                                                <i class="fa-solid fa-ellipsis"></i>
-                                            @endif
-                                        </div>
-
-                                        {{-- Connecting line --}}
-                                        @if (!$loop->last)
-                                            <div class="timeline-line position-absolute top-50 start-50 translate-middle"
-                                                style="height:4px; width:100%; background: #dee2e6; z-index:-1;"></div>
-                                        @endif
-
-                                        {{-- Label --}}
-                                        <p class="mt-2 small fw-semibold {{ $isCurrent ? 'text-primary' : 'text-muted' }}">
-                                            {{ $label }}</p>
-                                    </div>
-                                @endforeach
-                            </div>
-
-                            {{-- Expected Delivery Date --}}
-                            @if (!empty($order->expected_delivery_date) && !$order->is_pickup && !$isFinalCancelled)
-                                <div class="text-center mb-3">
-                                    <span class="badge bg-info text-dark p-2">
-                                        <i class="fa-solid fa-calendar-day me-1"></i>
-                                        Expected Delivery:
-                                        {{ \Carbon\Carbon::parse($order->expected_delivery_date)->format('M d, Y') }}
-                                    </span>
+                        @if (!$hasDigitalProduct)
+                            <div class="card-body">
+                                {{-- Order Info --}}
+                                <div class="mb-4">
+                                    <h4 class="mb-1 fw-bold">Order Tracking</h4>
+                                    <p class="mb-0 text-muted">Order <strong>#{{ $order->order_number }}</strong></p>
                                 </div>
-                            @endif
 
-                            {{-- Current Status --}}
-                            <div class="border-top pt-3 mt-3 text-center">
-                                <h6 class="mb-1">Current Status: <span
-                                        class="fw-bold">{{ $order->orderStatus->name ?? ucfirst($order->status) }}</span>
-                                </h6>
-                                <p class="mb-0 small text-muted">Last updated:
-                                    {{ \Carbon\Carbon::parse($order->updated_at)->timezone(auth()->user()->time_zone)->format('M d, Y h:i A') }}
-                                </p>
+                                {{-- Timeline --}}
+                                <div class="timeline d-flex justify-content-between align-items-center position-relative mb-4"
+                                    style="gap:1rem;">
+                                    @foreach ($timelineStatuses as $idx => $status)
+                                        @php
+                                            $reached = $idx <= $statusIndex;
+                                            $isCurrent = $idx === $statusIndex;
+                                            $cancelled = in_array(
+                                                $status->slug ?? '',
+                                                ['cancelled', 'pickup_cancelled'],
+                                                true,
+                                            );
+                                            $colorClass = $cancelled
+                                                ? 'bg-danger'
+                                                : ($reached
+                                                    ? (in_array($status->slug, ['delivered', 'pickup_picked_up'], true)
+                                                        ? 'bg-success'
+                                                        : ($isCurrent
+                                                            ? 'bg-primary'
+                                                            : 'bg-secondary'))
+                                                    : 'bg-light');
+                                            $label =
+                                                $labels[$status->slug] ?? ($status->name ?? ucfirst($status->slug));
+                                        @endphp
+
+                                        <div class="timeline-item text-center position-relative flex-fill">
+                                            {{-- Circle --}}
+                                            <div class="timeline-circle {{ $reached ? 'text-white' : 'text-muted' }} {{ $cancelled ? 'bg-danger' : ($reached ? (in_array($status->slug, ['delivered', 'pickup_picked_up'], true) ? 'bg-success' : ($isCurrent ? 'bg-primary' : 'bg-secondary')) : 'bg-light') }}"
+                                                style="width:50px; height:50px; border-radius:50%; display:flex; align-items:center; justify-content:center; margin:auto; font-size:1.2rem; background-color:#ccc !important;">
+                                                @if ($reached)
+                                                    <i class="fa-solid fa-check"></i>
+                                                @else
+                                                    <i class="fa-solid fa-ellipsis"></i>
+                                                @endif
+                                            </div>
+
+                                            {{-- Connecting line --}}
+                                            @if (!$loop->last)
+                                                <div class="timeline-line position-absolute top-50 start-50 translate-middle"
+                                                    style="height:4px; width:100%; background: #dee2e6; z-index:-1;"></div>
+                                            @endif
+
+                                            {{-- Label --}}
+                                            <p
+                                                class="mt-2 small fw-semibold {{ $isCurrent ? 'text-primary' : 'text-muted' }}">
+                                                {{ $label }}</p>
+                                        </div>
+                                    @endforeach
+                                </div>
+
+                                {{-- Expected Delivery Date --}}
+                                @if (!empty($order->expected_delivery_date) && !$order->is_pickup && !$isFinalCancelled)
+                                    <div class="text-center mb-3">
+                                        <span class="badge bg-info text-dark p-2">
+                                            <i class="fa-solid fa-calendar-day me-1"></i>
+                                            Expected Delivery:
+                                            {{ \Carbon\Carbon::parse($order->expected_delivery_date)->format('M d, Y') }}
+                                        </span>
+                                    </div>
+                                @endif
+
+                                {{-- Current Status --}}
+                                <div class="border-top pt-3 mt-3 text-center">
+                                    <h6 class="mb-1">Current Status: <span
+                                            class="fw-bold">{{ $order->orderStatus->name ?? ucfirst($order->status) }}</span>
+                                    </h6>
+                                    <p class="mb-0 small text-muted">Last updated:
+                                        {{ \Carbon\Carbon::parse($order->updated_at)->timezone(auth()->user()->time_zone)->format('M d, Y h:i A') }}
+                                    </p>
+                                </div>
                             </div>
-                        </div>
+                        @endif
                     </div>
 
 
@@ -472,7 +480,8 @@
                                 @if (
                                     (auth()->user()->can('Edit Estore Orders') || auth()->user()->isWarehouseAdmin()) &&
                                         !$isFinalDelivered &&
-                                        !$isFinalCancelled)
+                                        !$isFinalCancelled &&
+                                        !$hasDigitalProduct)
                                     <button type="button" class="btn btn-warning w-100 mb-2"
                                         onclick="openUpdateStatusModal({{ $order->id }}, '{{ $order->status }}', '{{ $order->payment_status }}', '{{ $order->notes }}', '{{ $order->expected_delivery_date ? date('Y-m-d', strtotime($order->expected_delivery_date)) : '' }}', '{{ $order->is_pickup ? 1 : 0 }}')">
                                         <i class="fas fa-edit"></i> Update Status
@@ -620,14 +629,14 @@
         }
 
         /* .timeline::before {
-                                                                                                                            content: '';
-                                                                                                                            position: absolute;
-                                                                                                                            left: 15px;
-                                                                                                                            top: 0;
-                                                                                                                            bottom: 0;
-                                                                                                                            width: 2px;
-                                                                                                                            background: #e9ecef;
-                                                                                                                        } */
+                                                                                                                                                    content: '';
+                                                                                                                                                    position: absolute;
+                                                                                                                                                    left: 15px;
+                                                                                                                                                    top: 0;
+                                                                                                                                                    bottom: 0;
+                                                                                                                                                    width: 2px;
+                                                                                                                                                    background: #e9ecef;
+                                                                                                                                                } */
 
         .timeline-item {
             position: relative;
