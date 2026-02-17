@@ -361,7 +361,7 @@
                                         <input type="hidden" name="product_id" value="{{ $product->id }}">
                                         <button type="submit" class="red_btn w-100 text-center border-0"
                                             style="text-decoration: none; display: block;">
-                                            <span>Checkout</span>
+                                            <span>Buy Now</span>
                                         </button>
                                     </form>
                                 </div>

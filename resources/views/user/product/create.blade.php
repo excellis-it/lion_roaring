@@ -1261,11 +1261,13 @@
 
 
 
-                function togglePriceFields() {
+                // Move togglePriceFields to be accessible globally
+                window.togglePriceFields = function() {
                     const isFree = $('#is_free').is(':checked');
                     const useMarket = $('#use_market_price').is(':checked');
+                    const productType = $('input[name="product_type"]:checked').val();
 
-                    if (useMarket) {
+                    if (productType === 'simple' && useMarket) {
                         $('#price-field').hide();
                         $('#sale-price-field').hide();
                         $('.market-price-fields').show();
@@ -1298,10 +1300,11 @@
                             $('#digital_sale_price').prop('readonly', false);
                         }
                     }
-                }
-                $('#is_free').on('change', togglePriceFields);
-                $('#use_market_price').on('change', togglePriceFields);
-                togglePriceFields();
+                };
+
+                $('#is_free').on('change', window.togglePriceFields);
+                $('#use_market_price').on('change', window.togglePriceFields);
+                window.togglePriceFields();
 
 
             });
@@ -1326,6 +1329,10 @@
                         $('#variable-product-section').show();
                     } else if (selectedType === 'digital') {
                         $('#digital-product-section').show();
+                    }
+
+                    if (typeof window.togglePriceFields === 'function') {
+                        window.togglePriceFields();
                     }
                 });
 
@@ -1640,24 +1647,6 @@
             });
         </script>
 
-        <script>
-            document.addEventListener('DOMContentLoaded', function() {
-                const simpleProductRadio = document.getElementById('simple_product');
-                const variableProductRadio = document.getElementById('variable_product');
-                const simpleProductSection = document.getElementById('simple-product-section');
-                const variableProductSection = document.getElementById('variable-product-section');
-
-                simpleProductRadio.addEventListener('change', function() {
-                    simpleProductSection.style.display = 'block';
-                    variableProductSection.style.display = 'none';
-                });
-
-                variableProductRadio.addEventListener('change', function() {
-                    simpleProductSection.style.display = 'none';
-                    variableProductSection.style.display = 'block';
-                });
-            });
-        </script>
 
         {{-- <script>
             (function() {

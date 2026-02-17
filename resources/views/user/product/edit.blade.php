@@ -465,7 +465,7 @@
 
 
                                     <!-- <div class="col-md-2 mb-2">
-                                                                                                                    </div> -->
+                                                                                                                        </div> -->
 
                                     {{-- is_free --}}
                                     <div class="col-md-4 mb-2">
@@ -1249,7 +1249,7 @@
                         <div class="col-md-4 mb-2">
                             <div class="box_label">
                                 <input type="text" name="other_charges[${otherChargeIndex}][charge_name]" class="form-control" placeholder="Ex. Shipping Charge">
-                                <span id="other_charges_${otherChargeIndex}_charge_name_error" class="text-danger"></span>
+                                <span id="other_charges.${otherChargeIndex}.charge_name_error" class="text-danger"></span>
                                 </div>
                         </div>
                         <div class="col-md-3 mb-2">
@@ -1265,7 +1265,7 @@
                         <div class="col-md-3 mb-2">
                             <div class="box_label">
                                 <input step="any" type="number" name="other_charges[${otherChargeIndex}][charge_amount]" class="form-control" placeholder="Charge Amount">
-                                <span id="other_charges_${otherChargeIndex}_charge_amount_error" class="text-danger"></span>
+                                <span id="other_charges.${otherChargeIndex}.charge_amount_error" class="text-danger"></span>
                                 </div>
                         </div>
                         <div class="col-md-2 mb-2">
@@ -1462,8 +1462,11 @@
                                         selectorName = 'images[]';
                                     } else if (field.includes('.')) {
                                         // other_charges.0.charge_name -> other_charges[0][charge_name]
-                                        selectorName = field.replace(/\.(\d+)/g, '[$1]')
-                                            .replace(/\./g, '][');
+                                        let parts = field.split('.');
+                                        selectorName = parts[0];
+                                        for (let i = 1; i < parts.length; i++) {
+                                            selectorName += '[' + parts[i] + ']';
+                                        }
                                     } else {
                                         selectorName = field;
                                     }
