@@ -88,7 +88,7 @@
   width: 8px;
   height: 2px;
   display: block;
-  background: var(--text-color);
+  background: #fff;
   content: '';
 }
 #cssmenu > ul > li.has-sub > a:before {
@@ -98,7 +98,7 @@
   display: block;
   width: 2px;
   height: 8px;
-  background: var(--text-color);
+  background: #fff;
   content: '';
   -webkit-transition: all .25s ease;
   -moz-transition: all .25s ease;
