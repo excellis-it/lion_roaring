@@ -168,18 +168,74 @@
                                             </tbody>
                                         </table>
                                     </div>
+                                    <hr>
+
+                                    <div class="row mb-2 mt-5">
+                                        <div class="col-md-10">
+                                            <h3 class="mb-3">Digital Product Email Template List</h3>
+                                        </div>
+                                    </div>
+
+                                    <div class="mt-3">
+                                        <div class="table-responsive">
+                                            <table id="digitalTemplatesTable"
+                                                class="table align-middle bg-white color_body_text">
+                                                <thead class="color_head">
+                                                    <tr class="header-row">
+                                                        <th style="width: 30px;"></th>
+                                                        <th>ID (#)</th>
+                                                        <th>Title</th>
+                                                        <th>Slug</th>
+                                                        <th>Order Status</th>
+                                                        <th>Subject</th>
+                                                        <th>Status</th>
+                                                        <th>Action</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    @if ($digitalTemplate)
+                                                        <tr data-id="{{ $digitalTemplate->id }}">
+                                                            <td></td>
+                                                            <td>1</td>
+                                                            <td>{{ $digitalTemplate->title }}</td>
+                                                            <td>{{ $digitalTemplate->slug }}</td>
+                                                            <td>{{ $digitalTemplate->orderStatus ? $digitalTemplate->orderStatus->name : '-' }}
+                                                            </td>
+                                                            <td>{{ $digitalTemplate->subject }}</td>
+                                                            <td>{{ $digitalTemplate->is_active ? 'Active' : 'Inactive' }}
+                                                            </td>
+                                                            <td>
+                                                                <div class="d-flex">
+                                                                    @if (auth()->user()->can('Edit Email Template'))
+                                                                        <a href="{{ route('order-email-templates.edit', $digitalTemplate->id) }}"
+                                                                            class="edit_icon me-2">
+                                                                            <i class="fa-solid fa-pen-to-square"></i>
+                                                                        </a>
+                                                                    @endif
+                                                                </div>
+                                                            </td>
+                                                        </tr>
+                                                    @else
+                                                        <tr>
+                                                            <td colspan="8" class="text-center">No digital templates
+                                                                found
+                                                            </td>
+                                                        </tr>
+                                                    @endif
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
                                 </div>
-                                </table>
+
+
+
                             </div>
-
-
-
                         </div>
                     </div>
                 </div>
+            </form>
         </div>
-        </form>
-    </div>
     </div>
 @endsection
 
