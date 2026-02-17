@@ -32,11 +32,24 @@
 
             @if (!empty($charges))
                 @foreach ($charges as $charge)
+                    @php
+                        if (isset($charge['calculated_amount'])) {
+                            $displayAmount = $charge['calculated_amount'];
+                        } else {
+                            $bg_type = $charge['charge_type'] ?? 'fixed';
+                            $bg_amount = $charge['charge_amount'] ?? 0;
+                            if ($bg_type == 'percentage') {
+                                $displayAmount = ($price * $qty * $bg_amount) / 100;
+                            } else {
+                                $displayAmount = $bg_amount;
+                            }
+                        }
+                    @endphp
                     <tr style="background:#f5f5f5;">
                         <td colspan="3" style="border:1px solid #ccc; padding:8px 8px 8px 20px;">•
                             {{ $charge['charge_name'] ?? 'Other' }}</td>
                         <td style="border:1px solid #ccc; padding:8px; text-align:right;">
-                            ${{ number_format($charge['charge_amount'] ?? 0, 2) }}</td>
+                            ${{ number_format($displayAmount, 2) }}</td>
                     </tr>
                 @endforeach
             @endif
