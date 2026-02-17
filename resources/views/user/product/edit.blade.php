@@ -465,7 +465,7 @@
 
 
                                     <!-- <div class="col-md-2 mb-2">
-                                                                                                            </div> -->
+                                                                                                                    </div> -->
 
                                     {{-- is_free --}}
                                     <div class="col-md-4 mb-2">
@@ -821,8 +821,30 @@
                                                     </div>
                                                 </div>
 
-                                                <div class="col-md-4 mb-2">
+                                                <div class="col-md-3 mb-2">
                                                     <div class="box_label">
+                                                        @if ($index == 0)
+                                                            <label>Charge Type</label>
+                                                        @endif
+                                                        <div class="mb-2">
+                                                            <select name="other_charges[{{ $index }}][charge_type]"
+                                                                class="form-control">
+                                                                <option value="fixed"
+                                                                    {{ $charge->charge_type == 'fixed' ? 'selected' : '' }}>
+                                                                    Fixed</option>
+                                                                <option value="percentage"
+                                                                    {{ $charge->charge_type == 'percentage' ? 'selected' : '' }}>
+                                                                    Percentage (%)</option>
+                                                            </select>
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                                <div class="col-md-3 mb-2">
+                                                    <div class="box_label">
+                                                        @if ($index == 0)
+                                                            <label>Amount/Percent</label>
+                                                        @endif
                                                         <input step="any" type="number"
                                                             name="other_charges[{{ $index }}][charge_amount]"
                                                             class="form-control" placeholder="Charge Amount"
@@ -832,10 +854,11 @@
                                                     </div>
                                                 </div>
 
-                                                <div class="col-md-4 mb-2">
+                                                <div class="col-md-2 mb-2">
                                                     <div class="box_label">
                                                         <div class="mb-2 mt-1">
                                                             @if ($index == 0)
+                                                                <label>&nbsp;</label>
                                                                 <button type="button"
                                                                     class="btn btn-primary add-more-other-charge">+</button>
                                                             @else
@@ -861,8 +884,21 @@
                                                 </div>
                                             </div>
 
-                                            <div class="col-md-4 mb-2">
+                                            <div class="col-md-3 mb-2">
                                                 <div class="box_label">
+                                                    <label>Charge Type</label>
+                                                    <div class="mb-2">
+                                                        <select name="other_charges[0][charge_type]" class="form-control">
+                                                            <option value="fixed">Fixed</option>
+                                                            <option value="percentage">Percentage (%)</option>
+                                                        </select>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <div class="col-md-3 mb-2">
+                                                <div class="box_label">
+                                                    <label>Amount/Percent</label>
                                                     <input step="any" type="number"
                                                         name="other_charges[0][charge_amount]" class="form-control"
                                                         placeholder="Charge Amount">
@@ -871,9 +907,10 @@
                                                 </div>
                                             </div>
 
-                                            <div class="col-md-4 mb-2">
+                                            <div class="col-md-2 mb-2">
                                                 <div class="box_label">
                                                     <div class="mb-2 mt-1">
+                                                        <label>&nbsp;</label>
                                                         <button type="button"
                                                             class="btn btn-primary add-more-other-charge">+</button>
                                                     </div>
@@ -1215,13 +1252,23 @@
                                 <span id="other_charges_${otherChargeIndex}_charge_name_error" class="text-danger"></span>
                                 </div>
                         </div>
-                        <div class="col-md-4 mb-2">
+                        <div class="col-md-3 mb-2">
+                             <div class="box_label">
+                                <div class="mb-2">
+                                <select name="other_charges[${otherChargeIndex}][charge_type]" class="form-control">
+                                    <option value="fixed">Fixed</option>
+                                    <option value="percentage">Percentage (%)</option>
+                                </select>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-3 mb-2">
                             <div class="box_label">
                                 <input step="any" type="number" name="other_charges[${otherChargeIndex}][charge_amount]" class="form-control" placeholder="Charge Amount">
                                 <span id="other_charges_${otherChargeIndex}_charge_amount_error" class="text-danger"></span>
                                 </div>
                         </div>
-                        <div class="col-md-4 mb-2">
+                        <div class="col-md-2 mb-2">
                             <div class="box_label">
                                 <div class="mb-2 mt-1">
                                     <button type="button" class="btn btn-danger text-danger remove-other-charge"><i class="fas fa-close"></i></button>

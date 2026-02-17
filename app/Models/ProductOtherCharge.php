@@ -13,5 +13,6 @@ class ProductOtherCharge extends BaseModel
         'product_id',
         'charge_name',
         'charge_amount',
+        'charge_type',
     ];
 }

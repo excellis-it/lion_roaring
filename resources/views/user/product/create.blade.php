@@ -796,8 +796,22 @@
                                                 </div>
                                             </div>
 
-                                            <div class="col-md-4 mb-2">
+                                            <div class="col-md-3 mb-2">
                                                 <div class="box_label">
+                                                    <label>Charge Type</label>
+                                                    <div class="mb-2">
+                                                        <select name="other_charges[0][charge_type]" class="form-control">
+                                                            <option value="fixed">Fixed</option>
+                                                            <option value="percentage">Percentage (%)</option>
+                                                        </select>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+
+                                            <div class="col-md-3 mb-2">
+                                                <div class="box_label">
+                                                    <label>Amount/Percent</label>
                                                     <div>
                                                         <div class="mb-2">
                                                             <input step="any" type="number"
@@ -812,8 +826,9 @@
                                                 </div>
                                             </div>
 
-                                            <div class="col-md-4 mb-2">
+                                            <div class="col-md-2 mb-2">
                                                 <div class="box_label">
+                                                    <label>&nbsp;</label>
                                                     <div class="mb-2 mt-1">
                                                         <button type="button"
                                                             class="btn btn-primary add-more-other-charge">+</button>
@@ -1563,13 +1578,23 @@
                                 <span class="text-danger" id="other_charges.${otherChargeIndex}.charge_name_error"></span>
                             </div>
                         </div>
-                        <div class="col-md-4 mb-2">
+                        <div class="col-md-3 mb-2">
+                            <div class="box_label">
+                                <div class="mb-2">
+                                    <select name="other_charges[${otherChargeIndex}][charge_type]" class="form-control">
+                                        <option value="fixed">Fixed</option>
+                                        <option value="percentage">Percentage (%)</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-3 mb-2">
                             <div class="box_label">
                                 <input step="any" type="number" name="other_charges[${otherChargeIndex}][charge_amount]" class="form-control" placeholder="Charge Amount" min="0.00">
                                 <span class="text-danger" id="other_charges.${otherChargeIndex}.charge_amount_error"></span>
                                 </div>
                         </div>
-                        <div class="col-md-4 mb-2">
+                        <div class="col-md-2 mb-2">
                             <div class="box_label">
                                 <div class="mb-2 mt-1">
                                     <button type="button" class="btn btn-danger text-danger remove-other-charge"><i class="fas fa-close"></i></button>
@@ -1586,6 +1611,32 @@
                 $(document).on('click', '.remove-other-charge', function() {
                     $(this).closest('.row').remove();
                 });
+
+                // Validation for percentage charges
+                $(document).on('input change',
+                    'input[name^="other_charges"][name$="[charge_amount]"], select[name^="other_charges"][name$="[charge_type]"]',
+                    function() {
+                        let row = $(this).closest('.row');
+                        let typeSelect = row.find('select[name$="[charge_type]"]');
+                        let amountInput = row.find('input[name$="[charge_amount]"]');
+                        // Find error span using suffix match since ID is dynamic
+                        let errorSpan = row.find('span[id$="charge_amount_error"]');
+
+                        let type = typeSelect.val();
+                        let amount = parseFloat(amountInput.val());
+
+                        if (type === 'percentage' && amount > 100) {
+                            errorSpan.text('Percentage cannot exceed 100.');
+                            amountInput.addClass('is-invalid');
+                            // Optional: Reset to 100? No, just warn.
+                        } else {
+                            // Only clear if it's our specific error message
+                            if (errorSpan.text() === 'Percentage cannot exceed 100.') {
+                                errorSpan.text('');
+                                amountInput.removeClass('is-invalid');
+                            }
+                        }
+                    });
             });
         </script>
 

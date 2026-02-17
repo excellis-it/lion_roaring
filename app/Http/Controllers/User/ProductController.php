@@ -224,7 +224,22 @@ class ProductController extends Controller
             // other charges (if present)
             'other_charges' => 'nullable|array',
             'other_charges.*.charge_name' => 'nullable|string|max:255',
-            'other_charges.*.charge_amount' => 'nullable|numeric|min:0', // base rule
+            'other_charges.*.charge_type' => 'nullable|in:fixed,percentage',
+            'other_charges.*.charge_amount' => [
+                'nullable',
+                'numeric',
+                'min:0',
+                function ($attribute, $value, $fail) use ($request) {
+                    $segments = explode('.', $attribute);
+                    $index = $segments[1];
+                    $charges = $request->input('other_charges');
+                    $type = $charges[$index]['charge_type'] ?? null;
+
+                    if ($type === 'percentage' && $value > 100) {
+                        $fail('The percentage value cannot exceed 100.');
+                    }
+                },
+            ],
 
         ];
 
@@ -615,7 +630,22 @@ class ProductController extends Controller
                 // other charges (if present)
                 'other_charges'             => 'nullable|array',
                 'other_charges.*.charge_name' => 'nullable|string|max:255',
-                'other_charges.*.charge_amount' => 'nullable|numeric|min:0',
+                'other_charges.*.charge_type' => 'nullable|in:fixed,percentage',
+                'other_charges.*.charge_amount' => [
+                    'nullable',
+                    'numeric',
+                    'min:0',
+                    function ($attribute, $value, $fail) use ($request) {
+                        $segments = explode('.', $attribute);
+                        $index = $segments[1];
+                        $charges = $request->input('other_charges');
+                        $type = $charges[$index]['charge_type'] ?? null;
+
+                        if ($type === 'percentage' && $value > 100) {
+                            $fail('The percentage value cannot exceed 100.');
+                        }
+                    },
+                ],
             ];
 
             // Conditional rules for simple product
