@@ -83,7 +83,7 @@
 }
 #cssmenu > ul > li.has-sub > a:after {
   position: absolute;
-  top: 22px;
+  top: 17px;
   right: 11px;
   width: 8px;
   height: 2px;
@@ -93,7 +93,7 @@
 }
 #cssmenu > ul > li.has-sub > a:before {
   position: absolute;
-  top: 19px;
+  top: 14px;
   right: 14px;
   display: block;
   width: 2px;

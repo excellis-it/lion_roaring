@@ -1477,6 +1477,7 @@ white-space: nowrap;
     /*background: var(--main-color);*/
     border-radius: 15px;
     /* border: 1px solid #fff; */
+    box-shadow: 0 0 15px #000000;
 }
 .filter .padding_filter:nth-last-child{
      /*border-bottom: 0px solid #BDBDBD;*/
@@ -2987,6 +2988,7 @@ content: none !important;
 }
 .feature_text{
     padding: 8px 20px;
+    background-color: #f0f0f0;
 }
 .dropdown-toggle::after{
     /*color: #fff;*/
@@ -4225,4 +4227,8 @@ content: none !important;
   text-align: center;
   font-weight: bold;
   color: #333;
+}
+.form-control:focus{
+    background-color: transparent !important;
+    color:#fff !important;
 }
