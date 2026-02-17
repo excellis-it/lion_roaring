@@ -1076,7 +1076,7 @@ white-space: nowrap;
     border-radius: 20px;
     transition: all ease-in 0.3s;
     background-color: #fff;
-    border: 1px solid #ccc;
+    /* border: 1px solid #ccc; */
     /*padding: 15px;*/
     /*background: url(../images/slider-bg.png);*/
 
@@ -1453,7 +1453,7 @@ white-space: nowrap;
 
 .search_color input {
     padding: 12px;
-    border: 1px solid #fff;
+    border: 1px solid #202d4d;
     font-size: 16px;
     letter-spacing: 2px;
     font-weight: 600;
@@ -1476,7 +1476,7 @@ white-space: nowrap;
     /*border-right: 1px solid #BDBDBD;*/
     /*background: var(--main-color);*/
     border-radius: 15px;
-    border: 1px solid #fff;
+    /* border: 1px solid #fff; */
 }
 .filter .padding_filter:nth-last-child{
      /*border-bottom: 0px solid #BDBDBD;*/
