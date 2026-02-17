@@ -170,8 +170,24 @@
                                     {{-- Product Details --}}
                                     <ul>
                                         <li>{{ $product->name }} (1x)</li>
-                                        <li>${{ number_format($product->price, 2) }}</li>
+                                        @if ($product->sale_price > 0)
+                                            <li>${{ number_format($product->sale_price, 2) }} <small
+                                                    class="text-decoration-line-through text-muted">${{ number_format($product->price, 2) }}</small>
+                                            </li>
+                                        @else
+                                            <li>${{ number_format($product->price, 2) }}</li>
+                                        @endif
                                     </ul>
+
+                                    @if (!empty($detailedCharges))
+                                        @foreach ($detailedCharges as $charge)
+                                            <ul class="text-muted small">
+                                                <li style="padding-left: 15px;">• {{ $charge['charge_name'] }}
+                                                </li>
+                                                <li>${{ number_format($charge['calculated_amount'], 2) }}</li>
+                                            </ul>
+                                        @endforeach
+                                    @endif
 
                                     <hr />
 
@@ -295,8 +311,9 @@
             // Store base costs
             const costs = {
                 subtotal: {{ $subtotal }},
-                original_tax: {{ ($product->price * ($estoreSettings->tax_percentage ?? 0)) / 100 }},
-                tax_percent: {{ $estoreSettings->tax_percentage ?? 0 }}
+                original_tax: {{ (($product->sale_price > 0 ? $product->sale_price : $product->price) * ($estoreSettings->tax_percentage ?? 0)) / 100 }},
+                tax_percent: {{ $estoreSettings->tax_percentage ?? 0 }},
+                other_charges: {{ $otherChargesTotal ?? 0 }}
             };
 
 

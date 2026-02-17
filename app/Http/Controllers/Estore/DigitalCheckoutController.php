@@ -63,14 +63,37 @@ class DigitalCheckoutController extends Controller
         $appliedPromoCode = session('digital_applied_promo_code');
         $promoDiscount = session('digital_promo_discount', 0);
 
+        // Calculate other charges
+        $otherChargesTotal = 0;
+        $detailedCharges = [];
+        $productPrice = ($product->sale_price > 0) ? $product->sale_price : $product->price;
+
+        if ($product->otherCharges) {
+            foreach ($product->otherCharges as $charge) {
+                $cAmount = 0;
+                if ($charge->charge_type == 'percentage') {
+                    $cAmount = ($productPrice * ($charge->charge_amount / 100));
+                } else {
+                    $cAmount = $charge->charge_amount;
+                }
+                $otherChargesTotal += $cAmount;
+                $detailedCharges[] = [
+                    'charge_name' => $charge->charge_name ?? '',
+                    'charge_type' => $charge->charge_type ?? 'fixed',
+                    'charge_amount' => $charge->charge_amount ?? 0,
+                    'calculated_amount' => $cAmount
+                ];
+            }
+        }
+
         // Calculate costs
-        $subtotal = $product->price;
+        $subtotal = $productPrice + $otherChargesTotal;
         $discountAmount = $promoDiscount;
         $taxableAmount = max($subtotal - $discountAmount, 0);
         $taxAmount = ($taxableAmount * ($estoreSettings->tax_percentage ?? 0)) / 100;
         $total = $taxableAmount + $taxAmount;
 
-        return view('ecom.digital-checkout', compact('product', 'estoreSettings', 'subtotal', 'taxAmount', 'total', 'appliedPromoCode', 'promoDiscount'));
+        return view('ecom.digital-checkout', compact('product', 'estoreSettings', 'subtotal', 'taxAmount', 'total', 'appliedPromoCode', 'promoDiscount', 'otherChargesTotal', 'detailedCharges'));
     }
 
     public function applyPromoCode(Request $request)
@@ -90,7 +113,23 @@ class DigitalCheckoutController extends Controller
                 return response()->json(['status' => false, 'message' => 'Product not found']);
             }
 
-            $subtotal = $product->price;
+            // Calculate other charges for promo validation
+            $otherChargesTotal = 0;
+            $productPrice = ($product->sale_price > 0) ? $product->sale_price : $product->price;
+
+            if ($product->otherCharges) {
+                foreach ($product->otherCharges as $charge) {
+                    $cAmount = 0;
+                    if ($charge->charge_type == 'percentage') {
+                        $cAmount = ($productPrice * ($charge->charge_amount / 100));
+                    } else {
+                        $cAmount = $charge->charge_amount;
+                    }
+                    $otherChargesTotal += $cAmount;
+                }
+            }
+
+            $subtotal = $productPrice + $otherChargesTotal;
             $isAuth = auth()->check();
 
             // Build cart items array for validation (just this one digital product)
@@ -156,8 +195,31 @@ class DigitalCheckoutController extends Controller
 
         $estoreSettings = EstoreSetting::first();
 
+        // Calculate other charges
+        $otherChargesTotal = 0;
+        $detailedCharges = [];
+        $productPrice = ($product->sale_price > 0) ? $product->sale_price : $product->price;
+
+        if ($product->otherCharges) {
+            foreach ($product->otherCharges as $charge) {
+                $cAmount = 0;
+                if ($charge->charge_type == 'percentage') {
+                    $cAmount = ($productPrice * ($charge->charge_amount / 100));
+                } else {
+                    $cAmount = $charge->charge_amount;
+                }
+                $otherChargesTotal += $cAmount;
+                $detailedCharges[] = [
+                    'charge_name' => $charge->charge_name ?? '',
+                    'charge_type' => $charge->charge_type ?? 'fixed',
+                    'charge_amount' => $charge->charge_amount ?? 0,
+                    'calculated_amount' => $cAmount
+                ];
+            }
+        }
+
         // Recalculate totals on server
-        $subtotal = $product->price;
+        $subtotal = $productPrice + $otherChargesTotal;
 
         // Get promo discount from session
         $promoDiscount = session('digital_promo_discount', 0);
@@ -282,8 +344,9 @@ class DigitalCheckoutController extends Controller
             $orderItem->product_name = $product->name;
             $orderItem->product_image = $product->getProductFirstImage() ?? null;
             $orderItem->quantity = 1;
-            $orderItem->price = $product->price;
-            $orderItem->total = $product->price;
+            $orderItem->price = $productPrice;
+            $orderItem->total = $productPrice + $otherChargesTotal;
+            $orderItem->other_charges = json_encode($detailedCharges);
             $orderItem->save();
 
             // Clear digital checkout session

@@ -103,16 +103,30 @@
                         <div class="brief-description">
                             {{ $product->short_description }}
                         </div>
-                        <div class="price my-2 warehouse-product-price-div">
-                            @if ($product->is_free ?? false)
-                                <span class="badge bg-success">FREE</span>
-                            @else
-                                $<span
-                                    id="warehouse-product-price">{{ $wareHouseHaveProductVariables?->price ?? '' }}</span>
-                            @endif
-
-
-                        </div>
+                        @if ($product->product_type != 'digital')
+                            <div class="price my-2 warehouse-product-price-div">
+                                @if ($product->is_free ?? false)
+                                    <span class="badge bg-success">FREE</span>
+                                @else
+                                    $<span
+                                        id="warehouse-product-price">{{ $wareHouseHaveProductVariables?->price ?? '' }}</span>
+                                @endif
+                            </div>
+                        @else
+                            <div class="price my-2 ">
+                                @if ($product->is_free ?? false)
+                                    <span class="badge bg-success">FREE</span>
+                                @else
+                                    @if (($product['sale_price'] ?? false) || ($product->sale_price ?? false))
+                                        <span class="">${{ $product['sale_price'] }}</span>
+                                        <span
+                                            class=" text-muted text-decoration-line-through">${{ $product['price'] }}</span>
+                                    @else
+                                        <span class="">${{ $product['price'] }}</span>
+                                    @endif
+                                @endif
+                            </div>
+                        @endif
                         <div class="mb-2">
                             @if (!empty($product->is_market_priced))
                                 <span class="fw-bold">{{ $product->market_grams ?? '' }}
@@ -306,7 +320,8 @@
                             </div>
 
                             {{-- Select option dropdown for quantity --}}
-                            <div class="me-3" id="qty-div" style="display: {{ $showQtySelect ? 'block' : 'none' }};">
+                            <div class="me-3" id="qty-div"
+                                style="display: {{ $showQtySelect ? 'block' : 'none' }};">
                                 <div class="d-flex justify-content-start align-items-center">
                                     <div class="small_number mb-3">
                                         <div class="d-flex ">
