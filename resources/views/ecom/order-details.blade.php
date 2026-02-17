@@ -123,7 +123,12 @@
 
                                     if (!empty($charges)) {
                                         foreach ($charges as $charge) {
-                                            $otherChargesTotal += floatval($charge['charge_amount'] ?? 0);
+                                            // prioritization: calculated_amount (new format) > charge_amount (legacy/fallback)
+                                            if (isset($charge['calculated_amount'])) {
+                                                $otherChargesTotal += floatval($charge['calculated_amount']);
+                                            } else {
+                                                $otherChargesTotal += floatval($charge['charge_amount'] ?? 0);
+                                            }
                                         }
                                     }
 

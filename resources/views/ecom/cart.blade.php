@@ -72,9 +72,9 @@
                                                     <h4>{{ $item->product->name ?? '' }}</h4>
                                                     <h6>SKU: {{ $item->warehouseProduct->sku ?? '' }}</h6>
                                                     <!-- <h6>{{ $item->size ? 'Size: ' . $item->size?->size ?? '' : '' }}
-                                                                                                                    &nbsp;&nbsp;
-                                                                                                                    {{ $item->color ? 'Color: ' . $item->color?->color_name ?? '' : '' }}
-                                                                                                                </h6> -->
+                                                                                                                                &nbsp;&nbsp;
+                                                                                                                                {{ $item->color ? 'Color: ' . $item->color?->color_name ?? '' : '' }}
+                                                                                                                            </h6> -->
                                                     {{-- <span class="">{!! \Illuminate\Support\Str::limit($item->product->description, 50) !!}</span> --}}
 
                                                     <ul class="wl_price mb-1">
@@ -86,10 +86,22 @@
                                                                     ($item->warehouseProduct->price ?? 0);
                                                                 $unitPrice =
                                                                     $item->meta['current_price'] ?? $displayPrice;
-                                                                $otherChargesTotal =
-                                                                    $item->product?->otherCharges?->sum(
-                                                                        'charge_amount',
-                                                                    ) ?? 0;
+
+                                                                $unitOtherCharges = 0; // This will store the sum of percentage-based charges per unit
+                                                                $fixedChargesTotal = 0; // This will store the sum of fixed charges per item
+                                                                if ($item->product?->otherCharges) {
+                                                                    foreach ($item->product->otherCharges as $charge) {
+                                                                        if ($charge->charge_type == 'percentage') {
+                                                                            $unitOtherCharges +=
+                                                                                $unitPrice *
+                                                                                ($charge->charge_amount / 100);
+                                                                        } else {
+                                                                            // Fixed charge per line
+                                                                            $fixedChargesTotal +=
+                                                                                $charge->charge_amount;
+                                                                        }
+                                                                    }
+                                                                }
                                                             @endphp
                                                             @if (isset($item->meta['price_changed']) && $item->meta['price_changed'])
                                                                 <span style="text-decoration: none;"
@@ -113,10 +125,25 @@
                                                     <!-- Display other charges if any -->
                                                     @if (isset($item->product->otherCharges) && $item->product->otherCharges->count() > 0)
                                                         @foreach ($item->product->otherCharges as $otherCharge)
-                                                            <ul class="wl_price">
-                                                                <li>{{ $otherCharge->charge_name }}</li>
-                                                                <li class="ms-auto">
-                                                                    ${{ number_format($otherCharge->charge_amount, 2) }}
+                                                            <ul class="wl_price other-charge-row"
+                                                                data-charge-type="{{ $otherCharge->charge_type }}"
+                                                                data-charge-amount="{{ $otherCharge->charge_amount }}">
+                                                                <li>{{ $otherCharge->charge_name }}
+                                                                    ({{ $otherCharge->charge_type == 'percentage' ? number_format($otherCharge->charge_amount, 2) . '%' : 'Fixed' }})
+                                                                </li>
+                                                                <li class="ms-auto charge-value">
+                                                                    @php
+                                                                        $chargeVal = 0;
+                                                                        if ($otherCharge->charge_type == 'percentage') {
+                                                                            $chargeVal =
+                                                                                $unitPrice *
+                                                                                $item->quantity *
+                                                                                ($otherCharge->charge_amount / 100);
+                                                                        } else {
+                                                                            $chargeVal = $otherCharge->charge_amount;
+                                                                        }
+                                                                    @endphp
+                                                                    ${{ number_format($chargeVal, 2) }}
                                                                 </li>
                                                             </ul>
                                                         @endforeach
@@ -173,7 +200,8 @@
                                                                             data-item-qty="{{ $item['quantity'] }}"
                                                                             data-warehouse-max="{{ $warehouseMax }}"
                                                                             data-price="{{ $unitPrice }}"
-                                                                            data-other-charges="{{ $otherChargesTotal }}">
+                                                                            data-unit-charges="{{ $unitOtherCharges }}"
+                                                                            data-fixed-charges="{{ $fixedChargesTotal }}">
                                                                         <button class="cart-qty-count qty-count--add"
                                                                             data-action="add" type="button">+</button>
                                                                     @endif
@@ -485,9 +513,29 @@
 
             function updateItemSubtotal($cartItem, quantity) {
                 var unitPrice = parseFloat($cartItem.find('.cart-quantity').data('price')) || 0;
-                var otherCharges = parseFloat($cartItem.find('.cart-quantity').data('other-charges')) || 0;
-                var subtotal = (unitPrice * quantity) + otherCharges;
+                var unitCharges = parseFloat($cartItem.find('.cart-quantity').data('unit-charges')) ||
+                0; // percentage based unit charges
+                var fixedCharges = parseFloat($cartItem.find('.cart-quantity').data('fixed-charges')) ||
+                0; // flat fixed charges
+
+                var subtotal = ((unitPrice + unitCharges) * quantity) + fixedCharges;
                 $cartItem.find('.item-subtotal').text(formatMoney(subtotal));
+
+                // Update individual charge rows
+                $cartItem.find('.other-charge-row').each(function() {
+                    var $row = $(this);
+                    var type = $row.data('charge-type');
+                    var amount = parseFloat($row.data('charge-amount')) || 0;
+                    var newVal = 0;
+
+                    if (type === 'percentage') {
+                        newVal = (unitPrice * quantity) * (amount / 100);
+                    } else {
+                        // Fixed amount is flat per line item
+                        newVal = amount;
+                    }
+                    $row.find('.charge-value').text(formatMoney(newVal));
+                });
             }
 
             function getTotalQty() {

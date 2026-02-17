@@ -773,7 +773,18 @@ class ProductController extends Controller
                 $hasChanges = true;
             }
 
-            $otherCharges = $cart->product?->otherCharges?->sum('charge_amount') ?? 0;
+            // Calculate other charges
+            $otherCharges = 0;
+            if ($cart->product?->otherCharges) {
+                foreach ($cart->product->otherCharges as $charge) {
+                    if ($charge->charge_type == 'percentage') {
+                        $otherCharges += (($cart->price ?? $currentWarehousePrice) * $cart->quantity * ($charge->charge_amount / 100));
+                    } else {
+                        // Fixed charge is now per line item, not per quantity
+                        $otherCharges += $charge->charge_amount;
+                    }
+                }
+            }
 
             if (!$meta['out_of_stock']) {
                 $cart->subtotal = ($cart->price ?? 0) * $cart->quantity + ($otherCharges ?? 0);
@@ -866,8 +877,18 @@ class ProductController extends Controller
                 $hasChanges = true;
             }
 
-            $otherCharges = $cart->product?->otherCharges?->sum('charge_amount') ?? 0;
-            $itemSubtotal = $outOfStock ? 0 : ((($cart->price ?? 0) * $cart->quantity) + $otherCharges);
+            $otherCharges = 0;
+            if ($cart->product?->otherCharges) {
+                foreach ($cart->product->otherCharges as $charge) {
+                    if ($charge->charge_type == 'percentage') {
+                        $otherCharges += (($cart->price ?? $currentWarehousePrice) * $cart->quantity * ($charge->charge_amount / 100));
+                    } else {
+                        // Fixed charge is now per line item, not per quantity
+                        $otherCharges += $charge->charge_amount;
+                    }
+                }
+            }
+            $itemSubtotal = $outOfStock ? 0 : ((($cart->price ?? 0) * $cart->quantity) + ($otherCharges ?? 0));
             $subtotal += $itemSubtotal;
 
             $cartItems[] = [
@@ -1044,7 +1065,18 @@ class ProductController extends Controller
                 $cart->save();
             }
 
-            $cart->other_charges = $cart->product?->otherCharges?->sum('charge_amount') ?? 0;
+            $otherChargesTotal = 0;
+            if ($cart->product?->otherCharges) {
+                foreach ($cart->product->otherCharges as $charge) {
+                    if ($charge->charge_type == 'percentage') {
+                        $otherChargesTotal += (($cart->price ?? $currentWarehousePrice) * $cart->quantity * ($charge->charge_amount / 100));
+                    } else {
+                        // Fixed charge is now per line item, not per quantity
+                        $otherChargesTotal += $charge->charge_amount;
+                    }
+                }
+            }
+            $cart->other_charges = $otherChargesTotal;
             $unitPrice = $cart->price ?? ($currentWarehousePrice);
             $itemSubtotal = ($unitPrice * $cart->quantity) + ($cart->other_charges ?? 0);
             $recalculatedSubtotal += $itemSubtotal;
@@ -1109,8 +1141,14 @@ class ProductController extends Controller
         foreach ($carts as $cart) {
             if (!empty($cart->product?->otherCharges)) {
                 foreach ($cart->product->otherCharges as $charge) {
-                    $otherCharges[$charge->charge_name] =
-                        ($otherCharges[$charge->charge_name] ?? 0) + ($charge->charge_amount ?? 0);
+                    $chargeVal = 0;
+                    if ($charge->charge_type == 'percentage') {
+                        $chargeVal = (($cart->price ?? $currentWarehousePrice) * $cart->quantity * ($charge->charge_amount / 100));
+                    } else {
+                        // Fixed charge is now per line item, not per quantity
+                        $chargeVal = $charge->charge_amount;
+                    }
+                    $otherCharges[$charge->charge_name] = ($otherCharges[$charge->charge_name] ?? 0) + $chargeVal;
                 }
             }
         }
@@ -1205,6 +1243,27 @@ class ProductController extends Controller
                 $color = Color::find($cart->color_id);
                 $wareHouseProduct = WareHouse::find($cart->warehouse_id);
 
+                $itemOtherChargesTotal = 0;
+                $detailedCharges = [];
+                if ($cart->product?->otherCharges) {
+                    foreach ($cart->product->otherCharges as $charge) {
+                        $cAmount = 0;
+                        if ($charge->charge_type == 'percentage') {
+                            $cAmount = (($cart->price ?? ($cart->warehouseProduct?->price ?? 0)) * $cart->quantity * ($charge->charge_amount / 100));
+                        } else {
+                            // Fixed charge is now per line item, not per quantity
+                            $cAmount = $charge->charge_amount;
+                        }
+                        $itemOtherChargesTotal += $cAmount;
+                        $detailedCharges[] = [
+                            'charge_name' => $charge->charge_name ?? '',
+                            'charge_type' => $charge->charge_type ?? 'fixed',
+                            'charge_amount' => $charge->charge_amount ?? 0,
+                            'calculated_amount' => $cAmount
+                        ];
+                    }
+                }
+
                 EstoreOrderItem::create([
                     'order_id' => $order->id,
                     'product_id' => $cart->product_id,
@@ -1220,13 +1279,8 @@ class ProductController extends Controller
                     'color' => $color->color_name ?? null,
                     'warehouse_name' => $wareHouseProduct->name ?? null,
                     'warehouse_address' => $wareHouseProduct->address ?? null,
-                    'other_charges' => json_encode(
-                        $cart->product?->otherCharges?->map(fn($charge) => [
-                            'charge_name' => $charge->charge_name ?? '',
-                            'charge_amount' => $charge->charge_amount ?? 0,
-                        ]) ?? []
-                    ),
-                    'total' => ((($cart->price ?? ($cart->warehouseProduct?->price ?? 0))) * $cart->quantity) + ($cart->other_charges ?? 0),
+                    'other_charges' => json_encode($detailedCharges),
+                    'total' => ((($cart->price ?? ($cart->warehouseProduct?->price ?? 0))) * $cart->quantity) + $itemOtherChargesTotal,
                 ]);
 
                 $warehouseProduct = WarehouseProduct::where('warehouse_id', $cart->warehouse_id)
