@@ -387,9 +387,9 @@ class DigitalCheckoutController extends Controller
 
             // Send order confirmation email to customer (Dynamic Mail for Digital)
             try {
-                $template = OrderEmailTemplate::where('slug', 'digital')->where('is_active', 1)->first();
+                $template = OrderEmailTemplate::where('slug', 'digital')->first();
 
-                if ($template) {
+                if ($template && $template->is_active) {
                     $orderList = view('user.emails.order_list_table', ['order' => $order])->render();
                     $myOrdersUrl = route('e-store.my-orders');
 
@@ -407,19 +407,6 @@ class DigitalCheckoutController extends Controller
                         ],
                         $template->body
                     );
-
-                    Mail::to($order->email)->send(new OrderStatusUpdatedMail($order, $body));
-                } else {
-                    // Fallback to direct mail if template not found
-                    $orderList = view('user.emails.order_list_table', ['order' => $order])->render();
-                    $myOrdersUrl = route('e-store.my-orders');
-
-                    $body = "<p>Hello " . ($order->first_name . ' ' . $order->last_name) . ",</p>";
-                    $body .= "<p>Thank you for your order. Your payment has been successfully received. You can now download the product and view the full details in your order history.</p>";
-                    $body .= "<p><strong>Order Number:</strong> " . $order->order_number . "</p>";
-                    $body .= $orderList;
-                    $body .= "<p><strong>Total Amount:</strong> $" . number_format($order->total_amount, 2) . "</p>";
-                    $body .= "<p><a href='" . $myOrdersUrl . "' style='display:inline-block;padding:10px 20px;background:#000;color:#fff;text-decoration:none;border-radius:5px;'>View Order History</a></p>";
 
                     Mail::to($order->email)->send(new OrderStatusUpdatedMail($order, $body));
                 }

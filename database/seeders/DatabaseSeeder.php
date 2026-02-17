@@ -34,7 +34,7 @@ class DatabaseSeeder extends Seeder
             HomeCmsImageSeeder::class,
             SignupRuleSeeder::class,
             MarketMaterialSeeder::class,
-
+            OrderEmailTemplateSeeder::class,
         ]);
     }
 }
