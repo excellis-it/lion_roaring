@@ -299,7 +299,13 @@
                                                             {{ $charge['charge_name'] ?? 'Other' }}</td>
                                                         <td></td>
                                                         <td></td>
-                                                        <td>${{ number_format($charge['charge_amount'] ?? 0, 2) }}</td>
+                                                        @php
+                                                            // Prioritize calculated_amount (new format) over charge_amount
+                                                            $displayAmount = isset($charge['calculated_amount'])
+                                                                ? floatval($charge['calculated_amount'])
+                                                                : floatval($charge['charge_amount'] ?? 0);
+                                                        @endphp
+                                                        <td>${{ number_format($displayAmount, 2) }}</td>
                                                     </tr>
                                                 @endforeach
                                             @endif
@@ -646,14 +652,14 @@
         }
 
         /* .timeline::before {
-                                                                                                                                                            content: '';
-                                                                                                                                                            position: absolute;
-                                                                                                                                                            left: 15px;
-                                                                                                                                                            top: 0;
-                                                                                                                                                            bottom: 0;
-                                                                                                                                                            width: 2px;
-                                                                                                                                                            background: #e9ecef;
-                                                                                                                                                        } */
+                                                                                                                                                                content: '';
+                                                                                                                                                                position: absolute;
+                                                                                                                                                                left: 15px;
+                                                                                                                                                                top: 0;
+                                                                                                                                                                bottom: 0;
+                                                                                                                                                                width: 2px;
+                                                                                                                                                                background: #e9ecef;
+                                                                                                                                                            } */
 
         .timeline-item {
             position: relative;
