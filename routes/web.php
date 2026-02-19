@@ -565,6 +565,7 @@ Route::prefix('user')->middleware(['user', 'preventBackHistory', 'userActivity',
         Route::get('/', [TeamChatController::class, 'index'])->name('index');
         Route::post('/create', [TeamChatController::class, 'create'])->name('create');
         Route::post('/load', [TeamChatController::class, 'load'])->name('load');
+        Route::post('/load-more', [TeamChatController::class, 'loadMore'])->name('load-more');
         Route::post('/send', [TeamChatController::class, 'send'])->name('send');
         Route::post('/group-info', [TeamChatController::class, 'groupInfo'])->name('group-info');
         Route::post('/update-group-image', [TeamChatController::class, 'updateGroupImage'])->name('update-group-image');

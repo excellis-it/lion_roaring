@@ -1332,6 +1332,8 @@ $(document).ready(function () {
             data.chat.user_id != sender_id &&
             chat_member_id_array.includes(sender_id)
         ) {
+            console.log(data.chat.user.first_name);
+
             let html = `
         <div class="message you" id="team-chat-message-${data.chat.id}">
             <div class="d-flex">
@@ -1364,7 +1366,7 @@ $(document).ready(function () {
                 : attachment
                 ? attachment.split("/").pop()
                 : "file";
-            if (attachment != "") {
+            if (attachment && attachment != "") {
                 fileUrl = storageUrl + attachment;
                 let attachement_extention = attachment.split(".").pop();
 

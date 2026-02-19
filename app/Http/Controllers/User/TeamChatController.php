@@ -80,13 +80,13 @@ class TeamChatController extends Controller
                 });
 
             if (!$isSuperAdmin) {
-                    if ($user_type == 'Global') {
+                if ($user_type == 'Global') {
                     $membersQuery->where('user_type', 'Global')->whereHas('userRole', function ($query) {
                         $query->where('name', '!=', 'SUPER ADMIN');
-                        });
-                    } else {
+                    });
+                } else {
                     $membersQuery->where('user_type', 'Regional')->where('country', $country_name);
-                    }
+                }
             }
 
             $members = $membersQuery->get();
@@ -205,9 +205,12 @@ class TeamChatController extends Controller
             $team_id = $request->team_id;
             $team = Team::where('id', $team_id)->with(['members', 'members.user'])->first()->toArray();
             $allusers = User::where('status', 1)->pluck('id')->toArray();
-            $team_chats = TeamChat::where('team_id', $team_id)->whereIn('user_id', $allusers)->orderBy('created_at', 'asc')->whereHas('chatMembers', function ($query) {
+            $team_chats = TeamChat::where('team_id', $team_id)->whereIn('user_id', $allusers)->whereHas('chatMembers', function ($query) {
                 $query->where('user_id', auth()->id());
-            })->with('user')->get();
+            })->with('user')->orderBy('created_at', 'desc')->paginate(20);
+
+            $items = $team_chats->getCollection()->reverse();
+            $team_chats->setCollection($items);
             ChatMember::where('user_id', auth()->id())->whereHas('chat', function ($query) use ($team_id) {
                 $query->where('team_id', $team_id);
             })->update(['is_seen' => true]);
@@ -223,7 +226,36 @@ class TeamChatController extends Controller
             $team_member_name = rtrim($team_member_name, ', ');
 
             $is_chat = true;
-            return response()->json(['view' => (string) view('user.team-chat.chat-body')->with(compact('team', 'team_chats', 'is_chat', 'team_member_name'))]);
+            $has_more_messages = $team_chats->hasMorePages();
+            return response()->json(['view' => (string) view('user.team-chat.chat-body')->with(compact('team', 'team_chats', 'is_chat', 'team_member_name', 'has_more_messages'))]);
+        }
+    }
+
+    public function loadMore(Request $request)
+    {
+        if ($request->ajax()) {
+            $team_id = $request->team_id;
+            $page = $request->page;
+            $allusers = User::where('status', 1)->pluck('id')->toArray();
+
+            $team_chats = TeamChat::where('team_id', $team_id)->whereIn('user_id', $allusers)
+                ->whereHas('chatMembers', function ($query) {
+                    $query->where('user_id', auth()->id());
+                })
+                ->with('user')
+                ->orderBy('created_at', 'desc')
+                ->paginate(20, ['*'], 'page', $page);
+
+            $items = $team_chats->getCollection()->reverse();
+            $team_chats->setCollection($items);
+
+            $view = (string) view('user.team-chat.message-list')->with(compact('team_chats'));
+
+            return response()->json([
+                'status' => true,
+                'view' => $view,
+                'has_more_messages' => $team_chats->hasMorePages()
+            ]);
         }
     }
 
@@ -405,13 +437,13 @@ class TeamChatController extends Controller
                 });
 
             if (!$isSuperAdmin) {
-                    if ($user_type == 'Global') {
+                if ($user_type == 'Global') {
                     $membersQuery->where('user_type', 'Global')->whereHas('userRole', function ($query) {
                         $query->where('name', '!=', 'SUPER ADMIN');
-                        });
-                    } else {
+                    });
+                } else {
                     $membersQuery->where('user_type', 'Regional')->where('country', $country_name);
-                    }
+                }
             }
 
             $members = $membersQuery->get();
@@ -469,8 +501,8 @@ class TeamChatController extends Controller
         // remove message sent by this user
         $team_chat = new TeamChat();
         $team_chat->team_id = $team_id;
-        $team_chat->user_id = $user_id;
-        $team_chat->message = $team_member->user->first_name . ' ' . $team_member->user->last_name . ' has been removed from the group.';
+        $team_chat->user_id = auth()->id();
+        $team_chat->message = auth()->user()->first_name . ' ' . auth()->user()->last_name . ' has removed ' . $team_member->user->first_name ?? '' . ' ' . $team_member->user->last_name ?? '' . ' from the group.';
         $team_chat->save();
 
         $members = TeamMember::where('team_id', $team_id)->where('is_removed', false)->get();
@@ -685,7 +717,7 @@ class TeamChatController extends Controller
         $team_chat = new TeamChat();
         $team_chat->team_id = $team_id;
         $team_chat->user_id = auth()->id();
-        $team_chat->message = 'New members added to the group. ' . $only_added_members_name;
+        $team_chat->message = 'New members added to the group. ' . $only_added_members_name . ' by ' . auth()->user()->full_name . '.';
         $team_chat->save();
 
         foreach ($team_members as $member) {

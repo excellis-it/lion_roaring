@@ -8,6 +8,34 @@
             background-color: yellow;
             font-weight: bold;
         }
+        .highlight {
+            background-color: yellow;
+            font-weight: bold;
+        }
+
+       .user-search-box {
+            padding: 10px;
+            background: #fff;
+            border-bottom: 1px solid #eee;
+        }
+
+        .user-search-box .search-field {
+            position: relative;
+        }
+
+        .user-search-box .search-field input {
+            border-radius: 20px;
+            padding-right: 35px;
+            border: 1px solid #ddd;
+        }
+
+        .user-search-box .search-field i {
+            position: absolute;
+            right: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #999;
+        }
     </style>
 @endpush
 @section('content')
@@ -36,10 +64,13 @@
                 </div>
                 <div class="SideNavhead">
                     <h2>Recent Chat</h2>
-                    <div class="search-field w-100 mt-2">
-                        <input type="text" id="search-group" placeholder="Search..." class="form-control">
-                        <button class="submit_search"> <span><i class="fa fa-search"></i></span></button>
                     </div>
+                    <div class="user-search-box">
+                        <div class="search-field w-100 mt-2">
+                        <input type="text" id="search-group" placeholder="Search..." class="form-control"><i class="fa fa-search"></i>
+                    </div>
+
+
                 </div>
                 <!-- Modal -->
 
