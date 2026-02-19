@@ -77,7 +77,7 @@
 
             // Define WebSocket connection
             let ip_address = "{{ env('IP_ADDRESS') }}";
-            let socket_port = '3000';
+            let socket_port = '{{ env('SOCKET_PORT') }}';
             let socket = io(ip_address + ':' + socket_port);
 
             var calendar;
@@ -127,7 +127,8 @@
                         $('#modalEnd').text(info.event.end ? moment(info.event.end).format(
                             'DD MMM YYYY h:mm A') : 'N/A');
                         $('#modalDescription').text(info.event.extendedProps.description);
-                        var link = info.event.extendedProps.meeting_link ? info.event.extendedProps.meeting_link.trim() : '';
+                        var link = info.event.extendedProps.meeting_link ? info.event.extendedProps
+                            .meeting_link.trim() : '';
                         if (link) {
                             var href = link;
                             // If the link already has a scheme (http:, https:, mailto:, tel:, etc.), use as-is

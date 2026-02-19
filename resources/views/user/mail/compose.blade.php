@@ -200,7 +200,7 @@
         $(document).ready(function() {
             var sender_id = "{{ Auth::user()->id }}";
             let ip_address = "{{ env('IP_ADDRESS') }}";
-            let socket_port = '3000';
+            let socket_port = '{{ env('SOCKET_PORT') }}';
             let socket = io(ip_address + ':' + socket_port);
 
             $('#sendMailForm').on('submit', function(e) {

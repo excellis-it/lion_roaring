@@ -13,7 +13,7 @@ $(document).ready(function () {
         },
     });
     let ip_address = window.Laravel.ipAddress;
-    let socket_port = "3000";
+    let socket_port = window.Laravel.socketPort;
     let socket = io(ip_address + ":" + socket_port);
 
     $(document).on("click", ".user-list", function (e) {
