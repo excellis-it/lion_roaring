@@ -55,7 +55,7 @@
                         <div class="row">
                             <div class="col-md-12">
                                 <div class="heading_box mb-5">
-                                    <h3>Edit Email Template111</h3>
+                                    <h3>Edit Email Template</h3>
                                 </div>
                             </div>
                         </div>
@@ -75,43 +75,44 @@
                                     @enderror
                                 </div>
                             </div>
+                            @if ($template->slug != 'digital')
+                                {{-- Order Status --}}
+                                <div class="col-md-6 mb-3">
+                                    <div class="box_label">
+                                        <label for="order_status_id" class="form-label">Order Status<span
+                                                class="text-danger">*</span></label>
+                                        <select name="order_status_id" id="order_status_id" class="form-select">
+                                            <option value="">-- Select Order Status --</option>
+                                            @foreach ($statuses as $status)
+                                                @php
+                                                    // Allow current template's status even if already used
+                                                    $disabled =
+                                                        $usedStatusIds->contains($status->id) &&
+                                                        $status->id != $template->order_status_id;
+                                                @endphp
+                                                <option value="{{ $status->id }}"
+                                                    {{ old('order_status_id', $template->order_status_id) == $status->id ? 'selected' : '' }}
+                                                    {{ $disabled ? 'disabled' : '' }}>
+                                                    {{ $status->name }}
+                                                </option>
+                                            @endforeach
+                                        </select>
 
-                            {{-- Order Status --}}
-                            <div class="col-md-6 mb-3">
-                                <div class="box_label">
-                                    <label for="order_status_id" class="form-label">Order Status<span
-                                            class="text-danger">*</span></label>
-                                    <select name="order_status_id" id="order_status_id" class="form-select">
-                                        <option value="">-- Select Order Status --</option>
-                                        @foreach ($statuses as $status)
-                                            @php
-                                                // Allow current template's status even if already used
-                                                $disabled =
-                                                    $usedStatusIds->contains($status->id) &&
-                                                    $status->id != $template->order_status_id;
-                                            @endphp
-                                            <option value="{{ $status->id }}"
-                                                {{ old('order_status_id', $template->order_status_id) == $status->id ? 'selected' : '' }}
-                                                {{ $disabled ? 'disabled' : '' }}>
-                                                {{ $status->name }}
-                                            </option>
-                                        @endforeach
-                                    </select>
+                                        <input type="hidden" name="is_pickup"
+                                            value="{{ old('is_pickup', $template->is_pickup) ? 1 : 0 }}">
+                                        @if ($template->is_pickup)
+                                            <span class="badge bg-secondary">Pickup Template</span>
+                                        @endif
 
-                                    <input type="hidden" name="is_pickup"
-                                        value="{{ old('is_pickup', $template->is_pickup) ? 1 : 0 }}">
-                                    @if ($template->is_pickup)
-                                        <span class="badge bg-secondary">Pickup Template</span>
-                                    @endif
-
-                                    <small class="text-muted">If selected, this template will be sent when the order reaches
-                                        this status.</small>
-                                    @error('order_status_id')
-                                        <span class="text-danger">{{ $message }}</span>
-                                    @enderror
+                                        <small class="text-muted">If selected, this template will be sent when the order
+                                            reaches
+                                            this status.</small>
+                                        @error('order_status_id')
+                                            <span class="text-danger">{{ $message }}</span>
+                                        @enderror
+                                    </div>
                                 </div>
-                            </div>
-
+                            @endif
                             {{-- Subject --}}
                             <div class="col-md-6 mb-3">
                                 <div class="box_label">

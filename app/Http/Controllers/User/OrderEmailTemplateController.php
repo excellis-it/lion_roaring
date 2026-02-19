@@ -24,11 +24,18 @@ class OrderEmailTemplateController extends Controller
             ->orderBy('id', 'asc')
             ->get();
 
-        // Split templates into general (delivery) and pickup variants
-        $generalTemplates = $templates->where('is_pickup', false)->values();
-        $pickupTemplates = $templates->where('is_pickup', true)->values();
+        // Split templates into general (delivery), pickup variants, and digital
+        $digitalTemplate = $templates->where('slug', 'digital')->first();
 
-        return view('user.order-email-templates.list', compact('generalTemplates', 'pickupTemplates'));
+        $generalTemplates = $templates->where('is_pickup', false)
+            ->where('slug', '!=', 'digital')
+            ->values();
+
+        $pickupTemplates = $templates->where('is_pickup', true)
+            ->where('slug', '!=', 'digital')
+            ->values();
+
+        return view('user.order-email-templates.list', compact('generalTemplates', 'pickupTemplates', 'digitalTemplate'));
     }
 
     /**
@@ -189,6 +196,7 @@ class OrderEmailTemplateController extends Controller
             'is_pickup' => $isPickup,
             'subject' => $request->subject,
             'body' => $request->body,
+            'is_active' => $request->is_active,
         ]);
 
         return redirect()->route('order-email-templates.index')

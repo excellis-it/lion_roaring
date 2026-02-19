@@ -385,19 +385,31 @@ class DigitalCheckoutController extends Controller
                 Notification::insert($notifications);
             }
 
-            // Send order confirmation email to customer (Direct Mail for Digital)
+            // Send order confirmation email to customer (Dynamic Mail for Digital)
             try {
-                $orderList = view('user.emails.order_list_table', ['order' => $order])->render();
-                $myOrdersUrl = route('e-store.my-orders');
+                $template = OrderEmailTemplate::where('slug', 'digital')->first();
 
-                $body = "<p>Hello " . ($order->first_name . ' ' . $order->last_name) . ",</p>";
-                $body .= "<p>Thank you for your order. Your payment has been successfully received. You can now download the product and view the full details in your order history.</p>";
-                $body .= "<p><strong>Order Number:</strong> " . $order->order_number . "</p>";
-                $body .= $orderList;
-                $body .= "<p><strong>Total Amount:</strong> $" . number_format($order->total_amount, 2) . "</p>";
-                $body .= "<p><a href='" . $myOrdersUrl . "' style='display:inline-block;padding:10px 20px;background:#000;color:#fff;text-decoration:none;border-radius:5px;'>View Order History</a></p>";
+                if ($template && $template->is_active) {
+                    $orderList = view('user.emails.order_list_table', ['order' => $order])->render();
+                    $myOrdersUrl = route('e-store.my-orders');
 
-                Mail::to($order->email)->send(new OrderStatusUpdatedMail($order, $body));
+                    $body = str_replace(
+                        ['{customer_name}', '{customer_email}', '{order_list}', '{order_id}', '{arriving_date}', '{total_order_value}', '{order_details_url_button}', '{order_note}'],
+                        [
+                            $order->first_name . ' ' . $order->last_name,
+                            $order->email ?? '',
+                            $orderList,
+                            $order->order_number ?? '',
+                            '', // Digital products don't have arriving date usually
+                            number_format($order->total_amount ?? 0, 2),
+                            "<p><a href='" . $myOrdersUrl . "' style='display:inline-block;padding:10px 20px;background:#000;color:#fff;text-decoration:none;border-radius:5px;'>View Order History</a></p>",
+                            $order->notes ?? '',
+                        ],
+                        $template->body
+                    );
+
+                    Mail::to($order->email)->send(new OrderStatusUpdatedMail($order, $body));
+                }
             } catch (\Throwable $th) {
                 Log::error('Failed to send digital order status email to customer: ' . $th->getMessage());
             }
