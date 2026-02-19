@@ -15,8 +15,8 @@ class DatabaseSeeder extends Seeder
     {
         $this->call([
             // first time only
-            // CountriesTableSeeder::class,
-            // StatesTableSeeder::class,
+            CountriesTableSeeder::class,
+            StatesTableSeeder::class,
 
             // then run these
             AddSuperAdminGlobal::class,

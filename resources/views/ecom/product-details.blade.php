@@ -776,8 +776,6 @@
         function getWareHouseProductDetails() {
             var selectedSize = $(".product-select-size-input:checked").val();
             var selectedColor = $(".product-select-color-input:checked").val();
-            console.log("Selected size:", selectedSize);
-            console.log("Selected color:", selectedColor);
             $.ajax({
                 url: "{{ route('e-store.get-warehouse-product-details') }}",
                 type: "POST",
@@ -789,7 +787,6 @@
                 },
                 success: function(response) {
                     if (response.status == true) {
-                        console.log("Warehouse product details:", response.data);
 
                         // response example is :
                         // {
