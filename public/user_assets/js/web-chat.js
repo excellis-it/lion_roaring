@@ -2,6 +2,11 @@ $(document).ready(function () {
     var sender_id = window.Laravel.authUserId;
     var receiver_id = null;
     var pastedFiles = []; // Store pasted image files
+    var chatPagination = {
+        isLoading: false,
+        hasMore: false,
+        oldestChatId: null,
+    };
     $.ajaxSetup({
         headers: {
             "X-CSRF-TOKEN": $('meta[name="csrf-token"]').attr("content"),
@@ -31,6 +36,12 @@ $(document).ready(function () {
     });
 
     function loadChats() {
+        chatPagination = {
+            isLoading: false,
+            hasMore: false,
+            oldestChatId: null,
+        };
+
         $.ajax({
             type: "POST",
             url: window.Laravel.routes.chatLoad,
@@ -42,6 +53,11 @@ $(document).ready(function () {
             success: function (resp) {
                 if (resp.status === true) {
                     $(".chat-module").html(resp.view);
+                    chatPagination.hasMore = !!resp.has_more;
+                    chatPagination.oldestChatId = resp.oldest_chat_id || null;
+                    cleanupDuplicateDateSeparators(
+                        $("#chat-container-" + receiver_id),
+                    );
 
                     // unseen_chat count remove
                     removeUnseenCount(receiver_id);
@@ -53,6 +69,8 @@ $(document).ready(function () {
                     if (resp.chat_count > 0) {
                         scrollChatToBottom(receiver_id);
                     }
+
+                    bindChatHistoryScroll();
 
                     // Initialize EmojiOneArea on MessageInput
                     var emojioneAreaInstance = $("#MessageInput").emojioneArea({
@@ -69,7 +87,7 @@ $(document).ready(function () {
                                 event.preventDefault();
                                 $("#MessageForm").submit();
                             }
-                        }
+                        },
                     );
 
                     // Add clipboard paste event listener for images
@@ -84,9 +102,118 @@ $(document).ready(function () {
             },
             error: function (xhr, status, error) {
                 console.error(
-                    "An error occurred: " + status + "\nError: " + error
+                    "An error occurred: " + status + "\nError: " + error,
                 );
             },
+        });
+    }
+
+    function bindChatHistoryScroll() {
+        const $container = $("#chat-container-" + receiver_id);
+        if (!$container.length) {
+            return;
+        }
+
+        $container
+            .off("scroll.chatHistory")
+            .on("scroll.chatHistory", function () {
+                if (this.scrollTop <= 30) {
+                    loadOlderChats();
+                }
+            });
+    }
+
+    function loadOlderChats() {
+        if (
+            !receiver_id ||
+            chatPagination.isLoading ||
+            !chatPagination.hasMore ||
+            !chatPagination.oldestChatId
+        ) {
+            return;
+        }
+
+        const $container = $("#chat-container-" + receiver_id);
+        if (!$container.length) {
+            return;
+        }
+
+        chatPagination.isLoading = true;
+        const previousOldestChatId = chatPagination.oldestChatId;
+        const previousScrollHeight = $container[0].scrollHeight;
+        const previousScrollTop = $container[0].scrollTop;
+        showTopHistoryLoader($container);
+
+        $.ajax({
+            type: "POST",
+            url: window.Laravel.routes.chatLoad,
+            data: {
+                _token: $("input[name=_token]").val(),
+                reciver_id: receiver_id,
+                sender_id: sender_id,
+                before_chat_id: chatPagination.oldestChatId,
+            },
+            success: function (resp) {
+                if (resp.status === true && resp.messages_view) {
+                    $container.prepend(resp.messages_view);
+                    cleanupDuplicateDateSeparators($container);
+
+                    const newScrollHeight = $container[0].scrollHeight;
+                    $container[0].scrollTop =
+                        newScrollHeight -
+                        previousScrollHeight +
+                        previousScrollTop;
+                }
+
+                chatPagination.hasMore = !!resp.has_more;
+                chatPagination.oldestChatId = resp.oldest_chat_id || null;
+
+                if (
+                    previousOldestChatId &&
+                    chatPagination.oldestChatId &&
+                    String(previousOldestChatId) ===
+                        String(chatPagination.oldestChatId)
+                ) {
+                    chatPagination.hasMore = false;
+                }
+            },
+            error: function (xhr, status, error) {
+                console.error(
+                    "Load older chats error: " + status + "\nError: " + error,
+                );
+            },
+            complete: function () {
+                hideTopHistoryLoader($container);
+                chatPagination.isLoading = false;
+            },
+        });
+    }
+
+    function showTopHistoryLoader($container) {
+        if (!$container.find("#chat-history-top-loader").length) {
+            $container.prepend(
+                '<div id="chat-history-top-loader" style="text-align:center;padding:8px 0;color:#6b7280;font-size:12px;">Loading older messages...</div>',
+            );
+        }
+    }
+
+    function hideTopHistoryLoader($container) {
+        $container.find("#chat-history-top-loader").remove();
+    }
+
+    function cleanupDuplicateDateSeparators($container) {
+        if (!$container || !$container.length) {
+            return;
+        }
+
+        let previousLabel = null;
+        $container.find(".messageSeperator").each(function () {
+            const currentLabel = $(this).text().trim();
+            if (currentLabel && previousLabel === currentLabel) {
+                $(this).remove();
+            } else {
+                previousLabel = currentLabel;
+            }
         });
     }
 
@@ -100,7 +227,7 @@ $(document).ready(function () {
         }
 
         // EmojiOneArea creates the editor after initialization, so we need to wait a bit
-        setTimeout(function() {
+        setTimeout(function () {
             const emojiArea = document.querySelector(".emojionearea-editor");
             if (emojiArea) {
                 emojiArea.addEventListener("paste", handlePaste);
@@ -139,7 +266,8 @@ $(document).ready(function () {
         $fileNameDisplay.empty();
 
         if (pastedFiles.length > 0) {
-            let displayContent = '<div style="display: flex; flex-wrap: wrap; gap: 10px; align-items: center;">';
+            let displayContent =
+                '<div style="display: flex; flex-wrap: wrap; gap: 10px; align-items: center;">';
 
             pastedFiles.forEach((file, index) => {
                 const reader = new FileReader();
@@ -183,7 +311,7 @@ $(document).ready(function () {
         user,
         isNewMessage = false,
         messageText = "",
-        isFile = false
+        isFile = false,
     ) {
         let timeZone = window.Laravel.authTimeZone;
         let time_format =
@@ -237,7 +365,7 @@ $(document).ready(function () {
         user,
         messageText = "",
         isFile = false,
-        timeFormat = ""
+        timeFormat = "",
     ) {
         let profileImage = user.profile_picture
             ? window.Laravel.storageUrl + user.profile_picture
@@ -262,8 +390,8 @@ $(document).ready(function () {
                     <img src="${profileImage}" alt="">
                 </div>
                 <p class="GroupName">${user.first_name || ""} ${
-            user.middle_name || ""
-        } ${user.last_name || ""}</p>
+                    user.middle_name || ""
+                } ${user.last_name || ""}</p>
                 <p class="GroupDescrp" id="message-app-${user.id}">
                     ${messageContent}
                 </p>
@@ -427,7 +555,7 @@ $(document).ready(function () {
                         receiverUser,
                         true,
                         firstChat.message,
-                        !!firstChat.attachment
+                        !!firstChat.attachment,
                     );
 
                     $("#loading").removeClass("loading");
@@ -502,7 +630,7 @@ $(document).ready(function () {
         } else {
             html += `<p class="messageContent">${messageText.replace(
                 /\n/g,
-                "<br>"
+                "<br>",
             )}</p>`;
         }
 
@@ -702,11 +830,11 @@ $(document).ready(function () {
         if (res.new_last_message) {
             $("#message-app-" + res.other_user_id).html(
                 res.new_last_message.message ||
-                    '<span><i class="ti ti-file"></i></span>'
+                    '<span><i class="ti ti-file"></i></span>',
             );
             let chatListItem = $("#chat_list_user_" + res.other_user_id);
             let timeFormat = moment(res.new_last_message.created_at).format(
-                "h:mm A"
+                "h:mm A",
             );
             chatListItem
                 .find('[id^="last-chat-time-"]')
@@ -775,14 +903,14 @@ $(document).ready(function () {
             const incomingFileName = data.attachment_name
                 ? data.attachment_name
                 : attachment
-                ? attachment.split("/").pop()
-                : "file";
+                  ? attachment.split("/").pop()
+                  : "file";
             if (attachment && attachment !== "") {
                 let extension = attachment.split(".").pop().toLowerCase();
 
                 if (
                     ["jpg", "jpeg", "png", "gif", "svg", "webp"].includes(
-                        extension
+                        extension,
                     )
                 ) {
                     html += `<a href="${
@@ -795,7 +923,7 @@ $(document).ready(function () {
                         }" alt="attachment" style="max-width: 200px; max-height: 200px;">
                     </a><br><span>${data.message.replace(
                         /\n/g,
-                        "<br>"
+                        "<br>",
                     )}</span>`;
                 } else if (["mp4", "webm", "ogg"].includes(extension)) {
                     html += `<a href="${
@@ -810,7 +938,7 @@ $(document).ready(function () {
                         </video>
                     </a><br><span>${data.message.replace(
                         /\n/g,
-                        "<br>"
+                        "<br>",
                     )}</span>`;
                 } else {
                     html += `<a href="${
@@ -821,7 +949,7 @@ $(document).ready(function () {
                         <img src="${window.Laravel.assetUrls.fileIcon}" alt="">
                     </a><br><span>${data.message.replace(
                         /\n/g,
-                        "<br>"
+                        "<br>",
                     )}</span>`;
                 }
             } else {
@@ -859,7 +987,7 @@ $(document).ready(function () {
                     senderUser,
                     true,
                     data.message,
-                    !!data.file_url
+                    !!data.file_url,
                 );
             }
 
@@ -918,12 +1046,12 @@ $(document).ready(function () {
                         otherUser,
                         true,
                         data.new_last_message.message,
-                        !!data.new_last_message.attachment
+                        !!data.new_last_message.attachment,
                     );
                 } else {
                     $("#message-app-" + data.other_user_id).html("");
                     let chatListItem = $(
-                        "#chat_list_user_" + data.other_user_id
+                        "#chat_list_user_" + data.other_user_id,
                     );
                     chatListItem.find('[id^="last-chat-time-"]').html("");
                 }
@@ -948,7 +1076,7 @@ $(document).ready(function () {
         if (receiver_id == data.last_chat.reciver_id) {
             if (sender_id == data.last_chat.sender_id) {
                 $("#seen_" + data.last_chat.id).html(
-                    '<i class="fas fa-check-double"></i>'
+                    '<i class="fas fa-check-double"></i>',
                 );
             }
         }
@@ -961,7 +1089,7 @@ $(document).ready(function () {
             data.unseen_chat.forEach(function (chat) {
                 if (sender_id == chat.sender_id) {
                     $("#seen_" + chat.id).html(
-                        '<i class="fas fa-check-double"></i>'
+                        '<i class="fas fa-check-double"></i>',
                     );
                 }
             });
@@ -1026,7 +1154,7 @@ $(document).ready(function () {
                             let html = generateMessageHtml(
                                 chat,
                                 "me",
-                                chatMessage
+                                chatMessage,
                             );
                             $("#chat-container-" + receiver_id).append(html);
                         });
@@ -1058,7 +1186,7 @@ $(document).ready(function () {
                             receiverUser,
                             true,
                             firstChat.message,
-                            !!firstChat.attachment
+                            !!firstChat.attachment,
                         );
 
                         // Emit to socket
@@ -1070,7 +1198,7 @@ $(document).ready(function () {
                                 ? chat.attachment_name
                                 : chat.attachment;
                             var formattedMessage = formatChatSendMessage(
-                                chat.message || ""
+                                chat.message || "",
                             );
 
                             socket.emit("chat", {

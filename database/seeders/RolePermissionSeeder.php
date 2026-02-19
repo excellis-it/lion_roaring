@@ -297,6 +297,12 @@ class RolePermissionSeeder extends Seeder
             ["name" => "Create Signup Rules"],
             ["name" => "Edit Signup Rules"],
             ["name" => "Delete Signup Rules"],
+
+            // promo codes
+            ["name" => "View Promo Codes"],
+            ["name" => "Create Promo Code"],
+            ["name" => "Edit Promo Code"],
+            ["name" => "Delete Promo Code"],
         ];
 
         $permissionNames = [];
@@ -323,15 +329,23 @@ class RolePermissionSeeder extends Seeder
         $permissionNames = array_values(array_unique($permissionNames));
 
 
-        // Ensure SUPER ADMIN UserType exists
-        $superAdminType = UserType::where('name', 'SUPER ADMIN')->first();
+        // Ensure SUPER ADMIN UserType exists (create if missing)
+        $superAdminType = UserType::firstOrCreate(
+            ['name' => 'SUPER ADMIN'],
+            ['guard_name' => 'web', 'type' => '1', 'is_ecclesia' => 0]
+        );
 
-
-        $superadmin_users = User::where('user_type_id', $superAdminType->id)->get();
+        // Find users either mapped to that user_type_id OR who already have the SUPER ADMIN role
+        $superadmin_users = User::where('user_type_id', $superAdminType->id)
+            ->orWhereHas('roles', function ($q) {
+                $q->where('name', 'SUPER ADMIN');
+            })->get();
 
         foreach ($superadmin_users as $superadmin_user) {
             $role = $superadmin_user->roles()->first();
-            $role->givePermissionTo(Permission::all());
+            if ($role) {
+                $role->givePermissionTo(Permission::all());
+            }
         }
     }
-}
+} 
