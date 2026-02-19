@@ -84,30 +84,34 @@ $(document).ready(function () {
                 $("#count-team-unseen-" + teamId).html(``);
 
                 // Initialize EmojiOneArea on MessageInput
-                var emojioneAreaInstance = $("#TeamMessageInput").emojioneArea({
-                    pickerPosition: "top",
-                    filtersPosition: "top",
-                    tonesStyle: "bullet",
-                });
+                if ($("#TeamMessageInput").length > 0) {
+                    var emojioneAreaInstance = $("#TeamMessageInput").emojioneArea({
+                        pickerPosition: "top",
+                        filtersPosition: "top",
+                        tonesStyle: "bullet",
+                    });
 
-                // Handle Enter key press within the emoji picker
-                emojioneAreaInstance[0].emojioneArea.on(
-                    "keydown",
-                    function (editor, event) {
-                        const $messageInput = $(".emojionearea-editor");
+                    // Handle Enter key press within the emoji picker
+                    if (emojioneAreaInstance[0]) {
+                        emojioneAreaInstance[0].emojioneArea.on(
+                            "keydown",
+                            function (editor, event) {
+                                const $messageInput = $(".emojionearea-editor");
 
-                        console.log("key is : " + event.key);
+                                console.log("key is : " + event.key);
 
-                        if (event.key === "Enter") {
-                            //
-                        } else {
-                            if (event.which === 13 && !event.shiftKey) {
-                                event.preventDefault();
-                                $("#TeamMessageForm").submit();
+                                if (event.key === "Enter") {
+                                    //
+                                } else {
+                                    if (event.which === 13 && !event.shiftKey) {
+                                        event.preventDefault();
+                                        $("#TeamMessageForm").submit();
+                                    }
+                                }
                             }
-                        }
+                        );
                     }
-                );
+                }
 
                 // Reinitialize file upload modals since modal HTML is in the loaded view
                 if (typeof window.reinitFileUploadModals === "function") {
