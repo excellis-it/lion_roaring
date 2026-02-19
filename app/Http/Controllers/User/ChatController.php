@@ -200,39 +200,80 @@ class ChatController extends Controller
     {
         try {
             $is_chat = true;
-            $chats = Chat::where(function ($query) use ($request) {
-                $query->where('sender_id', $request->sender_id)
-                    ->where('reciver_id', $request->reciver_id)
-                    ->where('deleted_for_sender', 0)
-                    ->where('delete_from_sender_id', 0);
-            })
-                ->orWhere(function ($query) use ($request) {
-                    $query->where('sender_id', $request->reciver_id)
+            $perPage = 30;
+            $beforeChatId = (int) $request->input('before_chat_id', 0);
+
+            $baseQuery = Chat::where(function ($query) use ($request) {
+                $query->where(function ($q) use ($request) {
+                    $q->where('sender_id', $request->sender_id)
+                        ->where('reciver_id', $request->reciver_id)
+                        ->where('deleted_for_sender', 0)
+                        ->where('delete_from_sender_id', 0);
+                })->orWhere(function ($q) use ($request) {
+                    $q->where('sender_id', $request->reciver_id)
                         ->where('reciver_id', $request->sender_id)
                         ->where('deleted_for_reciver', 0)
                         ->where('delete_from_receiver_id', 0);
-                })
-                ->orderBy('created_at', 'asc') // Assuming you want to order chats by timestamp
+                });
+            });
+
+            if ($beforeChatId > 0) {
+                $baseQuery->where('id', '<', $beforeChatId);
+            }
+
+            $chatsDesc = (clone $baseQuery)
+                ->orderBy('id', 'desc')
+                ->limit($perPage + 1)
                 ->get();
 
-            $unseen_chat = Chat::where('sender_id', $request->reciver_id)
-                ->where('reciver_id', $request->sender_id)
-                ->where('seen', 0)
-                ->where('delete_from_receiver_id', 0)
-                ->get();
-            // dd($unseen_chat);
-            // seen chat
-            $chats = $chats->map(function ($chat) {
-                if ($chat->reciver_id == auth()->id()) {
-                    $chat->update(['seen' => 1]);
-                }
-                return $chat;
-            });
-            // return $chats;
+            $hasMore = $chatsDesc->count() > $perPage;
+
+            if ($hasMore) {
+                $chatsDesc = $chatsDesc->take($perPage);
+            }
+
+            $chats = $chatsDesc
+                ->sortBy('id')
+                ->values();
+
+            $oldestChatId = $chats->isNotEmpty() ? $chats->first()->id : null;
+
+            $unseen_chat = collect();
+            if ($beforeChatId <= 0) {
+                $unseen_chat = Chat::where('sender_id', $request->reciver_id)
+                    ->where('reciver_id', $request->sender_id)
+                    ->where('seen', 0)
+                    ->where('delete_from_receiver_id', 0)
+                    ->get();
+
+                Chat::where('sender_id', $request->reciver_id)
+                    ->where('reciver_id', auth()->id())
+                    ->where('seen', 0)
+                    ->update(['seen' => 1]);
+            }
+
             $chat_count = count($chats);
             $reciver = User::find($request->reciver_id);
 
-            return response()->json(['message' => 'Show Chat', 'status' => true, 'chat_count' => $chat_count, 'unseen_chat' => $unseen_chat, 'view' => (string)View::make('user.chat.chat_body')->with(compact('chats', 'is_chat', 'reciver'))]);
+            if ($beforeChatId > 0) {
+                return response()->json([
+                    'message' => 'Older chats loaded',
+                    'status' => true,
+                    'messages_view' => (string) View::make('user.chat.partials.messages')->with(compact('chats')),
+                    'has_more' => $hasMore,
+                    'oldest_chat_id' => $oldestChatId,
+                ]);
+            }
+
+            return response()->json([
+                'message' => 'Show Chat',
+                'status' => true,
+                'chat_count' => $chat_count,
+                'unseen_chat' => $unseen_chat,
+                'has_more' => $hasMore,
+                'oldest_chat_id' => $oldestChatId,
+                'view' => (string) View::make('user.chat.chat_body')->with(compact('chats', 'is_chat', 'reciver')),
+            ]);
         } catch (\Throwable $th) {
             return response()->json(['msg' => $th->getMessage(), 'status' => false]);
         }
