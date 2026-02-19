@@ -36,7 +36,10 @@
                 </div>
                 <div class="SideNavhead">
                     <h2>Recent Chat</h2>
-
+                    <div class="search-field w-100 mt-2">
+                        <input type="text" id="search-group" placeholder="Search..." class="form-control">
+                        <button class="submit_search"> <span><i class="fa fa-search"></i></span></button>
+                    </div>
                 </div>
                 <!-- Modal -->
 
@@ -128,7 +131,9 @@
                 <div class="main">
                     <div class="sideNav2 group-list" id="group-list">
                         @include('user.team-chat.group-list')
-
+                        <div id="no-group-found-msg" class="text-center mt-3" style="display: none;">
+                            <p>No group found</p>
+                        </div>
                     </div>
                     <section class="Chat chat-body">
                         @include('user.team-chat.chat-body')
@@ -289,6 +294,28 @@
                 }
             });
         });
-    </script>
 
+        $(document).ready(function() {
+            $('#search-group').on('keyup', function() {
+                var searchTerm = $(this).val().toLowerCase().trim();
+                var found = false;
+
+                $('#group-list .group').each(function() {
+                    var groupName = $(this).find('.GroupName').text().toLowerCase().trim();
+                    if (groupName.includes(searchTerm)) {
+                        $(this).show();
+                        found = true;
+                    } else {
+                        $(this).hide();
+                    }
+                });
+
+                if (!found && searchTerm !== '') {
+                    $('#no-group-found-msg').show();
+                } else {
+                    $('#no-group-found-msg').hide();
+                }
+            });
+        });
+    </script>
 @endpush
