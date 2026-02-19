@@ -19,10 +19,10 @@ class DatabaseSeeder extends Seeder
             // StatesTableSeeder::class,
 
             // then run these
+            AddSuperAdminGlobal::class,
             MigrateRolesToUserTypesSeeder::class,
             RolePermissionSeeder::class,
-            assignAdminSeeder::class,
-            AddSuperAdminGlobal::class,
+
             IsAcceptedStatusUpdateSeeder::class,
             AddSidebarMenuItems::class,
             AddSidebarMenuItemsWithFrontend::class,
@@ -33,7 +33,7 @@ class DatabaseSeeder extends Seeder
             CompressCategoryImagesSeeder::class,
             HomeCmsImageSeeder::class,
             SignupRuleSeeder::class,
-            MarketMaterialSeeder::class,            
+            MarketMaterialSeeder::class,
         ]);
     }
 }
