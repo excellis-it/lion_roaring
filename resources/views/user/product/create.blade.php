@@ -828,7 +828,6 @@
 
                                             <div class="col-md-2 mb-2">
                                                 <div class="box_label">
-                                                    <label>&nbsp;</label>
                                                     <div class="mb-2 mt-1">
                                                         <button type="button"
                                                             class="btn btn-primary add-more-other-charge">+</button>

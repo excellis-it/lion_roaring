@@ -858,7 +858,6 @@
                                                     <div class="box_label">
                                                         <div class="mb-2 mt-1">
                                                             @if ($index == 0)
-                                                                <label>&nbsp;</label>
                                                                 <button type="button"
                                                                     class="btn btn-primary add-more-other-charge">+</button>
                                                             @else
@@ -910,7 +909,6 @@
                                             <div class="col-md-2 mb-2">
                                                 <div class="box_label">
                                                     <div class="mb-2 mt-1">
-                                                        <label>&nbsp;</label>
                                                         <button type="button"
                                                             class="btn btn-primary add-more-other-charge">+</button>
                                                     </div>
