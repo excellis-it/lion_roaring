@@ -27,14 +27,23 @@ class AddPromoCodePermissions extends Seeder
             Permission::firstOrCreate(['name' => $permission]);
         }
 
-        // add all permissions to whose usertype SUPER ADMIN
-        $user_type = UserType::where('name', 'SUPER ADMIN')->first();
+        // ensure SUPER ADMIN user type exists (create if missing)
+        $user_type = UserType::firstOrCreate(
+            ['name' => 'SUPER ADMIN'],
+            ['guard_name' => 'web', 'type' => '1', 'is_ecclesia' => 0]
+        );
 
-       $users = User::where('user_type_id', $user_type->id)->get();
+        $users = User::where('user_type_id', $user_type->id)
+            ->orWhereHas('roles', function ($q) {
+                $q->where('name', 'SUPER ADMIN');
+            })->get();
 
-       foreach ($users as $user) {
-       $user->roles->first()->givePermissionTo($permissions);
-       }
+        foreach ($users as $user) {
+            $role = $user->roles->first();
+            if ($role) {
+                $role->givePermissionTo($permissions);
+            }
+        }
 
         $this->command->info('Promo code permissions created successfully!');
     }

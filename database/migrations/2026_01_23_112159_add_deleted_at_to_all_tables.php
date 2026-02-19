@@ -93,7 +93,6 @@ private array $tables = [
             'product_images',
             'product_other_charges',
             'product_sizes',
-            'product_variation_images',
             'product_variations',
             'products',
             'register_agreements',
@@ -124,7 +123,6 @@ private array $tables = [
             'users',
             'verify_o_t_p_s',
             'ware_houses',
-            'warehouse_product_images',
             'warehouse_product_variations',
             'warehouse_products'
     ];

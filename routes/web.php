@@ -137,6 +137,7 @@ use App\Helpers\Helper;
 use App\Http\Controllers\ChatbotController as ControllersChatbotController;
 use App\Models\Country;
 use Illuminate\Support\Str;
+use Illuminate\Support\Facades\Schema;
 use App\Http\Controllers\VisitorController;
 use App\Http\Controllers\User\UserActivityController;
 use App\Http\Controllers\User\MembershipController as UserMembershipController;
@@ -355,12 +356,22 @@ Route::middleware(['userActivity'])->group(function () {
     Route::get('/', [CmsController::class, 'index'])->name('home');
 
     // Country code pattern (e.g., us|in|gb)
-    $__countryCodes = Country::pluck('code')
-        ->map(fn($c) => strtolower(trim($c)))
-        ->unique()
-        ->filter()
-        ->values()
-        ->all();
+    $__countryCodes = [];
+    // Don't query DB during console commands (migrate, route:list, etc.) — fall back to empty list
+    if (!app()->runningInConsole()) {
+        try {
+            if (Schema::hasTable('countries')) {
+                $__countryCodes = Country::pluck('code')
+                    ->map(fn($c) => strtolower(trim($c)))
+                    ->unique()
+                    ->filter()
+                    ->values()
+                    ->all();
+            }
+        } catch (\Throwable $e) {
+            $__countryCodes = [];
+        }
+    }
     $__ccPattern = $__countryCodes ? implode('|', array_map(fn($s) => preg_quote($s, '/'), $__countryCodes)) : 'a^';
 
     // Redirect "/" to "/{cc}"
@@ -1238,7 +1249,14 @@ Route::prefix('e-store')->middleware(['user', 'preventBackHistory', 'userActivit
     Route::post('/register', [HomeController::class, 'register'])->name('estore.register');
 
 
-    $categories = Category::where('status', 1)->get();
+    $categories = collect();
+    if (!app()->runningInConsole() && Schema::hasTable('categories')) {
+        try {
+            $categories = Category::where('status', 1)->get();
+        } catch (\Throwable $e) {
+            $categories = collect();
+        }
+    }
     foreach ($categories as $category) {
         if ($category->slug) {
             Route::get($category->slug, [EstoreProductController::class, 'products'])
@@ -1263,7 +1281,14 @@ Route::prefix('e-store')->middleware(['user', 'preventBackHistory', 'userActivit
 });
 
 // Dynamic routes for categories
-$categories = Category::whereNull('parent_id')->get();
+$categories = collect();
+if (!app()->runningInConsole() && Schema::hasTable('categories')) {
+    try {
+        $categories = Category::whereNull('parent_id')->get();
+    } catch (\Throwable $e) {
+        $categories = collect();
+    }
+}
 foreach ($categories as $category) {
     if ($category->slug) {
         Route::get($category->slug, [EstoreProductController::class, 'products'])
@@ -1273,7 +1298,14 @@ foreach ($categories as $category) {
 }
 
 // Dynamic routes for subcategories
-$subcategories = Category::whereNotNull('parent_id')->get();
+$subcategories = collect();
+if (!app()->runningInConsole() && Schema::hasTable('categories')) {
+    try {
+        $subcategories = Category::whereNotNull('parent_id')->get();
+    } catch (\Throwable $e) {
+        $subcategories = collect();
+    }
+}
 foreach ($subcategories as $subcategory) {
     if ($subcategory->slug) {
         Route::get($subcategory->slug, [EstoreProductController::class, 'products'])
@@ -1294,7 +1326,14 @@ Route::prefix('e-learning')->middleware(['user'])->group(function () {
     Route::get('/products-filter', [ElearningProductController::class, 'productsFilter'])->name('e-learning.products-filter');
     Route::post('/product-add-review', [ElearningProductController::class, 'productAddReview'])->name('e-learning.product-add-review');
 
-    $categories = ElearningCategory::where('status', 1)->get();
+    $categories = collect();
+    if (!app()->runningInConsole() && Schema::hasTable('elearning_categories')) {
+        try {
+            $categories = ElearningCategory::where('status', 1)->get();
+        } catch (\Throwable $e) {
+            $categories = collect();
+        }
+    }
     foreach ($categories as $category) {
         if ($category->slug) {
             Route::get($category->slug, [ElearningProductController::class, 'products'])
