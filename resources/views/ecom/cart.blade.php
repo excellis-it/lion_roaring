@@ -129,7 +129,7 @@
                                                                 data-charge-type="{{ $otherCharge->charge_type }}"
                                                                 data-charge-amount="{{ $otherCharge->charge_amount }}">
                                                                 <li>{{ $otherCharge->charge_name }}
-                                                                    ({{ $otherCharge->charge_type == 'percentage' ? number_format($otherCharge->charge_amount, 2) . '%' : 'Fixed' }})
+                                                                    {{-- {{ $otherCharge->charge_type == 'percentage' ? '' : 'Fixed' }} --}}
                                                                 </li>
                                                                 <li class="ms-auto charge-value">
                                                                     @php
