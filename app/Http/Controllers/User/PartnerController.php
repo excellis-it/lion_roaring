@@ -57,8 +57,7 @@ class PartnerController extends Controller
                 ->where(function ($q) {
                     $q->whereNull('ut.id') // Include users with deleted user types
                         ->orWhere(function ($subQ) {
-                            $subQ->where('ut.name', '!=', 'SUPER ADMIN')
-                                ->where('ut.name', '!=', 'ESTORE_USER');
+                            $subQ->where('ut.name', '!=', 'SUPER ADMIN');
                         });
                 })
                 ->select('users.*'); // Only select user columns to avoid conflicts
@@ -968,8 +967,7 @@ class PartnerController extends Controller
                 ->where(function ($q) {
                     $q->whereNull('ut.id') // Include users with deleted user types
                         ->orWhere(function ($subQ) {
-                            $subQ->where('ut.name', '!=', 'SUPER ADMIN')
-                                ->where('ut.name', '!=', 'ESTORE_USER');
+                            $subQ->where('ut.name', '!=', 'SUPER ADMIN');
                         });
                 })
                 ->select('users.*') // Only select user columns to avoid conflicts
@@ -1072,8 +1070,7 @@ class PartnerController extends Controller
             ->where(function ($q) {
                 $q->whereNull('ut.id')
                     ->orWhere(function ($subQ) {
-                        $subQ->where('ut.name', '!=', 'SUPER ADMIN')
-                            ->where('ut.name', '!=', 'ESTORE_USER');
+                        $subQ->where('ut.name', '!=', 'SUPER ADMIN');
                     });
             })
             ->select('users.*');
