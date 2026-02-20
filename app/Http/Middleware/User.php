@@ -17,12 +17,7 @@ class User
     public function handle(Request $request, Closure $next)
     {
         if (auth()->check() && auth()->user()->status == 1) {
-            $user = auth()->user()->roles()->whereIn('type', [1, 2, 3])->first();
-            if ($user) {
-                return $next($request);
-            } else {
-                return redirect()->route('home')->with('error', 'You must be logged in to access this page');
-            }
+            return $next($request);
         }
         return redirect()->route('home')->with('error', 'You must be logged in to access this page');
     }
