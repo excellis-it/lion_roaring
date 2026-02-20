@@ -3577,6 +3577,7 @@ li.slick-active button {
     pointer-events: all;
     transform: rotateY(0deg);
     right: 0;
+    border-bottom: 20px solid #d98b1c;
     border-radius: 0 4px 4px 0;
     background-image: linear-gradient(
         to right,

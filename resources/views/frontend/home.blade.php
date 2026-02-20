@@ -178,7 +178,6 @@ $showPopup = !session()->has($sessionKey) && !Session::has('agree');
                                     <h2>{{ $home['section_3_title'] ?? 'title' }}</h2>
                                     <p> {!! $home['section_3_description'] ?? 'descripiton' !!} </p>
                                 </div>
-                                <div class="design_page"></div>
                             </div>
                             @if (count($our_governances) > 0)
                                 @foreach ($our_governances as $key => $our_governance)
@@ -196,7 +195,6 @@ $showPopup = !session()->has($sessionKey) && !Session::has('agree');
                                     </div>
                                     <div class="page">
                                         <p>{!! $restPart ?? '' !!}</p>
-                                        <div class="design_page_right"></div>
                                     </div>
                                 @endforeach
                             @endif
