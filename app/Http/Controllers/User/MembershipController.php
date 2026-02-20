@@ -345,6 +345,19 @@ class MembershipController extends Controller
     public function upgrade(Request $request, MembershipTier $tier)
     {
         $user = Auth::user();
+
+        // Handle promo code if provided
+        $promoCode = null;
+        $discount = 0;
+        if ($request->has('promo_code') && !empty($request->promo_code)) {
+            $promoCode = MembershipPromoCode::where('code', $request->promo_code)->first();
+            if ($promoCode && $promoCode->canBeUsedByUser($user->id) && $promoCode->canBeAppliedToTier($tier->id)) {
+                $discount = $promoCode->calculateDiscount($tier->cost);
+            } else {
+                return redirect()->route('user.membership.index')->with('error', 'Invalid or expired promo code.');
+            }
+        }
+
         if (($tier->pricing_type ?? 'amount') === 'token') {
             $user_subscription = new UserSubscription();
             $user_subscription->user_id = $user->id;
@@ -355,6 +368,8 @@ class MembershipController extends Controller
             $user_subscription->life_force_energy_tokens = $tier->life_force_energy_tokens;
             $user_subscription->agree_accepted_at = now();
             $user_subscription->agree_description_snapshot = $tier->agree_description;
+            $user_subscription->promo_code = $promoCode ? $promoCode->code : null;
+            $user_subscription->discount_amount = $discount;
             $user_subscription->subscription_validity = 12;
             $user_subscription->subscription_start_date = now();
             $user_subscription->subscription_expire_date = now()->addYear();
@@ -362,16 +377,32 @@ class MembershipController extends Controller
 
             $this->syncTierPermissions($user, $tier);
 
+            // Record promo code usage
+            if ($promoCode) {
+                MembershipPromoUsage::create([
+                    'promo_code_id' => $promoCode->id,
+                    'user_id' => $user->id,
+                    'user_subscription_id' => $user_subscription->id,
+                    'discount_applied' => $discount,
+                ]);
+                $promoCode->incrementUsage();
+            }
+
             return redirect()->route('user.membership.index')->with('success', 'Membership upgraded');
         }
 
         // create a new subscription — for now, make a simple record (no payment gateway integrated)
+        $finalPrice = max(0, $tier->cost - $discount);
+
         $user_subscription = new UserSubscription();
         $user_subscription->user_id = $user->id;
         $user_subscription->plan_id = $tier->id;
         $user_subscription->subscription_method = 'amount';
         $user_subscription->subscription_name = $tier->name;
         $user_subscription->subscription_price = $tier->cost;
+        $user_subscription->promo_code = $promoCode ? $promoCode->code : null;
+        $user_subscription->discount_amount = $discount;
+        $user_subscription->final_price = $finalPrice;
         $user_subscription->subscription_validity = 12; // 12 months
         $user_subscription->subscription_start_date = now();
         $user_subscription->subscription_expire_date = now()->addYear();
@@ -383,11 +414,24 @@ class MembershipController extends Controller
         $payment->user_subscription_id = $user_subscription->id;
         $payment->transaction_id = 'manual-' . rand(1000, 9999);
         $payment->payment_method = 'Manual';
-        $payment->payment_amount = $tier->cost;
+        $payment->payment_amount = $finalPrice;
+        $payment->promo_code = $promoCode ? $promoCode->code : null;
+        $payment->discount_amount = $discount;
         $payment->payment_status = 'Success';
         $payment->save();
 
         $this->syncTierPermissions($user, $tier);
+
+        // Record promo code usage
+        if ($promoCode) {
+            MembershipPromoUsage::create([
+                'promo_code_id' => $promoCode->id,
+                'user_id' => $user->id,
+                'user_subscription_id' => $user_subscription->id,
+                'discount_applied' => $discount,
+            ]);
+            $promoCode->incrementUsage();
+        }
 
         return redirect()->route('user.membership.index')->with('success', 'Membership upgraded');
     }

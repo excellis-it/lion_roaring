@@ -129,47 +129,73 @@
                                                     class="fa fa-check text-success me-2"></i>{{ $b->benefit }}</li>
                                         @endforeach
                                     </ul>
-                                    <div class="mt-auto text-center">
-                                        @if ($user_subscription)
-                                            @if ($tier->id == $user_subscription->plan_id)
-                                                <span class="btn btn-sm btn-outline-primary disabled">Current Plan</span>
-                                            @elseif (($tier->pricing_type ?? 'amount') === 'token')
-                                                <button type="button"
-                                                    class="btn btn-upgrade btn-primary js-token-subscribe"
-                                                    data-tier-id="{{ $tier->id }}"
-                                                    data-tier-name="{{ $tier->name }}"
-                                                    data-agree-description="{{ e($tier->agree_description) }}">
-                                                    Subscribe to {{ $tier->name }}
-                                                </button>
-                                            @else
-                                                @if (($currentMethod ?? 'amount') === 'amount' && floatval($tier->cost) > $currentPrice)
+                                    @if (!auth()->user()->hasNewRole('SUPER ADMIN'))
+                                        <div class="mt-auto text-center">
+                                            @if ($user_subscription)
+                                                @if ($tier->id == $user_subscription->plan_id)
+                                                    <span class="btn btn-sm btn-outline-primary disabled">Current
+                                                        Plan</span>
+                                                @elseif (($tier->pricing_type ?? 'amount') === 'token')
                                                     <button type="button"
-                                                        class="btn btn-upgrade btn-primary js-promo-checkout"
+                                                        class="btn btn-upgrade btn-primary js-token-subscribe"
                                                         data-tier-id="{{ $tier->id }}"
                                                         data-tier-name="{{ $tier->name }}"
-                                                        data-tier-cost="{{ $tier->cost }}">Upgrade to
-                                                        {{ $tier->name }}</button>
+                                                        data-agree-description="{{ e($tier->agree_description) }}">
+                                                        Subscribe to {{ $tier->name }}
+                                                    </button>
                                                 @else
-                                                    <span class="btn btn-sm btn-outline-primary disabled"></span>
+                                                    @if (($currentMethod ?? 'amount') === 'amount' && floatval($tier->cost) > $currentPrice)
+                                                        @if (floatval($tier->cost) == 0)
+                                                            <form method="POST"
+                                                                action="{{ route('user.membership.upgrade', $tier->id) }}"
+                                                                class="d-inline">
+                                                                @csrf
+                                                                <button type="submit"
+                                                                    class="btn btn-upgrade btn-primary">Subscribe to
+                                                                    {{ $tier->name }}</button>
+                                                            </form>
+                                                        @else
+                                                            <button type="button"
+                                                                class="btn btn-upgrade btn-primary js-promo-checkout"
+                                                                data-tier-id="{{ $tier->id }}"
+                                                                data-tier-name="{{ $tier->name }}"
+                                                                data-tier-cost="{{ $tier->cost }}">Upgrade to
+                                                                {{ $tier->name }}</button>
+                                                        @endif
+                                                    @else
+                                                        <span class="btn btn-sm btn-outline-primary disabled"></span>
+                                                    @endif
+                                                @endif
+                                            @else
+                                                @if (($tier->pricing_type ?? 'amount') === 'token')
+                                                    <button type="button" class="btn btn-primary js-token-subscribe"
+                                                        data-tier-id="{{ $tier->id }}"
+                                                        data-tier-name="{{ $tier->name }}"
+                                                        data-agree-description="{{ e($tier->agree_description) }}">
+                                                        Subscribe to {{ $tier->name }}
+                                                    </button>
+                                                @else
+                                                    @if (floatval($tier->cost) == 0)
+                                                        <form method="POST"
+                                                            action="{{ route('user.membership.upgrade', $tier->id) }}"
+                                                            class="d-inline">
+                                                            @csrf
+                                                            <button type="submit"
+                                                                class="btn btn-primary btn-upgrade">Subscribe to
+                                                                {{ $tier->name }}</button>
+                                                        </form>
+                                                    @else
+                                                        <button type="button" class="btn btn-primary js-promo-checkout"
+                                                            data-tier-id="{{ $tier->id }}"
+                                                            data-tier-name="{{ $tier->name }}"
+                                                            data-tier-cost="{{ $tier->cost }}">Subscribe to
+                                                            {{ $tier->name }}</button>
+                                                    @endif
                                                 @endif
                                             @endif
-                                        @else
-                                            @if (($tier->pricing_type ?? 'amount') === 'token')
-                                                <button type="button" class="btn btn-primary js-token-subscribe"
-                                                    data-tier-id="{{ $tier->id }}"
-                                                    data-tier-name="{{ $tier->name }}"
-                                                    data-agree-description="{{ e($tier->agree_description) }}">
-                                                    Subscribe to {{ $tier->name }}
-                                                </button>
-                                            @else
-                                                <button type="button" class="btn btn-primary js-promo-checkout"
-                                                    data-tier-id="{{ $tier->id }}"
-                                                    data-tier-name="{{ $tier->name }}"
-                                                    data-tier-cost="{{ $tier->cost }}">Subscribe to
-                                                    {{ $tier->name }}</button>
-                                            @endif
-                                        @endif
-                                    </div>
+                                        </div>
+                                    @endif
+
                                 </div>
                             </div>
                         @endforeach
@@ -504,14 +530,16 @@
             finalAmount = currentTierCost;
 
             // Reset modal
-            $('#promoCodeModalTitle').text('Checkout - ' + currentTierName);
             $('#selectedPlan').text(currentTierName + ' Membership');
             $('#originalPrice').text('$' + currentTierCost.toFixed(2));
             $('#finalPrice').text('$' + currentTierCost.toFixed(2));
             $('#discountRow').hide();
             $('#discountAmount').text('');
-            $('#promoCodeInput').val('');
+            $('#promoCodeInput').val('').prop('readonly', false);
             $('#promoMessage').text('').removeClass('text-success text-danger');
+            $('#applyPromoBtn').text('Apply').prop('disabled', false).removeClass('btn-success text-white');
+            $('#promoCodeModalTitle').text('Checkout - ' + currentTierName);
+            $('#proceedToCheckout').text('Checkout ').append('<i class="fa fa-arrow-right ms-2 small"></i>');
 
             // Show modal
             if (window.bootstrap && bootstrap.Modal) {
@@ -591,12 +619,34 @@
 
         // Proceed to checkout
         $('#proceedToCheckout').on('click', function() {
-            var checkoutUrl = '{{ url('user/membership/checkout') }}/' + currentTierId;
+            // If final amount is 0 after promo discount, use the upgrade route (POST, no Stripe)
+            if (finalAmount <= 0) {
+                var form = $('<form>', {
+                    method: 'POST',
+                    action: '{{ route('user.membership.upgrade', ':id') }}'.replace(':id', currentTierId)
+                });
+                form.append($('<input>', {
+                    type: 'hidden',
+                    name: '_token',
+                    value: '{{ csrf_token() }}'
+                }));
+                if (appliedPromoCode) {
+                    form.append($('<input>', {
+                        type: 'hidden',
+                        name: 'promo_code',
+                        value: appliedPromoCode
+                    }));
+                }
+                $('body').append(form);
+                form.submit();
+                return;
+            }
 
+            // Paid plan: use Stripe checkout (GET)
+            var checkoutUrl = '{{ route('user.membership.checkout', ':id') }}'.replace(':id', currentTierId);
             if (appliedPromoCode) {
                 checkoutUrl += '?promo_code=' + encodeURIComponent(appliedPromoCode);
             }
-
             window.location.href = checkoutUrl;
         });
 
