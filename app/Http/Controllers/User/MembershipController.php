@@ -624,12 +624,41 @@ class MembershipController extends Controller
     private function syncTierPermissions($user, $tier)
     {
         if (!empty($tier->permissions)) {
-            $permissions = explode(',', $tier->permissions);
-            // We give permissions directly or we could use roles.
-            // Since the user asked to "add permissions", we'll sync them.
-            // Note: syncPermissions replaces existing ones. If we want to ADD, we use givePermissionTo.
-            // However, usually membership permissions should be consistent for that tier.
-            $user->syncPermissions($permissions);
+            $permissions = array_filter(array_map('trim', explode(',', $tier->permissions)));
+
+            // Get user's custom role (the one that is NOT a base UserType role)
+            $baseRoleNames = \App\Models\UserType::pluck('name')->toArray();
+            $userRole = null;
+            foreach ($user->roles as $role) {
+                if (!in_array($role->name, $baseRoleNames)) {
+                    $userRole = $role;
+                    break;
+                }
+            }
+
+            if ($userRole) {
+                // Sync permissions to the ROLE (same approach as PartnerController)
+                $userRole->syncPermissions($permissions);
+            } else {
+                // Fallback: if no custom role exists, sync directly to user
+                $user->syncPermissions($permissions);
+            }
+
+            // Also remove any stale direct user permissions to avoid conflicts
+            $directPerms = $user->getDirectPermissions()->pluck('name')->toArray();
+            if (!empty($directPerms) && $userRole) {
+                $user->revokePermissionTo($directPerms);
+            }
+        } else {
+            // No permissions on tier: clear all direct permissions
+            $directPerms = $user->getDirectPermissions()->pluck('name')->toArray();
+            if (!empty($directPerms)) {
+                $user->revokePermissionTo($directPerms);
+            }
         }
+
+        // Clear Spatie permission cache
+        app()->make(\Spatie\Permission\PermissionRegistrar::class)->forgetCachedPermissions();
+        $user->forgetCachedPermissions();
     }
 }

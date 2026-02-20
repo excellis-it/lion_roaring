@@ -573,12 +573,15 @@ class PartnerController extends Controller
         if ($the_role->name == 'MEMBER_NON_SOVEREIGN' && $request->has('membership_tier_id')) {
             $tier = MembershipTier::find($request->membership_tier_id);
             if ($tier && !empty($tier->permissions)) {
-                $permissions = explode(',', $tier->permissions);
+                $permissions = array_filter(array_map('trim', explode(',', $tier->permissions)));
                 $newRole->syncPermissions($permissions);
             }
         } elseif ($request->has('permissions')) {
             $newRole->syncPermissions($request->permissions);
         }
+
+        // Clear permission cache
+        app()->make(\Spatie\Permission\PermissionRegistrar::class)->forgetCachedPermissions();
 
         // return $request;
 
@@ -883,7 +886,7 @@ class PartnerController extends Controller
             if ($the_role->name == 'MEMBER_NON_SOVEREIGN' && $request->has('membership_tier_id')) {
                 $tier = MembershipTier::find($request->membership_tier_id);
                 if ($tier && !empty($tier->permissions)) {
-                    $permissions = explode(',', $tier->permissions);
+                    $permissions = array_filter(array_map('trim', explode(',', $tier->permissions)));
                     $userRole->syncPermissions($permissions);
                 }
             } elseif ($request->has('permissions')) {
@@ -892,6 +895,16 @@ class PartnerController extends Controller
 
             // Sync user to ONLY the custom role
             $data->syncRoles([$userRole->name]);
+
+            // Remove any stale direct user permissions (permissions should come from role only)
+            $directPerms = $data->getDirectPermissions()->pluck('name')->toArray();
+            if (!empty($directPerms)) {
+                $data->revokePermissionTo($directPerms);
+            }
+
+            // Clear permission cache
+            app()->make(\Spatie\Permission\PermissionRegistrar::class)->forgetCachedPermissions();
+            $data->forgetCachedPermissions();
 
             // Handle Membership Subscription Update
             if ($the_role->name == 'MEMBER_NON_SOVEREIGN' && $request->has('membership_tier_id')) {
