@@ -1,6 +1,72 @@
 @php
     use App\Helpers\Helper;
+    use App\Models\EstorePromoCode;
+    use App\Models\MembershipPromoCode;
+
+    $now = \Carbon\Carbon::now();
+
+    // Fetch active membership promo codes
+    $membershipCoupons = MembershipPromoCode::where('status', 1)
+        ->where('start_date', '<=', $now)
+        ->where('end_date', '>=', $now)
+        ->get()
+        ->map(function ($coupon) {
+            return (object) [
+                'code' => $coupon->code,
+                'discount' => $coupon->is_percentage
+                    ? $coupon->discount_amount . '% OFF'
+                    : '$' . number_format($coupon->discount_amount, 2) . ' OFF',
+                'end_date' => \Carbon\Carbon::parse($coupon->end_date)->format('M d, Y'),
+                'type' => 'Membership',
+            ];
+        });
+
+    $allCoupons = $membershipCoupons;
 @endphp
+
+@if ($allCoupons->count() > 0)
+    <div class="coupon_slider" id="couponSliderBar">
+        {{-- <div class="coupon-slider-close" id="couponSliderClose" title="Close">
+            <i class="fa fa-times"></i>
+        </div> --}}
+        <div class="coupon-ticker-wrapper">
+            <div class="coupon-ticker-track">
+                @foreach ($allCoupons as $coupon)
+                    <div class="coupon-ticker-item">
+                        <span class="coupon-ticker-icon"><i class="fa-solid fa-tag"></i></span>
+                        <span class="coupon-ticker-badge">{{ $coupon->type }}</span>
+                        <span class="coupon-ticker-text">
+                            Use code <strong class="coupon-ticker-code">{{ $coupon->code }}</strong>
+                            to get <strong class="coupon-ticker-discount">{{ $coupon->discount }}</strong>
+                        </span>
+                        <span class="coupon-ticker-expiry">
+                            <i class="fa-regular fa-clock"></i> Expires {{ $coupon->end_date }}
+                        </span>
+                    </div>
+                @endforeach
+                {{-- Duplicate for seamless loop --}}
+                @foreach ($allCoupons as $coupon)
+                    <div class="coupon-ticker-item">
+                        <span class="coupon-ticker-icon"><i class="fa-solid fa-tag"></i></span>
+                        <span class="coupon-ticker-badge">{{ $coupon->type }}</span>
+                        <span class="coupon-ticker-text">
+                            Use code <strong class="coupon-ticker-code">{{ $coupon->code }}</strong>
+                            to get <strong class="coupon-ticker-discount">{{ $coupon->discount }}</strong>
+                        </span>
+                        <span class="coupon-ticker-expiry">
+                            <i class="fa-regular fa-clock"></i> Expires {{ $coupon->end_date }}
+                        </span>
+                    </div>
+                @endforeach
+            </div>
+        </div>
+    </div>
+
+
+
+
+@endif
+
 <header class="app-header">
     <nav class="navbar navbar-expand-lg navbar-light">
         <ul class="navbar-nav">
@@ -122,7 +188,8 @@
                         </div>
                         <div class="message-body">
                             @if (Gate::check('Manage Profile'))
-                                <a href="{{ route('user.profile') }}" class="py-8 px-7 mt-8 d-flex align-items-center">
+                                <a href="{{ route('user.profile') }}"
+                                    class="py-8 px-7 mt-8 d-flex align-items-center">
                                     <span
                                         class="d-flex align-items-center justify-content-center bg-light rounded-1 p-6">
                                         <img src="{{ asset('user_assets/images/icon-account.svg') }}" alt=""

@@ -62,6 +62,183 @@
             margin: 100px;
         }
     </style>
+      <style>
+            /* ===== Coupon Slider / Ticker Bar ===== */
+            .coupon_slider {
+                background: linear-gradient(135deg, var(--main-color, #643271) 0%, #8b47a5 50%, var(--sec-color, #d98b1c) 100%);
+                position: sticky;
+                overflow: hidden;
+                padding: 8px 40px 8px 10px;
+                z-index: 1001;
+                box-shadow: 0 2px 10px rgba(100, 50, 113, 0.3);
+                top: 0;
+            }
+
+            .coupon-slider-close {
+                position: absolute;
+                right: 10px;
+                top: 50%;
+                transform: translateY(-50%);
+                color: rgba(255, 255, 255, 0.7);
+                cursor: pointer;
+                font-size: 14px;
+                width: 24px;
+                height: 24px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                border-radius: 50%;
+                background: rgba(255, 255, 255, 0.15);
+                transition: all 0.3s ease;
+                z-index: 2;
+            }
+
+            .coupon-slider-close:hover {
+                background: rgba(255, 255, 255, 0.3);
+                color: #fff;
+                transform: translateY(-50%) scale(1.1);
+            }
+
+            .coupon-ticker-wrapper {
+                overflow: hidden;
+                width: 100%;
+            }
+
+            .coupon-ticker-track {
+                display: flex;
+                align-items: center;
+                white-space: nowrap;
+                animation: couponTickerScroll var(--ticker-duration, 30s) linear infinite;
+                will-change: transform;
+            }
+
+            .coupon-ticker-track:hover {
+                animation-play-state: paused;
+            }
+
+            @keyframes couponTickerScroll {
+                0% {
+                    transform: translateX(0);
+                }
+
+                100% {
+                    transform: translateX(-50%);
+                }
+            }
+
+            .coupon-ticker-item {
+                display: inline-flex;
+                align-items: center;
+                gap: 8px;
+                padding: 0 40px;
+                color: #fff;
+                font-size: 13px;
+                font-family: var(--main-font, 'Roboto', sans-serif);
+                flex-shrink: 0;
+            }
+
+            .coupon-ticker-icon {
+                color: var(--sec-color, #d98b1c);
+                font-size: 15px;
+                animation: couponIconPulse 2s ease-in-out infinite;
+                filter: drop-shadow(0 0 4px rgba(217, 139, 28, 0.5));
+            }
+
+            @keyframes couponIconPulse {
+
+                0%,
+                100% {
+                    transform: scale(1);
+                }
+
+                50% {
+                    transform: scale(1.2) rotate(-10deg);
+                }
+            }
+
+            .coupon-ticker-badge {
+                background: rgba(255, 255, 255, 0.2);
+                padding: 2px 8px;
+                border-radius: 10px;
+                font-size: 10px;
+                font-weight: 600;
+                text-transform: uppercase;
+                letter-spacing: 0.5px;
+                backdrop-filter: blur(4px);
+                border: 1px solid rgba(255, 255, 255, 0.15);
+            }
+
+            .coupon-ticker-code {
+                background: rgba(255, 255, 255, 0.2);
+                padding: 2px 10px;
+                border-radius: 4px;
+                letter-spacing: 1.5px;
+                font-size: 13px;
+                font-weight: 700;
+                border: 1px dashed rgba(255, 255, 255, 0.5);
+                color: #ffe082;
+                cursor: pointer;
+                transition: all 0.3s ease;
+            }
+
+            .coupon-ticker-code:hover {
+                background: rgba(255, 255, 255, 0.35);
+                transform: scale(1.05);
+                box-shadow: 0 0 8px rgba(255, 224, 130, 0.4);
+            }
+
+            .coupon-ticker-discount {
+                color: #ffe082;
+                font-weight: 700;
+                font-size: 14px;
+                text-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+            }
+
+            .coupon-ticker-expiry {
+                font-size: 11px;
+                opacity: 0.8;
+                display: inline-flex;
+                align-items: center;
+                gap: 4px;
+            }
+
+            .coupon-ticker-item::after {
+                content: '';
+                width: 4px;
+                height: 4px;
+                background: rgba(255, 255, 255, 0.5);
+                border-radius: 50%;
+                margin-left: 32px;
+                flex-shrink: 0;
+            }
+
+            /* Responsive */
+            @media (max-width: 768px) {
+                .coupon_slider {
+                    padding: 6px 32px 6px 8px;
+                }
+
+                .coupon-ticker-item {
+                    font-size: 11px;
+                    padding: 0 25px;
+                    gap: 6px;
+                }
+
+                .coupon-ticker-code {
+                    font-size: 11px;
+                    padding: 1px 6px;
+                }
+
+                .coupon-ticker-badge {
+                    font-size: 9px;
+                    padding: 1px 6px;
+                }
+
+                .coupon-ticker-expiry {
+                    font-size: 10px;
+                }
+            }
+        </style>
     @stack('styles')
 
 </head>
@@ -1403,6 +1580,44 @@
         //   if ($(this).next('.note-editor').length) $(this).summernote('destroy');
         // });
     </script>
+
+     <script>
+            $(document).ready(function() {
+                // Close coupon slider
+                $('#couponSliderClose').on('click', function() {
+                    $('#couponSliderBar').slideUp(300);
+                    sessionStorage.setItem('couponSliderClosed', '1');
+                });
+
+                // Check if slider was closed in this session
+                // if (sessionStorage.getItem('couponSliderClosed') === '1') {
+                //     $('#couponSliderBar').hide();
+                // }
+
+                // Adjust ticker animation speed based on number of items
+                var itemCount = $('.coupon-ticker-item').length / 2; // half are duplicates
+                var duration = Math.max(15, itemCount * 8); // minimum 15s, 8s per item
+                document.documentElement.style.setProperty('--ticker-duration', duration + 's');
+
+                // Copy coupon code to clipboard on click
+                $(document).on('click', '.coupon-ticker-code', function() {
+                    var code = $(this).text().trim();
+                    if (navigator.clipboard) {
+                        navigator.clipboard.writeText(code).then(function() {
+                            toastr.success('Coupon code "' + code + '" copied to clipboard!');
+                        });
+                    } else {
+                        // Fallback for older browsers
+                        var $temp = $('<input>');
+                        $('body').append($temp);
+                        $temp.val(code).select();
+                        document.execCommand('copy');
+                        $temp.remove();
+                        toastr.success('Coupon code "' + code + '" copied to clipboard!');
+                    }
+                });
+            });
+        </script>
 
 
 
