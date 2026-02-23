@@ -75,5 +75,6 @@ class Kernel extends HttpKernel
         // 'role_or_permission' => \Spatie\Permission\Middlewares\RoleOrPermissionMiddleware::class,
         'userActivity' => \App\Http\Middleware\UserActivityLogger::class,
         'event.access' => \App\Http\Middleware\CheckEventAccess::class,
+        'agreement.signed' => \App\Http\Middleware\CheckAgreementSigned::class,
     ];
 }

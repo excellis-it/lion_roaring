@@ -72,6 +72,7 @@ use App\Http\Controllers\User\TeamController;
 use App\Http\Controllers\User\TopicController;
 use App\Http\Controllers\User\ElearningTopicController;
 use App\Http\Controllers\User\SignupRuleController as UserSignupRuleController;
+use App\Http\Controllers\User\AgreementSignController;
 
 
 use App\Http\Controllers\Admin\AboutUsController;
@@ -486,7 +487,14 @@ Route::middleware(['userActivity'])->group(function () {
     });
 });
 
-Route::prefix('user')->middleware(['user', 'preventBackHistory', 'userActivity', 'member.access'])->group(function () {
+// Agreement Signing Routes (must be outside agreement.signed middleware to avoid redirect loops)
+Route::prefix('user')->middleware(['user', 'preventBackHistory', 'userActivity'])->group(function () {
+    Route::get('/sign-agreement', [AgreementSignController::class, 'show'])->name('user.sign.agreement');
+    Route::post('/sign-agreement/preview', [AgreementSignController::class, 'preview'])->name('user.sign.agreement.preview');
+    Route::post('/sign-agreement/submit', [AgreementSignController::class, 'submit'])->name('user.sign.agreement.submit');
+});
+
+Route::prefix('user')->middleware(['user', 'preventBackHistory', 'userActivity', 'member.access', 'agreement.signed'])->group(function () {
     Route::prefix('membership')->group(function () {
         Route::get('/', [UserMembershipController::class, 'index'])->name('user.membership.index');
         Route::post('/upgrade/{tier}', [UserMembershipController::class, 'upgrade'])->name('user.membership.upgrade');
@@ -1171,7 +1179,7 @@ Route::post('/set-visitor-country', [VisitorController::class, 'setCountry'])->n
 
 /**************************************************----------------------------ECOM--------------------------****************************************************************/
 
-Route::prefix('e-store')->middleware(['user', 'preventBackHistory', 'userActivity', 'member.access'])->group(function () {
+Route::prefix('e-store')->middleware(['user', 'preventBackHistory', 'userActivity', 'member.access', 'agreement.signed'])->group(function () {
 
     Route::get('/', [HomeController::class, 'eStore'])->name('e-store');
     Route::post('/newsletter', [HomeController::class, 'newsletter'])->name('e-store.newsletter');
@@ -1319,7 +1327,7 @@ foreach ($subcategories as $subcategory) {
 
 /**************************************************----------------------------ELEARNING--------------------------****************************************************************/
 
-Route::prefix('e-learning')->middleware(['user'])->group(function () {
+Route::prefix('e-learning')->middleware(['user', 'agreement.signed'])->group(function () {
     Route::get('/', [ElearningHomeController::class, 'eStore'])->name('e-learning');
     Route::post('/newsletter', [ElearningHomeController::class, 'newsletter'])->name('e-learning.newsletter');
     Route::get('/product/{slug}', [ElearningProductController::class, 'productDetails'])->name('e-learning.product-details');
