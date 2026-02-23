@@ -330,7 +330,7 @@ p {
     font-size: 60px;
     font-weight: 700;
     text-transform: uppercase;
-    color: #fff;
+    color: var(--sec-color);
 }
 
 .slide .slide__content--headings .title span {

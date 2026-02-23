@@ -1,13 +1,13 @@
 :root {
-  --main-color: #643271;
-  --sec-color:#D98B1C;
-  --heading-color:#232331;
-  --text-color: #1E1E1E;
-  --white-color:#fff;
-  --black-color:#000;
-  --main-font: 'EB Garamond', serif;
-  --heading-font: 'EB Garamond', serif;
-  --button-font: 'EB Garamond', serif;
+    --main-color: #643271;
+    --sec-color: #d98b1c;
+    --heading-color: #232331;
+    --text-color: #1e1e1e;
+    --white-color: #fff;
+    --black-color: #000;
+    --main-font: "EB Garamond", serif;
+    --heading-font: "EB Garamond", serif;
+    --button-font: "EB Garamond", serif;
 }
 .booknow_btn {
     margin-right: 10px;
@@ -42,19 +42,19 @@
 
 .button_container.active .top {
     transform: translateY(7px) translateX(0) rotate(45deg);
-    background: #FFF;
-	left:0;
+    background: #fff;
+    left: 0;
 }
 
 .button_container.active .middle {
     opacity: 0;
-    background: #FFF;
+    background: #fff;
 }
 
 .button_container.active .bottom {
     transform: translateY(-9px) translateX(0) rotate(-45deg);
-    background: #FFF;
-	left:0;
+    background: #fff;
+    left: 0;
     width: 100%;
 }
 
@@ -100,7 +100,7 @@
     opacity: 1;
     visibility: visible;
     clip-path: circle(150% at 50% 0%);
-      pointer-events: all;
+    pointer-events: all;
 }
 
 .overlay.open li {
@@ -156,20 +156,20 @@
 .overlay ul li a {
     display: inline-block;
     position: relative;
-    color: #fff;
+    color: var(--sec-color);
     text-decoration: none;
     overflow: hidden;
     font-family: var(--heading-font);
-	letter-spacing:2px;
+    letter-spacing: 2px;
 }
-.gt_float_switcher .gt-selected, .gt_float_switcher{
-/* 	background:none !important; */
-	box-shadow:none !important;
+.gt_float_switcher .gt-selected,
+.gt_float_switcher {
+    /* 	background:none !important; */
+    box-shadow: none !important;
 }
 /* .gt_float_switcher .gt-selected .gt-current-lang{
 	color:#fff !important;
 } */
-
 
 .overlay ul li a:hover:after,
 .overlay ul li a:focus:after,
