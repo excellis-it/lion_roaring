@@ -1024,20 +1024,23 @@
 
 
         function setMailStar(element, mailid) {
-            const icon = element.querySelector('.material-symbols-outlined');
+            var materialIcon = element.querySelector('.material-symbols-outlined');
+            var faIcon = element.querySelector('.fa-star');
             var star_val = 0;
 
-            if (icon.style.color === 'orange') {
-                icon.style.color = '';
-                icon.style.fontVariationSettings = "'FILL' 0";
+            if (materialIcon) {
+                // Currently starred (material icon with orange) -> unstar it
+                // Replace with FA icon
+                element.innerHTML = '<i class="fa-regular fa-star"></i>';
                 star_val = 0;
-            } else {
-                icon.style.color = 'orange';
-                icon.style.fontVariationSettings = "'FILL' 1";
+            } else if (faIcon) {
+                // Currently unstarred (FA icon) -> star it
+                // Replace with material icon
+                element.innerHTML =
+                    '<span class="material-symbols-outlined" style="color: orange; font-variation-settings: \'FILL\' 1;">grade</span>';
                 star_val = 1;
             }
 
-            // console.log('mail id is ' + mailid);
             $.ajax({
                 url: "{{ route('mail.star') }}",
                 type: 'POST',
