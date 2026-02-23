@@ -27,13 +27,13 @@
                 <div class="emailList">
                     <!-- Settings Starts -->
                     <div class="emailList__settings">
-                        <div class="emailList__settingsLeft">
+                        <div class="emailList__settingsLeft gap-2">
                             <input type="checkbox" id="selectAll" />
                             <span type="button" class="material-symbols-outlined"> arrow_drop_down </span>
                             <span onclick="fetchTrashEmails()" type="button" class="material-symbols-outlined"> refresh
                             </span>
                             <span type="button" class="material-symbols-outlined" id="restore-trash"> restore </span>
-                            
+
                         </div>
                         <div class="emailList__settingsRight d-flex">
                             <span type="button" class="text-sm m3-2 btn btn-sm btn-trash-empty" id="empty-trash">

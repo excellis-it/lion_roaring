@@ -29,7 +29,7 @@ $mainMailUser = \App\Models\MailUser::where('send_mail_id', $mainMailId)
         <div class="emailRow {{ $isRead ? '' : 'mail_read' }}">
 
             <div class="col-1" style="max-width: 80px;">
-                <div class="emailRow__options">
+                <div class="emailRow__options gap-2">
                     <input type="checkbox" class="selectMail" id="check-box" data-id="{{ $mail->id }}" />
                     {{-- <span class="material-symbols-outlined"> star_border </span> --}}
                     @if ($isStar == 1)

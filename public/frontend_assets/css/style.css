@@ -3532,6 +3532,7 @@ li.slick-active button {
 
 .book .page.first_page {
     padding: 20px 40px;
+    overflow-y: hidden;
 }
 
 .book .page {
@@ -4134,6 +4135,7 @@ li.slick-active button {
 
 .book .page {
     overflow-x: hidden;
+    overflow-y: auto;
 }
 
 /* macOS Safari hard reset for native select */

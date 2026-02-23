@@ -22,7 +22,7 @@
                 <div class="emailList" id="mail_body_div">
                     <!-- Settings Starts -->
                     <div class="emailList__settings">
-                        <div class="emailList__settingsLeft">
+                        <div class="emailList__settingsLeft gap-2">
                             <a href="{{ route('mail.index') }}"> <span class="material-symbols-outlined">
                                     arrow_back</span></a>
                             <a href=""> <span class="material-symbols-outlined"> refresh </span></a>

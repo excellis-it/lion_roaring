@@ -9,7 +9,7 @@
             $isStar = $mailUser ? $mailUser->is_starred : 0;
         @endphp
         <div class="emailRow {{ $isRead ? '' : 'mail_read' }}">
-            <div class="emailRow__options">
+            <div class="emailRow__options gap-2">
                 <input type="checkbox" class="selectMail" id="check-box" data-id="{{ $mail->id }}" />
                 {{-- <span class="material-symbols-outlined"> star_border </span> --}}
                 @if ($isStar == 1)

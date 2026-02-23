@@ -19,7 +19,7 @@
                 <div class="emailList">
                     <!-- Settings Starts -->
                     <div class="emailList__settings">
-                        <div class="emailList__settingsLeft">
+                        <div class="emailList__settingsLeft gap-2">
                             <input type="checkbox" id="selectAll" />
                             <span type="button" class="material-symbols-outlined"> arrow_drop_down </span>
                             <span onclick="fetchSentEmails()" type="button" class="material-symbols-outlined"> refresh

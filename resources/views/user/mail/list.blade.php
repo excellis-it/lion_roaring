@@ -19,7 +19,7 @@
                 <div class="emailList">
                     <!-- Settings Starts -->
                     <div class="emailList__settings">
-                        <div class="emailList__settingsLeft">
+                        <div class="emailList__settingsLeft gap-2">
                             <input type="checkbox" id="selectAll" />
                             <span type="button"><i class="fa-solid fa-caret-down"></i> </span>
                             <span onclick="fetchLatestEmails()" type="button"><i class="fa-solid fa-arrows-rotate"></i>
