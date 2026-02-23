@@ -31,10 +31,10 @@ class ChatController extends Controller
         if (auth()->user()->can('Manage Chat')) {
             $user_type = auth()->user()->user_type;
             $country_name = auth()->user()->country;
-            $usersQuery = User::with('roles', 'chatSender')
+            $usersQuery = User::with('userRole', 'chatSender')
                 ->where('id', '!=', auth()->id())
                 ->where('status', 1)
-                ->whereHas('roles', function ($query) {
+                ->whereHas('userRole', function ($query) {
                     $query->whereIn('type', [1, 2, 3]);
                 });
 
@@ -42,42 +42,48 @@ class ChatController extends Controller
             $isSuperAdmin = auth()->user()->hasNewRole('SUPER ADMIN');
 
             if (!$isSuperAdmin) {
+                $authId = auth()->id();
+
                 if ($user_type == 'Global') {
-                    $usersQuery->where(function ($query) {
-                        $query->where('user_type', 'Global')
-                            ->orWhereHas('chatSender', function ($q) {
-                                $q->where('reciver_id', auth()->id());
+                    // Global user: see Global non-SA users + Super Admins who messaged me first
+                    $usersQuery->where(function ($query) use ($authId) {
+                        // Global users who are NOT Super Admins
+                        $query->where(function ($q) {
+                            $q->where('user_type', 'Global')
+                                ->whereDoesntHave('userRole', function ($r) {
+                                    $r->where('name', 'SUPER ADMIN');
+                                });
+                        })
+                            // OR Super Admins who have messaged me first
+                            ->orWhere(function ($q) use ($authId) {
+                                $q->whereHas('userRole', function ($r) {
+                                    $r->where('name', 'SUPER ADMIN');
+                                })->whereHas('chatSender', function ($chat) use ($authId) {
+                                    $chat->where('reciver_id', $authId);
+                                });
                             });
                     });
                 } else {
-                    $usersQuery->where(function ($query) use ($country_name) {
-                        // Same country users (Regional)
+                    // Regional user: see same-country Regional non-SA users + Super Admins who messaged me first
+                    $usersQuery->where(function ($query) use ($country_name, $authId) {
+                        // Regional users from same country who are NOT Super Admins
                         $query->where(function ($q) use ($country_name) {
-                            $q->where('user_type', 'Regional')->where('country', $country_name);
+                            $q->where('user_type', 'Regional')
+                                ->where('country', $country_name)
+                                ->whereDoesntHave('userRole', function ($r) {
+                                    $r->where('name', 'SUPER ADMIN');
+                                });
                         })
-                            // OR Global users who already messaged me
-                            ->orWhere(function ($q) {
-                                $q->where('user_type', 'Global')
-                                    ->whereHas('chatSender', function ($chat) {
-                                        $chat->where('reciver_id', auth()->id());
-                                    });
+                            // OR Super Admins who have messaged me first
+                            ->orWhere(function ($q) use ($authId) {
+                                $q->whereHas('userRole', function ($r) {
+                                    $r->where('name', 'SUPER ADMIN');
+                                })->whereHas('chatSender', function ($chat) use ($authId) {
+                                    $chat->where('reciver_id', $authId);
+                                });
                             });
                     });
                 }
-
-                // Exclude Global Super Admins from non-super-admin lists unless they have messaged
-                $usersQuery->where(function ($query) {
-                    $query->where(function ($q) {
-                        $q->where('user_type', '!=', 'Global')
-                            ->orWhereDoesntHave('userRole', function ($q) {
-                                $q->where('name', 'SUPER ADMIN');
-                            });
-                    })->orWhereHas('chatSender', function ($q) {
-                        $q->where('reciver_id', auth()->id());
-                    })->orWhereHas('chatReciver', function ($q) {
-                        $q->where('sender_id', auth()->id());
-                    });
-                });
             }
 
             $users = $usersQuery->get()->toArray();
@@ -105,7 +111,7 @@ class ChatController extends Controller
             });
 
             // foreach ($users as $user) {
-            //     $user['user_role'] = User::find($user['id'])->roles()->first();
+            //     $user['user_role'] = User::find($user['id'])->userRole()->first();
             // }
 
             // return $users;
@@ -122,49 +128,58 @@ class ChatController extends Controller
             $user_type = auth()->user()->user_type;
             $country_name = auth()->user()->country;
 
-            $usersQuery = User::with('roles', 'chatSender')
+            $usersQuery = User::with('userRole', 'chatSender')
                 ->where('id', '!=', auth()->id())
                 ->where('status', 1)
-                ->whereHas('roles', function ($query) {
+                ->whereHas('userRole', function ($query) {
                     $query->whereIn('type', [1, 2, 3]);
                 });
 
             $isSuperAdmin = auth()->user()->hasNewRole('SUPER ADMIN');
 
             if (!$isSuperAdmin) {
+                $authId = auth()->id();
+
                 if ($user_type == 'Global') {
-                    $usersQuery->where(function ($query) {
-                        $query->where('user_type', 'Global')
-                            ->orWhereHas('chatSender', function ($q) {
-                                $q->where('reciver_id', auth()->id());
+                    // Global user: see Global non-SA users + Super Admins who messaged me first
+                    $usersQuery->where(function ($query) use ($authId) {
+                        // Global users who are NOT Super Admins
+                        $query->where(function ($q) {
+                            $q->where('user_type', 'Global')
+                                ->whereDoesntHave('userRole', function ($r) {
+                                    $r->where('name', 'SUPER ADMIN');
+                                });
+                        })
+                            // OR Super Admins who have messaged me first
+                            ->orWhere(function ($q) use ($authId) {
+                                $q->whereHas('userRole', function ($r) {
+                                    $r->where('name', 'SUPER ADMIN');
+                                })->whereHas('chatSender', function ($chat) use ($authId) {
+                                    $chat->where('reciver_id', $authId);
+                                });
                             });
                     });
                 } else {
-                    $usersQuery->where(function ($query) use ($country_name) {
+                    // Regional user: see same-country Regional non-SA users + Super Admins who messaged me first
+                    $usersQuery->where(function ($query) use ($country_name, $authId) {
+                        // Regional users from same country who are NOT Super Admins
                         $query->where(function ($q) use ($country_name) {
-                            $q->where('user_type', 'Regional')->where('country', $country_name);
-                        })->orWhere(function ($q) {
-                            $q->where('user_type', 'Global')
-                                ->whereHas('chatSender', function ($chat) {
-                                    $chat->where('reciver_id', auth()->id());
+                            $q->where('user_type', 'Regional')
+                                ->where('country', $country_name)
+                                ->whereDoesntHave('userRole', function ($r) {
+                                    $r->where('name', 'SUPER ADMIN');
                                 });
-                        });
+                        })
+                            // OR Super Admins who have messaged me first
+                            ->orWhere(function ($q) use ($authId) {
+                                $q->whereHas('userRole', function ($r) {
+                                    $r->where('name', 'SUPER ADMIN');
+                                })->whereHas('chatSender', function ($chat) use ($authId) {
+                                    $chat->where('reciver_id', $authId);
+                                });
+                            });
                     });
                 }
-
-                // Exclude Global Super Admins from non-super-admin lists unless they have messaged
-                $usersQuery->where(function ($query) {
-                    $query->where(function ($q) {
-                        $q->where('user_type', '!=', 'Global')
-                            ->orWhereDoesntHave('userRole', function ($q) {
-                                $q->where('name', 'SUPER ADMIN');
-                            });
-                    })->orWhereHas('chatSender', function ($q) {
-                        $q->where('reciver_id', auth()->id());
-                    })->orWhereHas('chatReciver', function ($q) {
-                        $q->where('sender_id', auth()->id());
-                    });
-                });
             }
 
             $users = $usersQuery->get()->toArray();
@@ -381,7 +396,7 @@ class ChatController extends Controller
             }
 
             // ...existing code... (users array processing)
-            // $users = User::with('roles', 'chatSender')->where('id', '!=', auth()->id())->where('status', 1)->whereHas('roles', function ($query) {
+            // $users = User::with('userRole', 'chatSender')->where('id', '!=', auth()->id())->where('status', 1)->whereHas('userRole', function ($query) {
             //     $query->whereIn('type', [1, 2, 3]);
             // })->get()->toArray();
             // // return user orderBy latest message
@@ -413,11 +428,11 @@ class ChatController extends Controller
 
             // $reciver_id = $request->reciver_id; // Corrected the variable name to match the request
             // $receiver_users = User::
-            //     //with('roles', 'chatSender') // Assuming 'chatSender' is the relationship to the Chat model
+            //     //with('userRole', 'chatSender') // Assuming 'chatSender' is the relationship to the Chat model
 
             //     where('id', $reciver_id)
             //     ->where('status', 1)
-            //     ->whereHas('roles', function ($query) {
+            //     ->whereHas('userRole', function ($query) {
             //         $query->whereIn('type', [1, 2, 3]);
             //     })
             //     ->get()
@@ -460,7 +475,7 @@ class ChatController extends Controller
 
             // $receiver_user = User::where('id', $reciver_id)
             //     ->where('status', 1)
-            //     ->whereHas('roles', function ($query) {
+            //     ->whereHas('userRole', function ($query) {
             //         $query->whereIn('type', [1, 2, 3]);
             //     })
             //     ->first();
