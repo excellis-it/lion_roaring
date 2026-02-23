@@ -184,7 +184,7 @@
                                     </div>
                                     <div class="col-md-6 mb-2">
                                         <div class="box_label">
-                                            <label>Roar ID*</label>
+                                            <label>Roar ID</label>
                                             <input type="text" class="form-control" id="roar_id" name="roar_id"
                                                 placeholder="Roar ID" value="{{ Auth::user()->roar_id }}">
                                             @if ($errors->has('roar_id'))

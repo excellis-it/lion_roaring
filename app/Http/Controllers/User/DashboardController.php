@@ -86,7 +86,7 @@ class DashboardController extends Controller
             'middle_name' => 'nullable|string|max:255',
             'lion_roaring_id_suffix' => 'required|digits:4',
             'generated_id_part' => 'required|string',
-            'roar_id' => 'required|string|max:255',
+            'roar_id' => 'nullable|string|max:255',
             'address' => 'required|string|max:255',
             'phone_number' => 'required',
             'country' => 'required',
