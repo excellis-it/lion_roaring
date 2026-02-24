@@ -64,7 +64,8 @@ class StripeWebhookController extends Controller
             // Create or renew user subscription
             if ($isRenew && $user->userLastSubscription && $user->userLastSubscription->plan_id == $tier->id) {
                 $sub = $user->userLastSubscription;
-                $sub->subscription_expire_date = now()->max($sub->subscription_expire_date)->addYear();
+                $durationMonths = $tier->duration_months ?? 12;
+                $sub->subscription_expire_date = now()->max($sub->subscription_expire_date)->addMonths($durationMonths);
                 $sub->save();
                 $user_subscription = $sub;
             } else {
@@ -73,9 +74,10 @@ class StripeWebhookController extends Controller
                 $user_subscription->plan_id = $tier->id;
                 $user_subscription->subscription_name = $tier->name;
                 $user_subscription->subscription_price = $tier->cost;
-                $user_subscription->subscription_validity = 12; // default 12 months
+                $durationMonths = $tier->duration_months ?? 12;
+                $user_subscription->subscription_validity = $durationMonths;
                 $user_subscription->subscription_start_date = now();
-                $user_subscription->subscription_expire_date = now()->addYear();
+                $user_subscription->subscription_expire_date = now()->addMonths($durationMonths);
                 $user_subscription->save();
             }
 

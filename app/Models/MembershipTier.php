@@ -14,6 +14,7 @@ class MembershipTier extends BaseModel
         'slug',
         'description',
         'cost',
+        'duration_months',
         'pricing_type',
         'life_force_energy_tokens',
         'agree_description',

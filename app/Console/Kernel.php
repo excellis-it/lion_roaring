@@ -17,6 +17,7 @@ class Kernel extends ConsoleKernel
         'App\Console\Commands\DeleteJob',
         '\App\Console\Commands\UpdateDeletedMailsStatus',
         '\App\Console\Commands\MakeModelMigration',
+        '\App\Console\Commands\SendSubscriptionReminder',
     ];
 
     protected function schedule(Schedule $schedule)
@@ -24,6 +25,7 @@ class Kernel extends ConsoleKernel
         // $schedule->command('inspire')->hourly();
         $schedule->command('delete:job')->daily();
         $schedule->command('mails:update-deleted-status')->daily();
+        $schedule->command('subscription:send-reminder --days=7')->daily();
     }
 
     /**

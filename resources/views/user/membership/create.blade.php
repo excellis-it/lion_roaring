@@ -173,30 +173,42 @@
                     <div class="col-md-6 mb-3">
                         <div class="box_label">
                             <label>Tier Name *</label>
-                            <input name="name" class="form-control" value="{{ old('name') }}" >
+                            <input name="name" class="form-control" value="{{ old('name') }}">
+                            @error('name')
+                                <span class="text-danger">{{ $message }}</span>
+                            @enderror
                         </div>
                     </div>
                     <div class="col-md-6 mb-3">
                         <div class="box_label">
                             <label>Slug *</label>
-                            <input name="slug" class="form-control" value="{{ old('slug') }}" >
+                            <input name="slug" class="form-control" value="{{ old('slug') }}">
+                            @error('slug')
+                                <span class="text-danger">{{ $message }}</span>
+                            @enderror
                         </div>
                     </div>
                     <div class="col-md-12 mb-3">
                         <div class="box_label">
                             <label>Description</label>
                             <textarea name="description" class="form-control" rows="3">{{ old('description') }}</textarea>
+                            @error('description')
+                                <span class="text-danger">{{ $message }}</span>
+                            @enderror
                         </div>
                     </div>
                     <div class="col-md-6 mb-3">
                         <div class="box_label">
                             <label>Plan Type *</label>
-                            <select name="pricing_type" class="form-control" id="pricing_type" >
+                            <select name="pricing_type" class="form-control" id="pricing_type">
                                 <option value="amount" {{ old('pricing_type') == 'amount' ? 'selected' : '' }}>Amount (USD)
                                 </option>
                                 <option value="token" {{ old('pricing_type') == 'token' ? 'selected' : '' }}>Life Force
                                     Energy (Token)</option>
                             </select>
+                            @error('pricing_type')
+                                <span class="text-danger">{{ $message }}</span>
+                            @enderror
                         </div>
                     </div>
                     <div class="col-md-6 mb-3" id="amount_cost_wrap">
@@ -204,6 +216,9 @@
                             <label>Amount (USD) *</label>
                             <input name="cost" class="form-control" type="number" step="0.01" min="0"
                                 value="{{ old('cost') }}">
+                            @error('cost')
+                                <span class="text-danger">{{ $message }}</span>
+                            @enderror
                         </div>
                     </div>
                     <div class="col-md-6 mb-3 d-none" id="token_value_wrap">
@@ -211,12 +226,28 @@
                             <label>Life Force Energy Tokens *</label>
                             <input name="life_force_energy_tokens" class="form-control" type="number" step="0.01"
                                 min="0" value="{{ old('life_force_energy_tokens') }}">
+                            @error('life_force_energy_tokens')
+                                <span class="text-danger">{{ $message }}</span>
+                            @enderror
                         </div>
                     </div>
                     <div class="col-md-12 mb-3 d-none" id="agree_desc_wrap">
                         <div class="box_label">
                             <label>Agree Description *</label>
                             <textarea name="agree_description" class="form-control" rows="5">{{ old('agree_description') }}</textarea>
+                            @error('agree_description')
+                                <span class="text-danger">{{ $message }}</span>
+                            @enderror
+                        </div>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <div class="box_label">
+                            <label>Duration (Months) *</label>
+                            <input name="duration_months" class="form-control" type="number" min="1"
+                                value="{{ old('duration_months', 12) }}">
+                            @error('duration_months')
+                                <span class="text-danger">{{ $message }}</span>
+                            @enderror
                         </div>
                     </div>
 

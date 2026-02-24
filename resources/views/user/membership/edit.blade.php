@@ -173,13 +173,19 @@
                     <div class="col-md-6 mb-3">
                         <div class="box_label">
                             <label>Tier Name *</label>
-                            <input name="name" class="form-control" value="{{ old('name', $tier->name) }}" required>
+                            <input name="name" class="form-control" value="{{ old('name', $tier->name) }}">
+                            @error('name')
+                                <span class="text-danger">{{ $message }}</span>
+                            @enderror
                         </div>
                     </div>
                     <div class="col-md-6 mb-3">
                         <div class="box_label">
                             <label>Slug *</label>
-                            <input name="slug" class="form-control" value="{{ old('slug', $tier->slug) }}" required>
+                            <input name="slug" class="form-control" value="{{ old('slug', $tier->slug) }}" >
+                            @error('slug')
+                                <span class="text-danger">{{ $message }}</span>
+                            @enderror
                         </div>
                     </div>
                     <div class="col-md-12 mb-3">
@@ -191,7 +197,7 @@
                     <div class="col-md-6 mb-3">
                         <div class="box_label">
                             <label>Plan Type *</label>
-                            <select name="pricing_type" class="form-control" id="pricing_type" required>
+                            <select name="pricing_type" class="form-control" id="pricing_type" >
                                 <option value="amount"
                                     {{ old('pricing_type', $tier->pricing_type ?? 'amount') === 'amount' ? 'selected' : '' }}>
                                     Amount (USD)
@@ -201,6 +207,9 @@
                                     Life Force Energy
                                     (Token)</option>
                             </select>
+                            @error('pricing_type')
+                                <span class="text-danger">{{ $message }}</span>
+                            @enderror
                         </div>
                     </div>
                     <div class="col-md-6 mb-3" id="amount_cost_wrap">
@@ -208,6 +217,9 @@
                             <label>Amount (USD) *</label>
                             <input name="cost" class="form-control" value="{{ old('cost', $tier->cost) }}" type="number"
                                 step="0.01" min="0">
+                            @error('cost')
+                                <span class="text-danger">{{ $message }}</span>
+                            @enderror
                         </div>
                     </div>
                     <div class="col-md-6 mb-3 d-none" id="token_value_wrap">
@@ -216,12 +228,25 @@
                             <input name="life_force_energy_tokens" class="form-control"
                                 value="{{ old('life_force_energy_tokens', $tier->life_force_energy_tokens) }}"
                                 type="number" step="0.01" min="0">
+                            @error('life_force_energy_tokens')
+                                <span class="text-danger">{{ $message }}</span>
+                            @enderror
                         </div>
                     </div>
                     <div class="col-md-12 mb-3 d-none" id="agree_desc_wrap">
                         <div class="box_label">
                             <label>Agree Description *</label>
                             <textarea name="agree_description" class="form-control" rows="5">{{ old('agree_description', $tier->agree_description) }}</textarea>
+                        </div>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <div class="box_label">
+                            <label>Duration (Months) *</label>
+                            <input name="duration_months" class="form-control" type="number" min="1"
+                                value="{{ old('duration_months', $tier->duration_months ?? 12) }}">
+                            @error('duration_months')
+                                <span class="text-danger">{{ $message }}</span>
+                            @enderror
                         </div>
                     </div>
                     <div class="col-md-12 mb-3">

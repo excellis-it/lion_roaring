@@ -624,6 +624,7 @@ class PartnerController extends Controller
         if ($the_role->name == 'MEMBER_NON_SOVEREIGN' && $request->has('membership_tier_id')) {
             $tier = MembershipTier::find($request->membership_tier_id);
             if ($tier) {
+                $durationMonths = $tier->duration_months ?? 12;
                 UserSubscription::create([
                     'user_id' => $data->id,
                     'plan_id' => $tier->id,
@@ -631,8 +632,8 @@ class PartnerController extends Controller
                     'subscription_method' => $tier->pricing_type ?? 'amount',
                     'subscription_price' => $tier->cost ?? 0,
                     'subscription_start_date' => now(),
-                    'subscription_expire_date' => now()->addYear(),
-                    'subscription_validity' => 12,
+                    'subscription_expire_date' => now()->addMonths($durationMonths),
+                    'subscription_validity' => $durationMonths,
                 ]);
             }
         }
@@ -919,6 +920,7 @@ class PartnerController extends Controller
                             'subscription_price' => $tier->cost ?? 0,
                         ]);
                     } else {
+                        $durationMonths = $tier->duration_months ?? 12;
                         UserSubscription::create([
                             'user_id' => $data->id,
                             'plan_id' => $tier->id,
@@ -926,8 +928,8 @@ class PartnerController extends Controller
                             'subscription_method' => $tier->pricing_type ?? 'amount',
                             'subscription_price' => $tier->cost ?? 0,
                             'subscription_start_date' => now(),
-                            'subscription_expire_date' => now()->addYear(),
-                            'subscription_validity' => 12,
+                            'subscription_expire_date' => now()->addMonths($durationMonths),
+                            'subscription_validity' => $durationMonths,
                         ]);
                     }
                 }

@@ -397,9 +397,10 @@ class AuthController extends Controller
             $user_subscription->agree_description_snapshot = null;
         }
 
-        $user_subscription->subscription_validity = 12; // 12 months by default
+        $durationMonths = $tier->duration_months ?? 12;
+        $user_subscription->subscription_validity = $durationMonths;
         $user_subscription->subscription_start_date = now();
-        $user_subscription->subscription_expire_date = now()->addYear();
+        $user_subscription->subscription_expire_date = now()->addMonths($durationMonths);
         $user_subscription->save();
 
         if ($payment_status == 'Success') {

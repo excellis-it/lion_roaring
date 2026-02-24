@@ -75,6 +75,7 @@ class MembershipController extends Controller
             'cost' => 'nullable|required_if:pricing_type,amount|numeric|min:0',
             'life_force_energy_tokens' => 'nullable|required_if:pricing_type,token|numeric|min:0',
             'agree_description' => 'nullable|required_if:pricing_type,token|string',
+            'duration_months' => 'required|integer|min:1',
             'benefits' => 'array',
             'benefits.*' => 'nullable|string|max:250',
         ], [
@@ -86,6 +87,7 @@ class MembershipController extends Controller
             'slug',
             'description',
             'cost',
+            'duration_months',
             'pricing_type',
             'life_force_energy_tokens',
             'agree_description',
@@ -131,6 +133,7 @@ class MembershipController extends Controller
             'cost' => 'nullable|required_if:pricing_type,amount|numeric|min:0',
             'life_force_energy_tokens' => 'nullable|required_if:pricing_type,token|numeric|min:0',
             'agree_description' => 'nullable|required_if:pricing_type,token|string',
+            'duration_months' => 'required|integer|min:1',
             'benefits' => 'array',
             'benefits.*' => 'nullable|string|max:250',
         ], [
@@ -142,6 +145,7 @@ class MembershipController extends Controller
             'slug',
             'description',
             'cost',
+            'duration_months',
             'pricing_type',
             'life_force_energy_tokens',
             'agree_description',
@@ -370,9 +374,10 @@ class MembershipController extends Controller
             $user_subscription->agree_description_snapshot = $tier->agree_description;
             $user_subscription->promo_code = $promoCode ? $promoCode->code : null;
             $user_subscription->discount_amount = $discount;
-            $user_subscription->subscription_validity = 12;
+            $durationMonths = $tier->duration_months ?? 12;
+            $user_subscription->subscription_validity = $durationMonths;
             $user_subscription->subscription_start_date = now();
-            $user_subscription->subscription_expire_date = now()->addYear();
+            $user_subscription->subscription_expire_date = now()->addMonths($durationMonths);
             $user_subscription->save();
 
             $this->syncTierPermissions($user, $tier);
@@ -403,9 +408,10 @@ class MembershipController extends Controller
         $user_subscription->promo_code = $promoCode ? $promoCode->code : null;
         $user_subscription->discount_amount = $discount;
         $user_subscription->final_price = $finalPrice;
-        $user_subscription->subscription_validity = 12; // 12 months
+        $durationMonths = $tier->duration_months ?? 12;
+        $user_subscription->subscription_validity = $durationMonths;
         $user_subscription->subscription_start_date = now();
-        $user_subscription->subscription_expire_date = now()->addYear();
+        $user_subscription->subscription_expire_date = now()->addMonths($durationMonths);
         $user_subscription->save();
 
         // record payment placeholder
@@ -537,7 +543,8 @@ class MembershipController extends Controller
             if ($isRenew && $user->userLastSubscription && $user->userLastSubscription->plan_id == $tier->id) {
                 // extend existing subscription
                 $sub = $user->userLastSubscription;
-                $sub->subscription_expire_date = now()->max($sub->subscription_expire_date)->addYear();
+                $durationMonths = $tier->duration_months ?? 12;
+                $sub->subscription_expire_date = now()->max($sub->subscription_expire_date)->addMonths($durationMonths);
                 $sub->subscription_method = 'amount';
                 $sub->save();
                 $user_subscription = $sub;
@@ -555,9 +562,10 @@ class MembershipController extends Controller
                 $user_subscription->life_force_energy_tokens = null;
                 $user_subscription->agree_accepted_at = null;
                 $user_subscription->agree_description_snapshot = null;
-                $user_subscription->subscription_validity = 12; // 12 months by default
+                $durationMonths = $tier->duration_months ?? 12;
+                $user_subscription->subscription_validity = $durationMonths;
                 $user_subscription->subscription_start_date = now();
-                $user_subscription->subscription_expire_date = now()->addYear();
+                $user_subscription->subscription_expire_date = now()->addMonths($durationMonths);
                 $user_subscription->save();
             }
 
@@ -605,7 +613,8 @@ class MembershipController extends Controller
         }
 
         if (($tier->pricing_type ?? 'amount') === 'token') {
-            $sub->subscription_expire_date = now()->max($sub->subscription_expire_date)->addYear();
+            $durationMonths = $tier->duration_months ?? 12;
+            $sub->subscription_expire_date = now()->max($sub->subscription_expire_date)->addMonths($durationMonths);
             $sub->subscription_method = 'token';
             $sub->save();
             $this->syncTierPermissions($user, $tier);
@@ -655,9 +664,10 @@ class MembershipController extends Controller
         $user_subscription->life_force_energy_tokens = $tier->life_force_energy_tokens;
         $user_subscription->agree_accepted_at = now();
         $user_subscription->agree_description_snapshot = $tier->agree_description;
-        $user_subscription->subscription_validity = 12;
+        $durationMonths = $tier->duration_months ?? 12;
+        $user_subscription->subscription_validity = $durationMonths;
         $user_subscription->subscription_start_date = now();
-        $user_subscription->subscription_expire_date = now()->addYear();
+        $user_subscription->subscription_expire_date = now()->addMonths($durationMonths);
         $user_subscription->save();
 
         $this->syncTierPermissions($user, $tier);

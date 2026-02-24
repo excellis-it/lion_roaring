@@ -49,16 +49,8 @@
                                 </ul>
                                 <div class="mt-auto text-center">
                                     @auth
-                                        @if (($tier->pricing_type ?? 'amount') === 'token')
-                                            <button type="button" class="btn red_btn btn-upgrade w-100 js-token-subscribe"
-                                                data-tier-id="{{ $tier->id }}" data-tier-name="{{ $tier->name }}"
-                                                data-agree-description="{{ e($tier->agree_description) }}">
-                                                <span>Become a Member</span>
-                                            </button>
-                                        @else
-                                            <a href="{{ route('user.membership.checkout', $tier->id) }}"
-                                                class="btn red_btn btn-upgrade w-100"><span>Become a Member</span></a>
-                                        @endif
+                                        <a href="{{ route('user.membership.index') }}"
+                                            class="btn red_btn btn-upgrade w-100"><span>Become a Member</span></a>
                                     @else
                                         <a href="javascript:void(0);" data-bs-toggle="modal" data-bs-target="#loginModal"
                                             class="btn red_btn btn-upgrade w-100"><span>Login to Join</span></a>
