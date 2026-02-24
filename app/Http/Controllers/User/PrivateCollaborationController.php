@@ -32,31 +32,31 @@ class PrivateCollaborationController extends Controller
         $user_country = auth()->user()->country;
         // return $user_country;
 
-            if ($user_type == 'Global') {
+        if ($user_type == 'Global') {
 
-                $collaborations = PrivateCollaboration::with(['user', 'invitations.user'])
-                    ->where(function ($query) {
-                        $query->where('user_id', auth()->id())
-                            ->orWhereHas('invitations', function ($q) {
-                                $q->where('user_id', auth()->id());
-                            });
-                    })
-                    ->orderBy('id', 'desc')
-                    ->paginate(10);
-            } else {
-                $collaborations = PrivateCollaboration::with(['user', 'invitations.user'])
-                    ->where(function ($query) {
-                        $query->where('user_id', auth()->id())
-                            ->orWhereHas('invitations', function ($q) {
-                                $q->where('user_id', auth()->id());
-                            });
-                    })
-                    ->where('country_id', $user_country)
-                    ->orderBy('id', 'desc')
-                    ->paginate(10);
-            }
+            $collaborations = PrivateCollaboration::with(['user', 'invitations.user'])
+                ->where(function ($query) {
+                    $query->where('user_id', auth()->id())
+                        ->orWhereHas('invitations', function ($q) {
+                            $q->where('user_id', auth()->id());
+                        });
+                })
+                ->orderBy('id', 'desc')
+                ->paginate(10);
+        } else {
+            $collaborations = PrivateCollaboration::with(['user', 'invitations.user'])
+                ->where(function ($query) {
+                    $query->where('user_id', auth()->id())
+                        ->orWhereHas('invitations', function ($q) {
+                            $q->where('user_id', auth()->id());
+                        });
+                })
+                ->where('country_id', $user_country)
+                ->orderBy('id', 'desc')
+                ->paginate(10);
+        }
 
-            return view('user.private_collaboration.list', compact('collaborations'));
+        return view('user.private_collaboration.list', compact('collaborations'));
     }
 
     /**
@@ -66,10 +66,20 @@ class PrivateCollaborationController extends Controller
     {
         if (auth()->user()->can('Create Private Collaboration')) {
             $countries = Country::orderBy('name', 'asc')->get();
+            $user_type = auth()->user()->user_type;
+            $user_country = auth()->user()->country;
             // Eligible users who can be invited (users with Manage Private Collaboration permission)
-            $eligibleUsers = User::whereHas('roles.permissions', function ($query) {
-                $query->where('name', 'Manage Private Collaboration');
-            })->where('id', '!=', auth()->id())->orderBy('first_name')->orderBy('last_name')->get();
+            if ($user_type == 'Global') {
+                $eligibleUsers = User::whereHas('roles.permissions', function ($query) {
+                    $query->where('name', 'Manage Private Collaboration');
+                })->where('id', '!=', auth()->id())->orderBy('first_name')->orderBy('last_name')->get();
+            } else {
+                $eligibleUsers = User::whereHas('roles.permissions', function ($query) {
+                    $query->where('name', 'Manage Private Collaboration');
+                })->where('id', '!=', auth()->id())->where('user_type', 'Regional')->where('country_id', $user_country)->orderBy('first_name')->orderBy('last_name')->get();
+            }
+
+
             return view('user.private_collaboration.create', compact('countries', 'eligibleUsers'));
         } else {
             abort(403, 'You do not have permission to access this page.');
