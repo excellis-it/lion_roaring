@@ -7,6 +7,7 @@ use App\Http\Controllers\Controller;
 use App\Mail\AccountPendingApprovalMail;
 use App\Mail\ActiveUserMail;
 use App\Mail\RegistrationMail;
+use App\Mail\NewUserRegistrationMail;
 use App\Models\Country;
 use App\Models\Ecclesia;
 use App\Models\RegisterAgreement;
@@ -447,21 +448,41 @@ class AuthController extends Controller
             'status' => $user->status,
         ];
 
-        if ($user->status == 1) {
-            // Store promo code in session for later use
-            if ($request->has('promo_code') && !empty($request->promo_code)) {
-                Session::put('registration_promo_code', $request->promo_code);
-            }
+        // Store promo code in session for later use
+        if ($request->has('promo_code') && !empty($request->promo_code)) {
+            Session::put('registration_promo_code', $request->promo_code);
+        }
 
-            Mail::to($request->email)->send(new ActiveUserMail($maildata));
+        Mail::to($request->email)->send(new ActiveUserMail($maildata));
+
+        // Notify all SUPER ADMIN users about the new registration
+        try {
+            $superAdminType = UserType::where('name', 'SUPER ADMIN')->first();
+            if ($superAdminType) {
+                $superAdmins = User::where('user_type_id', $superAdminType->id)
+                    ->where('status', 1)
+                    ->get();
+
+                $adminMailData = [
+                    'new_user_name' => $request->first_name . ' ' . $request->last_name,
+                    'new_user_email' => $request->email,
+                    'new_user_username' => $request->user_name,
+                    'membership_tier' => $tier->name,
+                    'new_user_status' => $user->status,
+                    'registered_at' => now()->format('M d, Y h:i A'),
+                ];
+
+                foreach ($superAdmins as $admin) {
+                    Mail::to($admin->email)->send(new NewUserRegistrationMail($adminMailData));
+                }
+            }
+        } catch (\Exception $e) {
+            Log::error('Failed to send new user registration notification to Super Admins: ' . $e->getMessage());
+        }
+
+        if ($user->status == 1) {
             return redirect()->route('home')->with('message', 'Thank you for registering! You can now login');
         } else {
-            // Store promo code in session for later use
-            if ($request->has('promo_code') && !empty($request->promo_code)) {
-                Session::put('registration_promo_code', $request->promo_code);
-            }
-
-            Mail::to($request->email)->send(new ActiveUserMail($maildata));
             return redirect()->route('home')->with('message', 'Please wait for admin approval');
         }
     }
