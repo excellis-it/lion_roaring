@@ -10,6 +10,7 @@ use App\Models\OrganizationProject;
 use App\Traits\ImageTrait;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Validator;
 
 class OrganizationController extends Controller
 {
@@ -68,7 +69,7 @@ class OrganizationController extends Controller
      */
     public function store(Request $request)
     {
-        $request->validate([
+        $validator = Validator::make($request->all(), [
             'banner_title' => 'required',
             'banner_description' => 'required',
             'meta_title' => 'nullable',
@@ -80,7 +81,40 @@ class OrganizationController extends Controller
             'project_section_two_title' => 'nullable',
             'project_section_two_sub_title' => 'nullable',
             'project_section_two_description' => 'nullable',
+            'banner_image' => 'nullable|image|mimes:jpeg,png,jpg,gif,webp|max:2048',
+            'image.*' => 'image|mimes:jpeg,png,jpg,gif,webp|max:2048',
         ]);
+
+        $validator->after(function ($validator) use ($request) {
+
+            if ($request->hasFile('image')) {
+                foreach ($request->file('image') as $index => $file) {
+
+                    if (!$file->isValid()) {
+                        $validator->errors()->add(
+                            "image.$index",
+                            "About Section Image " . ($index + 1) . " is invalid."
+                        );
+                    }
+
+                    if (!in_array($file->extension(), ['jpeg', 'png', 'jpg', 'gif', 'webp'])) {
+                        $validator->errors()->add(
+                            "image.$index",
+                            "About Section Image " . ($index + 1) . " must be jpeg, png, jpg, gif, or webp."
+                        );
+                    }
+
+                    if ($file->getSize() > 2048 * 1024) {
+                        $validator->errors()->add(
+                            "image.$index",
+                            "About Section Image " . ($index + 1) . " must not exceed 2MB."
+                        );
+                    }
+                }
+            }
+        });
+
+        $validator->validate();
 
         if ($request->id != '') {
             $organization = Organization::find($request->id);
@@ -149,6 +183,10 @@ class OrganizationController extends Controller
                 $organization_project->section = 2;
                 $organization_project->save();
             }
+        }
+
+        if ($request->ajax()) {
+            return response()->json(['status' => true, 'message' => 'Organization details updated successfully']);
         }
 
         return redirect()->back()->with('message', 'Organization details updated successfully');

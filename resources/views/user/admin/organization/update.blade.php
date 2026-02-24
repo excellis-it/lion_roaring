@@ -59,7 +59,8 @@
                     <p class="text-muted small mb-0">Update Organization</p>
                 </div>
             </div>
-            <form action="{{ route('user.admin.organizations.store') }}" method="post" enctype="multipart/form-data">
+            <form id="update-organization-form" action="{{ route('user.admin.organizations.store') }}" method="post"
+                enctype="multipart/form-data">
                 @csrf
                 <input type="hidden" name="id" value="{{ $organization->id ?? '' }}">
                 <div class="sales-report-card-wrap">
@@ -92,10 +93,7 @@
                                     <label for="floatingInputValue">Banner Image</label>
                                     <input type="file" class="form-control" id="banner_image" name="banner_image"
                                         value="{{ old('banner_image') }}" placeholder="Banner Image">
-                                    @if ($errors->has('banner_image'))
-                                        <div class="error" style="color:red;">
-                                            {{ $errors->first('banner_image') }}</div>
-                                    @endif
+                                    <span class="text-danger error-message" id="error_banner_image"></span>
                                 </div>
                             </div>
                         </div>
@@ -120,10 +118,7 @@
                                     <input type="text" class="form-control" id="floatingInputValue" name="banner_title"
                                         value="{{ isset($organization->banner_title) ? $organization->banner_title : old('banner_title') }}"
                                         placeholder="Banner Title">
-                                    @if ($errors->has('banner_title'))
-                                        <div class="error" style="color:red;">
-                                            {{ $errors->first('banner_title') }}</div>
-                                    @endif
+                                    <span class="text-danger error-message" id="error_banner_title"></span>
                                 </div>
                             </div>
                         </div>
@@ -134,10 +129,7 @@
                                     <label for="floatingInputValue">Banner Description*</label>
                                     <textarea name="banner_description" id="banner_description" placeholder="Banner Description"
                                         class="form-control  banner_desc_">{{ isset($organization->banner_description) ? $organization->banner_description : old('banner_description') }}</textarea>
-                                    @if ($errors->has('banner_description'))
-                                        <div class="error" style="color:red;">
-                                            {{ $errors->first('banner_description') }}</div>
-                                    @endif
+                                    <span class="text-danger error-message" id="error_banner_description"></span>
                                 </div>
                             </div>
                         </div>
@@ -155,10 +147,8 @@
                                     <label for="floatingInputValue">Image (Multiple Image Upload)</label>
                                     <input type="file" class="form-control dropzone" id="floatingInputValue"
                                         name="image[]" value="{{ old('image') }}" placeholder="Image" multiple>
-                                    @if ($errors->has('image'))
-                                        <div class="error" style="color:red;">
-                                            {{ $errors->first('image') }}</div>
-                                    @endif
+                                    <span class="text-danger error-message" id="error_image"></span>
+                                    <span class="text-danger error-message" id="error_image_0"></span>
                                 </div>
                             </div>
                         </div>
@@ -190,10 +180,7 @@
                                         name="project_section_title"
                                         value="{{ isset($organization->project_section_title) ? $organization->project_section_title : old('project_section_title') }}"
                                         placeholder="Project Section Title">
-                                    @if ($errors->has('project_section_title'))
-                                        <div class="error" style="color:red;">
-                                            {{ $errors->first('project_section_title') }}</div>
-                                    @endif
+                                    <span class="text-danger error-message" id="error_project_section_title"></span>
                                 </div>
                             </div>
                         </div>
@@ -206,10 +193,7 @@
                                         name="project_section_sub_title"
                                         value="{{ isset($organization->project_section_sub_title) ? $organization->project_section_sub_title : old('project_section_sub_title') }}"
                                         placeholder="Project Section Sub Title">
-                                    @if ($errors->has('project_section_sub_title'))
-                                        <div class="error" style="color:red;">
-                                            {{ $errors->first('project_section_sub_title') }}</div>
-                                    @endif
+                                    <span class="text-danger error-message" id="error_project_section_sub_title"></span>
                                 </div>
                             </div>
                         </div>
@@ -220,10 +204,7 @@
                                     <label for="floatingInputValue">Project Section Description*</label>
                                     <textarea name="project_section_description" id="project_section_description" cols="30" rows="10"
                                         placeholder="Project Section Description" class="form-control">{{ isset($organization->project_section_description) ? $organization->project_section_description : old('project_section_description') }}</textarea>
-                                    @if ($errors->has('project_section_description'))
-                                        <div class="error" style="color:red;">
-                                            {{ $errors->first('project_section_description') }}</div>
-                                    @endif
+                                    <span class="text-danger error-message" id="error_project_section_description"></span>
                                 </div>
                             </div>
                         </div>
@@ -235,11 +216,12 @@
                                     <div class="form-group-div">
                                         <div class="form-group">
                                             {{-- meta title --}}
-                                            <label for="floatingInputValue">Card Title*</label>
-                                            <input type="text" class="form-control" id="floatingInputValue" required
+                                            <label for="floatingInputValue">Card Title</label>
+                                            <input type="text" class="form-control" id="floatingInputValue"
                                                 name="card_title[]" value="{{ $item->title }}"
                                                 placeholder="Card Title">
-                                            <span class="text-danger" id="job_opportunity_title_0"></span>
+                                            <span class="text-danger error-message"
+                                                id="error_card_title_{{ $key }}"></span>
                                         </div>
                                     </div>
                                 </div>
@@ -247,10 +229,11 @@
                                     <div class="form-group-div">
                                         <div class="form-group">
                                             {{-- banner_title --}}
-                                            <label for="floatingInputValue">Card Description*</label>
+                                            <label for="floatingInputValue">Card Description</label>
                                             <textarea name="card_description[]" id="card_description_{{ $key }}" cols="30" rows="10"
                                                 placeholder="Card Description" class="form-control card_description">{{ $item->description }}</textarea>
-                                            <span class="text-danger" id="job_opportunity_description_0"></span>
+                                            <span class="text-danger error-message"
+                                                id="error_card_description_{{ $key }}"></span>
                                         </div>
                                     </div>
                                 </div>
@@ -275,10 +258,10 @@
                                 <div class="form-group-div">
                                     <div class="form-group">
                                         {{-- meta title --}}
-                                        <label for="floatingInputValue">Card Title*</label>
-                                        <input type="text" class="form-control" id="floatingInputValue" required
+                                        <label for="floatingInputValue">Card Title</label>
+                                        <input type="text" class="form-control" id="floatingInputValue"
                                             name="card_title[]" value="" placeholder="Card Title">
-                                        <span class="text-danger" id="job_opportunity_title_0"></span>
+                                        <span class="text-danger error-message" id="error_card_title_0"></span>
                                     </div>
                                 </div>
                             </div>
@@ -286,10 +269,10 @@
                                 <div class="form-group-div">
                                     <div class="form-group">
                                         {{-- banner_title --}}
-                                        <label for="floatingInputValue">Card Description*</label>
+                                        <label for="floatingInputValue">Card Description</label>
                                         <textarea name="card_description[]" id="card_description_0" cols="30" rows="10"
                                             placeholder="Card Description" class="form-control card_description"></textarea>
-                                        <span class="text-danger" id="job_opportunity_description_0"></span>
+                                        <span class="text-danger error-message" id="error_card_description_0"></span>
                                     </div>
                                 </div>
                             </div>
@@ -317,6 +300,7 @@
                                         name="project_section_two_title"
                                         value="{{ isset($organization->project_section_two_title) ? $organization->project_section_two_title : old('project_section_two_title') }}"
                                         placeholder="Project Section Two Title">
+                                    <span class="text-danger error-message" id="error_project_section_two_title"></span>
                                 </div>
                             </div>
                         </div>
@@ -329,6 +313,8 @@
                                         name="project_section_two_sub_title"
                                         value="{{ isset($organization->project_section_two_sub_title) ? $organization->project_section_two_sub_title : old('project_section_two_sub_title') }}"
                                         placeholder="Project Section Two Sub Title">
+                                    <span class="text-danger error-message"
+                                        id="error_project_section_two_sub_title"></span>
                                 </div>
                             </div>
                         </div>
@@ -339,6 +325,8 @@
                                     <label for="floatingInputValue">Project Section Two Description</label>
                                     <textarea name="project_section_two_description" id="project_section_two_description" cols="30" rows="10"
                                         placeholder="Project Section Two Description" class="form-control">{{ isset($organization->project_section_two_description) ? $organization->project_section_two_description : old('project_section_two_description') }}</textarea>
+                                    <span class="text-danger error-message"
+                                        id="error_project_section_two_description"></span>
                                 </div>
                             </div>
                         </div>
@@ -350,10 +338,12 @@
                                     <div class="form-group-div">
                                         <div class="form-group">
                                             {{-- meta title --}}
-                                            <label for="floatingInputValue">Card Title*</label>
-                                            <input type="text" class="form-control" id="floatingInputValue" required
+                                            <label for="floatingInputValue">Card Title</label>
+                                            <input type="text" class="form-control" id="floatingInputValue"
                                                 name="card_title_two[]" value="{{ $item->title }}"
                                                 placeholder="Card Title">
+                                            <span class="text-danger error-message"
+                                                id="error_card_title_two_{{ $key }}"></span>
                                         </div>
                                     </div>
                                 </div>
@@ -361,9 +351,11 @@
                                     <div class="form-group-div">
                                         <div class="form-group">
                                             {{-- banner_title --}}
-                                            <label for="floatingInputValue">Card Description*</label>
+                                            <label for="floatingInputValue">Card Description</label>
                                             <textarea name="card_description_two[]" id="card_description_two_{{ $key }}" cols="30" rows="10"
                                                 placeholder="Card Description" class="form-control card_description_two">{{ $item->description }}</textarea>
+                                            <span class="text-danger error-message"
+                                                id="error_card_description_two_{{ $key }}"></span>
                                         </div>
                                     </div>
                                 </div>
@@ -387,18 +379,20 @@
                             <div class="col-xl-5 col-md-5 mt-4">
                                 <div class="form-group-div">
                                     <div class="form-group">
-                                        <label for="floatingInputValue">Card Title*</label>
-                                        <input type="text" class="form-control" id="floatingInputValue" required
+                                        <label for="floatingInputValue">Card Title</label>
+                                        <input type="text" class="form-control" id="floatingInputValue"
                                             name="card_title_two[]" value="" placeholder="Card Title">
+                                        <span class="text-danger error-message" id="error_card_title_two_0"></span>
                                     </div>
                                 </div>
                             </div>
                             <div class="col-md-5 mt-4">
                                 <div class="form-group-div">
                                     <div class="form-group">
-                                        <label for="floatingInputValue">Card Description*</label>
+                                        <label for="floatingInputValue">Card Description</label>
                                         <textarea name="card_description_two[]" id="card_description_two_0" cols="30" rows="10"
                                             placeholder="Card Description" class="form-control card_description_two"></textarea>
+                                        <span class="text-danger error-message" id="error_card_description_two_0"></span>
                                     </div>
                                 </div>
                             </div>
@@ -424,10 +418,7 @@
                                     <input type="text" class="form-control" id="floatingInputValue" name="meta_title"
                                         value="{{ isset($organization->meta_title) ? $organization->meta_title : old('meta_title') }}"
                                         placeholder="Meta Title">
-                                    @if ($errors->has('meta_title'))
-                                        <div class="error" style="color:red;">
-                                            {{ $errors->first('meta_title') }}</div>
-                                    @endif
+                                    <span class="text-danger error-message" id="error_meta_title"></span>
                                 </div>
                             </div>
                         </div>
@@ -440,10 +431,7 @@
                                         name="meta_keywords"
                                         value="{{ isset($organization->meta_keywords) ? $organization->meta_keywords : old('meta_keywords') }}"
                                         placeholder="Meta Keywords">
-                                    @if ($errors->has('meta_keywords'))
-                                        <div class="error" style="color:red;">
-                                            {{ $errors->first('meta_keywords') }}</div>
-                                    @endif
+                                    <span class="text-danger error-message" id="error_meta_keywords"></span>
                                 </div>
                             </div>
                         </div>
@@ -454,10 +442,7 @@
                                     <label for="floatingInputValue">Meta Description</label>
                                     <textarea name="meta_description" id="meta_description" cols="30" rows="10"
                                         placeholder="Meta Description" class="form-control">{{ isset($organization->meta_description) ? $organization->meta_description : old('meta_description') }}</textarea>
-                                    @if ($errors->has('meta_description'))
-                                        <div class="error" style="color:red;">
-                                            {{ $errors->first('meta_description') }}</div>
-                                    @endif
+                                    <span class="text-danger error-message" id="error_meta_description"></span>
                                 </div>
                             </div>
                         </div>
@@ -511,6 +496,8 @@
     </script>
     <script>
         $(document).ready(function() {
+            // window.allEditors = {};
+
             // function initializeCKEditor(selector) {
             //     document.querySelectorAll(selector).forEach((textarea) => {
             //         if (!textarea.classList.contains('ckeditor-initialized')) {
@@ -519,6 +506,11 @@
             //                 .then(editor => {
             //                     textarea.classList.add('ckeditor-initialized');
             //                     editor.ui.view.editable.element.style.height = '250px';
+
+            //                     // Store instance for AJAX sync
+            //                     var id = textarea.id || (textarea.name + '_' + Math.random().toString(
+            //                         36).substr(2, 9));
+            //                     window.allEditors[id] = editor;
             //                 })
             //                 .catch(error => {
             //                     console.error(error);
@@ -527,31 +519,32 @@
             //     });
             // }
 
-            // Initialize CKEditor for existing card descriptions
-            //   initializeCKEditor('.card_description');
-            //  initializeCKEditor('.card_description_two');
+            // // Initialize CKEditor for existing textareas
+            // initializeCKEditor('.card_description');
+            // initializeCKEditor('.card_description_two');
+            // initializeCKEditor('#banner_description');
+            // initializeCKEditor('#project_section_description');
+            // initializeCKEditor('#project_section_two_description');
 
             // Add more functionality
             $(document).on("click", ".add-more", function() {
-                var count = $("#add-more .col-xl-5").length; // Get the current count of card entries
-
-                // Create new card entry HTML
+                var count = $("#add-more .col-xl-5").length;
                 var html = `
                 <div class="col-xl-5 col-md-5 mt-4">
                     <div class="form-group-div">
                         <div class="form-group">
-                            <label for="floatingInputValue">Card Title*</label>
-                            <input type="text" class="form-control" name="card_title[]" value="" required placeholder="Card Title">
-                            <span class="text-danger" id="job_opportunity_title_${count}"></span>
+                            <label for="floatingInputValue">Card Title</label>
+                            <input type="text" class="form-control" name="card_title[]" value="" placeholder="Card Title">
+                            <span class="text-danger error-message" id="error_card_title_${count}"></span>
                         </div>
                     </div>
                 </div>
                 <div class="col-md-5 mt-4">
                     <div class="form-group-div">
                         <div class="form-group">
-                            <label for="floatingInputValue">Card Description*</label>
+                            <label for="floatingInputValue">Card Description</label>
                             <textarea name="card_description[]" id="card_description_${count}" cols="30" rows="10" class="form-control card_description" placeholder="Card Description"></textarea>
-                            <span class="text-danger" id="job_opportunity_description_${count}"></span>
+                            <span class="text-danger error-message" id="error_card_description_${count}"></span>
                         </div>
                     </div>
                 </div>
@@ -560,37 +553,29 @@
                         <button type="button" class="remove"><i class="fas fa-minus"></i> </button>
                     </div>
                 </div>`;
-
-                // Append the new fields
                 $("#add-more").append(html);
-
+                initializeCKEditor('#card_description_' + count);
                 toastr.success('Card Added Successfully');
-
-                // Initialize CKEditor for the newly added card description textarea
-                //  initializeCKEditor('#card_description_' + count);
             });
 
-            // Add more functionality for second project section
             $(document).on("click", ".add-more-two", function() {
-                var count = $("#add-more-two .col-xl-5").length; // Get the current count of card entries
-
-                // Create new card entry HTML for second section
+                var count = $("#add-more-two .col-xl-5").length;
                 var html = `
                 <div class="col-xl-5 col-md-5 mt-4">
                     <div class="form-group-div">
                         <div class="form-group">
-                            <label for="floatingInputValue">Card Title*</label>
-                            <input type="text" class="form-control" name="card_title_two[]" value="" required placeholder="Card Title">
-                            <span class="text-danger" id="job_opportunity_title_two_${count}"></span>
+                            <label for="floatingInputValue">Card Title</label>
+                            <input type="text" class="form-control" name="card_title_two[]" value="" placeholder="Card Title">
+                            <span class="text-danger error-message" id="error_card_title_two_${count}"></span>
                         </div>
                     </div>
                 </div>
                 <div class="col-md-5 mt-4">
                     <div class="form-group-div">
                         <div class="form-group">
-                            <label for="floatingInputValue">Card Description*</label>
+                            <label for="floatingInputValue">Card Description</label>
                             <textarea name="card_description_two[]" id="card_description_two_${count}" cols="30" rows="10" class="form-control card_description_two" placeholder="Card Description"></textarea>
-                            <span class="text-danger" id="job_opportunity_description_two_${count}"></span>
+                            <span class="text-danger error-message" id="error_card_description_two_${count}"></span>
                         </div>
                     </div>
                 </div>
@@ -599,28 +584,82 @@
                         <button type="button" class="remove-two"><i class="fas fa-minus"></i> </button>
                     </div>
                 </div>`;
-
-                // Append the new fields
                 $("#add-more-two").append(html);
-
-                // Initialize CKEditor for the newly added card description textarea
-                //  initializeCKEditor('#card_description_two_' + count);
-
+                initializeCKEditor('#card_description_two_' + count);
                 toastr.success('Card Added Successfully');
             });
 
-            // Remove functionality for second section
-            $(document).on("click", ".remove-two", function() {
-                $(this).closest('.col-xl-2').prev('.col-md-5').remove(); // Remove description column
-                $(this).closest('.col-xl-2').prev('.col-xl-5').remove(); // Remove title column
-                $(this).closest('.col-xl-2').remove(); // Remove button column
+            $(document).on("click", ".remove", function() {
+                $(this).closest('.col-xl-2').prev('.col-md-5').remove();
+                $(this).closest('.col-xl-2').prev('.col-xl-5').remove();
+                $(this).closest('.col-xl-2').remove();
             });
 
-            // Remove functionality
-            $(document).on("click", ".remove", function() {
-                $(this).closest('.col-xl-2').prev('.col-md-5').remove(); // Remove description column
-                $(this).closest('.col-xl-2').prev('.col-xl-5').remove(); // Remove title column
-                $(this).closest('.col-xl-2').remove(); // Remove button column
+            $(document).on("click", ".remove-two", function() {
+                $(this).closest('.col-xl-2').prev('.col-md-5').remove();
+                $(this).closest('.col-xl-2').prev('.col-xl-5').remove();
+                $(this).closest('.col-xl-2').remove();
+            });
+
+            // Form Submit by AJAX
+            $('#update-organization-form').on('submit', function(e) {
+                // Sync CKEditor data
+                if (window.allEditors) {
+                    Object.values(window.allEditors).forEach(editor => {
+                        editor.updateSourceElement();
+                    });
+                }
+
+                e.preventDefault();
+
+                var formData = new FormData(this);
+                var form = $(this);
+                var submitBtn = form.find('button[type="submit"]');
+                var originalBtnText = submitBtn.text();
+
+                submitBtn.prop('disabled', true).text('Updating...');
+                $('.error-message').text(''); // Clear previous errors
+
+                $.ajax({
+                    url: form.attr('action'),
+                    type: 'POST',
+                    data: formData,
+                    processData: false,
+                    contentType: false,
+                    success: function(response) {
+                        submitBtn.prop('disabled', false).text(originalBtnText);
+                        if (response.status) {
+                            toastr.success(response.message);
+                        }
+                    },
+                    error: function(xhr) {
+                        submitBtn.prop('disabled', false).text(originalBtnText);
+                        if (xhr.status === 422) {
+                            var errors = xhr.responseJSON.errors;
+                            $.each(errors, function(key, value) {
+                                // Handle array keys like card_title.0 -> card_title_0
+                                var errorKey = key.replace(/\./g, '_');
+                                var errorElement = $('#error_' + errorKey);
+                                if (errorElement.length) {
+                                    errorElement.text(value[0]);
+                                } else {
+                                    // Fallback for fields without specific error IDs
+                                    toastr.error(value[0]);
+                                }
+                            });
+
+                            // Scroll to the first error
+                            var firstError = $('.error-message:not(:empty)').first();
+                            if (firstError.length) {
+                                $('html, body').animate({
+                                    scrollTop: firstError.offset().top - 150
+                                }, 500);
+                            }
+                        } else {
+                            toastr.error('Something went wrong. Please try again.');
+                        }
+                    }
+                });
             });
         });
     </script>
