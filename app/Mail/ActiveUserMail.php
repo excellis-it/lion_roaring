@@ -16,7 +16,7 @@ class ActiveUserMail extends Mailable
      *
      * @return void
      */
-    Public $maildata;
+    public $maildata;
 
     public function __construct($maildata)
     {
@@ -31,9 +31,9 @@ class ActiveUserMail extends Mailable
     public function build()
     {
         if ($this->maildata['status'] == 1) {
-            return $this->markdown('user.emails.ActiveUserMail')->subject('Active User Mail')->with('maildata', $this->maildata);
+            return $this->view('user.emails.ActiveUserMail')->subject('Active User Mail')->with('maildata', $this->maildata);
         } else {
-            return $this->markdown('user.emails.ActiveUserMail')->subject('Pending User Mail')->with('maildata', $this->maildata);
+            return $this->view('user.emails.ActiveUserMail')->subject('Pending User Mail')->with('maildata', $this->maildata);
         }
     }
 }
