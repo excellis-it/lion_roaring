@@ -5,9 +5,11 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="description" content="">
-    <meta name="author" content="Mark Otto, Jacob Thornton, and Bootstrap contributors">
-    <meta name="generator" content="Hugo 0.84.0">
+    <meta name="author" content="">
+    <meta name="generator" content="">
     <title>{{ env('APP_NAME') }} - Confirmation mail </title>
+    <link rel="icon" href="{{ asset('frontend_assets/uploads/2023/04/cropped-logo-1-32x32.png') }}"
+        sizes="32x32" />
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link
@@ -46,13 +48,18 @@
                                     @php
                                         $email = $user->email;
                                         // show the email address swarna****@****llisit.net
-                                        $email = substr($email, 0, 6) . '****@****' . substr($email, strpos($email, '@') + 1);
-                                        echo 'A confirmation email has been sent to ' . $email . '. Please check your email to get your username.';
+                                        $email =
+                                            substr($email, 0, 6) .
+                                            '****@****' .
+                                            substr($email, strpos($email, '@') + 1);
+                                        echo 'A confirmation email has been sent to ' .
+                                            $email .
+                                            '. Please check your email to get your username.';
                                     @endphp
                                 </h4>
 
                                 <div class="join-text join-text-1">
-                                    <a href="{{route('home')}}"> Back to Home</a>
+                                    <a href="{{ route('home') }}"> Back to Home</a>
                                 </div>
                             </div>
                         </div>

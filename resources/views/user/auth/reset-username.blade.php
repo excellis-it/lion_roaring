@@ -5,8 +5,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="description" content="">
-    <meta name="author" content="Mark Otto, Jacob Thornton, and Bootstrap contributors">
-    <meta name="generator" content="Hugo 0.84.0">
+    <meta name="author" content="">
+    <meta name="generator" content="">
+    <link rel="icon" href="{{ asset('frontend_assets/uploads/2023/04/cropped-logo-1-32x32.png') }}"
+        sizes="32x32" />
     <title>{{ env('APP_NAME') }} - Reset Your Username</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -61,11 +63,11 @@
                                             @endif
                                         </p>
 
-                                            {{-- confirm password --}}
+                                        {{-- confirm password --}}
                                         <p class="login-username">
                                             <label for="user_login">Confirm Username</label>
-                                            <input type="text" name="confirm_username" id="confirm_username" class="input"
-                                                value="{{ old('confirm_username') }}">
+                                            <input type="text" name="confirm_username" id="confirm_username"
+                                                class="input" value="{{ old('confirm_username') }}">
                                             @if ($errors->has('confirm_username'))
                                                 @foreach ($errors->get('confirm_username') as $error)
                                                     <p class="error" style="color:red;">{{ $error }}</p>
@@ -79,7 +81,7 @@
                                     </form>
                                 </div>
                                 <div class="join-text join-text-1">
-                                    <a href="{{route('home')}}"> Back to Home</a>
+                                    <a href="{{ route('home') }}"> Back to Home</a>
                                 </div>
                             </div>
                         </div>
@@ -87,8 +89,8 @@
                 </div>
             </div>
         </section>
-        <div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false"
-            tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+        <div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
+            aria-labelledby="staticBackdropLabel" aria-hidden="true">
             <div class="modal-dialog modal-lg">
                 <div class="modal-content">
                     <div class="modal-header">

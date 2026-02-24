@@ -5,9 +5,11 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="description" content="">
-    <meta name="author" content="Mark Otto, Jacob Thornton, and Bootstrap contributors">
-    <meta name="generator" content="Hugo 0.84.0">
+    <meta name="author" content="">
+    <meta name="generator" content="">
     <title>{{ env('APP_NAME') }} - Forgot User Name</title>
+     <link rel="icon" href="{{ asset('frontend_assets/uploads/2023/04/cropped-logo-1-32x32.png') }}"
+        sizes="32x32" />
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link
@@ -51,10 +53,12 @@
                                         <div class="col-lg-12 mb-3">
                                             <div class="login-username">
                                                 <label for="user_login">Phone Number</label>
-                                                <input type="text" name="phone_number" id="mobile_code" class="input" placeholder="Enter Phone Number"
+                                                <input type="text" name="phone_number" id="mobile_code"
+                                                    class="input" placeholder="Enter Phone Number"
                                                     value="{{ old('full_phone_number') }}">
                                                 @if ($errors->has('phone_number'))
-                                                    <div class="error" style="color:red;">{{ $errors->first('phone_number') }}</div>
+                                                    <div class="error" style="color:red;">
+                                                        {{ $errors->first('phone_number') }}</div>
                                                 @endif
                                             </div>
                                         </div>
@@ -65,7 +69,7 @@
                                     </form>
                                 </div>
                                 <div class="join-text join-text-1">
-                                    <a href="{{route('home')}}"> Back to Home</a>
+                                    <a href="{{ route('home') }}"> Back to Home</a>
                                 </div>
                             </div>
                         </div>
@@ -126,34 +130,35 @@
             });
         });
     </script>
-      <link rel="stylesheet"
-      href="https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.12/css/intlTelInput.min.css">
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.mask/1.14.11/jquery.mask.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.12/js/intlTelInput-jquery.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.12/js/utils.min.js"></script>
-  <script>
-      function initializeIntlTelInput() {
-          const phoneInput = $("#mobile_code");
+    <link rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.12/css/intlTelInput.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.mask/1.14.11/jquery.mask.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.12/js/intlTelInput-jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.12/js/utils.min.js"></script>
+    <script>
+        function initializeIntlTelInput() {
+            const phoneInput = $("#mobile_code");
 
-          phoneInput.intlTelInput({
-              geoIpLookup: function(callback) {
-                  $.get("http://ipinfo.io", function() {}, "jsonp").always(function(resp) {
-                      const countryCode = (resp && resp.country) ? resp.country : "US";
-                      callback(countryCode);
-                  });
-              },
-              initialCountry: "auto",
-              separateDialCode: true,
-          });
+            phoneInput.intlTelInput({
+                geoIpLookup: function(callback) {
+                    $.get("http://ipinfo.io", function() {}, "jsonp").always(function(resp) {
+                        const countryCode = (resp && resp.country) ? resp.country : "US";
+                        callback(countryCode);
+                    });
+                },
+                initialCountry: "auto",
+                separateDialCode: true,
+            });
 
-          const selectedCountry = phoneInput.intlTelInput('getSelectedCountryData');
-          const dialCode = selectedCountry.dialCode;
-          const exampleNumber = intlTelInputUtils.getExampleNumber(selectedCountry.iso2, 0, 0);
+            const selectedCountry = phoneInput.intlTelInput('getSelectedCountryData');
+            const dialCode = selectedCountry.dialCode;
+            const exampleNumber = intlTelInputUtils.getExampleNumber(selectedCountry.iso2, 0, 0);
 
-          let maskNumber = intlTelInputUtils.formatNumber(exampleNumber, selectedCountry.iso2, intlTelInputUtils.numberFormat.NATIONAL);
-          maskNumber = maskNumber.replace('+' + dialCode + ' ', '');
+            let maskNumber = intlTelInputUtils.formatNumber(exampleNumber, selectedCountry.iso2, intlTelInputUtils
+                .numberFormat.NATIONAL);
+            maskNumber = maskNumber.replace('+' + dialCode + ' ', '');
 
-          let mask;
+            let mask;
             if (dialCode && dialCode.length > 2) {
                 // Use a fixed mask pattern for countries with dial codes of length greater than 2
                 mask = '999 999 999';
@@ -168,16 +173,17 @@
                 placeholder: 'Enter Phone Number',
             });
 
-          phoneInput.on('countrychange', function() {
-              $(this).val('');
-              const newSelectedCountry = $(this).intlTelInput('getSelectedCountryData');
-              const newDialCode = newSelectedCountry.dialCode;
-              const newExampleNumber = intlTelInputUtils.getExampleNumber(newSelectedCountry.iso2, 0, 0);
+            phoneInput.on('countrychange', function() {
+                $(this).val('');
+                const newSelectedCountry = $(this).intlTelInput('getSelectedCountryData');
+                const newDialCode = newSelectedCountry.dialCode;
+                const newExampleNumber = intlTelInputUtils.getExampleNumber(newSelectedCountry.iso2, 0, 0);
 
-              let newMaskNumber = intlTelInputUtils.formatNumber(newExampleNumber, newSelectedCountry.iso2, intlTelInputUtils.numberFormat.NATIONAL);
-              newMaskNumber = newMaskNumber.replace('+' + newDialCode + ' ', '');
-              let newMask;
-              if (newDialCode.length > 2) {
+                let newMaskNumber = intlTelInputUtils.formatNumber(newExampleNumber, newSelectedCountry.iso2,
+                    intlTelInputUtils.numberFormat.NATIONAL);
+                newMaskNumber = newMaskNumber.replace('+' + newDialCode + ' ', '');
+                let newMask;
+                if (newDialCode.length > 2) {
                     // If dial code length is more than 2, use a 999 999 999 mask (or a similar format)
                     newMask = '999 999 999';
                     newMaskNumber = '999 999 999';
@@ -189,41 +195,41 @@
                 phoneInput.mask(newMask, {
                     placeholder: 'Enter Phone Number',
                 });
-          });
-      }
+            });
+        }
 
-      function setPhoneNumber() {
-          const phoneInput = $("#mobile_code");
-          const fullNumber = "{{ old('full_phone_number') }}";
+        function setPhoneNumber() {
+            const phoneInput = $("#mobile_code");
+            const fullNumber = "{{ old('full_phone_number') }}";
 
-          if (fullNumber) {
-              phoneInput.intlTelInput("setNumber", fullNumber);
-          }
-      }
+            if (fullNumber) {
+                phoneInput.intlTelInput("setNumber", fullNumber);
+            }
+        }
 
-      $(document).ready(function() {
-          initializeIntlTelInput();
-          setPhoneNumber();
+        $(document).ready(function() {
+            initializeIntlTelInput();
+            setPhoneNumber();
 
-          $('form').on('submit', function() {
-              const phoneInput = $("#mobile_code");
-              const fullNumber = phoneInput.intlTelInput('getNumber');
-              const countryCode = phoneInput.intlTelInput('getSelectedCountryData').dialCode;
+            $('form').on('submit', function() {
+                const phoneInput = $("#mobile_code");
+                const fullNumber = phoneInput.intlTelInput('getNumber');
+                const countryCode = phoneInput.intlTelInput('getSelectedCountryData').dialCode;
 
-              $('<input>').attr({
-                  type: 'hidden',
-                  name: 'full_phone_number',
-                  value: fullNumber
-              }).appendTo('form');
+                $('<input>').attr({
+                    type: 'hidden',
+                    name: 'full_phone_number',
+                    value: fullNumber
+                }).appendTo('form');
 
-              $('<input>').attr({
-                  type: 'hidden',
-                  name: 'country_code',
-                  value: countryCode
-              }).appendTo('form');
-          });
-      });
-  </script>
+                $('<input>').attr({
+                    type: 'hidden',
+                    name: 'country_code',
+                    value: countryCode
+                }).appendTo('form');
+            });
+        });
+    </script>
 </body>
 
 </html>

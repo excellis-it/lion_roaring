@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="description" content="">
     <meta name="author" content="">
-    <meta name="generator" content="Hugo 0.84.0">
+    <meta name="generator" content="">
     {{-- favicon --}}
     <link rel="icon" href="{{ asset('frontend_assets/uploads/2023/04/cropped-logo-1-32x32.png') }}"
         sizes="32x32" />
@@ -346,20 +346,20 @@
 
 
         .loading-text-bottom {
-    position: absolute;
-    top: 220px;
-    left: 50%;
-    transform: translateX(-50%);
-    color: #d98b1c;
-    font-size: 20px;
-    font-weight: 600;
-    letter-spacing: 3px;
-    text-transform: uppercase;
-    white-space: nowrap;
-    font-family: 'EB Garamond', serif;
-    animation: fadeInOut 2s ease-in-out infinite;
-    text-shadow: 0 2px 10px rgba(217, 139, 28, 0.3);
-}
+            position: absolute;
+            top: 220px;
+            left: 50%;
+            transform: translateX(-50%);
+            color: #d98b1c;
+            font-size: 20px;
+            font-weight: 600;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            white-space: nowrap;
+            font-family: 'EB Garamond', serif;
+            animation: fadeInOut 2s ease-in-out infinite;
+            text-shadow: 0 2px 10px rgba(217, 139, 28, 0.3);
+        }
     </style>
 
     @stack('styles')
@@ -376,7 +376,7 @@
                 <i class="fas fa-crown loader-icon"></i>
             </div>
             <div class="loading-text">Lion Roaring</div>
-            
+
             <div class="particle"></div>
             <div class="particle"></div>
             <div class="particle"></div>
@@ -431,8 +431,8 @@
                                             </div>
                                             <div class="col-lg-6 mb-3">
                                                 <label for="billing_name">Last Name</label>
-                                                <input class="form-control has-icon" type="text" id="billing-lname"
-                                                    name="last_name" value="">
+                                                <input class="form-control has-icon" type="text"
+                                                    id="billing-lname" name="last_name" value="">
                                             </div>
                                             <div class="col-lg-6 mb-3">
                                                 <label for="email">Email</label>
@@ -582,11 +582,11 @@
                                     }
                                     return null;
                                 }
-
+                                
                                 // Get user's timezone based on IP address
                                 $ip = $_SERVER['REMOTE_ADDR'];
                                 $timezone = getTimezoneFromIp($ip);
-
+                                
                                 if ($timezone) {
                                     // Set the default timezone
                                     date_default_timezone_set($timezone);
@@ -594,10 +594,10 @@
                                     // Fallback timezone
                                     date_default_timezone_set('UTC');
                                 }
-
+                                
                                 // Get the current hour in 24-hour format
                                 $time = date('H');
-
+                                
                                 // Determine greeting based on time
                                 if ($time < '12') {
                                     echo 'Perfect morning';
@@ -1128,7 +1128,7 @@
                 opt.value.startsWith(value + '|') ||
                 (value === 'en' && opt.value === '') || // Google often uses empty value for original
                 (value !== 'en' && opt.text.toLowerCase().includes(value
-            .toLowerCase())) // Avoid matching 'en' in 'Bengali'
+                    .toLowerCase())) // Avoid matching 'en' in 'Bengali'
             );
 
             // Fallback for English: first option is usually the original language
