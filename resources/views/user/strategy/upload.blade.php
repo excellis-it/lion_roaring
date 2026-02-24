@@ -24,7 +24,26 @@
                             </div>
                         </div>
                         <div class="row">
-                            <div class="col-md-12 mb-2">
+                             @if (auth()->user()->user_type == 'Global')
+                                {{-- country --}}
+                                <div class="col-md-6 mb-2">
+                                    <div class="box_label">
+                                        <label>Country *</label>
+                                        <select name="country_id" id="countries" class="form-control">
+                                            <option value="">Select Country</option>
+                                            @foreach ($countries as $country)
+                                                <option value="{{ $country->id }}"
+                                                    {{ old('country_id') == $country->id ? 'selected' : '' }}>
+                                                    {{ $country->name }}</option>
+                                            @endforeach
+                                        </select>
+                                        @if ($errors->has('country_id'))
+                                            <span class="error">{{ $errors->first('country_id') }}</span>
+                                        @endif
+                                    </div>
+                                </div>
+                            @endif
+                            <div class="col-md-6 mb-2">
                                 <div class="box_label">
                                     <label for="file">Choose File</label>
                                     <input type="file" name="file[]" id="file" class="form-control" multiple>
