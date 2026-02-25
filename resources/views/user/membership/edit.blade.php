@@ -20,7 +20,7 @@
             border-bottom: 1px solid #e0e6ed;
             position: sticky;
             top: 0;
-            z-index: 100;
+            z-index: 96;
         }
 
         .search-wrapper {
