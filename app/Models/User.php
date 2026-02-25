@@ -12,6 +12,9 @@ use Laravel\Passport\HasApiTokens;
 use Spatie\Permission\Models\Role;
 use Spatie\Permission\Traits\HasRoles;
 
+use DateTimeZone;
+use Carbon\Carbon;
+
 class User extends Authenticatable
 {
     //  protected $guard_name = 'api';
@@ -217,5 +220,27 @@ class User extends Authenticatable
     public function userRegisterAgreement()
     {
         return $this->hasOne(UserRegisterAgreement::class, 'user_id');
+    }
+
+    public function resolveUserTimezone(?string $tz): string
+    {
+        // some common legacy mappings
+        $aliases = [
+            'Asia/Calcutta' => 'Asia/Kolkata',
+            // add more if you need…
+        ];
+
+        // map deprecated → correct
+        $tz = $aliases[$tz] ?? $tz;
+
+        // final check
+        return in_array($tz, DateTimeZone::listIdentifiers())
+            ? $tz
+            : config('app.timezone');
+    }
+
+    public function getTimeZoneAttribute($value)
+    {
+        return $this->resolveUserTimezone($value);
     }
 }
