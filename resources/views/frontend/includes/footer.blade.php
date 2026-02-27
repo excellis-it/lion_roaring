@@ -34,9 +34,9 @@
                         <p>
                             {!! Helper::getFooter()['footer_title'] ??
                                 'Our main focus is to restore our various communities, villages, cities, states,
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    and
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    our nation by restoring the condition of a person in both the spiritual and the
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    physical.' !!}
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                and
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                our nation by restoring the condition of a person in both the spiritual and the
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                physical.' !!}
                         </p>
                         <div class="col-lg-12">
                             <div class="d-flex align-items-center">
@@ -169,13 +169,13 @@
 </footer>
 <section class="copy_text-bottom">
     <div class="container">
-            <div class="row">
-                <div class="col-md-12 col-xxl-12">
-                    <p>{!! Helper::getFooter()['footer_copywrite_text'] ??
-                        'Copyright © ' . date('Y') . ' Daud Santosa. All Rights Reserved' !!}</p>
-                </div>
+        <div class="row">
+            <div class="col-md-12 col-xxl-12">
+                <p>{!! Helper::getFooter()['footer_copywrite_text'] ??
+                    'Copyright © ' . date('Y') . ' Daud Santosa. All Rights Reserved' !!}</p>
             </div>
         </div>
+    </div>
 </section>
 
 <script>
@@ -213,7 +213,6 @@
             if (response.ok) {
                 // optionally update any UI elements (update all countrySwitchers)
                 var sels = document.querySelectorAll('.countrySwitcher');
-                var switchTo = '{{ route('home') }}/';
                 if (sels && sels.length > 0) {
                     sels.forEach(function(s) {
                         if (s.value !== country) {
@@ -228,10 +227,17 @@
                     });
                 }
                 closePopup();
-                // reload so server-side session check will prevent popup next time
-                //  window.location.reload();
-                if (country) window.location.href = switchTo + encodeURIComponent(
-                    country); // goes to masked home which sets session + content
+
+                // If user selected US, redirect to the USA-specific instance URL
+                var usaInstanceUrl = "{{ \App\Helpers\Helper::getUsaInstanceUrl() }}";
+                var mainAppUrl = "{{ env('APP_URL') }}";
+                if (country.toLowerCase() === 'us' && usaInstanceUrl) {
+                    window.location.href = usaInstanceUrl;
+                } else {
+                    // For other countries, redirect to /{cc} on the main app URL
+                    var baseUrl = mainAppUrl ? mainAppUrl : '{{ route('home') }}';
+                    window.location.href = baseUrl + '/' + encodeURIComponent(country);
+                }
             } else {
                 // still close popup on failure to avoid blocking UX
                 closePopup();

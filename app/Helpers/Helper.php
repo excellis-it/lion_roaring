@@ -680,14 +680,71 @@ class Helper
         return $startingPrice;
     }
 
+    /**
+     * Check if the current request is being served by the USA-specific instance.
+     * Compares the request's host+port against the LION_ROARING_USA env variable.
+     */
+    public static function isUsaInstance()
+    {
+        $usaUrl = env('LION_ROARING_USA');
+        if (!$usaUrl) {
+            return false;
+        }
+
+        $parsed = parse_url($usaUrl);
+        $usaHost = $parsed['host'] ?? null;
+        $usaPort = $parsed['port'] ?? null;
+
+        $requestHost = request()->getHost();
+        $requestPort = request()->getPort();
+
+        // Match host and port (e.g., 127.0.0.1:8001)
+        return $usaHost && $requestHost === $usaHost && (string) $requestPort === (string) $usaPort;
+    }
+
+    /**
+     * Return the LION_ROARING_USA URL from .env (for use in JS redirects).
+     */
+    public static function getUsaInstanceUrl()
+    {
+        return env('LION_ROARING_USA', '');
+    }
+
     // get visitor country code by ip using ipinfo.io
     public static function getVisitorCountryCode()
     {
-        // return 'GB'; // Temporary hardcode for testing
         $ip = request()->ip();
         $codeSessionKey = 'visitor_country_code_' . $ip;
         $nameSessionKey = 'visitor_country_name_' . $ip;
         $languageSessionKey = 'visitor_country_languages';
+
+        // If this is the USA-specific instance (port 8001), force US country
+        if (self::isUsaInstance()) {
+            if (!session()->has($codeSessionKey) || session($codeSessionKey) !== 'US') {
+                $countryData = \App\Models\Country::with('languages')->where('code', 'US')->first();
+                $languages = $countryData ? $countryData->languages : [];
+
+                // Ensure English is included
+                $hasEnglish = $languages instanceof \Illuminate\Support\Collection
+                    ? $languages->contains(fn($lang) => strtolower($lang->code ?? '') === 'en')
+                    : false;
+                if (!$hasEnglish) {
+                    $english = \App\Models\TranslateLanguage::whereRaw('LOWER(code) = ?', ['en'])->first();
+                    if ($english) {
+                        $languages = $languages instanceof \Illuminate\Support\Collection
+                            ? $languages->push($english)
+                            : collect([$english]);
+                    }
+                }
+
+                session([
+                    $codeSessionKey => 'US',
+                    $nameSessionKey => $countryData->name ?? 'United States',
+                    $languageSessionKey => $languages,
+                ]);
+            }
+            return 'US';
+        }
 
         // Check session first
         if (session()->has($codeSessionKey) && session()->has($nameSessionKey)) {

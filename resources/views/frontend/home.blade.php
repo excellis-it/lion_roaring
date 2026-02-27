@@ -23,7 +23,8 @@
         // New visitor flow:
         // 1) If user hasn't selected a country yet -> show country popup first
 // 2) After selecting a country and reload -> show agreement modal (handled in master)
-$showPopup = !session()->has($sessionKey) && !Session::has('agree');
+// 3) If this is the USA-specific instance, never show the popup (country is forced to US)
+$showPopup = !Helper::isUsaInstance() && !session()->has($sessionKey) && !Session::has('agree');
     @endphp
 
     <!--Flag Popup -->
@@ -122,13 +123,13 @@ $showPopup = !session()->has($sessionKey) && !Session::has('agree');
                     <div class="four_image">
                         <div class="row align-items-center justify-content-center">
                             @foreach ($details as $key => $chunk)
-                                <div class="{{ $key % 2 == 0 ? 'col-xl-5 col-lg-6 col-md-6 col-sm-6 col-6 mb-4 top-imgs' : 'col-xl-5 col-lg-6 col-md-6 col-sm-6 col-6 mb-4 bottom-img mt-5' }} " data-aos="fade-right"
-                                    data-aos-duration="{{ $key % 2 == 0 ? '800' : '1600' }}">
+                                <div class="{{ $key % 2 == 0 ? 'col-xl-5 col-lg-6 col-md-6 col-sm-6 col-6 mb-4 top-imgs' : 'col-xl-5 col-lg-6 col-md-6 col-sm-6 col-6 mb-4 bottom-img mt-5' }} "
+                                    data-aos="fade-right" data-aos-duration="{{ $key % 2 == 0 ? '800' : '1600' }}">
                                     @foreach ($chunk as $detail)
-                                       <a href="{{ route('details') }}" tabindex="0">
-                                        <img src="{{ Storage::url($detail->image) }}"
-                                            class=" {{ $key % 2 == 0 ? 'about_four_ii mb-3' : 'about_four_ii mb-3' }}">
-                                       </a>
+                                        <a href="{{ route('details') }}" tabindex="0">
+                                            <img src="{{ Storage::url($detail->image) }}"
+                                                class=" {{ $key % 2 == 0 ? 'about_four_ii mb-3' : 'about_four_ii mb-3' }}">
+                                        </a>
                                     @endforeach
                                 </div>
                             @endforeach
@@ -270,7 +271,8 @@ $showPopup = !session()->has($sessionKey) && !Session::has('agree');
             </a>
         </p>
         <p>
-            <a href="javascript:void(0);" data-bs-toggle="modal" data-bs-target="#exampleModal1" class="cta-button red_btn">
+            <a href="javascript:void(0);" data-bs-toggle="modal" data-bs-target="#exampleModal1"
+                class="cta-button red_btn">
                 <span>{{ $home['section_6_button_text'] ?? 'Gift/Seed' }}</span>
             </a>
         </p>
@@ -375,7 +377,6 @@ $showPopup = !session()->has($sessionKey) && !Session::has('agree');
                             </div>
                         </div>
                     </div>
-
                 @endforeach
             </div>
 
@@ -384,14 +385,14 @@ $showPopup = !session()->has($sessionKey) && !Session::has('agree');
 
     <!-- @if (count($galleries) > 0)
     <section class="gallery_sec margin_27">
-                                                                            <div class="gallery_slider">
-                                                                                @foreach ($galleries as $galary)
+                                                                                <div class="gallery_slider">
+                                                                                    @foreach ($galleries as $galary)
     <div class="gallery_box" style="width: 100%; display: inline-block;">
-                                                                                        <img src="{{ Storage::url($galary->image) }}" alt="">
-                                                                                    </div>
+                                                                                            <img src="{{ Storage::url($galary->image) }}" alt="">
+                                                                                        </div>
     @endforeach
-                                                                            </div>
-                                                                        </section>
+                                                                                </div>
+                                                                            </section>
     @endif -->
 @endsection
 

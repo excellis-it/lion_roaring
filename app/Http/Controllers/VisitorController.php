@@ -12,12 +12,38 @@ class VisitorController extends Controller
             'country' => 'required|string|max:10',
         ]);
 
-        $country = strtolower($data['country'] ?? '');
+        $country = strtoupper($data['country'] ?? '');
         $ip = $request->ip();
-        $sessionKey = 'visitor_country_flag_code_' . $ip;
+        $flagSessionKey = 'visitor_country_flag_code_' . $ip;
+        $codeSessionKey = 'visitor_country_code_' . $ip;
+        $nameSessionKey = 'visitor_country_name_' . $ip;
+        $languageSessionKey = 'visitor_country_languages';
 
-        // store uppercase code to match existing usage (optional)
-        session([$sessionKey => strtoupper($country)]);
+        // Store flag key (prevents popup from showing again)
+        session([$flagSessionKey => $country]);
+
+        // Also update the main country session keys so content & dropdown reflect the selection
+        $countryData = \App\Models\Country::with('languages')->where('code', $country)->first();
+        $languages = $countryData ? $countryData->languages : collect();
+
+        // Ensure English is included
+        $hasEnglish = $languages instanceof \Illuminate\Support\Collection
+            ? $languages->contains(fn($lang) => strtolower($lang->code ?? '') === 'en')
+            : false;
+        if (!$hasEnglish) {
+            $english = \App\Models\TranslateLanguage::whereRaw('LOWER(code) = ?', ['en'])->first();
+            if ($english) {
+                $languages = $languages instanceof \Illuminate\Support\Collection
+                    ? $languages->push($english)
+                    : collect([$english]);
+            }
+        }
+
+        session([
+            $codeSessionKey => $country,
+            $nameSessionKey => $countryData->name ?? 'United States',
+            $languageSessionKey => $languages,
+        ]);
 
         return response()->json(['status' => 'ok']);
     }

@@ -375,10 +375,26 @@ Route::middleware(['userActivity'])->group(function () {
     }
     $__ccPattern = $__countryCodes ? implode('|', array_map(fn($s) => preg_quote($s, '/'), $__countryCodes)) : 'a^';
 
-    // Redirect "/" to "/{cc}"
+    // Home route
     Route::get('/', function () {
+        // If this is the USA-specific instance (port 8001), force US session and serve directly
+        if (Helper::isUsaInstance()) {
+            Helper::getVisitorCountryCode(); // forces US in session
+            return app(CmsController::class)->index();
+        }
+
+        // For the main URL: detect country by IP
         $cc = strtolower(Helper::getVisitorCountryCode()); // e.g., "US" -> "us"
         if ($cc) {
+            // If detected country is US, redirect to the USA-specific instance
+            if (strtoupper($cc) === 'US') {
+                $usaUrl = Helper::getUsaInstanceUrl();
+                if ($usaUrl) {
+                    session()->reflash();
+                    return redirect($usaUrl, 302);
+                }
+            }
+            // For all other countries, redirect to /{cc} as before
             session()->reflash();
             return redirect('/' . $cc, 302);
         }
@@ -387,6 +403,14 @@ Route::middleware(['userActivity'])->group(function () {
 
     // Country-code masked home (won't affect other routes due to tight constraint)
     Route::get('/{cc}', function (string $cc) {
+        // If someone visits /us on the main URL (port 8000), redirect to the USA instance
+        if (strtoupper($cc) === 'US' && !Helper::isUsaInstance()) {
+            $usaUrl = Helper::getUsaInstanceUrl();
+            if ($usaUrl) {
+                return redirect($usaUrl, 302);
+            }
+        }
+
         $row = Country::with('languages')->whereRaw('LOWER(code) = ?', [strtolower($cc)])->first();
 
         if ($row) {
