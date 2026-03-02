@@ -121,7 +121,8 @@ class AuthController extends Controller
         // abort(404);
         // $eclessias = User::role('ECCLESIA')->orderBy('id', 'desc')->get();
         $eclessias = Ecclesia::orderBy('id', 'asc')->get();
-        $countries = Country::all();
+        // global country not show
+        $countries = Country::where('code', '!=', 'GL')->get();
         $tiers = MembershipTier::with('benefits')->get();
 
         // Calculate auto-generated part for Lion Roaring ID: LR + 0000 (sequence) + MMDDYYYY
@@ -130,7 +131,27 @@ class AuthController extends Controller
         $datePart = now()->format('mdY');
         $generated_id_part = 'LR' . $sequence . $datePart;
 
-        return view('user.auth.register')->with(compact('eclessias', 'countries', 'tiers', 'generated_id_part'));
+        // Detect domain-based country
+        $domainCountry = Helper::getCountryByDomain();
+        $isGlobalDomain = $domainCountry && $domainCountry->is_global;
+        $lockedCountryId = null;
+
+        if ($domainCountry && !$domainCountry->is_global) {
+            // Country-specific domain: lock to this country
+            $lockedCountryId = $domainCountry->id;
+        } else {
+            // Global domain: check if user has selected a country from the header dropdown (session)
+            $currentCode = strtoupper(Helper::getVisitorCountryCode());
+            if ($currentCode && $currentCode !== 'GL') {
+                $sessionCountry = Country::where('code', $currentCode)->first();
+                if ($sessionCountry) {
+                    // Visitor selected a specific country — lock to that country
+                    $lockedCountryId = $sessionCountry->id;
+                }
+            }
+        }
+
+        return view('user.auth.register')->with(compact('eclessias', 'countries', 'tiers', 'generated_id_part', 'isGlobalDomain', 'lockedCountryId'));
     }
 
     public function registerCheck(Request $request)
@@ -223,7 +244,18 @@ class AuthController extends Controller
 
         $currentCode = strtoupper(Helper::getVisitorCountryCode());
         $country = Country::where('code', $currentCode)->first();
-        if ($country && $country->id != $request->country) {
+
+        // Enforce domain-based country locking
+        $domainCountry = Helper::getCountryByDomain();
+        $isGlobalDomain = $domainCountry && $domainCountry->is_global;
+
+        if ($domainCountry && !$domainCountry->is_global) {
+            // Country-specific domain: force the country to be the domain country
+            if ($request->country != $domainCountry->id) {
+                $validator->errors()->add('country', 'You must register with the country assigned to this domain (' . $domainCountry->name . ').');
+                return redirect()->back()->withErrors($validator)->withInput();
+            }
+        } elseif ($country && $country->id != $request->country && !$isGlobalDomain) {
             $validator->errors()->add('country', 'Now you are registered from ' . $country->name . '! Please change the country from dropdown.');
             return redirect()->back()->withErrors($validator)->withInput();
         }
@@ -304,6 +336,14 @@ class AuthController extends Controller
         $user->password = bcrypt($request->password);
         $user->signature = $request->signature;
         $user->email_verified_at = now();
+
+        // Set user_type based on the domain they registered from
+        $domainCountry = Helper::getCountryByDomain();
+        if ($domainCountry && $domainCountry->is_global) {
+            $user->user_type = 'Global';
+        } else {
+            $user->user_type = 'Regional';
+        }
 
         // Set user status based on signup field validation
         // If all critical rules passed, user is active (1), otherwise inactive (0)
@@ -554,7 +594,17 @@ class AuthController extends Controller
 
         $currentCode = strtoupper(Helper::getVisitorCountryCode());
         $country = Country::where('code', $currentCode)->first();
-        if ($country && $country->id != $request->country) {
+
+        // Enforce domain-based country locking
+        $domainCountry = Helper::getCountryByDomain();
+        $isGlobalDomain = $domainCountry && $domainCountry->is_global;
+
+        if ($domainCountry && !$domainCountry->is_global) {
+            // Country-specific domain: force the country to be the domain country
+            if ($request->country != $domainCountry->id) {
+                return response()->json(['status' => false, 'errors' => ['country' => ['You must register with the country assigned to this domain (' . $domainCountry->name . ').']]]);
+            }
+        } elseif ($country && $country->id != $request->country && !$isGlobalDomain) {
             return response()->json(['status' => false, 'errors' => ['country' => ['Now you are registered from ' . $country->name . '! Please change the country from dropdown.']]]);
         }
 

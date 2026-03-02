@@ -8,7 +8,7 @@
     <meta name="author" content="">
     <meta name="generator" content="">
     <title>{{ env('APP_NAME') }} - Register</title>
-     <link rel="icon" href="{{ asset('frontend_assets/uploads/2023/04/cropped-logo-1-32x32.png') }}"
+    <link rel="icon" href="{{ asset('frontend_assets/uploads/2023/04/cropped-logo-1-32x32.png') }}"
         sizes="32x32" />
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -375,8 +375,8 @@
                                             <div class="col-lg-6 mb-3">
                                                 <div class="login-username">
                                                     <label for="roar_id">Roar ID</label>
-                                                    <input type="text" name="roar_id" id="roar_id" class="input"
-                                                        value="{{ old('roar_id') }}">
+                                                    <input type="text" name="roar_id" id="roar_id"
+                                                        class="input" value="{{ old('roar_id') }}">
                                                     @if ($errors->has('roar_id'))
                                                         <div class="error" style="color:red;">
                                                             {{ $errors->first('roar_id') }}</div>
@@ -387,15 +387,35 @@
                                             <div class="col-lg-6 mb-3">
                                                 <div class="login-username">
                                                     <label for="user_login">Country</label>
-                                                    <select name="country" id="country" class="input">
-                                                        <option value="">Select Country</option>
-                                                        @foreach ($countries as $country)
-                                                            <option value="{{ $country->id }}"
-                                                                {{ old('country', $country->code == 'US' ? $country->id : '') == $country->id ? 'selected' : '' }}>
-                                                                {{ $country->name }}
-                                                            </option>
-                                                        @endforeach
-                                                    </select>
+                                                    @if (isset($lockedCountryId) && $lockedCountryId)
+                                                        {{-- Country-specific domain: locked, cannot change --}}
+                                                        <select name="country_display" id="country" class="input"
+                                                            disabled
+                                                            style="background-color: #e9ecef; cursor: not-allowed;">
+                                                            @foreach ($countries as $countryItem)
+                                                                <option value="{{ $countryItem->id }}"
+                                                                    {{ $countryItem->id == $lockedCountryId ? 'selected' : '' }}>
+                                                                    {{ $countryItem->name }}
+                                                                </option>
+                                                            @endforeach
+                                                        </select>
+                                                        {{-- Hidden input to submit the locked value --}}
+                                                        <input type="hidden" name="country"
+                                                            value="{{ $lockedCountryId }}">
+                                                        <small class="text-muted"><i class="fa fa-lock"></i> Country
+                                                            is determined by your domain</small>
+                                                    @else
+                                                        {{-- Global domain: user can choose any country --}}
+                                                        <select name="country" id="country" class="input">
+                                                            <option value="">Select Country</option>
+                                                            @foreach ($countries as $countryItem)
+                                                                <option value="{{ $countryItem->id }}"
+                                                                    {{ old('country') == $countryItem->id ? 'selected' : '' }}>
+                                                                    {{ $countryItem->name }}
+                                                                </option>
+                                                            @endforeach
+                                                        </select>
+                                                    @endif
                                                     @if ($errors->has('country'))
                                                         <div class="error" style="color:red;">
                                                             {{ $errors->first('country') }}</div>
@@ -790,6 +810,18 @@
             var initialCountry = $('#country').val();
             getStates(initialCountry);
             getEcclesias(initialCountry);
+
+            @if (isset($lockedCountryId) && $lockedCountryId)
+                // Prevent tampering with the locked country value
+                var lockedValue = '{{ $lockedCountryId }}';
+                $('input[name="country"]').on('change', function() {
+                    $(this).val(lockedValue);
+                });
+                // Re-enforce on form submit
+                $('#login-form').on('submit', function() {
+                    $('input[name="country"]').val(lockedValue);
+                });
+            @endif
 
             // Fetch states and ecclesias when the country changes
             $('#country').change(function() {
