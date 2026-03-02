@@ -14,26 +14,28 @@ class DatabaseSeeder extends Seeder
     public function run()
     {
         $this->call([
-            // first time only
-            CountriesTableSeeder::class,
-            StatesTableSeeder::class,
+            // // first time only
+            // CountriesTableSeeder::class,
+            // StatesTableSeeder::class,
 
-            // then run these
-            AddSuperAdminGlobal::class,
-            MigrateRolesToUserTypesSeeder::class,
-            RolePermissionSeeder::class,
+            // // then run these
+            // AddSuperAdminGlobal::class,
+            // MigrateRolesToUserTypesSeeder::class,
+            // RolePermissionSeeder::class,
 
-            IsAcceptedStatusUpdateSeeder::class,
-            AddSidebarMenuItems::class,
-            AddSidebarMenuItemsWithFrontend::class,
-            AddMembershipMenuItems::class,
-            SiteSettingsSeeder::class,
-            OrderStatusAndEmailTemplateSeeder::class,
-            ChatbotSeeder::class,
-            CompressCategoryImagesSeeder::class,
-            HomeCmsImageSeeder::class,
-            SignupRuleSeeder::class,
-            MarketMaterialSeeder::class,
+            // IsAcceptedStatusUpdateSeeder::class,
+            // AddSidebarMenuItems::class,
+            // AddSidebarMenuItemsWithFrontend::class,
+            // AddMembershipMenuItems::class,
+            // SiteSettingsSeeder::class,
+            // OrderStatusAndEmailTemplateSeeder::class,
+            // ChatbotSeeder::class,
+            // CompressCategoryImagesSeeder::class,
+            // HomeCmsImageSeeder::class,
+            // SignupRuleSeeder::class,
+            // MarketMaterialSeeder::class,
+
+            GlobalCountrySeeder::class,
         ]);
     }
 }
