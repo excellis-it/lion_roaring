@@ -1,5 +1,6 @@
 document.addEventListener("DOMContentLoaded", function () {
     document.querySelectorAll("select.cst-select").forEach(function (selectEl) {
+        const isDisabled = selectEl.disabled;
         const wrapper = document.createElement("div");
         wrapper.style.position = "relative";
         wrapper.style.display = "inline-block";
@@ -10,13 +11,14 @@ document.addEventListener("DOMContentLoaded", function () {
         display.style.border = "1px solid #ccc";
         display.style.padding = "6px 10px";
         display.style.borderRadius = "5px";
-        display.style.cursor = "pointer";
+        display.style.cursor = isDisabled ? "not-allowed" : "pointer";
         display.style.display = "flex";
         display.style.alignItems = "center";
         display.style.justifyContent = "space-between";
         display.style.minWidth = "180px";
-        display.style.background = "#fff";
+        display.style.background = isDisabled ? "#e9ecef" : "#fff";
         display.style.gap = "6px";
+        if (isDisabled) display.style.opacity = "0.7";
 
         const content = document.createElement("div");
         content.style.display = "flex";
@@ -95,7 +97,7 @@ document.addEventListener("DOMContentLoaded", function () {
         Array.from(selectEl.options).forEach(function (opt) {
             const item = document.createElement("div");
             item.style.padding = "6px 10px";
-            item.style.cursor = "pointer";
+            item.style.cursor = isDisabled ? "not-allowed" : "pointer";
             item.style.display = "flex";
             item.style.alignItems = "center";
             item.style.gap = "6px";
@@ -116,20 +118,22 @@ document.addEventListener("DOMContentLoaded", function () {
             span.style.flex = "1";
             item.appendChild(span);
 
-            item.addEventListener(
-                "mouseover",
-                () => (item.style.background = "#f2f2f2")
-            );
-            item.addEventListener(
-                "mouseout",
-                () => (item.style.background = "")
-            );
-            item.addEventListener("click", function () {
-                selectEl.value = opt.value;
-                updateDisplay();
-                list.style.display = "none";
-                selectEl.dispatchEvent(new Event("change"));
-            });
+            if (!isDisabled) {
+                item.addEventListener(
+                    "mouseover",
+                    () => (item.style.background = "#f2f2f2")
+                );
+                item.addEventListener(
+                    "mouseout",
+                    () => (item.style.background = "")
+                );
+                item.addEventListener("click", function () {
+                    selectEl.value = opt.value;
+                    updateDisplay();
+                    list.style.display = "none";
+                    selectEl.dispatchEvent(new Event("change"));
+                });
+            }
 
             optionContainer.appendChild(item);
         });
@@ -154,8 +158,9 @@ document.addEventListener("DOMContentLoaded", function () {
         }
         updateDisplay();
 
-        // toggle dropdown
+        // toggle dropdown — only if NOT disabled
         display.addEventListener("click", function () {
+            if (isDisabled) return;
             list.style.display =
                 list.style.display === "none" ? "block" : "none";
             searchInput.focus();

@@ -27,9 +27,13 @@
                             $countries = \App\Helpers\Helper::getCountries();
                             $hasCountrySelected = !empty($currentCode);
                             $isGlobal = $currentCode === 'GL';
+                            $canSwitchCountry = !auth()->check() || (auth()->check() && auth()->user()->hasNewRole('SUPER ADMIN'));
                         @endphp
                         <div class="input-group input-group-sm">
-                            <select class="countrySwitcher form-select form-select-sm cst-select cst-select-bottom">
+                            <select class="countrySwitcher form-select form-select-sm cst-select cst-select-bottom"
+                                {{ !$canSwitchCountry ? 'disabled' : '' }}
+                                {{ !$canSwitchCountry ? 'style=opacity:0.7;cursor:not-allowed;' : '' }}
+                                title="{{ !$canSwitchCountry ? 'Country switching is restricted for your role' : '' }}">
                                 <option value="gl" {{ $isGlobal ? 'selected' : '' }}
                                     data-image="{{ asset('frontend_assets/images/flags/globe.png') }}">
                                     Global (Main)

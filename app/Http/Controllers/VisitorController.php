@@ -12,6 +12,31 @@ class VisitorController extends Controller
             'country' => 'required|string|max:10',
         ]);
 
+        // If user is logged in, enforce country restrictions (SUPER ADMIN exempt)
+        if (auth()->check() && !auth()->user()->hasNewRole('SUPER ADMIN')) {
+            $user = auth()->user();
+            $requestedCode = strtoupper($data['country']);
+
+            if ($user->user_type == 'Regional') {
+                // Regional user: can only stay on their own country
+                $userCountry = \App\Models\Country::find($user->country);
+                if ($userCountry && strtoupper($userCountry->code) !== $requestedCode) {
+                    return response()->json([
+                        'status' => 'error',
+                        'message' => 'You are a Regional user. You can only access your assigned country (' . $userCountry->name . ').',
+                    ], 403);
+                }
+            } elseif ($user->user_type == 'Global') {
+                // Global user: can only stay on Global
+                if ($requestedCode !== 'GL') {
+                    return response()->json([
+                        'status' => 'error',
+                        'message' => 'You are a Global user. You can only access the Global domain.',
+                    ], 403);
+                }
+            }
+        }
+
         $country = strtoupper($data['country'] ?? '');
         $ip = $request->ip();
         $flagSessionKey = 'visitor_country_flag_code_' . $ip;

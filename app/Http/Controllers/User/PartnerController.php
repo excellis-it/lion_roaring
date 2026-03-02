@@ -141,7 +141,7 @@ class PartnerController extends Controller
 
             // Paginate results
             $partners = $partners->paginate(15);
-            $countries = Country::orderBy('name', 'asc')->get();
+            $countries = Country::orderBy('name', 'asc')->where('code', '!=', 'GL')->get();
 
             return view('user.partner.list', compact('partners', 'countries', 'query', 'country_id', 'has_agreement', 'sort_by', 'sort_type'));
         } else {
@@ -434,9 +434,9 @@ class PartnerController extends Controller
             }
 
             if (!$isSuperAdmin && $auth_user_user_type == 'Regional') {
-                $countries = Country::where('id', $auth_user_country)->orderBy('name', 'asc')->get();
+                $countries = Country::where('id', $auth_user_country)->where('code', '!=', 'GL')->orderBy('name', 'asc')->get();
             } else {
-                $countries = Country::orderBy('name', 'asc')->get();
+                $countries = Country::orderBy('name', 'asc')->where('code', '!=', 'GL')->get();
             }
 
             // Load all permissions
@@ -700,9 +700,9 @@ class PartnerController extends Controller
             }
 
             if (!$isSuperAdmin && $auth_user_user_type == 'Regional') {
-                $countries = Country::where('id', $auth_user_country)->orderBy('name', 'asc')->get();
+                $countries = Country::where('id', $auth_user_country)->where('code', '!=', 'GL')->orderBy('name', 'asc')->get();
             } else {
-                $countries = Country::orderBy('name', 'asc')->get();
+                $countries = Country::orderBy('name', 'asc')->where('code', '!=', 'GL')->get();
             }
 
             // Load all permissions
