@@ -71,6 +71,24 @@
                         <div class="col-md-6 mb-3">
                             <div class="form-group-div">
                                 <div class="form-group">
+                                    <label>Domain URL (Optional)</label>
+                                    <input type="url" class="form-control" name="domain"
+                                        value="{{ old('domain', $country->domain) }}"
+                                        placeholder="e.g., https://lionroaring.us">
+                                    <small class="text-muted">If this country has its own domain, enter the full URL
+                                        here</small>
+                                    @error('domain')
+                                        <div class="error" style="color:red;">{{ $message }}</div>
+                                    @enderror
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <div class="form-group-div">
+                                <div class="form-group">
                                     <label>Status</label>
                                     <div class="form-check form-switch">
                                         <input class="form-check-input" type="checkbox" role="switch" id="statusSwitchEdit"

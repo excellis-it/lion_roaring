@@ -22,7 +22,23 @@ class VisitorController extends Controller
         // Store flag key (prevents popup from showing again)
         session([$flagSessionKey => $country]);
 
-        // Also update the main country session keys so content & dropdown reflect the selection
+        // Handle GLOBAL selection — redirect to main URL with all languages
+        if ($country === 'GL') {
+            $allLanguages = \App\Models\TranslateLanguage::orderBy('name', 'asc')->get();
+            session([
+                $codeSessionKey => 'GL',
+                $nameSessionKey => 'Global (Main)',
+                $languageSessionKey => $allLanguages,
+            ]);
+
+            $redirectUrl = \App\Helpers\Helper::getMainUrl();
+            return response()->json([
+                'status' => 'ok',
+                'redirect_url' => $redirectUrl,
+            ]);
+        }
+
+        // Regular country selection
         $countryData = \App\Models\Country::with('languages')->where('code', $country)->first();
         $languages = $countryData ? $countryData->languages : collect();
 
@@ -45,16 +61,8 @@ class VisitorController extends Controller
             $languageSessionKey => $languages,
         ]);
 
-        // Determine the redirect URL
-        $redirectUrl = '';
-        if ($country === 'US') {
-            // Redirect to LION_ROARING_USA
-            $redirectUrl = env('LION_ROARING_USA', '');
-        } else {
-            // Redirect to MAIN_URL/{code}
-            $mainUrl = env('MAIN_URL', env('APP_URL', ''));
-            $redirectUrl = rtrim($mainUrl, '/') . '/' . strtolower($country);
-        }
+        // Determine the redirect URL dynamically from DB domains
+        $redirectUrl = \App\Helpers\Helper::getCountryRedirectUrl($country);
 
         return response()->json([
             'status' => 'ok',

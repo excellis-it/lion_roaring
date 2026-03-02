@@ -26,15 +26,17 @@
                             $currentCode = strtoupper(\App\Helpers\Helper::getVisitorCountryCode());
                             $countries = \App\Helpers\Helper::getCountries();
                             $hasCountrySelected = !empty($currentCode);
+                            $isGlobal = $currentCode === 'GL';
                         @endphp
                         <div class="input-group input-group-sm">
                             <select class="countrySwitcher form-select form-select-sm cst-select cst-select-bottom">
-                                @if (!$hasCountrySelected)
-                                    <option value="" selected disabled>Select Country</option>
-                                @endif
+                                <option value="gl" {{ $isGlobal ? 'selected' : '' }}
+                                    data-image="{{ asset('frontend_assets/images/flags/globe.png') }}">
+                                    Global (Main)
+                                </option>
                                 @foreach ($countries as $c)
                                     <option value="{{ strtolower($c->code) }}"
-                                        {{ $hasCountrySelected && strtoupper($c->code) === $currentCode ? 'selected' : '' }}
+                                        {{ !$isGlobal && $hasCountrySelected && strtoupper($c->code) === $currentCode ? 'selected' : '' }}
                                         data-image="{{ asset('frontend_assets/images/flags/' . strtolower($c->code) . '.png') }}">
                                         {{ $c->name }} ({{ strtoupper($c->code) }})
                                     </option>

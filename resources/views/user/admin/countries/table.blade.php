@@ -1,8 +1,13 @@
 @if ($countries->count() > 0)
     @foreach ($countries as $country)
-        <tr>
+        <tr class="{{ $country->is_global ? 'table-warning' : '' }}">
             <td>{{ ($countries->currentPage() - 1) * $countries->perPage() + $loop->index + 1 }}</td>
-            <td>{{ $country->name }}</td>
+            <td>
+                {{ $country->name }}
+                @if ($country->is_global)
+                    <span class="badge bg-dark ms-1">GLOBAL</span>
+                @endif
+            </td>
             <td>{{ strtoupper($country->code) }}</td>
             <td>
                 @if ($country->flag_image)
@@ -10,6 +15,14 @@
                         style="object-fit:cover;border:1px solid #eee;">
                 @else
                     —
+                @endif
+            </td>
+            <td>
+                @if ($country->domain)
+                    <a href="{{ $country->domain }}" target="_blank" class="text-primary text-decoration-underline"
+                        style="font-size: 0.85em;">{{ $country->domain }}</a>
+                @else
+                    <span class="text-muted">—</span>
                 @endif
             </td>
             <td>
@@ -27,29 +40,32 @@
             </td>
             <td>
                 <div class="edit-1 d-flex align-items-center gap-2 justify-content-end">
-                    <form action="{{ route('user.admin-countries.toggle-status', $country) }}" method="POST"
-                        class="d-inline mr-4">
-                        @csrf
-                        <button class="btn btn-sm btn-outline-warning ms-2 toggle-status" title="Toggle Status"
-                            type="button">
-                            {{ $country->status ? 'Deactivate' : 'Activate' }}
-                        </button>
-                    </form>
+                    {{-- @if (!$country->is_global) --}}
+                        <form action="{{ route('user.admin-countries.toggle-status', $country) }}" method="POST"
+                            class="d-inline mr-4">
+                            @csrf
+                            <button class="btn btn-sm btn-outline-warning ms-2 toggle-status" title="Toggle Status"
+                                type="button">
+                                {{ $country->status ? 'Deactivate' : 'Activate' }}
+                            </button>
+                        </form>
 
-                    <a title="Edit" href="{{ route('user.admin.admin-countries.edit', $country->id) }}">
-                        <span class="edit-icon"><i class="fas fa-edit"></i></span>
-                    </a>
-                    <a title="Delete" data-route="{{ route('user.admin-countries.delete', $country->id) }}"
-                        href="javascript:void(0);" id="delete">
-                        <span class="trash-icon"><i class="fas fa-trash"></i></span>
-                    </a>
-
+                        <a title="Edit" href="{{ route('user.admin.admin-countries.edit', $country->id) }}">
+                            <span class="edit-icon"><i class="fas fa-edit"></i></span>
+                        </a>
+                        <a title="Delete" data-route="{{ route('user.admin-countries.delete', $country->id) }}"
+                            href="javascript:void(0);" id="delete">
+                            <span class="trash-icon"><i class="fas fa-trash"></i></span>
+                        </a>
+                    {{-- @else
+                        <span class="badge bg-secondary text-white" style="font-size: 0.75em;">Protected</span>
+                    @endif --}}
                 </div>
             </td>
         </tr>
     @endforeach
     <tr style="box-shadow: none;">
-        <td colspan="7">
+        <td colspan="8">
             <div class="d-flex justify-content-center">
                 {!! $countries->links() !!}
             </div>
@@ -57,7 +73,7 @@
     </tr>
 @else
     <tr>
-        <td colspan="7" class="text-center">No Countries Found</td>
+        <td colspan="8" class="text-center">No Countries Found</td>
     </tr>
 @endif
 
@@ -90,14 +106,12 @@
                 data: form.serialize(),
                 success: function(response) {
                     swal('Success', 'Country status updated successfully.', 'success');
-                    // Update the status text and badge color without reloading the page
                     var statusSpan = $('.status-span[data-id="' + response.id + '"]');
                     if (response.status) {
                         statusSpan.removeClass('bg-secondary').addClass('bg-success').text('Active');
                     } else {
                         statusSpan.removeClass('bg-success').addClass('bg-secondary').text('Inactive');
                     }
-                    // Update the button text without reloading the page
                     var toggleButton = statusSpan.closest('tr').find('.toggle-status');
                     toggleButton.text(response.status ? 'Deactivate' : 'Activate');
                 },

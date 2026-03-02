@@ -34,9 +34,9 @@
                         <p>
                             {!! Helper::getFooter()['footer_title'] ??
                                 'Our main focus is to restore our various communities, villages, cities, states,
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            and
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            our nation by restoring the condition of a person in both the spiritual and the
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            physical.' !!}
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                and
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                our nation by restoring the condition of a person in both the spiritual and the
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                physical.' !!}
                         </p>
                         <div class="col-lg-12">
                             <div class="d-flex align-items-center">
@@ -142,16 +142,18 @@
                         $currentCode = strtoupper(\App\Helpers\Helper::getVisitorCountryCode());
                         $countries = \App\Helpers\Helper::getCountries();
                         $hasCountrySelected = !empty($currentCode);
+                        $isGlobal = $currentCode === 'GL';
                     @endphp
 
                     <div class="input-group input-group-sm">
                         <select class="countrySwitcher form-select form-select-sm cst-select cst-select-top">
-                            @if (!$hasCountrySelected)
-                                <option value="" selected disabled>Select Country</option>
-                            @endif
+                            <option value="gl" {{ $isGlobal ? 'selected' : '' }}
+                                data-image="{{ asset('frontend_assets/images/flags/globe.png') }}">
+                                Global (Main)
+                            </option>
                             @foreach ($countries as $c)
                                 <option value="{{ strtolower($c->code) }}"
-                                    {{ $hasCountrySelected && strtoupper($c->code) === $currentCode ? 'selected' : '' }}
+                                    {{ !$isGlobal && $hasCountrySelected && strtoupper($c->code) === $currentCode ? 'selected' : '' }}
                                     data-image="{{ asset('frontend_assets/images/flags/' . strtolower($c->code) . '.png') }}">
                                     {{ $c->name }} ({{ strtoupper($c->code) }})
                                 </option>
@@ -207,37 +209,30 @@
                 country: country
             })
         }).then(function(response) {
-            if (response.ok) {
-                // optionally update any UI elements (update all countrySwitchers)
-                var sels = document.querySelectorAll('.countrySwitcher');
-                if (sels && sels.length > 0) {
-                    sels.forEach(function(s) {
-                        if (s.value !== country) {
-                            s.value = country;
-                            // trigger change for any JS wrappers (e.g., select2) so they pick up the new value
-                            try {
-                                s.dispatchEvent(new Event('change', {
-                                    bubbles: true
-                                }));
-                            } catch (e) {}
-                        }
-                    });
-                }
+            if (!response.ok) {
                 closePopup();
+                return;
+            }
+            return response.json();
+        }).then(function(data) {
+            if (!data) return;
 
-                // If user selected US, redirect to the USA-specific instance URL
-                var usaInstanceUrl = "{{ \App\Helpers\Helper::getUsaInstanceUrl() }}";
-                var mainUrl = "{{ \App\Helpers\Helper::getMainUrl() }}";
-                if (country.toLowerCase() === 'us' && usaInstanceUrl) {
-                    window.location.href = usaInstanceUrl;
-                } else {
-                    // For other countries, redirect to MAIN_URL/{cc}
-                    var baseUrl = mainUrl ? mainUrl : '{{ route('home') }}';
-                    window.location.href = baseUrl + '/' + encodeURIComponent(country);
-                }
+            // Update all countrySwitcher selects to reflect the new selection
+            var sels = document.querySelectorAll('.countrySwitcher');
+            if (sels && sels.length > 0) {
+                sels.forEach(function(s) {
+                    if (s.value !== country) {
+                        s.value = country;
+                    }
+                });
+            }
+            closePopup();
+
+            // Use the redirect URL from the server response (dynamically resolved from DB)
+            if (data.redirect_url) {
+                window.location.href = data.redirect_url;
             } else {
-                // still close popup on failure to avoid blocking UX
-                closePopup();
+                window.location.reload();
             }
         }).catch(function() {
             closePopup();

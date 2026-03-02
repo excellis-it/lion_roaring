@@ -77,17 +77,18 @@ class CountryController extends Controller
             'name' => 'required|string|max:255|unique:countries,name',
             'code' => 'nullable|string|max:10|unique:countries,code',
             'flag_image' => 'nullable|image|mimes:jpeg,png,webp,svg,gif|max:2048',
+            'domain' => 'nullable|url|max:255',
             'status' => 'nullable|boolean',
             'languages' => 'nullable|array',
             'languages.*' => 'exists:translate_languages,id',
         ]);
 
-        $data = $request->only(['name', 'code']);
+        $data = $request->only(['name', 'code', 'domain']);
         $data['status'] = $request->boolean('status');
 
         if ($request->hasFile('flag_image')) {
             $path = $request->file('flag_image')->store('countries/flags', 'public');
-            $data['flag_image'] = $path; // stored relative to storage/app/public
+            $data['flag_image'] = $path;
         }
 
         $country = Country::create($data);
@@ -103,15 +104,22 @@ class CountryController extends Controller
     // Update a country
     public function update(Request $request, $id)
     {
-        // return $request->all();
         $country = Country::findOrFail($id);
         if (!Gate::allows('Manage Countries')) {
             abort(403, 'You do not have permission to access this page.');
         }
+
+        // Prevent editing the GLOBAL entry
+        // if ($country->is_global) {
+        //     return redirect()->route('user.admin.admin-countries.index')
+        //         ->with('error', 'The Global (Main) country cannot be modified.');
+        // }
+
         $request->validate([
             'name' => 'required|string|max:255|unique:countries,name,' . $country->id,
             'code' => 'nullable|string|max:10|unique:countries,code,' . $country->id,
             'flag_image' => 'nullable|image|mimes:jpeg,png,webp,svg,gif|max:2048',
+            'domain' => 'nullable|url|max:255',
             'status' => 'nullable|boolean',
             'languages' => 'nullable|array',
             'languages.*' => 'exists:translate_languages,id',
@@ -119,10 +127,10 @@ class CountryController extends Controller
 
         $country->name = $request->name;
         $country->code = $request->code;
+        $country->domain = $request->domain;
         $country->status = $request->boolean('status');
 
         if ($request->hasFile('flag_image')) {
-            // delete old
             if ($country->flag_image && Storage::disk('public')->exists($country->flag_image)) {
                 Storage::disk('public')->delete($country->flag_image);
             }
@@ -136,7 +144,6 @@ class CountryController extends Controller
         if ($request->has('languages')) {
             $country->languages()->sync($request->input('languages'));
         } else {
-            // If no languages selected, detach all
             $country->languages()->sync([]);
         }
 
@@ -150,6 +157,13 @@ class CountryController extends Controller
             abort(403, 'You do not have permission to access this page.');
         }
         $country = Country::findOrFail($id);
+
+        // Prevent editing the GLOBAL entry
+        // if ($country->is_global) {
+        //     return redirect()->route('user.admin.admin-countries.index')
+        //         ->with('error', 'The Global (Main) country cannot be edited.');
+        // }
+
         $languages = TranslateLanguage::orderBy('name', 'asc')->get();
         return view('user.admin.countries.edit', compact('country', 'languages'));
     }
@@ -160,6 +174,13 @@ class CountryController extends Controller
         if (!Gate::allows('Manage Countries')) {
             abort(403, 'You do not have permission to access this page.');
         }
+
+        // Prevent deleting the GLOBAL entry
+        if ($country->is_global) {
+            return redirect()->route('user.admin.admin-countries.index')
+                ->with('error', 'The Global (Main) country cannot be deleted.');
+        }
+
         if ($country->flag_image && Storage::disk('public')->exists($country->flag_image)) {
             Storage::disk('public')->delete($country->flag_image);
         }
@@ -173,6 +194,12 @@ class CountryController extends Controller
         if (!Gate::allows('Manage Countries')) {
             abort(403, 'You do not have permission to access this page.');
         }
+
+        // Prevent toggling the GLOBAL entry
+        if ($country->is_global) {
+            return response()->json(['error' => 'Cannot toggle Global country status.'], 403);
+        }
+
         $country->status = $country->status ? 0 : 1;
         $country->save();
         return response()->json(['status' => $country->status, 'id' => $country->id]);

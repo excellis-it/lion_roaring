@@ -144,7 +144,11 @@ class Helper
 
     public static function getCountries()
     {
-        $countries = Country::with('languages')->where('status', 1)->orderBy('name', 'asc')->get();
+        $countries = Country::with('languages')
+            ->where('status', 1)
+            ->where('is_global', false) // exclude GLOBAL entry from frontend dropdowns
+            ->orderBy('name', 'asc')
+            ->get();
         return $countries;
     }
 
@@ -681,11 +685,35 @@ class Helper
     }
 
     /**
-     * Check if the current request is being served by the USA-specific instance.
-     * Compares the request's host+port against the LION_ROARING_USA env variable.
+     * Resolve the current request to a Country record based on the domain column in DB.
+     * Uses a simple static cache to avoid repeated calls within the same request.
+     * The Country model itself also caches the DB query, so this is very fast.
+     */
+    private static $resolvedCountry = null;
+    private static $domainResolved = false;
+
+    public static function getCountryByDomain()
+    {
+        if (self::$domainResolved) {
+            return self::$resolvedCountry;
+        }
+        self::$domainResolved = true;
+        self::$resolvedCountry = \App\Models\Country::findByCurrentRequest();
+        return self::$resolvedCountry;
+    }
+
+    /**
+     * Check if the current request is being served by a country-specific instance (not GLOBAL).
+     * Checks domain in DB first, falls back to env LION_ROARING_USA.
      */
     public static function isUsaInstance()
     {
+        $country = self::getCountryByDomain();
+        if ($country && !$country->is_global && strtoupper($country->code) === 'US') {
+            return true;
+        }
+
+        // Fallback to env-based check for backward compatibility
         $usaUrl = env('LION_ROARING_USA');
         if (!$usaUrl) {
             return false;
@@ -698,32 +726,66 @@ class Helper
         $requestHost = request()->getHost();
         $requestPort = request()->getPort();
 
-        // Match host and port (e.g., 127.0.0.1:8001)
         return $usaHost && $requestHost === $usaHost && (string) $requestPort === (string) $usaPort;
     }
 
     /**
-     * Return the LION_ROARING_USA URL from .env (for use in JS redirects).
+     * Return the USA instance URL (from cached collection, no extra DB query).
      */
     public static function getUsaInstanceUrl()
     {
+        $domain = \App\Models\Country::getDomainByCode('US');
+        if ($domain) {
+            return $domain;
+        }
         return env('LION_ROARING_USA', '');
     }
 
     /**
-     * Return the MAIN_URL from .env.
+     * Return the MAIN_URL (from cached collection, no extra DB query).
      */
     public static function getMainUrl()
     {
+        $domain = \App\Models\Country::getGlobalDomain();
+        if ($domain) {
+            return $domain;
+        }
         return env('MAIN_URL', env('APP_URL', ''));
     }
 
     /**
-     * Check if the current request is being served by the MAIN instance (not USA).
+     * Check if the current request is being served by the GLOBAL (main) instance.
+     */
+    public static function isGlobalInstance()
+    {
+        $country = self::getCountryByDomain();
+        return $country && $country->is_global;
+    }
+
+    /**
+     * Check if the current request is being served by the MAIN instance (not a country-specific domain).
      */
     public static function isMainInstance()
     {
         return !self::isUsaInstance();
+    }
+
+    /**
+     * Get the redirect URL for a given country code (from cached collection, no extra DB query).
+     * If the country has a domain in DB, return that. Otherwise, return main_url/{code}.
+     */
+    public static function getCountryRedirectUrl(string $countryCode): string
+    {
+        $countryCode = strtoupper($countryCode);
+
+        $domain = \App\Models\Country::getDomainByCode($countryCode);
+        if ($domain) {
+            return $domain;
+        }
+
+        // No specific domain — redirect to main_url/{code}
+        $mainUrl = self::getMainUrl();
+        return rtrim($mainUrl, '/') . '/' . strtolower($countryCode);
     }
 
     /**
@@ -814,7 +876,15 @@ class Helper
             return session($languageSessionKey);
         }
 
-        // No country selected on MAIN_URL: return all active languages
+        // Check if we are on GLOBAL domain
+        if (self::isGlobalInstance()) {
+            $row = \App\Models\Country::with('languages')->where('is_global', true)->first();
+            if ($row && $row->languages->isNotEmpty()) {
+                return $row->languages;
+            }
+        }
+
+        // Fallback: all active languages
         $allLanguages = \App\Models\TranslateLanguage::orderBy('name', 'asc')->get();
         return $allLanguages;
     }
@@ -824,8 +894,8 @@ class Helper
     {
         $countryCode = self::getVisitorCountryCode();
 
-        // If no country is selected (empty code), fall back to US content
-        if (empty($countryCode)) {
+        // If no country is selected or GLOBAL is selected, fall back to US content
+        if (empty($countryCode) || $countryCode === 'GL') {
             $countryCode = 'US';
         }
 

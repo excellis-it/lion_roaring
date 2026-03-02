@@ -18,14 +18,15 @@
         $currentCode = strtoupper(Helper::getVisitorCountryCode());
         $countries = Helper::getCountries();
         $hasCountrySelected = !empty($currentCode);
+        $isGlobal = $currentCode === 'GL';
         // show popup only if session key not set for this IP
         $ip = request()->ip();
         $sessionKey = 'visitor_country_flag_code_' . $ip;
         // New visitor flow:
         // 1) If user hasn't selected a country yet -> show country popup first
 // 2) After selecting a country and reload -> show agreement modal (handled in master)
-// 3) If this is the USA-specific instance, never show the popup (country is forced to US)
-$showPopup = !Helper::isUsaInstance() && !session()->has($sessionKey) && !Session::has('agree');
+// 3) If this is the USA-specific instance or GLOBAL is set, never show the popup
+$showPopup = !Helper::isUsaInstance() && !$isGlobal && !session()->has($sessionKey) && !Session::has('agree');
     @endphp
 
     <!--Flag Popup -->
@@ -69,12 +70,13 @@ $showPopup = !Helper::isUsaInstance() && !session()->has($sessionKey) && !Sessio
 
             <div class="popup_countrySwitcher">
                 <select class="form-select form-select-sm cst-select cst-select-bottom" id="popupCountrySelect">
-                    @if (!$hasCountrySelected)
-                        <option value="" selected disabled>Select Country</option>
-                    @endif
+                    <option value="gl" {{ $isGlobal ? 'selected' : '' }}
+                        data-image="{{ asset('frontend_assets/images/flags/globe.png') }}">
+                        Global (Main)
+                    </option>
                     @foreach ($countries as $c)
                         <option value="{{ strtolower($c->code) }}"
-                            {{ $hasCountrySelected && strtoupper($c->code) === $currentCode ? 'selected' : '' }}
+                            {{ !$isGlobal && $hasCountrySelected && strtoupper($c->code) === $currentCode ? 'selected' : '' }}
                             data-image="{{ asset('frontend_assets/images/flags/' . strtolower($c->code) . '.png') }}">
                             {{ $c->name }} ({{ strtoupper($c->code) }})
                         </option>
@@ -389,14 +391,14 @@ $showPopup = !Helper::isUsaInstance() && !session()->has($sessionKey) && !Sessio
 
     <!-- @if (count($galleries) > 0)
     <section class="gallery_sec margin_27">
-                                                                                        <div class="gallery_slider">
-                                                                                            @foreach ($galleries as $galary)
+                                                                                            <div class="gallery_slider">
+                                                                                                @foreach ($galleries as $galary)
     <div class="gallery_box" style="width: 100%; display: inline-block;">
-                                                                                                    <img src="{{ Storage::url($galary->image) }}" alt="">
-                                                                                                </div>
+                                                                                                        <img src="{{ Storage::url($galary->image) }}" alt="">
+                                                                                                    </div>
     @endforeach
-                                                                                        </div>
-                                                                                    </section>
+                                                                                            </div>
+                                                                                        </section>
     @endif -->
 @endsection
 

@@ -377,26 +377,81 @@ Route::middleware(['userActivity'])->group(function () {
 
     // Home route
     Route::get('/', function () {
-        // If this is the USA-specific instance (port 8001), force US session and serve directly
+        // Dynamic domain resolution: check if the request domain matches a country in DB
+        $domainCountry = Helper::getCountryByDomain();
+
+        if ($domainCountry && !$domainCountry->is_global) {
+            // This is a country-specific domain (e.g., lionroaring.us → US)
+            // Force that country's session and serve the homepage
+            $ip = request()->ip();
+            $codeSessionKey = 'visitor_country_code_' . $ip;
+            $nameSessionKey = 'visitor_country_name_' . $ip;
+            $languageSessionKey = 'visitor_country_languages';
+
+            $row = Country::with('languages')->where('code', $domainCountry->code)->first();
+            if ($row) {
+                $languages = $row->languages;
+                $hasEnglish = $languages->contains(fn($lang) => strtolower($lang->code ?? '') === 'en');
+                if (!$hasEnglish) {
+                    $english = \App\Models\TranslateLanguage::whereRaw('LOWER(code) = ?', ['en'])->first();
+                    if ($english) $languages = $languages->push($english);
+                }
+                session([
+                    $codeSessionKey => strtoupper($row->code),
+                    $nameSessionKey => $row->name,
+                    $languageSessionKey => $languages,
+                ]);
+            }
+            return app(CmsController::class)->index();
+        }
+
+        // GLOBAL domain matched, or fallback main URL
+        // Set GLOBAL session so the UI knows we're on the Global instance
+        if ($domainCountry && $domainCountry->is_global) {
+            $ip = request()->ip();
+            $codeSessionKey = 'visitor_country_code_' . $ip;
+            $nameSessionKey = 'visitor_country_name_' . $ip;
+            $languageSessionKey = 'visitor_country_languages';
+
+            // Now always refresh GLOBAL info when hitting main URL if no specific regional country is selected
+            if (!session()->has($codeSessionKey) || session($codeSessionKey) === 'GL') {
+                $row = Country::with('languages')->where('is_global', true)->first();
+                $languages = $row ? $row->languages : collect();
+
+                // Fallback to English if no languages assigned
+                if ($languages->isEmpty()) {
+                    $english = \App\Models\TranslateLanguage::whereRaw('LOWER(code) = ?', ['en'])->first();
+                    if ($english) $languages = collect([$english]);
+                }
+
+                session([
+                    $codeSessionKey => 'GL',
+                    $nameSessionKey => $row ? $row->name : 'Global (Main)',
+                    $languageSessionKey => $languages,
+                ]);
+            }
+            return app(CmsController::class)->index();
+        }
+
+        // Fallback: check if this is the USA-specific instance (env-based backward compat)
         if (Helper::isUsaInstance()) {
             Helper::getVisitorCountryCode(); // forces US in session
             return app(CmsController::class)->index();
         }
 
-        // For MAIN_URL: serve home page directly (no auto-redirect by IP)
-        // If a country was already selected via session, the content will use that country
-        // If no country selected, the popup will show and language dropdown shows all languages
+        // Truly unknown domain — serve homepage
         return app(CmsController::class)->index();
     })->name('home');
 
     // Country-code masked home (won't affect other routes due to tight constraint)
     Route::get('/{cc}', function (string $cc) {
-        // If someone visits /us on the main URL (port 8000), redirect to the USA instance
-        if (strtoupper($cc) === 'US' && !Helper::isUsaInstance()) {
-            $usaUrl = Helper::getUsaInstanceUrl();
-            if ($usaUrl) {
-                return redirect($usaUrl, 302);
-            }
+        $ccUpper = strtoupper($cc);
+
+        // If this country has its own domain in DB, redirect there (uses cached collection)
+        $domainUrl = Country::getDomainByCode($ccUpper);
+
+        if ($domainUrl) {
+            return redirect($domainUrl, 302);
         }
 
         $row = Country::with('languages')->whereRaw('LOWER(code) = ?', [strtolower($cc)])->first();
