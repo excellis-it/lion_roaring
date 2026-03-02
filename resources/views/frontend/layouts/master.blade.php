@@ -1012,8 +1012,8 @@
         </script> --}}
     <!-- make sure this line sets the session languages (you already have this) -->
     <script>
-        // example: [{"id":202,"code":"es","name":"Spanish",...}, {"id":249,"code":"en","name":"English",...}]
-        window.sessionLanguages = @json(session('visitor_country_languages') ?? []);
+        // Use Helper::getVisitorCountryLanguages() — returns all active languages when no country selected
+        window.sessionLanguages = @json(\App\Helpers\Helper::getVisitorCountryLanguages());
         // console.log(window.sessionLanguages);
     </script>
 

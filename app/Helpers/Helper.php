@@ -710,6 +710,32 @@ class Helper
         return env('LION_ROARING_USA', '');
     }
 
+    /**
+     * Return the MAIN_URL from .env.
+     */
+    public static function getMainUrl()
+    {
+        return env('MAIN_URL', env('APP_URL', ''));
+    }
+
+    /**
+     * Check if the current request is being served by the MAIN instance (not USA).
+     */
+    public static function isMainInstance()
+    {
+        return !self::isUsaInstance();
+    }
+
+    /**
+     * Check if the visitor has already selected a country (stored in session).
+     */
+    public static function hasCountrySelected()
+    {
+        $ip = request()->ip();
+        $codeSessionKey = 'visitor_country_code_' . $ip;
+        return session()->has($codeSessionKey);
+    }
+
     // get visitor country code by ip using ipinfo.io
     public static function getVisitorCountryCode()
     {
@@ -746,37 +772,14 @@ class Helper
             return 'US';
         }
 
-        // Check session first
+        // For MAIN_URL: check session first — if a country was explicitly selected, use it
         if (session()->has($codeSessionKey) && session()->has($nameSessionKey)) {
             return session($codeSessionKey);
         }
 
-        try {
-            $client = new Client();
-            $response = $client->get("https://ipinfo.io/{$ip}/json");
-            $data = json_decode($response->getBody(), true);
-            $countryCode = $data['country'] ?? 'US';
-
-            // Lookup country name from Country model
-            $countryName = \App\Models\Country::with('languages')->where('code', $countryCode)->value('name') ?? 'United States';
-            $countryData = \App\Models\Country::with('languages')->where('code', $countryCode)->first();
-
-            // Save both code and name in session
-            session([
-                $codeSessionKey => $countryCode,
-                $nameSessionKey => $countryName,
-                $languageSessionKey => $countryData ? $countryData->languages : [],
-
-            ]);
-
-            return $countryCode;
-        } catch (\Exception $e) {
-            session([
-                $codeSessionKey => 'US',
-                $nameSessionKey => 'United States',
-            ]);
-            return 'US';
-        }
+        // On MAIN_URL with no country selected: return empty string (no auto-detection)
+        // The user should manually select a country from the dropdown/popup
+        return '';
     }
 
     // get visitor country name
@@ -796,10 +799,35 @@ class Helper
         return session($nameSessionKey, 'United States');
     }
 
+    /**
+     * Return the languages to show in the language dropdown.
+     * - If on LION_ROARING_USA: US-specific languages
+     * - If a country is selected: that country's languages
+     * - If on MAIN_URL with no country selected: ALL active languages
+     */
+    public static function getVisitorCountryLanguages()
+    {
+        $languageSessionKey = 'visitor_country_languages';
+
+        // If languages are already in session (country selected or USA instance), use those
+        if (session()->has($languageSessionKey)) {
+            return session($languageSessionKey);
+        }
+
+        // No country selected on MAIN_URL: return all active languages
+        $allLanguages = \App\Models\TranslateLanguage::orderBy('name', 'asc')->get();
+        return $allLanguages;
+    }
+
     // get visitor cms content by model name, single row or multiple, if multiple then pagination true/false, sort by, optional search query
     public static function getVisitorCmsContent($modelClass, $singleRow = true, $paginate = false, $sortBy = 'id', $sortType = 'desc', $searchQuery = null)
     {
         $countryCode = self::getVisitorCountryCode();
+
+        // If no country is selected (empty code), fall back to US content
+        if (empty($countryCode)) {
+            $countryCode = 'US';
+        }
 
         $modelClass = "\App\Models\\" . $modelClass;
 

@@ -45,6 +45,20 @@ class VisitorController extends Controller
             $languageSessionKey => $languages,
         ]);
 
-        return response()->json(['status' => 'ok']);
+        // Determine the redirect URL
+        $redirectUrl = '';
+        if ($country === 'US') {
+            // Redirect to LION_ROARING_USA
+            $redirectUrl = env('LION_ROARING_USA', '');
+        } else {
+            // Redirect to MAIN_URL/{code}
+            $mainUrl = env('MAIN_URL', env('APP_URL', ''));
+            $redirectUrl = rtrim($mainUrl, '/') . '/' . strtolower($country);
+        }
+
+        return response()->json([
+            'status' => 'ok',
+            'redirect_url' => $redirectUrl,
+        ]);
     }
 }

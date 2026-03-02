@@ -383,21 +383,9 @@ Route::middleware(['userActivity'])->group(function () {
             return app(CmsController::class)->index();
         }
 
-        // For the main URL: detect country by IP
-        $cc = strtolower(Helper::getVisitorCountryCode()); // e.g., "US" -> "us"
-        if ($cc) {
-            // If detected country is US, redirect to the USA-specific instance
-            if (strtoupper($cc) === 'US') {
-                $usaUrl = Helper::getUsaInstanceUrl();
-                if ($usaUrl) {
-                    session()->reflash();
-                    return redirect($usaUrl, 302);
-                }
-            }
-            // For all other countries, redirect to /{cc} as before
-            session()->reflash();
-            return redirect('/' . $cc, 302);
-        }
+        // For MAIN_URL: serve home page directly (no auto-redirect by IP)
+        // If a country was already selected via session, the content will use that country
+        // If no country selected, the popup will show and language dropdown shows all languages
         return app(CmsController::class)->index();
     })->name('home');
 

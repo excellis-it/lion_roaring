@@ -2,8 +2,8 @@
 
 
 <script>
-    // example: [{"id":202,"code":"es","name":"Spanish",...}, {"id":249,"code":"en","name":"English",...}]
-    window.sessionLanguages = @json(session('visitor_country_languages') ?? []);
+    // Use Helper::getVisitorCountryLanguages() — returns all active languages when no country selected
+    window.sessionLanguages = @json(\App\Helpers\Helper::getVisitorCountryLanguages());
 </script>
 
 <!-- Google Translate initialization + robust allowed-language logic -->
@@ -158,13 +158,13 @@
 
 
         // Try to find the option by value, prefix, or text
-         let found = Array.from(selectEl.options).find(opt =>
-                opt.value === value ||
-                opt.value.startsWith(value + '|') ||
-                (value === 'en' && opt.value === '') || // Google often uses empty value for original
-                (value !== 'en' && opt.text.toLowerCase().includes(value
-            .toLowerCase())) // Avoid matching 'en' in 'Bengali'
-            );
+        let found = Array.from(selectEl.options).find(opt =>
+            opt.value === value ||
+            opt.value.startsWith(value + '|') ||
+            (value === 'en' && opt.value === '') || // Google often uses empty value for original
+            (value !== 'en' && opt.text.toLowerCase().includes(value
+                .toLowerCase())) // Avoid matching 'en' in 'Bengali'
+        );
 
         // Fallback for English: first option is usually the original language
         if (!found && value === 'en') {

@@ -17,6 +17,7 @@
         use App\Helpers\Helper;
         $currentCode = strtoupper(Helper::getVisitorCountryCode());
         $countries = Helper::getCountries();
+        $hasCountrySelected = !empty($currentCode);
         // show popup only if session key not set for this IP
         $ip = request()->ip();
         $sessionKey = 'visitor_country_flag_code_' . $ip;
@@ -68,9 +69,12 @@ $showPopup = !Helper::isUsaInstance() && !session()->has($sessionKey) && !Sessio
 
             <div class="popup_countrySwitcher">
                 <select class="form-select form-select-sm cst-select cst-select-bottom" id="popupCountrySelect">
+                    @if (!$hasCountrySelected)
+                        <option value="" selected disabled>Select Country</option>
+                    @endif
                     @foreach ($countries as $c)
                         <option value="{{ strtolower($c->code) }}"
-                            {{ strtoupper($c->code) === $currentCode ? 'selected' : '' }}
+                            {{ $hasCountrySelected && strtoupper($c->code) === $currentCode ? 'selected' : '' }}
                             data-image="{{ asset('frontend_assets/images/flags/' . strtolower($c->code) . '.png') }}">
                             {{ $c->name }} ({{ strtoupper($c->code) }})
                         </option>
@@ -385,14 +389,14 @@ $showPopup = !Helper::isUsaInstance() && !session()->has($sessionKey) && !Sessio
 
     <!-- @if (count($galleries) > 0)
     <section class="gallery_sec margin_27">
-                                                                                <div class="gallery_slider">
-                                                                                    @foreach ($galleries as $galary)
+                                                                                        <div class="gallery_slider">
+                                                                                            @foreach ($galleries as $galary)
     <div class="gallery_box" style="width: 100%; display: inline-block;">
-                                                                                            <img src="{{ Storage::url($galary->image) }}" alt="">
-                                                                                        </div>
+                                                                                                    <img src="{{ Storage::url($galary->image) }}" alt="">
+                                                                                                </div>
     @endforeach
-                                                                                </div>
-                                                                            </section>
+                                                                                        </div>
+                                                                                    </section>
     @endif -->
 @endsection
 

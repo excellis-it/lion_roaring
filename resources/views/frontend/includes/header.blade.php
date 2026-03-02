@@ -21,28 +21,27 @@
                     </div>
                 </div>
                 <div class="right_top d-flex align-items-center justify-content-end">
-                <div class="header-flag-box">
-                    @php
-                        $currentCode = strtoupper(\App\Helpers\Helper::getVisitorCountryCode());
-                        $countries = \App\Helpers\Helper::getCountries();
-                    @endphp
-                    <div class="input-group input-group-sm">
-                        {{-- <span class="input-group-text bg-dark text-white">
-                            <img style="height: 20px;"
-                                src="{{ asset('frontend_assets/images/flags/' . strtolower($currentCode) . '.png') }}"
-                                alt="">
-                        </span> --}}
-                        <select class="countrySwitcher form-select form-select-sm cst-select cst-select-bottom">
-                            @foreach ($countries as $c)
-                                <option value="{{ strtolower($c->code) }}"
-                                    {{ strtoupper($c->code) === $currentCode ? 'selected' : '' }}
-                                    data-image="{{ asset('frontend_assets/images/flags/' . strtolower($c->code) . '.png') }}">
-                                    {{ $c->name }} ({{ strtoupper($c->code) }})
-                                </option>
-                            @endforeach
-                        </select>
+                    <div class="header-flag-box">
+                        @php
+                            $currentCode = strtoupper(\App\Helpers\Helper::getVisitorCountryCode());
+                            $countries = \App\Helpers\Helper::getCountries();
+                            $hasCountrySelected = !empty($currentCode);
+                        @endphp
+                        <div class="input-group input-group-sm">
+                            <select class="countrySwitcher form-select form-select-sm cst-select cst-select-bottom">
+                                @if (!$hasCountrySelected)
+                                    <option value="" selected disabled>Select Country</option>
+                                @endif
+                                @foreach ($countries as $c)
+                                    <option value="{{ strtolower($c->code) }}"
+                                        {{ $hasCountrySelected && strtoupper($c->code) === $currentCode ? 'selected' : '' }}
+                                        data-image="{{ asset('frontend_assets/images/flags/' . strtolower($c->code) . '.png') }}">
+                                        {{ $c->name }} ({{ strtoupper($c->code) }})
+                                    </option>
+                                @endforeach
+                            </select>
+                        </div>
                     </div>
-                </div>
 
 
 
@@ -57,22 +56,27 @@
                                             <a href="{{ route('home') }}">{{ Helper::getMenuName('home', 'Home') }}</a>
                                         </li>
                                         <li>
-                                            <a href="{{ route('organization') }}">{{ Helper::getMenuName('private_ecclesia', 'Private Ecclesia') }}</a>
+                                            <a
+                                                href="{{ route('organization') }}">{{ Helper::getMenuName('private_ecclesia', 'Private Ecclesia') }}</a>
                                         </li>
                                         <li>
-                                            <a href="{{ route('ecclesia-associations') }}">{{ Helper::getMenuName('ecclesia_covenant', 'Ecclesia Covenant') }}</a>
+                                            <a
+                                                href="{{ route('ecclesia-associations') }}">{{ Helper::getMenuName('ecclesia_covenant', 'Ecclesia Covenant') }}</a>
                                         </li>
                                         <li>
-                                            <a href="{{ route('principle-and-business') }}">{{ Helper::getMenuName('mandate_of_kingdom_precepts_and_dominion', 'Mandate of Kingdom Precepts and Dominion') }}</a>
+                                            <a
+                                                href="{{ route('principle-and-business') }}">{{ Helper::getMenuName('mandate_of_kingdom_precepts_and_dominion', 'Mandate of Kingdom Precepts and Dominion') }}</a>
                                         </li>
                                         <li>
-                                            <a href="{{ route('gallery') }}">{{ Helper::getMenuName('gallery', 'Gallery') }}</a>
+                                            <a
+                                                href="{{ route('gallery') }}">{{ Helper::getMenuName('gallery', 'Gallery') }}</a>
                                         </li>
                                         <li>
                                             <a href="{{ route('faq') }}">{{ Helper::getMenuName('faq', 'FAQ') }}</a>
                                         </li>
                                         <li>
-                                            <a href="{{ route('membership') }}">{{ Helper::getMenuName('membership', 'Membership') }}</a>
+                                            <a
+                                                href="{{ route('membership') }}">{{ Helper::getMenuName('membership', 'Membership') }}</a>
                                         </li>
                                         {{-- <li>
                                         <a href="{{ route('contact-us') }}">Contact Us</a>

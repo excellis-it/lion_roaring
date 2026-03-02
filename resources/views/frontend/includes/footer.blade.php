@@ -34,9 +34,9 @@
                         <p>
                             {!! Helper::getFooter()['footer_title'] ??
                                 'Our main focus is to restore our various communities, villages, cities, states,
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                and
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                our nation by restoring the condition of a person in both the spiritual and the
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                physical.' !!}
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            and
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            our nation by restoring the condition of a person in both the spiritual and the
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            physical.' !!}
                         </p>
                         <div class="col-lg-12">
                             <div class="d-flex align-items-center">
@@ -141,20 +141,17 @@
                     @php
                         $currentCode = strtoupper(\App\Helpers\Helper::getVisitorCountryCode());
                         $countries = \App\Helpers\Helper::getCountries();
+                        $hasCountrySelected = !empty($currentCode);
                     @endphp
 
-                    {{-- {{ collect($countries ?? [])->map(fn($c) => strtoupper($c->code ?? ($c['code'] ?? '')))->filter()->map(fn($code) => '"' . $code . '"')->implode(',') . ',' }} --}}
-
                     <div class="input-group input-group-sm">
-                        {{-- <span class="input-group-text bg-dark text-white">
-                            <img style="height: 20px;"
-                                src="{{ asset('frontend_assets/images/flags/' . strtolower($currentCode) . '.png') }}"
-                                alt="">
-                        </span> --}}
                         <select class="countrySwitcher form-select form-select-sm cst-select cst-select-top">
+                            @if (!$hasCountrySelected)
+                                <option value="" selected disabled>Select Country</option>
+                            @endif
                             @foreach ($countries as $c)
                                 <option value="{{ strtolower($c->code) }}"
-                                    {{ strtoupper($c->code) === $currentCode ? 'selected' : '' }}
+                                    {{ $hasCountrySelected && strtoupper($c->code) === $currentCode ? 'selected' : '' }}
                                     data-image="{{ asset('frontend_assets/images/flags/' . strtolower($c->code) . '.png') }}">
                                     {{ $c->name }} ({{ strtoupper($c->code) }})
                                 </option>
@@ -230,12 +227,12 @@
 
                 // If user selected US, redirect to the USA-specific instance URL
                 var usaInstanceUrl = "{{ \App\Helpers\Helper::getUsaInstanceUrl() }}";
-                var mainAppUrl = "{{ env('APP_URL') }}";
+                var mainUrl = "{{ \App\Helpers\Helper::getMainUrl() }}";
                 if (country.toLowerCase() === 'us' && usaInstanceUrl) {
                     window.location.href = usaInstanceUrl;
                 } else {
-                    // For other countries, redirect to /{cc} on the main app URL
-                    var baseUrl = mainAppUrl ? mainAppUrl : '{{ route('home') }}';
+                    // For other countries, redirect to MAIN_URL/{cc}
+                    var baseUrl = mainUrl ? mainUrl : '{{ route('home') }}';
                     window.location.href = baseUrl + '/' + encodeURIComponent(country);
                 }
             } else {
