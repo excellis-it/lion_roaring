@@ -20,13 +20,20 @@ class StrategyController extends Controller
     public function index()
     {
         if (auth()->user()->can('Manage Strategy')) {
-            $user_type = auth()->user()->user_type;
-            $user_country = auth()->user()->country;
+            $user = auth()->user();
+            $user_type = $user->user_type;
+            $user_country = $user->country;
 
-            if ($user_type == 'Global') {
-                $strategies = Strategy::orderBy('id', 'desc')->paginate(15);
+            if (!$user->hasNewRole('SUPER ADMIN')) {
+                if ($user_type == 'Global') {
+                    $strategies = Strategy::orderBy('id', 'desc')->whereHas('country', function ($query) {
+                        $query->where('code', 'GL');
+                    })->paginate(15);
+                } else {
+                    $strategies = Strategy::where('country_id', $user_country)->orderBy('id', 'desc')->paginate(15);
+                }
             } else {
-                $strategies = Strategy::where('country_id', $user_country)->orderBy('id', 'desc')->paginate(15);
+                $strategies = Strategy::orderBy('id', 'desc')->paginate(15);
             }
             return view('user.strategy.list')->with(compact('strategies'));
         } else {
@@ -46,9 +53,18 @@ class StrategyController extends Controller
 
     public function store(Request $request)
     {
-        $country_id = auth()->user()->user_type === 'Global'
-            ? $request->country_id
-            : auth()->user()->country;
+        $user = auth()->user();
+        $user_type = $user->user_type;
+        $user_country = $user->country;
+        $country_id_ex = null;
+        if ($user_type == 'Global') {
+            $country = Country::where('code', 'GL')->first();
+            $country_id_ex = $country->id;
+        } elseif ($user_type == 'Regional') {
+            $country_id_ex = $user_country;
+        }
+
+        $country_id = $user->hasNewRole('SUPER ADMIN') ? $request->country_id : $country_id_ex;
 
         $request->merge(['country_id' => $country_id]);
         $validated = Validator::make($request->all(), [
@@ -126,7 +142,22 @@ class StrategyController extends Controller
     public function download($id)
     {
         if (auth()->user()->can('Download Strategy')) {
-            $strategy = Strategy::where('id', $id)->first();
+            $user = auth()->user();
+            $user_type = $user->user_type;
+            $user_country = $user->country;
+
+            if (!$user->hasNewRole('SUPER ADMIN')) {
+                if ($user_type == 'Global') {
+                    $strategy = Strategy::whereHas('country', function ($query) {
+                        $query->where('code', 'GL');
+                    })->where('id', $id)->first();
+                } else {
+                    $strategy = Strategy::where('country_id', $user_country)->where('id', $id)->first();
+                }
+            } else {
+                $strategy = Strategy::where('id', $id)->first();
+            }
+
             if ($strategy) {
                 $filePath = Storage::disk('public')->path($strategy->file); // ensure using 'public' disk
                 if (file_exists($filePath)) {
@@ -145,13 +176,20 @@ class StrategyController extends Controller
     public function view($id)
     {
         if (auth()->user()->can('View Strategy')) {
-            $user_type = auth()->user()->user_type;
-            $user_country = auth()->user()->country;
+            $user = auth()->user();
+            $user_type = $user->user_type;
+            $user_country = $user->country;
 
-            if ($user_type == 'Global') {
-                $strategy = Strategy::findOrFail($id);
+            if (!$user->hasNewRole('SUPER ADMIN')) {
+                if ($user_type == 'Global') {
+                    $strategy = Strategy::whereHas('country', function ($query) {
+                        $query->where('code', 'GL');
+                    })->where('id', $id)->first();
+                } else {
+                    $strategy = Strategy::where('country_id', $user_country)->where('id', $id)->first();
+                }
             } else {
-                $strategy = Strategy::where('country_id', $user_country)->findOrFail($id);
+                $strategy = Strategy::where('id', $id)->first();
             }
 
             if ($strategy) {
@@ -189,10 +227,19 @@ class StrategyController extends Controller
             if ($request->type) {
                 $strategies->where('type', $request->type);
             }
-            $user_type = auth()->user()->user_type;
-            $country_name = auth()->user()->country;
-            if ($user_type == 'Regional') {
-                $strategies->where('country_name', $country_name);
+
+            $user = auth()->user();
+            $user_type = $user->user_type;
+            $user_country = $user->country;
+
+            if (!$user->hasNewRole('SUPER ADMIN')) {
+                if ($user_type == 'Global') {
+                    $strategies->whereHas('country', function ($query) {
+                        $query->where('code', 'GL');
+                    });
+                } else {
+                    $strategies->where('country_id', $user_country);
+                }
             }
 
             $strategies = $strategies->orderBy($sort_by, $sort_type)
