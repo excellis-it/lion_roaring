@@ -74,7 +74,7 @@
                     @method('PUT')
                     <div class="modal-body">
                         {{-- country --}}
-                        @if (auth()->user()->user_type == 'Global')
+                         @if (auth()->user()->hasNewRole('SUPER ADMIN'))
                             <div class="mb-3">
                                 <label for="modalCountryEdit" class="col-form-label">Country:</label>
                                 <select class="form-control" id="modalCountryEdit" name="country_id">
@@ -195,7 +195,7 @@
                         @csrf
                         <div class="modal-body">
                             {{-- country --}}
-                            @if (auth()->user()->user_type == 'Global')
+                            @if (auth()->user()->hasNewRole('SUPER ADMIN'))
                                 <div class="mb-3">
                                     <label for="modalCountry" class="col-form-label">Country:</label>
                                     <select class="form-control" id="modalCountry" name="country_id">
@@ -661,7 +661,7 @@
                     description: {
                         required: true,
                     },
-                    @if (auth()->user()->user_type == 'Global')
+                   @if (auth()->user()->hasNewRole('SUPER ADMIN'))
                         country_id: {
                             required: true,
                         },
@@ -680,7 +680,7 @@
                     description: {
                         required: "Please enter description",
                     },
-                    @if (auth()->user()->user_type == 'Global')
+                   @if (auth()->user()->hasNewRole('SUPER ADMIN'))
                         country_id: {
                             required: "Please select country",
                         },

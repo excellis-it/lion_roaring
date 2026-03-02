@@ -26,7 +26,7 @@
                             </div>
                         </div>
                         <div class="row">
-                              @if (auth()->user()->user_type == 'Global')
+                             @if (auth()->user()->hasNewRole('SUPER ADMIN'))
                                 <div class="col-md-6 mb-2">
                                     <div class="box_label">
                                         <label for="country_id">Country*</label>

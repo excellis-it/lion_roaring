@@ -12,24 +12,43 @@ class BulletinBoardController extends Controller
 
     public function list()
     {
-        $user_type = auth()->user()->user_type;
-        $user_country = auth()->user()->country;
-        if ($user_type == 'Global') {
-            $bulletins = Bulletin::orderBy('id', 'desc')->get();
+        $user = auth()->user();
+        if ($user->can('Manage Bulletin')) {
+
+            $user_type = $user->user_type;
+            $user_country = $user->country;
+            if (!$user->hasNewRole('SUPER ADMIN')) {
+                if ($user_type == 'Global') {
+                    $bulletins = Bulletin::orderBy('id', 'desc')->whereHas('country', function ($query) {
+                        $query->where('code', 'GL');
+                    })->get();
+                } else {
+                    $bulletins = Bulletin::orderBy('id', 'desc')->where('country_id', $user_country)->get();
+                }
+            } else {
+                $bulletins = Bulletin::orderBy('id', 'desc')->get();
+            }
+            return view('user.bulletin-board.list')->with('bulletins', $bulletins);
         } else {
-            $bulletins = Bulletin::orderBy('id', 'desc')->where('country_id', $user_country)->get();
+            abort(403, 'You do not have permission to access this page.');
         }
-        return view('user.bulletin-board.list')->with('bulletins', $bulletins);
     }
 
     public function load(Request $request)
     {
-        $user_type = auth()->user()->user_type;
-        $user_country = auth()->user()->country;
-        if ($user_type == 'Global') {
-            $bulletins = Bulletin::orderBy('id', 'desc')->get();
+        $user = auth()->user();
+        $user_type = $user->user_type;
+        $user_country = $user->country;
+        if (!$user->hasNewRole('SUPER ADMIN')) {
+            if ($user_type == 'Global') {
+                $bulletins = Bulletin::orderBy('id', 'desc')->whereHas('country', function ($query) {
+                    $query->where('code', 'GL');
+                })->get();
+            } else {
+                $bulletins = Bulletin::orderBy('id', 'desc')->where('country_id', $user_country)->get();
+            }
         } else {
-            $bulletins = Bulletin::orderBy('id', 'desc')->where('country_id', $user_country)->get();
+            $bulletins = Bulletin::orderBy('id', 'desc')->get();
         }
         return response()->json(['view' => view('user.bulletin-board.show-bulletin')->with('bulletins', $bulletins)->render()]);
     }

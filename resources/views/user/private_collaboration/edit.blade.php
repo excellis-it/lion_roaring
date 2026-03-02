@@ -3,6 +3,36 @@
     Edit Private Collaboration - {{ env('APP_NAME') }}
 @endsection
 @push('styles')
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/css/select2.min.css" rel="stylesheet" />
+    <style>
+        .select2-container--default .select2-selection--multiple {
+            min-height: 45px;
+        }
+
+        .select2-container--default .select2-selection--multiple .select2-selection__choice {
+            background-color: #7851a9;
+            border: 1px solid #5f3b86;
+            color: #ffffff;
+            padding-left: 8px;
+            padding-right: 6px;
+            border-radius: 6px;
+            font-weight: 500;
+        }
+
+        .select2-container--default .select2-selection--multiple .select2-selection__choice__remove {
+            color: rgba(255, 255, 255, 0.9);
+            margin-right: 6px;
+            font-weight: 700;
+        }
+
+        .select2-container--default .select2-selection--multiple .select2-selection__choice__remove:hover {
+            color: #fff;
+        }
+
+        .select2-container--default .select2-selection--multiple .select2-selection__choice span {
+            color: #ffffff;
+        }
+    </style>
 @endpush
 @section('content')
     <section id="loading">
@@ -24,7 +54,7 @@
                             </div>
                         </div>
                         <div class="row">
-                            @if (auth()->user()->user_type == 'Global')
+                            @if (auth()->user()->hasNewRole('SUPER ADMIN'))
                                 {{-- country --}}
                                 <div class="col-md-6 mb-2">
                                     <div class="box_label">
@@ -43,6 +73,7 @@
                                     </div>
                                 </div>
                             @endif
+
                             <div class="col-md-6 mb-2">
                                 <div class="box_label">
                                     <label>Title <span style="color:red">*</span></label>
@@ -60,6 +91,19 @@
                                     <span class="text-danger" id="meeting_link_error"></span>
                                 </div>
                             </div>
+
+                            @if (auth()->user()->hasNewRole('SUPER ADMIN'))
+                                <div class="col-md-12 mb-2">
+                                    <div class="box_label">
+                                        <label>Invite Users <small>(Select multiple users)</small></label>
+                                        <select name="invitees[]" id="invitees" class="form-control select2-multi"
+                                            multiple="multiple">
+                                            <option></option>
+                                        </select>
+                                        <span class="text-danger" id="invitees_error"></span>
+                                    </div>
+                                </div>
+                            @endif
 
                             <div class="col-md-6 mb-2">
                                 <div class="box_label">
@@ -158,6 +202,104 @@
                     }
                 });
             });
+
+            @if (auth()->user()->hasNewRole('SUPER ADMIN'))
+                // Initialize Select2 for invitees
+                function initInviteesSelect() {
+                    var renderTemplate = function(data) {
+                        if (!data.id) return data.text;
+                        var m = data.text.match(/^(.*) <(.*)>$/);
+                        if (m) {
+                            var $container = $("<div class='invite-template'><div><strong>" + m[1] +
+                                "</strong></div><div style='font-size:90%;color:#6c757d;'>" + m[2] +
+                                "</div></div>");
+                            return $container;
+                        }
+                        return data.text;
+                    };
+
+                    $('#invitees').select2({
+                        placeholder: 'Select users to invite',
+                        allowClear: true,
+                        width: '100%',
+                        closeOnSelect: false,
+                        templateResult: renderTemplate,
+                        templateSelection: function(data) {
+                            return data.text;
+                        }
+                    });
+                }
+
+                function loadUsersForCountry(countryId) {
+                    if (!countryId) return;
+                    var $invitees = $('#invitees');
+
+                    $.ajax({
+                        url: '{{ route('private-collaborations.get-eligible-users') }}',
+                        type: 'GET',
+                        data: {
+                            country_id: countryId
+                        },
+                        success: function(response) {
+                            if (response.status && response.users) {
+                                $invitees.empty().append('<option></option>');
+
+                                // Get currently invited user IDs
+                                var invitedUserIds = @json($collaboration->invitations->pluck('user_id')->toArray());
+
+                                $.each(response.users, function(index, user) {
+                                    var selected = invitedUserIds.includes(user.id) ?
+                                        ' selected' : '';
+                                    $invitees.append('<option value="' + user.id + '"' +
+                                        selected + '>' + user.text + '</option>');
+                                });
+
+                                if (typeof $.fn.select2 !== 'undefined') {
+                                    $invitees.trigger('change');
+                                }
+                            }
+                        },
+                        error: function(xhr) {
+                            console.error('Failed to load users:', xhr);
+                            toastr.error('Failed to load users for selected country.');
+                        }
+                    });
+                }
+
+                if (typeof $.fn.select2 === 'undefined') {
+                    $.getScript('https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/select2.min.js')
+                        .done(function() {
+                            initInviteesSelect();
+                            // Load users for the currently selected country
+                            var currentCountry = $('#countries').val();
+                            if (currentCountry) {
+                                loadUsersForCountry(currentCountry);
+                            }
+                        });
+                } else {
+                    initInviteesSelect();
+                    var currentCountry = $('#countries').val();
+                    if (currentCountry) {
+                        loadUsersForCountry(currentCountry);
+                    }
+                }
+
+                // When country changes, reload users
+                $('#countries').on('change', function() {
+                    var countryId = $(this).val();
+                    var $invitees = $('#invitees');
+
+                    // Clear current options
+                    $invitees.empty().append('<option></option>');
+                    if (typeof $.fn.select2 !== 'undefined') {
+                        $invitees.val(null).trigger('change');
+                    }
+
+                    if (countryId) {
+                        loadUsersForCountry(countryId);
+                    }
+                });
+            @endif
         });
     </script>
 @endpush

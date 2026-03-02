@@ -22,13 +22,20 @@ class JobpostingController extends Controller
     public function index()
     {
         if (auth()->user()->can('Manage Job Postings')) {
-            $user_type = auth()->user()->user_type;
-            $user_country = auth()->user()->country;
+            $user = auth()->user();
+            $user_type = $user->user_type;
+            $user_country = $user->country;
 
-            if ($user_type == 'Global') {
-                $jobs = Job::orderBy('id', 'desc')->paginate(15);
+            if (!$user->hasNewRole('SUPER ADMIN')) {
+                if ($user_type == 'Global') {
+                    $jobs = Job::orderBy('id', 'desc')->whereHas('country', function ($query) {
+                        $query->where('code', 'GL');
+                    })->paginate(15);
+                } else {
+                    $jobs = Job::where('country_id', $user_country)->orderBy('id', 'desc')->paginate(15);
+                }
             } else {
-                $jobs = Job::where('country_id', $user_country)->orderBy('id', 'desc')->paginate(15);
+                $jobs = Job::orderBy('id', 'desc')->paginate(15);
             }
             return view('user.job.list')->with(compact('jobs'));
         } else {
@@ -63,9 +70,18 @@ class JobpostingController extends Controller
     public function store(Request $request)
     {
         if (auth()->user()->can('Create Job Postings')) {
-            $country_id = auth()->user()->user_type === 'Global'
-                ? $request->country_id
-                : auth()->user()->country;
+            $user = auth()->user();
+            $user_type = $user->user_type;
+            $user_country = $user->country;
+            $country_id_ex = null;
+            if ($user_type == 'Global') {
+                $country = Country::where('code', 'GL')->first();
+                $country_id_ex = $country->id;
+            } elseif ($user_type == 'Regional') {
+                $country_id_ex = $user_country;
+            }
+
+            $country_id = auth()->user()->hasNewRole('SUPER ADMIN') ? $request->country_id : $country_id_ex;
 
             $request->merge(['country_id' => $country_id]);
 
@@ -116,12 +132,20 @@ class JobpostingController extends Controller
     public function show($id)
     {
         if (auth()->user()->can('View Job Postings')) {
-            $user_type = auth()->user()->user_type;
-            $user_country = auth()->user()->country;
-            if ($user_type == 'Global') {
-                $job = Job::findOrFail($id);
+            $user = auth()->user();
+            $user_type = $user->user_type;
+            $user_country = $user->country;
+
+            if (!$user->hasNewRole('SUPER ADMIN')) {
+                if ($user_type == 'Global') {
+                    $job = Job::whereHas('country', function ($query) {
+                        $query->where('code', 'GL');
+                    })->findOrFail($id);
+                } else {
+                    $job = Job::where('country_id', $user_country)->findOrFail($id);
+                }
             } else {
-                $job = Job::where('country_id', $user_country)->findOrFail($id);
+                $job = Job::findOrFail($id);
             }
             return view('user.job.show')->with(compact('job'));
         } else {
@@ -137,14 +161,21 @@ class JobpostingController extends Controller
      */
     public function edit($id)
     {
-        $user_type = auth()->user()->user_type;
-        $user_country = auth()->user()->country;
+        $user = auth()->user();
+        $user_type = $user->user_type;
+        $user_country = $user->country;
 
         $countries = Country::orderBy('name', 'asc')->get();
-        if ($user_type == 'Global') {
-            $job = Job::findOrFail($id);
+        if (!$user->hasNewRole('SUPER ADMIN')) {
+            if ($user_type == 'Global') {
+                $job = Job::whereHas('country', function ($query) {
+                    $query->where('code', 'GL');
+                })->findOrFail($id);
+            } else {
+                $job = Job::where('country_id', $user_country)->findOrFail($id);
+            }
         } else {
-            $job = Job::where('country_id', $user_country)->findOrFail($id);
+            $job = Job::findOrFail($id);
         }
 
         if ((auth()->user()->can('Edit Job Postings')  && $job->created_by == auth()->user()->id) || auth()->user()->hasNewRole('SUPER ADMIN')) {
@@ -164,9 +195,18 @@ class JobpostingController extends Controller
     public function update(Request $request, $id)
     {
         if (auth()->user()->can('Edit Job Postings')) {
-            $country_id = auth()->user()->user_type === 'Global'
-                ? $request->country_id
-                : auth()->user()->country;
+            $user = auth()->user();
+            $user_type = $user->user_type;
+            $user_country = $user->country;
+            $country_id_ex = null;
+            if ($user_type == 'Global') {
+                $country = Country::where('code', 'GL')->first();
+                $country_id_ex = $country->id;
+            } elseif ($user_type == 'Regional') {
+                $country_id_ex = $user_country;
+            }
+
+            $country_id = auth()->user()->hasNewRole('SUPER ADMIN') ? $request->country_id : $country_id_ex;
 
             $request->merge(['country_id' => $country_id]);
 
@@ -239,10 +279,20 @@ class JobpostingController extends Controller
                         ->orWhere('contact_email', 'like', '%' . $query . '%');
                 });
 
-            if (auth()->user()->user_type === 'Global') {
-                $jobs = $jobs->orderBy($sort_by, $sort_type)->paginate(10);
+            $user = auth()->user();
+            $user_type = $user->user_type;
+            $user_country = $user->country;
+
+            if (!$user->hasNewRole('SUPER ADMIN')) {
+                if ($user_type == 'Global') {
+                    $jobs = $jobs->whereHas('country', function ($query) {
+                        $query->where('code', 'GL');
+                    })->orderBy($sort_by, $sort_type)->paginate(10);
+                } else {
+                    $jobs = $jobs->where('country_id', $user_country)->orderBy($sort_by, $sort_type)->paginate(10);
+                }
             } else {
-                $jobs = $jobs->where('country_id', auth()->user()->country)->orderBy($sort_by, $sort_type)->paginate(10);
+                $jobs = $jobs->orderBy($sort_by, $sort_type)->paginate(10);
             }
 
 

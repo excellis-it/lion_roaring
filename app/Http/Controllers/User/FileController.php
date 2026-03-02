@@ -22,14 +22,24 @@ class FileController extends Controller
     public function index()
     {
         if (auth()->user()->can('Manage File')) {
-            $user_type = auth()->user()->user_type;
-            $user_country = auth()->user()->country;
+            $user = auth()->user();
+            $user_type = $user->user_type;
+            $user_country = $user->country;
 
-            if ($user_type == 'Global') {
-                $files = File::orderBy('id', 'desc')->paginate(15);
-                $topics = Topic::orderBy('topic_name', 'asc')->get();
+            if (!$user->hasNewRole('SUPER ADMIN')) {
+                if ($user_type == 'Global') {
+                    $files = File::orderBy('id', 'desc')->whereHas('country', function ($query) {
+                        $query->where('code', 'GL');
+                    })->paginate(15);
+                    $topics = Topic::orderBy('topic_name', 'asc')->whereHas('country', function ($query) {
+                        $query->where('code', 'GL');
+                    })->get();
+                } else {
+                    $files = File::orderBy('id', 'desc')->where('country_id', $user_country)->paginate(15);
+                    $topics = Topic::orderBy('topic_name', 'asc')->where('country_id', $user_country)->get();
+                }
             } else {
-                $files = File::orderBy('id', 'desc')->where('country_id', $user_country)->paginate(15);
+                $files = File::orderBy('id', 'desc')->paginate(15);
                 $topics = Topic::orderBy('topic_name', 'asc')->get();
             }
 
@@ -42,13 +52,20 @@ class FileController extends Controller
     public function upload()
     {
         if (auth()->user()->can('Upload File')) {
-            $user_type = auth()->user()->user_type;
-            $user_country = auth()->user()->country;
+            $user = auth()->user();
+            $user_type = $user->user_type;
+            $user_country = $user->country;
 
-            if ($user_type == 'Global') {
-                $topics = Topic::orderBy('topic_name', 'asc')->get();
+            if (!$user->hasNewRole('SUPER ADMIN')) {
+                if ($user_type == 'Global') {
+                    $topics = Topic::orderBy('topic_name', 'asc')->whereHas('country', function ($query) {
+                        $query->where('code', 'GL');
+                    })->get();
+                } else {
+                    $topics = Topic::orderBy('topic_name', 'asc')->where('country_id', $user_country)->get();
+                }
             } else {
-                $topics = Topic::orderBy('topic_name', 'asc')->where('country_id', $user_country)->get();
+                $topics = Topic::orderBy('topic_name', 'asc')->get();
             }
             $countries = Country::orderBy('name', 'asc')->get();
             return view('user.file.upload')->with(compact('topics', 'countries'));
@@ -59,9 +76,18 @@ class FileController extends Controller
 
     public function store(Request $request)
     {
-        $country_id = auth()->user()->user_type === 'Global'
-            ? $request->country_id
-            : auth()->user()->country;
+        $user = auth()->user();
+        $user_type = $user->user_type;
+        $user_country = $user->country;
+        $country_id_ex = null;
+        if ($user_type == 'Global') {
+            $country = Country::where('code', 'GL')->first();
+            $country_id_ex = $country->id;
+        } elseif ($user_type == 'Regional') {
+            $country_id_ex = $user_country;
+        }
+
+        $country_id = auth()->user()->hasNewRole('SUPER ADMIN') ? $request->country_id : $country_id_ex;
 
         $request->merge(['country_id' => $country_id]);
         // return $request->type;
@@ -85,16 +111,23 @@ class FileController extends Controller
             $file_path = $this->imageUpload($file, 'files');
 
             // Check if a file with the same name and extension already exists for the user
-            $user_type = auth()->user()->user_type;
-            $user_country = auth()->user()->country;
-            if ($user_type == 'Global') {
-                $check = File::where('file_name', $file_name)
-                    ->where('file_extension', $file_extension)
-                    ->first();
+            if (!$user->hasNewRole('SUPER ADMIN')) {
+                if ($user_type == 'Global') {
+                    $check = File::where('file_name', $file_name)
+                        ->where('file_extension', $file_extension)
+                        ->whereHas('country', function ($query) {
+                            $query->where('code', 'GL');
+                        })
+                        ->first();
+                } else {
+                    $check = File::where('file_name', $file_name)
+                        ->where('file_extension', $file_extension)
+                        ->where('country_id', $user_country)
+                        ->first();
+                }
             } else {
                 $check = File::where('file_name', $file_name)
                     ->where('file_extension', $file_extension)
-                    ->where('country_id', $user_country)
                     ->first();
             }
 
@@ -181,11 +214,18 @@ class FileController extends Controller
                 $files->where('type', $request->type);
             }
 
-            $user_type = auth()->user()->user_type;
-            $user_country = auth()->user()->country;
+            $user = auth()->user();
+            $user_type = $user->user_type;
+            $user_country = $user->country;
 
-            if ($user_type == 'Regional') {
-                $files->where('country_id', $user_country);
+            if (!$user->hasNewRole('SUPER ADMIN')) {
+                if ($user_type == 'Global') {
+                    $files->whereHas('country', function ($query) {
+                        $query->where('code', 'GL');
+                    });
+                } else {
+                    $files->where('country_id', $user_country);
+                }
             }
 
             $files = $files->orderBy($sort_by, $sort_type)
@@ -198,22 +238,38 @@ class FileController extends Controller
     public function edit($id)
     {
         if (auth()->user()->can('Edit File')) {
-            $user_type = auth()->user()->user_type;
-            $user_country = auth()->user()->country;
+            $user = auth()->user();
+            $user_type = $user->user_type;
+            $user_country = $user->country;
 
-            if ($user_type == 'Global') {
-                $file = File::findOrFail($id);
+            if (!$user->hasNewRole('SUPER ADMIN')) {
+                if ($user_type == 'Global') {
+                    $file = File::whereHas('country', function ($query) {
+                        $query->where('code', 'GL');
+                    })->findOrFail($id);
+                } else {
+                    $file = File::where('country_id', $user_country)->findOrFail($id);
+                }
             } else {
-                $file = File::where('country_id', $user_country)->findOrFail($id);
+                $file = File::findOrFail($id);
             }
 
             if ($file) {
-                if ($user_type == 'Global') {
+                if (!$user->hasNewRole('SUPER ADMIN')) {
+                    if ($user_type == 'Global') {
+                        $countries = Country::orderBy('name', 'asc')->whereHas('files', function ($query) {
+                            $query->where('code', 'GL');
+                        })->get();
+                        $topics = Topic::orderBy('topic_name', 'asc')->whereHas('country', function ($query) {
+                            $query->where('code', 'GL');
+                        })->get();
+                    } else {
+                        $countries = Country::orderBy('name', 'asc')->where('id', $user_country)->get();
+                        $topics = Topic::orderBy('topic_name', 'asc')->where('country_id', $user_country)->get();
+                    }
+                } else {
                     $countries = Country::orderBy('name', 'asc')->get();
                     $topics = Topic::orderBy('topic_name', 'asc')->get();
-                } else {
-                    $countries = Country::orderBy('name', 'asc')->where('id', $user_country)->get();
-                    $topics = Topic::orderBy('topic_name', 'asc')->where('country_id', $user_country)->get();
                 }
 
                 return view('user.file.edit')->with(compact('file', 'topics', 'countries'));
@@ -227,12 +283,18 @@ class FileController extends Controller
 
     public function update(Request $request, $id)
     {
-        $user_type = auth()->user()->user_type;
-        $user_country = auth()->user()->country;
+        $user = auth()->user();
+        $user_type = $user->user_type;
+        $user_country = $user->country;
+        $country_id_ex = null;
+        if ($user_type == 'Global') {
+            $country = Country::where('code', 'GL')->first();
+            $country_id_ex = $country->id;
+        } elseif ($user_type == 'Regional') {
+            $country_id_ex = $user_country;
+        }
 
-        $country_id = auth()->user()->user_type === 'Global'
-            ? $request->country_id
-            : auth()->user()->country;
+        $country_id = auth()->user()->hasNewRole('SUPER ADMIN') ? $request->country_id : $country_id_ex;
 
         $request->merge(['country_id' => $country_id]);
 
@@ -258,14 +320,23 @@ class FileController extends Controller
             $file_upload = $this->imageUpload($request->file('file'), 'files');
 
             // Check if a file with the same name and extension already exists for the current user
-            if ($user_type == 'Global') {
-                $check = File::where('file_name', $file_name)
-                    ->where('file_extension', $file_extension)
-                    ->first();
+            if (!$user->hasNewRole('SUPER ADMIN')) {
+                if ($user_type == 'Global') {
+                    $check = File::where('file_name', $file_name)
+                        ->where('file_extension', $file_extension)
+                        ->whereHas('country', function ($query) {
+                            $query->where('code', 'GL');
+                        })
+                        ->first();
+                } else {
+                    $check = File::where('file_name', $file_name)
+                        ->where('file_extension', $file_extension)
+                        ->where('country_id', $user_country)
+                        ->first();
+                }
             } else {
                 $check = File::where('file_name', $file_name)
                     ->where('file_extension', $file_extension)
-                    ->where('country_id', $user_country)
                     ->first();
             }
 
@@ -291,17 +362,22 @@ class FileController extends Controller
 
     public function getTopics(Request $request, $type)
     {
-        $user_type = auth()->user()->user_type;
-        $user_country = auth()->user()->country;
+        $user = auth()->user();
+        $user_type = $user->user_type;
+        $user_country = $user->country;
+        $country_id_ex = null;
         if ($user_type == 'Global') {
-            $country_id = $request->country_id;
-        } else {
-            $country_id = $user_country;
+            $country = Country::where('code', 'GL')->first();
+            $country_id_ex = $country->id;
+        } elseif ($user_type == 'Regional') {
+            $country_id_ex = $user_country;
         }
-        $topics = Topic::where('education_type', $type)
-            ->when($country_id, function ($q) use ($country_id, $user_type) {
-                return $q->where('country_id', $country_id);
-            })
+
+        $country_id = auth()->user()->hasNewRole('SUPER ADMIN') ? $request->country_id : $country_id_ex;
+
+
+
+        $topics = Topic::where('education_type', $type)->where('country_id', $country_id)
             ->orderBy('topic_name', 'asc')->get();
         return response()->json(['data' => $topics]);
     }

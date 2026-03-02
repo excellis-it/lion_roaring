@@ -61,7 +61,7 @@
                         </div>
                         <div class="row">
 
-                            @if (auth()->user()->user_type == 'Global')
+                            @if (auth()->user()->hasNewRole('SUPER ADMIN'))
                                 {{-- country --}}
                                 <div class="col-md-6 mb-2">
                                     <div class="box_label">
@@ -111,22 +111,20 @@
                                 </div>
                             </div>
 
-                            @if (isset($eligibleUsers) && $eligibleUsers->count())
-                                <div class="col-md-12 mb-2">
-                                    <div class="box_label">
-                                        <label>Invite Users <small>(Select multiple users)</small></label>
-                                        <select name="invitees[]" id="invitees" class="form-control select2-multi"
-                                            multiple="multiple" required aria-required="true">
-                                            <option></option>
-                                            @foreach ($eligibleUsers as $user)
-                                                <option value="{{ $user->id }}">{{ $user->full_name }}
-                                                    &lt;{{ $user->email }}&gt;</option>
-                                            @endforeach
-                                        </select>
-                                        <span class="text-danger" id="invitees_error"></span>
-                                    </div>
+                            <div class="col-md-12 mb-2">
+                                <div class="box_label">
+                                    <label>Invite Users <small>(Select multiple users)</small></label>
+                                    <select name="invitees[]" id="invitees" class="form-control select2-multi"
+                                        multiple="multiple" required aria-required="true">
+                                        <option></option>
+                                        @foreach ($eligibleUsers as $user)
+                                            <option value="{{ $user->id }}">{{ $user->full_name }}
+                                                &lt;{{ $user->email }}&gt;</option>
+                                        @endforeach
+                                    </select>
+                                    <span class="text-danger" id="invitees_error"></span>
                                 </div>
-                            @endif
+                            </div>
 
                             <div class="col-md-6 mb-2">
                                 <div class="box_label">
@@ -288,10 +286,59 @@
                     $.getScript('https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/select2.min.js')
                         .done(function() {
                             initInviteesSelect();
+                            @if (auth()->user()->hasNewRole('SUPER ADMIN'))
+                                setupCountryUserLoading();
+                            @endif
                         });
                 } else {
                     initInviteesSelect();
+                    @if (auth()->user()->hasNewRole('SUPER ADMIN'))
+                        setupCountryUserLoading();
+                    @endif
                 }
+            }
+
+            // Dynamic user loading based on country selection (SUPER ADMIN only)
+            function setupCountryUserLoading() {
+                $('#countries').on('change', function() {
+                    var countryId = $(this).val();
+                    var $invitees = $('#invitees');
+
+                    // Clear current options
+                    $invitees.empty().append('<option></option>');
+                    if (typeof $.fn.select2 !== 'undefined') {
+                        $invitees.val(null).trigger('change');
+                    }
+
+                    if (!countryId) {
+                        return;
+                    }
+
+                    // Fetch eligible users for selected country
+                    $.ajax({
+                        url: '{{ route('private-collaborations.get-eligible-users') }}',
+                        type: 'GET',
+                        data: {
+                            country_id: countryId
+                        },
+                        success: function(response) {
+                            if (response.status && response.users) {
+                                $invitees.empty().append('<option></option>');
+                                $.each(response.users, function(index, user) {
+                                    $invitees.append('<option value="' + user.id +
+                                        '">' + user.text + '</option>');
+                                });
+                                if (typeof $.fn.select2 !== 'undefined') {
+                                    $invitees.trigger('change');
+                                }
+                            }
+                        },
+                        error: function(xhr) {
+                            console.error('Failed to load users:', xhr);
+                            toastr.error('Failed to load users for selected country.');
+                        }
+                    });
+                });
             }
         });
     </script>

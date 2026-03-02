@@ -27,7 +27,7 @@
                         </div>
                         <div class="row">
                             {{-- country --}}
-                            @if (auth()->user()->user_type == 'Global')
+                            @if (auth()->user()->hasNewRole('SUPER ADMIN'))
                                 <div class="col-md-4 mb-2">
                                     <div class="box_label">
                                         <label for="country">Country</label>

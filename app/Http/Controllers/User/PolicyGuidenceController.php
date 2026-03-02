@@ -20,12 +20,20 @@ class PolicyGuidenceController extends Controller
     public function index()
     {
         if (auth()->user()->can('Manage Policy')) {
-            $user_type = auth()->user()->user_type;
-            $user_country = auth()->user()->country;
-            if ($user_type == 'Global') {
-                $policies = Policy::orderBy('id', 'desc')->paginate(15);
+            $user = auth()->user();
+            $user_type = $user->user_type;
+            $user_country = $user->country;
+
+            if (!$user->hasNewRole('SUPER ADMIN')) {
+                if ($user_type == 'Global') {
+                    $policies = Policy::orderBy('id', 'desc')->whereHas('country', function ($query) {
+                        $query->where('code', 'GL');
+                    })->paginate(15);
+                } else {
+                    $policies = Policy::where('country_id', $user_country)->orderBy('id', 'desc')->paginate(15);
+                }
             } else {
-                $policies = Policy::where('country_id', $user_country)->orderBy('id', 'desc')->paginate(15);
+                $policies = Policy::orderBy('id', 'desc')->paginate(15);
             }
             return view('user.policy.list')->with(compact('policies'));
         } else {
@@ -45,9 +53,18 @@ class PolicyGuidenceController extends Controller
 
     public function store(Request $request)
     {
-        $country_id = auth()->user()->user_type === 'Global'
-            ? $request->country_id
-            : auth()->user()->country;
+        $user = auth()->user();
+        $user_type = $user->user_type;
+        $user_country = $user->country;
+        $country_id_ex = null;
+        if ($user_type == 'Global') {
+            $country = Country::where('code', 'GL')->first();
+            $country_id_ex = $country->id;
+        } elseif ($user_type == 'Regional') {
+            $country_id_ex = $user_country;
+        }
+
+        $country_id = $user->hasNewRole('SUPER ADMIN') ? $request->country_id : $country_id_ex;
 
         $request->merge(['country_id' => $country_id]);
         $validated = Validator::make($request->all(), [
@@ -125,13 +142,20 @@ class PolicyGuidenceController extends Controller
     public function download($id)
     {
         if (auth()->user()->can('Download Policy')) {
-            $user_type = auth()->user()->user_type;
-            $country_name = auth()->user()->country;
+            $user = auth()->user();
+            $user_type = $user->user_type;
+            $user_country = $user->country;
 
-            if ($user_type == 'Global') {
-                $policy = Policy::where('id', $id)->first();
+            if (!$user->hasNewRole('SUPER ADMIN')) {
+                if ($user_type == 'Global') {
+                    $policy = Policy::whereHas('country', function ($query) {
+                        $query->where('code', 'GL');
+                    })->where('id', $id)->first();
+                } else {
+                    $policy = Policy::where('country_id', $user_country)->where('id', $id)->first();
+                }
             } else {
-                $policy = Policy::where('country_id', $country_name)->where('id', $id)->first();
+                $policy = Policy::where('id', $id)->first();
             }
 
             if ($policy) {
@@ -152,13 +176,22 @@ class PolicyGuidenceController extends Controller
     public function view($id)
     {
         if (auth()->user()->can('View Policy')) {
-            $user_type = auth()->user()->user_type;
-            $country_name = auth()->user()->country;
-            if ($user_type == 'Global') {
-                $policy = Policy::where('id', $id)->first();
+            $user = auth()->user();
+            $user_type = $user->user_type;
+            $user_country = $user->country;
+
+            if (!$user->hasNewRole('SUPER ADMIN')) {
+                if ($user_type == 'Global') {
+                    $policy = Policy::whereHas('country', function ($query) {
+                        $query->where('code', 'GL');
+                    })->where('id', $id)->first();
+                } else {
+                    $policy = Policy::where('country_id', $user_country)->where('id', $id)->first();
+                }
             } else {
-                $policy = Policy::where('country_id', $country_name)->where('id', $id)->first();
+                $policy = Policy::where('id', $id)->first();
             }
+
             if ($policy) {
                 return view('user.policy.view')->with('policy', $policy);
             } else {
@@ -192,10 +225,18 @@ class PolicyGuidenceController extends Controller
                 $policies->where('type', $request->type);
             }
 
-            $user_type = auth()->user()->user_type;
-            $country_name = auth()->user()->country;
-            if ($user_type == 'Regional') {
-                $policies->where('country_name', $country_name);
+            $user = auth()->user();
+            $user_type = $user->user_type;
+            $user_country = $user->country;
+
+            if (!$user->hasNewRole('SUPER ADMIN')) {
+                if ($user_type == 'Global') {
+                    $policies->whereHas('country', function ($query) {
+                        $query->where('code', 'GL');
+                    });
+                } else {
+                    $policies->where('country_id', $user_country);
+                }
             }
 
             $policies = $policies->orderBy($sort_by, $sort_type)

@@ -23,11 +23,16 @@ class TopicController extends Controller
     {
         if (Auth::user()->can('Manage Topic')) {
             $user = Auth::user();
-
-            if ($user->user_type == 'Global') {
-                $topics = Topic::orderBy('id', 'desc')->paginate(15);
+            if (!$user->hasNewRole('SUPER ADMIN')) {
+                if ($user->user_type == 'Global') {
+                    $topics = Topic::orderBy('id', 'desc')->whereHas('country', function ($query) {
+                        $query->where('code', 'GL');
+                    })->paginate(15);
+                } else {
+                    $topics = Topic::where('country_id', $user->country)->orderBy('id', 'desc')->paginate(15);
+                }
             } else {
-                $topics = Topic::where('country_id', $user->country)->orderBy('id', 'desc')->paginate(15);
+                $topics = Topic::orderBy('id', 'desc')->paginate(15);
             }
 
             return view('user.topics.list')->with('topics', $topics);
@@ -59,9 +64,16 @@ class TopicController extends Controller
      */
     public function store(Request $request)
     {
-        $country_id = auth()->user()->user_type === 'Global'
-            ? $request->country_id
-            : auth()->user()->country;
+        $country_id_ex = null;
+        if (auth()->user()->user_type == 'Global') {
+            $country = Country::where('code', 'GL')->first();
+            $country_id_ex = $country->id;
+        } elseif (auth()->user()->user_type == 'Regional') {
+            $country_id_ex = auth()->user()->country;
+        }
+
+
+        $country_id = auth()->user()->hasNewRole('SUPER ADMIN') ? $request->country_id : $country_id_ex;
 
         $request->merge(['country_id' => $country_id]);
 
@@ -137,9 +149,15 @@ class TopicController extends Controller
     {
         if (Auth::user()->can('Edit Topic')) {
             $id = Crypt::decrypt($id);
-            $country_id = auth()->user()->user_type === 'Global'
-                ? $request->country_id
-                : auth()->user()->country;
+            $country_id_ex = null;
+            if (auth()->user()->user_type == 'Global') {
+                $country = Country::where('code', 'GL')->first();
+                $country_id_ex = $country->id;
+            } elseif (auth()->user()->user_type == 'Regional') {
+                $country_id_ex = auth()->user()->country;
+            }
+
+            $country_id = auth()->user()->hasNewRole('SUPER ADMIN') ? $request->country_id : $country_id_ex;
 
             $request->merge(['country_id' => $country_id]);
 

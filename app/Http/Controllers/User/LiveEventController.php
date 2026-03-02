@@ -25,15 +25,23 @@ class LiveEventController extends Controller
     public function list()
     {
         if (Auth::user()->can('Manage Event')) {
-            $user_type = auth()->user()->user_type;
-            $user_country = auth()->user()->country;
-            if ($user_type == 'Global') {
-                $events = Event::with(['rsvps', 'payments'])->orderBy('id', 'desc')->get();
+            $user = auth()->user();
+            $user_type = $user->user_type;
+            $user_country = $user->country;
+
+            if (!$user->hasNewRole('SUPER ADMIN')) {
+                if ($user_type == 'Global') {
+                    $events = Event::with(['rsvps', 'payments'])->orderBy('id', 'desc')->whereHas('country', function ($query) {
+                        $query->where('code', 'GL');
+                    })->get();
+                } else {
+                    $events = Event::with(['rsvps', 'payments'])
+                        ->where('country_id', $user_country)
+                        ->orderBy('id', 'desc')
+                        ->get();
+                }
             } else {
-                $events = Event::with(['rsvps', 'payments'])
-                    ->where('country_id', $user_country)
-                    ->orderBy('id', 'desc')
-                    ->get();
+                $events = Event::with(['rsvps', 'payments'])->orderBy('id', 'desc')->get();
             }
             $country = Country::orderBy('name', 'asc')->get();
             return view('user.events.list', compact('events', 'country'));
@@ -47,14 +55,21 @@ class LiveEventController extends Controller
      */
     public function calender(Request $request)
     {
-        $user_type = auth()->user()->user_type;
-        $user_country = auth()->user()->country;
-        if ($user_type == 'Global') {
-            $events = Event::orderBy('id', 'desc')->get();
+        $user = auth()->user();
+        $user_type = $user->user_type;
+        $user_country = $user->country;
+        if (!$user->hasNewRole('SUPER ADMIN')) {
+            if ($user_type == 'Global') {
+                $events = Event::orderBy('id', 'desc')->whereHas('country', function ($query) {
+                    $query->where('code', 'GL');
+                })->get();
+            } else {
+                $events = Event::where('country_id', $user_country)
+                    ->orderBy('id', 'desc')
+                    ->get();
+            }
         } else {
-            $events = Event::where('country_id', $user_country)
-                ->orderBy('id', 'desc')
-                ->get();
+            $events = Event::orderBy('id', 'desc')->get();
         }
 
         // Add decrypted link, RSVP status, and ensure type is included
@@ -107,9 +122,18 @@ class LiveEventController extends Controller
     public function store(Request $request)
     {
         // return $request;
-        $country_id = auth()->user()->user_type === 'Global'
-            ? $request->country_id
-            : auth()->user()->country;
+        $user = auth()->user();
+        $user_type = $user->user_type;
+        $user_country = $user->country;
+        $country_id_ex = null;
+        if ($user_type == 'Global') {
+            $country = Country::where('code', 'GL')->first();
+            $country_id_ex = $country->id;
+        } elseif ($user_type == 'Regional') {
+            $country_id_ex = $user_country;
+        }
+
+        $country_id = $user->hasNewRole('SUPER ADMIN') ? $request->country_id : $country_id_ex;
 
         // return $country_id;
 
@@ -180,9 +204,18 @@ class LiveEventController extends Controller
      */
     public function update(Request $request, $id)
     {
-        $country_id = auth()->user()->user_type === 'Global'
-            ? $request->country_id
-            : auth()->user()->country;
+        $user = auth()->user();
+        $user_type = $user->user_type;
+        $user_country = $user->country;
+        $country_id_ex = null;
+        if ($user_type == 'Global') {
+            $country = Country::where('code', 'GL')->first();
+            $country_id_ex = $country->id;
+        } elseif ($user_type == 'Regional') {
+            $country_id_ex = $user_country;
+        }
+
+        $country_id = $user->hasNewRole('SUPER ADMIN') ? $request->country_id : $country_id_ex;
 
         $request->merge(['country_id' => $country_id]);
 
@@ -233,10 +266,13 @@ class LiveEventController extends Controller
     public function destroy($id)
     {
         $event = Event::findOrFail($id);
-        Log::info($event->title . ' deleted by ' . auth()->user()->email . ' deleted at ' . now());
-        $event->delete();
-
-        return response()->json(['success' => 'Event deleted successfully.']);
+        if ((Auth::user()->can('Manage Event') && $event->user_id == auth()->user()->id) || auth()->user()->hasNewRole('SUPER ADMIN')) {
+            Log::info($event->title . ' deleted by ' . auth()->user()->email . ' deleted at ' . now());
+            $event->delete();
+            return response()->json(['success' => 'Event deleted successfully.']);
+        } else {
+            abort(403, 'You do not have permission to delete this event.');
+        }
     }
 
     /**
@@ -366,10 +402,15 @@ class LiveEventController extends Controller
         // Get all active users based on event country
         $query = User::where('status', 1)->where('is_accept', 1);
 
-        // Filter by country if event is country-specific
-        if ($event->country_id) {
-            $query->where('country', $event->country_id);
+        if (!auth()->user()->hasNewRole('SUPER ADMIN')) {
+            if (auth()->user()->user_type == 'Global') {
+                $query->where('user_type', 'Global');
+            } else {
+                $query->where('user_type', 'Regional')->where('country', auth()->user()->country);
+            }
         }
+
+        
 
         $users = $query->get();
 

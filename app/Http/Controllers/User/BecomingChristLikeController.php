@@ -20,10 +20,36 @@ class BecomingChristLikeController extends Controller
     public function index(Request $request)
     {
         if (auth()->user()->can('Manage Becoming Christ Like')) {
-            $user_type = auth()->user()->user_type;
-            $user_country = auth()->user()->country;
-
-            if ($user_type == 'Global') {
+            $user = auth()->user();
+            $user_type = $user->user_type;
+            $user_country = $user->country;
+            if (!$user->hasNewRole('SUPER ADMIN')) {
+                if ($user_type == 'Global') {
+                    if (isset($request->topic)) {
+                        $new_topic = $request->topic;
+                        $files = File::orderBy('id', 'desc')->where('type', 'Becoming Christ Like')->whereHas('country', function ($query) {
+                            $query->where('code', 'GL');
+                        })->where('topic_id', $request->topic)->paginate(15);
+                    } else {
+                        $files = File::orderBy('id', 'desc')->where('type', 'Becoming Christ Like')->whereHas('country', function ($query) {
+                            $query->where('code', 'GL');
+                        })->paginate(15);
+                        $new_topic = '';
+                    }
+                    $topics = Topic::orderBy('topic_name', 'asc')->whereHas('country', function ($query) {
+                        $query->where('code', 'GL');
+                    })->where('education_type', 'Becoming Christ Like')->get();
+                } else {
+                    if (isset($request->topic)) {
+                        $new_topic = $request->topic;
+                        $files = File::orderBy('id', 'desc')->where('type', 'Becoming Christ Like')->where('topic_id', $request->topic)->where('country_id', $user_country)->paginate(15);
+                    } else {
+                        $files = File::orderBy('id', 'desc')->where('type', 'Becoming Christ Like')->where('country_id', $user_country)->paginate(15);
+                        $new_topic = '';
+                    }
+                    $topics = Topic::orderBy('topic_name', 'asc')->where('education_type', 'Becoming Christ Like')->where('country_id', $user_country)->get();
+                }
+            } else {
                 if (isset($request->topic)) {
                     $new_topic = $request->topic;
                     $files = File::orderBy('id', 'desc')->where('type', 'Becoming Christ Like')->where('topic_id', $request->topic)->paginate(15);
@@ -32,15 +58,6 @@ class BecomingChristLikeController extends Controller
                     $new_topic = '';
                 }
                 $topics = Topic::orderBy('topic_name', 'asc')->where('education_type', 'Becoming Christ Like')->get();
-            } else {
-                if (isset($request->topic)) {
-                    $new_topic = $request->topic;
-                    $files = File::orderBy('id', 'desc')->where('type', 'Becoming Christ Like')->where('topic_id', $request->topic)->where('country_id', $user_country)->paginate(15);
-                } else {
-                    $files = File::orderBy('id', 'desc')->where('type', 'Becoming Christ Like')->where('country_id', $user_country)->paginate(15);
-                    $new_topic = '';
-                }
-                $topics = Topic::orderBy('topic_name', 'asc')->where('education_type', 'Becoming Christ Like')->where('country_id', $user_country)->get();
             }
 
             return view('user.becoming-christ-link.list')->with(compact('files', 'topics', 'new_topic'));
@@ -52,12 +69,20 @@ class BecomingChristLikeController extends Controller
     public function upload()
     {
         if (auth()->user()->can('Upload Becoming Christ Like')) {
-            $user_type = auth()->user()->user_type;
-            $user_country = auth()->user()->country;
-            if ($user_type == 'Global') {
-                $topics = Topic::orderBy('topic_name', 'asc')->where('education_type', 'Becoming Christ Like')->get();
+            $user = auth()->user();
+            $user_type = $user->user_type;
+            $user_country = $user->country;
+
+            if (!$user->hasNewRole('SUPER ADMIN')) {
+                if ($user_type == 'Global') {
+                    $topics = Topic::orderBy('topic_name', 'asc')->where('education_type', 'Becoming Christ Like')->whereHas('country', function ($query) {
+                        $query->where('code', 'GL');
+                    })->get();
+                } else {
+                    $topics = Topic::orderBy('topic_name', 'asc')->where('education_type', 'Becoming Christ Like')->where('country_id', $user_country)->get();
+                }
             } else {
-                $topics = Topic::orderBy('topic_name', 'asc')->where('education_type', 'Becoming Christ Like')->where('country_id', $user_country)->get();
+                $topics = Topic::orderBy('topic_name', 'asc')->where('education_type', 'Becoming Christ Like')->get();
             }
             $countries = Country::orderBy('name', 'asc')->get();
             return view('user.becoming-christ-link.upload')->with(compact('topics', 'countries'));
@@ -68,9 +93,16 @@ class BecomingChristLikeController extends Controller
 
     public function store(Request $request)
     {
-        $country_id = auth()->user()->user_type === 'Global'
-            ? $request->country_id
-            : auth()->user()->country;
+        $country_id_ex = null;
+        if (auth()->user()->user_type == 'Global') {
+            $country = Country::where('code', 'GL')->first();
+            $country_id_ex = $country->id;
+        } elseif (auth()->user()->user_type == 'Regional') {
+            $country_id_ex = auth()->user()->country;
+        }
+
+
+        $country_id = auth()->user()->hasNewRole('SUPER ADMIN') ? $request->country_id : $country_id_ex;
 
         $request->merge(['country_id' => $country_id]);
 
@@ -88,10 +120,16 @@ class BecomingChristLikeController extends Controller
         $file_upload = $this->imageUpload($file, 'files');
 
         // Check if a file with the same name and extension already exists
-        if (auth()->user()->user_type == 'Global') {
-            $check = File::where('file_name', $file_name)->where('file_extension', $file_extension)->first();
+        if (!$user->hasNewRole('SUPER ADMIN')) {
+            if (auth()->user()->user_type == 'Global') {
+                $check = File::where('file_name', $file_name)->where('file_extension', $file_extension)->whereHas('country', function ($query) {
+                    $query->where('code', 'GL');
+                })->first();
+            } else {
+                $check = File::where('file_name', $file_name)->where('file_extension', $file_extension)->where('country_id', $country_id)->first();
+            }
         } else {
-            $check = File::where('file_name', $file_name)->where('file_extension', $file_extension)->where('country_id', $country_id)->first();
+            $check = File::where('file_name', $file_name)->where('file_extension', $file_extension)->first();
         }
 
         // Return validation error if file already exists
@@ -182,11 +220,18 @@ class BecomingChristLikeController extends Controller
                 $new_topic = '';
             }
 
-            $user_type = auth()->user()->user_type;
-            $user_country = auth()->user()->country;
+            $user = auth()->user();
+            $user_type = $user->user_type;
+            $user_country = $user->country;
 
-            if ($user_type == 'Regional') {
-                $files->where('country_id', $user_country);
+            if (!$user->hasNewRole('SUPER ADMIN')) {
+                if ($user_type == 'Global') {
+                    $files->whereHas('country', function ($q) use ($user_country) {
+                        $q->where('code', 'GL');
+                    });
+                } else {
+                    $files->where('country_id', $user_country);
+                }
             }
 
             $files = $files->where('type', 'Becoming Christ Like')
@@ -200,13 +245,20 @@ class BecomingChristLikeController extends Controller
     public function edit(Request $request, $id)
     {
         if (auth()->user()->can('Edit Becoming Christ Like')) {
-            $user_type = auth()->user()->user_type;
-            $user_country = auth()->user()->country;
+            $user = auth()->user();
+            $user_type = $user->user_type;
+            $user_country = $user->country;
 
-            if ($user_type == 'Global') {
-                $file = File::findOrFail($id);
+            if (!$user->hasNewRole('SUPER ADMIN')) {
+                if ($user_type == 'Global') {
+                    $file = File::whereHas('country', function ($q) use ($user_country) {
+                        $q->where('code', 'GL');
+                    })->findOrFail($id);
+                } else {
+                    $file = File::where('country_id', $user_country)->findOrFail($id);
+                }
             } else {
-                $file = File::where('country_id', $user_country)->findOrFail($id);
+                $file = File::findOrFail($id);
             }
 
             if (isset($request->topic)) {
@@ -215,13 +267,19 @@ class BecomingChristLikeController extends Controller
                 $new_topic = '';
             }
             if ($file) {
-                if ($user_type == 'Global') {
-                    $topics = Topic::orderBy(
-                        'topic_name',
-                        'asc'
-                    )->where('education_type', 'Becoming Christ Like')->get();
+                if (!$user->hasNewRole('SUPER ADMIN')) {
+                    if ($user_type == 'Global') {
+                        $topics = Topic::orderBy(
+                            'topic_name',
+                            'asc'
+                        )->where('education_type', 'Becoming Christ Like')->whereHas('country', function ($q) use ($user_country) {
+                            $q->where('code', 'GL');
+                        })->get();
+                    } else {
+                        $topics = Topic::orderBy('topic_name', 'asc')->where('education_type', 'Becoming Christ Like')->where('country_id', $user_country)->get();
+                    }
                 } else {
-                    $topics = Topic::orderBy('topic_name', 'asc')->where('education_type', 'Becoming Christ Like')->where('country_id', $user_country)->get();
+                    $topics = Topic::orderBy('topic_name', 'asc')->where('education_type', 'Becoming Christ Like')->get();
                 }
                 $countries = Country::orderBy('name', 'asc')->get();
                 return view('user.becoming-christ-link.edit', compact('file', 'topics', 'new_topic', 'countries'));
@@ -235,9 +293,16 @@ class BecomingChristLikeController extends Controller
 
     public function update(Request $request, $id)
     {
-        $country_id = auth()->user()->user_type === 'Global'
-            ? $request->country_id
-            : auth()->user()->country;
+        $country_id_ex = null;
+        if (auth()->user()->user_type == 'Global') {
+            $country = Country::where('code', 'GL')->first();
+            $country_id_ex = $country->id;
+        } elseif (auth()->user()->user_type == 'Regional') {
+            $country_id_ex = auth()->user()->country;
+        }
+
+
+        $country_id = auth()->user()->hasNewRole('SUPER ADMIN') ? $request->country_id : $country_id_ex;
 
         $request->merge(['country_id' => $country_id]);
 
@@ -248,7 +313,8 @@ class BecomingChristLikeController extends Controller
             'country_id' => 'required|exists:countries,id',
         ]);
 
-        $user_type = auth()->user()->user_type;
+        $user = auth()->user();
+        $user_type = $user->user_type;
 
         if ($user_type == 'Global') {
             $file = File::findOrFail($id);
@@ -263,11 +329,15 @@ class BecomingChristLikeController extends Controller
             $file_extension = $uploadedFile->getClientOriginalExtension();
 
             // Check for file name and extension duplication
+            if (!$user->hasNewRole('SUPER ADMIN')) {
             if (auth()->user()->user_type == 'Global') {
                 $check = File::where('file_name', $file_name)->where('file_extension', $file_extension)->first();
             } else {
                 $check = File::where('file_name', $file_name)->where('file_extension', $file_extension)->where('country_id', $country_id)->first();
             }
+        } else {
+            $check = File::where('file_name', $file_name)->where('file_extension', $file_extension)->first();
+        }
 
             // If a file with the same name and extension already exists, return an error
             if ($check) {

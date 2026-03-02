@@ -64,9 +64,18 @@ class BulletinController extends Controller
     public function store(Request $request)
     {
         if (Auth::user()->can('Create Bulletin')) {
-            $country_id = auth()->user()->user_type === 'Global'
-                ? $request->country_id
-                : auth()->user()->country;
+            $user = auth()->user();
+            $user_type = $user->user_type;
+            $user_country = $user->country;
+            $country_id_ex = null;
+            if ($user_type == 'Global') {
+                $country = Country::where('code', 'GL')->first();
+                $country_id_ex = $country->id;
+            } elseif ($user_type == 'Regional') {
+                $country_id_ex = $user_country;
+            }
+
+            $country_id = auth()->user()->hasNewRole('SUPER ADMIN') ? $request->country_id : $country_id_ex;
 
             $request->merge(['country_id' => $country_id]);
 
@@ -151,9 +160,18 @@ class BulletinController extends Controller
     public function update(Request $request, $id)
     {
         if (Auth::user()->can('Edit Bulletin')) {
-            $country_id = auth()->user()->user_type === 'Global'
-                ? $request->country_id
-                : auth()->user()->country;
+            $user = auth()->user();
+            $user_type = $user->user_type;
+            $user_country = $user->country;
+            $country_id_ex = null;
+            if ($user_type == 'Global') {
+                $country = Country::where('code', 'GL')->first();
+                $country_id_ex = $country->id;
+            } elseif ($user_type == 'Regional') {
+                $country_id_ex = $user_country;
+            }
+
+            $country_id = auth()->user()->hasNewRole('SUPER ADMIN') ? $request->country_id : $country_id_ex;
 
             $request->merge(['country_id' => $country_id]);
 
@@ -254,10 +272,16 @@ class BulletinController extends Controller
                         });
                 }
 
-                if (auth()->user()->user_type == 'Global') {
+                if(!Auth::user()->hasNewRole('SUPER ADMIN')){
+                    if (auth()->user()->user_type == 'Global') {
+                        $bulletins = $bulletins->orderBy($sort_by, $sort_type)->whereHas('country', function ($query) {
+                            $query->where('code', 'GL');
+                        })->paginate(15);
+                    } else {
+                        $bulletins = $bulletins->where('country_id', auth()->user()->country)->orderBy($sort_by, $sort_type)->paginate(15);
+                    }
+                }else{
                     $bulletins = $bulletins->orderBy($sort_by, $sort_type)->paginate(15);
-                } else {
-                    $bulletins = $bulletins->where('country_id', auth()->user()->country)->orderBy($sort_by, $sort_type)->paginate(15);
                 }
             }
 

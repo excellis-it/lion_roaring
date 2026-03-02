@@ -986,6 +986,7 @@ Route::prefix('user')->middleware(['user', 'preventBackHistory', 'userActivity',
     Route::get('/private-collaborations-calender-fetch-data', [PrivateCollaborationController::class, 'fetchCalenderData'])->name('private-collaborations.calender-fetch-data');
     Route::get('/private-collaborations-fetch-data', [PrivateCollaborationController::class, 'fetchData'])->name('private-collaborations.fetch-data');
     Route::post('/private-collaborations/zoom-signature', [PrivateCollaborationController::class, 'zoomSignature'])->name('private-collaborations.zoom-signature');
+    Route::get('/private-collaborations-get-eligible-users', [PrivateCollaborationController::class, 'getEligibleUsers'])->name('private-collaborations.get-eligible-users');
 
     Route::prefix('jobs')->group(function () {
         Route::get('/job-delete/{id}', [JobpostingController::class, 'delete'])->name('jobs.delete');

@@ -21,10 +21,37 @@ class LeadershipDevelopmentController extends Controller
     public function index(Request $request)
     {
         if (auth()->user()->can('Manage Becoming a Leader')) {
-            $user_type = auth()->user()->user_type;
-            $user_country = auth()->user()->country;
+            $user = auth()->user();
+            $user_type = $user->user_type;
+            $user_country = $user->country;
 
-            if ($user_type == 'Global') {
+            if (!$user->hasNewRole('SUPER ADMIN')) {
+                if ($user_type == 'Global') {
+                    if (isset($request->topic)) {
+                        $new_topic = $request->topic;
+                        $files = File::orderBy('id', 'desc')->whereHas('country', function ($query) {
+                            $query->where('code', 'GL');
+                        })->where('type', 'Becoming a Leader')->where('topic_id', $request->topic)->paginate(15);
+                    } else {
+                        $files = File::orderBy('id', 'desc')->whereHas('country', function ($query) {
+                            $query->where('code', 'GL');
+                        })->where('type', 'Becoming a Leader')->paginate(15);
+                        $new_topic = '';
+                    }
+                    $topics = Topic::orderBy('topic_name', 'asc')->where('education_type', 'Becoming a Leader')->whereHas('country', function ($query) {
+                        $query->where('code', 'GL');
+                    })->get();
+                } else {
+                    if (isset($request->topic)) {
+                        $new_topic = $request->topic;
+                        $files = File::orderBy('id', 'desc')->where('type', 'Becoming a Leader')->where('topic_id', $request->topic)->where('country_id', $user_country)->paginate(15);
+                    } else {
+                        $files = File::orderBy('id', 'desc')->where('type', 'Becoming a Leader')->where('country_id', $user_country)->paginate(15);
+                        $new_topic = '';
+                    }
+                    $topics = Topic::orderBy('topic_name', 'asc')->where('education_type', 'Becoming a Leader')->where('country_id', $user_country)->get();
+                }
+            } else {
                 if (isset($request->topic)) {
                     $new_topic = $request->topic;
                     $files = File::orderBy('id', 'desc')->where('type', 'Becoming a Leader')->where('topic_id', $request->topic)->paginate(15);
@@ -33,17 +60,7 @@ class LeadershipDevelopmentController extends Controller
                     $new_topic = '';
                 }
                 $topics = Topic::orderBy('topic_name', 'asc')->where('education_type', 'Becoming a Leader')->get();
-            } else {
-                if (isset($request->topic)) {
-                    $new_topic = $request->topic;
-                    $files = File::orderBy('id', 'desc')->where('type', 'Becoming a Leader')->where('topic_id', $request->topic)->where('country_id', $user_country)->paginate(15);
-                } else {
-                    $files = File::orderBy('id', 'desc')->where('type', 'Becoming a Leader')->where('country_id', $user_country)->paginate(15);
-                    $new_topic = '';
-                }
-                $topics = Topic::orderBy('topic_name', 'asc')->where('education_type', 'Becoming a Leader')->where('country_id', $user_country)->get();
             }
-
             return view('user.leadership-development.list')->with(compact('files', 'topics', 'new_topic'));
         } else {
             abort(403, 'You do not have permission to access this page.');
@@ -53,13 +70,20 @@ class LeadershipDevelopmentController extends Controller
     public function upload()
     {
         if (auth()->user()->can('Upload Becoming a Leader')) {
-            $user_type = auth()->user()->user_type;
-            $user_country = auth()->user()->country;
+            $user = auth()->user();
+            $user_type = $user->user_type;
+            $user_country = $user->country;
 
-            if ($user_type == 'Global') {
-                $topics = Topic::orderBy('topic_name', 'asc')->where('education_type', 'Becoming a Leader')->get();
+            if (!$user->hasNewRole('SUPER ADMIN')) {
+                if ($user_type == 'Global') {
+                    $topics = Topic::orderBy('topic_name', 'asc')->where('education_type', 'Becoming a Leader')->whereHas('country', function ($query) {
+                        $query->where('code', 'GL');
+                    })->get();
+                } else {
+                    $topics = Topic::orderBy('topic_name', 'asc')->where('education_type', 'Becoming a Leader')->where('country_id', $user_country)->get();
+                }
             } else {
-                $topics = Topic::orderBy('topic_name', 'asc')->where('education_type', 'Becoming a Leader')->where('country_id', $user_country)->get();
+                $topics = Topic::orderBy('topic_name', 'asc')->where('education_type', 'Becoming a Leader')->get();
             }
             $countries = Country::orderBy('name', 'asc')->get();
             return view('user.leadership-development.upload')->with(compact('topics', 'countries'));
@@ -70,9 +94,18 @@ class LeadershipDevelopmentController extends Controller
 
     public function store(Request $request)
     {
-        $country_id = auth()->user()->user_type === 'Global'
-            ? $request->country_id
-            : auth()->user()->country;
+        $user = auth()->user();
+        $user_type = $user->user_type;
+        $user_country = $user->country;
+        $country_id_ex = null;
+        if ($user_type == 'Global') {
+            $country = Country::where('code', 'GL')->first();
+            $country_id_ex = $country->id;
+        } elseif ($user_type == 'Regional') {
+            $country_id_ex = $user_country;
+        }
+
+        $country_id = auth()->user()->hasNewRole('SUPER ADMIN') ? $request->country_id : $country_id_ex;
 
         $request->merge(['country_id' => $country_id]);
 
@@ -86,10 +119,16 @@ class LeadershipDevelopmentController extends Controller
         $file_extension = $request->file('file')->getClientOriginalExtension();
         $file_upload = $this->imageUpload($request->file('file'), 'files');
 
-        if (auth()->user()->user_type == 'Global') {
-            $check = File::where('file_name', $file_name)->where('file_extension', $file_extension)->first();
+        if (!$user->hasNewRole('SUPER ADMIN')) {
+            if ($user_type == 'Global') {
+                $check = File::where('file_name', $file_name)->where('file_extension', $file_extension)->whereHas('country', function ($query) {
+                    $query->where('code', 'GL');
+                })->first();
+            } else {
+                $check = File::where('file_name', $file_name)->where('file_extension', $file_extension)->where('country_id', $country_id)->first();
+            }
         } else {
-            $check = File::where('file_name', $file_name)->where('file_extension', $file_extension)->where('country_id', $country_id)->first();
+            $check = File::where('file_name', $file_name)->where('file_extension', $file_extension)->first();
         }
 
         // get the same name validation error
@@ -177,11 +216,19 @@ class LeadershipDevelopmentController extends Controller
             } else {
                 $new_topic = '';
             }
-            $user_type = auth()->user()->user_type;
-            $user_country = auth()->user()->country;
 
-            if ($user_type == 'Regional') {
-                $files->where('country_id', $user_country);
+            $user = auth()->user();
+            $user_type = $user->user_type;
+            $user_country = $user->country;
+
+            if (!$user->hasNewRole('SUPER ADMIN')) {
+                if ($user_type == 'Regional') {
+                    $files->where('country_id', $user_country);
+                } elseif ($user_type == 'Global') {
+                    $files->whereHas('country', function ($query) {
+                        $query->where('code', 'GL');
+                    });
+                }
             }
 
             $files = $files->where('type', 'Becoming a Leader')
@@ -195,15 +242,21 @@ class LeadershipDevelopmentController extends Controller
     public function edit(Request $request, $id)
     {
         if (auth()->user()->can('Edit Becoming a Leader')) {
-            $user_type = auth()->user()->user_type;
-            $user_country = auth()->user()->country;
+            $user = auth()->user();
+            $user_type = $user->user_type;
+            $user_country = $user->country;
 
-            if ($user_type == 'Global') {
-                $file = File::findOrFail($id);
+            if (!$user->hasNewRole('SUPER ADMIN')) {
+                if ($user_type == 'Global') {
+                    $file = File::whereHas('country', function ($query) {
+                        $query->where('code', 'GL');
+                    })->findOrFail($id);
+                } else {
+                    $file = File::where('country_id', $user_country)->findOrFail($id);
+                }
             } else {
-                $file = File::where('country_id', $user_country)->findOrFail($id);
+                $file = File::findOrFail($id);
             }
-
 
             if (isset($request->topic)) {
                 $new_topic = $request->topic;
@@ -212,10 +265,16 @@ class LeadershipDevelopmentController extends Controller
             }
 
             if ($file) {
-                if ($user_type == 'Global') {
-                    $topics = Topic::orderBy('topic_name', 'asc')->where('education_type', 'Becoming a Leader')->get();
+                if (!$user->hasNewRole('SUPER ADMIN')) {
+                    if ($user_type == 'Global') {
+                        $topics = Topic::orderBy('topic_name', 'asc')->where('education_type', 'Becoming a Leader')->whereHas('country', function ($query) {
+                            $query->where('code', 'GL');
+                        })->get();
+                    } else {
+                        $topics = Topic::orderBy('topic_name', 'asc')->where('education_type', 'Becoming a Leader')->where('country_id', $user_country)->get();
+                    }
                 } else {
-                    $topics = Topic::orderBy('topic_name', 'asc')->where('education_type', 'Becoming a Leader')->where('country_id', $user_country)->get();
+                    $topics = Topic::orderBy('topic_name', 'asc')->where('education_type', 'Becoming a Leader')->get();
                 }
                 $countries = Country::orderBy('name', 'asc')->get();
                 return view('user.leadership-development.edit')->with(compact('file', 'topics', 'new_topic', 'countries'));
@@ -229,9 +288,19 @@ class LeadershipDevelopmentController extends Controller
 
     public function update(Request $request, $id)
     {
-        $country_id = auth()->user()->user_type === 'Global'
-            ? $request->country_id
-            : auth()->user()->country;
+        $user = auth()->user();
+        $user_type = $user->user_type;
+        $user_country = $user->country;
+
+        $country_id_ex = null;
+        if ($user_type == 'Global') {
+            $country = Country::where('code', 'GL')->first();
+            $country_id_ex = $country->id;
+        } elseif ($user_type == 'Regional') {
+            $country_id_ex = $user_country;
+        }
+
+        $country_id = auth()->user()->hasNewRole('SUPER ADMIN') ? $request->country_id : $country_id_ex;
 
         $request->merge(['country_id' => $country_id]);
 
@@ -241,20 +310,33 @@ class LeadershipDevelopmentController extends Controller
         ]);
 
         $user_type = auth()->user()->user_type;
-        if ($user_type == 'Global') {
-            $file = File::findOrFail($id);
+        if (!$user->hasNewRole('SUPER ADMIN')) {
+            if ($user_type == 'Global') {
+                $file = File::whereHas('country', function ($query) {
+                    $query->where('code', 'GL');
+                })->findOrFail($id);
+            } else {
+                $file = File::where('country_id', $user_country)->findOrFail($id);
+            }
         } else {
-            $file = File::where('country_id', $country_id)->findOrFail($id);
+            $file = File::findOrFail($id);
         }
 
         if ($request->hasFile('file')) {
             $file_name = $request->file('file')->getClientOriginalName();
             $file_extension = $request->file('file')->getClientOriginalExtension();
             $file_upload = $this->imageUpload($request->file('file'), 'files');
-            if (auth()->user()->user_type == 'Global') {
-                $check = File::where('file_name', $file_name)->where('file_extension', $file_extension)->first();
+
+            if (!$user->hasNewRole('SUPER ADMIN')) {
+                if ($user_type == 'Global') {
+                    $check = File::where('file_name', $file_name)->where('file_extension', $file_extension)->whereHas('country', function ($query) {
+                        $query->where('code', 'GL');
+                    })->first();
+                } else {
+                    $check = File::where('file_name', $file_name)->where('file_extension', $file_extension)->where('country_id', $country_id)->first();
+                }
             } else {
-                $check = File::where('file_name', $file_name)->where('file_extension', $file_extension)->where('country_id', $country_id)->first();
+                $check = File::where('file_name', $file_name)->where('file_extension', $file_extension)->first();
             }
             if ($check) {
                 return redirect()->back()->withErrors(['file' => 'The file name has already been taken.'])->withInput();

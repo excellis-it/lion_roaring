@@ -71,7 +71,7 @@ class AuthController extends Controller
             if ($user->status == 1 && $user->is_accept == 1) {
 
                 // dd($country->id, $user->country);
-                if (!$user->hasRole('SUPER ADMIN')) {
+                if (!$user->hasNewRole('SUPER ADMIN')) {
                     if (($user->user_type == 'Regional') && ($country->id != $user->country)) {
                         return response()->json(['message' => 'You are not from ' . $country->name . '! Please change the country from dropdown.', 'status' => false]);
                     } elseif (($user->user_type == 'Global') && ($country->code != 'GL')) {

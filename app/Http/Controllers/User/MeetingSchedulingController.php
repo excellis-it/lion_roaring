@@ -23,13 +23,20 @@ class MeetingSchedulingController extends Controller
     public function index()
     {
         if (auth()->user()->can('Manage Meeting Schedule')) {
-            $user_type = auth()->user()->user_type;
-            $user_country = auth()->user()->country;
+            $user = auth()->user();
+            $user_type = $user->user_type;
+            $user_country = $user->country;
 
-            if ($user_type == 'Global') {
-                $meetings = Meeting::orderBy('id', 'desc')->paginate(15);
+            if (!$user->hasNewRole('SUPER ADMIN')) {
+                if ($user_type == 'Global') {
+                    $meetings = Meeting::orderBy('id', 'desc')->whereHas('country', function ($query) {
+                        $query->where('code', 'GL');
+                    })->paginate(15);
+                } else {
+                    $meetings = Meeting::orderBy('id', 'desc')->where('country_id', $user_country)->paginate(15);
+                }
             } else {
-                $meetings = Meeting::orderBy('id', 'desc')->where('country_id', $user_country)->paginate(15);
+                $meetings = Meeting::orderBy('id', 'desc')->paginate(15);
             }
             return view('user.meeting.list')->with(compact('meetings'));
         } else {
@@ -61,9 +68,18 @@ class MeetingSchedulingController extends Controller
     public function store(Request $request)
     {
         if (auth()->user()->can('Create Meeting Schedule')) {
-            $country_id = auth()->user()->user_type === 'Global'
-                ? $request->country_id
-                : auth()->user()->country;
+            $user = auth()->user();
+            $user_type = $user->user_type;
+            $user_country = $user->country;
+            $country_id_ex = null;
+            if ($user_type == 'Global') {
+                $country = Country::where('code', 'GL')->first();
+                $country_id_ex = $country->id;
+            } elseif ($user_type == 'Regional') {
+                $country_id_ex = $user_country;
+            }
+
+            $country_id = $user->hasNewRole('SUPER ADMIN') ? $request->country_id : $country_id_ex;
 
             $request->merge(['country_id' => $country_id]);
 
@@ -130,7 +146,21 @@ class MeetingSchedulingController extends Controller
     public function show($id)
     {
         if (auth()->user()->can('View Meeting Schedule')) {
-            $meeting = Meeting::find($id);
+            $user = auth()->user();
+            $user_type = $user->user_type;
+            $user_country = $user->country;
+
+            if (!$user->hasNewRole('SUPER ADMIN')) {
+                if ($user_type == 'Global') {
+                    $meeting = Meeting::whereHas('country', function ($query) {
+                        $query->where('code', 'GL');
+                    })->findOrFail($id);
+                } else {
+                    $meeting = Meeting::where('country_id', $user_country)->findOrFail($id);
+                }
+            } else {
+                $meeting = Meeting::findOrFail($id);
+            }
             $isZoom = $this->isZoomLink($meeting->meeting_link ?? '');
             $zoomMeetingId = $isZoom ? $this->parseZoomMeetingIdFromUrl($meeting->meeting_link) : null;
             return view('user.meeting.show')->with('meeting', $meeting)->with('isZoom', $isZoom)->with('zoomMeetingId', $zoomMeetingId);
@@ -143,12 +173,19 @@ class MeetingSchedulingController extends Controller
     public function joinMeeting($id)
     {
         if (auth()->user()->can('View Meeting Schedule')) {
-            $user_type = auth()->user()->user_type;
-            $user_country = auth()->user()->country;
-            if ($user_type == 'Global') {
-                $meeting = Meeting::findOrFail($id);
+            $user = auth()->user();
+            $user_type = $user->user_type;
+            $user_country = $user->country;
+            if (!$user->hasNewRole('SUPER ADMIN')) {
+                if ($user_type == 'Global') {
+                    $meeting = Meeting::whereHas('country', function ($query) {
+                        $query->where('code', 'GL');
+                    })->findOrFail($id);
+                } else {
+                    $meeting = Meeting::where('country_id', $user_country)->findOrFail($id);
+                }
             } else {
-                $meeting = Meeting::where('country_id', $user_country)->findOrFail($id);
+                $meeting = Meeting::findOrFail($id);
             }
             $isZoom = $this->isZoomLink($meeting->meeting_link ?? '');
             $zoomMeetingId = $isZoom ? $this->parseZoomMeetingIdFromUrl($meeting->meeting_link) : null;
@@ -166,15 +203,25 @@ class MeetingSchedulingController extends Controller
      */
     public function edit($id)
     {
-        if (auth()->user()->can('Edit Meeting Schedule') && auth()->user()->id == Meeting::find($id)->user_id || auth()->user()->hasNewRole('SUPER ADMIN')) {
-            $countries = Country::orderBy('name', 'asc')->get();
-            $user_type = auth()->user()->user_type;
-            $user_country = auth()->user()->country;
+
+        $user = auth()->user();
+        $user_type = $user->user_type;
+        $user_country = $user->country;
+
+        $countries = Country::orderBy('name', 'asc')->get();
+        if (!$user->hasNewRole('SUPER ADMIN')) {
             if ($user_type == 'Global') {
-                $meeting = Meeting::findOrFail($id);
+                $meeting = Meeting::whereHas('country', function ($query) {
+                    $query->where('code', 'GL');
+                })->findOrFail($id);
             } else {
                 $meeting = Meeting::where('country_id', $user_country)->findOrFail($id);
             }
+        } else {
+            $meeting = Meeting::findOrFail($id);
+        }
+
+        if ((auth()->user()->can('Edit Meeting Schedule') && $meeting->user_id == auth()->user()->id) || auth()->user()->hasNewRole('SUPER ADMIN')) {
             return view('user.meeting.edit')->with(compact('meeting', 'countries'));
         } else {
             abort(403, 'You do not have permission to access this page.');
@@ -191,9 +238,18 @@ class MeetingSchedulingController extends Controller
     public function update(Request $request, $id)
     {
         if (auth()->user()->can('Edit Meeting Schedule')) {
-            $country_id = auth()->user()->user_type === 'Global'
-                ? $request->country_id
-                : auth()->user()->country;
+            $user = auth()->user();
+            $user_type = $user->user_type;
+            $user_country = $user->country;
+            $country_id_ex = null;
+            if ($user_type == 'Global') {
+                $country = Country::where('code', 'GL')->first();
+                $country_id_ex = $country->id;
+            } elseif ($user_type == 'Regional') {
+                $country_id_ex = $user_country;
+            }
+
+            $country_id = $user->hasNewRole('SUPER ADMIN') ? $request->country_id : $country_id_ex;
 
             $request->merge(['country_id' => $country_id]);
 
@@ -275,10 +331,20 @@ class MeetingSchedulingController extends Controller
                         ->orWhere('meeting_link', 'like', '%' . $query . '%');
                 });
 
-            if (auth()->user()->user_type == 'Global') {
-                $meetings = $meetings->orderBy($sort_by, $sort_type)->paginate(15);
+            $user = auth()->user();
+            $user_type = $user->user_type;
+            $user_country = $user->country;
+
+            if (!$user->hasNewRole('SUPER ADMIN')) {
+                if ($user_type == 'Global') {
+                    $meetings = $meetings->whereHas('country', function ($query) {
+                        $query->where('code', 'GL');
+                    })->orderBy($sort_by, $sort_type)->paginate(15);
+                } else {
+                    $meetings = $meetings->where('country_id', $user_country)->orderBy($sort_by, $sort_type)->paginate(15);
+                }
             } else {
-                $meetings = $meetings->where('country_id', auth()->user()->country)->orderBy($sort_by, $sort_type)->paginate(15);
+                $meetings = $meetings->orderBy($sort_by, $sort_type)->paginate(15);
             }
 
             return response()->json(['data' => view('user.meeting.table', compact('meetings'))->render()]);
@@ -286,8 +352,9 @@ class MeetingSchedulingController extends Controller
     }
     public function delete($id)
     {
-        if (Auth::user()->can('Delete Meeting Schedule') && Auth::user()->id == Meeting::find($id)->user_id || Auth::user()->hasNewRole('SUPER ADMIN')) {
-            $meeting = Meeting::findOrFail($id);
+        $meeting = Meeting::findOrFail($id);
+        if ((Auth::user()->can('Delete Meeting Schedule') && $meeting->user_id == auth()->user()->id) || auth()->user()->hasNewRole('SUPER ADMIN')) {
+            Log::info($meeting->title . ' deleted by ' . auth()->user()->email . ' deleted at ' . now());
             $meeting->delete();
             return response()->json(['message' => 'Meeting deleted successfully.', 'status' => true, 'id' => $id]);
         } else {
@@ -298,12 +365,19 @@ class MeetingSchedulingController extends Controller
     public function viewCalender()
     {
         if (auth()->user()->can('Manage Meeting Schedule')) {
-            $user_type = auth()->user()->user_type;
-            $user_country = auth()->user()->country;
-            if ($user_type == 'Global') {
-                $meetings = Meeting::orderBy('id', 'desc')->get();
+            $user = auth()->user();
+            $user_type = $user->user_type;
+            $user_country = $user->country;
+            if (!$user->hasNewRole('SUPER ADMIN')) {
+                if ($user_type == 'Global') {
+                    $meetings = Meeting::orderBy('id', 'desc')->whereHas('country', function ($query) {
+                        $query->where('code', 'GL');
+                    })->get();
+                } else {
+                    $meetings = Meeting::where('country_id', $user_country)->orderBy('id', 'desc')->get();
+                }
             } else {
-                $meetings = Meeting::where('country_id', $user_country)->orderBy('id', 'desc')->get();
+                $meetings = Meeting::orderBy('id', 'desc')->get();
             }
             return view('user.meeting.calender')->with(compact('meetings'));
         } else {
@@ -314,12 +388,19 @@ class MeetingSchedulingController extends Controller
     public function fetchCalenderData()
     {
         if (auth()->user()->can('Manage Meeting Schedule')) {
-            $user_type = auth()->user()->user_type;
-            $user_country = auth()->user()->country;
-            if ($user_type == 'Global') {
-                $meetings = Meeting::orderBy('id', 'desc')->get(['id', 'title', 'description', 'start_time as start', 'end_time as end', 'meeting_link']);
+            $user = auth()->user();
+            $user_type = $user->user_type;
+            $user_country = $user->country;
+            if (!$user->hasNewRole('SUPER ADMIN')) {
+                if ($user_type == 'Global') {
+                    $meetings = Meeting::orderBy('id', 'desc')->whereHas('country', function ($query) {
+                        $query->where('code', 'GL');
+                    })->get(['id', 'title', 'description', 'start_time as start', 'end_time as end', 'meeting_link']);
+                } else {
+                    $meetings = Meeting::where('country_id', $user_country)->orderBy('id', 'desc')->get(['id', 'title', 'description', 'start_time as start', 'end_time as end', 'meeting_link']);
+                }
             } else {
-                $meetings = Meeting::where('country_id', $user_country)->orderBy('id', 'desc')->get(['id', 'title', 'description', 'start_time as start', 'end_time as end', 'meeting_link']);
+                $meetings = Meeting::orderBy('id', 'desc')->get(['id', 'title', 'description', 'start_time as start', 'end_time as end', 'meeting_link']);
             }
             return response()->json($meetings);
         } else {
@@ -329,12 +410,19 @@ class MeetingSchedulingController extends Controller
 
     public function showSingleMeeting(Request $request)
     {
-        $user_type = auth()->user()->user_type;
-        $user_country = auth()->user()->country;
-        if ($user_type == 'Global') {
-            $meeting = Meeting::find($request->meeting_id);
+        $user = auth()->user();
+        $user_type = $user->user_type;
+        $user_country = $user->country;
+        if (!$user->hasNewRole('SUPER ADMIN')) {
+            if ($user_type == 'Global') {
+                $meeting = Meeting::whereHas('country', function ($query) {
+                    $query->where('code', 'GL');
+                })->find($request->meeting_id);
+            } else {
+                $meeting = Meeting::where('country_id', $user_country)->find($request->meeting_id);
+            }
         } else {
-            $meeting = Meeting::where('country_id', $user_country)->find($request->meeting_id);
+            $meeting = Meeting::find($request->meeting_id);
         }
         return response()->json(['status' => true, 'view' => view('user.meeting.show-single-meeting', compact('meeting'))->render()]);
     }
@@ -352,12 +440,19 @@ class MeetingSchedulingController extends Controller
             'meeting_id' => 'required|integer|exists:meetings,id',
         ]);
 
-        $user_type = auth()->user()->user_type;
-        $user_country = auth()->user()->country;
-        if ($user_type == 'Global') {
-            $meeting = Meeting::findOrFail($request->meeting_id);
+        $user = auth()->user();
+        $user_type = $user->user_type;
+        $user_country = $user->country;
+        if (!$user->hasNewRole('SUPER ADMIN')) {
+            if ($user_type == 'Global') {
+                $meeting = Meeting::whereHas('country', function ($query) {
+                    $query->where('code', 'GL');
+                })->findOrFail($request->meeting_id);
+            } else {
+                $meeting = Meeting::where('country_id', $user_country)->findOrFail($request->meeting_id);
+            }
         } else {
-            $meeting = Meeting::where('country_id', $user_country)->findOrFail($request->meeting_id);
+            $meeting = Meeting::findOrFail($request->meeting_id);
         }
 
         if (!auth()->user()->can('View Meeting Schedule')) {
