@@ -29,7 +29,7 @@
                                 <div class="form-group">
                                     <label>Name*</label>
                                     <input type="text" class="form-control" name="name"
-                                        value="{{ old('name', $country->name) }}" placeholder="Country Name" required>
+                                        value="{{ old('name', $country->name) }}" placeholder="Country Name" {{$country->code == 'GL' ? 'readonly' : ''}}>
                                     @error('name')
                                         <div class="error" style="color:red;">{{ $message }}</div>
                                     @enderror
@@ -41,7 +41,7 @@
                                 <div class="form-group">
                                     <label>ISO Code</label>
                                     <input type="text" class="form-control" name="code"
-                                        value="{{ old('code', $country->code) }}" placeholder="e.g., US, IN, GB">
+                                        value="{{ old('code', $country->code) }}" placeholder="e.g., US, IN, GB" {{$country->code == 'GL' ? 'readonly' : ''}}>
                                     @error('code')
                                         <div class="error" style="color:red;">{{ $message }}</div>
                                     @enderror
