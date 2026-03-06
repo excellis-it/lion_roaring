@@ -5,6 +5,7 @@ namespace App\Http\Controllers\User;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Session;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Facades\Auth;
 use App\Models\User;
@@ -23,6 +24,7 @@ class EmailVerificationController extends Controller
 
     public function resendOtp(Request $request)
     {
+        //dd($request->session()->all());
         if (!$request->session()->has('user_id')) {
             return response()->json(['message' => 'User session expired', 'status' => false]);
         }
@@ -34,15 +36,14 @@ class EmailVerificationController extends Controller
             return response()->json(['message' => 'User not found', 'status' => false]);
         }
 
-        // Check if last OTP was sent within the last 10 minutes
+        // Check if last OTP was sent within the last 60 seconds
         $lastOtp = VerifyOTP::where('user_id', $userId)
             ->orderBy('created_at', 'desc')
             ->first();
 
-        if ($lastOtp && Carbon::parse($lastOtp->created_at)->addMinutes(10)->gt(Carbon::now())) {
-            // $timeLeft = Carbon::now()->diffInSeconds(Carbon::parse($lastOtp->created_at)->addMinutes(10));
-            // time left set to 5 seconds
-            $timeLeft = Carbon::now()->diffInSeconds(Carbon::parse($lastOtp->created_at)->addSeconds(5));
+        $throttleSeconds = 10; // Using 10 seconds for throttling
+        if ($lastOtp && Carbon::parse($lastOtp->created_at)->addSeconds($throttleSeconds)->gt(Carbon::now())) {
+            $timeLeft = Carbon::now()->diffInSeconds(Carbon::parse($lastOtp->created_at)->addSeconds($throttleSeconds));
             return response()->json([
                 'message' => 'Please wait before requesting another OTP',
                 'status' => false,

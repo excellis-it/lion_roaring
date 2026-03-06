@@ -582,11 +582,11 @@
                                     }
                                     return null;
                                 }
-                                
+
                                 // Get user's timezone based on IP address
                                 $ip = $_SERVER['REMOTE_ADDR'];
                                 $timezone = getTimezoneFromIp($ip);
-                                
+
                                 if ($timezone) {
                                     // Set the default timezone
                                     date_default_timezone_set($timezone);
@@ -594,10 +594,10 @@
                                     // Fallback timezone
                                     date_default_timezone_set('UTC');
                                 }
-                                
+
                                 // Get the current hour in 24-hour format
                                 $time = date('H');
-                                
+
                                 // Determine greeting based on time
                                 if ($time < '12') {
                                     echo 'Perfect morning';
@@ -1788,8 +1788,8 @@
 
             // Function to start countdown timer
             function startCountdown(seconds) {
-                remainingSeconds = seconds || 5; // Default to 5 seconds
-                $('#resend-otp-btn').prop('disabled', true);
+                remainingSeconds = seconds || 10; // Default to 10 seconds
+                $('#resend-otp-btn').hide(); // Hide the resend button
                 $('#countdown-timer').show();
 
                 clearInterval(countdownInterval);
@@ -1804,7 +1804,7 @@
 
                     if (remainingSeconds <= 0) {
                         clearInterval(countdownInterval);
-                        $('#resend-otp-btn').prop('disabled', false);
+                        $('#resend-otp-btn').show(); // Show the resend button
                         $('#countdown-timer').hide();
                     }
                 }, 1000);
@@ -1819,7 +1819,8 @@
                         _token: "{{ csrf_token() }}"
                     },
                     beforeSend: function() {
-                        $('#resend-otp-btn').prop('disabled', true).text('Sending...');
+                        $('#resend-otp-btn').hide(); // Hide immediately on click
+                        // $('#resend-otp-btn').prop('disabled', true).text('Sending...');
                     },
                     success: function(response) {
                         if (response.status) {
@@ -1829,14 +1830,16 @@
                         } else {
                             if (response.time_left) {
                                 startCountdown(response.time_left);
+                                $('#resend-otp-btn').text('Resend Code');
+                            } else {
+                                toastr.error(response.message);
+                                $('#resend-otp-btn').show().text('Resend Code');
                             }
-                            toastr.error(response.message);
-                            $('#resend-otp-btn').prop('disabled', false).text('Resend Code');
                         }
                     },
                     error: function() {
                         toastr.error('Something went wrong. Please try again.');
-                        $('#resend-otp-btn').prop('disabled', false).text('Resend Code');
+                        $('#resend-otp-btn').show().text('Resend Code');
                     }
                 });
             });
