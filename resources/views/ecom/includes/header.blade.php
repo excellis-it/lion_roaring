@@ -1,6 +1,12 @@
 @php
     use App\Helpers\Helper;
 @endphp
+
+<style>
+    .form-control:focus {
+        color: #212529 !important;
+    }
+</style>
 <!--<div class="top-bar-header">-->
 <!--    <div class="container-fluid">-->
 <!--        <div class="top-bar-wrepper">-->
@@ -957,8 +963,8 @@
                                     <div class="small text-muted">Click to edit</div>
                                 </div>
                                ${a.is_default ? '' : `<button type="button" class="btn btn-link p-0 text-danger lr-delete-btn" aria-label="Delete address" title="Delete">
-                                                    <i class="fa-solid fa-trash"></i>
-                                                </button>`}
+                                                            <i class="fa-solid fa-trash"></i>
+                                                        </button>`}
                             </div>
                         `;
 
@@ -1054,7 +1060,7 @@
 
             function startEdit(a) {
                 editingId = parseInt(String(a.id), 10);
-                if (formTitleEl) formTitleEl.textContent = 'Edit Address';
+                if (formTitleEl) formTitleEl.textContent = 'Edit Address11';
                 if (saveBtn) saveBtn.textContent = 'Save Changes';
                 fillFormFromAddress(a);
                 updateActiveCard();

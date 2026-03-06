@@ -32,6 +32,7 @@ class UserAddressController extends Controller
 
     public function store(Request $request)
     {
+        //dd($request->all());
         $validated = $request->validate([
             'latitude' => ['required', 'numeric', 'between:-90,90'],
             'longitude' => ['required', 'numeric', 'between:-180,180'],
@@ -61,7 +62,7 @@ class UserAddressController extends Controller
             ]);
         }
 
-        $makeDefault = (bool) ($validated['make_default'] ?? true);
+        $makeDefault = $request->has('make_default') ? $request->boolean('make_default') : true;
 
         $address = DB::transaction(function () use ($validated, $makeDefault) {
             if ($makeDefault) {
@@ -131,7 +132,9 @@ class UserAddressController extends Controller
         }
 
         DB::transaction(function () use ($address) {
-            UserAddress::where('user_id', auth()->id())->update(['is_default' => false]);
+            UserAddress::where('user_id', auth()->id())
+                ->where('id', '!=', $address->id)
+                ->update(['is_default' => false]);
             $address->is_default = true;
             $address->save();
 
@@ -183,11 +186,13 @@ class UserAddressController extends Controller
             'make_default' => ['nullable', 'boolean'],
         ]);
 
-        $makeDefault = (bool) ($validated['make_default'] ?? $address->is_default);
+        $makeDefault = $request->has('make_default') ? $request->boolean('make_default') : (bool)$address->is_default;
 
         $address = DB::transaction(function () use ($address, $validated, $makeDefault) {
             if ($makeDefault) {
-                UserAddress::where('user_id', auth()->id())->update(['is_default' => false]);
+                UserAddress::where('user_id', auth()->id())
+                    ->where('id', '!=', $address->id)
+                    ->update(['is_default' => false]);
             }
 
             $address->label = $validated['label'] ?? null;
