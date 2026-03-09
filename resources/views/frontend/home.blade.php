@@ -201,6 +201,7 @@ $showPopup = !Helper::isUsaInstance() && !$isGlobal && !session()->has($sessionK
                                         <div class="design_page"></div>
                                     </div>
                                     <div class="page">
+
                                         <p>{!! $restPart ?? '' !!}</p>
                                     </div>
                                 @endforeach
