@@ -44,6 +44,9 @@
     .feature_img{
         height: 400px;
     }
+    .filter_and_productlist .feature_img{
+        height: 300px;
+    }
     .feature_img .sales{
         left: -130px;
     }
@@ -112,6 +115,9 @@
     .shopping_cart_sec .d-position ul li::before{
         left: 21px;
     }
+    .filter_and_productlist .feature_img{
+        height: 250px;
+     }
 }
 @media (max-width:1280px){
     .left_ali p, .left_ali a {
@@ -144,6 +150,7 @@
     /* .shopping_cart_sec .d-position ul li::before{
         left: -90px;
     } */
+     
 }
 
 @media (max-width:1200px){

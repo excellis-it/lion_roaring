@@ -195,7 +195,9 @@ $showPopup = !session()->has($sessionKey) && !Session::has('agree');
                                         <div class="design_page"></div>
                                     </div>
                                     <div class="page">
+                                        
                                         <p>{!! $restPart ?? '' !!}</p>
+                                         
                                         <div class="design_page_right"></div>
                                     </div>
                                 @endforeach
