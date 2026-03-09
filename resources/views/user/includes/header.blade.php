@@ -86,7 +86,7 @@
             @endif
         </div>
 
-        <ul class="navbar-nav flex-row ms-auto align-items-center justify-content-center">
+        <ul class="navbar-nav flex-row ms-auto align-items-center justify-content-end">
             <li class="nav-item m-3">
                 <style>
                     .blink {
@@ -126,6 +126,23 @@
                     {{ Helper::getMenuName('estore', 'e-Store') }}</a>
             </li>
 
+            {{-- ── Account Type Indicator ──────────────────────────── --}}
+            @if (Auth::user()->user_type == 'Global')
+                <li class="nav-item d-none d-lg-flex align-items-center px-2">
+                    <span class="badge-global">
+                        <i class="fa-solid fa-globe"></i> Global
+                    </span>
+                </li>
+            @elseif(Auth::user()->user_type == 'Regional')
+                <li class="nav-item d-none d-lg-flex align-items-center px-2">
+                    <span class="badge-regional">
+                        <img src="{{ asset('frontend_assets/images/flags/' . strtolower(Auth::user()->countries->code) . '.png') }}" height="12px"
+                            alt="">
+                        {{ Auth::user()->countries->name ?? 'Regional' }}
+                    </span>
+                </li>
+            @endif
+
             <li class="nav-item dropdown">
                 <a class="nav-link nav-icon-hover" href="javascript:void(0)" id="drop2">
                     <i class="ti ti-bell-ringing"></i>
@@ -159,7 +176,6 @@
                                 <img src="{{ asset('user_assets/images/profile_dummy.png') }}" class="rounded-circle"
                                     width="35" height="35" alt="">
                             @endif
-
                         </div>
                     </div>
                 </a>
@@ -179,7 +195,19 @@
                                     width="80" height="80" alt="">
                             @endif
                             <div class="ms-3">
-                                <h5 class="mb-1 fs-3">{{ Auth::user()->full_name }}</h5>
+                                <h5 class="mb-1 fs-3">
+                                    {{ Auth::user()->full_name }}
+                                    @if (Auth::user()->user_type == 'Global')
+                                        <span class="badge-global small-badge ms-1">
+                                            <i class="fa-solid fa-globe"></i> Global
+                                        </span>
+                                    @elseif(Auth::user()->user_type == 'Regional')
+                                        <span class="badge-regional small-badge ms-1">
+                                            <img src="{{ asset('frontend_assets/images/flags/' . strtolower(Auth::user()->countries->code) . '.png') }}" height="12px"
+                                                alt=""> {{ Auth::user()->countries->name ?? 'Regional' }}
+                                        </span>
+                                    @endif
+                                </h5>
                                 <span class="mb-1 d-block text-dark">{{ Auth::user()->getFirstUserRoleName() }}</span>
                                 <p class="mb-0 d-flex text-dark align-items-center gap-2">
                                     <i class="ti ti-mail fs-4"></i> {{ Auth::user()->email }}

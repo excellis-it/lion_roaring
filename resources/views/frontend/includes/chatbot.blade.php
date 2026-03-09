@@ -633,47 +633,18 @@
                 });
                 const data = await res.json();
                 if (data.success) {
-                    console.log(data.success);
-
                     currentLanguage = lang;
                     addBotMsg(`Language updated! ✅`);
 
-                    // Trigger Google Translate to match
-                    if (window.forceSelectValue) {
+                    // Use the same approach as the header language switcher (no page reload)
+                    if (window.changeGoogleTranslateLanguage) {
+                        window.changeGoogleTranslateLanguage(lang);
+                    } else if (window.forceSelectValue) {
                         const translateSelect = document.querySelector('.goog-te-combo');
                         if (translateSelect) {
                             window.forceSelectValue(translateSelect, lang);
-                            console.log('first step');
-
                         }
-                        console.log('not work first step');
-
-                    } else if (window.changeGoogleTranslateLanguage) {
-                        const translateSelect = document.querySelector('.goog-te-combo');
-                        if (translateSelect) {
-                            window.forceSelectValue(translateSelect, lang);
-                            console.log('second step');
-
-                        }
-                         console.log('not work second step');
-                    } else {
-                        // Fallback manual trigger if helper not available
-                        const translateSelect = document.querySelector('.goog-te-combo');
-                        if (translateSelect) {
-                            translateSelect.value = lang;
-                            translateSelect.dispatchEvent(new Event('change'));
-                            console.log('third step')
-                        }
-                         console.log('not work third step');
                     }
-
-                    //  // Trigger Google Translate to match
-                    // if (window.changeGoogleTranslateLanguage) {
-                    //     window.changeGoogleTranslateLanguage(lang);
-                    // } else {
-                    //     console.error('Translation helper not found. Reloading...');
-                    //     location.reload();
-                    // }
 
                     showMainMenu();
                 }

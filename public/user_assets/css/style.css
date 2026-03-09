@@ -10,6 +10,63 @@
     --button-font: "Roboto", sans-serif;
 }
 
+/* ─── Global / Regional Account Type Badges ─────────────────────────── */
+.badge-global,
+.badge-regional {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    padding: 5px 12px;
+    border-radius: 30px;
+    font-size: 12px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    line-height: 1;
+    white-space: nowrap;
+    border: 2px solid transparent;
+    transition: all 0.25s ease;
+    cursor: default;
+    user-select: none;
+}
+
+/* Global – white pill with purple text */
+.badge-global {
+    background: #ffffff;
+    color: #643271 !important;
+    border-color: #ffffff;
+    box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.25),
+                0 4px 10px rgba(0, 0, 0, 0.18);
+}
+
+.badge-global i {
+    color: #643271;
+    font-size: 11px;
+}
+
+/* Regional – amber pill with white text */
+.badge-regional {
+    background: #d98b1c;
+    color: #ffffff !important;
+    border-color: #d98b1c;
+    box-shadow: 0 0 0 3px rgba(217, 139, 28, 0.35),
+                0 4px 10px rgba(0, 0, 0, 0.18);
+}
+
+.badge-regional i {
+    color: #ffffff;
+    font-size: 11px;
+}
+
+/* Compact variant used inside dropdown card */
+.badge-global.small-badge,
+.badge-regional.small-badge {
+    font-size: 10px;
+    padding: 3px 8px;
+}
+
+/* ─────────────────────────────────────────────────────────────────────── */
+
 html,
 body {
     font-family: var(--main-font);

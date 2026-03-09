@@ -30,6 +30,15 @@
                     </div>
 
                     <div class="mb-3">
+                        <label for="SITE_TAGLINE" class="form-label">Site Loader Tagline</label>
+                        <input type="text" class="form-control" id="SITE_TAGLINE" name="SITE_TAGLINE"
+                            value="{{ old('SITE_TAGLINE', $settings->SITE_TAGLINE) }}">
+                        @error('SITE_TAGLINE')
+                            <div class="text-danger">{{ $message }}</div>
+                        @enderror
+                    </div>
+
+                    <div class="mb-3">
                         <label for="SITE_LOGO" class="form-label">Site Logo</label><br>
                         <img src="{{ asset($settings->SITE_LOGO) }}" class="" alt="" style="height: 100px" />
 

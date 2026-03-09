@@ -21,6 +21,7 @@ class SettingsController extends Controller
     {
         $request->validate([
             'SITE_NAME' => 'required|string|max:255',
+            'SITE_TAGLINE' => 'nullable|string|max:255',
             'SITE_LOGO' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg',  // Validate logo file
             'SITE_CONTACT_EMAIL' => 'required|email|max:255',
             'SITE_CONTACT_PHONE' => 'required|string',
@@ -51,6 +52,7 @@ class SettingsController extends Controller
 
         // Update other settings values
         $settings->SITE_NAME = $request->SITE_NAME;
+        $settings->SITE_TAGLINE = $request->SITE_TAGLINE;
         $settings->SITE_CONTACT_EMAIL = $request->SITE_CONTACT_EMAIL;
         $settings->SITE_CONTACT_PHONE = $request->SITE_CONTACT_PHONE;
         $settings->DONATE_TEXT = $request->DONATE_TEXT;  // Update donate text

@@ -275,7 +275,7 @@
             <div class="particle"></div>
             <div class="particle"></div>
             <div class="particle"></div>
-            <div class="loading-text-bottom">Think Supernaturally, Act Locally</div>
+            <div class="loading-text-bottom">{{ \App\Helpers\Helper::getSettings()->SITE_TAGLINE ?? 'Think Supernaturally, Act Locally' }}</div>
         </div>
         @include('elearning.includes.header')
         @yield('content')

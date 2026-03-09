@@ -11,6 +11,7 @@ class SiteSetting extends BaseModel
 
     protected $fillable = [
         'SITE_NAME',
+        'SITE_TAGLINE',
         'SITE_LOGO',
         'PANEL_WATERMARK_LOGO',
         'SITE_CONTACT_EMAIL',

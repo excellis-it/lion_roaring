@@ -365,7 +365,12 @@
     @stack('styles')
 </head>
 
+@php
+    use App\Helpers\Helper;
+@endphp
+
 <body class="loading">
+
     <script>
         // Ensure loader is visible immediately
         document.body.classList.add('loading');
@@ -381,11 +386,9 @@
             <div class="particle"></div>
             <div class="particle"></div>
             <div class="particle"></div>
-            <div class="loading-text-bottom">Think Supernaturally, Act Locally</div>
+            <div class="loading-text-bottom">{{ \App\Helpers\Helper::getSettings()->SITE_TAGLINE ?? 'Think Supernaturally, Act Locally' }}</div>
         </section>
-        @php
-            use App\Helpers\Helper;
-        @endphp
+
 
 
         @include('frontend.includes.header')
@@ -1116,46 +1119,41 @@
         }
 
         /**
+         * clearGoogleTranslateCookies()
+         */
+        function clearGoogleTranslateCookies() {
+            var domain = window.location.hostname;
+            document.cookie = "googtrans=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+            document.cookie = "googtrans=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/; domain=" + domain + ";";
+            document.cookie = "googtrans=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/; domain=." + domain + ";";
+        }
+        window.clearGoogleTranslateCookies = clearGoogleTranslateCookies;
+
+        /**
          * forceSelectValue(selectEl, value)
-         * - Safely forces the .goog-te-combo select to a value (language code) if option exists.
          */
         function forceSelectValue(selectEl, value) {
             if (!selectEl) return;
 
-            // Try to find the option by value, prefix, or text
+            // English = clear cookies + reload to get original content back
+            if (value === 'en') {
+                clearGoogleTranslateCookies();
+                window.location.reload();
+                return;
+            }
+
+            // For non-English: find matching option and select it
             let found = Array.from(selectEl.options).find(opt =>
                 opt.value === value ||
                 opt.value.startsWith(value + '|') ||
-                (value === 'en' && opt.value === '') || // Google often uses empty value for original
-                (value !== 'en' && opt.text.toLowerCase().includes(value
-                    .toLowerCase())) // Avoid matching 'en' in 'Bengali'
+                (opt.text.toLowerCase().includes(value.toLowerCase()) && value !== 'en')
             );
-
-            // Fallback for English: first option is usually the original language
-            if (!found && value === 'en') {
-                found = selectEl.options[0];
-            }
 
             if (found) {
                 selectEl.value = found.value;
-                // Trigger change event so Google Translate applies the language
                 const evt = document.createEvent('HTMLEvents');
                 evt.initEvent('change', true, true);
                 selectEl.dispatchEvent(evt);
-
-                // If switching back to English, clear the Google Translate cookies to ensure a full reset
-                // if (value === 'en') {
-                //     const domain = window.location.hostname;
-                //     const path = "/";
-                //     document.cookie = `googtrans=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=${path};`;
-                //     document.cookie = `googtrans=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=${path}; domain=${domain};`;
-                //     document.cookie = `googtrans=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=${path}; domain=.${domain};`;
-
-                //     // Reload the page to fully reset the translation
-                //     // setTimeout(() => {
-                //     //     window.location.reload();
-                //     // }, 300);
-                // }
             }
         }
         window.forceSelectValue = forceSelectValue;
@@ -1170,16 +1168,27 @@
             new google.translate.TranslateElement({
                 // pageLanguage: 'en',
                 includedLanguages: includedLanguages,
-                //   layout: google.translate.TranslateElement.InlineLayout.SIMPLE
             }, 'google_translate_element');
 
-            // Removed the automatic English reset on load to allow persistent translations
-            /*
+            // Watch for the Google Translate dropdown to appear, then intercept English selection
             waitForTranslateSelect(function(selectEl) {
                 if (!selectEl) return;
-                forceSelectValue(selectEl, 'en');
+
+                // Listen for manual language changes from the header dropdown
+                selectEl.addEventListener('change', function(e) {
+                    var selectedValue = selectEl.value;
+
+                    // If English or empty (original) is selected, clear cookies and reload
+                    if (selectedValue === 'en' || selectedValue === '' || selectedValue === 'en|en') {
+                        e.stopPropagation();
+                        clearGoogleTranslateCookies();
+                        // Small delay to let Google Translate finish its internal processing
+                        setTimeout(function() {
+                            window.location.reload();
+                        }, 100);
+                    }
+                }, true); // useCapture = true to fire before Google Translate's own handler
             }, 5000);
-            */
         }
     </script>
 

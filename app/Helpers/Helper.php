@@ -311,8 +311,71 @@ class Helper
     public static function notificationCount()
     {
         if (auth()->check()) {
-            $notifications = Notification::where('user_id', auth()->user()->id)->where('is_read', 0)->where('is_delete', 0)->count();
-            return $notifications;
+            $user = auth()->user();
+            $authId = $user->id;
+
+            // Total count for non-chat notifications
+            $baseCount = Notification::where('user_id', $authId)
+                ->where('is_read', 0)
+                ->where('is_delete', 0)
+                ->where('type', '!=', 'Chat')
+                ->count();
+
+            // Filtered count for chat notifications
+            $chatNotificationCount = Notification::where('user_id', $authId)
+                ->where('is_read', 0)
+                ->where('is_delete', 0)
+                ->where('type', 'Chat')
+                ->whereHas('chat.sender', function ($query) use ($user) {
+                    $query->where('status', 1)
+                        ->whereHas('userRole', function ($q) {
+                            $q->whereIn('type', [1, 2, 3]);
+                        });
+
+                    $isSuperAdmin = $user->hasNewRole('SUPER ADMIN');
+
+                    if (!$isSuperAdmin) {
+                        $user_type = $user->user_type;
+                        $country_name = $user->country;
+                        $authId = $user->id;
+
+                        $query->where(function ($q) use ($user_type, $country_name, $authId) {
+                            if ($user_type == 'Global') {
+                                // Global user: see Global non-SA users + Super Admins who messaged me first
+                                $q->where(function ($sq) {
+                                    $sq->where('user_type', 'Global')
+                                        ->whereDoesntHave('userRole', function ($r) {
+                                            $r->where('name', 'SUPER ADMIN');
+                                        });
+                                })->orWhere(function ($sq) use ($authId) {
+                                    $sq->whereHas('userRole', function ($r) {
+                                        $r->where('name', 'SUPER ADMIN');
+                                    })->whereHas('chatSender', function ($chat) use ($authId) {
+                                        $chat->where('reciver_id', $authId);
+                                    });
+                                });
+                            } else {
+                                // Regional user: see same-country Regional non-SA users + Super Admins who messaged me first
+                                $q->where(function ($sq) use ($country_name) {
+                                    $sq->where('user_type', 'Regional')
+                                        ->where('country', $country_name)
+                                        ->whereDoesntHave('userRole', function ($r) {
+                                            $r->where('name', 'SUPER ADMIN');
+                                        });
+                                })->orWhere(function ($sq) use ($authId) {
+                                    $sq->whereHas('userRole', function ($r) {
+                                        $r->where('name', 'SUPER ADMIN');
+                                    })->whereHas('chatSender', function ($chat) use ($authId) {
+                                        $chat->where('reciver_id', $authId);
+                                    });
+                                });
+                            }
+                        });
+                    }
+                })
+                ->count();
+
+            return $baseCount + $chatNotificationCount;
         } else {
             return 0;
         }

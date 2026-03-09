@@ -94,15 +94,18 @@ class BecomingChristLikeController extends Controller
     public function store(Request $request)
     {
         $country_id_ex = null;
-        if (auth()->user()->user_type == 'Global') {
+        $user = auth()->user();
+        $user_type = $user->user_type;
+
+        if ($user_type == 'Global') {
             $country = Country::where('code', 'GL')->first();
             $country_id_ex = $country->id;
-        } elseif (auth()->user()->user_type == 'Regional') {
-            $country_id_ex = auth()->user()->country;
+        } elseif ($user_type == 'Regional') {
+            $country_id_ex = $user->country;
         }
 
 
-        $country_id = auth()->user()->hasNewRole('SUPER ADMIN') ? $request->country_id : $country_id_ex;
+        $country_id = $user->hasNewRole('SUPER ADMIN') ? $request->country_id : $country_id_ex;
 
         $request->merge(['country_id' => $country_id]);
 
@@ -330,14 +333,14 @@ class BecomingChristLikeController extends Controller
 
             // Check for file name and extension duplication
             if (!$user->hasNewRole('SUPER ADMIN')) {
-            if (auth()->user()->user_type == 'Global') {
-                $check = File::where('file_name', $file_name)->where('file_extension', $file_extension)->first();
+                if (auth()->user()->user_type == 'Global') {
+                    $check = File::where('id', '!=', $id)->where('file_name', $file_name)->where('file_extension', $file_extension)->first();
+                } else {
+                    $check = File::where('id', '!=', $id)->where('file_name', $file_name)->where('file_extension', $file_extension)->where('country_id', $country_id)->first();
+                }
             } else {
-                $check = File::where('file_name', $file_name)->where('file_extension', $file_extension)->where('country_id', $country_id)->first();
+                $check = File::where('id', '!=', $id)->where('file_name', $file_name)->where('file_extension', $file_extension)->first();
             }
-        } else {
-            $check = File::where('file_name', $file_name)->where('file_extension', $file_extension)->first();
-        }
 
             // If a file with the same name and extension already exists, return an error
             if ($check) {

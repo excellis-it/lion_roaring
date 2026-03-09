@@ -141,8 +141,66 @@ class DashboardController extends Controller
             $page = $request->get('page', 1);
             $offset = ($page - 1) * $perPage;
 
-            $notifications = Notification::where('user_id', Auth::user()->id)->where('is_delete', 0)
-                ->orderBy('created_at', 'desc')
+            $user = Auth::user();
+            $authId = $user->id;
+
+            $notificationsQuery = Notification::where('user_id', $authId)->where('is_delete', 0);
+
+            // Filter Chat notifications
+            $notificationsQuery->where(function($q) use ($user) {
+                // Keep all non-Chat notifications
+                $q->where('type', '!=', 'Chat')
+                  // OR valid Chat notifications
+                  ->orWhere(function($sq) use ($user) {
+                      $sq->where('type', 'Chat')
+                        ->whereHas('chat.sender', function ($query) use ($user) {
+                            $query->where('status', 1)
+                                ->whereHas('userRole', function ($qr) {
+                                    $qr->whereIn('type', [1, 2, 3]);
+                                });
+
+                            $isSuperAdmin = $user->hasNewRole('SUPER ADMIN');
+                            if (!$isSuperAdmin) {
+                                $user_type = $user->user_type;
+                                $country_name = $user->country;
+                                $authId = $user->id;
+
+                                $query->where(function ($qf) use ($user_type, $country_name, $authId) {
+                                    if ($user_type == 'Global') {
+                                        $qf->where(function ($ssq) {
+                                            $ssq->where('user_type', 'Global')
+                                                ->whereDoesntHave('userRole', function ($r) {
+                                                    $r->where('name', 'SUPER ADMIN');
+                                                });
+                                        })->orWhere(function ($ssq) use ($authId) {
+                                            $ssq->whereHas('userRole', function ($r) {
+                                                $r->where('name', 'SUPER ADMIN');
+                                            })->whereHas('chatSender', function ($chat) use ($authId) {
+                                                $chat->where('reciver_id', $authId);
+                                            });
+                                        });
+                                    } else {
+                                        $qf->where(function ($ssq) use ($country_name) {
+                                            $ssq->where('user_type', 'Regional')
+                                                ->where('country', $country_name)
+                                                ->whereDoesntHave('userRole', function ($r) {
+                                                    $r->where('name', 'SUPER ADMIN');
+                                                });
+                                        })->orWhere(function ($ssq) use ($authId) {
+                                            $ssq->whereHas('userRole', function ($r) {
+                                                $r->where('name', 'SUPER ADMIN');
+                                            })->whereHas('chatSender', function ($chat) use ($authId) {
+                                                $chat->where('reciver_id', $authId);
+                                            });
+                                        });
+                                    }
+                                });
+                            }
+                        });
+                  });
+            });
+
+            $notifications = $notificationsQuery->orderBy('created_at', 'desc')
                 ->skip($offset)
                 ->take($perPage)
                 ->get();
@@ -229,12 +287,53 @@ class DashboardController extends Controller
             ->where('seen', 0)
             ->where('deleted_for_reciver', 0)
             ->where('delete_from_receiver_id', 0)
-            ->whereHas('sender', function ($query) {
+            ->whereHas('sender', function ($query) use ($user) {
                 // Only count messages from active users with valid roles
                 $query->where('status', 1)
-                    ->whereHas('roles', function ($q) {
+                    ->whereHas('userRole', function ($q) {
                         $q->whereIn('type', [1, 2, 3]);
                     });
+
+                $isSuperAdmin = $user->hasNewRole('SUPER ADMIN');
+
+                if (!$isSuperAdmin) {
+                    $user_type = $user->user_type;
+                    $country_name = $user->country;
+                    $authId = $user->id;
+
+                    $query->where(function ($q) use ($user_type, $country_name, $authId) {
+                        if ($user_type == 'Global') {
+                            // Global user: see Global non-SA users + Super Admins who messaged me first
+                            $q->where(function ($sq) {
+                                $sq->where('user_type', 'Global')
+                                    ->whereDoesntHave('userRole', function ($r) {
+                                        $r->where('name', 'SUPER ADMIN');
+                                    });
+                            })->orWhere(function ($sq) use ($authId) {
+                                $sq->whereHas('userRole', function ($r) {
+                                    $r->where('name', 'SUPER ADMIN');
+                                })->whereHas('chatSender', function ($chat) use ($authId) {
+                                    $chat->where('reciver_id', $authId);
+                                });
+                            });
+                        } else {
+                            // Regional user: see same-country Regional non-SA users + Super Admins who messaged me first
+                            $q->where(function ($sq) use ($country_name) {
+                                $sq->where('user_type', 'Regional')
+                                    ->where('country', $country_name)
+                                    ->whereDoesntHave('userRole', function ($r) {
+                                        $r->where('name', 'SUPER ADMIN');
+                                    });
+                            })->orWhere(function ($sq) use ($authId) {
+                                $sq->whereHas('userRole', function ($r) {
+                                    $r->where('name', 'SUPER ADMIN');
+                                })->whereHas('chatSender', function ($chat) use ($authId) {
+                                    $chat->where('reciver_id', $authId);
+                                });
+                            });
+                        }
+                    });
+                }
             })
             ->count();
 

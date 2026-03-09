@@ -389,6 +389,7 @@ class MembershipController extends Controller
                     'user_id' => $user->id,
                     'user_subscription_id' => $user_subscription->id,
                     'discount_applied' => $discount,
+                    'used_at' => now()
                 ]);
                 $promoCode->incrementUsage();
             }
@@ -435,6 +436,7 @@ class MembershipController extends Controller
                 'user_id' => $user->id,
                 'user_subscription_id' => $user_subscription->id,
                 'discount_applied' => $discount,
+                'used_at' => now()
             ]);
             $promoCode->incrementUsage();
         }

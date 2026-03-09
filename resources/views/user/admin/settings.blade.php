@@ -48,6 +48,15 @@
                             @enderror
                         </div>
 
+                        <div class="col-md-6 mb-3">
+                            <label for="SITE_TAGLINE" class="form-label">Site Loader Tagline</label>
+                            <input type="text" class="form-control" id="SITE_TAGLINE" name="SITE_TAGLINE"
+                                value="{{ old('SITE_TAGLINE', $settings->SITE_TAGLINE) }}">
+                            @error('SITE_TAGLINE')
+                                <div class="text-danger">{{ $message }}</div>
+                            @enderror
+                        </div>
+
                         <div class="col-md-6 mb-3 mt-2">
                             <label for="SITE_NAME" class="form-label"></label>
                             <input type="file" class="form-control" id="SITE_LOGO" name="SITE_LOGO">
