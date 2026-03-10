@@ -3,39 +3,63 @@
         <tr>
             <td>{{ $products->firstItem() + $key }}</td>
             <td>
-                <div class="d-flex">
+                <div class="d-flex align-items-center">
                     @if (isset($product->main_image) && $product->main_image != null)
-                        <img src="{{ Storage::url($product->main_image) }}" alt="{{ $product->main_image }}"
-                            style="width: 50px; height: 50px; object-fit: cover;">
+                        <img src="{{ Storage::url($product->main_image) }}" class="product-img-card" alt="product"
+                            onerror="this.onerror=null;this.src='{{ asset('ecom_assets/images/no-image.png') }}';">
+                    @else
+                        <img src="{{ asset('ecom_assets/images/no-image.png') }}" class="product-img-card" alt="no-image">
                     @endif
                 </div>
             </td>
-            <td> {{ $product->name }}</td>
-            <td> {{ $product->slug }}</td>
-            <td> {{ $product->category ? $product->category->name : '' }}</td>
-            <td> {{ $product->elearningTopic ? $product->elearningTopic->topic_name : '' }}</td>
-            {{-- <td> {{ $product->price  ? '$' . $product->price : '' }}</td>
-            <td> {{ $product->quantity }}</td>
-            <td> {{ $product->sku }}</td> --}}
-            <td> {{ $product->affiliate_link }}</td>
-            {{-- status --}}
+            <td>
+                <div class="truncate-150" title="{{ $product->name }}">
+                    {{ $product->name }}
+                </div>
+            </td>
+            <td>
+                <span class="badge-custom badge-info">{{ $product->category ? $product->category->name : 'N/A' }}</span>
+            </td>
+            <td>
+                <span class="truncate-120" title="{{ $product->subcategory ? $product->subcategory->name : '--' }}">
+                    {{ $product->subcategory ? $product->subcategory->name : '--' }}
+                </span>
+            </td>
+            <td>
+                <div class="truncate-120"
+                    title="{{ $product->elearningTopic ? $product->elearningTopic->topic_name : '' }}">
+                    {{ $product->elearningTopic ? $product->elearningTopic->topic_name : 'No Topic' }}
+                </div>
+            </td>
+            <td>
+                <div class="truncate-120 text-muted" title="{{ $product->slug }}">
+                    {{ $product->slug }}
+                </div>
+            </td>
+            <td>
+                <a href="{{ $product->affiliate_link }}" target="_blank" class="affiliate-link-item"
+                    title="{{ $product->affiliate_link }}">
+                    {{ $product->affiliate_link }}
+                </a>
+            </td>
             <td>
                 @if ($product->status == 1)
-                    <span class=" badge-success">Active</span>
+                    <span class="badge-custom badge-active">Active</span>
                 @else
-                    <span class=" badge-danger">Inactive</span>
+                    <span class="badge-custom badge-inactive">Inactive</span>
                 @endif
             </td>
-            {{-- feature_product --}}
             <td>
                 @if ($product->feature_product == 1)
-                    <span class=" badge-success">Yes</span>
+                    <span class="badge-custom badge-yes">Yes</span>
                 @else
-                    <span class=" badge-danger">No</span>
+                    <span class="badge-custom badge-no">No</span>
                 @endif
             </td>
-            <td>{{ $product->user?->full_name ?? '--' }}</td>
-            <td> {{ $product->created_at->format('d M Y') }}</td>
+            <td class="info-cell">
+                <b>{{ $product->user?->full_name ?? 'Bot' }}</b>
+                <span>{{ $product->created_at->format('d M Y') }}</span>
+            </td>
             <td>
                 <div class="d-flex">
                     @if (auth()->user()->can('Edit Elearning Product'))

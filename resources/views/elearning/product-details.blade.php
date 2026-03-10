@@ -39,7 +39,8 @@
                             @if ($product->images->count() > 0)
                                 @foreach ($product->images as $image)
                                     <div class="slid_big_img">
-                                        <img src="{{ Storage::url($image->image) }}" />
+                                        <img src="{{ Storage::url($image->image) }}"
+                                            onerror="this.src='{{ asset('ecom_assets/images/no-image.png') }}'" />
                                     </div>
                                 @endforeach
                             @endif
@@ -49,7 +50,8 @@
                                 @foreach ($product->images as $image)
                                     <div class="small_box_img">
                                         <div class="slid_small_img">
-                                            <img src="{{ Storage::url($image->image) }}" />
+                                            <img src="{{ Storage::url($image->image) }}"
+                                                onerror="this.src='{{ asset('ecom_assets/images/no-image.png') }}'" />
                                         </div>
                                     </div>
                                 @endforeach
@@ -68,6 +70,13 @@
                     <div class="title">{{ $product->name }}</div>
                     @if (isset($product->elearningTopic) && $product->elearningTopic)
                         <div class="topic mb-2"><strong>Topic:</strong> {{ $product->elearningTopic->topic_name }}</div>
+                    @endif
+                    @if (isset($product->category) && $product->category)
+                        <div class="category mb-2"><strong>Category:</strong> {{ $product->category->name }}</div>
+                    @endif
+                    @if (isset($product->subcategory) && $product->subcategory)
+                        <div class="subcategory mb-2"><strong>Sub Category:</strong> {{ $product->subcategory->name }}
+                        </div>
                     @endif
                     <div class="brief-description">
                         {{ $product->short_description }}
@@ -180,7 +189,10 @@
                                         <a href="{{ route('e-learning.product-details', $related_product->slug) }}">
                                             @if (isset($related_product->main_image) && $related_product->main_image != null)
                                                 <img src="{{ Storage::url($related_product->main_image) }}"
-                                                    alt="{{ $related_product->main_image }}">
+                                                    alt="{{ $related_product->main_image }}"
+                                                    onerror="this.src='{{ asset('ecom_assets/images/no-image.png') }}'">
+                                            @else
+                                                <img src="{{ asset('ecom_assets/images/no-image.png') }}" alt="no image">
                                             @endif
                                         </a>
                                     </div>

@@ -213,6 +213,13 @@ class RolePermissionSeeder extends Seeder
             ["name" => "Create Elearning Category"],
             ["name" => "Edit Elearning Category"],
             ["name" => "Delete Elearning Category"],
+
+            ["name" => "Manage Elearning Sub Category"],
+            ["name" => "View Elearning Sub Category"],
+            ["name" => "Create Elearning Sub Category"],
+            ["name" => "Edit Elearning Sub Category"],
+            ["name" => "Delete Elearning Sub Category"],
+
             ["name" => "Manage Elearning Product"],
             ["name" => "View Elearning Product"],
             ["name" => "Create Elearning Product"],
@@ -348,4 +355,4 @@ class RolePermissionSeeder extends Seeder
             }
         }
     }
-} 
+}

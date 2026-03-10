@@ -16,82 +16,85 @@ class AddSidebarMenuItems extends Seeder
     public function run()
     {
         $sidebarMenus = [
-            // Donations
-            ['key' => 'donations', 'default_name' => 'Donations'],
+            // // Donations
+            // ['key' => 'donations', 'default_name' => 'Donations'],
 
-            // Contact Us Messages
-            ['key' => 'contact_us_messages', 'default_name' => 'Contact Us Messages'],
+            // // Contact Us Messages
+            // ['key' => 'contact_us_messages', 'default_name' => 'Contact Us Messages'],
 
-            // Newsletters
-            ['key' => 'newsletters', 'default_name' => 'Newsletters'],
+            // // Newsletters
+            // ['key' => 'newsletters', 'default_name' => 'Newsletters'],
 
-            // Testimonials
-            ['key' => 'testimonials', 'default_name' => 'Testimonials'],
-            ['key' => 'testimonials_list', 'default_name' => 'Testimonials List'],
-            ['key' => 'testimonials_create', 'default_name' => 'Testimonials Create'],
+            // // Testimonials
+            // ['key' => 'testimonials', 'default_name' => 'Testimonials'],
+            // ['key' => 'testimonials_list', 'default_name' => 'Testimonials List'],
+            // ['key' => 'testimonials_create', 'default_name' => 'Testimonials Create'],
 
-            // Our Governance
-            ['key' => 'our_governance', 'default_name' => 'Our Governance'],
-            ['key' => 'our_governance_list', 'default_name' => 'Our Governance List'],
-            ['key' => 'our_governance_create', 'default_name' => 'Our Governance Create'],
+            // // Our Governance
+            // ['key' => 'our_governance', 'default_name' => 'Our Governance'],
+            // ['key' => 'our_governance_list', 'default_name' => 'Our Governance List'],
+            // ['key' => 'our_governance_create', 'default_name' => 'Our Governance Create'],
 
-            // Our Organizations
-            ['key' => 'our_organizations', 'default_name' => 'Our Organizations'],
-            ['key' => 'our_organizations_list', 'default_name' => 'Our Organizations List'],
-            ['key' => 'our_organizations_create', 'default_name' => 'Our Organizations Create'],
+            // // Our Organizations
+            // ['key' => 'our_organizations', 'default_name' => 'Our Organizations'],
+            // ['key' => 'our_organizations_list', 'default_name' => 'Our Organizations List'],
+            // ['key' => 'our_organizations_create', 'default_name' => 'Our Organizations Create'],
 
-            // Organization Center
-            ['key' => 'organization_center', 'default_name' => 'Organization Center'],
-            ['key' => 'organization_center_list', 'default_name' => 'Organization Center List'],
-            ['key' => 'organization_center_create', 'default_name' => 'Organization Center Create'],
+            // // Organization Center
+            // ['key' => 'organization_center', 'default_name' => 'Organization Center'],
+            // ['key' => 'organization_center_list', 'default_name' => 'Organization Center List'],
+            // ['key' => 'organization_center_create', 'default_name' => 'Organization Center Create'],
 
-            // Services
-            ['key' => 'services', 'default_name' => 'Services'],
+            // // Services
+            // ['key' => 'services', 'default_name' => 'Services'],
 
-            // Pages
-            ['key' => 'pages', 'default_name' => 'Pages'],
-            ['key' => 'pages_home', 'default_name' => 'Home'],
-            ['key' => 'pages_details', 'default_name' => 'Details'],
-            ['key' => 'pages_organization', 'default_name' => 'Organization'],
-            ['key' => 'pages_organization_cms', 'default_name' => 'Organization CMS'],
-            ['key' => 'pages_about_us', 'default_name' => 'About Us'],
-            ['key' => 'pages_faqs', 'default_name' => "FAQ's"],
-            ['key' => 'pages_gallery', 'default_name' => 'Gallery'],
-            ['key' => 'pages_ecclesia_association', 'default_name' => 'Ecclesia Association'],
-            ['key' => 'pages_principle_and_business', 'default_name' => 'Principle and Business Model'],
-            ['key' => 'pages_contact_us', 'default_name' => 'Contact US'],
-            ['key' => 'pages_articles_of_association', 'default_name' => 'Articles of Association'],
-            ['key' => 'pages_footer', 'default_name' => 'Footer'],
-            ['key' => 'pages_register_agreements', 'default_name' => 'Register Page Agreements'],
-            ['key' => 'pages_pma_terms', 'default_name' => 'PMA Terms'],
-            ['key' => 'pages_privacy_policy', 'default_name' => 'Privacy Policy'],
-            ['key' => 'pages_terms_and_conditions', 'default_name' => 'Terms and Conditions'],
+            // // Pages
+            // ['key' => 'pages', 'default_name' => 'Pages'],
+            // ['key' => 'pages_home', 'default_name' => 'Home'],
+            // ['key' => 'pages_details', 'default_name' => 'Details'],
+            // ['key' => 'pages_organization', 'default_name' => 'Organization'],
+            // ['key' => 'pages_organization_cms', 'default_name' => 'Organization CMS'],
+            // ['key' => 'pages_about_us', 'default_name' => 'About Us'],
+            // ['key' => 'pages_faqs', 'default_name' => "FAQ's"],
+            // ['key' => 'pages_gallery', 'default_name' => 'Gallery'],
+            // ['key' => 'pages_ecclesia_association', 'default_name' => 'Ecclesia Association'],
+            // ['key' => 'pages_principle_and_business', 'default_name' => 'Principle and Business Model'],
+            // ['key' => 'pages_contact_us', 'default_name' => 'Contact US'],
+            // ['key' => 'pages_articles_of_association', 'default_name' => 'Articles of Association'],
+            // ['key' => 'pages_footer', 'default_name' => 'Footer'],
+            // ['key' => 'pages_register_agreements', 'default_name' => 'Register Page Agreements'],
+            // ['key' => 'pages_pma_terms', 'default_name' => 'PMA Terms'],
+            // ['key' => 'pages_privacy_policy', 'default_name' => 'Privacy Policy'],
+            // ['key' => 'pages_terms_and_conditions', 'default_name' => 'Terms and Conditions'],
 
-            // Countries
-            ['key' => 'countries', 'default_name' => 'Countries'],
+            // // Countries
+            // ['key' => 'countries', 'default_name' => 'Countries'],
 
-            // Site Settings
-            ['key' => 'site_settings', 'default_name' => 'Site Settings'],
-            ['key' => 'site_settings_settings', 'default_name' => 'Settings'],
-            ['key' => 'site_settings_menu_names', 'default_name' => 'Menu Names'],
+            // // Site Settings
+            // ['key' => 'site_settings', 'default_name' => 'Site Settings'],
+            // ['key' => 'site_settings_settings', 'default_name' => 'Settings'],
+            // ['key' => 'site_settings_menu_names', 'default_name' => 'Menu Names'],
 
-            // Chatbot
-            ['key' => 'chatbot', 'default_name' => 'Chatbot Assistant'],
-            ['key' => 'chatbot_dashboard', 'default_name' => 'Dashboard'],
-            ['key' => 'chatbot_keywords', 'default_name' => 'Keywords'],
-            ['key' => 'chatbot_history', 'default_name' => 'History'],
+            // // Chatbot
+            // ['key' => 'chatbot', 'default_name' => 'Chatbot Assistant'],
+            // ['key' => 'chatbot_dashboard', 'default_name' => 'Dashboard'],
+            // ['key' => 'chatbot_keywords', 'default_name' => 'Keywords'],
+            // ['key' => 'chatbot_history', 'default_name' => 'History'],
 
-            // Membership
-            ['key' => 'membership', 'default_name' => 'Membership'],
-            ['key' => 'membership_management', 'default_name' => 'Membership Management'],
-            ['key' => 'membership_plan_list', 'default_name' => 'Plan List'],
-            ['key' => 'membership_create_plan', 'default_name' => 'Create Plan'],
-            ['key' => 'membership_members', 'default_name' => 'Members'],
-            ['key' => 'membership_all_payments', 'default_name' => 'All Payments'],
-            ['key' => 'membership_settings', 'default_name' => 'Settings'],
+            // // Membership
+            // ['key' => 'membership', 'default_name' => 'Membership'],
+            // ['key' => 'membership_management', 'default_name' => 'Membership Management'],
+            // ['key' => 'membership_plan_list', 'default_name' => 'Plan List'],
+            // ['key' => 'membership_create_plan', 'default_name' => 'Create Plan'],
+            // ['key' => 'membership_members', 'default_name' => 'Members'],
+            // ['key' => 'membership_all_payments', 'default_name' => 'All Payments'],
+            // ['key' => 'membership_settings', 'default_name' => 'Settings'],
 
-            // admin
-            ['key' => 'admin', 'default_name' => 'Super Admin'],
+            // // admin
+            // ['key' => 'admin', 'default_name' => 'Super Admin'],
+
+            // e_learning_sub_categories
+            ['key' => 'e_learning_sub_categories', 'default_name' => 'E-learning Sub Categories', 'type' => null],
 
         ];
 

@@ -23,7 +23,7 @@ class ElearningController extends Controller
     public function index()
     {
         if (auth()->user()->can('Manage Elearning Product')) {
-            $products = ElearningProduct::orderBy('id', 'desc')->paginate(10);
+            $products = ElearningProduct::with(['category', 'subcategory', 'elearningTopic', 'user'])->orderBy('id', 'desc')->paginate(10);
             $categories = ElearningCategory::orderBy('name')->get();
             return view('user.elearning-product.list', compact('products', 'categories'));
         } else {
@@ -52,6 +52,8 @@ class ElearningController extends Controller
                         ->orWhere('slug', 'like', '%' . $query . '%');
                 })->orWhereHas('category', function ($q) use ($query) {
                     $q->where('name', 'like', '%' . $query . '%');
+                })->orWhereHas('subcategory', function ($q) use ($query) {
+                    $q->where('name', 'like', '%' . $query . '%');
                 })->orWhereHas('elearningTopic', function ($q) use ($query) {
                     $q->where('topic_name', 'like', '%' . $query . '%');
                 });
@@ -60,6 +62,7 @@ class ElearningController extends Controller
             if (!empty($categoryId)) {
                 $products = $products->where('category_id', $categoryId);
             }
+            $products = $products->with(['category', 'subcategory', 'elearningTopic', 'user']);
             if ($sort_by && $sort_type) {
                 $products = $products->orderBy($sort_by, $sort_type);
             }
@@ -107,6 +110,7 @@ class ElearningController extends Controller
             'slug' => 'required|string|unique:elearning_products',
             'affiliate_link' => 'required|string',
             'elearning_topic_id' => 'nullable|numeric|exists:elearning_topics,id',
+            'elearning_sub_category_id' => 'nullable|numeric|exists:elearning_sub_categories,id',
             // 'meta_title' => 'nullable|string|max:255',
             // 'meta_description' => 'nullable|string|max:255',
             'image' => 'required|image|mimes:jpeg,png,jpg,gif,svg,webp',
@@ -115,9 +119,9 @@ class ElearningController extends Controller
             'button_name' => 'required|string',
         ]);
 
-
         $product = new ElearningProduct();
         $product->category_id = $request->category_id;
+        $product->elearning_sub_category_id = $request->elearning_sub_category_id;
         $product->elearning_topic_id = $request->elearning_topic_id;
         $product->user_id = auth()->user()->id;
         $product->name = $request->name;
@@ -212,6 +216,7 @@ class ElearningController extends Controller
                 'slug' => 'required|string|unique:elearning_products,slug,' . $id,
                 'affiliate_link' => 'required|string',
                 'elearning_topic_id' => 'nullable|numeric|exists:elearning_topics,id',
+                'elearning_sub_category_id' => 'nullable|numeric|exists:elearning_sub_categories,id',
                 // 'meta_title' => 'nullable|string|max:255',
                 // 'meta_description' => 'nullable|string|max:255',
                 'image' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg,webp',
@@ -224,6 +229,7 @@ class ElearningController extends Controller
 
             $product = ElearningProduct::findOrFail($id);
             $product->category_id = $request->category_id;
+            $product->elearning_sub_category_id = $request->elearning_sub_category_id;
             $product->elearning_topic_id = $request->elearning_topic_id;
             $product->name = $request->name;
             // $product->description = $request->description;

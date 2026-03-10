@@ -13,7 +13,7 @@ class ElearningProductController extends Controller
 {
     public function productDetails($slug)
     {
-        $product = ElearningProduct::with('elearningTopic')->where('slug', $slug)->first();
+        $product = ElearningProduct::with(['elearningTopic', 'category', 'subcategory'])->where('slug', $slug)->first();
         $related_products = ElearningProduct::where('category_id', $product->category_id)
             ->where(function ($query) use ($product) {
                 $query->where('id', '!=', $product->id)
@@ -27,23 +27,32 @@ class ElearningProductController extends Controller
         return view('elearning.product-details')->with(compact('product', 'related_products', 'reviews'));
     }
 
-    public function products(Request $request, $category_id = null)
+    public function products(Request $request, $category_id = null, $subcategory_id = null)
     {
         $category_id = $category_id ?? ''; // Default value is ' '
-        $products = ElearningProduct::where('status', 1)->with('elearningTopic');
+
+        $products = ElearningProduct::where('status', 1)->with(['elearningTopic', 'category', 'subcategory']);
+
         if ($category_id) {
             $products = $products->where('category_id', $category_id);
             $category = ElearningCategory::find($category_id);
         } else {
             $category = null;
         }
+
+        $subcategory = null;
+        if ($subcategory_id) {
+            $products = $products->where('elearning_sub_category_id', $subcategory_id);
+            $subcategory = \App\Models\ElearningSubCategory::find($subcategory_id);
+        }
+
         $products = $products->orderBy('id', 'DESC')->limit(12)->get();
         // dd($products);
 
         $products_count  = $products->count();
         $categories = ElearningCategory::where('status', 1)->orderBy('id', 'DESC')->get();
         $topics = ElearningTopic::orderBy('id', 'desc')->get();
-        return view('elearning.products')->with(compact('products', 'categories', 'category_id', 'products_count', 'category', 'topics'));
+        return view('elearning.products')->with(compact('products', 'categories', 'category_id', 'products_count', 'category', 'topics', 'subcategory', 'subcategory_id'));
     }
 
     public static function productsFilter(Request $request)
@@ -63,6 +72,10 @@ class ElearningProductController extends Controller
 
             if (!empty($category_id)) {
                 $products->whereIn('category_id', $category_id);
+            }
+
+            if (!empty($request->elearning_sub_category_id)) {
+                $products->where('elearning_sub_category_id', $request->elearning_sub_category_id);
             }
 
             if (!empty($topic_id)) {

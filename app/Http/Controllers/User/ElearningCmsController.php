@@ -111,7 +111,7 @@ class ElearningCmsController extends Controller
     {
         if (auth()->user()->can('Edit Elearning CMS')) {
             $request->validate([
-                'banner_image' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+                'banner_image' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg,webp',
                 'banner_title' => 'required|string',
                 'banner_subtitle' => 'required|string',
                 'product_category_title' => 'required|string',

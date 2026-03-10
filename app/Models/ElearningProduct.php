@@ -12,6 +12,7 @@ class ElearningProduct extends BaseModel
 
     protected $fillable = [
         'category_id',
+        'elearning_sub_category_id',
         'elearning_topic_id',
         'name',
         'description',
@@ -25,6 +26,11 @@ class ElearningProduct extends BaseModel
     public function category()
     {
         return $this->belongsTo(ElearningCategory::class);
+    }
+
+    public function subcategory()
+    {
+        return $this->belongsTo(ElearningSubCategory::class, 'elearning_sub_category_id');
     }
 
     public function images()

@@ -100,6 +100,19 @@
                                     @endif
                                 </div>
                             </div>
+                            {{-- elearning_sub_category_id --}}
+                            <div class="col-md-6 mb-2">
+                                <div class="box_label">
+                                    <label for="elearning_sub_category_id"> Sub Category</label>
+                                    <select name="elearning_sub_category_id" id="elearning_sub_category_id"
+                                        class="form-control">
+                                        <option value="">Select Sub Category</option>
+                                    </select>
+                                    @if ($errors->has('elearning_sub_category_id'))
+                                        <span class="error">{{ $errors->first('elearning_sub_category_id') }}</span>
+                                    @endif
+                                </div>
+                            </div>
                             {{-- elearning_topic_id --}}
                             <div class="col-md-6 mb-2">
                                 <div class="box_label">
@@ -343,6 +356,40 @@
         <script>
             ClassicEditor.create(document.querySelector("#description"));
             ClassicEditor.create(document.querySelector("#specification"));
+
+            $('#category_id').on('change', function() {
+                var category_id = $(this).val();
+                var sub_category_id = "{{ $product->elearning_sub_category_id ?? '' }}";
+                if (category_id) {
+                    $.ajax({
+                        url: "{{ route('elearning-sub-categories.get-subcategories') }}",
+                        type: "GET",
+                        data: {
+                            category_id: category_id
+                        },
+                        success: function(response) {
+                            $('#elearning_sub_category_id').empty();
+                            $('#elearning_sub_category_id').append(
+                                '<option value="">Select Sub Category</option>');
+                            $.each(response.data, function(key, value) {
+                                var selected = (value.id == sub_category_id) ? 'selected' :
+                                    '';
+                                $('#elearning_sub_category_id').append('<option value="' +
+                                    value.id + '" ' + selected + '>' + value.name +
+                                    '</option>');
+                            });
+                        }
+                    });
+                } else {
+                    $('#elearning_sub_category_id').empty();
+                    $('#elearning_sub_category_id').append('<option value="">Select Sub Category</option>');
+                }
+            });
+
+            // Trigger change on page load
+            if ($('#category_id').val()) {
+                $('#category_id').trigger('change');
+            }
         </script>
         <script>
             $(document).ready(function() {

@@ -10,4 +10,9 @@ class ElearningCategory extends BaseModel
     use HasFactory;
 
     protected $fillable = ['name', 'slug', 'status', 'image', 'meta_title', 'meta_description', 'main'];
+
+    public function subcategories()
+    {
+        return $this->hasMany(ElearningSubCategory::class, 'elearning_category_id');
+    }
 }

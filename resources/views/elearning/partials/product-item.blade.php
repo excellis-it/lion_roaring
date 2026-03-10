@@ -13,7 +13,10 @@
                     <a href="{{ $product['affiliate_link'] }}">
                         @if (isset($product['image']['image']) && $product['image']['image'] != null)
                             <img src="{{ Storage::url($product['image']['image']) }}"
-                                alt="{{ $product['image']['image'] }}">
+                                alt="{{ $product['image']['image'] }}"
+                                onerror="this.onerror=null;this.src='{{ asset('ecom_assets/images/no-image.png') }}';">
+                        @else
+                            <img src="{{ asset('ecom_assets/images/no-image.png') }}" alt="no image">
                         @endif
                     </a>
                 </div>

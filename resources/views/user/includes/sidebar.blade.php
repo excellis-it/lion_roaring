@@ -505,7 +505,9 @@
 
                  @if (Gate::check('Manage Elearning CMS') ||
                          Gate::check('Manage Elearning Category') ||
-                         Gate::check('Manage Elearning Product'))
+                         Gate::check('Manage Elearning Product') ||
+                         Gate::check('Manage Elearning Sub Category') ||
+                         Gate::check('Manage Elearning Topic'))
                      <li class="sidebar-item">
                          <a class="sidebar-link" href="#" aria-expanded="false" data-bs-toggle="collapse"
                              data-bs-target="#collapseExample11">
@@ -536,6 +538,16 @@
                                                  alt="">
                                          </span>
                                          <span>{{ Helper::getMenuName('e_learning_categories', 'E-learning Categories') }}</span>
+                                     </a>
+                                 @endif
+
+                                 @if (Gate::check('Manage Elearning Sub Category'))
+                                     <a href="{{ route('elearning-sub-categories.index') }}">
+                                         <span>
+                                             <img src="{{ asset('user_assets/images/ICON/Store/Product_Categories.svg') }}"
+                                                 alt="">
+                                         </span>
+                                         <span>{{ Helper::getMenuName('e_learning_sub_categories', 'E-learning Sub Categories') }}</span>
                                      </a>
                                  @endif
                                  {{-- elearning topics  --}}

@@ -16,10 +16,15 @@
             <div class="row justify-content-center">
                 <div class="col-xxl-6 col-xl-8 col-md-12">
                     <div class="inner_banner_ontent">
-                        <h2>Our Collection</h2>
-                        {{-- <p>Lorem ipsum dolor sit amet consectetur. Habitant ultricies sapien nunc adipiscing volutpat
-                            consectetur
-                            id purus rhoncus.</p> --}}
+                        <h2>
+                            @if (isset($subcategory) && $subcategory)
+                                {{ $category ? $category->name . ' > ' : '' }}{{ $subcategory->name }}
+                            @elseif(isset($category) && $category)
+                                {{ $category->name }}
+                            @else
+                                Our Collection
+                            @endif
+                        </h2>
                     </div>
                 </div>
             </div>
@@ -210,6 +215,7 @@
             var page = 1;
             var loading = false;
             var numSlick = 0; // Initialize numSlick variable
+            var elearning_sub_category_id = '{{ isset($subcategory_id) ? $subcategory_id : '' }}';
 
 
             // Show loading GIF function
@@ -261,7 +267,7 @@
 
                     showLoading(); // Show loading GIF
                     loadMoreProducts(page, prices, category_id, latestFilter, search, elearning_topic_id,
-                        elearning_topic_search); // Load more products
+                        elearning_topic_search, elearning_sub_category_id); // Load more products
                 }
             }
 
@@ -300,7 +306,8 @@
                     page = 1;
                     $('#products').html('');
 
-                    loadMoreProducts(page, prices, category_id, latestFilter, search, elearning_topic_id, '');
+                    loadMoreProducts(page, prices, category_id, latestFilter, search, elearning_topic_id, '',
+                        elearning_sub_category_id);
                 });
 
             // Search products
@@ -334,7 +341,8 @@
                 page = 1;
                 $('#products').html('');
 
-                loadMoreProducts(page, prices, category_id, latestFilter, search, elearning_topic_id, '');
+                loadMoreProducts(page, prices, category_id, latestFilter, search, elearning_topic_id, '',
+                    elearning_sub_category_id);
             });
 
             $(document).on('keyup', '#serach-product, #elearning-topic-search', function(e) {
@@ -369,19 +377,21 @@
                 $('#products').html('');
 
                 loadMoreProducts(page, prices, category_id, latestFilter, search, elearning_topic_id,
-                    elearning_topic_search);
+                    elearning_topic_search, elearning_sub_category_id);
             });
 
 
 
             function loadMoreProducts(page, prices = [], category_id = [],
-                latestFilter = '', search = '', elearning_topic_id = [], elearning_topic_search = '') {
+                latestFilter = '', search = '', elearning_topic_id = [], elearning_topic_search = '',
+                elearning_sub_category_id = '') {
                 $.ajax({
                     url: '{{ route('e-learning.products-filter') }}',
                     type: 'GET',
                     data: {
                         page: page,
                         category_id: category_id,
+                        elearning_sub_category_id: elearning_sub_category_id,
                         prices: prices,
                         elearning_topic_id: elearning_topic_id,
                         elearning_topic_search: elearning_topic_search,

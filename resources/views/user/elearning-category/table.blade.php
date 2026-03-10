@@ -4,8 +4,13 @@
             <td>{{ $categories->firstItem() + $key }}</td>
             <td>
                 <div class="d-flex">
-                    <img src="{{ Storage::url($category->image) }}" alt="{{ $category->name }}"
-                        style="width: 50px; height: 50px; object-fit: cover;">
+                    @if ($category->image)
+                        <img src="{{ Storage::url($category->image) }}" alt="{{ $category->name }}"
+                            style="width: 50px; height: 50px; object-fit: cover;" onerror="this.onerror=null;this.src='{{ asset('ecom_assets/images/no-image.png') }}';">
+                    @else
+                        <img src="{{ asset('ecom_assets/images/no-image.png') }}" alt="no-image"
+                            style="width: 50px; height: 50px; object-fit: cover;">
+                    @endif
                 </div>
             </td>
             <td> {{ $category->name }}</td>

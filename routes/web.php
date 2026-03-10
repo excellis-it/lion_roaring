@@ -46,6 +46,7 @@ use App\Http\Controllers\User\BulletinBoardController;
 use App\Http\Controllers\User\BulletinController;
 use App\Http\Controllers\User\CategoryController;
 use App\Http\Controllers\User\ElearningCategoryController;
+use App\Http\Controllers\User\ElearningSubCategoryController;
 use App\Http\Controllers\User\ChatController;
 use App\Http\Controllers\User\EstoreCmsController;
 use App\Http\Controllers\User\ElearningCmsController;
@@ -749,6 +750,7 @@ Route::prefix('user')->middleware(['user', 'preventBackHistory', 'userActivity',
         'elearning-topics' => ElearningTopicController::class,
         'categories' => CategoryController::class,
         'elearning-categories' => ElearningCategoryController::class,
+        'elearning-sub-categories' => ElearningSubCategoryController::class,
         'products' => ProductController::class,
         'elearning' => ElearningController::class,
         'ecclesias' => EcclesiaContorller::class,
@@ -941,9 +943,14 @@ Route::prefix('user')->middleware(['user', 'preventBackHistory', 'userActivity',
     Route::get('/elearning-products-image-delete', [ElearningController::class, 'imageDelete'])->name('elearning.image.delete');
     Route::get('/elearning-products-fetch-data', [ElearningController::class, 'fetchData'])->name('elearning.fetch-data');
     Route::get('/elearning-categories-fetch-data', [ElearningCategoryController::class, 'fetchData'])->name('elearning-categories.fetch-data');
+    Route::get('/elearning-sub-categories-fetch-data', [ElearningSubCategoryController::class, 'fetchData'])->name('elearning-sub-categories.fetch-data');
     Route::prefix('elearning-categories')->group(function () {
         Route::get('/elearning-category-delete/{id}', [ElearningCategoryController::class, 'delete'])->name('elearning-categories.delete');
     });
+    Route::prefix('elearning-sub-categories')->group(function () {
+        Route::get('/elearning-sub-category-delete/{id}', [ElearningSubCategoryController::class, 'delete'])->name('elearning-sub-categories.delete');
+    });
+    Route::get('/get-subcategories', [ElearningSubCategoryController::class, 'getSubcategories'])->name('elearning-sub-categories.get-subcategories');
     Route::get('/elearning-page/{name}/{permission}', [ElearningCmsController::class, 'page'])->name('user.elearning-page');
     Route::get('/elearning-cms/dashboard', [ElearningCmsController::class, 'dashboard'])->name('user.elearning-cms.dashboard');
     Route::get('/elearning-cms/list', [ElearningCmsController::class, 'list'])->name('user.elearning-cms.list');
@@ -1406,7 +1413,7 @@ Route::prefix('e-learning')->middleware(['user', 'agreement.signed'])->group(fun
     $categories = collect();
     if (!app()->runningInConsole() && Schema::hasTable('elearning_categories')) {
         try {
-            $categories = ElearningCategory::where('status', 1)->get();
+            $categories = ElearningCategory::with('subcategories')->where('status', 1)->get();
         } catch (\Throwable $e) {
             $categories = collect();
         }
@@ -1416,6 +1423,15 @@ Route::prefix('e-learning')->middleware(['user', 'agreement.signed'])->group(fun
             Route::get($category->slug, [ElearningProductController::class, 'products'])
                 ->name($category->slug . '.e-learning.page')
                 ->defaults('category_id', $category->id);
+
+            foreach ($category->subcategories as $subcategory) {
+                if ($subcategory->slug) {
+                    Route::get($category->slug . '/' . $subcategory->slug, [ElearningProductController::class, 'products'])
+                        ->name($category->slug . '.' . $subcategory->slug . '.e-learning.page')
+                        ->defaults('category_id', $category->id)
+                        ->defaults('subcategory_id', $subcategory->id);
+                }
+            }
         }
     }
 

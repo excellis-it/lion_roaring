@@ -14,20 +14,34 @@
                         <ul>
                             <li><a href="{{ route('e-learning') }}">Home</a></li>
                             @php
-                                $elearningCategories = \App\Models\ElearningCategory::where('status', 1)
+                                $elearningCategories = \App\Models\ElearningCategory::with([
+                                    'subcategories' => function ($q) {
+                                        $q->where('status', 1)->orderBy('name', 'asc');
+                                    },
+                                ])
+                                    ->where('status', 1)
                                     ->orderBy('name', 'asc')
                                     ->get();
                             @endphp
                             @if (isset($elearningCategories) && count($elearningCategories) > 0)
                                 <li class="has-sub">
-                                    <a href="javascript:void(0);">Category</a>
+                                    <a href="javascript:void(0);">Categories</a>
                                     <ul>
                                         @foreach ($elearningCategories as $cat)
-                                            @if (isset($cat->slug) && $cat->slug)
-                                                <li><a
-                                                        href="{{ url('e-learning/' . $cat->slug) }}">{{ $cat->name }}</a>
-                                                </li>
-                                            @endif
+                                            <li class="{{ $cat->subcategories->count() > 0 ? 'has-sub' : '' }}">
+                                                <a
+                                                    href="{{ route($cat->slug . '.e-learning.page') }}">{{ $cat->name }}</a>
+                                                @if ($cat->subcategories->count() > 0)
+                                                    <ul>
+                                                        @foreach ($cat->subcategories as $subcat)
+                                                            <li>
+                                                                <a
+                                                                    href="{{ route($cat->slug . '.' . $subcat->slug . '.e-learning.page') }}">{{ $subcat->name }}</a>
+                                                            </li>
+                                                        @endforeach
+                                                    </ul>
+                                                @endif
+                                            </li>
                                         @endforeach
                                     </ul>
                                 </li>

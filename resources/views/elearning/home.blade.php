@@ -14,7 +14,7 @@
         <div class="slider stick-dots">
             <div class="slide">
                 <div class="slide__img">
-                    <img src="{{ isset($content['banner_image']) ? Storage::url($content['banner_image']) : asset('ecom_assets/images/banner.jpg') }}"
+                    <img src="{{ isset($content['banner_image']) ? Storage::url($content['banner_image']) : asset('ecom_assets/images/banner.jpg') }}" 
                         alt="banner" />
                 </div>
                 <div class="slide__content slide__content__left">
@@ -49,8 +49,15 @@
                         <div class="feature_slid_padding">
                             <div class="feature_box shadow">
                                 <div class="feature_img">
-                                    <a href="{{ route($category->slug . '.e-learning.page') }}"><img
-                                            src="{{ Storage::url($category->image) }}" /></a>
+                                    <a href="{{ route($category->slug . '.e-learning.page') }}">
+                                        @if ($category->image)
+                                            <img
+                                                src="{{ Storage::url($category->image) }}" onerror="this.onerror=null;this.src='{{ asset('ecom_assets/images/no-image.png') }}';"/>
+                                        @else
+                                            <img src="{{ asset('ecom_assets/images/no-image.png') }}" alt="no-image"
+                                                >
+                                        @endif
+                                        </a>
                                 </div>
                                 <div class="feature_text">
                                     <a href="{{ route($category->slug . '.e-learning.page') }}">{{ $category->name }}</a>
@@ -87,7 +94,10 @@
                                         <a href="{{ $product['affiliate_link'] }}">
                                             @if (isset($product->main_image) && $product->main_image != null)
                                                 <img src="{{ Storage::url($product->main_image) }}"
-                                                    alt="{{ $product->main_image }}">
+                                                    alt="{{ $product->main_image }}" onerror="this.onerror=null;this.src='{{ asset('ecom_assets/images/no-image.png') }}';">
+                                            @else
+                                                <img src="{{ asset('ecom_assets/images/no-image.png') }}" alt="no-image"
+                                                    onerror="this.onerror=null;this.src='{{ asset('ecom_assets/images/no-image.png') }}';">
                                             @endif
                                         </a>
                                     </div>
@@ -134,7 +144,10 @@
                                         <a href="{{ $product['affiliate_link'] }}">
                                             @if (isset($product->main_image) && $product->main_image != null)
                                                 <img src="{{ Storage::url($product->main_image) }}"
-                                                    alt="{{ $product->main_image }}">
+                                                    alt="{{ $product->main_image }}" onerror="this.onerror=null;this.src='{{ asset('ecom_assets/images/no-image.png') }}';">
+                                            @else
+                                                <img src="{{ asset('ecom_assets/images/no-image.png') }}" alt="no-image"
+                                                    onerror="this.onerror=null;this.src='{{ asset('ecom_assets/images/no-image.png') }}';">
                                             @endif
                                         </a>
                                     </div>

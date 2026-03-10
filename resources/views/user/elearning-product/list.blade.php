@@ -3,6 +3,120 @@
     E-Learning Product List - {{ env('APP_NAME') }}
 @endsection
 @push('styles')
+    <style>
+        .table-responsive {
+            margin-top: 20px;
+            background: #fff;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+            padding: 15px;
+        }
+
+        .table thead th {
+            background-color: #61337b !important;
+            color: #fff !important;
+            font-weight: 500;
+            white-space: nowrap;
+            vertical-align: middle;
+            border: none;
+            padding: 12px 15px;
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .table tbody td {
+            vertical-align: middle;
+            padding: 12px 15px;
+            color: #4a4a4a;
+            font-size: 13.5px;
+            border-bottom: 1px solid #f1f1f1;
+        }
+
+        .table tbody tr:hover {
+            background-color: #fcfaff;
+        }
+
+        .product-img-card {
+            width: 45px;
+            height: 45px;
+            object-fit: cover;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+
+        .badge-custom {
+            padding: 4px 10px;
+            border-radius: 6px;
+            font-weight: 500;
+            font-size: 11px;
+            display: inline-flex;
+            align-items: center;
+        }
+
+        .badge-active {
+            background-color: #e8f5e9;
+            color: #2e7d32;
+        }
+
+        .badge-inactive {
+            background-color: #ffebee;
+            color: #c62828;
+        }
+
+        .badge-yes {
+            background-color: #e3f2fd;
+            color: #1565c0;
+        }
+
+        .badge-no {
+            background-color: #f5f5f5;
+            color: #757575;
+        }
+
+        .truncate-120 {
+            max-width: 120px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            display: inline-block;
+        }
+
+        .truncate-150 {
+            max-width: 150px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            display: inline-block;
+        }
+
+        .affiliate-link-item {
+            color: #61337b;
+            text-decoration: none;
+            font-weight: 500;
+            max-width: 150px;
+            display: inline-block;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .affiliate-link-item:hover {
+            text-decoration: underline;
+        }
+
+        .info-cell b {
+            color: #333;
+            display: block;
+            font-size: 12.5px;
+        }
+
+        .info-cell span {
+            color: #888;
+            font-size: 11px;
+            display: block;
+        }
+    </style>
 @endpush
 @section('content')
     <div class="container-fluid">
@@ -57,6 +171,9 @@
                                                 <th>
                                                     Product Category
                                                 </th>
+                                                <th>
+                                                    Sub Category
+                                                </th>
                                                 <th>Topic</th>
                                                 <th class="sorting" data-tippy-content="Sort by Product Slug"
                                                     data-sorting_type="desc" data-column_name="slug"
@@ -83,11 +200,8 @@
                                                 <th>
                                                     Is Featured
                                                 </th>
-                                                <th>Created By</th>
-                                                <th>
-                                                    Created On
-                                                </th>
-                                                <th></th>
+                                                <th>Publisher Details</th>
+                                                <th>Actions</th>
                                             </tr>
                                         </thead>
                                         <tbody>

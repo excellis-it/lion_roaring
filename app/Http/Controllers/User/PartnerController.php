@@ -279,6 +279,14 @@ class PartnerController extends Controller
                     'Edit Elearning Category',
                     'Delete Elearning Category',
                 ],
+
+                Helper::getMenuName('e_learning_sub_categories', 'Elearning Sub Categories') => [
+                    'Manage Elearning Sub Category',
+                    'View Elearning Sub Category',
+                    'Create Elearning Sub Category',
+                    'Edit Elearning Sub Category',
+                    'Delete Elearning Sub Category',
+                ],
                 Helper::getMenuName('elearning_topic', 'Elearning Topic') => [
                     'Manage Elearning Topic',
                     'View Elearning Topic',
