@@ -7,8 +7,7 @@
     <meta name="description" content="Sign your PMA Agreement">
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>{{ env('APP_NAME') }} - Sign Agreement</title>
-     <link rel="icon" href="{{ asset('frontend_assets/uploads/2023/04/cropped-logo-1-32x32.png') }}"
-        sizes="32x32" />
+    <link rel="icon" href="{{ asset('frontend_assets/uploads/2023/04/cropped-logo-1-32x32.png') }}" sizes="32x32" />
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link
@@ -273,18 +272,33 @@
 
         /* PDF Preview (Step 3) */
         .pdf-preview-container {
-            height: 50vh;
-            border-radius: 12px;
-            overflow: hidden;
+            max-height: 50vh;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 15px;
+            padding: 10px;
             border: 1px solid #eee;
+            border-radius: 12px;
+            background: #fafafa;
             margin-bottom: 20px;
-            background: #f5f5f5;
+            scrollbar-width: thin;
+            scrollbar-color: #643271 #f1f1f1;
         }
 
-        .pdf-preview-container iframe {
-            width: 100%;
-            height: 100%;
-            border: 0;
+        .pdf-preview-container::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        .pdf-preview-container::-webkit-scrollbar-track {
+            background: #f1f1f1;
+            border-radius: 3px;
+        }
+
+        .pdf-preview-container::-webkit-scrollbar-thumb {
+            background: #643271;
+            border-radius: 3px;
         }
 
         /* Signature Section (Step 4) */
@@ -606,11 +620,19 @@
                             <i class="fas fa-file-pdf me-2 text-danger"></i> Review & Agree
                         </h4>
 
-                        <div class="pdf-preview-container">
-                            <iframe id="agreementPdfIframe" src=""></iframe>
+                        <div class="scroll-hint" id="previewScrollHint">
+                            <i class="fas fa-mouse-pointer"></i>
+                            Please scroll to the bottom to enable agreement
                         </div>
 
-                        <div class="agreement-checkbox">
+                        <div class="pdf-preview-container" id="pdf-preview-canvas-container">
+                            <div class="text-center p-5">
+                                <div class="spinner-border text-primary" role="status"></div>
+                                <p class="mt-3 text-muted fw-500">Preparing document...</p>
+                            </div>
+                        </div>
+
+                        <div class="agreement-checkbox" id="agreementPreviewCheckboxSection" style="display: none;">
                             <div class="form-group mb-0">
                                 <input type="checkbox" id="agreeCheck3">
                                 <label for="agreeCheck3" class="ms-2">
@@ -751,8 +773,13 @@
 
                         const observer = new IntersectionObserver((entries) => {
                             if (entries[0].isIntersecting) {
-                                $('#agreementCheckboxSection').fadeIn(800);
-                                $('#scrollHint').fadeOut();
+                                if (containerId === 'pdf-viewer-container') {
+                                    $('#agreementCheckboxSection').fadeIn(800);
+                                    $('#scrollHint').fadeOut();
+                                } else if (containerId === 'pdf-preview-canvas-container') {
+                                    $('#agreementPreviewCheckboxSection').fadeIn(800);
+                                    $('#previewScrollHint').fadeOut();
+                                }
                                 observer.disconnect();
                             }
                         }, {
@@ -882,8 +909,10 @@
                             return;
                         }
 
-                        $('#agreementPdfIframe').attr('src', res.pdf_url);
+                        renderPDF(res.pdf_url, 'pdf-preview-canvas-container');
                         $('#agreeCheck3').prop('checked', false);
+                        $('#agreementPreviewCheckboxSection').hide();
+                        $('#previewScrollHint').show();
                         goToStep(3);
                     },
                     error: function(xhr) {
