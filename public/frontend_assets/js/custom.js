@@ -303,7 +303,9 @@ $(document).ready(function () {
                     return;
                 }
 
-                $("#register_agreement_pdf_iframe").attr("src", res.pdf_url);
+                if (typeof renderPDF === 'function') {
+                    renderPDF(res.pdf_url, 'register_agreement_pdf_container');
+                }
                 $("#pma_register_check3").prop("checked", false);
 
                 $("#registerModalSecond").modal("hide");

@@ -268,7 +268,8 @@
             border: 1px solid #e9ecef;
         }
 
-        #pdf-viewer-container {
+        #pdf-viewer-container,
+        #register_agreement_pdf_container {
             max-height: 55vh;
             overflow-y: auto;
             display: flex;
@@ -386,7 +387,8 @@
             <div class="particle"></div>
             <div class="particle"></div>
             <div class="particle"></div>
-            <div class="loading-text-bottom">{{ \App\Helpers\Helper::getSettings()->SITE_TAGLINE ?? 'Think Supernaturally, Act Locally' }}</div>
+            <div class="loading-text-bottom">
+                {{ \App\Helpers\Helper::getSettings()->SITE_TAGLINE ?? 'Think Supernaturally, Act Locally' }}</div>
         </section>
 
 
@@ -585,11 +587,11 @@
                                     }
                                     return null;
                                 }
-
+                                
                                 // Get user's timezone based on IP address
                                 $ip = $_SERVER['REMOTE_ADDR'];
                                 $timezone = getTimezoneFromIp($ip);
-
+                                
                                 if ($timezone) {
                                     // Set the default timezone
                                     date_default_timezone_set($timezone);
@@ -597,10 +599,10 @@
                                     // Fallback timezone
                                     date_default_timezone_set('UTC');
                                 }
-
+                                
                                 // Get the current hour in 24-hour format
                                 $time = date('H');
-
+                                
                                 // Determine greeting based on time
                                 if ($time < '12') {
                                     echo 'Perfect morning';
@@ -944,13 +946,18 @@
                     </div>
                     <div class="modal-body">
                         <div class="pdf-viewer-wrapper">
-                            <div id="register_agreement_pdf_container" style="height: 70vh;">
-                                <iframe id="register_agreement_pdf_iframe" src="" width="100%"
-                                    height="100%" style="border:0; border-radius: 12px;"></iframe>
+                            <div class="scroll-hint mb-3">
+                                <i class="fas fa-mouse-pointer me-2"></i> Please read to the bottom to enable agreement
+                            </div>
+                            <div id="register_agreement_pdf_container" style="max-height: 70vh;">
+                                <div class="text-center p-5">
+                                    <div class="spinner-border text-primary" role="status"></div>
+                                    <p class="mt-3 text-muted fw-500">Preparing document...</p>
+                                </div>
                             </div>
                         </div>
 
-                        <div class="agreement-glass-box mt-4">
+                        <div class="agreement-glass-box mt-4" style="display: none;">
                             <div class="check-main">
                                 <div class="form-group mb-0">
                                     <input type="checkbox" id="pma_register_check3">
@@ -1347,8 +1354,13 @@
 
                         const observer = new IntersectionObserver((entries) => {
                             if (entries[0].isIntersecting) {
-                                $('.check-main-first').fadeIn(800);
-                                $('.scroll-hint').fadeOut();
+                                if (containerId === 'pdf-viewer-container') {
+                                    $('.check-main-first').fadeIn(800);
+                                    $('#registerModalFirst .scroll-hint').fadeOut();
+                                } else if (containerId === 'register_agreement_pdf_container') {
+                                    $('#registerAgreementPreviewModal .agreement-glass-box').fadeIn(800);
+                                    $('#registerAgreementPreviewModal .scroll-hint').fadeOut();
+                                }
                                 observer.disconnect();
                             }
                         }, {
