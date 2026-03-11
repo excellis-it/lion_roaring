@@ -5,6 +5,7 @@ namespace App\Services;
 use App\Models\User;
 use App\Models\Notification;
 use App\Notifications\CommonNotification;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Notification as LaravelNotification;
 
 class NotificationService
@@ -15,7 +16,22 @@ class NotificationService
     public static function notifyAllUsers($message, $type = 'general')
     {
         try {
-            $users = User::where('status', 1)->get(); // Get all active users
+            if (Auth::check()) {
+                $user = auth()->user();
+                $user_type = $user->user_type;
+                if ($user->hasNewRole('SUPER ADMIN')) {
+                    $users = User::where('status', 1)->get(); // Get all active users
+                } else {
+                    if ($user_type == 'Global') {
+                        $users = User::where('status', 1)->where('user_type', 'Global')->get(); // Get all active users
+                    } else {
+                        $users = User::where('status', 1)->where('user_type', 'Regional')->where('country', $user->country)->get(); // Get all active users
+                    }
+                }
+            } else {
+                $users = User::where('status', 1)->get(); // Get all active users
+            }
+
             // return $users;
 
             $notified_users = [];
