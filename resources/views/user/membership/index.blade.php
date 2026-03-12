@@ -539,7 +539,11 @@
             $('#promoMessage').text('').removeClass('text-success text-danger');
             $('#applyPromoBtn').text('Apply').prop('disabled', false).removeClass('btn-success text-white');
             $('#promoCodeModalTitle').text('Checkout - ' + currentTierName);
-            $('#proceedToCheckout').text('Checkout ').append('<i class="fa fa-arrow-right ms-2 small"></i>');
+            if (finalAmount <= 0) {
+                $('#proceedToCheckout').html('Complete Subscription <i class="fa fa-arrow-right ms-2 small"></i>');
+            } else {
+                $('#proceedToCheckout').html('Checkout <i class="fa fa-arrow-right ms-2 small"></i>');
+            }
 
             // Show modal
             if (window.bootstrap && bootstrap.Modal) {
@@ -587,9 +591,11 @@
                         ).removeClass(
                             'text-danger').addClass('text-success');
                         $('#promoCodeInput').prop('readonly', true);
-                        $('#applyPromoBtn').text('Applied').addClass('btn-success text-white')
-                            .removeClass(
-                                'btn-theme');
+                        if (finalAmount <= 0) {
+                            $('#proceedToCheckout').html('Complete Subscription <i class="fa fa-check-circle ms-2 small"></i>');
+                        } else {
+                            $('#proceedToCheckout').html('Checkout <i class="fa fa-arrow-right ms-2 small"></i>');
+                        }
                     } else {
                         $('#promoMessage').text(response.message || 'Invalid promo code').removeClass(
                             'text-success').addClass('text-danger');

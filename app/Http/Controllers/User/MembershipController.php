@@ -614,7 +614,7 @@ class MembershipController extends Controller
             return redirect()->route('user.membership.index')->with('error', 'Invalid membership tier');
         }
 
-        if (($tier->pricing_type ?? 'amount') === 'token') {
+        if (($tier->pricing_type ?? 'amount') === 'token' || (float)$tier->cost <= 0) {
             $durationMonths = $tier->duration_months ?? 12;
             $sub->subscription_expire_date = now()->max($sub->subscription_expire_date)->addMonths($durationMonths);
             $sub->subscription_method = 'token';

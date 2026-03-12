@@ -117,15 +117,13 @@
                             </li>
                             <li>
                                 <a href="{{ Helper::getPDFAttribute() ?? 'javascript:void(0);' }}"
-                                    target="_blank">Article of
-                                    Agreement</a>
+                                    target="_blank">{{ Helper::getMenuName('pages_articles_of_association', 'Article of Agreement') }}</a>
                             </li>
                             <li class="active">
-                                <a href="{{ route('privacy-policy') }}" aria-current="page">Privacy Policy</a>
+                                <a href="{{ route('privacy-policy') }}" aria-current="page">{{ Helper::getMenuName('pages_privacy_policy', 'Privacy Policy') }}</a>
                             </li>
                             <li class="active">
-                                <a href="{{ route('terms-and-conditions') }}" aria-current="page">Terms and
-                                    Conditions</a>
+                                <a href="{{ route('terms-and-conditions') }}" aria-current="page">{{ Helper::getMenuName('pages_terms_and_conditions', 'Terms and Conditions') }}</a>
                             </li>
                             {{-- <li>
                                 <a href="{{route('contact-us')}}">Contact Us</a>

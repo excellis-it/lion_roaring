@@ -225,7 +225,7 @@ class PartnerController extends Controller
                     'Edit Estore CMS',
                     'Delete Estore CMS',
                 ],
-                Helper::getMenuName('estore_users', 'Estore Users') => ['Manage Estore Users', 'View Estore Users'],
+                // Helper::getMenuName('estore_users', 'Estore Users') => ['Manage Estore Users', 'View Estore Users'],
                 Helper::getMenuName('estore_category', 'Estore Category') => [
                     'Manage Estore Category',
                     'View Estore Category',

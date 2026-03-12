@@ -223,7 +223,16 @@ class AuthController extends Controller
             }
 
             // Amount based tiers
-            if (floatval($tier->cost) > 0 && !$request->stripeToken) {
+            $finalPrice = floatval($tier->cost);
+            if ($request->promo_code) {
+                $promo = MembershipPromoCode::where('code', $request->promo_code)->first();
+                if ($promo && $promo->canBeAppliedToTier($tier->id)) {
+                    $discount = $promo->calculateDiscount($tier->cost);
+                    $finalPrice = max(0, $tier->cost - $discount);
+                }
+            }
+
+            if ($finalPrice > 0 && (!$request->stripeToken || $request->stripeToken == 'free_tier')) {
                 $validator->errors()->add('stripeToken', 'Payment token is missing. Please try again.');
             }
         });

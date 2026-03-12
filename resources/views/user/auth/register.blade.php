@@ -1242,7 +1242,7 @@
                             <div id="promo-code-feedback" class="mt-2" style="font-size: 13px;"></div>
                         </div>
 
-                        <div class="form-group mb-4">
+                        <div class="form-group mb-4" id="card-payment-group">
                             <label for="card-element"
                                 style="font-weight: 600; color: #555; margin-bottom: 10px; display: block;">Credit
                                 or
@@ -1538,39 +1538,67 @@
 
             // Handle Payment
             $('#confirm-payment-btn').click(function() {
+                var btn = $(this);
                 // Disable button to prevent multiple clicks
-                $(this).prop('disabled', true).text('Processing...');
+                btn.prop('disabled', true).text('Processing...');
 
-                stripe.createToken(card).then(function(result) {
-                    if (result.error) {
-                        $('#card-errors').text(result.error.message);
-                        $('#confirm-payment-btn').prop('disabled', false).text('Pay Now');
-                    } else {
-                        // Send the token to your server.
-                        $('#stripeToken').remove();
+                var finalPrice = (promoCodeData) ? promoCodeData.final_price : originalAmount;
+
+                if (finalPrice <= 0) {
+                    $('#stripeToken').remove();
+                    $('<input>').attr({
+                        type: 'hidden',
+                        id: 'stripeToken',
+                        name: 'stripeToken',
+                        value: 'free_tier'
+                    }).appendTo('#login-form');
+
+                    // Add promo code if validated
+                    $('#promo_code_input').remove();
+                    if (promoCodeData && promoCodeData.code) {
                         $('<input>').attr({
                             type: 'hidden',
-                            id: 'stripeToken',
-                            name: 'stripeToken',
-                            value: result.token.id
+                            id: 'promo_code_input',
+                            name: 'promo_code',
+                            value: promoCodeData.code
                         }).appendTo('#login-form');
+                    }
 
-                        // Add promo code if validated
-                        $('#promo_code_input').remove();
-                        if (promoCodeData && promoCodeData.code) {
+                    $('#paymentModal').modal('hide');
+                    $('#login-form').data('final-submit', true);
+                    $('#login-form').submit();
+                } else {
+                    stripe.createToken(card).then(function(result) {
+                        if (result.error) {
+                            $('#card-errors').text(result.error.message);
+                            btn.prop('disabled', false).html('Complete Payment <i class="fas fa-lock" style="font-size: 0.8em; margin-left: 5px;"></i>');
+                        } else {
+                            // Send the token to your server.
+                            $('#stripeToken').remove();
                             $('<input>').attr({
                                 type: 'hidden',
-                                id: 'promo_code_input',
-                                name: 'promo_code',
-                                value: promoCodeData.code
+                                id: 'stripeToken',
+                                name: 'stripeToken',
+                                value: result.token.id
                             }).appendTo('#login-form');
-                        }
 
-                        $('#paymentModal').modal('hide');
-                        $('#login-form').data('final-submit', true);
-                        $('#login-form').submit();
-                    }
-                });
+                            // Add promo code if validated
+                            $('#promo_code_input').remove();
+                            if (promoCodeData && promoCodeData.code) {
+                                $('<input>').attr({
+                                    type: 'hidden',
+                                    id: 'promo_code_input',
+                                    name: 'promo_code',
+                                    value: promoCodeData.code
+                                }).appendTo('#login-form');
+                            }
+
+                            $('#paymentModal').modal('hide');
+                            $('#login-form').data('final-submit', true);
+                            $('#login-form').submit();
+                        }
+                    });
+                }
             });
 
             // Promo Code Validation System
@@ -1687,6 +1715,7 @@
             // Update payment display with promo code
             function updatePaymentDisplay() {
                 if (originalAmount > 0) {
+                    var finalPrice = originalAmount;
                     if (promoCodeData && promoCodeData.discount > 0) {
                         $('#original-amount-display').text('$' + originalAmount.toFixed(2));
                         $('#discount-amount-display').text('-$' + promoCodeData.discount.toFixed(2));
@@ -1694,10 +1723,19 @@
                         $('#applied-promo-code').text(promoCodeData.code);
                         $('#original-amount-section').show();
                         $('#promo-discount-section').show();
+                        finalPrice = promoCodeData.final_price;
                     } else {
                         $('#payment-amount-display').text('$' + originalAmount.toFixed(2));
                         $('#original-amount-section').hide();
                         $('#promo-discount-section').hide();
+                    }
+
+                    if (finalPrice <= 0) {
+                        $('#card-payment-group').hide();
+                        $('#confirm-payment-btn').text('Complete Registration');
+                    } else {
+                        $('#card-payment-group').show();
+                        $('#confirm-payment-btn').html('Complete Payment <i class="fas fa-lock" style="font-size: 0.8em; margin-left: 5px;"></i>');
                     }
                 }
             }
