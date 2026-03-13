@@ -14,7 +14,7 @@ class NewsletterController extends Controller
 {
     public function list()
     {
-        if (auth()->user()->hasNewRole('SUPER ADMIN')) {
+        if (auth()->user()->can('Manage Estore CMS')) {
             $newsletters = EcomNewsletter::orderBy('id', 'desc')->paginate(10);
             return view('user.newsletter.list')->with('newsletters', $newsletters);
         } else {
@@ -36,7 +36,7 @@ class NewsletterController extends Controller
                 $q->where('id', 'like', '%' . $query . '%')
                     ->orWhere('name', 'like', '%' . $query . '%')
                     ->orWhere('email', 'like', '%' . $query . '%');
-                  //  ->orWhere('message', 'like', '%' . $query . '%');
+                //  ->orWhere('message', 'like', '%' . $query . '%');
             })
             ->orderBy($sort_by, $sort_type)
             ->paginate($perPage);
@@ -51,7 +51,7 @@ class NewsletterController extends Controller
     // delete
     public function delete($id)
     {
-        if (auth()->user()->hasNewRole('SUPER ADMIN')) {
+        if (auth()->user()->can('Manage Estore CMS')) {
             $newsletter = EcomNewsletter::find($id);
             Log::info($newsletter->id . ' deleted by ' . auth()->user()->email . ' deleted at ' . now());
             if ($newsletter) {
