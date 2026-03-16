@@ -33,12 +33,12 @@
                                         communication)</span>
                                 </P>
                                 <p style="margin: 0px;"><strong>Email:</strong> <span
-                                        style="color:#666666;">info@lionroaring.com</span> | <strong>
+                                        style="color:#666666;">info@lionroaring.com</span>
+                                        {{-- | <strong>
                                         Phone:</strong>
-                                    <span style="color:#666666;">+1 (240)-982-0054</span>
+                                    <span style="color:#666666;">+1 (240)-982-0054</span> --}}
                                 </P>
-                                <p><strong>EIN :</strong> <span style="color:#666666;">33-6491742</span></p>
-                                </p>
+                                {{-- <p><strong>EIN :</strong> <span style="color:#666666;">33-6491742</span></p> --}}
                             </td>
                         </tr>
                     </table>
