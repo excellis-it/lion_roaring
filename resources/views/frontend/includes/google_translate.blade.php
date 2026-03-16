@@ -94,6 +94,9 @@
         const domain = window.location.hostname;
         document.cookie = "googtrans=/auto/" + lang + "; path=/";
         document.cookie = "googtrans=/auto/" + lang + "; path=/; domain=" + domain;
+        if (domain.includes('.')) {
+            document.cookie = "googtrans=/auto/" + lang + "; path=/; domain=." + domain;
+        }
 
         // Wait for the Google Translate widget and update it
         let attempts = 0;
@@ -111,6 +114,7 @@
                 attempts++;
                 if (attempts >= 50) {
                     clearInterval(checkAndSet);
+                    window.location.reload();
                 }
             }
         }, 100);
@@ -158,11 +162,10 @@
             return;
         }
 
-        // For non-English: find matching option and select it
+        // For non-English: find matching option by exact value or value prefix
         let found = Array.from(selectEl.options).find(opt =>
             opt.value === value ||
-            opt.value.startsWith(value + '|') ||
-            (opt.text.toLowerCase().includes(value.toLowerCase()) && value !== 'en')
+            opt.value.startsWith(value + '|')
         );
 
         if (found) {
@@ -170,6 +173,21 @@
             const evt = document.createEvent('HTMLEvents');
             evt.initEvent('change', true, true);
             selectEl.dispatchEvent(evt);
+            
+            // Fallback for E-store and E-learning where dynamic translation might stall
+            setTimeout(() => {
+                const htmlEl = document.documentElement;
+                const isTranslated = htmlEl.classList.contains('translated-ltr') || 
+                                   htmlEl.classList.contains('translated-rtl') ||
+                                   htmlEl.lang === value;
+                
+                if (!isTranslated) {
+                    console.log("Translation not detected, forcing reload...");
+                    window.location.reload();
+                }
+            }, 1000);
+        } else {
+            window.location.reload();
         }
     }
     window.forceSelectValue = forceSelectValue;

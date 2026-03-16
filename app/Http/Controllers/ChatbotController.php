@@ -35,6 +35,10 @@ class ChatbotController extends Controller
             ]
         );
 
+        if ($request->has('language') && $conversation->language !== $request->language) {
+            $conversation->update(['language' => $request->language]);
+        }
+
         // Track analytics
         ChatbotAnalytics::create([
             'conversation_id' => $conversation->id,
@@ -76,7 +80,7 @@ class ChatbotController extends Controller
 
             // Translate if needed
             if ($conversation->language !== 'en') {
-                $message = $this->translateText($message, $conversation->language);
+                $message = $this->translateText($message, $conversation->language, 'en');
             }
 
             return response()->json([
@@ -138,8 +142,8 @@ class ChatbotController extends Controller
             $conversation = ChatbotConversation::where('session_id', $request->session_id)->first();
             if ($conversation && $conversation->language !== 'en') {
                 foreach ($questions as $q) {
-                    $q->question = $this->translateText($q->question, $conversation->language);
-                    $q->answer = $this->translateText($q->answer, $conversation->language);
+                    $q->question = $this->translateText($q->question, $conversation->language, 'en');
+                    $q->answer = $this->translateText($q->answer, $conversation->language, 'en');
                 }
             }
 
@@ -165,22 +169,27 @@ class ChatbotController extends Controller
      */
     public function getLanguages()
     {
-        $countryCode = Helper::getVisitorCountryCode();
-        $country = Country::with('languages')->where('code', $countryCode)->first();
-
+        // Use the same helper used by the header dropdown
+        $languagesCol = Helper::getVisitorCountryLanguages();
+        
         $languages = [];
-        if ($country && $country->languages) {
-            foreach ($country->languages as $lang) {
-                $languages[] = [
-                    'code' => $lang->code,
-                    'name' => $lang->name,
-                ];
-            }
+        foreach ($languagesCol as $lang) {
+            $languages[] = [
+                'code' => $lang->code,
+                'name' => $lang->name,
+            ];
         }
 
-        // If no languages found, default to English
-        if (empty($languages)) {
-            $languages[] = ['code' => 'en', 'name' => 'English'];
+        // Ensure English is always included as a backup
+        $hasEnglish = false;
+        foreach ($languages as $l) {
+            if (strtolower($l['code']) === 'en') {
+                $hasEnglish = true;
+                break;
+            }
+        }
+        if (!$hasEnglish) {
+            array_unshift($languages, ['code' => 'en', 'name' => 'English']);
         }
 
         return response()->json([
@@ -200,7 +209,7 @@ class ChatbotController extends Controller
         if ($request->session_id) {
             $conversation = ChatbotConversation::where('session_id', $request->session_id)->first();
             if ($conversation && $conversation->language !== 'en') {
-                $query = $this->translateText($query, 'en');
+                $query = $this->translateText($query, 'en', $conversation->language);
             }
         }
 
@@ -221,7 +230,7 @@ class ChatbotController extends Controller
             // Translate if needed
             if ($conversation && $conversation->language !== 'en') {
                 foreach ($products as $product) {
-                    $product->name = $this->translateText($product->name, $conversation->language);
+                    $product->name = $this->translateText($product->name, $conversation->language, 'en');
                 }
             }
 
@@ -246,7 +255,7 @@ class ChatbotController extends Controller
         return response()->json([
             'success' => true,
             'products' => $products,
-            'response' => $keyword ? ($conversation && $conversation->language !== 'en' ? $this->translateText($keyword->response, $conversation->language) : $keyword->response) : null,
+            'response' => $keyword ? ($conversation && $conversation->language !== 'en' ? $this->translateText($keyword->response, $conversation->language, 'en') : $keyword->response) : null,
         ]);
     }
 
@@ -261,7 +270,7 @@ class ChatbotController extends Controller
         if ($request->session_id) {
             $conversation = ChatbotConversation::where('session_id', $request->session_id)->first();
             if ($conversation && $conversation->language !== 'en') {
-                $query = $this->translateText($query, 'en');
+                $query = $this->translateText($query, 'en', $conversation->language);
             }
         }
 
@@ -281,7 +290,7 @@ class ChatbotController extends Controller
             // Translate if needed
             if ($conversation && $conversation->language !== 'en') {
                 foreach ($courses as $course) {
-                    $course->name = $this->translateText($course->name, $conversation->language);
+                    $course->name = $this->translateText($course->name, $conversation->language, 'en');
                 }
             }
 
@@ -306,7 +315,7 @@ class ChatbotController extends Controller
         return response()->json([
             'success' => true,
             'courses' => $courses,
-            'response' => $keyword ? ($conversation && $conversation->language !== 'en' ? $this->translateText($keyword->response, $conversation->language) : $keyword->response) : null,
+            'response' => $keyword ? ($conversation && $conversation->language !== 'en' ? $this->translateText($keyword->response, $conversation->language, 'en') : $keyword->response) : null,
         ]);
     }
 
@@ -321,7 +330,7 @@ class ChatbotController extends Controller
         if ($request->session_id) {
             $conversation = ChatbotConversation::where('session_id', $request->session_id)->first();
             if ($conversation && $conversation->language !== 'en') {
-                $query = $this->translateText($query, 'en');
+                $query = $this->translateText($query, 'en', $conversation->language);
             }
         }
 
@@ -395,13 +404,13 @@ class ChatbotController extends Controller
                 // Translate results if needed
                 if ($conversation->language !== 'en') {
                     foreach ($products as $product) {
-                        $product->name = $this->translateText($product->name, $conversation->language);
+                        $product->name = $this->translateText($product->name, $conversation->language, 'en');
                     }
                     foreach ($courses as $course) {
-                        $course->name = $this->translateText($course->name, $conversation->language);
+                        $course->name = $this->translateText($course->name, $conversation->language, 'en');
                     }
                     if ($response) {
-                        $response = $this->translateText($response, $conversation->language);
+                        $response = $this->translateText($response, $conversation->language, 'en');
                     }
                 }
 
@@ -430,7 +439,7 @@ class ChatbotController extends Controller
 
         $msg = "Sorry, I couldn't find anything matching your query. Please rephrase or contact support.";
         if ($conversation && $conversation->language !== 'en') {
-            $msg = $this->translateText($msg, $conversation->language);
+            $msg = $this->translateText($msg, $conversation->language, 'en');
         }
 
         return response()->json([
@@ -536,9 +545,9 @@ class ChatbotController extends Controller
     /**
      * Helper to translate text using Google Translate free API (gtx)
      */
-    private function translateText($text, $targetLang)
+    private function translateText($text, $targetLang, $sourceLang = 'auto')
     {
-        if ($targetLang === 'en' || empty($text)) {
+        if (empty($text) || $targetLang === $sourceLang || ($targetLang === 'en' && $sourceLang === 'en')) {
             return $text;
         }
 
@@ -547,7 +556,7 @@ class ChatbotController extends Controller
             $response = $client->get('https://translate.googleapis.com/translate_a/single', [
                 'query' => [
                     'client' => 'gtx',
-                    'sl' => 'auto',
+                    'sl' => $sourceLang,
                     'tl' => $targetLang,
                     'dt' => 't',
                     'q' => $text

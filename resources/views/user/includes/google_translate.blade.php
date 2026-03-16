@@ -85,6 +85,9 @@
         const domain = window.location.hostname;
         document.cookie = "googtrans=/auto/" + lang + "; path=/";
         document.cookie = "googtrans=/auto/" + lang + "; path=/; domain=" + domain;
+        if (domain.includes('.')) {
+            document.cookie = "googtrans=/auto/" + lang + "; path=/; domain=." + domain;
+        }
 
         let attempts = 0;
         const checkAndSet = setInterval(function() {
@@ -101,6 +104,7 @@
                 attempts++;
                 if (attempts >= 50) {
                     clearInterval(checkAndSet);
+                    window.location.reload();
                 }
             }
         }, 100);
@@ -147,8 +151,7 @@
 
         let found = Array.from(selectEl.options).find(opt =>
             opt.value === value ||
-            opt.value.startsWith(value + '|') ||
-            (opt.text.toLowerCase().includes(value.toLowerCase()) && value !== 'en')
+            opt.value.startsWith(value + '|')
         );
 
         if (found) {
@@ -156,6 +159,20 @@
             const evt = document.createEvent('HTMLEvents');
             evt.initEvent('change', true, true);
             selectEl.dispatchEvent(evt);
+            
+            setTimeout(() => {
+                const htmlEl = document.documentElement;
+                const isTranslated = htmlEl.classList.contains('translated-ltr') || 
+                                   htmlEl.classList.contains('translated-rtl') ||
+                                   htmlEl.lang === value;
+                
+                if (!isTranslated) {
+                    console.log("Translation not detected, forcing reload...");
+                    window.location.reload();
+                }
+            }, 1000);
+        } else {
+            window.location.reload();
         }
     }
     window.forceSelectValue = forceSelectValue;

@@ -368,7 +368,7 @@
 </button>
 
 <!-- Chat Window -->
-<div class="chatbot-window" id="chatbotWindow">
+<div class="chatbot-window notranslate" translate="no" id="chatbotWindow">
     <div class="chatbot-widget-header">
         <div class="chatbot-widget-avatar">
             <img src="{{ asset('ecom_assets/images/chat-icon.png') }}" alt="Chatbot">
@@ -415,6 +415,10 @@
 
         // Helper to get Google Translate language
         function getGoogleTranslateLang() {
+            // First check if the user selected a specific language inside the chatbot
+            const storedLang = localStorage.getItem('chatbot_language');
+            if (storedLang) return storedLang;
+
             const cookie = document.cookie.split('; ').find(row => row.startsWith('googtrans='));
             if (cookie) {
                 const parts = cookie.split('/');
@@ -422,8 +426,6 @@
             }
             return 'en';
         }
-
-        
 
         currentLanguage = getGoogleTranslateLang();
 
@@ -634,6 +636,7 @@
                 const data = await res.json();
                 if (data.success) {
                     currentLanguage = lang;
+                    localStorage.setItem('chatbot_language', lang);
                     addBotMsg(`Language updated! ✅`);
 
                     // Use the same approach as the header language switcher (no page reload)

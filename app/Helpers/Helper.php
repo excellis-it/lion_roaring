@@ -952,6 +952,45 @@ class Helper
         return $allLanguages;
     }
 
+    /**
+     * Refresh the visitor_country_languages session with fresh data from DB.
+     * Call this after adding/updating languages on a country via Country Management
+     * so that the chatbot, e-commerce, and all other pages immediately reflect the changes.
+     */
+    public static function refreshCountryLanguagesSession()
+    {
+        $ip = request()->ip();
+        $codeSessionKey = 'visitor_country_code_' . $ip;
+        $languageSessionKey = 'visitor_country_languages';
+
+        $currentCode = session($codeSessionKey);
+
+        if (empty($currentCode)) {
+            return;
+        }
+
+        if ($currentCode === 'GL') {
+            // Global: re-fetch from the global country or fall back to all languages
+            $row = \App\Models\Country::with('languages')->where('is_global', true)->first();
+            $languages = ($row && $row->languages->isNotEmpty()) ? $row->languages : \App\Models\TranslateLanguage::orderBy('name', 'asc')->get();
+        } else {
+            // Specific country: re-fetch from DB
+            $row = \App\Models\Country::with('languages')->whereRaw('UPPER(code) = ?', [strtoupper($currentCode)])->first();
+            $languages = $row ? $row->languages : collect();
+
+            // Ensure English is always included
+            $hasEnglish = $languages->contains(fn($lang) => strtolower($lang->code ?? '') === 'en');
+            if (!$hasEnglish) {
+                $english = \App\Models\TranslateLanguage::whereRaw('LOWER(code) = ?', ['en'])->first();
+                if ($english) {
+                    $languages = $languages->push($english);
+                }
+            }
+        }
+
+        session([$languageSessionKey => $languages]);
+    }
+
     // get visitor cms content by model name, single row or multiple, if multiple then pagination true/false, sort by, optional search query
     public static function getVisitorCmsContent($modelClass, $singleRow = true, $paginate = false, $sortBy = 'id', $sortType = 'desc', $searchQuery = null)
     {

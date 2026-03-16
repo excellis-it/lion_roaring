@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\User\Admin;
 
+use App\Helpers\Helper;
 use App\Http\Controllers\Controller;
 use App\Models\Country;
 use App\Models\TranslateLanguage;
@@ -98,6 +99,9 @@ class CountryController extends Controller
             $country->languages()->sync($request->input('languages'));
         }
 
+        // Refresh the session so language changes are immediately visible across all pages
+        Helper::refreshCountryLanguagesSession();
+
         return redirect()->route('user.admin.admin-countries.index')->with('message', 'Country created successfully.');
     }
 
@@ -146,6 +150,9 @@ class CountryController extends Controller
         } else {
             $country->languages()->sync([]);
         }
+
+        // Refresh the session so language changes are immediately visible across all pages
+        Helper::refreshCountryLanguagesSession();
 
         return redirect()->route('user.admin.admin-countries.index')->with('message', 'Country updated successfully.');
     }
