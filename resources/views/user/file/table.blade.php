@@ -15,7 +15,11 @@
                             <i class="fa-solid fa-edit"></i>
                         </a> &nbsp; &nbsp;
                     @endif
-
+                    @if (auth()->user()->can('Edit File'))
+                        <a href="{{ route('file.view', $file->id) }}" class="edit_icon">
+                            <i class="fa-solid fa-eye"></i>
+                        </a> &nbsp; &nbsp;
+                    @endif
                     <a href="{{ route('file.download', $file->id) }}" class="edit_icon me-2 file-download"
                         data-download-url="{{ route('file.download', $file->id) }}"
                         data-file-name="{{ $file->file_name }}.{{ $file->file_extension }}">

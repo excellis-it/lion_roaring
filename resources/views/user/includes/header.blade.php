@@ -136,8 +136,8 @@
             @elseif(Auth::user()->user_type == 'Regional')
                 <li class="nav-item d-none d-lg-flex align-items-center px-2">
                     <span class="badge-regional">
-                        <img src="{{ asset('frontend_assets/images/flags/' . strtolower(Auth::user()->countries->code) . '.png') }}" height="12px"
-                            alt="">
+                        <img src="{{ asset('frontend_assets/images/flags/' . strtolower(Auth::user()->countries->code) . '.png') }}"
+                            height="12px" alt="">
                         {{ Auth::user()->countries->name ?? 'Regional' }}
                     </span>
                 </li>
@@ -181,7 +181,7 @@
                 </a>
                 <div class="dropdown-menu content-dd dropdown-menu-end dropdown-menu-animate-up"
                     aria-labelledby="drop1">
-                    <div class="profile-dropdown position-relative" data-simplebar="">
+                    <div class="profile-dropdown position-relatipve" data-simplebar="">
                         <div class="py-3 px-7 pb-0">
                             <h5 class="mb-0 fs-5 fw-semibold">
                                 {{ Str::ucfirst(strtolower(Auth::user()->getFirstUserRoleName())) }} Profile</h5>
@@ -189,29 +189,31 @@
                         <div class="d-flex align-items-center py-9 mx-7 border-bottom">
                             @if (Auth::user()->profile_picture)
                                 <img src="{{ Storage::url(Auth::user()->profile_picture) }}" class="rounded-circle"
-                                    width="80" height="80" alt="">
+                                    width="100" height="100" alt="">
                             @else
                                 <img src="{{ asset('user_assets/images/profile_dummy.png') }}" class="rounded-circle"
-                                    width="80" height="80" alt="">
+                                    width="100" height="100" alt="">
                             @endif
                             <div class="ms-3">
                                 <h5 class="mb-1 fs-3">
                                     {{ Auth::user()->full_name }}
-                                    @if (Auth::user()->user_type == 'Global')
-                                        <span class="badge-global small-badge ms-1">
-                                            <i class="fa-solid fa-globe"></i> Global
-                                        </span>
-                                    @elseif(Auth::user()->user_type == 'Regional')
-                                        <span class="badge-regional small-badge ms-1">
-                                            <img src="{{ asset('frontend_assets/images/flags/' . strtolower(Auth::user()->countries->code) . '.png') }}" height="12px"
-                                                alt=""> {{ Auth::user()->countries->name ?? 'Regional' }}
-                                        </span>
-                                    @endif
+
                                 </h5>
                                 <span class="mb-1 d-block text-dark">{{ Auth::user()->getFirstUserRoleName() }}</span>
                                 <p class="mb-0 d-flex text-dark align-items-center gap-2">
                                     <i class="ti ti-mail fs-4"></i> {{ Auth::user()->email }}
                                 </p>
+                                @if (Auth::user()->user_type == 'Global')
+                                    <span class="badge-global small-badge">
+                                        <i class="fa-solid fa-globe"></i> Global
+                                    </span>
+                                @elseif(Auth::user()->user_type == 'Regional')
+                                    <span class="badge-regional small-badge ms-1">
+                                        <img src="{{ asset('frontend_assets/images/flags/' . strtolower(Auth::user()->countries->code) . '.png') }}"
+                                            height="12px" alt="">
+                                        {{ Auth::user()->countries->name ?? 'Regional' }}
+                                    </span>
+                                @endif
                             </div>
                         </div>
                         <div class="message-body">

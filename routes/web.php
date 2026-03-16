@@ -700,6 +700,7 @@ Route::prefix('user')->middleware(['user', 'preventBackHistory', 'userActivity',
         Route::get('/delete/{id}', [FileController::class, 'delete'])->name('file.delete');
         Route::get('/download/{file}', [FileController::class, 'download'])->name('file.download');
         Route::get('/fetch-data', [FileController::class, 'fetchData'])->name('file.fetch-data');
+        Route::get('/view/{id}', [FileController::class, 'view'])->name('file.view');
     });
     // topics.getTopics
     Route::get('/get-topics/{type}', [FileController::class, 'getTopics'])->name('topics.getTopics');

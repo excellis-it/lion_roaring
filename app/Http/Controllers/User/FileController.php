@@ -381,4 +381,33 @@ class FileController extends Controller
             ->orderBy('topic_name', 'asc')->get();
         return response()->json(['data' => $topics]);
     }
+
+    public function view($id)
+    {
+        if (auth()->user()->can('View File')) {
+            $user = auth()->user();
+            $user_type = $user->user_type;
+            $user_country = $user->country;
+
+            if (!$user->hasNewRole('SUPER ADMIN')) {
+                if ($user_type == 'Global') {
+                    $file = File::whereHas('country', function ($query) {
+                        $query->where('code', 'GL');
+                    })->findOrFail($id);
+                } else {
+                    $file = File::where('country_id', $user_country)->findOrFail($id);
+                }
+            } else {
+                $file = File::findOrFail($id);
+            }
+
+            if ($file) {
+                return view('user.file.view')->with(compact('file'));
+            } else {
+                return redirect()->route('file.index')->with('error', 'File not found.');
+            }
+        } else {
+            abort(403, 'You do not have permission to access this page.');
+        }
+    }
 }
