@@ -410,7 +410,7 @@ class LiveEventController extends Controller
             }
         }
 
-        
+
 
         $users = $query->get();
 
@@ -442,12 +442,17 @@ class LiveEventController extends Controller
     protected function sendEventInvitations(Event $event)
     {
         // Get all active users based on event country
-        $query = \App\Models\User::where('status', 1)->where('is_accept', 1);
+         $query = User::where('status', 1)->where('is_accept', 1);
 
-        // Filter by country if event is country-specific
-        if ($event->country_id) {
-            $query->where('country', $event->country_id);
+        if (!auth()->user()->hasNewRole('SUPER ADMIN')) {
+            if (auth()->user()->user_type == 'Global') {
+                $query->where('user_type', 'Global');
+            } else {
+                $query->where('user_type', 'Regional')->where('country', auth()->user()->country);
+            }
         }
+
+
 
         $users = $query->get();
 
