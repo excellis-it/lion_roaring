@@ -720,7 +720,7 @@ class WareHouseController extends Controller
                     ->where('product_variation_id', $variationId)
                     ->first();
                 if ($warehouseProduct) {
-                    $warehouseProduct->quantity += $newQty;
+                    $warehouseProduct->quantity = $warehouseVariation->warehouse_quantity;
                     $warehouseProduct->save();
                 }
 
