@@ -134,6 +134,7 @@
 </div>
 <div class="gift_seed_btn">
     <a href="javascript:void(0);" data-bs-toggle="modal" data-bs-target="#exampleModal1">
-        <span><i class="fa-solid fa-hand-holding-medical"></i></span> Gift/Seed
+        <span class="gift-text">Gift/Seed</span> <span class="gift-icon"><i
+                class="fa-solid fa-hand-holding-medical"></i></span>
     </a>
 </div>

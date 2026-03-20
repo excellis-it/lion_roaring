@@ -177,23 +177,30 @@ p {
     color: #fff;
     padding: 21px 9px;
     border-radius: 15px 0 0 15px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+    display: block;
     font-weight: 500;
-    writing-mode: sideways-lr;
+    /* writing-mode: sideways-lr; */
 }
 
-.gift_seed_btn a span {
+.gift_seed_btn a .gift-icon {
     background-color: var(--main-color);
-    border-radius: 40px;
+    border-radius: 50%;
     width: 30px;
     height: 30px;
-    display: inline-flex;
+    display: block;
     position: relative;
-    align-items: center;
-    justify-content: center;
-    margin-top: 6px;
+    text-align: center;
+    padding: 4px;
+     transform: rotate(280deg);
+}
+
+.gift_seed_btn a .gift-text {
+    margin-bottom: 12px;
+    writing-mode: tb;
+    transform: rotate(180deg);
+    /* padding-left: 11px; */
+    display: block;
+    margin-left: 4px;
 }
 
 .banner_sec {
@@ -2333,6 +2340,8 @@ li.slick-active button {
 .lion_aducation img {
     width: 100%;
     border-radius: 12px;
+    height: 100%;
+    object-fit: contain;
 }
 
 .map-location {
@@ -3609,9 +3618,6 @@ li.slick-active button {
     background-color: red;
 } */
 
-
-
-
 .book .page:nth-child(even) {
     pointer-events: none;
     transform: rotateY(180deg);
@@ -3874,9 +3880,11 @@ li.slick-active button {
 
 .lion_aducation {
     /* margin-bottom: 15px; */
-    background-color: #ccc;
+    background-color: #fff;
     padding: 10px;
     border-radius: 20px;
+    height: 500px;
+    border: 5px solid #ccc;
 }
 .contact-form .iti {
     width: 100%;
@@ -4340,6 +4348,3 @@ button.book-button:hover {
     left: auto;
     right: 0%;
 }
-
-
-

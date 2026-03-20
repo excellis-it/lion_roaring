@@ -630,6 +630,7 @@
                         submitBtn.prop('disabled', false).text(originalBtnText);
                         if (response.status) {
                             toastr.success(response.message);
+                            window.location.reload();
                         }
                     },
                     error: function(xhr) {
