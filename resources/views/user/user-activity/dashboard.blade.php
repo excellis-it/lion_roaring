@@ -91,9 +91,12 @@
                     <!-- Statistics Cards -->
                     <div class="row mb-4">
                         <div class="col-md-3">
-                            <div class="stats-card bg-white">
+                            <div class="stats-card bg-white" style="position:relative;">
                                 <h4>Total Activities</h4>
                                 <div class="number">{{ number_format($stats['total_activities']) }}</div>
+                                <button onclick="window.location='{{ route('user-activity-get-list') }}'"
+                                    class="btn btn-sm btn-primary"
+                                    style="position:absolute;bottom:12px;right:12px;font-size:11px;">Details</button>
                             </div>
                         </div>
                         <div class="col-md-3">
