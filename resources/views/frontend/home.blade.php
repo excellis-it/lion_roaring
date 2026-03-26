@@ -103,11 +103,13 @@ $showPopup = !Helper::isUsaInstance() && !$isGlobal && !session()->has($sessionK
                             <source
                                 src="{{ isset($home['banner_video']) ? Storage::url($home['banner_video']) : 'https://via.placeholder.com/150' }}"
                                 type="video/mp4">
-                            Your browser does not support the video tag.
+
                         </video>
                         <!-- <img src="" alt="" class="full-image d-block d-md-none" /> -->
-                        {{-- <img src="{{ isset($home['banner_image']) ? Storage::url($home['banner_image']) : 'https://via.placeholder.com/150' }}"
-                            class="full-image overlay-image"> --}}
+                        @if ($currentCode != 'US')
+                            <img src="{{ isset($home['banner_image']) ? Storage::url($home['banner_image']) : 'https://via.placeholder.com/150' }}"
+                                class="full-image overlay-image">
+                        @endif
 
                         {{-- <img src="{{ asset('frontend_assets/images/banner_img.png') }}" class="full-image overlay-image"> --}}
                     </div>

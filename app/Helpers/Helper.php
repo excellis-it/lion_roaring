@@ -997,7 +997,7 @@ class Helper
         $countryCode = self::getVisitorCountryCode();
 
         // If no country is selected or GLOBAL is selected, fall back to US content
-        if (empty($countryCode) || $countryCode === 'GL') {
+        if (empty($countryCode)) {
             $countryCode = 'US';
         }
 
