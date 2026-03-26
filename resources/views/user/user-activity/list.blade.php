@@ -246,7 +246,7 @@
                     html +=
                         `<button class="btn btn-sm btn-outline-primary activity-pagination-btn" data-page="${response.current_page - 1}">Previous</button>`;
                 }
-                html += `<span class="mx-2">Page ${response.current_page} of ${response.last_page}</span>`;
+                html += `<span class="mx-2">Page ${response.current_page} of ${response.last_page} (${response.total.toLocaleString()} total records)</span>`;
                 if (response.next_page_url) {
                     html +=
                         `<button class="btn btn-sm btn-outline-primary activity-pagination-btn" data-page="${response.current_page + 1}">Next</button>`;

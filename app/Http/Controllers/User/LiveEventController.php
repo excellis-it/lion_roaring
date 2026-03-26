@@ -24,30 +24,36 @@ class LiveEventController extends Controller
      */
     public function list()
     {
-        if (Auth::user()->can('Manage Event')) {
-            $user = auth()->user();
-            $user_type = $user->user_type;
-            $user_country = $user->country;
+        $user = auth()->user();
+        $user_type = $user->user_type;
+        $user_country = $user->country;
 
-            if (!$user->hasNewRole('SUPER ADMIN')) {
-                if ($user_type == 'Global') {
-                    $events = Event::with(['rsvps', 'payments'])->orderBy('id', 'desc')->whereHas('country', function ($query) {
-                        $query->where('code', 'GL');
-                    })->get();
-                } else {
-                    $events = Event::with(['rsvps', 'payments'])
-                        ->where('country_id', $user_country)
-                        ->orderBy('id', 'desc')
-                        ->get();
-                }
+        if (!$user->hasNewRole('SUPER ADMIN')) {
+            $rsvpEventIds = EventRsvp::where('user_id', $user->id)
+                ->whereIn('status', ['confirmed', 'pending'])
+                ->pluck('event_id');
+
+            if ($user_type == 'Global') {
+                $events = Event::with(['rsvps', 'payments'])->orderBy('id', 'desc')
+                    ->where(function ($query) use ($rsvpEventIds) {
+                        $query->whereHas('country', function ($q) {
+                            $q->where('code', 'GL');
+                        })->orWhereIn('id', $rsvpEventIds);
+                    })
+                    ->get();
             } else {
-                $events = Event::with(['rsvps', 'payments'])->orderBy('id', 'desc')->get();
+                $events = Event::with(['rsvps', 'payments'])->orderBy('id', 'desc')
+                    ->where(function ($query) use ($user_country, $rsvpEventIds) {
+                        $query->where('country_id', $user_country)
+                              ->orWhereIn('id', $rsvpEventIds);
+                    })
+                    ->get();
             }
-            $country = Country::orderBy('name', 'asc')->get();
-            return view('user.events.list', compact('events', 'country'));
         } else {
-            abort(403, 'You do not have permission to access this page.');
+            $events = Event::with(['rsvps', 'payments'])->orderBy('id', 'desc')->get();
         }
+        $country = Country::orderBy('name', 'asc')->get();
+        return view('user.events.list', compact('events', 'country'));
     }
 
     /**
@@ -59,13 +65,25 @@ class LiveEventController extends Controller
         $user_type = $user->user_type;
         $user_country = $user->country;
         if (!$user->hasNewRole('SUPER ADMIN')) {
+            // Get IDs of events the user has registered for (any country)
+            $rsvpEventIds = EventRsvp::where('user_id', $user->id)
+                ->whereIn('status', ['confirmed', 'pending'])
+                ->pluck('event_id');
+
             if ($user_type == 'Global') {
-                $events = Event::orderBy('id', 'desc')->whereHas('country', function ($query) {
-                    $query->where('code', 'GL');
-                })->get();
+                $events = Event::orderBy('id', 'desc')
+                    ->where(function ($query) use ($rsvpEventIds) {
+                        $query->whereHas('country', function ($q) {
+                            $q->where('code', 'GL');
+                        })->orWhereIn('id', $rsvpEventIds);
+                    })
+                    ->get();
             } else {
-                $events = Event::where('country_id', $user_country)
-                    ->orderBy('id', 'desc')
+                $events = Event::orderBy('id', 'desc')
+                    ->where(function ($query) use ($user_country, $rsvpEventIds) {
+                        $query->where('country_id', $user_country)
+                              ->orWhereIn('id', $rsvpEventIds);
+                    })
                     ->get();
             }
         } else {
