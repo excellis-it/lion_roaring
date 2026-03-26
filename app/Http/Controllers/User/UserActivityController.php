@@ -31,15 +31,13 @@ class UserActivityController extends Controller
             if ($user_type == 'Global') {
                 $stats = [
                     'total_activities' => UserActivity::count(),
-                    'activities_by_country_count' => UserActivity::selectRaw('country_name, COUNT(*) as count')
-                        ->groupBy('country_name')
-                        ->having('count', '>', 0)
-                        ->count(),
-                    'activities_by_user_count' => UserActivity::selectRaw('user_name, email, COUNT(*) as count')
-                        ->whereNotNull('user_id')
-                        ->groupBy('user_name', 'email')
-                        ->having('count', '>', 0)
-                        ->count(),
+                    'activities_by_country_count' => UserActivity::whereNotNull('country_name')
+                        ->where('country_name', '!=', '')
+                        ->distinct('country_name')
+                        ->count('country_name'),
+                    'activities_by_user_count' => UserActivity::whereNotNull('user_id')
+                        ->distinct('user_id')
+                        ->count('user_id'),
                     'activities_by_type_count' => UserActivity::selectRaw('activity_type, COUNT(*) as count')
                         ->groupBy('activity_type')
                         ->having('count', '>', 0)
@@ -89,15 +87,15 @@ class UserActivityController extends Controller
             } else {
                 $stats = [
                     'total_activities' => UserActivity::where('country_name', $country_name)->count(),
-                    'activities_by_country_count' => UserActivity::where('country_name', $country_name)->selectRaw('country_name, COUNT(*) as count')
-                        ->groupBy('country_name')
-                        ->having('count', '>', 0)
-                        ->count(),
-                    'activities_by_user_count' => UserActivity::where('country_name', $country_name)->selectRaw('user_name, email, COUNT(*) as count')
+                    'activities_by_country_count' => UserActivity::where('country_name', $country_name)
+                        ->whereNotNull('country_name')
+                        ->where('country_name', '!=', '')
+                        ->distinct('country_name')
+                        ->count('country_name'),
+                    'activities_by_user_count' => UserActivity::where('country_name', $country_name)
                         ->whereNotNull('user_id')
-                        ->groupBy('user_name', 'email')
-                        ->having('count', '>', 0)
-                        ->count(),
+                        ->distinct('user_id')
+                        ->count('user_id'),
                     'activities_by_type_count' => UserActivity::where('country_name', $country_name)->selectRaw('activity_type, COUNT(*) as count')
                         ->groupBy('activity_type')
                         ->having('count', '>', 0)
@@ -298,6 +296,59 @@ class UserActivityController extends Controller
             ->having('count', '>', 0)
             ->orderBy('count', 'desc')
             ->paginate($request->get('per_page', 10));
+
+        return response()->json($data);
+    }
+
+    /**
+     * Get active members list (distinct users with activity count)
+     */
+    public function getActiveMembers(Request $request)
+    {
+        if (!Auth::user()->can('Manage User Activity')) {
+            return response()->json(['error' => 'Unauthorized'], 403);
+        }
+
+        $user_type = auth()->user()->user_type;
+        $user_country = auth()->user()->country;
+        $country_name = Country::where('id', $user_country)->value('name');
+
+        $query = UserActivity::selectRaw('user_id, MAX(user_name) as user_name, MAX(email) as email, MAX(country_name) as country_name, MAX(activity_date) as last_seen')
+            ->whereNotNull('user_id')
+            ->groupBy('user_id');
+
+        if (!auth()->user()->hasNewRole('SUPER ADMIN') && $user_type == 'Regional') {
+            $query->where('country_name', $country_name);
+        }
+
+        $data = $query->orderBy('last_seen', 'desc')->paginate($request->get('per_page', 10));
+
+        return response()->json($data);
+    }
+
+    /**
+     * Get active countries list (distinct countries with activity count)
+     */
+    public function getActiveCountries(Request $request)
+    {
+        if (!Auth::user()->can('Manage User Activity')) {
+            return response()->json(['error' => 'Unauthorized'], 403);
+        }
+
+        $user_type = auth()->user()->user_type;
+        $user_country = auth()->user()->country;
+        $country_name = Country::where('id', $user_country)->value('name');
+
+        $query = UserActivity::selectRaw('country_name, MAX(country_code) as country_code, COUNT(DISTINCT user_id) as member_count, MAX(activity_date) as last_activity')
+            ->whereNotNull('country_name')
+            ->where('country_name', '!=', '')
+            ->groupBy('country_name');
+
+        if (!auth()->user()->hasNewRole('SUPER ADMIN') && $user_type == 'Regional') {
+            $query->where('country_name', $country_name);
+        }
+
+        $data = $query->orderBy('member_count', 'desc')->paginate($request->get('per_page', 10));
 
         return response()->json($data);
     }

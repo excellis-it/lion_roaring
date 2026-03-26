@@ -781,6 +781,8 @@ Route::prefix('user')->middleware(['user', 'preventBackHistory', 'userActivity',
     Route::get('/get-user-activity/by-country', [UserActivityController::class, 'getActivitiesByCountry'])->name('user-activity-by-country');
     Route::get('/get-user-activity/by-user', [UserActivityController::class, 'getActivitiesByUser'])->name('user-activity-by-user');
     Route::get('/get-user-activity/by-type', [UserActivityController::class, 'getActivitiesByType'])->name('user-activity-by-type');
+    Route::get('/get-user-activity/active-members', [UserActivityController::class, 'getActiveMembers'])->name('user-activity-active-members');
+    Route::get('/get-user-activity/active-countries', [UserActivityController::class, 'getActiveCountries'])->name('user-activity-active-countries');
 
     // Signup Rules Management
     Route::resource('signup-rules', UserSignupRuleController::class)->names([
