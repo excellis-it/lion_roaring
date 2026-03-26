@@ -23,9 +23,9 @@
                 @foreach ($tiers as $tier)
                     <div class="col-lg-4 col-md-6 mb-4">
                         <div class="card h-100 shadow-sm tier-card position-relative">
-                            @if ($tier->cost == $maxCost)
+                            {{-- @if ($tier->cost == $maxCost)
                                 <div class="ribbon">Most Popular</div>
-                            @endif
+                            @endif --}}
                             <div class="card-body card-content-body d-flex flex-column">
                                 <div class="d-flex justify-content-between align-items-center mb-3">
                                     <h4 class="card-title mb-0">{{ $tier->name }}</h4>

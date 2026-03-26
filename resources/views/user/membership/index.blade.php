@@ -105,9 +105,9 @@
                         @foreach ($tiers as $tier)
                             <div class="col-md-4 mb-3">
                                 <div class="card h-100 p-4 tier-card position-relative">
-                                    @if ($tier->cost == $maxCost)
+                                    {{-- @if ($tier->cost == $maxCost)
                                         <div class="ribbon">Most Popular</div>
-                                    @endif
+                                    @endif --}}
                                     <div class="d-flex justify-content-between align-items-center mb-2">
                                         <h5 class="mb-0">{{ $tier->name }}</h5>
                                         <div class="text-primary fw-bold">
