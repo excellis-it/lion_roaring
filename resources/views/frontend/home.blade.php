@@ -106,7 +106,7 @@ $showPopup = !Helper::isUsaInstance() && !$isGlobal && !session()->has($sessionK
 
                         </video>
                         <!-- <img src="" alt="" class="full-image d-block d-md-none" /> -->
-                        @if ($currentCode != 'US')
+                        @if ($currentCode != 'GL')
                             <img src="{{ isset($home['banner_image']) ? Storage::url($home['banner_image']) : 'https://via.placeholder.com/150' }}"
                                 class="full-image overlay-image">
                         @endif
