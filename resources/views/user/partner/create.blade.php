@@ -569,7 +569,7 @@
                                     </div>
                                 </div>
 
-                                <!-- Membership Tier Selection (Only for MEMBER_NON_SOVEREIGN) -->
+                                <!-- Membership Tier Selection (Only for MEMBER_SOVEREIGN) -->
                                 <div class="row mt-4 d-none" id="membership-tier-section">
                                     <div class="col-md-12">
                                         <div class="card border-0 shadow-sm"
@@ -1200,7 +1200,7 @@
 
             function togglePermissionsAndMembership() {
                 var selectedRole = $('input[name="role"]:checked').val();
-                if (selectedRole === 'MEMBER_NON_SOVEREIGN') {
+                if (selectedRole === 'MEMBER_SOVEREIGN') {
                     $('#permissions-section').addClass('d-none');
                     $('#membership-tier-section').removeClass('d-none');
                     // Ensure at least one tier is selected if none is

@@ -408,7 +408,7 @@ class AuthController extends Controller
         }
 
         // Find the default Member user type (as baseline)
-        $memberType = UserType::where('name', 'MEMBER_NON_SOVEREIGN')->first();
+        $memberType = UserType::where('name', 'MEMBER_SOVEREIGN')->first();
 
         // Create the new role for this specific user
         $newRole = Role::create([

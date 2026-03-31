@@ -468,9 +468,9 @@
                 }
             });
 
-            // Hide permissions for MEMBER_NON_SOVEREIGN
+            // Hide permissions for MEMBER_SOVEREIGN
             $('#role_name_input').on('input', function() {
-                if ($(this).val().toUpperCase() === 'MEMBER_NON_SOVEREIGN') {
+                if ($(this).val().toUpperCase() === 'MEMBER_SOVEREIGN') {
                     $('#permissions-section').hide();
                 } else {
                     $('#permissions-section').show();
@@ -478,7 +478,7 @@
             });
 
             // Initial check
-            if ($('#role_name_input').val().toUpperCase() === 'MEMBER_NON_SOVEREIGN') {
+            if ($('#role_name_input').val().toUpperCase() === 'MEMBER_SOVEREIGN') {
                 $('#permissions-section').hide();
             }
         });

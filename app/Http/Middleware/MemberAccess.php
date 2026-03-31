@@ -25,7 +25,7 @@ class MemberAccess
         $sub = $user->userLastSubscription ?? null;
 
         // If the user has a subscription and it is expired, redirect them to membership page
-        if (auth()->check() && auth()->user()->hasNewRole('MEMBER_NON_SOVEREIGN')) {
+        if (auth()->check() && auth()->user()->hasNewRole('MEMBER_SOVEREIGN')) {
             if ($sub && $sub->subscription_expire_date) {
 
 

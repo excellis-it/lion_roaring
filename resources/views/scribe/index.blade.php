@@ -46,13 +46,13 @@
     </span>
 </a>
 <div class="tocify-wrapper">
-    
+
             <div class="lang-selector">
                                             <button type="button" class="lang-button" data-language-name="bash">bash</button>
                                             <button type="button" class="lang-button" data-language-name="javascript">javascript</button>
                                             <button type="button" class="lang-button" data-language-name="jsonToDart">jsonToDart</button>
                     </div>
-    
+
     <div class="search">
         <input type="text" class="search" id="input-search" placeholder="Search">
     </div>
@@ -1103,7 +1103,7 @@ You can switch the language used with the tabs at the top right (or from the nav
 
         <h1 id="authentication">Authentication</h1>
 
-    
+
 
                                 <h2 id="authentication-POSTapi-v3-country-by-id">Get Country by ID</h2>
 
@@ -2869,7 +2869,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
                 <h1 id="bulletins">Bulletins</h1>
 
-    
+
 
                                 <h2 id="bulletins-GETapi-v3-user-bulletins-load">Bulletins List</h2>
 
@@ -4264,7 +4264,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
                 <h1 id="cms-management">CMS Management</h1>
 
-    
+
 
                                 <h2 id="cms-management-POSTapi-v3-cms-home">Get Home Page</h2>
 
@@ -7627,7 +7627,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
                 <h1 id="chats">Chats</h1>
 
-    
+
 
                                 <h2 id="chats-POSTapi-v3-user-chats-list">List of Chat Users</h2>
 
@@ -9868,7 +9868,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
                 <h1 id="checkout">Checkout</h1>
 
-    
+
 
                                 <h2 id="checkout-POSTapi-v3-e-store-process-checkout">Process checkout for Flutter API</h2>
 
@@ -10872,7 +10872,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
                 <h1 id="contact-us">Contact Us</h1>
 
-    
+
 
                                 <h2 id="contact-us-POSTapi-v3-contact-us">Store Contact Us</h2>
 
@@ -11267,7 +11267,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
                 <h1 id="donation">Donation</h1>
 
-    
+
 
                                 <h2 id="donation-POSTapi-v3-donation">Donation Api</h2>
 
@@ -11754,7 +11754,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
                 <h1 id="e-store-product-apis">E-Store Product APIs</h1>
 
-    
+
 
                                 <h2 id="e-store-product-apis-GETapi-v3-e-store-all-products">Public products list (All products)</h2>
 
@@ -13883,7 +13883,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
                 <h1 id="e-store-public-apis">E-Store Public APIs</h1>
 
-    
+
 
                                 <h2 id="e-store-public-apis-GETapi-v3-e-store-store-home">Public Store Home</h2>
 
@@ -16713,7 +16713,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
                 <h1 id="e-learning">E-learning</h1>
 
-    
+
 
                                 <h2 id="e-learning-GETapi-v3-e-learning-store-home">Store Home Products</h2>
 
@@ -18958,7 +18958,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
                 <h1 id="education">Education</h1>
 
-    
+
 
                         <h2 id="education-topics">Topics</h2>
                                         <p>
@@ -27456,7 +27456,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
                 <h1 id="email">Email</h1>
 
-    
+
 
                                 <h2 id="email-POSTapi-v3-user-mail-inbox-email-list">Inbox Emails</h2>
 
@@ -31769,7 +31769,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
                 <h1 id="estore-cms">Estore CMS</h1>
 
-    
+
 
                                 <h2 id="estore-cms-POSTapi-v3-user-estore-cms-dashboard">Dashboard</h2>
 
@@ -35033,7 +35033,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
                 <h1 id="estore-colors">Estore Colors</h1>
 
-    
+
 
                                 <h2 id="estore-colors-GETapi-v3-user-colors">Color List</h2>
 
@@ -36201,7 +36201,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
                 <h1 id="estore-profile">Estore Profile</h1>
 
-    
+
 
                                 <h2 id="estore-profile-POSTapi-v3-e-store-profile">Profile Details</h2>
 
@@ -37045,7 +37045,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
                 <h1 id="estore-sizes">Estore Sizes</h1>
 
-    
+
 
                                 <h2 id="estore-sizes-GETapi-v3-user-sizes">Size List</h2>
 
@@ -38476,7 +38476,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
                 <h1 id="events">Events</h1>
 
-    
+
 
                                 <h2 id="events-GETapi-v3-user-events-load">List All events</h2>
 
@@ -39875,7 +39875,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
                 <h1 id="fcm">FCM</h1>
 
-    
+
 
                                 <h2 id="fcm-POSTapi-v3-user-fcm-update-token">Update FCM Token</h2>
 
@@ -40414,7 +40414,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
                 <h1 id="forget-password">Forget Password</h1>
 
-    
+
 
                                 <h2 id="forget-password-POSTapi-v3-forget-password">Forget Password</h2>
 
@@ -40577,7 +40577,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
                 <h1 id="group-chats">Group Chats</h1>
 
-    
+
 
                                 <h2 id="group-chats-POSTapi-v3-user-team-chats-list">List of Group Chats</h2>
 
@@ -44873,7 +44873,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
                 <h1 id="jobs">Jobs</h1>
 
-    
+
 
                                 <h2 id="jobs-GETapi-v3-user-jobs-load">All Job Posts</h2>
 
@@ -46514,7 +46514,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
                 <h1 id="meetings">Meetings</h1>
 
-    
+
 
                                 <h2 id="meetings-GETapi-v3-user-meetings-load">List All Meetings</h2>
 
@@ -48247,7 +48247,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
                 <h1 id="members">Members</h1>
 
-    
+
 
                                 <h2 id="members-POSTapi-v3-user-create-partner">Store new Members</h2>
 
@@ -50370,7 +50370,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
                 <h1 id="policy">Policy</h1>
 
-    
+
 
                                 <h2 id="policy-GETapi-v3-user-policy-load">Policies List</h2>
 
@@ -53134,7 +53134,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
                 <h1 id="profile">Profile</h1>
 
-    
+
 
                                 <h2 id="profile-POSTapi-v3-user-profile">Profile Details</h2>
 
@@ -56923,7 +56923,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
                 <h1 id="role-permission">Role Permission</h1>
 
-    
+
 
                                 <h2 id="role-permission-GETapi-v3-user-roles-list">All roles with permissions</h2>
 
@@ -57065,7 +57065,7 @@ class Pivot {
     &quot;data&quot;: [
         {
             &quot;id&quot;: 2,
-            &quot;name&quot;: &quot;MEMBER_NON_SOVEREIGN&quot;,
+            &quot;name&quot;: &quot;MEMBER_SOVEREIGN&quot;,
             &quot;guard_name&quot;: &quot;web&quot;,
             &quot;created_at&quot;: &quot;2024-03-05T15:36:13.000000Z&quot;,
             &quot;updated_at&quot;: &quot;2024-03-05T15:36:13.000000Z&quot;,
@@ -57911,7 +57911,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
                 <h1 id="strategy">Strategy</h1>
 
-    
+
 
                                 <h2 id="strategy-GETapi-v3-user-strategy-load">Strategies List</h2>
 
@@ -58961,7 +58961,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
                 <h1 id="user-activity">User Activity</h1>
 
-    
+
 
                                 <h2 id="user-activity-POSTapi-v3-user-user-activity-log">Log user activity entry</h2>
 
@@ -60096,7 +60096,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
                 <h1 id="wishlist">Wishlist</h1>
 
-    
+
 
                                 <h2 id="wishlist-POSTapi-v3-e-store-add-to-wishlist">Add to wishlist</h2>
 
@@ -60801,7 +60801,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
                 <h1 id="chatbot">chatbot</h1>
 
-    
+
 
                                 <h2 id="chatbot-POSTapi-v3-user-chatbot">chatbot</h2>
 
@@ -60972,9 +60972,9 @@ You can check the Dev Tools console for debugging information.</code></pre>
         </div>
         </form>
 
-            
 
-        
+
+
     </div>
     <div class="dark-box">
                     <div class="lang-selector">

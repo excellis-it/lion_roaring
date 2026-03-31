@@ -202,7 +202,7 @@ class WareHouseController extends Controller
                         // if ($user->hasNewRole('WAREHOUSE_ADMIN')) {
                         //     $user->removeRole('WAREHOUSE_ADMIN');
                         //     // assign default role
-                        //     $user->syncRoles(['MEMBER_NON_SOVEREIGN']);
+                        //     $user->syncRoles(['MEMBER_SOVEREIGN']);
                         // }
                     }
                 }

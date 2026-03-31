@@ -182,7 +182,7 @@
                                         Name</label>
                                     <input type="text" class="form-control" id="role_name_input"
                                         value="{{ $role->name }}" name="role_name" placeholder=""
-                                        {{ $role->name == 'MEMBER_NON_SOVEREIGN' || $role->name == 'WAREHOUSE_ADMIN' || $role->name == 'ESTORE_USER' || $role->name == 'ECCLESIA' ? 'readonly' : '' }}>
+                                        {{ $role->name == 'MEMBER_SOVEREIGN' || $role->name == 'WAREHOUSE_ADMIN' || $role->name == 'ESTORE_USER' || $role->name == 'ECCLESIA' ? 'readonly' : '' }}>
                                     @if ($errors->has('role_name'))
                                         @error('role_name')
                                             <span class="text-danger" style="color: red !important"> {{ $message }}</span>
@@ -473,9 +473,9 @@
                 }
             });
 
-            // Hide permissions for MEMBER_NON_SOVEREIGN
+            // Hide permissions for MEMBER_SOVEREIGN
             $('#role_name_input').on('input', function() {
-                if ($(this).val().toUpperCase() === 'MEMBER_NON_SOVEREIGN') {
+                if ($(this).val().toUpperCase() === 'MEMBER_SOVEREIGN') {
                     $('#permissions-section').hide();
                 } else {
                     $('#permissions-section').show();
@@ -483,7 +483,7 @@
             });
 
             // Initial check
-            if ($('#role_name_input').val().toUpperCase() === 'MEMBER_NON_SOVEREIGN') {
+            if ($('#role_name_input').val().toUpperCase() === 'MEMBER_SOVEREIGN') {
                 $('#permissions-section').hide();
             }
         });

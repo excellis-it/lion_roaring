@@ -30,7 +30,7 @@ class RolePermissionsController extends Controller
             } else {
                 $roles = UserType::whereIn('type', [2])->orderBy('id', 'DESC')->get();
             }
-
+            // dd($roles);
             return view('user.role_permission.list', compact('roles'));
         } else {
             abort(403, 'You do not have permission to access this page.');
@@ -77,7 +77,7 @@ class RolePermissionsController extends Controller
         $role->is_ecclesia = $request['is_ecclesia'];
         $role->save();
 
-        if ($name != 'MEMBER_NON_SOVEREIGN' && $request->has('permissions')) {
+        if ($name != 'MEMBER_SOVEREIGN' && $request->has('permissions')) {
             foreach ($request->permissions as $permName) {
                 $permission = Permission::where('name', $permName)->first();
                 if ($permission) {
@@ -153,7 +153,7 @@ class RolePermissionsController extends Controller
         $role->is_ecclesia = $request['is_ecclesia'];
         $role->save();
 
-        if ($role->name != 'MEMBER_NON_SOVEREIGN') {
+        if ($role->name != 'MEMBER_SOVEREIGN') {
             UserTypePermission::where('user_type_id', $role->id)->delete();
             if ($request->has('permissions')) {
                 foreach ($request->permissions as $permName) {

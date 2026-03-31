@@ -27,7 +27,7 @@ class RolePermissionsController extends Controller
      *    "data": [
      *        {
      *            "id": 2,
-     *            "name": "MEMBER_NON_SOVEREIGN",
+     *            "name": "MEMBER_SOVEREIGN",
      *            "guard_name": "web",
      *            "created_at": "2024-03-05T15:36:13.000000Z",
      *            "updated_at": "2024-03-05T15:36:13.000000Z",
@@ -365,10 +365,10 @@ class RolePermissionsController extends Controller
         try {
             // Check if the user has the necessary roles
             if (Auth::user()->hasNewRole('SUPER ADMIN') || Auth::user()->hasNewRole('LEADER')) {
-                // If the user is a LEADER, fetch only the 'MEMBER_NON_SOVEREIGN' roles
+                // If the user is a LEADER, fetch only the 'MEMBER_SOVEREIGN' roles
                 if (Auth::user()->hasNewRole('LEADER')) {
-                    $roles = Role::where('name', 'MEMBER_NON_SOVEREIGN')
-                        ->with('permissions') // Load permissions for the 'MEMBER_NON_SOVEREIGN' role
+                    $roles = Role::where('name', 'MEMBER_SOVEREIGN')
+                        ->with('permissions') // Load permissions for the 'MEMBER_SOVEREIGN' role
                         ->get();
                 } else {
                     // If the user is an SUPER ADMIN, fetch all roles except 'SUPER ADMIN' and load their permissions

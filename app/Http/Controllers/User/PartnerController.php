@@ -507,7 +507,7 @@ class PartnerController extends Controller
             'user_type' => 'required',
         ];
 
-        if ($request->role === 'MEMBER_NON_SOVEREIGN') {
+        if ($request->role === 'MEMBER_SOVEREIGN') {
             $rules['membership_tier_id'] = 'required|exists:membership_tiers,id';
         } else {
             $rules['permissions'] = 'required|array';
@@ -578,7 +578,7 @@ class PartnerController extends Controller
         ]);
 
         // Sync permissions
-        if ($the_role->name == 'MEMBER_NON_SOVEREIGN' && $request->has('membership_tier_id')) {
+        if ($the_role->name == 'MEMBER_SOVEREIGN' && $request->has('membership_tier_id')) {
             $tier = MembershipTier::find($request->membership_tier_id);
             if ($tier && !empty($tier->permissions)) {
                 $permissions = array_filter(array_map('trim', explode(',', $tier->permissions)));
@@ -628,8 +628,8 @@ class PartnerController extends Controller
         // Assign the newly created role to the user
         $data->assignRole($newRole->name);
 
-        // If MEMBER_NON_SOVEREIGN, create subscription
-        if ($the_role->name == 'MEMBER_NON_SOVEREIGN' && $request->has('membership_tier_id')) {
+        // If MEMBER_SOVEREIGN, create subscription
+        if ($the_role->name == 'MEMBER_SOVEREIGN' && $request->has('membership_tier_id')) {
             $tier = MembershipTier::find($request->membership_tier_id);
             if ($tier) {
                 $durationMonths = $tier->duration_months ?? 12;
@@ -777,7 +777,7 @@ class PartnerController extends Controller
                 'confirm_password' => 'nullable|min:8|same:password',
             ];
 
-            if ($request->role === 'MEMBER_NON_SOVEREIGN') {
+            if ($request->role === 'MEMBER_SOVEREIGN') {
                 $rules['membership_tier_id'] = 'required|exists:membership_tiers,id';
             } else {
                 $rules['permissions'] = 'required|array';
@@ -892,7 +892,7 @@ class PartnerController extends Controller
             }
 
             // Sync permissions to the custom role
-            if ($the_role->name == 'MEMBER_NON_SOVEREIGN' && $request->has('membership_tier_id')) {
+            if ($the_role->name == 'MEMBER_SOVEREIGN' && $request->has('membership_tier_id')) {
                 $tier = MembershipTier::find($request->membership_tier_id);
                 if ($tier && !empty($tier->permissions)) {
                     $permissions = array_filter(array_map('trim', explode(',', $tier->permissions)));
@@ -916,7 +916,7 @@ class PartnerController extends Controller
             $data->forgetCachedPermissions();
 
             // Handle Membership Subscription Update
-            if ($the_role->name == 'MEMBER_NON_SOVEREIGN' && $request->has('membership_tier_id')) {
+            if ($the_role->name == 'MEMBER_SOVEREIGN' && $request->has('membership_tier_id')) {
                 $tier = MembershipTier::find($request->membership_tier_id);
                 if ($tier) {
                     $sub = UserSubscription::where('user_id', $data->id)->orderBy('id', 'desc')->first();
