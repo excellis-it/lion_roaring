@@ -39,13 +39,18 @@
                                         </select>
                                     </div> --}}
 
+                                    @php
+                                        use App\Helpers\Helper;
+                                        $currentCode = strtoupper(Helper::getVisitorCountryCode());
+                                    @endphp
+
                                     <div class="col-md-3">
-                                        @if (auth()->user()->user_type == 'Regional')
+                                        @if ($currentCode != 'GL')
                                             {{-- Regional users can only see their own country --}}
                                             <select name="country_filter" id="country_filter" class="form-control" disabled
                                                 style="background-color: #e9ecef; cursor: not-allowed;">
                                                 @foreach ($countries as $country)
-                                                    @if ($country->id == auth()->user()->country)
+                                                    @if ($country->code == $currentCode)
                                                         <option value="{{ $country->id }}" selected>
                                                             {{ $country->name }} (Your Region)
                                                         </option>
@@ -82,8 +87,8 @@
                                         <div class="search-field float-right">
                                             <input type="text" name="search" id="search" placeholder="search..."
                                                 required class="form-control" value="{{ $query }}">
-                                            <button class="submit_search" id="search-button" type="button"> <span class=""><i
-                                                        class="fa fa-search"></i></span></button>
+                                            <button class="submit_search" id="search-button" type="button"> <span
+                                                    class=""><i class="fa fa-search"></i></span></button>
                                         </div>
                                     </div>
                                 </div>

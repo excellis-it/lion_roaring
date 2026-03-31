@@ -29,8 +29,6 @@ class ChatController extends Controller
     public function chats()
     {
         if (auth()->user()->can('Manage Chat')) {
-            $user_type = auth()->user()->user_type;
-            $country_name = auth()->user()->country;
             $usersQuery = User::with('userRole', 'chatSender')
                 ->where('id', '!=', auth()->id())
                 ->where('status', 1)
@@ -38,52 +36,25 @@ class ChatController extends Controller
                     $query->whereIn('type', [1, 2, 3]);
                 });
 
-
             $isSuperAdmin = auth()->user()->hasNewRole('SUPER ADMIN');
 
             if (!$isSuperAdmin) {
                 $authId = auth()->id();
 
-                if ($user_type == 'Global') {
-                    // Global user: see Global non-SA users + Super Admins who messaged me first
-                    $usersQuery->where(function ($query) use ($authId) {
-                        // Global users who are NOT Super Admins
-                        $query->where(function ($q) {
-                            $q->where('user_type', 'Global')
-                                ->whereDoesntHave('userRole', function ($r) {
-                                    $r->where('name', 'SUPER ADMIN');
-                                });
-                        })
-                            // OR Super Admins who have messaged me first
-                            ->orWhere(function ($q) use ($authId) {
-                                $q->whereHas('userRole', function ($r) {
-                                    $r->where('name', 'SUPER ADMIN');
-                                })->whereHas('chatSender', function ($chat) use ($authId) {
-                                    $chat->where('reciver_id', $authId);
-                                });
-                            });
+                $usersQuery->where(function ($query) use ($authId) {
+                    // Users matching visibility rules
+                    $query->where(function ($q) {
+                        $q->visibleToAuthUser();
+                    })
+                    // OR Super Admins who have messaged me first
+                    ->orWhere(function ($q) use ($authId) {
+                        $q->whereHas('userRole', function ($r) {
+                            $r->where('name', 'SUPER ADMIN');
+                        })->whereHas('chatSender', function ($chat) use ($authId) {
+                            $chat->where('reciver_id', $authId);
+                        });
                     });
-                } else {
-                    // Regional user: see same-country Regional non-SA users + Super Admins who messaged me first
-                    $usersQuery->where(function ($query) use ($country_name, $authId) {
-                        // Regional users from same country who are NOT Super Admins
-                        $query->where(function ($q) use ($country_name) {
-                            $q->where('user_type', 'Regional')
-                                ->where('country', $country_name)
-                                ->whereDoesntHave('userRole', function ($r) {
-                                    $r->where('name', 'SUPER ADMIN');
-                                });
-                        })
-                            // OR Super Admins who have messaged me first
-                            ->orWhere(function ($q) use ($authId) {
-                                $q->whereHas('userRole', function ($r) {
-                                    $r->where('name', 'SUPER ADMIN');
-                                })->whereHas('chatSender', function ($chat) use ($authId) {
-                                    $chat->where('reciver_id', $authId);
-                                });
-                            });
-                    });
-                }
+                });
             }
 
             $users = $usersQuery->get()->toArray();
@@ -115,6 +86,7 @@ class ChatController extends Controller
             // }
 
             // return $users;
+            // dd($users);
 
             return view('user.chat.list')->with(compact('users'));
         } else {
@@ -125,9 +97,6 @@ class ChatController extends Controller
     public function chatsList()
     {
         if (auth()->user()->can('Manage Chat')) {
-            $user_type = auth()->user()->user_type;
-            $country_name = auth()->user()->country;
-
             $usersQuery = User::with('userRole', 'chatSender')
                 ->where('id', '!=', auth()->id())
                 ->where('status', 1)
@@ -140,46 +109,20 @@ class ChatController extends Controller
             if (!$isSuperAdmin) {
                 $authId = auth()->id();
 
-                if ($user_type == 'Global') {
-                    // Global user: see Global non-SA users + Super Admins who messaged me first
-                    $usersQuery->where(function ($query) use ($authId) {
-                        // Global users who are NOT Super Admins
-                        $query->where(function ($q) {
-                            $q->where('user_type', 'Global')
-                                ->whereDoesntHave('userRole', function ($r) {
-                                    $r->where('name', 'SUPER ADMIN');
-                                });
-                        })
-                            // OR Super Admins who have messaged me first
-                            ->orWhere(function ($q) use ($authId) {
-                                $q->whereHas('userRole', function ($r) {
-                                    $r->where('name', 'SUPER ADMIN');
-                                })->whereHas('chatSender', function ($chat) use ($authId) {
-                                    $chat->where('reciver_id', $authId);
-                                });
-                            });
+                $usersQuery->where(function ($query) use ($authId) {
+                    // Users matching visibility rules
+                    $query->where(function ($q) {
+                        $q->visibleToAuthUser();
+                    })
+                    // OR Super Admins who have messaged me first
+                    ->orWhere(function ($q) use ($authId) {
+                        $q->whereHas('userRole', function ($r) {
+                            $r->where('name', 'SUPER ADMIN');
+                        })->whereHas('chatSender', function ($chat) use ($authId) {
+                            $chat->where('reciver_id', $authId);
+                        });
                     });
-                } else {
-                    // Regional user: see same-country Regional non-SA users + Super Admins who messaged me first
-                    $usersQuery->where(function ($query) use ($country_name, $authId) {
-                        // Regional users from same country who are NOT Super Admins
-                        $query->where(function ($q) use ($country_name) {
-                            $q->where('user_type', 'Regional')
-                                ->where('country', $country_name)
-                                ->whereDoesntHave('userRole', function ($r) {
-                                    $r->where('name', 'SUPER ADMIN');
-                                });
-                        })
-                            // OR Super Admins who have messaged me first
-                            ->orWhere(function ($q) use ($authId) {
-                                $q->whereHas('userRole', function ($r) {
-                                    $r->where('name', 'SUPER ADMIN');
-                                })->whereHas('chatSender', function ($chat) use ($authId) {
-                                    $chat->where('reciver_id', $authId);
-                                });
-                            });
-                    });
-                }
+                });
             }
 
             $users = $usersQuery->get()->toArray();

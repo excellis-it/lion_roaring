@@ -36,6 +36,7 @@ class PartnerController extends Controller
             $user = Auth::user();
             $user_ecclesia_id = $user->ecclesia_id;
             $is_user_ecclesia_admin = $user->is_ecclesia_admin;
+            $currentCode = strtoupper(Helper::getVisitorCountryCode());
 
             // Retrieve filters from session
             $filters = session('partner_filters', []);
@@ -101,7 +102,29 @@ class PartnerController extends Controller
                 })
                     ->where('users.id', '!=', $user->id);
             } elseif ($user->user_type == 'Global') {
-                $partners->where('users.user_type', 'Global');
+                $partners->whereIn('users.user_type', ['Global', 'G_R']);
+            } elseif ($user->user_type == 'G_R') {
+                if ($currentCode == 'GL') {
+                    $partners->whereIn('users.user_type', ['Global', 'G_R']);
+                } else {
+                    $manage_ecclesia_ids = is_array($user->manage_ecclesia)
+                        ? $user->manage_ecclesia
+                        : explode(',', $user->manage_ecclesia);
+                    // print_r($manage_ecclesia_ids);
+                    // die;
+                    $partners->where(function ($q) {
+                        // Include users with deleted user types OR users with type 2 or 3
+                        $q->whereNull('ut.id')
+                            ->orWhereHas('userRole', function ($subQ) {
+                                $subQ->whereIn('type', [2, 3]);
+                            });
+                    })
+                        ->where(function ($q) use ($manage_ecclesia_ids, $user) {
+                            $q->whereIn('users.ecclesia_id', $manage_ecclesia_ids)->whereNotNull('users.ecclesia_id')
+                                ->orWhere('users.created_id', $user->id)->orWhere('users.id', auth()->id());
+                        });
+                    $partners->where('users.country', $user->country)->whereIn('users.user_type', ['Regional', 'G_R']);
+                }
             } elseif ($is_user_ecclesia_admin == 1) {
                 $manage_ecclesia_ids = is_array($user->manage_ecclesia)
                     ? $user->manage_ecclesia
@@ -126,9 +149,9 @@ class PartnerController extends Controller
             //             ->orWhere('users.created_id', $user->id)->orWhere('users.id', auth()->id());
             //     });
             // }
-            if (!$user->hasNewRole('SUPER ADMIN') && $user->user_type != 'Global') {
+            if (!$user->hasNewRole('SUPER ADMIN') && $user->user_type != 'Global' && $user->user_type != 'G_R') {
                 if ($user->user_type == 'Regional') {
-                    $partners->where('users.country', $user->country)->where('users.user_type', 'Regional');
+                    $partners->where('users.country', $user->country)->whereIn('users.user_type', ['Regional', 'G_R']);
                 }
             }
 
@@ -970,6 +993,7 @@ class PartnerController extends Controller
             $sort_by = $request->get('sortby', 'id'); // Default sorting by 'id'
             $sort_type = $request->get('sorttype', 'asc'); // Default sorting type
             $query = $request->get('query');
+            $currentCode = strtoupper(Helper::getVisitorCountryCode());
 
             // Store filters in session
             session(['partner_filters' => [
@@ -1035,6 +1059,30 @@ class PartnerController extends Controller
                         });
                 })
                     ->where('users.id', '!=', $user->id);
+            } elseif ($user->user_type == 'Global') {
+                $partners->whereIn('users.user_type', ['Global', 'G_R']);
+            } elseif ($user->user_type == 'G_R') {
+                if ($currentCode == 'GL') {
+                    $partners->whereIn('users.user_type', ['Global', 'G_R']);
+                } else {
+                    $manage_ecclesia_ids = is_array($user->manage_ecclesia)
+                        ? $user->manage_ecclesia
+                        : explode(',', $user->manage_ecclesia);
+                    // print_r($manage_ecclesia_ids);
+                    // die;
+                    $partners->where(function ($q) {
+                        // Include users with deleted user types OR users with type 2 or 3
+                        $q->whereNull('ut.id')
+                            ->orWhereHas('userRole', function ($subQ) {
+                                $subQ->whereIn('type', [2, 3]);
+                            });
+                    })
+                        ->where(function ($q) use ($manage_ecclesia_ids, $user) {
+                            $q->whereIn('users.ecclesia_id', $manage_ecclesia_ids)->whereNotNull('users.ecclesia_id')
+                                ->orWhere('users.created_id', $user->id)->orWhere('users.id', auth()->id());
+                        });
+                    $partners->where('users.country', $user->country)->whereIn('users.user_type', ['Regional', 'G_R']);
+                }
             } elseif ($is_user_ecclesia_admin == 1) {
                 $manage_ecclesia_ids = is_array($user->manage_ecclesia)
                     ? $user->manage_ecclesia
@@ -1061,9 +1109,7 @@ class PartnerController extends Controller
 
             if (!$user->hasNewRole('SUPER ADMIN')) {
                 if ($user->user_type == 'Regional') {
-                    $partners->where('users.country', $user->country)->where('users.user_type', 'Regional');
-                } elseif ($user->user_type == 'Global') {
-                    $partners->where('users.user_type', 'Global');
+                    $partners->where('users.country', $user->country)->whereIn('users.user_type', ['Regional', 'G_R']);
                 }
             }
             // Sorting logic

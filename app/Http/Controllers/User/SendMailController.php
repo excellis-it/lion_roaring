@@ -29,25 +29,12 @@ class SendMailController extends Controller
     {
         if (auth()->user()->can('Manage Email')) {
 
-            $user = auth()->user();
-            $user_type = $user->user_type;
-            $country_name = $user->country;
-            $isSuperAdmin = $user->hasNewRole('SUPER ADMIN');
-
-            $allMailIdsQuery = User::with('roles')->where('status', true)
+            $allMailIds = User::with('roles')->where('status', true)
                 ->whereHas('roles', function ($query) {
                     $query->whereIn('type', [1, 2, 3]);
-                })->where('id', '!=', $user->id);
-
-            if (!$isSuperAdmin) {
-                if ($user_type == 'Global') {
-                    $allMailIdsQuery->where('user_type', 'Global');
-                } else {
-                    $allMailIdsQuery->where('user_type', 'Regional')->where('country', $country_name);
-                }
-            }
-
-            $allMailIds = $allMailIdsQuery->get(['id', 'email']);
+                })->where('id', '!=', auth()->id())
+                ->visibleToAuthUser()
+                ->get(['id', 'email']);
 
             return view('user.mail.list', ['allMailIds' => $allMailIds]);
         } else {
@@ -59,25 +46,12 @@ class SendMailController extends Controller
     {
         if (auth()->user()->can('Manage Email')) {
 
-            $user = auth()->user();
-            $user_type = $user->user_type;
-            $country_name = $user->country;
-            $isSuperAdmin = $user->hasNewRole('SUPER ADMIN');
-
-            $allMailIdsQuery = User::with('roles')->where('status', true)
+            $allMailIds = User::with('roles')->where('status', true)
                 ->whereHas('roles', function ($query) {
                     $query->whereIn('type', [1, 2, 3]);
-                })->where('id', '!=', $user->id);
-
-            if (!$isSuperAdmin) {
-                if ($user_type == 'Global') {
-                    $allMailIdsQuery->where('user_type', 'Global');
-                } else {
-                    $allMailIdsQuery->where('user_type', 'Regional')->where('country', $country_name);
-                }
-            }
-
-            $allMailIds = $allMailIdsQuery->get(['id', 'email']);
+                })->where('id', '!=', auth()->id())
+                ->visibleToAuthUser()
+                ->get(['id', 'email']);
 
             return view('user.mail.sent', ['allMailIds' => $allMailIds]);
         } else {
@@ -89,27 +63,12 @@ class SendMailController extends Controller
     {
         if (auth()->user()->can('Manage Email')) {
 
-            $user = auth()->user();
-            $user_type = $user->user_type;
-            $country_name = $user->country;
-            $isSuperAdmin = $user->hasNewRole('SUPER ADMIN');
-
-            $allMailIdsQuery = User::with('roles')->where('status', true)
+            $allMailIds = User::with('roles')->where('status', true)
                 ->whereHas('roles', function ($query) {
                     $query->whereIn('type', [1, 2, 3]);
-                })->where('id', '!=', $user->id);
-
-            if (!$isSuperAdmin) {
-                if ($user_type == 'Global') {
-                    $allMailIdsQuery->where('user_type', 'Global')->whereHas('userRole', function ($query) {
-                        $query->where('name', '!=', 'SUPER ADMIN');
-                    });
-                } else {
-                    $allMailIdsQuery->where('user_type', 'Regional')->where('country', $country_name);
-                }
-            }
-
-            $allMailIds = $allMailIdsQuery->get(['id', 'email']);
+                })->where('id', '!=', auth()->id())
+                ->visibleToAuthUser()
+                ->get(['id', 'email']);
 
             return view('user.mail.star', ['allMailIds' => $allMailIds]);
         } else {
@@ -121,27 +80,12 @@ class SendMailController extends Controller
     {
         if (auth()->user()->can('Manage Email')) {
 
-            $user = auth()->user();
-            $user_type = $user->user_type;
-            $country_name = $user->country;
-            $isSuperAdmin = $user->hasNewRole('SUPER ADMIN');
-
-            $allMailIdsQuery = User::with('roles')->where('status', true)
+            $allMailIds = User::with('roles')->where('status', true)
                 ->whereHas('roles', function ($query) {
                     $query->whereIn('type', [1, 2, 3]);
-                })->where('id', '!=', $user->id);
-
-            if (!$isSuperAdmin) {
-                if ($user_type == 'Global') {
-                    $allMailIdsQuery->where('user_type', 'Global')->whereHas('userRole', function ($query) {
-                        $query->where('name', '!=', 'SUPER ADMIN');
-                    });
-                } else {
-                    $allMailIdsQuery->where('user_type', 'Regional')->where('country', $country_name);
-                }
-            }
-
-            $allMailIds = $allMailIdsQuery->get(['id', 'email']);
+                })->where('id', '!=', auth()->id())
+                ->visibleToAuthUser()
+                ->get(['id', 'email']);
 
             return view('user.mail.trash', ['allMailIds' => $allMailIds]);
         } else {
@@ -527,29 +471,12 @@ class SendMailController extends Controller
         });
 
         // Fetch all mail IDs for other users (to avoid sending mails to yourself)
-        $user = auth()->user();
-        $user_type = $user->user_type;
-        $country_name = $user->country;
-        $isSuperAdmin = $user->hasNewRole('SUPER ADMIN');
-
-        $allMailIdsQuery = User::with('roles')->where('status', true)
+        $allMailIds = User::with('roles')->where('status', true)
             ->whereHas('roles', function ($query) {
                 $query->whereIn('type', [1, 2, 3]);
-            })->where('id', '!=', $user->id);
-
-        if (!$isSuperAdmin) {
-            if ($user_type == 'Global') {
-                $allMailIdsQuery->where('user_type', 'Global')->whereHas('userRole', function ($query) {
-                    $query->where('name', '!=', 'SUPER ADMIN');
-                });
-            } else {
-                $allMailIdsQuery->where('user_type', 'Regional')->where('country', $country_name);
-            }
-        }
-
-        $allMailIds = $allMailIdsQuery->get(['id', 'email']);
-
-        // return $allMailIds;
+            })->where('id', '!=', auth()->id())
+            ->visibleToAuthUser()
+            ->get(['id', 'email']);
 
         // Collect all email addresses involved in this mail thread, excluding the current user's email
         $replyMailids = collect([$mail_details->user->email])
@@ -589,27 +516,14 @@ class SendMailController extends Controller
     public function compose()
     {
         if (auth()->user()->can('Manage Email')) {
-            $user = auth()->user();
-            $user_type = $user->user_type;
-            $country_name = $user->country;
-            $isSuperAdmin = $user->hasNewRole('SUPER ADMIN');
 
-            $usersQuery = User::with('roles')->where('status', true)
+            $users = User::with('roles')->where('status', true)
                 ->whereHas('roles', function ($query) {
                     $query->whereIn('type', [1, 2, 3]);
-                })->where('id', '!=', $user->id);
+                })->where('id', '!=', auth()->id())
+                ->visibleToAuthUser()
+                ->get(['id', 'email']);
 
-            if (!$isSuperAdmin) {
-                if ($user_type == 'Global') {
-                    $usersQuery->where('user_type', 'Global')->whereHas('userRole', function ($query) {
-                        $query->where('name', '!=', 'SUPER ADMIN');
-                    });
-                } else {
-                    $usersQuery->where('user_type', 'Regional')->where('country', $country_name);
-                }
-            }
-
-            $users = $usersQuery->get(['id', 'email']); // Adjust fields as needed
             return view('user.mail.compose')->with(compact('users'));
         } else {
             abort(403, 'You do not have permission to access this page.');

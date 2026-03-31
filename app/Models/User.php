@@ -159,6 +159,58 @@ class User extends Authenticatable
         return $this->roles->pluck('is_ecclesia')->first() == 1 ? true : false;
     }
 
+    /**
+     * Scope: filter users visible to the currently authenticated user
+     * based on user_type, country, ecclesia, and current server context.
+     */
+    public function scopeVisibleToAuthUser($query)
+    {
+        $authUser = auth()->user();
+
+        if ($authUser->hasNewRole('SUPER ADMIN')) {
+            return $query;
+        }
+
+        $userType = $authUser->user_type;
+        $currentCountry = Country::findByCurrentRequest();
+        $isOnGlobalServer = $currentCountry && $currentCountry->is_global;
+
+        if ($userType == 'Global' || ($userType == 'G_R' && $isOnGlobalServer)) {
+            // Global users & G_R on global server: see Global + G_R of all countries
+            $query->whereIn('user_type', ['Global', 'G_R'])
+                ->whereDoesntHave('userRole', function ($r) {
+                    $r->where('name', 'SUPER ADMIN');
+                });
+        } else {
+            // Regional server: see Regional + G_R from same country
+            $query->whereIn('user_type', ['Regional', 'G_R'])
+                ->where('country', $authUser->country);
+
+            // If ecclesia role, also filter by same ecclesia
+            if ($authUser->isEcclesiaUser()) {
+                $manage_ecclesia_ids = is_array($authUser->manage_ecclesia)
+                    ? $authUser->manage_ecclesia
+                    : explode(',', $authUser->manage_ecclesia);
+
+                $query->where(function ($q) {
+                    // Include users with deleted user types OR users with type 2 or 3
+                    $q->whereNull('user_type_id')
+                        ->orWhereHas('userRole', function ($subQ) {
+                            $subQ->whereIn('type', [2, 3]);
+                        });
+                })
+                    ->where(function ($q) use ($manage_ecclesia_ids, $authUser) {
+                        $q->whereIn('ecclesia_id', $manage_ecclesia_ids)->whereNotNull('ecclesia_id')
+                            ->orWhere('created_id', $authUser->id)->orWhere('id', auth()->id());
+                    });
+
+                // $query->where('ecclesia_id', $authUser->ecclesia_id);
+            }
+        }
+
+        return $query;
+    }
+
     // Relationship for warehouses this user can manage
     public function warehouses()
     {

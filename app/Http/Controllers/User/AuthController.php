@@ -76,9 +76,9 @@ class AuthController extends Controller
                         return response()->json(['message' => 'Please select your country from the dropdown first.', 'status' => false]);
                     }
 
-                    if (($user->user_type == 'Regional') && ($country->id != $user->country)) {
+                    if (($user->user_type != 'G_R') && ($user->user_type == 'Regional') && ($country->id != $user->country)) {
                         return response()->json(['message' => 'You are not from ' . $country->name . '! Please change the country from dropdown.', 'status' => false]);
-                    } elseif (($user->user_type == 'Global') && ($country->code != 'GL')) {
+                    } elseif (($user->user_type != 'G_R') && ($user->user_type == 'Global') && ($country->code != 'GL')) {
                         return response()->json(['message' => 'You are a Global user! Please change the country to Global.', 'status' => false]);
                     }
                 }

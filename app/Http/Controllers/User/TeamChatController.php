@@ -67,29 +67,15 @@ class TeamChatController extends Controller
 
 
 
-            $user_type = auth()->user()->user_type;
-            $country_name = auth()->user()->country;
-            $isSuperAdmin = auth()->user()->hasNewRole('SUPER ADMIN');
-
-            $membersQuery = User::with('roles')
+            $members = User::with('roles')
                 ->orderBy('first_name', 'asc')
                 ->where('id', '!=', auth()->id())
                 ->where('status', true)
                 ->whereHas('roles', function ($query) {
                     $query->whereIn('type', [1, 2, 3]);
-                });
-
-            if (!$isSuperAdmin) {
-                if ($user_type == 'Global') {
-                    $membersQuery->where('user_type', 'Global')->whereHas('userRole', function ($query) {
-                        $query->where('name', '!=', 'SUPER ADMIN');
-                    });
-                } else {
-                    $membersQuery->where('user_type', 'Regional')->where('country', $country_name);
-                }
-            }
-
-            $members = $membersQuery->get();
+                })
+                ->visibleToAuthUser()
+                ->get();
 
             return view('user.team-chat.index')->with(compact('teams', 'members'));
         } else {
@@ -424,29 +410,15 @@ class TeamChatController extends Controller
                     $query->where('is_removed', false); // Replace with your condition
                 }, 'members.user'])
                 ->first();
-            $user_type = auth()->user()->user_type;
-            $country_name = auth()->user()->country;
-            $isSuperAdmin = auth()->user()->hasNewRole('SUPER ADMIN');
-
-            $membersQuery = User::with('roles')
+            $members = User::with('roles')
                 ->orderBy('first_name', 'asc')
                 ->where('id', '!=', auth()->id())
                 ->where('status', true)
                 ->whereHas('roles', function ($query) {
                     $query->whereIn('type', [1, 2, 3]);
-                });
-
-            if (!$isSuperAdmin) {
-                if ($user_type == 'Global') {
-                    $membersQuery->where('user_type', 'Global')->whereHas('userRole', function ($query) {
-                        $query->where('name', '!=', 'SUPER ADMIN');
-                    });
-                } else {
-                    $membersQuery->where('user_type', 'Regional')->where('country', $country_name);
-                }
-            }
-
-            $members = $membersQuery->get();
+                })
+                ->visibleToAuthUser()
+                ->get();
             $is_group_info = true;
             return response()->json(['view' => (string) view('user.team-chat.group-info')->with(compact('team', 'is_group_info', 'members'))]);
         }
