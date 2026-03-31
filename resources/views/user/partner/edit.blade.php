@@ -1042,13 +1042,13 @@
                     return;
                 }
 
-                if (userType === 'Regional' && !country) {
+                if ((userType === 'Regional' || userType === 'G_R') && !country) {
                     $('select[name="ecclesia_id"]').html('<option value="">Select Ecclesia</option>');
                     $('#hoe_row .row.g-3').html('');
                     return;
                 }
 
-                var filterCountry = (userType === 'Regional') ? country : '';
+                var filterCountry = (userType === 'Regional' || userType === 'G_R') ? country : '';
 
                 $.ajax({
                     url: "{{ route('get.ecclesias') }}",
@@ -1244,6 +1244,9 @@
                 if (is_ecclesia == 1) {
                     $("#hoe_row").show();
                     $("#ecclesia_main_input").hide();
+                    if ($('select[name="user_type"]').val() === 'Regional') {
+                        $('select[name="user_type"]').val('G_R').change();
+                    }
                 } else {
                     $("#hoe_row").hide();
                     $("#ecclesia_main_input").show();

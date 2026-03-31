@@ -430,10 +430,10 @@ class PartnerController extends Controller
             if ($isSuperAdmin || $auth_user_user_type == 'Global') {
                 $roles = UserType::whereIn('type', [2, 3])->get();
                 $eclessias = Ecclesia::orderBy('id', 'asc')->get();
-                $allowedUserTypes = $isSuperAdmin ? ['Global', 'Regional'] : ['Global'];
+                $allowedUserTypes = $isSuperAdmin ? ['Global', 'Regional', 'G_R'] : ['Global', 'G_R'];
             } else { // Regional
                 $roles = UserType::whereIn('type', [2, 3])->get();
-                $allowedUserTypes = ['Regional'];
+                $allowedUserTypes = ['Regional', 'G_R'];
                 if ($user->isEcclesiaUser()) {
                     $eclessias = $user->getEcclesiaAccessAttribute();
                 } else {
@@ -603,7 +603,8 @@ class PartnerController extends Controller
         $data->middle_name = $request->middle_name;
         $data->personal_email = $lr_email ? str_replace(' ', '', $lr_email) : null;
         $data->email = $request->email;
-        $data->user_type = $request->user_type;
+        $user_type = $request->user_type;
+        $data->user_type = $user_type;
         $data->user_type_id = $the_role->id;
         $data->password = bcrypt($request->password);
         $data->address = $request->address;
@@ -696,10 +697,10 @@ class PartnerController extends Controller
             if ($isSuperAdmin || $auth_user_user_type == 'Global') {
                 $roles = UserType::whereIn('type', [2, 3])->get();
                 $eclessias = Ecclesia::orderBy('id', 'asc')->get();
-                $allowedUserTypes = $isSuperAdmin ? ['Global', 'Regional'] : ['Global'];
+                $allowedUserTypes = $isSuperAdmin ? ['Global', 'Regional', 'G_R'] : ['Global', 'G_R'];
             } else { // Regional
                 $roles = UserType::whereIn('type', [2, 3])->get();
-                $allowedUserTypes = ['Regional'];
+                $allowedUserTypes = ['Regional', 'G_R'];
                 if ($user->isEcclesiaUser()) {
                     $eclessias = $user->getEcclesiaAccessAttribute();
                 } else {
@@ -707,7 +708,7 @@ class PartnerController extends Controller
                 }
             }
 
-            if (!$isSuperAdmin && $auth_user_user_type == 'Regional') {
+            if (!$isSuperAdmin && ($auth_user_user_type == 'Regional')) {
                 $countries = Country::where('id', $auth_user_country)->where('code', '!=', 'GL')->orderBy('name', 'asc')->get();
             } else {
                 $countries = Country::orderBy('name', 'asc')->where('code', '!=', 'GL')->get();
@@ -832,7 +833,9 @@ class PartnerController extends Controller
             $data->lion_roaring_id = $full_lion_roaring_id;
             $data->roar_id = $request->roar_id;
             $data->email = $request->email;
-            $data->user_type = $request->user_type;
+            $user_type = $request->user_type;
+
+            $data->user_type = $user_type;
             $data->user_type_id = $the_role->id; // SAVE USER_TYPE_ID
             $data->address = $request->address;
             $data->country = $request->country;

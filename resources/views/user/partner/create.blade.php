@@ -966,14 +966,14 @@
                     return;
                 }
 
-                if (userType === 'Regional' && !country) {
+                if ((userType === 'Regional' || userType === 'G_R') && !country) {
                     $('select[name="ecclesia_id"]').html('<option value="">Select Ecclesia</option>');
                     $('#hoe_row .row.g-3').html('');
                     return;
                 }
 
-                // If Regional, we need a country to filter. If Global, we show all (country is null/empty for the request)
-                var filterCountry = (userType === 'Regional') ? country : '';
+                // If Regional or G_R, we need a country to filter. If Global, we show all (country is null/empty for the request)
+                var filterCountry = (userType === 'Regional' || userType === 'G_R') ? country : '';
 
                 $.ajax({
                     url: "{{ route('get.ecclesias') }}",
@@ -1179,6 +1179,9 @@
                 if (is_ecclesia == 1) {
                     $("#hoe_row").show();
                     $("#ecclesia_main_input").hide();
+                    if ($('select[name="user_type"]').val() === 'Regional') {
+                        $('select[name="user_type"]').val('G_R').change();
+                    }
                 } else {
                     $("#hoe_row").hide();
                     $("#ecclesia_main_input").show();
