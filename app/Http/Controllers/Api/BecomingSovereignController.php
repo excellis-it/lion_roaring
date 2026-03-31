@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Models\Country;
 use App\Models\File;
 use App\Models\Topic;
 use App\Traits\ImageTrait;
@@ -121,8 +122,11 @@ class BecomingSovereignController extends Controller
         try {
             $new_topic = $request->topic ?? '';
 
-            $user_type = auth()->user()->user_type ?? 'Global';
-            $user_country = auth()->user()->country ?? null;
+            $user = auth()->user();
+            $user_type = $user->user_type ?? 'Global';
+            $user_country = $user->country ?? null;
+            $currentCountry = Country::findByCurrentRequest();
+            $isOnGlobalServer = $currentCountry && $currentCountry->is_global;
 
             $filesQuery = File::query()->where('type', 'Becoming Sovereign');
 
@@ -130,9 +134,30 @@ class BecomingSovereignController extends Controller
                 $filesQuery->where('topic_id', $new_topic);
             }
 
-            // Apply country filter for non-global users
-            if ($user_type !== 'Global' && $user_country) {
-                $filesQuery->where('country_id', $user_country);
+            // Apply country and user_type filter
+            if ($user_type == 'Global' || ($user_type == 'G_R' && $isOnGlobalServer)) {
+                $filesQuery->whereHas('country', function ($q) {
+                    $q->where('code', 'GL');
+                })->whereHas('user', function ($q) {
+                    $q->whereIn('user_type', ['Global', 'G_R']);
+                });
+            } elseif ($user_country) {
+                $filesQuery->where('country_id', $user_country)
+                    ->whereHas('user', function ($q) {
+                        $q->whereIn('user_type', ['Regional', 'G_R']);
+                    });
+
+                // Ecclesia filtering
+                if ($user->is_ecclesia_admin == 1) {
+                    $manage_ecclesia_ids = is_array($user->manage_ecclesia)
+                        ? $user->manage_ecclesia
+                        : explode(',', $user->manage_ecclesia ?? '');
+                    $filesQuery->where(function ($q) use ($manage_ecclesia_ids, $user) {
+                        $q->whereHas('user', function ($uq) use ($manage_ecclesia_ids) {
+                            $uq->whereIn('ecclesia_id', $manage_ecclesia_ids);
+                        })->orWhere('user_id', $user->id);
+                    });
+                }
             }
 
             // Paginate results to match user panel
@@ -145,7 +170,7 @@ class BecomingSovereignController extends Controller
             });
 
             // Topics should respect user scope (Global vs Regional)
-            if ($user_type == 'Global') {
+            if ($user_type == 'Global' || ($user_type == 'G_R' && $isOnGlobalServer)) {
                 $topics = Topic::orderBy('topic_name', 'asc')->where('education_type', 'Becoming Sovereign')->get();
             } else {
                 $topics = Topic::orderBy('topic_name', 'asc')->where('education_type', 'Becoming Sovereign')->where('country_id', $user_country)->get();
@@ -225,10 +250,35 @@ class BecomingSovereignController extends Controller
             }
 
             // Apply country filter based on authenticated user
-            $user_type = auth()->user()->user_type ?? 'Global';
-            $user_country = auth()->user()->country ?? null;
-            if ($user_type !== 'Global' && $user_country) {
-                $filesQuery->where('country_id', $user_country);
+            $user = auth()->user();
+            $user_type = $user->user_type ?? 'Global';
+            $user_country = $user->country ?? null;
+            $currentCountry = Country::findByCurrentRequest();
+            $isOnGlobalServer = $currentCountry && $currentCountry->is_global;
+
+            if ($user_type == 'Global' || ($user_type == 'G_R' && $isOnGlobalServer)) {
+                $filesQuery->whereHas('country', function ($q) {
+                    $q->where('code', 'GL');
+                })->whereHas('user', function ($q) {
+                    $q->whereIn('user_type', ['Global', 'G_R']);
+                });
+            } elseif ($user_country) {
+                $filesQuery->where('country_id', $user_country)
+                    ->whereHas('user', function ($q) {
+                        $q->whereIn('user_type', ['Regional', 'G_R']);
+                    });
+
+                // Ecclesia filtering
+                if ($user->is_ecclesia_admin == 1) {
+                    $manage_ecclesia_ids = is_array($user->manage_ecclesia)
+                        ? $user->manage_ecclesia
+                        : explode(',', $user->manage_ecclesia ?? '');
+                    $filesQuery->where(function ($q) use ($manage_ecclesia_ids, $user) {
+                        $q->whereHas('user', function ($uq) use ($manage_ecclesia_ids) {
+                            $uq->whereIn('ecclesia_id', $manage_ecclesia_ids);
+                        })->orWhere('user_id', $user->id);
+                    });
+                }
             }
 
             // Order and paginate the results
@@ -283,8 +333,10 @@ class BecomingSovereignController extends Controller
         try {
             $user_type = auth()->user()->user_type ?? 'Global';
             $user_country = auth()->user()->country ?? null;
+            $currentCountry = Country::findByCurrentRequest();
+            $isOnGlobalServer = $currentCountry && $currentCountry->is_global;
 
-            if ($user_type == 'Global') {
+            if ($user_type == 'Global' || ($user_type == 'G_R' && $isOnGlobalServer)) {
                 $topics = Topic::orderBy('topic_name', 'asc')->where('education_type', 'Becoming Sovereign')->get();
             } else {
                 $topics = Topic::orderBy('topic_name', 'asc')->where('education_type', 'Becoming Sovereign')->where('country_id', $user_country)->get();
@@ -345,8 +397,10 @@ class BecomingSovereignController extends Controller
         try {
             $user_type = auth()->user()->user_type ?? 'Global';
             $user_country = auth()->user()->country ?? null;
+            $currentCountry = Country::findByCurrentRequest();
+            $isOnGlobalServer = $currentCountry && $currentCountry->is_global;
 
-            if ($user_type === 'Global') {
+            if ($user_type === 'Global' || ($user_type === 'G_R' && $isOnGlobalServer)) {
                 $validated = Validator::make($request->all(), [
                     'file' => 'required|file',
                     'topic_id' => 'required|exists:topics,id',
@@ -378,7 +432,7 @@ class BecomingSovereignController extends Controller
             $file_upload = $this->imageUpload($file, 'files');
 
             // Check if a file with the same name and extension already exists
-            if ($user_type === 'Global') {
+            if ($user_type === 'Global' || ($user_type === 'G_R' && $isOnGlobalServer)) {
                 $check = File::where('file_name', $file_name)
                     ->where('file_extension', $file_extension)
                     ->first();
@@ -458,9 +512,11 @@ class BecomingSovereignController extends Controller
         try {
             $user_type = auth()->user()->user_type ?? 'Global';
             $user_country = auth()->user()->country ?? null;
+            $currentCountry = Country::findByCurrentRequest();
+            $isOnGlobalServer = $currentCountry && $currentCountry->is_global;
 
             // Find the file by ID within user scope (if not Global)
-            if ($user_type == 'Global') {
+            if ($user_type == 'Global' || ($user_type == 'G_R' && $isOnGlobalServer)) {
                 $file = File::findOrFail($id);
             } else {
                 $file = File::where('country_id', $user_country)->findOrFail($id);
@@ -525,8 +581,10 @@ class BecomingSovereignController extends Controller
         try {
             $user_type = auth()->user()->user_type ?? 'Global';
             $user_country = auth()->user()->country ?? null;
+            $currentCountry = Country::findByCurrentRequest();
+            $isOnGlobalServer = $currentCountry && $currentCountry->is_global;
 
-            if ($user_type === 'Global') {
+            if ($user_type === 'Global' || ($user_type === 'G_R' && $isOnGlobalServer)) {
                 $validatedData = $request->validate([
                     'topic_id' => 'required|exists:topics,id',
                     'file' => 'file',
@@ -543,7 +601,7 @@ class BecomingSovereignController extends Controller
             }
 
             // Find the file respecting country scope for non-global users
-            if ($user_type == 'Global') {
+            if ($user_type == 'Global' || ($user_type == 'G_R' && $isOnGlobalServer)) {
                 $file = File::findOrFail($id);
             } else {
                 $file = File::where('country_id', $country_id)->findOrFail($id);
@@ -555,7 +613,7 @@ class BecomingSovereignController extends Controller
                 $file_extension = $request->file('file')->getClientOriginalExtension();
 
                 // Check if a file with the same name and extension exists (respect country scope)
-                if ($user_type === 'Global') {
+                if ($user_type === 'Global' || ($user_type === 'G_R' && $isOnGlobalServer)) {
                     $existingFile = File::where('file_name', $file_name)
                         ->where('file_extension', $file_extension)
                         ->first();
@@ -631,8 +689,10 @@ class BecomingSovereignController extends Controller
         try {
             $user_type = auth()->user()->user_type ?? 'Global';
             $user_country = auth()->user()->country ?? null;
+            $currentCountry = Country::findByCurrentRequest();
+            $isOnGlobalServer = $currentCountry && $currentCountry->is_global;
 
-            if ($user_type == 'Global') {
+            if ($user_type == 'Global' || ($user_type == 'G_R' && $isOnGlobalServer)) {
                 $file = File::find($id);
             } else {
                 $file = File::where('country_id', $user_country)->find($id);
@@ -682,8 +742,10 @@ class BecomingSovereignController extends Controller
         try {
             $user_type = auth()->user()->user_type ?? 'Global';
             $user_country = auth()->user()->country ?? null;
+            $currentCountry = Country::findByCurrentRequest();
+            $isOnGlobalServer = $currentCountry && $currentCountry->is_global;
 
-            if ($user_type == 'Global') {
+            if ($user_type == 'Global' || ($user_type == 'G_R' && $isOnGlobalServer)) {
                 $file = File::find($id);
             } else {
                 $file = File::where('country_id', $user_country)->find($id);

@@ -26,27 +26,51 @@ class BecomingSovereignController extends Controller
             $user_country = $user->country;
 
             if (!$user->hasNewRole('SUPER ADMIN')) {
-                if ($user_type == 'Global') {
+                $currentCountry = Country::findByCurrentRequest();
+                $isOnGlobalServer = $currentCountry && $currentCountry->is_global;
+
+                if ($user_type == 'Global' || ($user_type == 'G_R' && $isOnGlobalServer)) {
+                    $filesQuery = File::orderBy('id', 'desc')->where('type', 'Becoming Sovereign')
+                        ->whereHas('country', function ($query) {
+                            $query->where('code', 'GL');
+                        })
+                        ->whereHas('user', function ($query) {
+                            $query->whereIn('user_type', ['Global', 'G_R']);
+                        });
                     if (isset($request->topic)) {
                         $new_topic = $request->topic;
-                        $files = File::orderBy('id', 'desc')->where('type', 'Becoming Sovereign')->whereHas('country', function ($query) {
-                            $query->where('code', 'GL');
-                        })->where('topic_id', $request->topic)->paginate(15);
+                        $files = $filesQuery->where('topic_id', $request->topic)->paginate(15);
                     } else {
-                        $files = File::orderBy('id', 'desc')->where('type', 'Becoming Sovereign')->whereHas('country', function ($query) {
-                            $query->where('code', 'GL');
-                        })->paginate(15);
+                        $files = $filesQuery->paginate(15);
                         $new_topic = '';
                     }
                     $topics = Topic::orderBy('topic_name', 'asc')->where('education_type', 'Becoming Sovereign')->whereHas('country', function ($query) {
                         $query->where('code', 'GL');
                     })->get();
                 } else {
+                    $filesQuery = File::orderBy('id', 'desc')->where('type', 'Becoming Sovereign')
+                        ->where('country_id', $user_country)
+                        ->whereHas('user', function ($query) {
+                            $query->whereIn('user_type', ['Regional', 'G_R']);
+                        });
+
+                    // Ecclesia filtering
+                    if ($user->is_ecclesia_admin == 1) {
+                        $manage_ecclesia_ids = is_array($user->manage_ecclesia)
+                            ? $user->manage_ecclesia
+                            : explode(',', $user->manage_ecclesia ?? '');
+                        $filesQuery->where(function ($q) use ($manage_ecclesia_ids, $user) {
+                            $q->whereHas('user', function ($uq) use ($manage_ecclesia_ids) {
+                                $uq->whereIn('ecclesia_id', $manage_ecclesia_ids);
+                            })->orWhere('user_id', $user->id);
+                        });
+                    }
+
                     if (isset($request->topic)) {
                         $new_topic = $request->topic;
-                        $files = File::orderBy('id', 'desc')->where('type', 'Becoming Sovereign')->where('topic_id', $request->topic)->where('country_id', $user_country)->paginate(15);
+                        $files = $filesQuery->where('topic_id', $request->topic)->paginate(15);
                     } else {
-                        $files = File::orderBy('id', 'desc')->where('type', 'Becoming Sovereign')->where('country_id', $user_country)->paginate(15);
+                        $files = $filesQuery->paginate(15);
                         $new_topic = '';
                     }
                     $topics = Topic::orderBy('topic_name', 'asc')->where('education_type', 'Becoming Sovereign')->where('country_id', $user_country)->get();
@@ -76,7 +100,10 @@ class BecomingSovereignController extends Controller
             $user_type = $user->user_type;
             $user_country = $user->country;
             if (!$user->hasNewRole('SUPER ADMIN')) {
-                if ($user_type == 'Global') {
+                $currentCountry = Country::findByCurrentRequest();
+                $isOnGlobalServer = $currentCountry && $currentCountry->is_global;
+
+                if ($user_type == 'Global' || ($user_type == 'G_R' && $isOnGlobalServer)) {
                     $topics = Topic::orderBy('topic_name', 'asc')->where('education_type', 'Becoming Sovereign')->whereHas('country', function ($query) {
                         $query->where('code', 'GL');
                     })->get();
@@ -97,10 +124,13 @@ class BecomingSovereignController extends Controller
     public function store(Request $request)
     {
         $country_id_ex = null;
-        if (auth()->user()->user_type == 'Global') {
+        $currentCountry = Country::findByCurrentRequest();
+        $isOnGlobalServer = $currentCountry && $currentCountry->is_global;
+
+        if (auth()->user()->user_type == 'Global' || (auth()->user()->user_type == 'G_R' && $isOnGlobalServer)) {
             $country = Country::where('code', 'GL')->first();
             $country_id_ex = $country->id;
-        } elseif (auth()->user()->user_type == 'Regional') {
+        } else {
             $country_id_ex = auth()->user()->country;
         }
 
@@ -130,7 +160,7 @@ class BecomingSovereignController extends Controller
         // Check if a file with the same name and extension already exists
         $user = auth()->user();
         if (!$user->hasNewRole('SUPER ADMIN')) {
-            if (auth()->user()->user_type == 'Global') {
+            if (auth()->user()->user_type == 'Global' || (auth()->user()->user_type == 'G_R' && $isOnGlobalServer)) {
                 $check = File::where('file_name', $file_name)->where('file_extension', $file_extension)->whereHas('country', function ($query) {
                     $query->where('code', 'GL');
                 })->first();
@@ -237,16 +267,34 @@ class BecomingSovereignController extends Controller
 
 
             if (!$user->hasNewRole('SUPER ADMIN')) {
-                if ($user_type == 'Regional') {
-                    $files->where('country_id', $user_country);
-                } elseif ($user_type == 'Global') {
+                $currentCountry = Country::findByCurrentRequest();
+                $isOnGlobalServer = $currentCountry && $currentCountry->is_global;
+
+                if ($user_type == 'Global' || ($user_type == 'G_R' && $isOnGlobalServer)) {
                     $files->whereHas('country', function ($query) {
                         $query->where('code', 'GL');
+                    })->whereHas('user', function ($query) {
+                        $query->whereIn('user_type', ['Global', 'G_R']);
                     });
+                } else {
+                    $files->where('country_id', $user_country)
+                        ->whereHas('user', function ($query) {
+                            $query->whereIn('user_type', ['Regional', 'G_R']);
+                        });
+
+                    // Ecclesia filtering
+                    if ($user->is_ecclesia_admin == 1) {
+                        $manage_ecclesia_ids = is_array($user->manage_ecclesia)
+                            ? $user->manage_ecclesia
+                            : explode(',', $user->manage_ecclesia ?? '');
+                        $files->where(function ($q) use ($manage_ecclesia_ids, $user) {
+                            $q->whereHas('user', function ($uq) use ($manage_ecclesia_ids) {
+                                $uq->whereIn('ecclesia_id', $manage_ecclesia_ids);
+                            })->orWhere('user_id', $user->id);
+                        });
+                    }
                 }
             }
-
-
 
 
             $files = $files->where('type', 'Becoming Sovereign')
@@ -265,7 +313,10 @@ class BecomingSovereignController extends Controller
             $user_country = $user->country;
 
             if (!$user->hasNewRole('SUPER ADMIN')) {
-                if ($user_type == 'Global') {
+                $currentCountry = Country::findByCurrentRequest();
+                $isOnGlobalServer = $currentCountry && $currentCountry->is_global;
+
+                if ($user_type == 'Global' || ($user_type == 'G_R' && $isOnGlobalServer)) {
                     $file = File::whereHas('country', function ($query) {
                         $query->where('code', 'GL');
                     })->findOrFail($id);
@@ -285,7 +336,7 @@ class BecomingSovereignController extends Controller
 
             if ($file) {
                 if (!$user->hasNewRole('SUPER ADMIN')) {
-                    if ($user_type == 'Global') {
+                    if ($user_type == 'Global' || ($user_type == 'G_R' && $isOnGlobalServer)) {
                         $topics = Topic::orderBy('topic_name', 'asc')->where('education_type', 'Becoming Sovereign')->whereHas('country', function ($query) {
                             $query->where('code', 'GL');
                         })->get();
@@ -310,10 +361,13 @@ class BecomingSovereignController extends Controller
 
          $user = auth()->user();
         $country_id_ex = null;
-        if ($user->user_type == 'Global') {
+        $currentCountry = Country::findByCurrentRequest();
+        $isOnGlobalServer = $currentCountry && $currentCountry->is_global;
+
+        if ($user->user_type == 'Global' || ($user->user_type == 'G_R' && $isOnGlobalServer)) {
             $country = Country::where('code', 'GL')->first();
             $country_id_ex = $country->id;
-        } elseif ($user->user_type == 'Regional') {
+        } else {
             $country_id_ex = $user->country;
         }
 
@@ -331,7 +385,7 @@ class BecomingSovereignController extends Controller
         $user_country = $country_id;
 
         if (!$user->hasNewRole('SUPER ADMIN')) {
-            if ($user_type == 'Global') {
+            if ($user_type == 'Global' || ($user_type == 'G_R' && $isOnGlobalServer)) {
                 $file = File::whereHas('country', function ($query) {
                     $query->where('code', 'GL');
                 })->findOrFail($id);
@@ -355,7 +409,7 @@ class BecomingSovereignController extends Controller
 
             // Check if a file with the same name and extension already exists
             if (!$user->hasNewRole('SUPER ADMIN')) {
-                if ($user_type == 'Global') {
+                if ($user_type == 'Global' || ($user_type == 'G_R' && $isOnGlobalServer)) {
                     $check = File::where('file_name', $file_name)->where('file_extension', $file_extension)->whereHas('country', function ($query) {
                         $query->where('code', 'GL');
                     })->first();

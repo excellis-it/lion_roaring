@@ -24,7 +24,10 @@ class TopicController extends Controller
         if (Auth::user()->can('Manage Topic')) {
             $user = Auth::user();
             if (!$user->hasNewRole('SUPER ADMIN')) {
-                if ($user->user_type == 'Global') {
+                $currentCountry = Country::findByCurrentRequest();
+                $isOnGlobalServer = $currentCountry && $currentCountry->is_global;
+
+                if ($user->user_type == 'Global' || ($user->user_type == 'G_R' && $isOnGlobalServer)) {
                     $topics = Topic::orderBy('id', 'desc')->whereHas('country', function ($query) {
                         $query->where('code', 'GL');
                     })->paginate(15);
@@ -65,10 +68,13 @@ class TopicController extends Controller
     public function store(Request $request)
     {
         $country_id_ex = null;
-        if (auth()->user()->user_type == 'Global') {
+        $currentCountry = Country::findByCurrentRequest();
+        $isOnGlobalServer = $currentCountry && $currentCountry->is_global;
+
+        if (auth()->user()->user_type == 'Global' || (auth()->user()->user_type == 'G_R' && $isOnGlobalServer)) {
             $country = Country::where('code', 'GL')->first();
             $country_id_ex = $country->id;
-        } elseif (auth()->user()->user_type == 'Regional') {
+        } else {
             $country_id_ex = auth()->user()->country;
         }
 
@@ -150,10 +156,13 @@ class TopicController extends Controller
         if (Auth::user()->can('Edit Topic')) {
             $id = Crypt::decrypt($id);
             $country_id_ex = null;
-            if (auth()->user()->user_type == 'Global') {
+            $currentCountry = Country::findByCurrentRequest();
+            $isOnGlobalServer = $currentCountry && $currentCountry->is_global;
+
+            if (auth()->user()->user_type == 'Global' || (auth()->user()->user_type == 'G_R' && $isOnGlobalServer)) {
                 $country = Country::where('code', 'GL')->first();
                 $country_id_ex = $country->id;
-            } elseif (auth()->user()->user_type == 'Regional') {
+            } else {
                 $country_id_ex = auth()->user()->country;
             }
 

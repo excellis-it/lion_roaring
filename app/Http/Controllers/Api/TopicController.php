@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Topic;
+use App\Models\Country;
 use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\Rule;
@@ -80,8 +81,10 @@ class TopicController extends Controller
         try {
             $user_type = auth()->user()->user_type ?? 'Global';
             $user_country = auth()->user()->country ?? null;
+            $currentCountry = Country::findByCurrentRequest();
+            $isOnGlobalServer = $currentCountry && $currentCountry->is_global;
 
-            if ($user_type == 'Global') {
+            if ($user_type == 'Global' || ($user_type == 'G_R' && $isOnGlobalServer)) {
                 $topics = Topic::orderBy('id', 'desc')->paginate(15);
             } else {
                 $topics = Topic::where('country_id', $user_country)->orderBy('id', 'desc')->paginate(15);
@@ -122,8 +125,10 @@ class TopicController extends Controller
         try {
             $user_type = auth()->user()->user_type ?? 'Global';
             $user_country = auth()->user()->country ?? null;
+            $currentCountry = Country::findByCurrentRequest();
+            $isOnGlobalServer = $currentCountry && $currentCountry->is_global;
 
-            if ($user_type === 'Global') {
+            if ($user_type === 'Global' || ($user_type === 'G_R' && $isOnGlobalServer)) {
                 $request->validate([
                     'topic_name' => [
                         'required',
@@ -234,8 +239,10 @@ class TopicController extends Controller
         try {
             $user_type = auth()->user()->user_type ?? 'Global';
             $user_country = auth()->user()->country ?? null;
+            $currentCountry = Country::findByCurrentRequest();
+            $isOnGlobalServer = $currentCountry && $currentCountry->is_global;
 
-            if ($user_type === 'Global') {
+            if ($user_type === 'Global' || ($user_type === 'G_R' && $isOnGlobalServer)) {
                 $request->validate([
                     'topic_name' => [
                         'required',

@@ -156,7 +156,7 @@ class User extends Authenticatable
     // is ecclesia user
     public function isEcclesiaUser()
     {
-        return $this->roles->pluck('is_ecclesia')->first() == 1 ? true : false;
+        return $this->userRole->pluck('is_ecclesia')->first() == 1 ? true : false;
     }
 
     /**
@@ -187,7 +187,8 @@ class User extends Authenticatable
                 ->where('country', $authUser->country);
 
             // If ecclesia role, also filter by same ecclesia
-            if ($authUser->isEcclesiaUser()) {
+            $is_user_ecclesia_admin = $authUser->is_ecclesia_admin;
+            if ($is_user_ecclesia_admin == 1) {
                 $manage_ecclesia_ids = is_array($authUser->manage_ecclesia)
                     ? $authUser->manage_ecclesia
                     : explode(',', $authUser->manage_ecclesia);
