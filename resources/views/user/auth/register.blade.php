@@ -1104,8 +1104,8 @@
                 <div class="modal-body">
                     <div class="tier-grid">
                         @foreach ($tiers as $index => $tier)
-                            @php $is_featured = ($index == 1) ? 'featured' : ''; @endphp
-                            <div class="tier-card {{ $is_featured }}">
+                            {{-- @php $is_featured = ($index == 0) ? 'featured' : ''; @endphp --}}
+                            <div class="tier-card" id="featured_{{ $index }}">
                                 <div class="tier-name">{{ $tier->name }}</div>
                                 <div class="tier-price">
                                     @if (($tier->pricing_type ?? 'amount') === 'token')
@@ -1394,6 +1394,15 @@
                             // Check if Tier is selected
                             if ($('#tier_id').length === 0) {
                                 $('#tierModal').modal('show');
+                                //check value exist at ecclessia if exist first tier featured else two
+                                var ecclessia_id = formData.get('ecclesia_id');
+                                if (ecclessia_id != '') {
+                                    $('#featured_1').removeClass('featured');
+                                    $('#featured_0').addClass('featured');
+                                } else {
+                                    $('#featured_1').addClass('featured');
+                                    $('#featured_0').removeClass('featured');
+                                }
                             } else {
                                 // Tier selected; token tiers need agreement, amount tiers need payment
                                 var type = $('#tier_pricing_type').val() || 'amount';
@@ -1571,7 +1580,9 @@
                     stripe.createToken(card).then(function(result) {
                         if (result.error) {
                             $('#card-errors').text(result.error.message);
-                            btn.prop('disabled', false).html('Complete Payment <i class="fas fa-lock" style="font-size: 0.8em; margin-left: 5px;"></i>');
+                            btn.prop('disabled', false).html(
+                                'Complete Payment <i class="fas fa-lock" style="font-size: 0.8em; margin-left: 5px;"></i>'
+                                );
                         } else {
                             // Send the token to your server.
                             $('#stripeToken').remove();
@@ -1735,7 +1746,9 @@
                         $('#confirm-payment-btn').text('Complete Registration');
                     } else {
                         $('#card-payment-group').show();
-                        $('#confirm-payment-btn').html('Complete Payment <i class="fas fa-lock" style="font-size: 0.8em; margin-left: 5px;"></i>');
+                        $('#confirm-payment-btn').html(
+                            'Complete Payment <i class="fas fa-lock" style="font-size: 0.8em; margin-left: 5px;"></i>'
+                            );
                     }
                 }
             }
