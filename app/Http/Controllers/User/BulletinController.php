@@ -21,16 +21,33 @@ class BulletinController extends Controller
     public function index()
     {
         if (Auth::user()->can('Manage Bulletin')) {
+            $user = auth()->user();
             $user_type = auth()->user()->user_type;
             $user_country = auth()->user()->country;
+            $currentCountry = Country::findByCurrentRequest();
+            $isOnGlobalServer = $currentCountry && $currentCountry->is_global;
+
 
             if (Auth::user()->hasNewRole('SUPER ADMIN')) {
                 $bulletins = Bulletin::orderBy('id', 'desc')->paginate(15);
             } else {
-                if ($user_type == 'Global') {
+                if ($user_type == 'Global' || ($user_type == 'G_R' && $isOnGlobalServer)) {
                     $bulletins = Bulletin::where('user_id', Auth::user()->id)->orderBy('id', 'desc')->paginate(15);
                 } else {
-                    $bulletins = Bulletin::where('user_id', Auth::user()->id)->where('country_id', $user_country)->orderBy('id', 'desc')->paginate(15);
+                    $bulletins = Bulletin::where('user_id', Auth::user()->id)->orderBy('id', 'desc')->where('country_id', $user_country)->whereHas('user', function ($query) {
+                        $query->whereIn('user_type', ['Regional', 'G_R']);
+                    });
+                    if ($user->is_ecclesia_admin == 1) {
+                        $manage_ecclesia_ids = is_array($user->manage_ecclesia)
+                            ? $user->manage_ecclesia
+                            : explode(',', $user->manage_ecclesia ?? '');
+                        $bulletins->where(function ($q) use ($manage_ecclesia_ids, $user) {
+                            $q->whereHas('user', function ($uq) use ($manage_ecclesia_ids) {
+                                $uq->whereIn('ecclesia_id', $manage_ecclesia_ids);
+                            })->orWhere('user_id', $user->id);
+                        });
+                    }
+                    $bulletins = $bulletins->paginate(15);
                 }
             }
 
@@ -68,10 +85,12 @@ class BulletinController extends Controller
             $user_type = $user->user_type;
             $user_country = $user->country;
             $country_id_ex = null;
-            if ($user_type == 'Global') {
+            $currentCountry = Country::findByCurrentRequest();
+            $isOnGlobalServer = $currentCountry && $currentCountry->is_global;
+            if ($user_type == 'Global' || ($user_type == 'G_R' && $isOnGlobalServer)) {
                 $country = Country::where('code', 'GL')->first();
                 $country_id_ex = $country->id;
-            } elseif ($user_type == 'Regional') {
+            } else {
                 $country_id_ex = $user_country;
             }
 
@@ -128,13 +147,16 @@ class BulletinController extends Controller
     public function edit($id)
     {
         if (Auth::user()->can('Edit Bulletin')) {
-            $user_type = auth()->user()->user_type;
-            $user_country = auth()->user()->country;
+            $user = auth()->user();
+            $user_type = $user->user_type;
+            $user_country = $user->country;
+            $currentCountry = Country::findByCurrentRequest();
+            $isOnGlobalServer = $currentCountry && $currentCountry->is_global;
 
             if (auth()->user()->hasNewRole('SUPER ADMIN')) {
                 $bulletin = Bulletin::find($id);
             } else {
-                if ($user_type == 'Global') {
+                if ($user_type == 'Global' || ($user_type == 'G_R' && $isOnGlobalServer)) {
                     $bulletin = Bulletin::where('user_id', Auth::user()->id)->find($id);
                 } else {
                     $bulletin = Bulletin::where('user_id', Auth::user()->id)->where('country_id', $user_country)->find($id);
@@ -164,10 +186,12 @@ class BulletinController extends Controller
             $user_type = $user->user_type;
             $user_country = $user->country;
             $country_id_ex = null;
-            if ($user_type == 'Global') {
+            $currentCountry = Country::findByCurrentRequest();
+            $isOnGlobalServer = $currentCountry && $currentCountry->is_global;
+            if ($user_type == 'Global' || ($user_type == 'G_R' && $isOnGlobalServer)) {
                 $country = Country::where('code', 'GL')->first();
                 $country_id_ex = $country->id;
-            } elseif ($user_type == 'Regional') {
+            } else {
                 $country_id_ex = $user_country;
             }
 
@@ -246,6 +270,8 @@ class BulletinController extends Controller
             $sort_type = $request->get('sorttype', 'asc'); // Default sort type 'asc'
             $query = $request->get('query', '');
             $query = str_replace(" ", "%", $query);
+            $currentCountry = Country::findByCurrentRequest();
+            $isOnGlobalServer = $currentCountry && $currentCountry->is_global;
 
             if ($request->ajax()) {
                 $sort_by = $request->get('sortby', 'id'); // Default sort by 'id'
@@ -272,15 +298,29 @@ class BulletinController extends Controller
                         });
                 }
 
-                if(!Auth::user()->hasNewRole('SUPER ADMIN')){
-                    if (auth()->user()->user_type == 'Global') {
+                if (!Auth::user()->hasNewRole('SUPER ADMIN')) {
+                    if (auth()->user()->user_type == 'Global' || (auth()->user()->user_type == 'G_R' && $isOnGlobalServer)) {
                         $bulletins = $bulletins->orderBy($sort_by, $sort_type)->whereHas('country', function ($query) {
                             $query->where('code', 'GL');
                         })->paginate(15);
                     } else {
-                        $bulletins = $bulletins->where('country_id', auth()->user()->country)->orderBy($sort_by, $sort_type)->paginate(15);
+                        $bulletins = $bulletins->where('country_id', auth()->user()->country)->whereHas('user', function ($query) {
+                            $query->whereIn('user_type', ['Regional', 'G_R']);
+                        });
+                        // dd($bulletins->get()->toArray());
+                        if (auth()->user()->is_ecclesia_admin == 1) {
+                            $manage_ecclesia_ids = is_array(auth()->user()->manage_ecclesia)
+                                ? auth()->user()->manage_ecclesia
+                                : explode(',', auth()->user()->manage_ecclesia ?? '');
+                            $bulletins = $bulletins->where(function ($q) use ($manage_ecclesia_ids) {
+                                $q->whereHas('user', function ($uq) use ($manage_ecclesia_ids) {
+                                    $uq->whereIn('ecclesia_id', $manage_ecclesia_ids);
+                                })->orWhere('user_id', auth()->user()->id);
+                            });
+                        }
+                        $bulletins = $bulletins->orderBy($sort_by, $sort_type)->paginate(15);
                     }
-                }else{
+                } else {
                     $bulletins = $bulletins->orderBy($sort_by, $sort_type)->paginate(15);
                 }
             }

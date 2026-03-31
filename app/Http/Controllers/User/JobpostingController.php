@@ -25,14 +25,32 @@ class JobpostingController extends Controller
             $user = auth()->user();
             $user_type = $user->user_type;
             $user_country = $user->country;
+            $currentCountry = Country::findByCurrentRequest();
+            $isOnGlobalServer = $currentCountry && $currentCountry->is_global;
 
             if (!$user->hasNewRole('SUPER ADMIN')) {
-                if ($user_type == 'Global') {
+                if ($user_type == 'Global' || ($user_type == 'G_R' && $isOnGlobalServer)) {
                     $jobs = Job::orderBy('id', 'desc')->whereHas('country', function ($query) {
                         $query->where('code', 'GL');
+                    })->whereHas('user', function ($query) {
+                        $query->whereIn('user_type', ['Global', 'G_R']);
                     })->paginate(15);
                 } else {
-                    $jobs = Job::where('country_id', $user_country)->orderBy('id', 'desc')->paginate(15);
+                    $jobsQuery = Job::where('country_id', $user_country)->orderBy('id', 'desc')->whereHas('user', function ($query) {
+                        $query->whereIn('user_type', ['Regional', 'G_R']);
+                    });
+
+                    if ($user->is_ecclesia_admin == 1) {
+                        $manage_ecclesia_ids = is_array($user->manage_ecclesia)
+                            ? $user->manage_ecclesia
+                            : explode(',', $user->manage_ecclesia ?? '');
+                        $jobsQuery->where(function ($q) use ($manage_ecclesia_ids, $user) {
+                            $q->whereHas('user', function ($uq) use ($manage_ecclesia_ids) {
+                                $uq->whereIn('ecclesia_id', $manage_ecclesia_ids);
+                            })->orWhere('created_by', $user->id);
+                        });
+                    }
+                    $jobs = $jobsQuery->paginate(15);
                 }
             } else {
                 $jobs = Job::orderBy('id', 'desc')->paginate(15);
@@ -74,10 +92,13 @@ class JobpostingController extends Controller
             $user_type = $user->user_type;
             $user_country = $user->country;
             $country_id_ex = null;
-            if ($user_type == 'Global') {
+            $currentCountry = Country::findByCurrentRequest();
+            $isOnGlobalServer = $currentCountry && $currentCountry->is_global;
+
+            if ($user_type == 'Global' || ($user_type == 'G_R' && $isOnGlobalServer)) {
                 $country = Country::where('code', 'GL')->first();
                 $country_id_ex = $country->id;
-            } elseif ($user_type == 'Regional') {
+            } else {
                 $country_id_ex = $user_country;
             }
 
@@ -137,7 +158,10 @@ class JobpostingController extends Controller
             $user_country = $user->country;
 
             if (!$user->hasNewRole('SUPER ADMIN')) {
-                if ($user_type == 'Global') {
+                $currentCountry = Country::findByCurrentRequest();
+                $isOnGlobalServer = $currentCountry && $currentCountry->is_global;
+
+                if ($user_type == 'Global' || ($user_type == 'G_R' && $isOnGlobalServer)) {
                     $job = Job::whereHas('country', function ($query) {
                         $query->where('code', 'GL');
                     })->findOrFail($id);
@@ -167,7 +191,10 @@ class JobpostingController extends Controller
 
         $countries = Country::orderBy('name', 'asc')->get();
         if (!$user->hasNewRole('SUPER ADMIN')) {
-            if ($user_type == 'Global') {
+            $currentCountry = Country::findByCurrentRequest();
+            $isOnGlobalServer = $currentCountry && $currentCountry->is_global;
+
+            if ($user_type == 'Global' || ($user_type == 'G_R' && $isOnGlobalServer)) {
                 $job = Job::whereHas('country', function ($query) {
                     $query->where('code', 'GL');
                 })->findOrFail($id);
@@ -199,10 +226,13 @@ class JobpostingController extends Controller
             $user_type = $user->user_type;
             $user_country = $user->country;
             $country_id_ex = null;
-            if ($user_type == 'Global') {
+            $currentCountry = Country::findByCurrentRequest();
+            $isOnGlobalServer = $currentCountry && $currentCountry->is_global;
+
+            if ($user_type == 'Global' || ($user_type == 'G_R' && $isOnGlobalServer)) {
                 $country = Country::where('code', 'GL')->first();
                 $country_id_ex = $country->id;
-            } elseif ($user_type == 'Regional') {
+            } else {
                 $country_id_ex = $user_country;
             }
 
@@ -284,12 +314,32 @@ class JobpostingController extends Controller
             $user_country = $user->country;
 
             if (!$user->hasNewRole('SUPER ADMIN')) {
-                if ($user_type == 'Global') {
+                $currentCountry = Country::findByCurrentRequest();
+                $isOnGlobalServer = $currentCountry && $currentCountry->is_global;
+
+                if ($user_type == 'Global' || ($user_type == 'G_R' && $isOnGlobalServer)) {
                     $jobs = $jobs->whereHas('country', function ($query) {
                         $query->where('code', 'GL');
+                    })->whereHas('user', function ($query) {
+                        $query->whereIn('user_type', ['Global', 'G_R']);
                     })->orderBy($sort_by, $sort_type)->paginate(10);
                 } else {
-                    $jobs = $jobs->where('country_id', $user_country)->orderBy($sort_by, $sort_type)->paginate(10);
+                    $jobs = $jobs->where('country_id', $user_country)->whereHas('user', function ($query) {
+                        $query->whereIn('user_type', ['Regional', 'G_R']);
+                    });
+
+                    if ($user->is_ecclesia_admin == 1) {
+                        $manage_ecclesia_ids = is_array($user->manage_ecclesia)
+                            ? $user->manage_ecclesia
+                            : explode(',', $user->manage_ecclesia ?? '');
+                        $jobs->where(function ($q) use ($manage_ecclesia_ids, $user) {
+                            $q->whereHas('user', function ($uq) use ($manage_ecclesia_ids) {
+                                $uq->whereIn('ecclesia_id', $manage_ecclesia_ids);
+                            })->orWhere('created_by', $user->id);
+                        });
+                    }
+
+                    $jobs = $jobs->orderBy($sort_by, $sort_type)->paginate(10);
                 }
             } else {
                 $jobs = $jobs->orderBy($sort_by, $sort_type)->paginate(10);

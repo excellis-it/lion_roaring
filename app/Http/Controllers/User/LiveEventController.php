@@ -33,21 +33,38 @@ class LiveEventController extends Controller
                 ->whereIn('status', ['confirmed', 'pending'])
                 ->pluck('event_id');
 
-            if ($user_type == 'Global') {
+            $currentCountry = Country::findByCurrentRequest();
+            $isOnGlobalServer = $currentCountry && $currentCountry->is_global;
+
+            if ($user_type == 'Global' || ($user_type == 'G_R' && $isOnGlobalServer)) {
                 $events = Event::with(['rsvps', 'payments'])->orderBy('id', 'desc')
                     ->where(function ($query) use ($rsvpEventIds) {
                         $query->whereHas('country', function ($q) {
                             $q->where('code', 'GL');
                         })->orWhereIn('id', $rsvpEventIds);
-                    })
-                    ->get();
+                    })->whereHas('user', function ($query) {
+                        $query->whereIn('user_type', ['Global', 'G_R']);
+                    })->get();
             } else {
-                $events = Event::with(['rsvps', 'payments'])->orderBy('id', 'desc')
+                $eventsQuery = Event::with(['rsvps', 'payments'])->orderBy('id', 'desc')
                     ->where(function ($query) use ($user_country, $rsvpEventIds) {
                         $query->where('country_id', $user_country)
                               ->orWhereIn('id', $rsvpEventIds);
-                    })
-                    ->get();
+                    })->whereHas('user', function ($query) {
+                        $query->whereIn('user_type', ['Regional', 'G_R']);
+                    });
+
+                if ($user->is_ecclesia_admin == 1) {
+                    $manage_ecclesia_ids = is_array($user->manage_ecclesia)
+                        ? $user->manage_ecclesia
+                        : explode(',', $user->manage_ecclesia ?? '');
+                    $eventsQuery->where(function ($q) use ($manage_ecclesia_ids, $user) {
+                        $q->whereHas('user', function ($uq) use ($manage_ecclesia_ids) {
+                            $uq->whereIn('ecclesia_id', $manage_ecclesia_ids);
+                        })->orWhere('user_id', $user->id);
+                    });
+                }
+                $events = $eventsQuery->get();
             }
         } else {
             $events = Event::with(['rsvps', 'payments'])->orderBy('id', 'desc')->get();
@@ -70,21 +87,38 @@ class LiveEventController extends Controller
                 ->whereIn('status', ['confirmed', 'pending'])
                 ->pluck('event_id');
 
-            if ($user_type == 'Global') {
+            $currentCountry = Country::findByCurrentRequest();
+            $isOnGlobalServer = $currentCountry && $currentCountry->is_global;
+
+            if ($user_type == 'Global' || ($user_type == 'G_R' && $isOnGlobalServer)) {
                 $events = Event::orderBy('id', 'desc')
                     ->where(function ($query) use ($rsvpEventIds) {
                         $query->whereHas('country', function ($q) {
                             $q->where('code', 'GL');
                         })->orWhereIn('id', $rsvpEventIds);
-                    })
-                    ->get();
+                    })->whereHas('user', function ($query) {
+                        $query->whereIn('user_type', ['Global', 'G_R']);
+                    })->get();
             } else {
-                $events = Event::orderBy('id', 'desc')
+                $eventsQuery = Event::orderBy('id', 'desc')
                     ->where(function ($query) use ($user_country, $rsvpEventIds) {
                         $query->where('country_id', $user_country)
                               ->orWhereIn('id', $rsvpEventIds);
-                    })
-                    ->get();
+                    })->whereHas('user', function ($query) {
+                        $query->whereIn('user_type', ['Regional', 'G_R']);
+                    });
+
+                if ($user->is_ecclesia_admin == 1) {
+                    $manage_ecclesia_ids = is_array($user->manage_ecclesia)
+                        ? $user->manage_ecclesia
+                        : explode(',', $user->manage_ecclesia ?? '');
+                    $eventsQuery->where(function ($q) use ($manage_ecclesia_ids, $user) {
+                        $q->whereHas('user', function ($uq) use ($manage_ecclesia_ids) {
+                            $uq->whereIn('ecclesia_id', $manage_ecclesia_ids);
+                        })->orWhere('user_id', $user->id);
+                    });
+                }
+                $events = $eventsQuery->get();
             }
         } else {
             $events = Event::orderBy('id', 'desc')->get();
@@ -144,10 +178,13 @@ class LiveEventController extends Controller
         $user_type = $user->user_type;
         $user_country = $user->country;
         $country_id_ex = null;
-        if ($user_type == 'Global') {
+        $currentCountry = Country::findByCurrentRequest();
+        $isOnGlobalServer = $currentCountry && $currentCountry->is_global;
+
+        if ($user_type == 'Global' || ($user_type == 'G_R' && $isOnGlobalServer)) {
             $country = Country::where('code', 'GL')->first();
             $country_id_ex = $country->id;
-        } elseif ($user_type == 'Regional') {
+        } else {
             $country_id_ex = $user_country;
         }
 
@@ -226,10 +263,13 @@ class LiveEventController extends Controller
         $user_type = $user->user_type;
         $user_country = $user->country;
         $country_id_ex = null;
-        if ($user_type == 'Global') {
+        $currentCountry = Country::findByCurrentRequest();
+        $isOnGlobalServer = $currentCountry && $currentCountry->is_global;
+
+        if ($user_type == 'Global' || ($user_type == 'G_R' && $isOnGlobalServer)) {
             $country = Country::where('code', 'GL')->first();
             $country_id_ex = $country->id;
-        } elseif ($user_type == 'Regional') {
+        } else {
             $country_id_ex = $user_country;
         }
 
@@ -421,10 +461,21 @@ class LiveEventController extends Controller
         $query = User::where('status', 1)->where('is_accept', 1);
 
         if (!auth()->user()->hasNewRole('SUPER ADMIN')) {
-            if (auth()->user()->user_type == 'Global') {
-                $query->where('user_type', 'Global');
+            $currentCountry = Country::findByCurrentRequest();
+            $isOnGlobalServer = $currentCountry && $currentCountry->is_global;
+            $user_type = auth()->user()->user_type;
+
+            if ($user_type == 'Global' || ($user_type == 'G_R' && $isOnGlobalServer)) {
+                $query->whereIn('user_type', ['Global', 'G_R']);
             } else {
-                $query->where('user_type', 'Regional')->where('country', auth()->user()->country);
+                $query->whereIn('user_type', ['Regional', 'G_R'])->where('country', auth()->user()->country);
+
+                if (auth()->user()->is_ecclesia_admin == 1) {
+                    $manage_ecclesia_ids = is_array(auth()->user()->manage_ecclesia)
+                        ? auth()->user()->manage_ecclesia
+                        : explode(',', auth()->user()->manage_ecclesia ?? '');
+                    $query->whereIn('ecclesia_id', $manage_ecclesia_ids);
+                }
             }
         }
 
@@ -463,14 +514,23 @@ class LiveEventController extends Controller
          $query = User::where('status', 1)->where('is_accept', 1);
 
         if (!auth()->user()->hasNewRole('SUPER ADMIN')) {
-            if (auth()->user()->user_type == 'Global') {
-                $query->where('user_type', 'Global');
+            $currentCountry = Country::findByCurrentRequest();
+            $isOnGlobalServer = $currentCountry && $currentCountry->is_global;
+            $user_type = auth()->user()->user_type;
+
+            if ($user_type == 'Global' || ($user_type == 'G_R' && $isOnGlobalServer)) {
+                $query->whereIn('user_type', ['Global', 'G_R']);
             } else {
-                $query->where('user_type', 'Regional')->where('country', auth()->user()->country);
+                $query->whereIn('user_type', ['Regional', 'G_R'])->where('country', auth()->user()->country);
+
+                if (auth()->user()->is_ecclesia_admin == 1) {
+                    $manage_ecclesia_ids = is_array(auth()->user()->manage_ecclesia)
+                        ? auth()->user()->manage_ecclesia
+                        : explode(',', auth()->user()->manage_ecclesia ?? '');
+                    $query->whereIn('ecclesia_id', $manage_ecclesia_ids);
+                }
             }
         }
-
-
 
         $users = $query->get();
 

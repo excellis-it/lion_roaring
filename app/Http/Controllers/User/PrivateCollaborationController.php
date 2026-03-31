@@ -33,7 +33,10 @@ class PrivateCollaborationController extends Controller
         $user_country = $user->country;
 
         if (!$user->hasNewRole('SUPER ADMIN')) {
-            if ($user_type == 'Global') {
+            $currentCountry = Country::findByCurrentRequest();
+            $isOnGlobalServer = $currentCountry && $currentCountry->is_global;
+
+            if ($user_type == 'Global' || ($user_type == 'G_R' && $isOnGlobalServer)) {
                 $collaborations = PrivateCollaboration::with(['user', 'invitations.user'])
                     ->where(function ($query) {
                         $query->where('user_id', auth()->id())
@@ -85,20 +88,32 @@ class PrivateCollaborationController extends Controller
             $user_country = $user->country;
 
             // For SUPER ADMIN, eligible users will be loaded via AJAX based on selected country
+            $currentCountry = Country::findByCurrentRequest();
+            $isOnGlobalServer = $currentCountry && $currentCountry->is_global;
+
             if ($user->hasNewRole('SUPER ADMIN')) {
                 $eligibleUsers = collect(); // empty collection, loaded via AJAX
-            } elseif ($user_type == 'Global') {
+            } elseif ($user_type == 'Global' || ($user_type == 'G_R' && $isOnGlobalServer)) {
                 $eligibleUsers = User::whereHas('roles.permissions', function ($query) {
                     $query->where('name', 'Manage Private Collaboration');
                 })->whereHas('userRole', function ($query) {
                     $query->where('name', '!=', 'SUPER ADMIN');
-                })->where('user_type', 'Global')->where('id', '!=', auth()->id())->orderBy('first_name')->orderBy('last_name')->get();
+                })->whereIn('user_type', ['Global', 'G_R'])->where('id', '!=', auth()->id())->orderBy('first_name')->orderBy('last_name')->get();
             } else {
-                $eligibleUsers = User::whereHas('roles.permissions', function ($query) {
+                $eligibleUsersQuery = User::whereHas('roles.permissions', function ($query) {
                     $query->where('name', 'Manage Private Collaboration');
                 })->whereHas('userRole', function ($query) {
                     $query->where('name', '!=', 'SUPER ADMIN');
-                })->where('id', '!=', auth()->id())->where('user_type', 'Regional')->where('country', $user_country)->orderBy('first_name')->orderBy('last_name')->get();
+                })->where('id', '!=', auth()->id())->whereIn('user_type', ['Regional', 'G_R'])->where('country', $user_country);
+
+                if ($user->is_ecclesia_admin == 1) {
+                    $manage_ecclesia_ids = is_array($user->manage_ecclesia)
+                        ? $user->manage_ecclesia
+                        : explode(',', $user->manage_ecclesia ?? '');
+                    $eligibleUsersQuery->whereIn('ecclesia_id', $manage_ecclesia_ids);
+                }
+
+                $eligibleUsers = $eligibleUsersQuery->orderBy('first_name')->orderBy('last_name')->get();
             }
 
             return view('user.private_collaboration.create', compact('countries', 'eligibleUsers'));
@@ -122,14 +137,14 @@ class PrivateCollaborationController extends Controller
             // Global country selected → show Global user_type users
             $users = User::whereHas('roles.permissions', function ($query) {
                 $query->where('name', 'Manage Private Collaboration');
-            })->where('user_type', 'Global')->whereHas('userRole', function ($query) {
+            })->whereIn('user_type', ['Global', 'G_R'])->whereHas('userRole', function ($query) {
                 $query->where('name', '!=', 'SUPER ADMIN');
             })->where('id', '!=', auth()->id())->orderBy('first_name')->orderBy('last_name')->get();
         } else {
             // Other country selected → show Regional users from that country
             $users = User::whereHas('roles.permissions', function ($query) {
                 $query->where('name', 'Manage Private Collaboration');
-            })->where('id', '!=', auth()->id())->where('user_type', 'Regional')->where('country', $country->id)->orderBy('first_name')->orderBy('last_name')->get();
+            })->where('id', '!=', auth()->id())->whereIn('user_type', ['Regional', 'G_R'])->where('country', $country->id)->orderBy('first_name')->orderBy('last_name')->get();
         }
 
         $result = $users->map(function ($user) {
@@ -152,10 +167,13 @@ class PrivateCollaborationController extends Controller
             $user_type = $user->user_type;
             $user_country = $user->country;
             $country_id_ex = null;
-            if ($user_type == 'Global') {
+            $currentCountry = Country::findByCurrentRequest();
+            $isOnGlobalServer = $currentCountry && $currentCountry->is_global;
+
+            if ($user_type == 'Global' || ($user_type == 'G_R' && $isOnGlobalServer)) {
                 $country = Country::where('code', 'GL')->first();
                 $country_id_ex = $country->id;
-            } elseif ($user_type == 'Regional') {
+            } else {
                 $country_id_ex = $user_country;
             }
 
@@ -262,7 +280,10 @@ class PrivateCollaborationController extends Controller
         $user_country = $user->country;
 
         if (!$user->hasNewRole('SUPER ADMIN')) {
-            if ($user_type == 'Global') {
+            $currentCountry = Country::findByCurrentRequest();
+            $isOnGlobalServer = $currentCountry && $currentCountry->is_global;
+
+            if ($user_type == 'Global' || ($user_type == 'G_R' && $isOnGlobalServer)) {
                 $collaboration = PrivateCollaboration::with(['user', 'invitations.user'])->whereHas('country', function ($query) {
                     $query->where('code', 'GL');
                 })->findOrFail($id);
@@ -299,7 +320,10 @@ class PrivateCollaborationController extends Controller
 
         $countries = Country::orderBy('name', 'asc')->get();
         if (!$user->hasNewRole('SUPER ADMIN')) {
-            if ($user_type == 'Global') {
+            $currentCountry = Country::findByCurrentRequest();
+            $isOnGlobalServer = $currentCountry && $currentCountry->is_global;
+
+            if ($user_type == 'Global' || ($user_type == 'G_R' && $isOnGlobalServer)) {
                 $collaboration = PrivateCollaboration::whereHas('country', function ($query) {
                     $query->where('code', 'GL');
                 })->findOrFail($id);
@@ -328,10 +352,13 @@ class PrivateCollaborationController extends Controller
             $user_type = $user->user_type;
             $user_country = $user->country;
             $country_id_ex = null;
-            if ($user_type == 'Global') {
+            $currentCountry = Country::findByCurrentRequest();
+            $isOnGlobalServer = $currentCountry && $currentCountry->is_global;
+
+            if ($user_type == 'Global' || ($user_type == 'G_R' && $isOnGlobalServer)) {
                 $country = Country::where('code', 'GL')->first();
                 $country_id_ex = $country->id;
-            } elseif ($user_type == 'Regional') {
+            } else {
                 $country_id_ex = $user_country;
             }
 
@@ -451,7 +478,10 @@ class PrivateCollaborationController extends Controller
             $searchQuery = $searchQuery !== '' ? $searchQuery : null;
 
             if (!$user->hasNewRole('SUPER ADMIN')) {
-                if ($user_type == 'Global') {
+                $currentCountry = Country::findByCurrentRequest();
+                $isOnGlobalServer = $currentCountry && $currentCountry->is_global;
+
+                if ($user_type == 'Global' || ($user_type == 'G_R' && $isOnGlobalServer)) {
                     $collaborations = PrivateCollaboration::with(['user', 'invitations.user'])
                         ->where(function ($query) {
                             $query->where('user_id', auth()->id())
@@ -536,7 +566,10 @@ class PrivateCollaborationController extends Controller
         $user_country = $user->country;
 
         if (!$user->hasNewRole('SUPER ADMIN')) {
-            if ($user_type == 'Global') {
+            $currentCountry = Country::findByCurrentRequest();
+            $isOnGlobalServer = $currentCountry && $currentCountry->is_global;
+
+            if ($user_type == 'Global' || ($user_type == 'G_R' && $isOnGlobalServer)) {
                 $collaborations = PrivateCollaboration::with(['user', 'invitations.user'])
                     ->where(function ($query) {
                         $query->where('user_id', auth()->id())
@@ -605,7 +638,10 @@ class PrivateCollaborationController extends Controller
         };
 
         if (!$user->hasNewRole('SUPER ADMIN')) {
-            if ($user_type == 'Global') {
+            $currentCountry = Country::findByCurrentRequest();
+            $isOnGlobalServer = $currentCountry && $currentCountry->is_global;
+
+            if ($user_type == 'Global' || ($user_type == 'G_R' && $isOnGlobalServer)) {
                 $collaborations = PrivateCollaboration::with(['user', 'invitations.user'])
                     ->where(function ($query) {
                         $query->where('user_id', auth()->id())

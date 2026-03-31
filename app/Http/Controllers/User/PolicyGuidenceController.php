@@ -25,12 +25,31 @@ class PolicyGuidenceController extends Controller
             $user_country = $user->country;
 
             if (!$user->hasNewRole('SUPER ADMIN')) {
-                if ($user_type == 'Global') {
+                $currentCountry = Country::findByCurrentRequest();
+                $isOnGlobalServer = $currentCountry && $currentCountry->is_global;
+
+                if ($user_type == 'Global' || ($user_type == 'G_R' && $isOnGlobalServer)) {
                     $policies = Policy::orderBy('id', 'desc')->whereHas('country', function ($query) {
                         $query->where('code', 'GL');
+                    })->whereHas('user', function ($query) {
+                        $query->whereIn('user_type', ['Global', 'G_R']);
                     })->paginate(15);
                 } else {
-                    $policies = Policy::where('country_id', $user_country)->orderBy('id', 'desc')->paginate(15);
+                    $policiesQuery = Policy::where('country_id', $user_country)->orderBy('id', 'desc')->whereHas('user', function ($query) {
+                        $query->whereIn('user_type', ['Regional', 'G_R']);
+                    });
+
+                    if ($user->is_ecclesia_admin == 1) {
+                        $manage_ecclesia_ids = is_array($user->manage_ecclesia)
+                            ? $user->manage_ecclesia
+                            : explode(',', $user->manage_ecclesia ?? '');
+                        $policiesQuery->where(function ($q) use ($manage_ecclesia_ids, $user) {
+                            $q->whereHas('user', function ($uq) use ($manage_ecclesia_ids) {
+                                $uq->whereIn('ecclesia_id', $manage_ecclesia_ids);
+                            })->orWhere('user_id', $user->id);
+                        });
+                    }
+                    $policies = $policiesQuery->paginate(15);
                 }
             } else {
                 $policies = Policy::orderBy('id', 'desc')->paginate(15);
@@ -57,10 +76,13 @@ class PolicyGuidenceController extends Controller
         $user_type = $user->user_type;
         $user_country = $user->country;
         $country_id_ex = null;
-        if ($user_type == 'Global') {
+        $currentCountry = Country::findByCurrentRequest();
+        $isOnGlobalServer = $currentCountry && $currentCountry->is_global;
+
+        if ($user_type == 'Global' || ($user_type == 'G_R' && $isOnGlobalServer)) {
             $country = Country::where('code', 'GL')->first();
             $country_id_ex = $country->id;
-        } elseif ($user_type == 'Regional') {
+        } else {
             $country_id_ex = $user_country;
         }
 
@@ -147,7 +169,10 @@ class PolicyGuidenceController extends Controller
             $user_country = $user->country;
 
             if (!$user->hasNewRole('SUPER ADMIN')) {
-                if ($user_type == 'Global') {
+                $currentCountry = Country::findByCurrentRequest();
+                $isOnGlobalServer = $currentCountry && $currentCountry->is_global;
+
+                if ($user_type == 'Global' || ($user_type == 'G_R' && $isOnGlobalServer)) {
                     $policy = Policy::whereHas('country', function ($query) {
                         $query->where('code', 'GL');
                     })->where('id', $id)->first();
@@ -181,7 +206,10 @@ class PolicyGuidenceController extends Controller
             $user_country = $user->country;
 
             if (!$user->hasNewRole('SUPER ADMIN')) {
-                if ($user_type == 'Global') {
+                $currentCountry = Country::findByCurrentRequest();
+                $isOnGlobalServer = $currentCountry && $currentCountry->is_global;
+
+                if ($user_type == 'Global' || ($user_type == 'G_R' && $isOnGlobalServer)) {
                     $policy = Policy::whereHas('country', function ($query) {
                         $query->where('code', 'GL');
                     })->where('id', $id)->first();
@@ -230,12 +258,30 @@ class PolicyGuidenceController extends Controller
             $user_country = $user->country;
 
             if (!$user->hasNewRole('SUPER ADMIN')) {
-                if ($user_type == 'Global') {
+                $currentCountry = Country::findByCurrentRequest();
+                $isOnGlobalServer = $currentCountry && $currentCountry->is_global;
+
+                if ($user_type == 'Global' || ($user_type == 'G_R' && $isOnGlobalServer)) {
                     $policies->whereHas('country', function ($query) {
                         $query->where('code', 'GL');
+                    })->whereHas('user', function ($query) {
+                        $query->whereIn('user_type', ['Global', 'G_R']);
                     });
                 } else {
-                    $policies->where('country_id', $user_country);
+                    $policies->where('country_id', $user_country)->whereHas('user', function ($query) {
+                        $query->whereIn('user_type', ['Regional', 'G_R']);
+                    });
+
+                    if ($user->is_ecclesia_admin == 1) {
+                        $manage_ecclesia_ids = is_array($user->manage_ecclesia)
+                            ? $user->manage_ecclesia
+                            : explode(',', $user->manage_ecclesia ?? '');
+                        $policies->where(function ($q) use ($manage_ecclesia_ids, $user) {
+                            $q->whereHas('user', function ($uq) use ($manage_ecclesia_ids) {
+                                $uq->whereIn('ecclesia_id', $manage_ecclesia_ids);
+                            })->orWhere('user_id', $user->id);
+                        });
+                    }
                 }
             }
 
