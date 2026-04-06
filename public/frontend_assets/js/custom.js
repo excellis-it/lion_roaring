@@ -280,6 +280,7 @@ $(document).ready(function () {
 
         const btn = $(this);
         btn.addClass("disabled");
+        $("#registerSecondLoader").fadeIn(200);
 
         $.ajax({
             url:
@@ -287,6 +288,7 @@ $(document).ready(function () {
                     ? register_agreement_preview_route
                     : "/register-agreement/preview",
             method: "POST",
+            timeout: 60000,
             headers: {
                 "X-CSRF-TOKEN":
                     typeof csrf_token !== "undefined" ? csrf_token : undefined,
@@ -311,16 +313,22 @@ $(document).ready(function () {
                 $("#registerModalSecond").modal("hide");
                 $("#registerAgreementPreviewModal").modal("show");
             })
-            .fail(function (xhr) {
-                const msg =
-                    (xhr &&
-                        xhr.responseJSON &&
-                        (xhr.responseJSON.message || xhr.responseJSON.error)) ||
-                    "Could not generate agreement preview. Please try again.";
+            .fail(function (xhr, status) {
+                var msg;
+                if (status === 'timeout') {
+                    msg = "PDF generation timed out. Please try again.";
+                } else {
+                    msg =
+                        (xhr &&
+                            xhr.responseJSON &&
+                            (xhr.responseJSON.message || xhr.responseJSON.error)) ||
+                        "Could not generate agreement preview. Please try again.";
+                }
                 toastr.error(msg);
             })
             .always(function () {
                 btn.removeClass("disabled");
+                $("#registerSecondLoader").fadeOut(200);
             });
     });
 

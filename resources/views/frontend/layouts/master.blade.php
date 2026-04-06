@@ -878,7 +878,17 @@
                         <button type="button" class="btn-close" data-bs-dismiss="modal"
                             aria-label="Close"></button>
                     </div>
-                    <div class="modal-body">
+                    <div class="modal-body" style="position: relative;">
+                        {{-- Loading overlay for PDF generation --}}
+                        <div id="registerSecondLoader" style="display:none; position:absolute; top:0; left:0; width:100%; height:100%; background:rgba(255,255,255,0.9); z-index:10; border-radius:12px;">
+                            <div style="display:flex; flex-direction:column; align-items:center; justify-content:center; height:100%;">
+                                <div class="spinner-border" role="status" style="width:3rem; height:3rem; color:#643271;">
+                                    <span class="visually-hidden">Loading...</span>
+                                </div>
+                                <p class="mt-3 fw-bold" style="color:#643271;">Generating Agreement PDF...</p>
+                            </div>
+                        </div>
+
                         <div class="agre">
                             <div class="logo-admin">
                                 @if (isset(Helper::getFooter()['footer_logo']))

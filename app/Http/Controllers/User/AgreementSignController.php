@@ -58,7 +58,7 @@ class AgreementSignController extends Controller
         $html = $template->agreement_description ?? 'This is the agreement for Lion Roaring PMA (Private Members Association)';
         $checkboxText = $template->checkbox_text ?? null;
 
-        $html = $this->applyPlaceholders($html, $signerName, $signerInitials);
+        $html = $this->applyPlaceholders($html, $signerName, $signerInitials, $template);
         $html = '<p></p>' . $html;
 
         $token = (string) Str::uuid();
@@ -165,15 +165,37 @@ class AgreementSignController extends Controller
         return $initials ?: null;
     }
 
-    private function applyPlaceholders(string $html, string $signerName, ?string $initials): string
+    private function applyPlaceholders(string $html, string $signerName, ?string $initials, ?RegisterAgreement $template = null): string
     {
+        $sealImageHtml = '';
+        if ($template && $template->seal_image) {
+            $sealPath = storage_path('app/public/' . $template->seal_image);
+            if (file_exists($sealPath)) {
+                $sealData = base64_encode(file_get_contents($sealPath));
+                $sealMime = mime_content_type($sealPath);
+                $sealImageHtml = '<img src="data:' . $sealMime . ';base64,' . $sealData . '" alt="Seal" style="max-height:100px;">';
+            }
+        }
+
+        $currentDate = date('m/d/Y');
+        $stewardMember1 = ($template && $template->steward_member_1) ? e($template->steward_member_1) : '';
+        $stewardMember2 = ($template && $template->steward_member_2) ? e($template->steward_member_2) : '';
+
         $replacements = [
             '/\{\{\s*user_name\s*\}\}/i' => e($signerName),
             '/\{\{\s*i_user_name\s*\}\}/i' => 'I, ' . e($signerName),
             '/\{\{\s*user_initial\s*\}\}/i' => e($initials ?? ''),
+            '/\{\{\s*seal_image\s*\}\}/i' => $sealImageHtml,
+            '/\{\{\s*current_date\s*\}\}/i' => $currentDate,
+            '/\{\{\s*steward_member_1\s*\}\}/i' => $stewardMember1,
+            '/\{\{\s*steward_member_2\s*\}\}/i' => $stewardMember2,
             '/\[\[\s*user_name\s*\]\]/i' => e($signerName),
             '/\[\[\s*i_user_name\s*\]\]/i' => 'I, ' . e($signerName),
             '/\[\[\s*user_initial\s*\]\]/i' => e($initials ?? ''),
+            '/\[\[\s*seal_image\s*\]\]/i' => $sealImageHtml,
+            '/\[\[\s*current_date\s*\]\]/i' => $currentDate,
+            '/\[\[\s*steward_member_1\s*\]\]/i' => $stewardMember1,
+            '/\[\[\s*steward_member_2\s*\]\]/i' => $stewardMember2,
         ];
 
         foreach ($replacements as $pattern => $value) {

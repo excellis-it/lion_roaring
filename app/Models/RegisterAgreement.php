@@ -14,5 +14,8 @@ class RegisterAgreement extends BaseModel
         'agreement_title',
         'agreement_description',
         'checkbox_text',
+        'seal_image',
+        'steward_member_1',
+        'steward_member_2',
     ];
 }
