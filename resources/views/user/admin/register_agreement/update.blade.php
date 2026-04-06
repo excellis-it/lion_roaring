@@ -65,6 +65,14 @@
                                         <span class="me-3">Placeholders supported:</span> <strong>[[user_name]]</strong>
                                         &nbsp; <span class="mx-2">|</span> &nbsp;
                                         <strong>[[user_initial]]</strong>
+                                        &nbsp; <span class="mx-2">|</span> &nbsp;
+                                        <strong>[[seal_image]]</strong>
+                                        &nbsp; <span class="mx-2">|</span> &nbsp;
+                                        <strong>[[current_date]]</strong>
+                                        &nbsp; <span class="mx-2">|</span> &nbsp;
+                                        <strong>[[steward_member_1]]</strong>
+                                        &nbsp; <span class="mx-2">|</span> &nbsp;
+                                        <strong>[[steward_member_2]]</strong>
                                     </div>
                                     <textarea name="agreement_description" id="description" cols="30" rows="10" placeholder="Description"
                                         class="form-control">{{ isset($agreement->agreement_description) ? $agreement->agreement_description : old('agreement_description') }}</textarea>
@@ -76,7 +84,7 @@
                             </div>
                         </div>
 
-                        <div class="col-xl-12 col-md-12">
+                        <div class="col-xl-12 col-md-12 mb-3">
                             <div class="form-group-div">
                                 <div class="form-group">
                                     {{-- checkbox_text --}}
@@ -91,6 +99,59 @@
                                 </div>
                             </div>
                         </div>
+
+                        <div class="col-md-6 mb-3">
+                            <div class="form-group-div">
+                                <div class="form-group">
+                                    <label for="seal_image">Seal Image</label>
+                                    <input type="file" name="seal_image" id="seal_image" class="form-control"
+                                        accept="image/*">
+                                    @if (isset($agreement->seal_image) && $agreement->seal_image)
+                                        <div class="mt-2">
+                                            <img src="{{ asset('storage/' . $agreement->seal_image) }}"
+                                                alt="Seal Image" style="max-height: 100px;">
+                                        </div>
+                                    @endif
+                                    @if ($errors->has('seal_image'))
+                                        <div class="error" style="color:red;">
+                                            {{ $errors->first('seal_image') }}</div>
+                                    @endif
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-md-6 mb-3">
+                            <div class="form-group-div">
+                                <div class="form-group">
+                                    <label for="steward_member_1">Office of Dominion Steward Member 1</label>
+                                    <input type="text" name="steward_member_1" id="steward_member_1"
+                                        class="form-control"
+                                        value="{{ isset($agreement->steward_member_1) ? $agreement->steward_member_1 : old('steward_member_1') }}"
+                                        placeholder="Steward Member Name">
+                                    @if ($errors->has('steward_member_1'))
+                                        <div class="error" style="color:red;">
+                                            {{ $errors->first('steward_member_1') }}</div>
+                                    @endif
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-md-6 mb-3">
+                            <div class="form-group-div">
+                                <div class="form-group">
+                                    <label for="steward_member_2">Office of Dominion Steward Member 2</label>
+                                    <input type="text" name="steward_member_2" id="steward_member_2"
+                                        class="form-control"
+                                        value="{{ isset($agreement->steward_member_2) ? $agreement->steward_member_2 : old('steward_member_2') }}"
+                                        placeholder="Steward Member Name">
+                                    @if ($errors->has('steward_member_2'))
+                                        <div class="error" style="color:red;">
+                                            {{ $errors->first('steward_member_2') }}</div>
+                                    @endif
+                                </div>
+                            </div>
+                        </div>
+
                         <div class="col-xl-12">
                             <div class="btn-1">
                                 <button type="submit" class="print_btn me-2 mt-2">Update</button>

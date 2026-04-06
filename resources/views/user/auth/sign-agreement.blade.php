@@ -498,7 +498,7 @@
             <div class="spinner-border text-primary mb-3" role="status" style="width: 3rem; height: 3rem;">
                 <span class="visually-hidden">Loading...</span>
             </div>
-            <p class="mb-0 fw-bold">Generating Agreement PDF...</p>
+            <p class="mb-0 fw-bold" id="loadingText">Generating Agreement PDF...</p>
         </div>
     </div>
 
@@ -891,9 +891,12 @@
                 btn.addClass('disabled');
                 $('#loadingOverlay').addClass('active');
 
+                $('#loadingText').text('Generating Agreement PDF...');
+
                 $.ajax({
                     url: "{{ route('user.sign.agreement.preview') }}",
                     method: 'POST',
+                    timeout: 60000,
                     headers: {
                         'X-CSRF-TOKEN': "{{ csrf_token() }}"
                     },
@@ -915,11 +918,16 @@
                         $('#previewScrollHint').show();
                         goToStep(3);
                     },
-                    error: function(xhr) {
+                    error: function(xhr, status) {
                         $('#loadingOverlay').removeClass('active');
-                        var msg = (xhr && xhr.responseJSON && (xhr.responseJSON.message || xhr
+                        var msg;
+                        if (status === 'timeout') {
+                            msg = 'PDF generation timed out. Please try again.';
+                        } else {
+                            msg = (xhr && xhr.responseJSON && (xhr.responseJSON.message || xhr
                                 .responseJSON.error)) ||
                             'Could not generate agreement preview. Please try again.';
+                        }
                         toastr.error(msg);
                     },
                     complete: function() {
@@ -1014,6 +1022,8 @@
 
                 $('#btnSubmit').prop('disabled', true).html(
                     '<i class="fas fa-spinner fa-spin me-1"></i> Submitting...');
+                $('#loadingText').text('Signing document & generating agreement...');
+                $('#loadingOverlay').addClass('active');
             });
         });
     </script>

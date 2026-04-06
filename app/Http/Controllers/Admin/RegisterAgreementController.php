@@ -4,10 +4,12 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\RegisterAgreement;
+use App\Traits\ImageTrait;
 use Illuminate\Http\Request;
 
 class RegisterAgreementController extends Controller
 {
+    use ImageTrait;
     /**
      * Display a listing of the resource.
      *
@@ -56,7 +58,13 @@ class RegisterAgreementController extends Controller
         $agreement->agreement_title = $request->agreement_title;
         $agreement->agreement_description = $request->agreement_description;
         $agreement->checkbox_text = $request->checkbox_text;
-       // $agreement->save();
+        $agreement->steward_member_1 = $request->steward_member_1;
+        $agreement->steward_member_2 = $request->steward_member_2;
+
+        if ($request->hasFile('seal_image')) {
+            $agreement->seal_image = $this->imageUpload($request->file('seal_image'), 'agreement_seals', true);
+        }
+
         $country = $request->content_country_code ?? 'US';
         $agreement = RegisterAgreement::updateOrCreate(['country_code' => $country], array_merge($agreement->getAttributes(), ['country_code' => $country]));
 
