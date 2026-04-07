@@ -190,21 +190,43 @@ $showPopup = !Helper::isUsaInstance() && !$isGlobal && !session()->has($sessionK
                             </div>
                             @if (count($our_governances) > 0)
                                 @foreach ($our_governances as $key => $our_governance)
+                                    @php
+                                        $desc = $our_governance->description ?? '';
+                                        // Clean Word/Office HTML
+                                        $desc = preg_replace('/<o:p[^>]*>.*?<\/o:p>/is', '', $desc);
+                                        $desc = str_replace('class="MsoNormal"', '', $desc);
+                                        $desc = preg_replace('/\sstyle="[^"]*"/i', '', $desc);
+
+                                        // Check if content has <p> tags (HTML) or is plain text
+                                        $hasPTags = preg_match('/<p[\s>]/i', $desc);
+
+                                        if ($hasPTags) {
+                                            // Split by <p> tags
+                                            preg_match_all('/<p[^>]*>.*?<\/p>/is', $desc, $matches);
+                                            $paragraphs = $matches[0] ?? [];
+                                        } else {
+                                            // Plain text: split by sentences into paragraphs
+                                            $sentences = preg_split('/(?<=\.)\s+/', trim($desc));
+                                            $perParagraph = max(1, intval(count($sentences) / 5));
+                                            $chunks = array_chunk($sentences, $perParagraph);
+                                            $paragraphs = array_map(fn($chunk) => '<p>' . implode(' ', $chunk) . '</p>', $chunks);
+                                        }
+
+                                        $total = count($paragraphs);
+                                        // First page has image+name, so give it fewer paragraphs
+                                        $splitAt = max(1, intval($total / 3));
+                                        $firstPageHtml = implode('', array_slice($paragraphs, 0, $splitAt));
+                                        $secondPageHtml = implode('', array_slice($paragraphs, $splitAt));
+                                    @endphp
                                     <div class="page">
                                         <img src="{{ isset($our_governance->image) ? Storage::url($our_governance->image) : 'https://via.placeholder.com/150' }}"
-                                            alt="">
+                                            alt="{{ $our_governance->name }}">
                                         <h4 class="flex-fixed">{{ $our_governance->name }}</h4>
-                                        @php
-                                            $description = $our_governance->description ?? 'description';
-                                            $firstPart = Str::limit(strip_tags($description), 1200, '');
-                                            $restPart = Str::after($description, $firstPart);
-                                        @endphp
-                                        <p>{!! $firstPart ?? '' !!}</p>
+                                        <div class="page-text">{!! $firstPageHtml !!}</div>
                                         <div class="design_page"></div>
                                     </div>
                                     <div class="page">
-
-                                        <p>{!! $restPart ?? '' !!}</p>
+                                        <div class="page-text">{!! $secondPageHtml !!}</div>
                                     </div>
                                 @endforeach
                             @endif
@@ -256,10 +278,17 @@ $showPopup = !Helper::isUsaInstance() && !$isGlobal && !session()->has($sessionK
                                 </div>
                                 <div class="client-reviews">
                                     @php
-                                        $description = $our_governance->description ?? 'description';
+                                        $descMobile = $our_governance->description ?? '';
+                                        $descMobile = preg_replace('/<o:p[^>]*>.*?<\/o:p>/is', '', $descMobile);
+                                        $descMobile = str_replace('class="MsoNormal"', '', $descMobile);
+                                        $descMobile = preg_replace('/\sstyle="[^"]*"/i', '', $descMobile);
+                                        // Wrap plain text in <p> tags if not already HTML
+                                        if (!preg_match('/<p[\s>]/i', $descMobile)) {
+                                            $descMobile = '<p>' . nl2br(e($descMobile)) . '</p>';
+                                        }
                                     @endphp
                                     <h3>{{ $our_governance->name ?? '' }} </h3>
-                                    <p>{!! $description !!}</p>
+                                    {!! $descMobile !!}
                                 </div>
                             </div>
                         </div>
@@ -394,14 +423,14 @@ $showPopup = !Helper::isUsaInstance() && !$isGlobal && !session()->has($sessionK
 
     <!-- @if (count($galleries) > 0)
     <section class="gallery_sec margin_27">
-                                                                                            <div class="gallery_slider">
-                                                                                                @foreach ($galleries as $galary)
+                                                                                                        <div class="gallery_slider">
+                                                                                                            @foreach ($galleries as $galary)
     <div class="gallery_box" style="width: 100%; display: inline-block;">
-                                                                                                        <img src="{{ Storage::url($galary->image) }}" alt="">
-                                                                                                    </div>
+                                                                                                                    <img src="{{ Storage::url($galary->image) }}" alt="">
+                                                                                                                </div>
     @endforeach
-                                                                                            </div>
-                                                                                        </section>
+                                                                                                        </div>
+                                                                                                    </section>
     @endif -->
 @endsection
 
