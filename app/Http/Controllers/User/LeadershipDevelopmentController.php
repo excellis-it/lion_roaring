@@ -25,64 +25,37 @@ class LeadershipDevelopmentController extends Controller
             $user_type = $user->user_type;
             $user_country = $user->country;
 
-            if (!$user->hasNewRole('SUPER ADMIN')) {
-                $currentCountry = Country::findByCurrentRequest();
-                $isOnGlobalServer = $currentCountry && $currentCountry->is_global;
+            $filesQuery = File::orderBy('id', 'desc')->where('type', 'Becoming a Leader');
 
-                if ($user_type == 'Global' || ($user_type == 'G_R' && $isOnGlobalServer)) {
-                    $filesQuery = File::orderBy('id', 'desc')->where('type', 'Becoming a Leader')
+            if (!$user->hasNewRole('SUPER ADMIN')) {
+                if ($user_type == 'Global') {
+                    $filesQuery->whereHas('country', function ($query) {
+                        $query->where('code', 'GL');
+                    });
+                } else {
+                    $filesQuery->where('country_id', $user_country);
+                }
+            }
+
+            if (isset($request->topic) && $request->topic != '') {
+                $new_topic = $request->topic;
+                $files = $filesQuery->where('topic_id', $request->topic)->paginate(15);
+            } else {
+                $files = $filesQuery->paginate(15);
+                $new_topic = '';
+            }
+
+            if (!$user->hasNewRole('SUPER ADMIN')) {
+                if ($user_type == 'Global') {
+                    $topics = Topic::orderBy('topic_name', 'asc')->where('education_type', 'Becoming a Leader')
                         ->whereHas('country', function ($query) {
                             $query->where('code', 'GL');
-                        })
-                        ->whereHas('user', function ($query) {
-                            $query->whereIn('user_type', ['Global', 'G_R']);
-                        });
-                    if (isset($request->topic)) {
-                        $new_topic = $request->topic;
-                        $files = $filesQuery->where('topic_id', $request->topic)->paginate(15);
-                    } else {
-                        $files = $filesQuery->paginate(15);
-                        $new_topic = '';
-                    }
-                    $topics = Topic::orderBy('topic_name', 'asc')->where('education_type', 'Becoming a Leader')->whereHas('country', function ($query) {
-                        $query->where('code', 'GL');
-                    })->get();
+                        })->get();
                 } else {
-                    $filesQuery = File::orderBy('id', 'desc')->where('type', 'Becoming a Leader')
-                        ->where('country_id', $user_country)
-                        ->whereHas('user', function ($query) {
-                            $query->whereIn('user_type', ['Regional', 'G_R']);
-                        });
-
-                    // Ecclesia filtering
-                    if ($user->is_ecclesia_admin == 1) {
-                        $manage_ecclesia_ids = is_array($user->manage_ecclesia)
-                            ? $user->manage_ecclesia
-                            : explode(',', $user->manage_ecclesia ?? '');
-                        $filesQuery->where(function ($q) use ($manage_ecclesia_ids, $user) {
-                            $q->whereHas('user', function ($uq) use ($manage_ecclesia_ids) {
-                                $uq->whereIn('ecclesia_id', $manage_ecclesia_ids);
-                            })->orWhere('user_id', $user->id);
-                        });
-                    }
-
-                    if (isset($request->topic)) {
-                        $new_topic = $request->topic;
-                        $files = $filesQuery->where('topic_id', $request->topic)->paginate(15);
-                    } else {
-                        $files = $filesQuery->paginate(15);
-                        $new_topic = '';
-                    }
-                    $topics = Topic::orderBy('topic_name', 'asc')->where('education_type', 'Becoming a Leader')->where('country_id', $user_country)->get();
+                    $topics = Topic::orderBy('topic_name', 'asc')->where('education_type', 'Becoming a Leader')
+                        ->where('country_id', $user_country)->get();
                 }
             } else {
-                if (isset($request->topic)) {
-                    $new_topic = $request->topic;
-                    $files = File::orderBy('id', 'desc')->where('type', 'Becoming a Leader')->where('topic_id', $request->topic)->paginate(15);
-                } else {
-                    $files = File::orderBy('id', 'desc')->where('type', 'Becoming a Leader')->paginate(15);
-                    $new_topic = '';
-                }
                 $topics = Topic::orderBy('topic_name', 'asc')->where('education_type', 'Becoming a Leader')->get();
             }
             return view('user.leadership-development.list')->with(compact('files', 'topics', 'new_topic'));
@@ -252,32 +225,12 @@ class LeadershipDevelopmentController extends Controller
             $user_country = $user->country;
 
             if (!$user->hasNewRole('SUPER ADMIN')) {
-                $currentCountry = Country::findByCurrentRequest();
-                $isOnGlobalServer = $currentCountry && $currentCountry->is_global;
-
-                if ($user_type == 'Global' || ($user_type == 'G_R' && $isOnGlobalServer)) {
+                if ($user_type == 'Global') {
                     $files->whereHas('country', function ($query) {
                         $query->where('code', 'GL');
-                    })->whereHas('user', function ($query) {
-                        $query->whereIn('user_type', ['Global', 'G_R']);
                     });
                 } else {
-                    $files->where('country_id', $user_country)
-                        ->whereHas('user', function ($query) {
-                            $query->whereIn('user_type', ['Regional', 'G_R']);
-                        });
-
-                    // Ecclesia filtering
-                    if ($user->is_ecclesia_admin == 1) {
-                        $manage_ecclesia_ids = is_array($user->manage_ecclesia)
-                            ? $user->manage_ecclesia
-                            : explode(',', $user->manage_ecclesia ?? '');
-                        $files->where(function ($q) use ($manage_ecclesia_ids, $user) {
-                            $q->whereHas('user', function ($uq) use ($manage_ecclesia_ids) {
-                                $uq->whereIn('ecclesia_id', $manage_ecclesia_ids);
-                            })->orWhere('user_id', $user->id);
-                        });
-                    }
+                    $files->where('country_id', $user_country);
                 }
             }
 
