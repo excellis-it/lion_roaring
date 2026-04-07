@@ -72,7 +72,7 @@ class MembershipController extends Controller
     {
         $measurement = MembershipMeasurement::first();
         if ($request->isMethod('post')) {
-            $data = $request->only('label', 'description', 'yearly_dues');
+            $data = $request->only('label', 'description', 'yearly_dues', 'membership_card_title');
             if ($measurement) {
                 $measurement->update($data);
             } else {

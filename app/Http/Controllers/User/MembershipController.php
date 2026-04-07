@@ -192,7 +192,7 @@ class MembershipController extends Controller
             if (!auth()->user()->can('Edit Membership Settings')) {
                 abort(403, 'Unauthorized');
             }
-            $data = $request->only('label', 'description', 'yearly_dues');
+            $data = $request->only('label', 'description', 'yearly_dues', 'membership_card_title');
             if ($measurement) {
                 $measurement->update($data);
             } else {

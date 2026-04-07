@@ -26,7 +26,7 @@
                     <div
                         class="card p-4 h-100 text-center {{ $user_subscription ? 'current-card' : '' }} membership-current-card">
                         <div class="mb-3 d-flex align-items-center justify-content-center">
-                            <h5 class="mb-0 me-2">My Current Membership</h5>
+                            <h5 class="mb-0 me-2">{{ $measurement->membership_card_title ?? 'My Current Membership' }}</h5>
 
                         </div>
                         <div class="my-3 text-start">
@@ -38,6 +38,11 @@
                                 @endphp
 
                                 <h4 class="mb-1">{{ $user_subscription->subscription_name }}</h4>
+                                @if ($user_subscription->subscription_start_date)
+                                    <div class="text-muted">Started:
+                                        <strong>{{ date('F j, Y', strtotime($user_subscription->subscription_start_date)) }}</strong>
+                                    </div>
+                                @endif
                                 <div class="text-muted">Valid until:
                                     <strong>{{ date('F j, Y', strtotime($user_subscription->subscription_expire_date)) }}</strong>
                                 </div>
