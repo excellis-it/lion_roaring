@@ -365,20 +365,20 @@ class FileController extends Controller
         $user = auth()->user();
         $user_type = $user->user_type;
         $user_country = $user->country;
-        $country_id_ex = null;
-        if ($user_type == 'Global') {
-            $country = Country::where('code', 'GL')->first();
-            $country_id_ex = $country->id;
-        } elseif ($user_type == 'Regional') {
-            $country_id_ex = $user_country;
+
+        $query = Topic::where('education_type', $type);
+
+        if (!$user->hasNewRole('SUPER ADMIN')) {
+            if ($user_type == 'Global') {
+                $query->whereHas('country', function ($q) {
+                    $q->where('code', 'GL');
+                });
+            } else {
+                $query->where('country_id', $user_country);
+            }
         }
 
-        $country_id = auth()->user()->hasNewRole('SUPER ADMIN') ? $request->country_id : $country_id_ex;
-
-
-
-        $topics = Topic::where('education_type', $type)->where('country_id', $country_id)
-            ->orderBy('topic_name', 'asc')->get();
+        $topics = $query->orderBy('topic_name', 'asc')->get();
         return response()->json(['data' => $topics]);
     }
 
