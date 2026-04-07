@@ -250,7 +250,7 @@
                                     <div class="col-md-6 mb-2">
                                         <div class="box_label">
                                             <label>User Type *</label>
-                                            <select class="form-control" name="user_type">
+                                            <select class="form-control" name="user_type" id="user_type_select">
                                                 <option value="">Select User Type</option>
                                                 @foreach ($allowedUserTypes as $type)
                                                     <option value="{{ $type }}"
@@ -258,6 +258,8 @@
                                                         {{ $type }}</option>
                                                 @endforeach
                                             </select>
+                                            {{-- Hidden input to submit user_type when dropdown is disabled for ECCLESIA roles --}}
+                                            <input type="hidden" name="user_type" id="user_type_hidden" disabled>
                                             @if ($errors->has('user_type'))
                                                 <div class="error" style="color:red !important;">
                                                     {{ $errors->first('user_type') }}
@@ -1240,16 +1242,28 @@
                 }
             });
 
+            function lockUserType(lock) {
+                if (lock) {
+                    $('#user_type_select').val('G_R').change();
+                    $('#user_type_select').prop('disabled', true);
+                    $('#user_type_hidden').val('G_R').prop('disabled', false);
+                } else {
+                    $('#user_type_select').prop('disabled', false);
+                    $('#user_type_hidden').prop('disabled', true);
+                }
+            }
+
             function updatePermissions(permissions, is_ecclesia) {
                 if (is_ecclesia == 1) {
                     $("#hoe_row").show();
                     $("#ecclesia_main_input").hide();
-                    if ($('select[name="user_type"]').val() === 'Regional') {
-                        $('select[name="user_type"]').val('G_R').change();
-                    }
+                    // Force user_type to G_R and lock the dropdown for ECCLESIA roles
+                    lockUserType(true);
                 } else {
                     $("#hoe_row").hide();
                     $("#ecclesia_main_input").show();
+                    // Re-enable user_type dropdown for non-ECCLESIA roles
+                    lockUserType(false);
                 }
 
                 // Uncheck all permissions first
@@ -1273,8 +1287,16 @@
                 if (selectedRole === 'MEMBER_SOVEREIGN') {
                     $('#permissions-section').addClass('d-none');
                     $('#membership-tier-section').removeClass('d-none');
+                    // Auto-select tier based on user_type: Global/G_R = Tier 2, Regional = Tier 1
                     if ($('input[name="membership_tier_id"]:checked').length === 0) {
-                        $('input[name="membership_tier_id"]').first().prop('checked', true);
+                        var userType = $('select[name="user_type"]').val();
+                        if (userType === 'Global' || userType === 'G_R') {
+                            // Tier 2 (second option) for Global/G_R users
+                            $('input[name="membership_tier_id"]').eq(1).prop('checked', true);
+                        } else {
+                            // Tier 1 (first option) for Regional users
+                            $('input[name="membership_tier_id"]').first().prop('checked', true);
+                        }
                     }
                 } else {
                     $('#permissions-section').removeClass('d-none');
@@ -1317,6 +1339,12 @@
             updateSelectionStates();
             updateSelectAllEcclesiasState();
             togglePermissionsAndMembership();
+
+            // Lock user_type dropdown on page load if current role is ECCLESIA
+            var checkedRoleOnLoad = $('input[name="role"]:checked');
+            if (checkedRoleOnLoad.length > 0 && checkedRoleOnLoad.data('isecclesia') == 1) {
+                lockUserType(true);
+            }
         });
     </script>
     <style>

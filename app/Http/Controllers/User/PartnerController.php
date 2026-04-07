@@ -627,6 +627,12 @@ class PartnerController extends Controller
         $data->personal_email = $lr_email ? str_replace(' ', '', $lr_email) : null;
         $data->email = $request->email;
         $user_type = $request->user_type;
+
+        // Force user_type to G_R when role is ECCLESIA
+        if ($the_role->is_ecclesia == 1) {
+            $user_type = 'G_R';
+        }
+
         $data->user_type = $user_type;
         $data->user_type_id = $the_role->id;
         $data->password = bcrypt($request->password);
@@ -857,6 +863,11 @@ class PartnerController extends Controller
             $data->roar_id = $request->roar_id;
             $data->email = $request->email;
             $user_type = $request->user_type;
+
+            // Force user_type to G_R when role is ECCLESIA
+            if ($the_role->is_ecclesia == 1) {
+                $user_type = 'G_R';
+            }
 
             $data->user_type = $user_type;
             $data->user_type_id = $the_role->id; // SAVE USER_TYPE_ID
