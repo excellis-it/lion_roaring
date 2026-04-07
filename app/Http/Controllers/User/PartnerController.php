@@ -628,8 +628,8 @@ class PartnerController extends Controller
         $data->email = $request->email;
         $user_type = $request->user_type;
 
-        // Force user_type to G_R when role is ECCLESIA
-        if ($the_role->is_ecclesia == 1) {
+        // Force user_type to G_R when role is configured as Admin
+        if ($the_role->is_admin == 1) {
             $user_type = 'G_R';
         }
 
@@ -864,8 +864,8 @@ class PartnerController extends Controller
             $data->email = $request->email;
             $user_type = $request->user_type;
 
-            // Force user_type to G_R when role is ECCLESIA
-            if ($the_role->is_ecclesia == 1) {
+            // Force user_type to G_R when role is configured as Admin
+            if ($the_role->is_admin == 1) {
                 $user_type = 'G_R';
             }
 

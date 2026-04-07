@@ -497,6 +497,7 @@
                                                         value="{{ $role->name }}"
                                                         data-permissions="{{ json_encode($role->permissions->pluck('name')) }}"
                                                         data-isecclesia="{{ $role->is_ecclesia }}"
+                                                        data-isadmin="{{ $role->is_admin ?? 0 }}"
                                                         {{ old('role') == $role->name ? 'checked' : '' }}>
                                                     <label class="form-check-label"
                                                         for="data-roles-{{ $role->id }}">{{ $role->name }}
@@ -1188,16 +1189,20 @@
                 getEcclesias(); // Trigger ecclesia fetching on role change
                 var permissions = $(this).data('permissions');
                 var is_ecclesia = $(this).data('isecclesia');
+                var is_admin = $(this).data('isadmin');
 
                 if (is_ecclesia == 1) {
                     $("#hoe_row").show();
                     $("#ecclesia_main_input").hide();
-                    // Force user_type to G_R and lock the dropdown for ECCLESIA roles
-                    lockUserType(true);
                 } else {
                     $("#hoe_row").hide();
                     $("#ecclesia_main_input").show();
-                    // Re-enable user_type dropdown for non-ECCLESIA roles
+                }
+
+                // Lock user_type to G_R if the role is configured as Admin
+                if (is_admin == 1) {
+                    lockUserType(true);
+                } else {
                     lockUserType(false);
                 }
 
@@ -1240,8 +1245,7 @@
             $(document).on('change', 'input[name="role"]', function() {
                 getEcclesias(); // Trigger ecclesia fetching on role change
                 togglePermissionsAndMembership();
-                var is_ecclesia = $(this).data(
-                    'isecclesia'); // Corrected from 'is-ecclesia' to 'isecclesia'
+                var is_ecclesia = $(this).data('isecclesia');
                 if (is_ecclesia == 1) {
                     $('#house-of-ecclesia-section').removeClass('d-none');
                 } else {
@@ -1264,13 +1268,17 @@
             var checkedRole = $(".data-roles:checked");
             if (checkedRole.length > 0) {
                 var is_ecclesia = checkedRole.data('isecclesia');
+                var is_admin = checkedRole.data('isadmin');
                 if (is_ecclesia == 1) {
                     $("#hoe_row").show();
                     $("#ecclesia_main_input").hide();
-                    lockUserType(true);
                 } else {
                     $("#hoe_row").hide();
                     $("#ecclesia_main_input").show();
+                }
+                // Lock user_type if role is Admin
+                if (is_admin == 1) {
+                    lockUserType(true);
                 }
             }
         });

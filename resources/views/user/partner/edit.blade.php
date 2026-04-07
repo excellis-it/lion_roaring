@@ -540,6 +540,7 @@
                                                         value="{{ $role->name }}"
                                                         data-permissions="{{ json_encode($role->permissions->pluck('name')) }}"
                                                         data-isecclesia="{{ $role->is_ecclesia }}"
+                                                        data-isadmin="{{ $role->is_admin ?? 0 }}"
                                                         {{ $currentRoleName == $role->name ? 'checked' : '' }}>
                                                     <label class="form-check-label"
                                                         for="data-roles-{{ $role->id }}">{{ $role->name }}
@@ -1253,16 +1254,19 @@
                 }
             }
 
-            function updatePermissions(permissions, is_ecclesia) {
+            function updatePermissions(permissions, is_ecclesia, is_admin) {
                 if (is_ecclesia == 1) {
                     $("#hoe_row").show();
                     $("#ecclesia_main_input").hide();
-                    // Force user_type to G_R and lock the dropdown for ECCLESIA roles
-                    lockUserType(true);
                 } else {
                     $("#hoe_row").hide();
                     $("#ecclesia_main_input").show();
-                    // Re-enable user_type dropdown for non-ECCLESIA roles
+                }
+
+                // Lock user_type to G_R if the role is configured as Admin
+                if (is_admin == 1) {
+                    lockUserType(true);
+                } else {
                     lockUserType(false);
                 }
 
@@ -1321,9 +1325,10 @@
                 getEcclesias(); // Trigger ecclesia fetching on role change
                 var permissions = $(this).data('permissions');
                 var is_ecclesia = $(this).data('isecclesia');
+                var is_admin = $(this).data('isadmin');
 
                 // Original permission updating logic
-                updatePermissions(permissions, is_ecclesia);
+                updatePermissions(permissions, is_ecclesia, is_admin);
 
                 // Toggle membership section
                 togglePermissionsAndMembership();
@@ -1340,9 +1345,9 @@
             updateSelectAllEcclesiasState();
             togglePermissionsAndMembership();
 
-            // Lock user_type dropdown on page load if current role is ECCLESIA
+            // Lock user_type dropdown on page load if current role is Admin
             var checkedRoleOnLoad = $('input[name="role"]:checked');
-            if (checkedRoleOnLoad.length > 0 && checkedRoleOnLoad.data('isecclesia') == 1) {
+            if (checkedRoleOnLoad.length > 0 && checkedRoleOnLoad.data('isadmin') == 1) {
                 lockUserType(true);
             }
         });

@@ -206,6 +206,23 @@
                                     @endif
                                 </div>
                             </div>
+                            <div class="col-md-4 mb-2 mt-1">
+                                <div class="box_label">
+                                    <label>Is Admin?</label>
+                                    <select name="is_admin" id="" class="form-control" required>
+                                        <option value="" disabled>
+                                            Select
+                                        </option>
+                                        <option value="1" {{ $role->is_admin == 1 ? 'selected' : '' }}>Yes</option>
+                                        <option value="0" {{ ($role->is_admin ?? 0) == 0 ? 'selected' : '' }}>No
+                                        </option>
+                                    </select>
+                                    @if ($errors->has('is_admin'))
+                                        <span class="text-danger"
+                                            style="color: red !important">{{ $errors->first('is_admin') }}</span>
+                                    @endif
+                                </div>
+                            </div>
                         </div>
 
                         <div class="row mt-4" id="permissions-section">
@@ -313,7 +330,8 @@
                                                                                 <div class="form-check mb-0">
                                                                                     <input
                                                                                         class="form-check-input permission-checkbox"
-                                                                                        type="checkbox" name="permissions[]"
+                                                                                        type="checkbox"
+                                                                                        name="permissions[]"
                                                                                         value="{{ $permName }}"
                                                                                         id="perm-{{ $permId }}"
                                                                                         {{ in_array($permName, $currentPermissions) ? 'checked' : '' }}>
@@ -347,10 +365,59 @@
                         </div>
 
                         <div class="w-100 text-end d-flex align-items-center justify-content-end mt-3">
-                            <button type="submit" class="print_btn me-2">Update</button>
+                            <button type="button" id="submit-role-form" class="print_btn me-2">Update</button>
                             <a href="{{ route('roles.index') }}" class="print_btn print_btn_vv">Cancel</a>
                         </div>
                     </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    {{-- Modal: Warning when is_admin changes from No to Yes --}}
+    <div class="modal fade" id="isAdminWarningModal" tabindex="-1" aria-labelledby="isAdminWarningModalLabel"
+        aria-hidden="true">
+        <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
+            <div class="modal-content">
+                <div class="modal-header bg-warning text-dark">
+                    <h5 class="modal-title" id="isAdminWarningModalLabel">
+                        <i class="fas fa-exclamation-triangle me-2"></i> User Type Change Warning
+                    </h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="alert alert-warning mb-3">
+                        <strong>Warning:</strong> Changing "Is Admin" to <strong>Yes</strong> will automatically update
+                        the User Type of <strong><span id="affected-count">0</span> partner(s)</strong> from their current
+                        type to <strong>G_R</strong>.
+                    </div>
+                    <div id="affected-users-table-wrapper">
+                        <div class="table-responsive">
+                            <table class="table table-bordered table-sm table-striped align-middle mb-0">
+                                <thead>
+                                    <tr style="background-color: #343a40; color: #fff;">
+                                        <th class="px-2 py-2">#</th>
+                                        <th class="px-2 py-2">Full Name</th>
+                                        <th class="px-2 py-2">Email</th>
+                                        <th class="px-2 py-2">Role</th>
+                                        <th class="px-2 py-2">Current User Type</th>
+                                        <th class="px-2 py-2">New User Type</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="affected-users-body">
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    <div id="no-affected-users" class="text-center text-muted py-3" style="display: none;">
+                        No partners will be affected by this change.
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="button" class="btn btn-primary" id="confirm-admin-change">
+                        <i class="fas fa-check me-1"></i> Confirm & Update
+                    </button>
                 </div>
             </div>
         </div>
@@ -486,6 +553,73 @@
             if ($('#role_name_input').val().toUpperCase() === 'MEMBER_SOVEREIGN') {
                 $('#permissions-section').hide();
             }
+
+            // Track original is_admin value
+            var originalIsAdmin = {{ $role->is_admin ?? 0 }};
+
+            // Intercept Update button click
+            $('#submit-role-form').click(function() {
+                var newIsAdmin = $('select[name="is_admin"]').val();
+
+                // If is_admin changed from 0 to 1, show warning modal with affected users
+                if (originalIsAdmin == 0 && newIsAdmin == '1') {
+                    // Fetch affected users via AJAX
+                    $.ajax({
+                        url: "{{ route('roles.affected-users', Crypt::encrypt($role->id)) }}",
+                        type: "GET",
+                        beforeSend: function() {
+                            $('#affected-users-body').html(
+                                '<tr><td colspan="6" class="text-center">Loading...</td></tr>'
+                                );
+                            $('#no-affected-users').hide();
+                            $('#affected-users-table-wrapper').show();
+                            $('#isAdminWarningModal').modal('show');
+                        },
+                        success: function(response) {
+                            $('#affected-count').text(response.count);
+
+                            if (response.count === 0) {
+                                $('#affected-users-table-wrapper').hide();
+                                $('#no-affected-users').show();
+                            } else {
+                                var html = '';
+                                $.each(response.users, function(index, user) {
+                                    html += '<tr>';
+                                    html += '<td class="px-2">' + (index + 1) + '</td>';
+                                    html += '<td class="px-2">' + user.full_name +
+                                        '</td>';
+                                    html += '<td class="px-2">' + user.email + '</td>';
+                                    html += '<td class="px-2">' + (user.role_name ||
+                                        '-') + '</td>';
+                                    html +=
+                                        '<td class="px-2"><span class="badge bg-secondary">' +
+                                        user.current_user_type + '</span></td>';
+                                    html +=
+                                        '<td class="px-2"><span class="badge bg-success">G_R</span></td>';
+                                    html += '</tr>';
+                                });
+                                $('#affected-users-body').html(html);
+                                $('#affected-users-table-wrapper').show();
+                                $('#no-affected-users').hide();
+                            }
+                        },
+                        error: function() {
+                            $('#affected-users-body').html(
+                                '<tr><td colspan="6" class="text-center text-danger">Error loading data</td></tr>'
+                                );
+                        }
+                    });
+                } else {
+                    // No is_admin change, submit directly
+                    $('form').submit();
+                }
+            });
+
+            // Confirm button in modal submits the form
+            $('#confirm-admin-change').click(function() {
+                $('#isAdminWarningModal').modal('hide');
+                $('form').submit();
+            });
         });
     </script>
 @endpush

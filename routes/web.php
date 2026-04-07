@@ -1035,6 +1035,7 @@ Route::prefix('user')->middleware(['user', 'preventBackHistory', 'userActivity',
 
     Route::prefix('roles')->group(function () {
         Route::get('/role-delete/{id}', [RolePermissionsController::class, 'delete'])->name('roles.delete');
+        Route::get('/affected-users/{id}', [RolePermissionsController::class, 'affectedUsers'])->name('roles.affected-users');
     });
 
     Route::prefix('partners')->group(function () {
