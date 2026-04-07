@@ -133,6 +133,12 @@
                         <i class="fa-solid fa-globe"></i> Global
                     </span>
                 </li>
+            @elseif(Auth::user()->user_type == 'G_R')
+                <li class="nav-item d-none d-lg-flex align-items-center px-2">
+                    <span class="badge-global">
+                        <i class="fa-solid fa-globe"></i> G_R
+                    </span>
+                </li>
             @elseif(Auth::user()->user_type == 'Regional')
                 <li class="nav-item d-none d-lg-flex align-items-center px-2">
                     <span class="badge-regional">

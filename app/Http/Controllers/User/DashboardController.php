@@ -258,6 +258,12 @@ class DashboardController extends Controller
             return redirect()->route('user.store-orders.details', $order_id);
         } elseif ($type == 'collaboration') {
             return redirect()->route('private-collaborations.index');
+        } elseif ($type == 'membership_cancellation') {
+            $userId = $notification->chat_id;
+            if ($userId) {
+                return redirect()->route('partners.show', encrypt($userId));
+            }
+            return redirect()->route('partners.index');
         }
 
 

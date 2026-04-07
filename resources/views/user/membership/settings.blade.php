@@ -35,6 +35,14 @@
                             <textarea name="description" class="form-control" rows="3">{{ $measurement->description ?? '' }}</textarea>
                         </div>
                     </div>
+                    <div class="col-md-6 mb-3">
+                        <div class="box_label">
+                            <label>Membership Card Title</label>
+                            <input type="text" class="form-control" name="membership_card_title"
+                                value="{{ $measurement->membership_card_title ?? 'My Current Membership' }}"
+                                placeholder="e.g. My Current Membership">
+                        </div>
+                    </div>
                     <div class="col-md-12">
                         <div class="w-100 text-end">
                             <button type="submit" class="print_btn">Save</button>

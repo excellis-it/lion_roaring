@@ -570,6 +570,7 @@ Route::prefix('user')->middleware(['user', 'preventBackHistory', 'userActivity',
         Route::get('/checkout/success', [UserMembershipController::class, 'checkoutSuccess'])->name('user.membership.checkout.success');
         Route::post('/token-subscribe/{tier}', [UserMembershipController::class, 'tokenSubscribe'])->name('user.membership.token-subscribe');
         Route::post('/renew', [UserMembershipController::class, 'renew'])->name('user.membership.renew');
+        Route::post('/cancel', [UserMembershipController::class, 'cancel'])->name('user.membership.cancel');
 
         // Management routes
         Route::get('/manage', [UserMembershipController::class, 'manage'])->name('user.membership.manage');
@@ -1034,6 +1035,7 @@ Route::prefix('user')->middleware(['user', 'preventBackHistory', 'userActivity',
 
     Route::prefix('roles')->group(function () {
         Route::get('/role-delete/{id}', [RolePermissionsController::class, 'delete'])->name('roles.delete');
+        Route::get('/affected-users/{id}', [RolePermissionsController::class, 'affectedUsers'])->name('roles.affected-users');
     });
 
     Route::prefix('partners')->group(function () {

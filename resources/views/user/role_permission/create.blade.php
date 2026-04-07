@@ -192,12 +192,28 @@
                                         <option value="" disabled selected>
                                             Select
                                         </option>
-                                        <option value="1">Yes</option>
-                                        <option value="0">No</option>
+                                        <option value="1" {{ old('is_ecclesia') == '1' ? 'selected' : '' }}>Yes</option>
+                                        <option value="0" {{ old('is_ecclesia') == '0' ? 'selected' : '' }}>No</option>
                                     </select>
                                     @if ($errors->has('is_ecclesia'))
                                         <span class="text-danger"
                                             style="color: red !important">{{ $errors->first('is_ecclesia') }}</span>
+                                    @endif
+                                </div>
+                            </div>
+                            <div class="col-md-4 mb-2 mt-1">
+                                <div class="box_label">
+                                    <label>Is Admin?</label>
+                                    <select name="is_admin" id="" class="form-control" required>
+                                        <option value="" disabled selected>
+                                            Select
+                                        </option>
+                                        <option value="1" {{ old('is_admin') == '1' ? 'selected' : '' }}>Yes</option>
+                                        <option value="0" {{ old('is_admin') == '0' ? 'selected' : '' }}>No</option>
+                                    </select>
+                                    @if ($errors->has('is_admin'))
+                                        <span class="text-danger"
+                                            style="color: red !important">{{ $errors->first('is_admin') }}</span>
                                     @endif
                                 </div>
                             </div>

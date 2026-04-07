@@ -9,5 +9,5 @@ class MembershipMeasurement extends BaseModel
 {
     use HasFactory;
 
-    protected $fillable = ['label', 'description', 'yearly_dues'];
+    protected $fillable = ['label', 'description', 'yearly_dues', 'membership_card_title'];
 }

@@ -39,6 +39,16 @@
                                     </div>
                                 </div>
                             </div>
+                            <div class="col-md-6">
+                                <div class="form-group-div">
+                                    <div class="form-group">
+                                        <label>Membership Card Title</label>
+                                        <input type="text" class="form-control" name="membership_card_title"
+                                            value="{{ $measurement->membership_card_title ?? 'My Current Membership' }}"
+                                            placeholder="e.g. My Current Membership">
+                                    </div>
+                                </div>
+                            </div>
                             <div class="col-md-12">
                                 <div class="btn-1 mt-4">
                                     <button type="submit" class="btn btn-primary">Save</button>

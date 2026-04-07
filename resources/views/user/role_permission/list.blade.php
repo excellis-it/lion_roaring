@@ -48,6 +48,7 @@
                                                 <th>{{ App\Helpers\Helper::getMenuName('role_permission', 'Role Permission') }}
                                                 </th>
                                                 <th>Is ECCLESIA</th>
+                                                <th>Is Admin</th>
                                                 <th></th>
                                             </tr>
                                         </thead>
@@ -59,6 +60,7 @@
                                                         <td>{{ $key + 1 }}</td>
                                                         <td> {{ $role->name }}</td>
                                                         <td>{{ $role->is_ecclesia == 1 ? 'ECCLESIA' : '' }}</td>
+                                                        <td>{{ $role->is_admin == 1 ? 'Yes' : 'No' }}</td>
 
                                                         <td>
 
@@ -88,7 +90,7 @@
                                                 @endforeach
                                             @else
                                                 <tr>
-                                                    <td colspan="4" class="text-center">No data found</td>
+                                                    <td colspan="5" class="text-center">No data found</td>
                                                 </tr>
                                             @endif
                                         </tbody>

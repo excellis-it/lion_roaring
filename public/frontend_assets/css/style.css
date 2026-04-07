@@ -908,6 +908,20 @@ p {
     border-radius: 0 0 30px 30px;
 }
 
+.governance_description {
+    font-size: 16px;
+    color: rgb(0 0 0 / 100%);
+    line-height: 28px;
+    overflow-wrap: break-word;
+    word-break: break-word;
+    white-space: normal;
+}
+
+.governance_description p {
+    margin-bottom: 15px;
+    text-align: justify;
+}
+
 .img1 {
     width: 100%;
     position: relative;
@@ -4157,6 +4171,21 @@ li.slick-active button {
 .book .page {
     overflow-x: hidden;
     overflow-y: auto;
+}
+
+.book .page .page-text p {
+    font-size: 14px !important;
+    font-family: inherit !important;
+    line-height: 24px !important;
+    margin-bottom: 12px;
+    color: #333;
+    text-align: justify;
+}
+
+.book .page .page-text span {
+    font-family: inherit !important;
+    font-size: inherit !important;
+    font-weight: normal !important;
 }
 
 /* macOS Safari hard reset for native select */

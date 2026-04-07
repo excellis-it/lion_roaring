@@ -237,7 +237,7 @@
                                     <div class="col-md-6 mb-2">
                                         <div class="box_label">
                                             <label>User Type *</label>
-                                            <select class="form-control" name="user_type">
+                                            <select class="form-control" name="user_type" id="user_type_select">
                                                 <option value="">Select User Type</option>
                                                 @foreach ($allowedUserTypes as $type)
                                                     <option value="{{ $type }}"
@@ -245,6 +245,8 @@
                                                         {{ $type }}</option>
                                                 @endforeach
                                             </select>
+                                            {{-- Hidden input to submit user_type when dropdown is disabled for ECCLESIA roles --}}
+                                            <input type="hidden" name="user_type" id="user_type_hidden" disabled>
                                             @if ($errors->has('user_type'))
                                                 <div class="error" style="color:red !important;">
                                                     {{ $errors->first('user_type') }}
@@ -495,6 +497,7 @@
                                                         value="{{ $role->name }}"
                                                         data-permissions="{{ json_encode($role->permissions->pluck('name')) }}"
                                                         data-isecclesia="{{ $role->is_ecclesia }}"
+                                                        data-isadmin="{{ $role->is_admin ?? 0 }}"
                                                         {{ old('role') == $role->name ? 'checked' : '' }}>
                                                     <label class="form-check-label"
                                                         for="data-roles-{{ $role->id }}">{{ $role->name }}
@@ -1170,21 +1173,37 @@
                 }
             });
 
+            function lockUserType(lock) {
+                if (lock) {
+                    $('#user_type_select').val('G_R').change();
+                    $('#user_type_select').prop('disabled', true);
+                    $('#user_type_hidden').val('G_R').prop('disabled', false);
+                } else {
+                    $('#user_type_select').prop('disabled', false);
+                    $('#user_type_hidden').prop('disabled', true);
+                }
+            }
+
             $(".data-roles").change(function(e) {
                 e.preventDefault();
                 getEcclesias(); // Trigger ecclesia fetching on role change
                 var permissions = $(this).data('permissions');
                 var is_ecclesia = $(this).data('isecclesia');
+                var is_admin = $(this).data('isadmin');
 
                 if (is_ecclesia == 1) {
                     $("#hoe_row").show();
                     $("#ecclesia_main_input").hide();
-                    if ($('select[name="user_type"]').val() === 'Regional') {
-                        $('select[name="user_type"]').val('G_R').change();
-                    }
                 } else {
                     $("#hoe_row").hide();
                     $("#ecclesia_main_input").show();
+                }
+
+                // Lock user_type to G_R if the role is configured as Admin
+                if (is_admin == 1) {
+                    lockUserType(true);
+                } else {
+                    lockUserType(false);
                 }
 
                 // Uncheck all permissions first
@@ -1206,9 +1225,16 @@
                 if (selectedRole === 'MEMBER_SOVEREIGN') {
                     $('#permissions-section').addClass('d-none');
                     $('#membership-tier-section').removeClass('d-none');
-                    // Ensure at least one tier is selected if none is
+                    // Auto-select tier based on user_type: Global/G_R = Tier 2, Regional = Tier 1
                     if ($('input[name="membership_tier_id"]:checked').length === 0) {
-                        $('input[name="membership_tier_id"]').first().prop('checked', true);
+                        var userType = $('select[name="user_type"]').val();
+                        if (userType === 'Global' || userType === 'G_R') {
+                            // Tier 2 (second option) for Global/G_R users
+                            $('input[name="membership_tier_id"]').eq(1).prop('checked', true);
+                        } else {
+                            // Tier 1 (first option) for Regional users
+                            $('input[name="membership_tier_id"]').first().prop('checked', true);
+                        }
                     }
                 } else {
                     $('#permissions-section').removeClass('d-none');
@@ -1219,8 +1245,7 @@
             $(document).on('change', 'input[name="role"]', function() {
                 getEcclesias(); // Trigger ecclesia fetching on role change
                 togglePermissionsAndMembership();
-                var is_ecclesia = $(this).data(
-                    'isecclesia'); // Corrected from 'is-ecclesia' to 'isecclesia'
+                var is_ecclesia = $(this).data('isecclesia');
                 if (is_ecclesia == 1) {
                     $('#house-of-ecclesia-section').removeClass('d-none');
                 } else {
@@ -1243,12 +1268,17 @@
             var checkedRole = $(".data-roles:checked");
             if (checkedRole.length > 0) {
                 var is_ecclesia = checkedRole.data('isecclesia');
+                var is_admin = checkedRole.data('isadmin');
                 if (is_ecclesia == 1) {
                     $("#hoe_row").show();
                     $("#ecclesia_main_input").hide();
                 } else {
                     $("#hoe_row").hide();
                     $("#ecclesia_main_input").show();
+                }
+                // Lock user_type if role is Admin
+                if (is_admin == 1) {
+                    lockUserType(true);
                 }
             }
         });

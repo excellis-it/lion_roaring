@@ -192,7 +192,7 @@ class MembershipController extends Controller
             if (!auth()->user()->can('Edit Membership Settings')) {
                 abort(403, 'Unauthorized');
             }
-            $data = $request->only('label', 'description', 'yearly_dues');
+            $data = $request->only('label', 'description', 'yearly_dues', 'membership_card_title');
             if ($measurement) {
                 $measurement->update($data);
             } else {
@@ -648,6 +648,52 @@ class MembershipController extends Controller
         } catch (\Throwable $th) {
             return redirect()->route('user.membership.index')->with('error', $th->getMessage());
         }
+    }
+
+    public function cancel(Request $request)
+    {
+        $user = Auth::user();
+        $sub = $user->userLastSubscription;
+
+        if (!$sub) {
+            return redirect()->route('user.membership.index')->with('error', 'No active subscription to cancel.');
+        }
+
+        // Expire the subscription immediately
+        $sub->subscription_expire_date = now();
+        $sub->save();
+
+        // Deactivate the user account
+        $user->status = 0;
+        $user->save();
+
+        // Notify all SUPER ADMIN users
+        $admins = User::whereHas('userRole', function ($q) {
+            $q->where('name', 'SUPER ADMIN');
+        })->where('status', 1)->get();
+
+        $userName = $user->first_name . ' ' . $user->last_name;
+        $encryptedUserId = encrypt($user->id);
+
+        foreach ($admins as $admin) {
+            $notification = \App\Services\NotificationService::saveNotification(
+                $admin->id,
+                '<strong>' . e($userName) . '</strong> has cancelled their <strong>' . e($sub->subscription_name) . '</strong> membership. Their account has been deactivated.',
+                'membership_cancellation'
+            );
+            // Store the cancelled user's encrypted ID for linking to partner details
+            if ($notification) {
+                $notification->chat_id = $user->id;
+                $notification->save();
+            }
+        }
+
+        // Log the user out
+        Auth::logout();
+        $request->session()->invalidate();
+        $request->session()->regenerateToken();
+
+        return redirect('/')->with('success', 'Your membership has been cancelled and your account has been deactivated.');
     }
 
     public function tokenSubscribe(Request $request, MembershipTier $tier)
