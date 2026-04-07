@@ -90,10 +90,10 @@
                                             @php $daysToOpen = max(0, $remainingDays - 30); @endphp
                                             <button type="button" class="btn btn-secondary" disabled>Renew (available in
                                                 {{ $daysToOpen }} days)</button>
-                                            {{-- <small class="d-block text-muted mt-1">Renewals open 30 days before
-                                                expiry.</small> --}}
                                         @endif
                                     </form>
+                                    <button type="button" class="btn btn-primary btn-sm mt-2 w-100" data-bs-toggle="modal"
+                                        data-bs-target="#cancelMembershipModal">Cancel Membership</button>
                                 </div>
                             @else
                                 <p class="text-danger">No active subscription</p>
@@ -348,6 +348,50 @@
             </div>
         </div>
     </div>
+
+    <!-- Cancel Membership Confirmation Modal -->
+    <div class="modal fade" id="cancelMembershipModal" tabindex="-1" aria-labelledby="cancelMembershipModalLabel"
+        aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content shadow-lg border-0" style="border-radius: 20px; overflow: hidden;">
+                <div class="modal-header border-0 p-4 pb-0 position-relative d-block"
+                    style="background: linear-gradient(135deg, #dc3545 0%, #a71d2a 100%); min-height: 110px;">
+                    <button type="button" class="btn-close btn-close-white position-absolute" data-bs-dismiss="modal"
+                        aria-label="Close" style="top: 20px; right: 20px; z-index: 10;"></button>
+                    <div class="position-relative" style="z-index: 1;">
+                        <h4 class="modal-title text-white fw-bold mb-0" id="cancelMembershipModalLabel">Cancel Membership
+                        </h4>
+                        <p class="text-white-50 mb-0 small"><i class="fa fa-exclamation-triangle me-1"></i> This action
+                            cannot be undone</p>
+                    </div>
+                </div>
+                <div class="modal-body p-4" style="margin-top: -20px; position: relative; z-index: 2;">
+                    <div class="card border-0 shadow-sm p-4" style="border-radius: 15px;">
+                        <p class="mb-2"><strong>Are you sure you want to cancel your membership?</strong></p>
+                        <ul class="text-muted small mb-0">
+                            <li>Your subscription will be terminated immediately.</li>
+                            <li>Your account will be deactivated.</li>
+                            <li>You will be logged out.</li>
+                            <li>An admin will be notified of your cancellation.</li>
+                            <li><strong class="text-danger">No refunds will be issued.</strong></li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="modal-footer border-0 p-4 pt-0 d-flex gap-2">
+                    <button type="button" class="btn btn-light rounded-pill flex-grow-1 py-2 fw-bold text-muted border-0"
+                        data-bs-dismiss="modal" style="background: #f8f9fa;">
+                        Keep Membership
+                    </button>
+                    <form action="{{ route('user.membership.cancel') }}" method="POST" class="flex-grow-1">
+                        @csrf
+                        <button type="submit" class="btn btn-danger w-100 rounded-pill py-2 fw-bold shadow-sm">
+                            Yes, Cancel Membership
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
 @endsection
 
 @include('frontend.membership._card-styles')
@@ -597,9 +641,12 @@
                             'text-danger').addClass('text-success');
                         $('#promoCodeInput').prop('readonly', true);
                         if (finalAmount <= 0) {
-                            $('#proceedToCheckout').html('Complete Subscription <i class="fa fa-check-circle ms-2 small"></i>');
+                            $('#proceedToCheckout').html(
+                                'Complete Subscription <i class="fa fa-check-circle ms-2 small"></i>'
+                            );
                         } else {
-                            $('#proceedToCheckout').html('Checkout <i class="fa fa-arrow-right ms-2 small"></i>');
+                            $('#proceedToCheckout').html(
+                                'Checkout <i class="fa fa-arrow-right ms-2 small"></i>');
                         }
                     } else {
                         $('#promoMessage').text(response.message || 'Invalid promo code').removeClass(
