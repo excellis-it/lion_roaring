@@ -37,6 +37,7 @@ use Stripe\PaymentIntent;
 use App\Models\EstoreRefund;
 use App\Models\ProductVariation;
 use App\Models\WarehouseProductVariation;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Storage;
 use App\Services\PromoCodeService;
 use App\Models\EstorePromoCode;
@@ -61,7 +62,7 @@ class ProductController extends Controller
         $userSessionId = session()->getId();
         $cartCount = $isAuth ? EstoreCart::where('user_id', auth()->id())->count() : EstoreCart::where('session_id', $userSessionId)->count();
 
-        $nearbyWareHouseId = WareHouse::where('is_active', 1)->first()->id;
+        $nearbyWareHouseId = WareHouse::where('is_active', 1)->first()?->id ?? 0;
         $originLat = null;
         $originLng = null;
         $isUser = auth()->user();
@@ -161,7 +162,7 @@ class ProductController extends Controller
         $childCategoriesList = [];
         $category_name = null;
 
-        $nearbyWareHouseId = WareHouse::where('is_active', 1)->first()->id;
+        $nearbyWareHouseId = WareHouse::where('is_active', 1)->first()?->id ?? 0;
         $originLat = null;
         $originLng = null;
         $isUser = auth()->user();
@@ -239,7 +240,7 @@ class ProductController extends Controller
 
 
 
-            $nearbyWareHouseId = WareHouse::where('is_active', 1)->first()->id;
+            $nearbyWareHouseId = WareHouse::where('is_active', 1)->first()?->id ?? 0;
             $originLat = null;
             $originLng = null;
             $isUser = auth()->user();
@@ -1046,6 +1047,22 @@ class ProductController extends Controller
             return response()->json(['status' => false, 'message' => 'Please login to continue']);
         }
 
+        // Prevent concurrent duplicate orders from the same user
+        $lockKey = 'checkout_lock_user_' . auth()->id();
+        $lock = Cache::lock($lockKey, 30); // 30 second lock
+        if (!$lock->get()) {
+            return response()->json(['status' => false, 'message' => 'Your order is already being processed. Please wait.'], 429);
+        }
+
+        try {
+            return $this->executeCheckout($request);
+        } finally {
+            $lock->release();
+        }
+    }
+
+    private function executeCheckout(Request $request)
+    {
         $request->validate([
             'first_name' => 'required|string|max:255',
             'last_name' => 'required|string|max:255',
@@ -1179,8 +1196,21 @@ class ProductController extends Controller
             $taxAmount = (($subtotal - $promoDiscount) * ($estoreSettings->tax_percentage ?? 0)) / 100;
         }
 
-        // Calculate selected checkout charges total
-        $selectedCheckoutCharges = $request->input('checkout_charges', []);
+        // Validate checkout charges against actual DB records — ignore any names not in DB
+        $requestedCheckoutCharges = $request->input('checkout_charges', []);
+        $validCheckoutChargeNames = [];
+        foreach ($carts as $cart) {
+            if (!empty($cart->product?->otherCharges)) {
+                foreach ($cart->product->otherCharges as $charge) {
+                    if (($charge->display_at ?? 'listing') === 'checkout') {
+                        $validCheckoutChargeNames[] = $charge->charge_name;
+                    }
+                }
+            }
+        }
+        $selectedCheckoutCharges = array_intersect($requestedCheckoutCharges, array_unique($validCheckoutChargeNames));
+
+        // Calculate selected checkout charges total using DB values only
         $orderCheckoutChargesTotal = 0;
         foreach ($carts as $cart) {
             if (!empty($cart->product?->otherCharges)) {
@@ -1261,13 +1291,20 @@ class ProductController extends Controller
             $signaturePath = null;
             if ($request->filled('signature_image')) {
                 $signatureData = $request->input('signature_image');
-                if (preg_match('/^data:image\/(\w+);base64,/', $signatureData, $type)) {
-                    $signatureData = substr($signatureData, strpos($signatureData, ',') + 1);
-                    $signatureData = base64_decode($signatureData);
-                    $extension = strtolower($type[1]);
-                    $fileName = 'signatures/' . uniqid('sig_') . '.' . $extension;
-                    Storage::disk('public')->put($fileName, $signatureData);
-                    $signaturePath = $fileName;
+                if (preg_match('/^data:image\/(png|jpeg|jpg|webp);base64,/', $signatureData, $type)) {
+                    $base64Payload = substr($signatureData, strpos($signatureData, ',') + 1);
+                    // Reject if base64 payload exceeds ~1MB decoded
+                    if (strlen($base64Payload) > 1400000) {
+                        Log::warning('Signature image too large', ['user_id' => auth()->id()]);
+                    } else {
+                        $decoded = base64_decode($base64Payload, true);
+                        if ($decoded !== false) {
+                            $extension = strtolower($type[1]);
+                            $fileName = 'signatures/' . uniqid('sig_') . '.' . $extension;
+                            Storage::disk('public')->put($fileName, $decoded);
+                            $signaturePath = $fileName;
+                        }
+                    }
                 }
             }
 
@@ -1355,28 +1392,43 @@ class ProductController extends Controller
                     'total' => ((($cart->price ?? ($cart->warehouseProduct?->price ?? 0))) * $cart->quantity) + $itemOtherChargesTotal,
                 ]);
 
+                // Lock row to prevent race condition on concurrent orders
                 $warehouseProduct = WarehouseProduct::where('warehouse_id', $cart->warehouse_id)
                     ->where('id', $cart->warehouse_product_id)
                     ->where('product_id', $cart->product_id)
+                    ->lockForUpdate()
                     ->first();
 
                 if ($warehouseProduct) {
+                    // Pre-decrement validation: ensure stock won't go negative
+                    if ($warehouseProduct->quantity < $cart->quantity) {
+                        DB::rollBack();
+                        return response()->json([
+                            'status' => false,
+                            'message' => "Insufficient stock for '{$cart->product->name}'. Only {$warehouseProduct->quantity} left."
+                        ], 422);
+                    }
+
                     $warehouseProduct->decrement('quantity', $cart->quantity);
                     Log::info('Warehouse product stock updated', ['product_id' => $warehouseProduct->id, 'new_quantity' => $warehouseProduct->quantity]);
 
                     $wareHouseProductVariation = WarehouseProductVariation::where('warehouse_id', $cart->warehouse_id)
                         ->where('product_variation_id', $warehouseProduct->product_variation_id)
                         ->where('product_id', $cart->product_id)
+                        ->lockForUpdate()
                         ->first();
 
                     if ($wareHouseProductVariation) {
-                        $newWarehouseQty = max(0, ($wareHouseProductVariation->warehouse_quantity ?? 0) - $cart->quantity);
-                        $wareHouseProductVariation->warehouse_quantity = $newWarehouseQty;
+                        if ($wareHouseProductVariation->warehouse_quantity < $cart->quantity) {
+                            $wareHouseProductVariation->warehouse_quantity = 0;
+                        } else {
+                            $wareHouseProductVariation->warehouse_quantity -= $cart->quantity;
+                        }
                         $wareHouseProductVariation->updated_at = now();
                         $wareHouseProductVariation->save();
                         Log::info('Warehouse product variation stock updated', [
                             'warehouse_product_variation_id' => $wareHouseProductVariation->id,
-                            'new_quantity' => $newWarehouseQty
+                            'new_quantity' => $wareHouseProductVariation->warehouse_quantity
                         ]);
                     } else {
                         Log::warning('WarehouseProductVariation not found for order item', [
@@ -1816,7 +1868,7 @@ class ProductController extends Controller
             if (!$product) {
                 return response()->json(['status' => false, 'message' => 'Product not found']);
             }
-            $nearbyWareHouseId = WareHouse::where('is_active', 1)->first()->id; // first id from warehouses
+            $nearbyWareHouseId = WareHouse::where('is_active', 1)->first()?->id ?? 0; // first id from warehouses
             $originLat = null;
             $originLng = null;
             $isUser = auth()->user();

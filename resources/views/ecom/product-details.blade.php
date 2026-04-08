@@ -154,7 +154,7 @@
                         <div class=" mb-2">
                             <div class="theme-text subtitle">Description:</div>
                             <div class="subtitle p-descrition-text">
-                                {!! $product->description !!}
+                                {!! strip_tags($product->description, '<p><br><b><strong><i><em><u><ul><ol><li><a><h1><h2><h3><h4><h5><h6><table><thead><tbody><tr><td><th><img><span><div><blockquote><hr><sub><sup>') !!}
                             </div>
                         </div>
                         {{-- @dd($product); --}}
@@ -406,7 +406,7 @@
                 <div class="tab-content mb-3">
                     <div class="tab-pane active" id="home">
                         <div class="description">
-                            {!! $product->specification !!}
+                            {!! strip_tags($product->specification, '<p><br><b><strong><i><em><u><ul><ol><li><a><h1><h2><h3><h4><h5><h6><table><thead><tbody><tr><td><th><img><span><div><blockquote><hr><sub><sup>') !!}
                         </div>
                     </div>
                     <div class="tab-pane fade" id="menu1">

@@ -1270,10 +1270,10 @@ Route::prefix('e-store')->middleware(['user', 'preventBackHistory', 'userActivit
     Route::get('/live-search', [EstoreProductController::class, 'liveSearch'])->name('e-store.live-search');
     Route::get('/products-filter', [EstoreProductController::class, 'productsFilter'])->name('e-store.products-filter');
     Route::post('/product-add-review', [EstoreProductController::class, 'productAddReview'])->name('e-store.product-add-review');
-    Route::post('/add-to-cart', [EstoreProductController::class, 'addToCart'])->name('e-store.add-to-cart');
-    Route::post('/remove-from-cart', [EstoreProductController::class, 'removeFromCart'])->name('e-store.remove-from-cart');
-    Route::post('/update-cart', [EstoreProductController::class, 'updateCart'])->name('e-store.update-cart');
-    Route::post('/clear-cart', [EstoreProductController::class, 'clearCart'])->name('e-store.clear-cart');
+    Route::post('/add-to-cart', [EstoreProductController::class, 'addToCart'])->name('e-store.add-to-cart')->middleware('throttle:60,1');
+    Route::post('/remove-from-cart', [EstoreProductController::class, 'removeFromCart'])->name('e-store.remove-from-cart')->middleware('throttle:60,1');
+    Route::post('/update-cart', [EstoreProductController::class, 'updateCart'])->name('e-store.update-cart')->middleware('throttle:60,1');
+    Route::post('/clear-cart', [EstoreProductController::class, 'clearCart'])->name('e-store.clear-cart')->middleware('throttle:30,1');
     Route::get('/cart-count', [EstoreProductController::class, 'cartCount'])->name('e-store.cart-count');
     Route::get('/cart-list', [EstoreProductController::class, 'cartList'])->name('e-store.cart-list');
     Route::get('/check-product-in-cart', [EstoreProductController::class, 'checkProductInCart'])->name('e-store.check-product-in-cart');
@@ -1282,16 +1282,16 @@ Route::prefix('e-store')->middleware(['user', 'preventBackHistory', 'userActivit
 
 
     // e-store.apply-promo-code
-    Route::post('/apply-promo-code', [EstoreProductController::class, 'applyPromoCode'])->name('e-store.apply-promo-code');
+    Route::post('/apply-promo-code', [EstoreProductController::class, 'applyPromoCode'])->name('e-store.apply-promo-code')->middleware('throttle:10,1');
     // e-store.remove-promo-code
-    Route::post('/remove-promo-code', [EstoreProductController::class, 'removePromoCode'])->name('e-store.remove-promo-code');
+    Route::post('/remove-promo-code', [EstoreProductController::class, 'removePromoCode'])->name('e-store.remove-promo-code')->middleware('throttle:10,1');
 
-    Route::post('/process-checkout', [EstoreProductController::class, 'processCheckout'])->name('e-store.process-checkout');
+    Route::post('/process-checkout', [EstoreProductController::class, 'processCheckout'])->name('e-store.process-checkout')->middleware('throttle:5,1');
 
     // Digital Checkout Routes
     Route::post('/initiate-digital-checkout', [DigitalCheckoutController::class, 'initiateCheckout'])->name('e-store.initiate-digital-checkout');
     Route::get('/digital-checkout', [DigitalCheckoutController::class, 'checkout'])->name('e-store.digital-checkout');
-    Route::post('/process-digital-checkout', [DigitalCheckoutController::class, 'processCheckout'])->name('e-store.process-digital-checkout');
+    Route::post('/process-digital-checkout', [DigitalCheckoutController::class, 'processCheckout'])->name('e-store.process-digital-checkout')->middleware('throttle:5,1');
 
     // Digital Promo Code
     Route::post('/digital/apply-promo-code', [DigitalCheckoutController::class, 'applyPromoCode'])->name('e-store.digital.apply-promo-code');
@@ -1315,7 +1315,7 @@ Route::prefix('e-store')->middleware(['user', 'preventBackHistory', 'userActivit
 
 
     // e-store.cancel-order
-    Route::post('/cancel-order', [EstoreProductController::class, 'cancelOrder'])->name('e-store.cancel-order');
+    Route::post('/cancel-order', [EstoreProductController::class, 'cancelOrder'])->name('e-store.cancel-order')->middleware('throttle:5,1');
 
     // add to wishlist
     Route::post('/product/add-to-wishlist', [EstoreProductController::class, 'addToWishlist'])->name('e-store.add-to-wishlist');

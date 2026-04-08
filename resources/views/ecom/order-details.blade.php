@@ -171,9 +171,9 @@
                                                 </div>
                                             @endif
                                         </div>
-                                        <div class="col-md-2 text-center">
+                                        {{-- <div class="col-md-2 text-center">
                                             <p class="mb-0">${{ number_format($item->price, 2) }}</p>
-                                        </div>
+                                        </div> --}}
                                         @php
                                             // Calculate total for this item
                                             $itemTotal = $item->price * $item->quantity;

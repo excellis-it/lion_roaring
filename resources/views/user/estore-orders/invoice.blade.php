@@ -247,18 +247,6 @@
             </tr>
         </table>
 
-        @if (!empty($order->signature_image))
-            <table width="100%" border="0" cellspacing="0" cellpadding="0">
-                <tr>
-                    <td style="padding: 10px 20px;" align="left" valign="top">
-                        <p style="font-size:14px;font-weight:bold;color:#333;">Customer Signature:</p>
-                    </td>
-                    <td align="right" style="padding: 10px 20px;">
-                        <img src="{{ Storage::url($order->signature_image) }}" width="200" style="border: 1px solid #ddd;" />
-                    </td>
-                </tr>
-            </table>
-        @endif
         <table width="100%" border="0" cellspacing="0" cellpadding="0">
             <tr>
                 {{-- <td height="40" style="padding:0px 20px 0 20px;" align="left" valign="top">
