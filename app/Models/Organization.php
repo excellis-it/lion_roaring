@@ -25,7 +25,7 @@ class Organization extends BaseModel
 
     public function images()
     {
-        return $this->hasMany(OrganizationImage::class);
+        return $this->hasMany(OrganizationImage::class)->orderBy('sort_order');
     }
 
     public function projects()

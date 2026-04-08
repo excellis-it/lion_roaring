@@ -1216,6 +1216,7 @@ Route::prefix('user')->middleware(['user', 'preventBackHistory', 'userActivity',
             Route::get('/contact-us-delete/{id}', [UserAdminContactusController::class, 'delete'])->name('contact-us.delete');
 
             Route::get('/organizations-image-delete', [UserAdminOrganizationController::class, 'imageDelete'])->name('organization.image.delete');
+            Route::post('/organizations-image-reorder', [UserAdminOrganizationController::class, 'imageReorder'])->name('organization.image.reorder');
 
             Route::prefix('faq')->group(function () {
                 Route::get('/faq-delete/{id}', [UserAdminFaqController::class, 'delete'])->name('faq.delete');

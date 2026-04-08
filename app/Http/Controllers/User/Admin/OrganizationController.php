@@ -152,10 +152,12 @@ class OrganizationController extends Controller
         $organization = Organization::updateOrCreate(['country_code' => $country], array_merge($organization->getAttributes(), ['country_code' => $country]));
 
         if ($request->image) {
+            $maxOrder = OrganizationImage::where('organization_id', $organization->id)->max('sort_order') ?? -1;
             foreach ($request->image as $key => $image) {
                 $organization_image = new OrganizationImage();
                 $organization_image->organization_id = $organization->id;
                 $organization_image->image = $this->imageUpload($image, 'organization');
+                $organization_image->sort_order = ++$maxOrder;
                 $organization_image->save();
             }
         }
@@ -201,6 +203,17 @@ class OrganizationController extends Controller
 
         $organization_image->delete();
         return response()->json(['success' => 'Product image deleted successfully.']);
+    }
+
+    public function imageReorder(Request $request)
+    {
+        $order = $request->order;
+        if (is_array($order)) {
+            foreach ($order as $index => $id) {
+                OrganizationImage::where('id', $id)->update(['sort_order' => $index]);
+            }
+        }
+        return response()->json(['status' => true, 'message' => 'Image order updated successfully.']);
     }
 
     /**
