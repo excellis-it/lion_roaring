@@ -2847,6 +2847,11 @@ section {
     list-style: inside !important;
 }
 
+.ck-content,
+.ck-content *{
+    font-family: var(--main-font) !important;
+}
+
 
 
 

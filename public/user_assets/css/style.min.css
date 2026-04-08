@@ -47738,6 +47738,11 @@ input {
     height: 250px;
 }
 
+.ck-content,
+.ck-content *{
+    font-family: var(--main-font) !important;
+}
+
 .other_attch {
     width: auto;
     display: inline-block;
