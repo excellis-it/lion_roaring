@@ -683,7 +683,7 @@ class CmsController extends Controller
         try {
             $pdf_url = Helper::getPDFAttribute();
             if ($pdf_url) {
-                return response()->json(['message' => 'Article of association', 'status' => true, 'url' => $pdf_url], $this->successStatus);
+                return response()->json(['message' => 'Article of association', 'status' => true, 'url' => $pdf_url, 'checkbox_text' => Helper::getArticleCheckboxText()], $this->successStatus);
             } else {
                 return response()->json(['message' => 'No Article of association found', 'status' => false], 201);
             }

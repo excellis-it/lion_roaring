@@ -847,7 +847,7 @@
                                         <div class="form-group mb-0">
                                             <input type="checkbox" id="pma_register_check1">
                                             <label for="pma_register_check1" class="fw-bold text-dark h5 mb-0">
-                                                I have read and agree to the Articles of Association
+                                                {{ Helper::getArticleCheckboxText() }}
                                             </label>
                                         </div>
                                     </div>

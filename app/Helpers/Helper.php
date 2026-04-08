@@ -130,6 +130,15 @@ class Helper
         }
     }
 
+    public static function getArticleCheckboxText()
+    {
+        $article = self::getVisitorCmsContent('Article', true, false, 'id', 'desc', null);
+        if ($article && $article->checkbox_text) {
+            return $article->checkbox_text;
+        }
+        return 'I have read and agree to the Articles of Association';
+    }
+
     public static function getOrganzations()
     {
         $organizations = OurOrganization::orderBy('id', 'desc')->get();
