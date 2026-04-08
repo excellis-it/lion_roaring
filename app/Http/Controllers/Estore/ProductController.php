@@ -86,7 +86,7 @@ class ProductController extends Controller
                 ->where('quantity', '>', 0);
         })->pluck('id')->toArray();
 
-        $getProduct = Product::where('slug', $slug)->first();
+        $getProduct = Product::where('slug', $slug)->with('otherCharges')->first();
 
         $wareHouseHaveProductVariables = WarehouseProduct::where('product_id', $getProduct->id)
             ->where('warehouse_id', $nearbyWareHouseId)
@@ -188,7 +188,7 @@ class ProductController extends Controller
         // if ($wareHouseProducts ) {
         //    $products = Product::whereIn('id', $wareHouseProducts)->where('status', 1);
         // } else {
-        $products = Product::where('is_deleted', false)->where('status', 1);
+        $products = Product::where('is_deleted', false)->where('status', 1)->with('otherCharges');
         //  }
 
 
@@ -265,7 +265,7 @@ class ProductController extends Controller
             //  if ($wareHouseProducts) {
             //     $products = Product::whereIn('id', $wareHouseProducts)->where('status', 1)->with('image');
             //  } else {
-            $products = Product::where('is_deleted', false)->where('status', 1)->with('image');
+            $products = Product::where('is_deleted', false)->where('status', 1)->with('image', 'otherCharges');
             //  }
 
             if (!empty($category_id)) {
@@ -773,18 +773,27 @@ class ProductController extends Controller
                 $hasChanges = true;
             }
 
-            // Calculate other charges
-            $otherCharges = 0;
+            // Calculate other charges separated by display_at
+            $listingCharges = 0;
+            $checkoutCharges = 0;
             if ($cart->product?->otherCharges) {
                 foreach ($cart->product->otherCharges as $charge) {
+                    $displayAt = $charge->display_at ?? 'listing';
                     if ($charge->charge_type == 'percentage') {
-                        $otherCharges += (($cart->price ?? $currentWarehousePrice) * $cart->quantity * ($charge->charge_amount / 100));
+                        $chargeAmount = (($cart->price ?? $currentWarehousePrice) * $cart->quantity * ($charge->charge_amount / 100));
                     } else {
-                        // Fixed charge is now per line item, not per quantity
-                        $otherCharges += $charge->charge_amount;
+                        $chargeAmount = $charge->charge_amount;
+                    }
+
+                    if ($displayAt === 'listing') {
+                        $listingCharges += $chargeAmount;
+                    } else {
+                        $checkoutCharges += $chargeAmount;
                     }
                 }
             }
+
+            $otherCharges = $listingCharges + $checkoutCharges;
 
             if (!$meta['out_of_stock']) {
                 $cart->subtotal = ($cart->price ?? 0) * $cart->quantity + ($otherCharges ?? 0);
@@ -792,6 +801,8 @@ class ProductController extends Controller
             } else {
                 $cart->subtotal = 0;
             }
+            $cart->listing_charges = $listingCharges;
+            $cart->checkout_charges = $checkoutCharges;
 
             $cart->setAttribute('meta', $meta);
         }
@@ -877,18 +888,34 @@ class ProductController extends Controller
                 $hasChanges = true;
             }
 
-            $otherCharges = 0;
+            // Separate listing vs checkout charges
+            $listingCharges = 0;
+            $checkoutChargesTotal = 0;
+            $checkoutChargesList = [];
             if ($cart->product?->otherCharges) {
                 foreach ($cart->product->otherCharges as $charge) {
+                    $displayAt = $charge->display_at ?? 'listing';
                     if ($charge->charge_type == 'percentage') {
-                        $otherCharges += (($cart->price ?? $currentWarehousePrice) * $cart->quantity * ($charge->charge_amount / 100));
+                        $chargeAmount = (($cart->price ?? $currentWarehousePrice) * $cart->quantity * ($charge->charge_amount / 100));
                     } else {
-                        // Fixed charge is now per line item, not per quantity
-                        $otherCharges += $charge->charge_amount;
+                        $chargeAmount = $charge->charge_amount;
+                    }
+
+                    if ($displayAt === 'listing') {
+                        $listingCharges += $chargeAmount;
+                    } else {
+                        $checkoutChargesTotal += $chargeAmount;
+                        $checkoutChargesList[] = [
+                            'charge_name' => $charge->charge_name,
+                            'charge_type' => $charge->charge_type,
+                            'charge_amount' => $charge->charge_amount,
+                            'calculated_amount' => $chargeAmount,
+                        ];
                     }
                 }
             }
-            $itemSubtotal = $outOfStock ? 0 : ((($cart->price ?? 0) * $cart->quantity) + ($otherCharges ?? 0));
+            $otherCharges = $listingCharges + $checkoutChargesTotal;
+            $itemSubtotal = $outOfStock ? 0 : ((($cart->price ?? 0) * $cart->quantity) + ($listingCharges));
             $subtotal += $itemSubtotal;
 
             $cartItems[] = [
@@ -898,6 +925,9 @@ class ProductController extends Controller
                 'product_image' => $cart->product->getProductFirstImage($cart->color_id) ?? '',
                 'price' => $cart->price ?? 0,
                 'quantity' => $cart->quantity,
+                'listing_charges' => $listingCharges,
+                'checkout_charges' => $checkoutChargesTotal,
+                'checkout_charges_list' => $checkoutChargesList,
                 'other_charges' => $otherCharges,
                 'subtotal' => $itemSubtotal,
                 'price_changed' => $priceChanged,
@@ -949,7 +979,13 @@ class ProductController extends Controller
             }
         }
 
-        $total = $subtotal - $promoDiscount + $shippingCost + $deliveryCost + $taxAmount;
+        // Sum checkout-only charges across all items
+        $totalCheckoutCharges = 0;
+        foreach ($cartItems as $ci) {
+            $totalCheckoutCharges += $ci['checkout_charges'] ?? 0;
+        }
+
+        $total = $subtotal + $totalCheckoutCharges - $promoDiscount + $shippingCost + $deliveryCost + $taxAmount;
 
         // Get nearest warehouse based on user location
         $nearestWarehouse = null;
@@ -991,6 +1027,7 @@ class ProductController extends Controller
             'deliveryCost',
             'taxAmount',
             'total',
+            'totalCheckoutCharges',
             'cartCount',
             'estoreSettings',
             'hasChanges',
@@ -1036,6 +1073,7 @@ class ProductController extends Controller
         $hasBlockingStockIssue = false;
         $recalculatedSubtotal = 0;
         $cartItems = [];
+        $selectedCheckoutCharges = $request->input('checkout_charges', []);
 
         foreach ($carts as $cart) {
             $warehouseProduct = $cart->warehouseProduct;
@@ -1065,20 +1103,30 @@ class ProductController extends Controller
                 $cart->save();
             }
 
-            $otherChargesTotal = 0;
+            $listingChargesTotal = 0;
+            $checkoutChargesTotal = 0;
             if ($cart->product?->otherCharges) {
                 foreach ($cart->product->otherCharges as $charge) {
+                    $displayAt = $charge->display_at ?? 'listing';
                     if ($charge->charge_type == 'percentage') {
-                        $otherChargesTotal += (($cart->price ?? $currentWarehousePrice) * $cart->quantity * ($charge->charge_amount / 100));
+                        $chargeAmt = (($cart->price ?? $currentWarehousePrice) * $cart->quantity * ($charge->charge_amount / 100));
                     } else {
-                        // Fixed charge is now per line item, not per quantity
-                        $otherChargesTotal += $charge->charge_amount;
+                        $chargeAmt = $charge->charge_amount;
+                    }
+
+                    if ($displayAt === 'listing') {
+                        $listingChargesTotal += $chargeAmt;
+                    } else {
+                        $checkoutChargesTotal += $chargeAmt;
                     }
                 }
             }
-            $cart->other_charges = $otherChargesTotal;
+
+            $cart->listing_charges = $listingChargesTotal;
+            $cart->checkout_charges_total = $checkoutChargesTotal;
+            $cart->other_charges = $listingChargesTotal; // listing charges are always included
             $unitPrice = $cart->price ?? ($currentWarehousePrice);
-            $itemSubtotal = ($unitPrice * $cart->quantity) + ($cart->other_charges ?? 0);
+            $itemSubtotal = ($unitPrice * $cart->quantity) + $listingChargesTotal;
             $recalculatedSubtotal += $itemSubtotal;
 
             $cartItems[] = [
@@ -1130,28 +1178,29 @@ class ProductController extends Controller
             $taxAmount = (($subtotal - $promoDiscount) * ($estoreSettings->tax_percentage ?? 0)) / 100;
         }
 
-        $withAmount = $subtotal - $promoDiscount + $shippingCost + $deliveryCost + $taxAmount;
+        // Calculate selected checkout charges total
+        $selectedCheckoutCharges = $request->input('checkout_charges', []);
+        $orderCheckoutChargesTotal = 0;
+        foreach ($carts as $cart) {
+            if (!empty($cart->product?->otherCharges)) {
+                foreach ($cart->product->otherCharges as $charge) {
+                    if (($charge->display_at ?? 'listing') === 'checkout' && in_array($charge->charge_name, $selectedCheckoutCharges)) {
+                        if ($charge->charge_type == 'percentage') {
+                            $orderCheckoutChargesTotal += (($cart->price ?? 0) * $cart->quantity * ($charge->charge_amount / 100));
+                        } else {
+                            $orderCheckoutChargesTotal += $charge->charge_amount;
+                        }
+                    }
+                }
+            }
+        }
+
+        $withAmount = $subtotal + $orderCheckoutChargesTotal - $promoDiscount + $shippingCost + $deliveryCost + $taxAmount;
         $creditCardFee = ($request->payment_type === 'credit')
             ? ($withAmount * ($estoreSettings->credit_card_percentage ?? 0)) / 100
             : 0;
 
         $totalAmount = $withAmount + $creditCardFee;
-
-        $otherCharges = [];
-        foreach ($carts as $cart) {
-            if (!empty($cart->product?->otherCharges)) {
-                foreach ($cart->product->otherCharges as $charge) {
-                    $chargeVal = 0;
-                    if ($charge->charge_type == 'percentage') {
-                        $chargeVal = (($cart->price ?? $currentWarehousePrice) * $cart->quantity * ($charge->charge_amount / 100));
-                    } else {
-                        // Fixed charge is now per line item, not per quantity
-                        $chargeVal = $charge->charge_amount;
-                    }
-                    $otherCharges[$charge->charge_name] = ($otherCharges[$charge->charge_name] ?? 0) + $chargeVal;
-                }
-            }
-        }
 
         DB::beginTransaction();
 
@@ -1207,6 +1256,20 @@ class ProductController extends Controller
                 $expectedDeliveryDate = now()->addDays($daysToAdd);
             }
 
+            // Save signature image if provided
+            $signaturePath = null;
+            if ($request->filled('signature_image')) {
+                $signatureData = $request->input('signature_image');
+                if (preg_match('/^data:image\/(\w+);base64,/', $signatureData, $type)) {
+                    $signatureData = substr($signatureData, strpos($signatureData, ',') + 1);
+                    $signatureData = base64_decode($signatureData);
+                    $extension = strtolower($type[1]);
+                    $fileName = 'signatures/' . uniqid('sig_') . '.' . $extension;
+                    Storage::disk('public')->put($fileName, $signatureData);
+                    $signaturePath = $fileName;
+                }
+            }
+
             $order = EstoreOrder::create([
                 'warehouse_id' => $warehouseId,
                 'is_pickup' => $is_pickup,
@@ -1228,6 +1291,7 @@ class ProductController extends Controller
                 'total_amount' => $totalAmount,
                 'credit_card_fee' => $creditCardFee,
                 'payment_type' => $request->payment_type,
+                'signature_image' => $signaturePath,
                 'payment_status' => 'paid',
                 'status' => $order_status->id ?? null,
                 'warehouse_name' => $wareHouse->name ?? null,
@@ -1247,11 +1311,17 @@ class ProductController extends Controller
                 $detailedCharges = [];
                 if ($cart->product?->otherCharges) {
                     foreach ($cart->product->otherCharges as $charge) {
+                        $displayAt = $charge->display_at ?? 'listing';
+
+                        // Skip checkout charges that were not selected
+                        if ($displayAt === 'checkout' && !in_array($charge->charge_name, $selectedCheckoutCharges)) {
+                            continue;
+                        }
+
                         $cAmount = 0;
                         if ($charge->charge_type == 'percentage') {
                             $cAmount = (($cart->price ?? ($cart->warehouseProduct?->price ?? 0)) * $cart->quantity * ($charge->charge_amount / 100));
                         } else {
-                            // Fixed charge is now per line item, not per quantity
                             $cAmount = $charge->charge_amount;
                         }
                         $itemOtherChargesTotal += $cAmount;
@@ -1259,7 +1329,8 @@ class ProductController extends Controller
                             'charge_name' => $charge->charge_name ?? '',
                             'charge_type' => $charge->charge_type ?? 'fixed',
                             'charge_amount' => $charge->charge_amount ?? 0,
-                            'calculated_amount' => $cAmount
+                            'calculated_amount' => $cAmount,
+                            'display_at' => $displayAt,
                         ];
                     }
                 }
@@ -1807,7 +1878,18 @@ class ProductController extends Controller
                 return response()->json(['status' => false, 'message' => 'Item Out Of Stock']);
             }
 
-            return response()->json(['status' => true, 'data' => $warehouseProduct, 'productImages' => $productImages]);
+            // Calculate display price including listing charges
+            $product->load('otherCharges');
+            $displayPrice = $product->getDisplayPrice($warehouseProduct->price);
+            $listingChargesBreakdown = $product->getListingChargesBreakdown($warehouseProduct->price);
+
+            return response()->json([
+                'status' => true,
+                'data' => $warehouseProduct,
+                'productImages' => $productImages,
+                'display_price' => $displayPrice,
+                'listing_charges_breakdown' => $listingChargesBreakdown,
+            ]);
         }
     }
 

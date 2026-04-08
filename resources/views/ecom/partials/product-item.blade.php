@@ -35,14 +35,20 @@
                         @if (($product['is_free'] ?? false) || ($product->is_free ?? false))
                             <span class="price_text"><strong>Free</strong></span>
                         @else
+                            @php
+                                $basePrice = $product['price'] ?? 0;
+                                $displayPrice = (is_object($product) && method_exists($product, 'getDisplayPrice'))
+                                    ? $product->getDisplayPrice($basePrice)
+                                    : $basePrice;
+                            @endphp
                             @if (($product['sale_price'] ?? false) || ($product->sale_price ?? false))
-                                <span class="price_text">${{ $product['sale_price'] }}</span>
-                                <span class=" text-muted text-decoration-line-through">${{ $product['price'] }}</span>
+                                <span class="price_text">${{ number_format($product['sale_price'], 2) }}</span>
+                                <span class=" text-muted text-decoration-line-through">${{ number_format($basePrice, 2) }}</span>
                                 <span></span>
                                 <span></span>
                                 <span></span>
                             @else
-                                <span class="price_text">${{ $product['price'] }}</span>
+                                <span class="price_text">${{ number_format($displayPrice, 2) }}</span>
                             @endif
                         @endif
                         <ul class="star_ul">

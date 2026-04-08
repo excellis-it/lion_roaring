@@ -39,6 +39,7 @@ class EstoreOrder extends BaseModel
         'promo_code',
         'promo_discount',
         'expected_delivery_date',
+        'signature_image',
     ];
 
     protected $casts = [

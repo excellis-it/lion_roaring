@@ -225,6 +225,7 @@ class ProductController extends Controller
             'other_charges' => 'nullable|array',
             'other_charges.*.charge_name' => 'nullable|string|max:255',
             'other_charges.*.charge_type' => 'nullable|in:fixed,percentage',
+            'other_charges.*.display_at' => 'nullable|in:listing,checkout',
             'other_charges.*.charge_amount' => [
                 'nullable',
                 'numeric',
@@ -631,6 +632,7 @@ class ProductController extends Controller
                 'other_charges'             => 'nullable|array',
                 'other_charges.*.charge_name' => 'nullable|string|max:255',
                 'other_charges.*.charge_type' => 'nullable|in:fixed,percentage',
+            'other_charges.*.display_at' => 'nullable|in:listing,checkout',
                 'other_charges.*.charge_amount' => [
                     'nullable',
                     'numeric',

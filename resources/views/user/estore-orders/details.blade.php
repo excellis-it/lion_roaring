@@ -371,6 +371,18 @@
                         </div>
                     </div>
 
+                    @if (!empty($order->signature_image))
+                        <div class="card shadow-sm">
+                            <div class="card-body">
+                                <h5 class="mb-3">Customer Signature</h5>
+                                <div class="bg-light p-3 rounded text-center">
+                                    <img src="{{ Storage::url($order->signature_image) }}" alt="Customer Signature"
+                                        style="max-width: 400px; border: 1px solid #ddd; border-radius: 4px; background: #fff; width:100%;">
+                                </div>
+                            </div>
+                        </div>
+                    @endif
+
                     <div class="card shadow-sm">
                         @php
                             if ($order->is_pickup == 1) {

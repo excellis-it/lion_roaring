@@ -444,6 +444,16 @@
                             </div>
                         @endif
 
+                        @if (!empty($order->signature_image))
+                            <div class="signature-section mt-4">
+                                <h5>Customer Signature</h5>
+                                <div class="bg-light p-3 rounded">
+                                    <img src="{{ Storage::url($order->signature_image) }}" alt="Customer Signature"
+                                        style="max-width: 400px; border: 1px solid #ddd; border-radius: 4px; background: #fff; width:100%;">
+                                </div>
+                            </div>
+                        @endif
+
                         @if (!$orderHasDigitalProduct)
                             <!-- Actions Order Cancellation button with modal confirm with note area and cancel button -->
                             <div class="order-cancellation mt-4">

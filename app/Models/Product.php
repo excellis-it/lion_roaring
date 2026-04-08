@@ -238,7 +238,53 @@ class Product extends BaseModel
         return $this->images->first()->image;
     }
 
-    // in products map main image, to get in api response
+    /**
+     * Calculate display price including listing-type other charges.
+     * For market-priced products: base price + percentage listing charges.
+     */
+    public function getDisplayPrice($basePrice = null)
+    {
+        $price = $basePrice ?? $this->price;
+        if (!$price || $this->is_free) {
+            return $price;
+        }
 
+        $listingCharges = $this->otherCharges->where('display_at', 'listing');
+        $additionalAmount = 0;
 
+        foreach ($listingCharges as $charge) {
+            if ($charge->charge_type == 'percentage') {
+                $additionalAmount += ($price * ($charge->charge_amount / 100));
+            } else {
+                $additionalAmount += $charge->charge_amount;
+            }
+        }
+
+        return round($price + $additionalAmount, 2);
+    }
+
+    /**
+     * Get listing charges breakdown for display.
+     */
+    public function getListingChargesBreakdown($basePrice = null)
+    {
+        $price = $basePrice ?? $this->price;
+        $listingCharges = $this->otherCharges->where('display_at', 'listing');
+        $breakdown = [];
+
+        foreach ($listingCharges as $charge) {
+            $calculated = $charge->charge_type == 'percentage'
+                ? round($price * ($charge->charge_amount / 100), 2)
+                : $charge->charge_amount;
+
+            $breakdown[] = [
+                'name' => $charge->charge_name,
+                'type' => $charge->charge_type,
+                'amount' => $charge->charge_amount,
+                'calculated' => $calculated,
+            ];
+        }
+
+        return $breakdown;
+    }
 }
