@@ -37,9 +37,10 @@
                         @else
                             @php
                                 $basePrice = $product['price'] ?? 0;
-                                $displayPrice = (is_object($product) && method_exists($product, 'getDisplayPrice'))
-                                    ? $product->getDisplayPrice($basePrice)
-                                    : $basePrice;
+                                $displayPrice = $product['display_price']
+                                    ?? ((is_object($product) && method_exists($product, 'getDisplayPrice'))
+                                        ? $product->getDisplayPrice($basePrice)
+                                        : $basePrice);
                             @endphp
                             @if (($product['sale_price'] ?? false) || ($product->sale_price ?? false))
                                 <span class="price_text">${{ number_format($product['sale_price'], 2) }}</span>

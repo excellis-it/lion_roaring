@@ -328,16 +328,17 @@ class ProductController extends Controller
             $products_count = $productsCountQuery->count();
 
             // Get the paginated products
-            $products = $products->skip($offset)
+            $productsCollection = $products->skip($offset)
                 ->take($limit)
-                ->get()->toArray();
+                ->get();
 
-            //  return $products;
-
-            // is the product in wishlist
-            foreach ($products as &$product) {
-                $product['is_in_wishlist'] = (new Product())->isInWishlist($product['id']);
-            }
+            // Calculate display price before converting to array
+            $products = $productsCollection->map(function ($product) {
+                $arr = $product->toArray();
+                $arr['display_price'] = $product->getDisplayPrice($product->price);
+                $arr['is_in_wishlist'] = $product->isInWishlist($product->id);
+                return $arr;
+            })->toArray();
 
             $category = !empty($category_id) ? Category::whereIn('id', $category_id)->get()->toArray() : null;
             $isAuth = auth()->check();
