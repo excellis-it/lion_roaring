@@ -935,6 +935,20 @@ p {
     width: 100%;
 }
 
+.feature-detail-img {
+    width: 100%;
+    position: relative;
+    overflow: hidden;
+    border-radius: 10px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
+    border: 1px solid rgba(0, 0, 0, 0.08);
+}
+
+.feature-detail-img img {
+    width: 100%;
+    display: block;
+}
+
 .img1 video {
     border-radius: 300px;
     width: 100%;
