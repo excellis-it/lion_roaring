@@ -40,17 +40,18 @@ class ArticleOfAssociationController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'pdf' => 'required|mimes:pdf'
+            'pdf' => 'nullable|mimes:pdf',
+            'checkbox_text' => 'nullable|string|max:255'
         ]);
-        if ($request->id != '') {
-            $article = Article::find($request->id);
-        } else {
-            $article = new Article();
-        }
-        $article->pdf = $this->imageUpload($request->file('pdf'), 'article_of_association');
-        //  $article->save();
         $country = $request->content_country_code ?? 'US';
-        $article = Article::updateOrCreate(['country_code' => $country], array_merge($article->getAttributes(), ['country_code' => $country]));
+        $data = ['country_code' => $country];
+        if ($request->hasFile('pdf')) {
+            $data['pdf'] = $this->imageUpload($request->file('pdf'), 'article_of_association');
+        }
+        if ($request->has('checkbox_text')) {
+            $data['checkbox_text'] = $request->checkbox_text;
+        }
+        $article = Article::updateOrCreate(['country_code' => $country], $data);
 
         return redirect()->back()->with('message', 'Article of association updated successfully');
     }

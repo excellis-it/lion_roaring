@@ -97,7 +97,7 @@ class RegisterAgreementPreviewController extends Controller
             }
         }
 
-        $currentDate = date('m/d/Y');
+        $currentDate = date('d/m/Y');
         $stewardMember1 = ($template && $template->steward_member_1) ? e($template->steward_member_1) : '';
         $stewardMember2 = ($template && $template->steward_member_2) ? e($template->steward_member_2) : '';
 

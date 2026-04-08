@@ -47,6 +47,20 @@
                                 </div>
                             </div>
                         </div>
+                        <div class="col-md-8">
+                            <div class="form-group-div">
+                                <div class="form-group">
+                                    <label for="checkbox_text">Checkbox Text</label>
+                                    <input type="text" class="form-control" id="checkbox_text" name="checkbox_text"
+                                        value="{{ old('checkbox_text', $article->checkbox_text ?? 'I have read and agree to the Articles of Association') }}"
+                                        placeholder="I have read and agree to the Articles of Association">
+                                    @if ($errors->has('checkbox_text'))
+                                        <div class="error" style="color:red;">
+                                            {{ $errors->first('checkbox_text') }}</div>
+                                    @endif
+                                </div>
+                            </div>
+                        </div>
                         <div class="col-xl-12">
                             <div class="btn-1">
                                 <button type="submit" class="print_btn me-2 mt-2 mb-2">Update</button>

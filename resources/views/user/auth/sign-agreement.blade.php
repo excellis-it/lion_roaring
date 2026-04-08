@@ -561,7 +561,7 @@
                             <div class="form-group mb-0">
                                 <input type="checkbox" id="agreeCheck1">
                                 <label for="agreeCheck1" class="ms-2">
-                                    I have read and agree to the Articles of Association
+                                    {{ Helper::getArticleCheckboxText() }}
                                 </label>
                             </div>
                         </div>
