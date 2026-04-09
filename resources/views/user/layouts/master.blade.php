@@ -263,7 +263,8 @@
         </div>
         <div class="dark-transparent sidebartoggler"></div>
         @include('frontend.includes.google_translate')
-        @include('frontend.includes.chatbot')
+        {{-- @include('frontend.includes.chatbot') --}}
+        @include('frontend.includes.rag_chatbot')
     </div>
     <script src="{{ asset('user_assets/js/jquery.min.js') }}"></script>
     <script src="{{ asset('user_assets/js/simplebar.min.js') }}"></script>

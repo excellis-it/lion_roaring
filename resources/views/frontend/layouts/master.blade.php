@@ -1776,8 +1776,11 @@
     </script>
 
 
-    @stack('scripts')
-    @include('frontend.includes.chatbot')
+   @stack('scripts')
+{{-- @include('frontend.includes.chatbot') --}}
+
+@include('frontend.includes.rag_chatbot')
+
 </body>
 
 </html>

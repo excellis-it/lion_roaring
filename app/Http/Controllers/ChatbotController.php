@@ -276,7 +276,7 @@ class ChatbotController extends Controller
 
         $keyword = ChatbotKeyword::findByKeyword($query);
 
-        $courses = ElearningProduct::where(function ($q) use ($query) {
+        $courses = ElearningProduct::with('image')->where(function ($q) use ($query) {
             $q->where('name', 'like', "%{$query}%")
                 ->orWhere('description', 'like', "%{$query}%");
         })
@@ -354,7 +354,7 @@ class ChatbotController extends Controller
                     ->limit(5)
                     ->get(['id', 'name', 'slug', 'price', 'sale_price']);
             } elseif ($keyword->search_type == 'elearning') {
-                $courses = ElearningProduct::where(function ($q) use ($query) {
+                $courses = ElearningProduct::with('image')->where(function ($q) use ($query) {
                     $q->where('name', 'like', "%{$query}%")
                         ->orWhere('description', 'like', "%{$query}%");
                 })
@@ -370,7 +370,7 @@ class ChatbotController extends Controller
                     ->limit(3)
                     ->get(['id', 'name', 'slug', 'price', 'sale_price']);
 
-                $courses = ElearningProduct::where(function ($q) use ($query) {
+                $courses = ElearningProduct::with('image')->where(function ($q) use ($query) {
                     $q->where('name', 'like', "%{$query}%")
                         ->orWhere('description', 'like', "%{$query}%");
                 })
@@ -387,7 +387,7 @@ class ChatbotController extends Controller
                 ->limit(3)
                 ->get(['id', 'name', 'slug', 'price', 'sale_price']);
 
-            $courses = ElearningProduct::where(function ($q) use ($query) {
+            $courses = ElearningProduct::with('image')->where(function ($q) use ($query) {
                 $q->where('name', 'like', "%{$query}%")
                     ->orWhere('description', 'like', "%{$query}%");
             })
@@ -396,36 +396,41 @@ class ChatbotController extends Controller
         }
 
         // Track search & Translate
+        // Determine language: from conversation session OR direct 'language' param (for RAG widget)
+        $targetLanguage = $request->get('language', 'en');
         $conversation = null;
         if ($request->session_id) {
             $conversation = ChatbotConversation::where('session_id', $request->session_id)->first();
-
             if ($conversation) {
-                // Translate results if needed
-                if ($conversation->language !== 'en') {
-                    foreach ($products as $product) {
-                        $product->name = $this->translateText($product->name, $conversation->language, 'en');
-                    }
-                    foreach ($courses as $course) {
-                        $course->name = $this->translateText($course->name, $conversation->language, 'en');
-                    }
-                    if ($response) {
-                        $response = $this->translateText($response, $conversation->language, 'en');
-                    }
-                }
-
-                ChatbotAnalytics::create([
-                    'conversation_id' => $conversation->id,
-                    'event_type' => 'keyword_search',
-                    'section' => $keyword->search_type ?? 'others',
-                    'event_data' => [
-                        'query' => $query,
-                        'found_keyword' => $keyword ? true : false,
-                        'products_count' => $products->count(),
-                        'courses_count' => $courses->count()
-                    ],
-                ]);
+                $targetLanguage = $conversation->language;
             }
+        }
+
+        // Translate results if needed
+        if ($targetLanguage !== 'en') {
+            foreach ($products as $product) {
+                $product->name = $this->translateText($product->name, $targetLanguage, 'en');
+            }
+            foreach ($courses as $course) {
+                $course->name = $this->translateText($course->name, $targetLanguage, 'en');
+            }
+            if ($response) {
+                $response = $this->translateText($response, $targetLanguage, 'en');
+            }
+        }
+
+        if ($conversation) {
+            ChatbotAnalytics::create([
+                'conversation_id' => $conversation->id,
+                'event_type' => 'keyword_search',
+                'section' => $keyword->search_type ?? 'others',
+                'event_data' => [
+                    'query' => $query,
+                    'found_keyword' => $keyword ? true : false,
+                    'products_count' => $products->count(),
+                    'courses_count' => $courses->count()
+                ],
+            ]);
         }
 
         if ($response || $products->isNotEmpty() || $courses->isNotEmpty()) {
@@ -438,8 +443,8 @@ class ChatbotController extends Controller
         }
 
         $msg = "Sorry, I couldn't find anything matching your query. Please rephrase or contact support.";
-        if ($conversation && $conversation->language !== 'en') {
-            $msg = $this->translateText($msg, $conversation->language, 'en');
+        if ($targetLanguage !== 'en') {
+            $msg = $this->translateText($msg, $targetLanguage, 'en');
         }
 
         return response()->json([

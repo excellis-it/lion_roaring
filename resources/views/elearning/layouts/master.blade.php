@@ -415,7 +415,8 @@
     </script>
     @stack('scripts')
     @include('frontend.includes.google_translate')
-    @include('frontend.includes.chatbot')
+    {{-- @include('frontend.includes.chatbot') --}}
+    @include('frontend.includes.rag_chatbot')
 </body>
 
 </html>
