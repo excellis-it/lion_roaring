@@ -27,7 +27,10 @@ class FileController extends Controller
             $user_country = $user->country;
 
             if (!$user->hasNewRole('SUPER ADMIN')) {
-                if ($user_type == 'Global') {
+                $currentCountry = Country::findByCurrentRequest();
+                $isOnGlobalServer = $currentCountry && $currentCountry->is_global;
+
+                if ($user_type == 'Global' || ($user_type == 'G_R' && $isOnGlobalServer)) {
                     $files = File::orderBy('id', 'desc')->whereHas('country', function ($query) {
                         $query->where('code', 'GL');
                     })->paginate(15);

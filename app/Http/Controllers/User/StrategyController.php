@@ -32,11 +32,11 @@ class StrategyController extends Controller
                     $strategies = Strategy::orderBy('id', 'desc')->whereHas('country', function ($query) {
                         $query->where('code', 'GL');
                     })->whereHas('user', function ($query) {
-                        $query->whereIn('user_type', ['Global', 'G_R']);
+                        $query->whereIn('user_type', ['Global', 'G_R'])->where('status', 1);
                     })->paginate(15);
                 } else {
                     $strategiesQuery = Strategy::where('country_id', $user_country)->orderBy('id', 'desc')->whereHas('user', function ($query) {
-                        $query->whereIn('user_type', ['Regional', 'G_R']);
+                        $query->whereIn('user_type', ['Regional', 'G_R'])->where('status', 1);
                     });
 
                     if ($user->is_ecclesia_admin == 1) {
@@ -45,7 +45,12 @@ class StrategyController extends Controller
                             : explode(',', $user->manage_ecclesia ?? '');
                         $strategiesQuery->where(function ($q) use ($manage_ecclesia_ids, $user) {
                             $q->whereHas('user', function ($uq) use ($manage_ecclesia_ids) {
-                                $uq->whereIn('ecclesia_id', $manage_ecclesia_ids);
+                                $uq->where(function ($sub) use ($manage_ecclesia_ids) {
+                                    $sub->whereIn('ecclesia_id', $manage_ecclesia_ids)->whereNotNull('ecclesia_id');
+                                    foreach ($manage_ecclesia_ids as $id) {
+                                        $sub->orWhereRaw('FIND_IN_SET(?, manage_ecclesia)', [trim($id)]);
+                                    }
+                                });
                             })->orWhere('user_id', $user->id);
                         });
                     }

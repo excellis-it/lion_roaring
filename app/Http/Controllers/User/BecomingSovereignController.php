@@ -28,7 +28,10 @@ class BecomingSovereignController extends Controller
             $filesQuery = File::orderBy('id', 'desc')->where('type', 'Becoming Sovereign');
 
             if (!$user->hasNewRole('SUPER ADMIN')) {
-                if ($user_type == 'Global') {
+                $currentCountry = Country::findByCurrentRequest();
+                $isOnGlobalServer = $currentCountry && $currentCountry->is_global;
+
+                if ($user_type == 'Global' || ($user_type == 'G_R' && $isOnGlobalServer)) {
                     $filesQuery->whereHas('country', function ($query) {
                         $query->where('code', 'GL');
                     });
@@ -46,7 +49,7 @@ class BecomingSovereignController extends Controller
             }
 
             if (!$user->hasNewRole('SUPER ADMIN')) {
-                if ($user_type == 'Global') {
+                if ($user_type == 'Global' || ($user_type == 'G_R' && $isOnGlobalServer)) {
                     $topics = Topic::orderBy('topic_name', 'asc')->where('education_type', 'Becoming Sovereign')
                         ->whereHas('country', function ($query) {
                             $query->where('code', 'GL');
