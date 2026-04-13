@@ -192,11 +192,24 @@ class MembershipController extends Controller
             if (!auth()->user()->can('Edit Membership Settings')) {
                 abort(403, 'Unauthorized');
             }
-            $data = $request->only('label', 'description', 'yearly_dues', 'membership_card_title');
+            $validated = $request->validate([
+                'label' => 'nullable|string|max:255',
+                'description' => 'nullable|string',
+                'yearly_dues' => 'nullable|numeric',
+                'membership_card_title' => 'nullable|string|max:255',
+                'renewal_reminder_days' => 'nullable|integer|min:1|max:365',
+                'renewal_reminder_subject' => 'nullable|string|max:255',
+                'renewal_reminder_body' => 'nullable|string',
+            ]);
+
+            $validated['renewal_reminder_days'] = $request->filled('renewal_reminder_days')
+                ? (int) $request->input('renewal_reminder_days')
+                : 7;
+
             if ($measurement) {
-                $measurement->update($data);
+                $measurement->update($validated);
             } else {
-                MembershipMeasurement::create($data);
+                MembershipMeasurement::create($validated);
             }
             return redirect()->route('user.membership.manage')->with('success', 'Measurement updated');
         }

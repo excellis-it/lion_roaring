@@ -3,6 +3,7 @@
 namespace App\Console\Commands;
 
 use App\Mail\SubscriptionReminderMail;
+use App\Models\MembershipMeasurement;
 use App\Models\UserSubscription;
 use Carbon\Carbon;
 use Illuminate\Console\Command;
@@ -16,7 +17,7 @@ class SendSubscriptionReminder extends Command
      *
      * @var string
      */
-    protected $signature = 'subscription:send-reminder {--days=7 : Number of days before expiry to send reminder}';
+    protected $signature = 'subscription:send-reminder {--days= : Number of days before expiry (optional override)}';
 
     /**
      * The console command description.
@@ -42,23 +43,25 @@ class SendSubscriptionReminder extends Command
      */
     public function handle()
     {
-        $days = (int) $this->option('days');
-        $targetDate = Carbon::now()->addDays($days);
+        $measurement = MembershipMeasurement::query()->first();
+        $days = $this->resolveReminderDays($measurement);
+        $targetDate = Carbon::today()->addDays($days);
 
-        // Find active subscriptions that expire within the specified number of days
+        // Send reminders only for subscriptions expiring exactly N days from today.
         $subscriptions = UserSubscription::with(['user', 'tier'])
-            ->where('subscription_expire_date', '>', Carbon::now())
-            ->where('subscription_expire_date', '<=', $targetDate)
+            ->whereNotNull('subscription_expire_date')
+            ->whereRaw('DATE(subscription_expire_date) = ?', [$targetDate->toDateString()])
             ->get();
 
         if ($subscriptions->isEmpty()) {
-            $this->info('No subscriptions expiring within the next ' . $days . ' day(s).');
-            Log::info('Subscription Reminder: No subscriptions expiring within ' . $days . ' day(s).');
+            $this->info('No subscriptions expiring exactly in ' . $days . ' day(s).');
+            Log::info('Subscription Reminder: No subscriptions expiring exactly in ' . $days . ' day(s).');
             return 0;
         }
 
         $sent = 0;
         $failed = 0;
+        $skipped = 0;
 
         foreach ($subscriptions as $subscription) {
             $user = $subscription->user;
@@ -68,22 +71,60 @@ class SendSubscriptionReminder extends Command
                 continue;
             }
 
-            $daysRemaining = Carbon::now()->startOfDay()->diffInDays(Carbon::parse($subscription->subscription_expire_date)->startOfDay(), false);
+            try {
+                $expireDate = Carbon::parse($subscription->subscription_expire_date)->startOfDay();
+            } catch (\Throwable $e) {
+                $skipped++;
+                Log::warning('Subscription Reminder skipped due to invalid expire date for subscription ID ' . $subscription->id);
+                continue;
+            }
+
+            // Prevent duplicates for the same subscription cycle.
+            if (!empty($subscription->reminder_for_expire_date)) {
+                try {
+                    $remindedForDate = Carbon::parse($subscription->reminder_for_expire_date)->toDateString();
+                    if ($remindedForDate === $expireDate->toDateString()) {
+                        $skipped++;
+                        continue;
+                    }
+                } catch (\Throwable $e) {
+                    // Ignore malformed historical values and continue with send attempt.
+                }
+            }
+
+            $daysRemaining = Carbon::today()->diffInDays($expireDate, false);
 
             if ($daysRemaining < 0) {
+                $skipped++;
                 continue;
+            }
+
+            $startDate = 'N/A';
+            if (!empty($subscription->subscription_start_date)) {
+                try {
+                    $startDate = Carbon::parse($subscription->subscription_start_date)->format('F d, Y');
+                } catch (\Throwable $e) {
+                    $startDate = 'N/A';
+                }
             }
 
             $maildata = [
                 'name' => $user->name ?? $user->first_name ?? 'Member',
                 'subscription_name' => $subscription->subscription_name ?? 'Membership',
-                'start_date' => Carbon::parse($subscription->subscription_start_date)->format('F d, Y'),
-                'expire_date' => Carbon::parse($subscription->subscription_expire_date)->format('F d, Y'),
+                'start_date' => $startDate,
+                'expire_date' => $expireDate->format('F d, Y'),
                 'days_remaining' => (int) $daysRemaining,
+                'renew_url' => route('user.membership.index'),
+                'custom_subject' => $measurement->renewal_reminder_subject ?? null,
+                'custom_body' => $measurement->renewal_reminder_body ?? null,
             ];
 
             try {
                 Mail::to($user->email)->send(new SubscriptionReminderMail($maildata));
+                $subscription->reminder_for_expire_date = $expireDate->toDateString();
+                $subscription->reminder_sent_at = now();
+                $subscription->save();
+
                 $sent++;
                 Log::info('Subscription Reminder sent to: ' . $user->email . ' (expires: ' . $maildata['expire_date'] . ')');
             } catch (\Throwable $e) {
@@ -93,9 +134,22 @@ class SendSubscriptionReminder extends Command
             }
         }
 
-        $this->info("Subscription reminder emails sent: {$sent}, failed: {$failed}");
-        Log::info("Subscription Reminder completed. Sent: {$sent}, Failed: {$failed}");
+        $this->info("Subscription reminder emails sent: {$sent}, skipped: {$skipped}, failed: {$failed}");
+        Log::info("Subscription Reminder completed. Sent: {$sent}, Skipped: {$skipped}, Failed: {$failed}");
 
         return 0;
+    }
+
+    private function resolveReminderDays(?MembershipMeasurement $measurement = null): int
+    {
+        $daysOption = $this->option('days');
+
+        if ($daysOption !== null && $daysOption !== '') {
+            return max(1, (int) $daysOption);
+        }
+
+        $configuredDays = $measurement ? $measurement->renewal_reminder_days : MembershipMeasurement::query()->value('renewal_reminder_days');
+
+        return max(1, (int) ($configuredDays ?? 7));
     }
 }
