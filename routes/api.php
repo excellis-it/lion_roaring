@@ -41,6 +41,7 @@ use App\Http\Controllers\Api\FCMController;
 use App\Http\Controllers\Api\SizeController;
 use App\Http\Controllers\Api\PrivateCollaborationController;
 use App\Http\Controllers\Api\UserActivityController;
+use App\Http\Controllers\Api\PublicChatbotController;
 
 /*
 |--------------------------------------------------------------------------
@@ -56,6 +57,13 @@ use App\Http\Controllers\Api\UserActivityController;
 // Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 //     return $request->user();
 // });
+
+Route::prefix('public/chatbot')->group(function () {
+    Route::post('/query', [PublicChatbotController::class, 'query']);
+    Route::get('/faqs', [PublicChatbotController::class, 'faqs']);
+    Route::get('/search-products', [PublicChatbotController::class, 'searchProducts']);
+    Route::get('/search-courses', [PublicChatbotController::class, 'searchCourses']);
+});
 
 Route::prefix('v3')->middleware(['userActivity'])->group(function () {
     Route::post('contact-us', [ContactUsController::class, 'store']);
