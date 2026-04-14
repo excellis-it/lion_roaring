@@ -4,10 +4,15 @@ namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\Controller;
 use App\Models\Event;
+use App\Models\EventRsvp;
+use App\Models\EventPayment;
+use App\Services\CheckoutPaymentService;
+use App\Services\NotificationService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Auth;
-use App\Services\NotificationService;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Str;
 
 /**
  * @group Events
@@ -420,5 +425,247 @@ class EventController extends Controller
         } catch (\Exception $e) {
             return response()->json(['error' => 'Failed to load event calender data.'], 201);
         }
+    }
+
+    /**
+     * POST /events/{id}/rsvp
+     * Creates or re-confirms the authenticated user's RSVP for a free event.
+     * For paid events, returns `requires_payment: true` so the client invokes
+     * `/events/{id}/payment` next.
+     * @bodyParam notes string optional
+     */
+    public function rsvp(Request $request, int $id)
+    {
+        $event = Event::find($id);
+        if (!$event) {
+            return response()->json(['status' => false, 'message' => 'Event not found.'], 404);
+        }
+
+        if (!$event->hasCapacity()) {
+            return response()->json(['status' => false, 'message' => 'Event is at full capacity.'], 422);
+        }
+
+        $existing = EventRsvp::where('event_id', $event->id)
+            ->where('user_id', Auth::id())
+            ->first();
+
+        if ($event->isPaid()) {
+            $rsvp = $existing ?: EventRsvp::create([
+                'event_id' => $event->id,
+                'user_id' => Auth::id(),
+                'status' => 'pending',
+                'rsvp_date' => now(),
+                'notes' => $request->input('notes'),
+            ]);
+
+            if ($existing && $existing->status === 'cancelled') {
+                $existing->update(['status' => 'pending', 'rsvp_date' => now()]);
+            }
+
+            return response()->json([
+                'status' => true,
+                'message' => 'Payment required to confirm RSVP.',
+                'data' => [
+                    'rsvp' => $rsvp->fresh(),
+                    'requires_payment' => true,
+                    'amount' => (float) $event->price,
+                    'currency' => 'USD',
+                ],
+            ]);
+        }
+
+        if ($existing) {
+            if ($existing->status === 'cancelled') {
+                $existing->update(['status' => 'confirmed', 'rsvp_date' => now(), 'notes' => $request->input('notes')]);
+            }
+            return response()->json([
+                'status' => true,
+                'message' => 'RSVP confirmed.',
+                'data' => ['rsvp' => $existing->fresh(), 'requires_payment' => false],
+            ]);
+        }
+
+        $rsvp = EventRsvp::create([
+            'event_id' => $event->id,
+            'user_id' => Auth::id(),
+            'status' => 'confirmed',
+            'rsvp_date' => now(),
+            'notes' => $request->input('notes'),
+        ]);
+
+        return response()->json([
+            'status' => true,
+            'message' => 'RSVP confirmed.',
+            'data' => ['rsvp' => $rsvp, 'requires_payment' => false],
+        ]);
+    }
+
+    /**
+     * DELETE /events/{id}/rsvp
+     */
+    public function cancelRsvp(int $id)
+    {
+        $rsvp = EventRsvp::where('event_id', $id)
+            ->where('user_id', Auth::id())
+            ->first();
+
+        if (!$rsvp) {
+            return response()->json(['status' => false, 'message' => 'RSVP not found.'], 404);
+        }
+
+        $rsvp->update(['status' => 'cancelled']);
+
+        return response()->json(['status' => true, 'message' => 'RSVP cancelled.']);
+    }
+
+    /**
+     * GET /events/my-rsvps
+     */
+    public function myRsvps(Request $request)
+    {
+        $perPage = max(1, min(50, (int) $request->input('per_page', 20)));
+
+        $rsvps = EventRsvp::with(['event', 'payment'])
+            ->where('user_id', Auth::id())
+            ->orderByDesc('rsvp_date')
+            ->paginate($perPage);
+
+        return response()->json([
+            'status' => true,
+            'message' => 'My RSVPs.',
+            'data' => $rsvps,
+        ]);
+    }
+
+    /**
+     * POST /events/{id}/payment
+     * Creates a Stripe PaymentIntent for a paid event and attaches it to the RSVP.
+     * Mobile client calls this after RSVP returns `requires_payment: true`.
+     */
+    public function createPaymentIntent(int $id, CheckoutPaymentService $payment)
+    {
+        $event = Event::find($id);
+        if (!$event) {
+            return response()->json(['status' => false, 'message' => 'Event not found.'], 404);
+        }
+
+        if (!$event->isPaid() || (float) $event->price <= 0) {
+            return response()->json(['status' => false, 'message' => 'Event does not require payment.'], 422);
+        }
+
+        if (!$event->hasCapacity()) {
+            return response()->json(['status' => false, 'message' => 'Event is at full capacity.'], 422);
+        }
+
+        $rsvp = EventRsvp::firstOrCreate(
+            ['event_id' => $event->id, 'user_id' => Auth::id()],
+            ['status' => 'pending', 'rsvp_date' => now()]
+        );
+
+        $pending = EventPayment::create([
+            'event_id' => $event->id,
+            'user_id' => Auth::id(),
+            'rsvp_id' => $rsvp->id,
+            'transaction_id' => 'TXN-' . strtoupper(Str::random(12)),
+            'amount' => $event->price,
+            'currency' => 'USD',
+            'status' => 'pending',
+            'payment_method' => 'stripe',
+        ]);
+
+        $result = $payment->createIntent(
+            (float) $event->price,
+            'USD',
+            Auth::user(),
+            [
+                'type' => 'event',
+                'event_id' => $event->id,
+                'rsvp_id' => $rsvp->id,
+                'payment_id' => $pending->id,
+            ]
+        );
+
+        if (!$result['success']) {
+            $pending->update(['status' => 'failed']);
+            return response()->json(['status' => false, 'message' => $result['error']], 500);
+        }
+
+        $pending->update(['stripe_payment_intent_id' => $result['payment_intent_id']]);
+
+        return response()->json([
+            'status' => true,
+            'message' => 'Payment intent created.',
+            'data' => [
+                'payment_id' => $pending->id,
+                'rsvp_id' => $rsvp->id,
+                'payment_intent_id' => $result['payment_intent_id'],
+                'client_secret' => $result['client_secret'],
+                'ephemeral_key' => $result['ephemeral_key'],
+                'customer_id' => $result['customer_id'],
+                'publishable_key' => $result['publishable_key'],
+            ],
+        ]);
+    }
+
+    /**
+     * POST /events/{id}/payment/confirm
+     * Mobile client calls after PaymentSheet succeeds. Verifies with Stripe,
+     * flips payment+RSVP to confirmed.
+     * @bodyParam payment_id int required
+     */
+    public function confirmPayment(int $id, Request $request, CheckoutPaymentService $payment)
+    {
+        $validator = Validator::make($request->all(), [
+            'payment_id' => 'required|integer',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json(['status' => false, 'message' => $validator->errors()->first()], 422);
+        }
+
+        $paymentRow = EventPayment::where('id', $request->payment_id)
+            ->where('event_id', $id)
+            ->where('user_id', Auth::id())
+            ->first();
+
+        if (!$paymentRow) {
+            return response()->json(['status' => false, 'message' => 'Payment not found.'], 404);
+        }
+
+        if ($paymentRow->status === 'completed') {
+            return response()->json([
+                'status' => true,
+                'message' => 'Payment already completed.',
+                'data' => $paymentRow->load('rsvp'),
+            ]);
+        }
+
+        if (!$paymentRow->stripe_payment_intent_id) {
+            return response()->json(['status' => false, 'message' => 'No payment intent attached.'], 422);
+        }
+
+        $verification = $payment->verifyIntent($paymentRow->stripe_payment_intent_id);
+        if (!($verification['success'] ?? false)) {
+            return response()->json([
+                'status' => false,
+                'message' => 'Payment not completed. Status: ' . ($verification['status'] ?? 'unknown'),
+            ], 402);
+        }
+
+        DB::transaction(function () use ($paymentRow) {
+            $paymentRow->update([
+                'status' => 'completed',
+                'paid_at' => now(),
+            ]);
+            if ($paymentRow->rsvp_id) {
+                EventRsvp::where('id', $paymentRow->rsvp_id)->update(['status' => 'confirmed']);
+            }
+        });
+
+        return response()->json([
+            'status' => true,
+            'message' => 'Payment confirmed.',
+            'data' => $paymentRow->fresh()->load('rsvp'),
+        ]);
     }
 }

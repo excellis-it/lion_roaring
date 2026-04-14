@@ -8,6 +8,8 @@ use App\Models\ElearningCategory;
 use App\Models\ElearningProduct;
 use App\Models\ElearningReview;
 use App\Models\ElearningEcomHomeCms;
+use App\Models\ElearningSubCategory;
+use App\Models\ElearningTopic;
 
 /**
  * @group E-learning
@@ -332,5 +334,76 @@ class ElearningController extends Controller
         } catch (\Exception $e) {
             return response()->json(['message' => 'Error filtering products.'], 201);
         }
+    }
+
+    /**
+     * GET /e-learning/categories/{id}/sub-categories
+     */
+    public function subCategoriesByCategory(int $id)
+    {
+        $subs = ElearningSubCategory::where('elearning_category_id', $id)
+            ->where('status', 1)
+            ->orderBy('name')
+            ->get();
+
+        return response()->json([
+            'status' => true,
+            'message' => 'Sub-categories.',
+            'data' => $subs,
+        ]);
+    }
+
+    /**
+     * GET /e-learning/sub-categories/{id}/topics
+     * Returns the distinct topics used by products within a given sub-category.
+     */
+    public function topicsBySubCategory(int $id)
+    {
+        $topicIds = ElearningProduct::where('elearning_sub_category_id', $id)
+            ->whereNotNull('elearning_topic_id')
+            ->pluck('elearning_topic_id')
+            ->unique()
+            ->values();
+
+        $topics = ElearningTopic::whereIn('id', $topicIds)->orderBy('topic_name')->get();
+
+        return response()->json([
+            'status' => true,
+            'message' => 'Topics.',
+            'data' => $topics,
+        ]);
+    }
+
+    /**
+     * GET /e-learning/topics/{id}
+     */
+    public function topicDetail(int $id)
+    {
+        $topic = ElearningTopic::find($id);
+        if (!$topic) {
+            return response()->json(['status' => false, 'message' => 'Topic not found.'], 404);
+        }
+
+        return response()->json(['status' => true, 'message' => 'Topic.', 'data' => $topic]);
+    }
+
+    /**
+     * GET /e-learning/topics/{id}/products
+     */
+    public function productsByTopic(int $id, Request $request)
+    {
+        $perPage = max(1, min(50, (int) $request->input('per_page', 12)));
+
+        $products = ElearningProduct::where('elearning_topic_id', $id)
+            ->where('status', 1)
+            ->with(['image', 'category', 'subcategory'])
+            ->orderByDesc('id')
+            ->paginate($perPage);
+
+        return response()->json([
+            'status' => true,
+            'message' => 'Products by topic.',
+            'data' => $products,
+        ]);
     }
 }

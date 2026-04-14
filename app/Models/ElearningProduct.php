@@ -19,6 +19,7 @@ class ElearningProduct extends BaseModel
         'short_description',
         'sku',
         'specification',
+        'file_location',
         'price',
         'status',
     ];

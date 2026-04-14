@@ -14,7 +14,10 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use App\Helpers\Helper;
 use App\Models\WareHouse;
+use App\Models\MarketMaterialRate;
+use App\Services\MarketRateService;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Cache;
 
 /**
  * @group E-Store Product APIs
@@ -753,5 +756,53 @@ class EstoreProductController extends Controller
         } catch (\Exception $e) {
             return response()->json(['message' => 'Something went wrong. ' . $e->getMessage(), 'status' => false], 201);
         }
+    }
+
+    /**
+     * GET /e-store/products/{id}/market-price
+     * Returns current price for market-priced products (precious metals). Cached 60s per product
+     * so many clients watching the same product don't each hit the upstream rate API.
+     *
+     * @urlParam id int required Product id.
+     */
+    public function marketPrice(int $id)
+    {
+        $product = Product::find($id);
+        if (!$product) {
+            return response()->json(['status' => false, 'message' => 'Product not found.'], 404);
+        }
+
+        if (!$product->is_market_priced || !$product->market_material_id) {
+            return response()->json([
+                'status' => true,
+                'message' => 'Product is not market-priced.',
+                'data' => [
+                    'is_market_priced' => false,
+                    'price' => (float) $product->price,
+                ],
+            ]);
+        }
+
+        $payload = Cache::remember("market_price:product:{$id}", 60, function () use ($product) {
+            $rate = MarketRateService::getLatestRateForMaterial((int) $product->market_material_id);
+            $product->refresh();
+
+            return [
+                'is_market_priced' => true,
+                'price' => (float) $product->price,
+                'rate_per_gram' => $rate?->rate_per_gram !== null ? (float) $rate->rate_per_gram : null,
+                'usd_per_ounce' => $rate?->usd_per_ounce !== null ? (float) $rate->usd_per_ounce : null,
+                'market_grams' => (float) $product->market_grams,
+                'market_unit' => $product->market_unit,
+                'fetched_at' => $rate?->fetched_at,
+                'market_rate_at' => $product->market_rate_at,
+            ];
+        });
+
+        return response()->json([
+            'status' => true,
+            'message' => 'Market price.',
+            'data' => $payload,
+        ]);
     }
 }

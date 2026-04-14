@@ -9,6 +9,7 @@ use App\Models\EcomCmsPage;
 use App\Models\EcomNewsletter;
 use App\Models\Category;
 use App\Models\Product;
+use App\Models\WareHouse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use GuzzleHttp\Client;
@@ -251,5 +252,43 @@ class EstoreController extends Controller
         } catch (\Exception $e) {
             return response()->json(['status' => false, 'message' => $e->getMessage()], 201);
         }
+    }
+
+    /**
+     * GET /e-store/warehouses/nearest
+     * Ranks active warehouses by distance. Falls back to all active warehouses when lat/lng are
+     * missing or no warehouse has coordinates (matches April 8 null-warehouse safety fix).
+     *
+     * @queryParam latitude  number optional  User latitude.
+     * @queryParam longitude number optional  User longitude.
+     * @queryParam limit     int    optional  Default 10.
+     */
+    public function nearestWarehouses(Request $request)
+    {
+        $lat = $request->input('latitude');
+        $lng = $request->input('longitude');
+        $limit = max(1, min(50, (int) $request->input('limit', 10)));
+
+        $query = WareHouse::where('is_active', 1);
+
+        if (is_numeric($lat) && is_numeric($lng)) {
+            $query->whereNotNull('location_lat')
+                ->whereNotNull('location_lng')
+                ->selectRaw(
+                    '*, (6371 * acos(cos(radians(?)) * cos(radians(location_lat)) * cos(radians(location_lng) - radians(?)) + sin(radians(?)) * sin(radians(location_lat)))) AS distance_km',
+                    [$lat, $lng, $lat]
+                )
+                ->orderBy('distance_km');
+        } else {
+            $query->orderBy('name');
+        }
+
+        $warehouses = $query->take($limit)->get();
+
+        return response()->json([
+            'status' => true,
+            'message' => 'Warehouses.',
+            'data' => $warehouses,
+        ]);
     }
 }

@@ -12,6 +12,9 @@ use App\Http\Controllers\Api\ForgetPasswordController;
 use App\Http\Controllers\Api\PlanController;
 use App\Http\Controllers\Api\ProfileController;
 use App\Http\Controllers\Api\SubscriptionController;
+use App\Http\Controllers\Api\MembershipApiController;
+use App\Http\Controllers\Api\ArticleController;
+use App\Http\Controllers\Api\OrganizationApiController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\ChatController;
@@ -20,6 +23,8 @@ use App\Http\Controllers\Api\TeamChatController;
 use App\Http\Controllers\Api\EmailController;
 use App\Http\Controllers\Api\Estore\EstoreProductController;
 use App\Http\Controllers\Api\ElearningController;
+use App\Http\Controllers\Api\ElearningCartController;
+use App\Http\Controllers\Api\ElearningCheckoutController;
 use App\Http\Controllers\Api\EventController;
 use App\Http\Controllers\Api\JobController;
 use App\Http\Controllers\Api\LeadershipDevelopmentController;
@@ -33,6 +38,7 @@ use App\Http\Controllers\Api\PolicyGuidenceController;
 use App\Http\Controllers\Api\RolePermissionController;
 use App\Http\Controllers\Api\EcclesiaController;
 use App\Http\Controllers\Api\Estore\CheckoutController;
+use App\Http\Controllers\Api\Estore\AddressController;
 use App\Http\Controllers\Api\EstoreCmsController;
 use App\Http\Controllers\Api\Estore\EstoreController;
 use App\Http\Controllers\Api\Estore\ProfileController as EstoreProfileController;
@@ -66,6 +72,36 @@ Route::prefix('v3')->middleware(['userActivity'])->group(function () {
         Route::get('/category-products/{slug}', [ElearningController::class, 'productsByCategorySlug']);
         Route::get('/product/{slug}', [ElearningController::class, 'productDetails']);
         Route::get('/products-filter', [ElearningController::class, 'productsFilter']);
+
+        // Navigation
+        Route::get('/categories/{id}/sub-categories', [ElearningController::class, 'subCategoriesByCategory'])->whereNumber('id');
+        Route::get('/sub-categories/{id}/topics', [ElearningController::class, 'topicsBySubCategory'])->whereNumber('id');
+        Route::get('/topics/{id}', [ElearningController::class, 'topicDetail'])->whereNumber('id');
+        Route::get('/topics/{id}/products', [ElearningController::class, 'productsByTopic'])->whereNumber('id');
+
+        // Signed file download — no auth, validated via signed URL middleware
+        Route::get('/files/{order_item}/signed', [ElearningCheckoutController::class, 'serveSignedFile'])
+            ->middleware('signed')
+            ->whereNumber('order_item')
+            ->name('elearning.file.signed');
+
+        // Authenticated cart, checkout, purchases
+        Route::group(['middleware' => ['auth:api', 'user']], function () {
+            Route::get('/cart', [ElearningCartController::class, 'index']);
+            Route::get('/cart/count', [ElearningCartController::class, 'count']);
+            Route::post('/cart/add', [ElearningCartController::class, 'add']);
+            Route::post('/cart/update', [ElearningCartController::class, 'update']);
+            Route::post('/cart/remove', [ElearningCartController::class, 'remove']);
+            Route::post('/cart/clear', [ElearningCartController::class, 'clear']);
+
+            Route::post('/promo-code/validate', [ElearningCheckoutController::class, 'validatePromoCode']);
+            Route::post('/checkout/display-prices', [ElearningCheckoutController::class, 'displayPrices']);
+            Route::post('/checkout/payment-intent', [ElearningCheckoutController::class, 'createPaymentIntent']);
+            Route::post('/checkout/confirm', [ElearningCheckoutController::class, 'confirm']);
+
+            Route::get('/purchases', [ElearningCheckoutController::class, 'purchases']);
+            Route::get('/purchases/{order_item}/download', [ElearningCheckoutController::class, 'download'])->whereNumber('order_item');
+        });
     });
 
 
@@ -135,7 +171,30 @@ Route::prefix('v3')->middleware(['userActivity'])->group(function () {
 
             //order tracking
             Route::post('/order-tracking', [EstoreProfileController::class, 'orderTracking']);
+
+            // Promo code validation
+            Route::post('/promo-code/validate', [CheckoutController::class, 'validatePromoCode']);
+
+            // Checkout helpers (mobile)
+            Route::post('/checkout/display-prices', [CheckoutController::class, 'displayPrices']);
+            Route::post('/checkout/payment-intent', [CheckoutController::class, 'createPaymentIntent']);
+            Route::post('/checkout/signature', [CheckoutController::class, 'uploadSignature']);
+
+            // Order actions (RESTful)
+            Route::post('/orders/{id}/cancel', [CheckoutController::class, 'cancelOrderById'])->whereNumber('id');
+            Route::get('/orders/{id}/track', [CheckoutController::class, 'trackOrder'])->whereNumber('id');
+
+            // Address book
+            Route::get('/addresses', [AddressController::class, 'index']);
+            Route::post('/addresses', [AddressController::class, 'store']);
+            Route::get('/addresses/{id}', [AddressController::class, 'show'])->whereNumber('id');
+            Route::put('/addresses/{id}', [AddressController::class, 'update'])->whereNumber('id');
+            Route::delete('/addresses/{id}', [AddressController::class, 'destroy'])->whereNumber('id');
         }); // end e-store
+
+        // Public e-store utility endpoints (outside auth group)
+        Route::get('/warehouses/nearest', [EstoreController::class, 'nearestWarehouses']);
+        Route::get('/products/{id}/market-price', [EstoreProductController::class, 'marketPrice'])->whereNumber('id');
     });
 
     Route::prefix('cms')->group(function () {
@@ -179,6 +238,22 @@ Route::prefix('v3')->middleware(['userActivity'])->group(function () {
     Route::post('verify-otp', [AuthController::class, 'verifyOtp']);
     Route::post('register-agreement', [AuthController::class, 'registerAgreement']);
     Route::post('forget-password', [ForgetPasswordController::class, 'forgetPassword']);
+
+    // Articles & Register Agreement (public read)
+    Route::get('articles/latest', [ArticleController::class, 'latest']);
+    Route::get('articles/{id}', [ArticleController::class, 'show'])->whereNumber('id');
+    Route::get('register-agreement', [ArticleController::class, 'registerAgreement']);
+
+    // Organizations & Governance (public read)
+    Route::get('organizations/latest', [OrganizationApiController::class, 'latestOrganization']);
+    Route::get('organizations/{id}', [OrganizationApiController::class, 'organizationDetail'])->whereNumber('id');
+    Route::get('organizations/{id}/projects', [OrganizationApiController::class, 'organizationProjects'])->whereNumber('id');
+    Route::get('our-organizations', [OrganizationApiController::class, 'ourOrganizations']);
+    Route::get('our-organizations/{id}', [OrganizationApiController::class, 'ourOrganizationDetail'])->whereNumber('id');
+    Route::get('our-organizations/{id}/centers', [OrganizationApiController::class, 'ourOrganizationCenters'])->whereNumber('id');
+    Route::get('organization-centers/{id}', [OrganizationApiController::class, 'centerDetail'])->whereNumber('id');
+    Route::get('our-governance', [OrganizationApiController::class, 'governanceList']);
+    Route::get('our-governance/{id}', [OrganizationApiController::class, 'governanceDetail'])->whereNumber('id');
     // logout
 
 
@@ -208,7 +283,29 @@ Route::prefix('v3')->middleware(['userActivity'])->group(function () {
 
         Route::post('logout', [AuthController::class, 'logout']);
 
+        Route::prefix('subscription')->group(function () {
+            Route::get('/details', [SubscriptionController::class, 'details']);
+            Route::post('/subscribe', [SubscriptionController::class, 'subscribe']);
+            Route::post('/stripe-checkout-success', [SubscriptionController::class, 'stripeCheckoutSuccess'])->name('api.stripe.checkout.success');
+        });
 
+        // Articles + Register Agreement acceptance (auth)
+        Route::post('articles/{id}/accept', [ArticleController::class, 'accept'])->whereNumber('id');
+        Route::post('register-agreement/sign', [ArticleController::class, 'signRegisterAgreement']);
+
+        Route::prefix('membership')->group(function () {
+            Route::get('/tiers', [MembershipApiController::class, 'tiers']);
+            Route::get('/tiers/{id}', [MembershipApiController::class, 'tierDetail']);
+            Route::get('/current', [MembershipApiController::class, 'current']);
+            Route::get('/payment-history', [MembershipApiController::class, 'paymentHistory']);
+            Route::get('/card', [MembershipApiController::class, 'card']);
+            Route::post('/promo-code/validate', [MembershipApiController::class, 'validatePromoCode']);
+            Route::post('/subscribe-token', [MembershipApiController::class, 'subscribeToken']);
+            Route::post('/renew', [MembershipApiController::class, 'renew']);
+            Route::post('/cancel', [MembershipApiController::class, 'cancel']);
+            Route::get('/renewal-reminder', [MembershipApiController::class, 'getRenewalReminder']);
+            Route::put('/renewal-reminder', [MembershipApiController::class, 'updateRenewalReminder']);
+        });
 
         Route::prefix('sizes')->group(function () {
             Route::get('/', [SizeController::class, 'index']);
@@ -421,6 +518,13 @@ Route::prefix('v3')->middleware(['userActivity'])->group(function () {
             Route::post('/edit/{id}', [EventController::class, 'update']);
             Route::post('/delete/{id}', [EventController::class, 'destroy']);
             Route::get('/event-calender-fetch-data', [EventController::class, 'fetchCalenderData']);
+
+            // RSVP + payment
+            Route::get('/my-rsvps', [EventController::class, 'myRsvps']);
+            Route::post('/{id}/rsvp', [EventController::class, 'rsvp'])->whereNumber('id');
+            Route::delete('/{id}/rsvp', [EventController::class, 'cancelRsvp'])->whereNumber('id');
+            Route::post('/{id}/payment', [EventController::class, 'createPaymentIntent'])->whereNumber('id');
+            Route::post('/{id}/payment/confirm', [EventController::class, 'confirmPayment'])->whereNumber('id');
         });
 
 
