@@ -4,6 +4,7 @@
             <td>{{ $policies->firstItem() + $key }}</td>
             <td> {{ $policy->file_name }}</td>
             <td> {{ $policy->file_extension }}</td>
+            <td> {{ $policy->user?->full_name ?? '--' }}</td>
             <td> {{ $policy->country->name ?? ''}}</td>
             <td>
                 <div class="d-flex">
@@ -20,7 +21,9 @@
                             <i class="fa-solid fa-download"></i>
                         </a>
                     @endif
-                    @if (auth()->user()->can('Delete Policy'))
+                    @if (
+                        (auth()->user()->can('Delete Policy') && $policy->user_id == auth()->user()->id) ||
+                            auth()->user()->hasNewRole('SUPER ADMIN'))
                         <a href="javascript:void(0)" id="delete"
                             data-route="{{ route('policy-guidence.delete', $policy->id) }}" class="delete_icon">
                             <i class="fa-solid fa-trash"></i>
@@ -31,7 +34,7 @@
         </tr>
     @endforeach
     <tr class="toxic">
-        <td colspan="5">
+        <td colspan="6">
             <div class="d-flex justify-content-center">
                 {!! $policies->links() !!}
             </div>
@@ -39,6 +42,6 @@
     </tr>
 @else
     <tr>
-        <td colspan="5" class="text-center">No data found</td>
+        <td colspan="6" class="text-center">No data found</td>
     </tr>
 @endif

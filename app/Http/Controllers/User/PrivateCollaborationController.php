@@ -98,19 +98,35 @@ class PrivateCollaborationController extends Controller
                     $query->where('name', 'Manage Private Collaboration');
                 })->whereHas('userRole', function ($query) {
                     $query->where('name', '!=', 'SUPER ADMIN');
-                })->whereIn('user_type', ['Global', 'G_R'])->where('id', '!=', auth()->id())->orderBy('first_name')->orderBy('last_name')->get();
+                })->whereIn('user_type', ['Global', 'G_R'])
+                    ->where('status', 1)
+                    ->where('id', '!=', auth()->id())
+                    ->orderBy('first_name')->orderBy('last_name')->get();
             } else {
                 $eligibleUsersQuery = User::whereHas('roles.permissions', function ($query) {
                     $query->where('name', 'Manage Private Collaboration');
                 })->whereHas('userRole', function ($query) {
                     $query->where('name', '!=', 'SUPER ADMIN');
-                })->where('id', '!=', auth()->id())->whereIn('user_type', ['Regional', 'G_R'])->where('country', $user_country);
+                })->where('id', '!=', auth()->id())
+                    ->whereIn('user_type', ['Regional', 'G_R'])
+                    ->where('status', 1)
+                    ->where('country', $user_country);
 
                 if ($user->is_ecclesia_admin == 1) {
                     $manage_ecclesia_ids = is_array($user->manage_ecclesia)
                         ? $user->manage_ecclesia
                         : explode(',', $user->manage_ecclesia ?? '');
-                    $eligibleUsersQuery->whereIn('ecclesia_id', $manage_ecclesia_ids);
+                    $eligibleUsersQuery->where(function ($q) use ($manage_ecclesia_ids) {
+                        $q->where(function ($sub) use ($manage_ecclesia_ids) {
+                            $sub->whereIn('ecclesia_id', $manage_ecclesia_ids)->whereNotNull('ecclesia_id');
+                        });
+                        foreach ($manage_ecclesia_ids as $id) {
+                            $id = trim($id);
+                            if ($id !== '') {
+                                $q->orWhereRaw('FIND_IN_SET(?, manage_ecclesia)', [$id]);
+                            }
+                        }
+                    });
                 }
 
                 $eligibleUsers = $eligibleUsersQuery->orderBy('first_name')->orderBy('last_name')->get();
@@ -132,6 +148,7 @@ class PrivateCollaborationController extends Controller
         ]);
 
         $country = Country::findOrFail($request->country_id);
+        $authUser = auth()->user();
 
         if ($country->code == 'GL') {
             // Global country selected → show Global user_type users
@@ -139,12 +156,39 @@ class PrivateCollaborationController extends Controller
                 $query->where('name', 'Manage Private Collaboration');
             })->whereIn('user_type', ['Global', 'G_R'])->whereHas('userRole', function ($query) {
                 $query->where('name', '!=', 'SUPER ADMIN');
-            })->where('id', '!=', auth()->id())->orderBy('first_name')->orderBy('last_name')->get();
+            })->where('status', 1)
+                ->where('id', '!=', auth()->id())
+                ->orderBy('first_name')->orderBy('last_name')->get();
         } else {
             // Other country selected → show Regional users from that country
-            $users = User::whereHas('roles.permissions', function ($query) {
+            $usersQuery = User::whereHas('roles.permissions', function ($query) {
                 $query->where('name', 'Manage Private Collaboration');
-            })->where('id', '!=', auth()->id())->whereIn('user_type', ['Regional', 'G_R'])->where('country', $country->id)->orderBy('first_name')->orderBy('last_name')->get();
+            })->whereHas('userRole', function ($query) {
+                $query->where('name', '!=', 'SUPER ADMIN');
+            })->where('id', '!=', auth()->id())
+                ->whereIn('user_type', ['Regional', 'G_R'])
+                ->where('status', 1)
+                ->where('country', $country->id);
+
+            // If auth user is an ECCLESIA admin, filter by shared House of Ecclesia
+            if ($authUser && $authUser->is_ecclesia_admin == 1) {
+                $manage_ecclesia_ids = is_array($authUser->manage_ecclesia)
+                    ? $authUser->manage_ecclesia
+                    : explode(',', $authUser->manage_ecclesia ?? '');
+                $usersQuery->where(function ($q) use ($manage_ecclesia_ids) {
+                    $q->where(function ($sub) use ($manage_ecclesia_ids) {
+                        $sub->whereIn('ecclesia_id', $manage_ecclesia_ids)->whereNotNull('ecclesia_id');
+                    });
+                    foreach ($manage_ecclesia_ids as $id) {
+                        $id = trim($id);
+                        if ($id !== '') {
+                            $q->orWhereRaw('FIND_IN_SET(?, manage_ecclesia)', [$id]);
+                        }
+                    }
+                });
+            }
+
+            $users = $usersQuery->orderBy('first_name')->orderBy('last_name')->get();
         }
 
         $result = $users->map(function ($user) {
