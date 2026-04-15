@@ -25,7 +25,9 @@
                         data-file-name="{{ $file->file_name }}.{{ $file->file_extension }}">
                         <i class="fa-solid fa-download"></i>
                     </a>
-                    @if (auth()->user()->can('Delete File'))
+                    @if (
+                        (auth()->user()->can('Delete File') && $file->user_id == auth()->user()->id) ||
+                            auth()->user()->hasNewRole('SUPER ADMIN'))
                         <a href="javascript:void(0)" id="delete" data-route="{{ route('file.delete', $file->id) }}"
                             class="delete_icon">
                             <i class="fa-solid fa-trash"></i>
