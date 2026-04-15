@@ -178,6 +178,7 @@ Route::prefix('v3')->middleware(['userActivity'])->group(function () {
             // Checkout helpers (mobile)
             Route::post('/checkout/display-prices', [CheckoutController::class, 'displayPrices']);
             Route::post('/checkout/payment-intent', [CheckoutController::class, 'createPaymentIntent']);
+            Route::post('/checkout/confirm', [CheckoutController::class, 'confirmCheckout']);
             Route::post('/checkout/signature', [CheckoutController::class, 'uploadSignature']);
 
             // Order actions (RESTful)
@@ -305,6 +306,9 @@ Route::prefix('v3')->middleware(['userActivity'])->group(function () {
             Route::post('/cancel', [MembershipApiController::class, 'cancel']);
             Route::get('/renewal-reminder', [MembershipApiController::class, 'getRenewalReminder']);
             Route::put('/renewal-reminder', [MembershipApiController::class, 'updateRenewalReminder']);
+
+            Route::post('/checkout/payment-intent', [MembershipApiController::class, 'createPaymentIntent']);
+            Route::post('/checkout/confirm', [MembershipApiController::class, 'confirmCheckout']);
         });
 
         Route::prefix('sizes')->group(function () {

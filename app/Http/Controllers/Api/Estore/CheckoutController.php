@@ -1187,4 +1187,311 @@ class CheckoutController extends Controller
             ],
         ]);
     }
+
+    /**
+     * POST /e-store/checkout/confirm
+     *
+     * Finalizes an order after the mobile client has successfully charged a
+     * Stripe PaymentIntent via flutter_stripe PaymentSheet.
+     *
+     * Difference from `processCheckout`:
+     *   - No PaymentIntent creation — that happens in `/checkout/payment-intent`.
+     *   - Verifies the supplied `payment_intent_id` with Stripe (guards against
+     *     spoofed success) before materializing the order.
+     *   - Idempotent: re-posting the same `payment_intent_id` returns the
+     *     already-created order instead of double-charging stock/email/etc.
+     *
+     * @bodyParam payment_intent_id string required
+     * @bodyParam first_name string required
+     * @bodyParam last_name string required
+     * @bodyParam email string required
+     * @bodyParam phone string required
+     * @bodyParam address_line_1 string required
+     * @bodyParam address_line_2 string nullable
+     * @bodyParam city string required
+     * @bodyParam state string required
+     * @bodyParam pincode string required
+     * @bodyParam country string required
+     * @bodyParam order_method int nullable 1 = pickup, 0 = delivery
+     * @bodyParam payment_type string nullable 'credit' | 'debit' | 'paymentsheet'
+     * @bodyParam promo_code string nullable
+     * @authenticated
+     */
+    public function confirmCheckout(Request $request, \App\Services\CheckoutPaymentService $payment)
+    {
+        if (!auth()->check()) {
+            return response()->json(['status' => false, 'message' => 'Please login to continue'], 401);
+        }
+
+        $validator = Validator::make($request->all(), [
+            'payment_intent_id' => 'required|string',
+            'first_name' => 'required|string|max:255',
+            'last_name' => 'required|string|max:255',
+            'email' => 'required|email|max:255',
+            'phone' => 'required|string|max:20',
+            'address_line_1' => 'required|string|max:500',
+            'address_line_2' => 'nullable|string|max:500',
+            'city' => 'required|string|max:255',
+            'state' => 'required|string|max:255',
+            'pincode' => 'required|string|max:20',
+            'country' => 'required|string|max:255',
+            'order_method' => 'nullable|integer|in:0,1',
+            'payment_type' => 'nullable|string|max:50',
+            'promo_code' => 'nullable|string',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json(['status' => false, 'message' => $validator->errors()->first()], 422);
+        }
+
+        // Idempotency — same intent_id means we already created this order.
+        $existingPayment = EstorePayment::where('stripe_payment_intent_id', $request->payment_intent_id)->first();
+        if ($existingPayment) {
+            $existingOrder = EstoreOrder::find($existingPayment->order_id);
+            if ($existingOrder) {
+                return response()->json([
+                    'status' => true,
+                    'message' => 'Order already recorded for this payment.',
+                    'order_id' => $existingOrder->id,
+                    'order_number' => $existingOrder->order_number,
+                    'total_amount' => $existingOrder->total_amount,
+                    'order' => $existingOrder,
+                ], 200);
+            }
+        }
+
+        // Verify the intent with Stripe — never trust client-supplied success.
+        $verification = $payment->verifyIntent($request->payment_intent_id);
+        if (!($verification['success'] ?? false)) {
+            return response()->json([
+                'status' => false,
+                'message' => 'Payment not completed. Status: ' . ($verification['status'] ?? 'unknown'),
+            ], 402);
+        }
+
+        $is_pickup = (int) $request->input('order_method', 0);
+
+        $carts = EstoreCart::where('user_id', auth()->id())
+            ->with(['product.otherCharges', 'warehouseProduct'])
+            ->get();
+
+        if ($carts->isEmpty()) {
+            return response()->json(['status' => false, 'message' => 'Your cart is empty'], 400);
+        }
+
+        $estoreSettings = EstoreSetting::first();
+
+        // Recalculate server-side (authoritative) — never trust client totals.
+        $recalculatedSubtotal = 0;
+        $cartItems = [];
+        foreach ($carts as $cart) {
+            $warehouseProduct = $cart->warehouseProduct;
+            $currentWarehousePrice = $warehouseProduct?->price ?? 0;
+            if (($cart->price ?? 0) != $currentWarehousePrice && !($cart->product?->is_free)) {
+                $cart->old_price = $cart->price;
+                $cart->price = $currentWarehousePrice;
+                $cart->save();
+            }
+            $cart->other_charges = $cart->product?->otherCharges?->sum('charge_amount') ?? 0;
+            $unitPrice = $cart->price ?? $currentWarehousePrice;
+            $itemSubtotal = ($unitPrice * $cart->quantity) + ($cart->other_charges ?? 0);
+            $recalculatedSubtotal += $itemSubtotal;
+            $cartItems[] = ['product_id' => $cart->product_id, 'subtotal' => $itemSubtotal];
+        }
+
+        $subtotal = $recalculatedSubtotal;
+
+        // Promo
+        $appliedPromoCode = $request->promo_code;
+        $promoDiscount = 0;
+        if ($appliedPromoCode && $subtotal > 0) {
+            $validation = PromoCodeService::validatePromoCode($appliedPromoCode, auth()->id(), $cartItems);
+            if ($validation['valid']) {
+                $promoDiscount = PromoCodeService::calculateDiscount($validation['promo_code'], $subtotal, $cartItems);
+            } else {
+                return response()->json(['status' => false, 'message' => $validation['message'] ?? 'Invalid promo code'], 422);
+            }
+        }
+
+        // Shipping / tax / totals
+        $shippingCost = $deliveryCost = $taxAmount = 0;
+        $totalItems = array_sum(array_map(fn($c) => isset($c['quantity']) ? (int)$c['quantity'] : 0, $carts->toArray()));
+        if ($estoreSettings) {
+            if ($is_pickup == 0 || !$estoreSettings->is_pickup_available) {
+                if (is_array($estoreSettings->shipping_rules) && count($estoreSettings->shipping_rules) > 0) {
+                    $shippingForQty = $estoreSettings->getShippingForQuantity($totalItems);
+                    $shippingCost = $shippingForQty['shipping_cost'];
+                    $deliveryCost = $shippingForQty['delivery_cost'];
+                } else {
+                    $shippingCost = $estoreSettings->shipping_cost ?? 0;
+                    $deliveryCost = $estoreSettings->delivery_cost ?? 0;
+                }
+            }
+            $taxAmount = (($subtotal - $promoDiscount) * ($estoreSettings->tax_percentage ?? 0)) / 100;
+        }
+        $totalAmount = $subtotal - $promoDiscount + $shippingCost + $deliveryCost + $taxAmount;
+
+        // Soft amount check — we don't fail on tiny drift but do log if the
+        // Stripe amount deviates significantly from our recomputed total.
+        $stripeAmount = (float) ($verification['amount'] ?? 0);
+        if ($stripeAmount > 0 && abs($stripeAmount - $totalAmount) > 0.02) {
+            Log::warning('confirmCheckout: Stripe amount differs from recomputed total', [
+                'stripe' => $stripeAmount,
+                'recomputed' => $totalAmount,
+                'user_id' => auth()->id(),
+            ]);
+        }
+
+        DB::beginTransaction();
+        try {
+            $warehouseId = $carts->first()->warehouse_id ?? null;
+            $wareHouse = WareHouse::find($warehouseId);
+
+            $cancelHours = $estoreSettings->cancel_within_hours ?? 0;
+            $statusSlug = $is_pickup
+                ? 'pickup_processing'
+                : (($cancelHours == 0) ? 'processing' : 'pending');
+
+            $order_status = OrderStatus::where('slug', $statusSlug)
+                ->where('is_pickup', $is_pickup ? 1 : 0)
+                ->first();
+            if (!$order_status) {
+                $statusSlug = $is_pickup ? 'pickup_pending' : 'pending';
+                $order_status = OrderStatus::where('slug', $statusSlug)
+                    ->where('is_pickup', $is_pickup ? 1 : 0)
+                    ->first();
+            }
+
+            $order = EstoreOrder::create([
+                'warehouse_id' => $warehouseId,
+                'is_pickup' => $is_pickup,
+                'user_id' => auth()->id(),
+                'first_name' => $request->first_name,
+                'last_name' => $request->last_name,
+                'email' => $request->email,
+                'phone' => $request->phone,
+                'address_line_1' => $request->address_line_1,
+                'address_line_2' => $request->address_line_2,
+                'city' => $request->city,
+                'state' => $request->state,
+                'pincode' => $request->pincode,
+                'country' => $request->country,
+                'subtotal' => $subtotal,
+                'tax_amount' => $taxAmount,
+                'shipping_amount' => $shippingCost,
+                'handling_amount' => $deliveryCost,
+                'total_amount' => $totalAmount,
+                'credit_card_fee' => 0,
+                'payment_type' => $request->input('payment_type', 'paymentsheet'),
+                'payment_status' => 'paid',
+                'status' => $order_status->id ?? null,
+                'warehouse_name' => $wareHouse->name ?? null,
+                'warehouse_address' => $wareHouse->address ?? null,
+                'promo_code' => $appliedPromoCode,
+                'promo_discount' => $promoDiscount,
+                'expected_delivery_date' => (!$is_pickup) ? now()->addDays($estoreSettings->expected_delivery_days ?? 7) : null,
+            ]);
+
+            foreach ($carts as $cart) {
+                $size = Size::find($cart->size_id);
+                $color = Color::find($cart->color_id);
+                $wareHouseProduct = WareHouse::find($cart->warehouse_id);
+
+                EstoreOrderItem::create([
+                    'order_id' => $order->id,
+                    'product_id' => $cart->product_id,
+                    'warehouse_product_id' => $cart->warehouse_product_id ?? null,
+                    'warehouse_id' => $cart->warehouse_id,
+                    'product_name' => $cart->product->name ?? 'Unknown Product',
+                    'product_image' => $cart->product->getProductFirstImage($cart->color_id) ?? null,
+                    'price' => $cart->price ?? ($cart->warehouseProduct->price ?? 0),
+                    'quantity' => $cart->quantity,
+                    'size_id' => $cart->size_id,
+                    'color_id' => $cart->color_id,
+                    'size' => $size->size ?? null,
+                    'color' => $color->color_name ?? null,
+                    'warehouse_name' => $wareHouseProduct->name ?? null,
+                    'warehouse_address' => $wareHouseProduct->address ?? null,
+                    'other_charges' => json_encode(
+                        $cart->product?->otherCharges?->map(fn($charge) => [
+                            'charge_name' => $charge->charge_name ?? '',
+                            'charge_amount' => $charge->charge_amount ?? 0,
+                        ]) ?? []
+                    ),
+                    'total' => ((($cart->price ?? ($cart->warehouseProduct?->price ?? 0))) * $cart->quantity) + ($cart->other_charges ?? 0),
+                ]);
+
+                // Stock decrement — same logic as processCheckout.
+                $warehouseProductRow = WarehouseProduct::where('warehouse_id', $cart->warehouse_id)
+                    ->where('id', $cart->warehouse_product_id)
+                    ->where('product_id', $cart->product_id)
+                    ->first();
+                if ($warehouseProductRow) {
+                    $warehouseProductRow->decrement('quantity', $cart->quantity);
+                    $wpv = WarehouseProductVariation::where('warehouse_id', $cart->warehouse_id)
+                        ->where('product_variation_id', $warehouseProductRow->product_variation_id)
+                        ->where('product_id', $cart->product_id)
+                        ->first();
+                    if ($wpv) {
+                        $wpv->warehouse_quantity = max(0, ($wpv->warehouse_quantity ?? 0) - $cart->quantity);
+                        $wpv->updated_at = now();
+                        $wpv->save();
+                    }
+                }
+            }
+
+            // Payment row — links order to the Stripe intent.
+            EstorePayment::create([
+                'order_id' => $order->id,
+                'stripe_payment_intent_id' => $request->payment_intent_id,
+                'payment_method' => 'stripe',
+                'payment_type' => $request->input('payment_type', 'paymentsheet'),
+                'amount' => $totalAmount,
+                'currency' => 'USD',
+                'status' => 'succeeded',
+                'payment_details' => [
+                    'payment_intent_id' => $request->payment_intent_id,
+                    'amount' => $stripeAmount,
+                    'currency' => $verification['currency'] ?? 'usd',
+                ],
+                'paid_at' => now(),
+            ]);
+
+            // Clear cart AFTER everything else succeeds.
+            EstoreCart::where('user_id', auth()->id())->delete();
+
+            DB::commit();
+
+            return response()->json([
+                'status' => true,
+                'message' => 'Order placed successfully',
+                'order_id' => $order->id,
+                'order_number' => $order->order_number,
+                'total_amount' => $totalAmount,
+                'order' => [
+                    'id' => $order->id,
+                    'order_number' => $order->order_number,
+                    'total_amount' => $order->total_amount,
+                    'subtotal' => $order->subtotal,
+                    'tax_amount' => $order->tax_amount,
+                    'shipping_amount' => $order->shipping_amount,
+                    'promo_discount' => $order->promo_discount,
+                    'payment_status' => $order->payment_status,
+                    'status' => $order->status,
+                    'created_at' => $order->created_at,
+                ],
+            ], 200);
+        } catch (\Exception $e) {
+            DB::rollback();
+            Log::error('confirmCheckout failed: ' . $e->getMessage(), [
+                'user_id' => auth()->id(),
+                'payment_intent_id' => $request->payment_intent_id,
+                'trace' => $e->getTraceAsString(),
+            ]);
+            return response()->json([
+                'status' => false,
+                'message' => 'Order creation failed: ' . $e->getMessage(),
+            ], 500);
+        }
+    }
 }

@@ -10,11 +10,13 @@ use App\Models\MembershipPromoUsage;
 use App\Models\MembershipTier;
 use App\Models\SubscriptionPayment;
 use App\Models\UserSubscription;
+use App\Services\CheckoutPaymentService;
 use App\Services\NotificationService;
 use App\Services\PromoCodeValidator;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
 use Spatie\Permission\PermissionRegistrar;
 
@@ -380,6 +382,190 @@ class MembershipApiController extends Controller
         return response()->json([
             'status' => true,
             'message' => 'Membership cancelled and account deactivated.',
+        ], $this->successStatus);
+    }
+
+    /**
+     * POST /user/membership/checkout/payment-intent
+     * Creates a Stripe PaymentIntent for a paid membership tier.
+     * The client then presents PaymentSheet and posts back to /checkout/confirm.
+     *
+     * @bodyParam tier_id int required
+     * @bodyParam promo_code string optional
+     */
+    public function createPaymentIntent(Request $request, CheckoutPaymentService $payment): JsonResponse
+    {
+        $validator = Validator::make($request->all(), [
+            'tier_id' => 'required|integer|exists:membership_tiers,id',
+            'promo_code' => 'nullable|string',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json(['status' => false, 'message' => $validator->errors()->first()], 422);
+        }
+
+        $user = Auth::user();
+        $tier = MembershipTier::find($request->tier_id);
+
+        if (($tier->pricing_type ?? 'amount') === 'token') {
+            return response()->json([
+                'status' => false,
+                'message' => 'Token-priced tiers do not require payment. Use /subscribe-token.',
+            ], 422);
+        }
+
+        $amount = (float) $tier->cost;
+        $promoCode = null;
+        if ($request->filled('promo_code')) {
+            $result = PromoCodeValidator::validateMembership($request->promo_code, $user->id, $tier->id);
+            if (!$result['valid']) {
+                return response()->json(['status' => false, 'message' => $result['message']], 422);
+            }
+            $amount = (float) $result['final_price'];
+            $promoCode = $result['code'];
+        }
+
+        if ($amount <= 0) {
+            return response()->json(['status' => false, 'message' => 'Amount after discount must be greater than zero.'], 422);
+        }
+
+        $intent = $payment->createIntent(
+            $amount,
+            'USD',
+            $user,
+            [
+                'type' => 'membership',
+                'tier_id' => $tier->id,
+                'promo_code' => $promoCode,
+            ]
+        );
+
+        if (!$intent['success']) {
+            return response()->json(['status' => false, 'message' => $intent['error'] ?? 'Could not create payment intent.'], 500);
+        }
+
+        return response()->json([
+            'status' => true,
+            'message' => 'Payment intent created.',
+            'data' => [
+                'tier_id' => $tier->id,
+                'amount' => $amount,
+                'currency' => 'USD',
+                'promo_code' => $promoCode,
+                'payment_intent_id' => $intent['payment_intent_id'],
+                'client_secret' => $intent['client_secret'],
+                'ephemeral_key' => $intent['ephemeral_key'],
+                'customer_id' => $intent['customer_id'],
+                'publishable_key' => $intent['publishable_key'],
+            ],
+        ], $this->successStatus);
+    }
+
+    /**
+     * POST /user/membership/checkout/confirm
+     * Called after the mobile client's PaymentSheet succeeds. Verifies the intent,
+     * creates/extends a UserSubscription + SubscriptionPayment, syncs tier permissions.
+     *
+     * @bodyParam payment_intent_id string required
+     * @bodyParam tier_id int required
+     * @bodyParam is_renew bool optional (default false)
+     */
+    public function confirmCheckout(Request $request, CheckoutPaymentService $payment): JsonResponse
+    {
+        $validator = Validator::make($request->all(), [
+            'payment_intent_id' => 'required|string',
+            'tier_id' => 'required|integer|exists:membership_tiers,id',
+            'is_renew' => 'nullable|boolean',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json(['status' => false, 'message' => $validator->errors()->first()], 422);
+        }
+
+        // Idempotency: same intent → same payment row.
+        $existing = SubscriptionPayment::where('transaction_id', $request->payment_intent_id)->first();
+        if ($existing) {
+            return response()->json([
+                'status' => true,
+                'message' => 'Payment already processed.',
+                'data' => $existing->load('userSubscription'),
+            ], $this->successStatus);
+        }
+
+        $verification = $payment->verifyIntent($request->payment_intent_id);
+        if (!($verification['success'] ?? false)) {
+            return response()->json([
+                'status' => false,
+                'message' => 'Payment not completed. Status: ' . ($verification['status'] ?? 'unknown'),
+            ], 402);
+        }
+
+        $user = Auth::user();
+        $tier = MembershipTier::find($request->tier_id);
+        $isRenew = (bool) $request->input('is_renew', false);
+        $amountPaid = (float) ($verification['amount'] ?? $tier->cost);
+        $promoCode = $verification['metadata']['promo_code'] ?? null;
+
+        $subscription = DB::transaction(function () use ($user, $tier, $isRenew, $amountPaid, $promoCode, $request) {
+            if ($isRenew && $user->userLastSubscription && $user->userLastSubscription->plan_id == $tier->id) {
+                $sub = $user->userLastSubscription;
+                $duration = $tier->duration_months ?? 12;
+                $base = $sub->subscription_expire_date
+                    ? now()->max(\Carbon\Carbon::parse($sub->subscription_expire_date))
+                    : now();
+                $sub->subscription_expire_date = $base->addMonths($duration);
+                $sub->subscription_method = 'amount';
+                $sub->save();
+            } else {
+                $duration = $tier->duration_months ?? 12;
+                $sub = new UserSubscription();
+                $sub->user_id = $user->id;
+                $sub->plan_id = $tier->id;
+                $sub->subscription_method = 'amount';
+                $sub->subscription_name = $tier->name;
+                $sub->subscription_price = $tier->cost;
+                $sub->promo_code = $promoCode;
+                $sub->final_price = $amountPaid;
+                $sub->subscription_validity = $duration;
+                $sub->subscription_start_date = now();
+                $sub->subscription_expire_date = now()->addMonths($duration);
+                $sub->save();
+            }
+
+            SubscriptionPayment::create([
+                'user_id' => $user->id,
+                'user_subscription_id' => $sub->id,
+                'transaction_id' => $request->payment_intent_id,
+                'payment_method' => 'Stripe',
+                'payment_amount' => $amountPaid,
+                'promo_code' => $promoCode,
+                'discount_amount' => max(0, (float) $tier->cost - $amountPaid),
+                'payment_status' => 'Success',
+            ]);
+
+            if ($promoCode) {
+                $promo = MembershipPromoCode::where('code', $promoCode)->first();
+                if ($promo) {
+                    MembershipPromoUsage::create([
+                        'promo_code_id' => $promo->id,
+                        'user_id' => $user->id,
+                        'user_subscription_id' => $sub->id,
+                        'discount_applied' => max(0, (float) $tier->cost - $amountPaid),
+                        'used_at' => now(),
+                    ]);
+                    $promo->incrementUsage();
+                }
+            }
+
+            return $sub;
+        });
+
+        $this->syncTierPermissions($user, $tier);
+
+        return response()->json([
+            'status' => true,
+            'message' => 'Subscription activated.',
+            'data' => $subscription->fresh()->load('payments'),
         ], $this->successStatus);
     }
 
