@@ -160,17 +160,20 @@ class FileController extends Controller
 
     public function delete($id)
     {
-        if (auth()->user()->can('Delete File')) {
-            $file = File::find($id);
-            if ($file) {
-                Log::info($file->file_name . ' deleted by ' . auth()->user()->email . ' deleted at ' . now());
-                $file->delete();
-                // delete file from storage
-                Storage::disk('public')->delete($file->file);
-                return redirect()->route('file.index')->with('message', 'File deleted successfully.');
-            } else {
-                return redirect()->route('file.index')->with('error', 'File not found.');
-            }
+        $file = File::find($id);
+        if (!$file) {
+            return redirect()->route('file.index')->with('error', 'File not found.');
+        }
+
+        if (
+            (auth()->user()->can('Delete File') && $file->user_id == auth()->user()->id) ||
+            auth()->user()->hasNewRole('SUPER ADMIN')
+        ) {
+            Log::info($file->file_name . ' deleted by ' . auth()->user()->email . ' deleted at ' . now());
+            $file->delete();
+            // delete file from storage
+            Storage::disk('public')->delete($file->file);
+            return redirect()->route('file.index')->with('message', 'File deleted successfully.');
         } else {
             abort(403, 'You do not have permission to access this page.');
         }

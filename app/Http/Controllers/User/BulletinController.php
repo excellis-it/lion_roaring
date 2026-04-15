@@ -290,14 +290,15 @@ class BulletinController extends Controller
 
                 if (Auth::user()->hasNewRole('SUPER ADMIN')) {
                     $bulletins = Bulletin::query()
-                        ->where('title', 'like', '%' . $query . '%')
-                        ->orWhere('description', 'like', '%' . $query . '%')
-                        ->orWhereHas('user', function ($q) use ($query) {
-                            $q->whereRaw("CONCAT(first_name, ' ', IFNULL(middle_name,''), ' ', last_name) LIKE ?", ['%' . $query . '%']);
+                        ->where(function ($q) use ($query) {
+                            $q->where('title', 'like', '%' . $query . '%')
+                                ->orWhere('description', 'like', '%' . $query . '%')
+                                ->orWhereHas('user', function ($subQuery) use ($query) {
+                                    $subQuery->whereRaw("CONCAT(first_name, ' ', IFNULL(middle_name,''), ' ', last_name) LIKE ?", ['%' . $query . '%']);
+                                });
                         });
                 } else {
                     $bulletins = Bulletin::query()
-                        ->where('user_id', Auth::user()->id)
                         ->where(function ($q) use ($query) {
                             $q->where('title', 'like', '%' . $query . '%')
                                 ->orWhere('description', 'like', '%' . $query . '%')
@@ -311,19 +312,25 @@ class BulletinController extends Controller
                     if (auth()->user()->user_type == 'Global' || (auth()->user()->user_type == 'G_R' && $isOnGlobalServer)) {
                         $bulletins = $bulletins->orderBy($sort_by, $sort_type)->whereHas('country', function ($query) {
                             $query->where('code', 'GL');
+                        })->whereHas('user', function ($q) {
+                            $q->whereIn('user_type', ['Global', 'G_R'])->where('status', 1);
                         })->paginate(15);
                     } else {
                         $bulletins = $bulletins->where('country_id', auth()->user()->country)->whereHas('user', function ($query) {
-                            $query->whereIn('user_type', ['Regional', 'G_R']);
+                            $query->whereIn('user_type', ['Regional', 'G_R'])->where('status', 1);
                         });
-                        // dd($bulletins->get()->toArray());
                         if (auth()->user()->is_ecclesia_admin == 1) {
                             $manage_ecclesia_ids = is_array(auth()->user()->manage_ecclesia)
                                 ? auth()->user()->manage_ecclesia
                                 : explode(',', auth()->user()->manage_ecclesia ?? '');
                             $bulletins = $bulletins->where(function ($q) use ($manage_ecclesia_ids) {
                                 $q->whereHas('user', function ($uq) use ($manage_ecclesia_ids) {
-                                    $uq->whereIn('ecclesia_id', $manage_ecclesia_ids);
+                                    $uq->where(function ($sub) use ($manage_ecclesia_ids) {
+                                        $sub->whereIn('ecclesia_id', $manage_ecclesia_ids)->whereNotNull('ecclesia_id');
+                                        foreach ($manage_ecclesia_ids as $id) {
+                                            $sub->orWhereRaw('FIND_IN_SET(?, manage_ecclesia)', [trim($id)]);
+                                        }
+                                    });
                                 })->orWhere('user_id', auth()->user()->id);
                             });
                         }
@@ -339,24 +346,64 @@ class BulletinController extends Controller
         }
     }
 
-    public function loadTable(Request $request)
+    /**
+     * Shared query builder for the current user's visible bulletins.
+     * Mirrors the filter logic in index() and the BulletinBoardController.
+     */
+    private function visibleBulletinsQuery()
     {
-        if (Auth::user()->hasNewRole('SUPER ADMIN')) {
-            $bulletins = Bulletin::orderBy('id', 'desc')->paginate(15);
-        } else {
-            $bulletins = Bulletin::where('user_id', Auth::user()->id)->orderBy('id', 'desc')->paginate(15);
+        $user = Auth::user();
+        $currentCountry = Country::findByCurrentRequest();
+        $isOnGlobalServer = $currentCountry && $currentCountry->is_global;
+
+        if ($user->hasNewRole('SUPER ADMIN')) {
+            return Bulletin::orderBy('id', 'desc');
         }
 
+        if ($user->user_type == 'Global' || ($user->user_type == 'G_R' && $isOnGlobalServer)) {
+            return Bulletin::orderBy('id', 'desc')
+                ->whereHas('country', function ($query) {
+                    $query->where('code', 'GL');
+                })
+                ->whereHas('user', function ($query) {
+                    $query->whereIn('user_type', ['Global', 'G_R'])->where('status', 1);
+                });
+        }
+
+        $bulletinsQuery = Bulletin::orderBy('id', 'desc')
+            ->where('country_id', $user->country)
+            ->whereHas('user', function ($query) {
+                $query->whereIn('user_type', ['Regional', 'G_R'])->where('status', 1);
+            });
+
+        if ($user->is_ecclesia_admin == 1) {
+            $manage_ecclesia_ids = is_array($user->manage_ecclesia)
+                ? $user->manage_ecclesia
+                : explode(',', $user->manage_ecclesia ?? '');
+            $bulletinsQuery->where(function ($q) use ($manage_ecclesia_ids, $user) {
+                $q->whereHas('user', function ($uq) use ($manage_ecclesia_ids) {
+                    $uq->where(function ($sub) use ($manage_ecclesia_ids) {
+                        $sub->whereIn('ecclesia_id', $manage_ecclesia_ids)->whereNotNull('ecclesia_id');
+                        foreach ($manage_ecclesia_ids as $id) {
+                            $sub->orWhereRaw('FIND_IN_SET(?, manage_ecclesia)', [trim($id)]);
+                        }
+                    });
+                })->orWhere('user_id', $user->id);
+            });
+        }
+
+        return $bulletinsQuery;
+    }
+
+    public function loadTable(Request $request)
+    {
+        $bulletins = $this->visibleBulletinsQuery()->paginate(15);
         return response()->json(['view' => view('user.bulletin.table', compact('bulletins'))->render()]);
     }
 
     public function single(Request $request)
     {
-        if (Auth::user()->hasNewRole('SUPER ADMIN')) {
-            $bulletins = Bulletin::orderBy('id', 'desc')->paginate(15);
-        } else {
-            $bulletins = Bulletin::where('user_id', Auth::user()->id)->orderBy('id', 'desc')->paginate(15);
-        }
+        $bulletins = $this->visibleBulletinsQuery()->paginate(15);
         $bulletin = Bulletin::find($request->bulletin_id);
         return response()->json(['view' => view('user.bulletin.show-single-bulletin', compact('bulletin', 'bulletins'))->render()]);
     }
