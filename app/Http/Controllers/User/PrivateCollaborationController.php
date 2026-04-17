@@ -103,9 +103,7 @@ class PrivateCollaborationController extends Controller
                     ->where('id', '!=', auth()->id())
                     ->orderBy('first_name')->orderBy('last_name')->get();
             } else {
-                $eligibleUsersQuery = User::whereHas('roles.permissions', function ($query) {
-                    $query->where('name', 'Manage Private Collaboration');
-                })->whereHas('userRole', function ($query) {
+                $eligibleUsersQuery = User::whereHas('userRole', function ($query) {
                     $query->where('name', '!=', 'SUPER ADMIN');
                 })->where('id', '!=', auth()->id())
                     ->whereIn('user_type', ['Regional', 'G_R'])
@@ -152,18 +150,15 @@ class PrivateCollaborationController extends Controller
 
         if ($country->code == 'GL') {
             // Global country selected → show Global user_type users
-            $users = User::whereHas('roles.permissions', function ($query) {
-                $query->where('name', 'Manage Private Collaboration');
-            })->whereIn('user_type', ['Global', 'G_R'])->whereHas('userRole', function ($query) {
+            $users = User::whereHas('userRole', function ($query) {
                 $query->where('name', '!=', 'SUPER ADMIN');
-            })->where('status', 1)
+            })->whereIn('user_type', ['Global', 'G_R'])
+                ->where('status', 1)
                 ->where('id', '!=', auth()->id())
                 ->orderBy('first_name')->orderBy('last_name')->get();
         } else {
             // Other country selected → show Regional users from that country
-            $usersQuery = User::whereHas('roles.permissions', function ($query) {
-                $query->where('name', 'Manage Private Collaboration');
-            })->whereHas('userRole', function ($query) {
+            $usersQuery = User::whereHas('userRole', function ($query) {
                 $query->where('name', '!=', 'SUPER ADMIN');
             })->where('id', '!=', auth()->id())
                 ->whereIn('user_type', ['Regional', 'G_R'])

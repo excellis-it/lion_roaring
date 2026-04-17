@@ -222,6 +222,26 @@
                 background: linear-gradient(135deg, #b57012 0%, #945a0e 100%);
             }
 
+            .tier-card.tier-disabled {
+                opacity: 0.45;
+                cursor: not-allowed;
+                pointer-events: none;
+            }
+
+            .tier-card.tier-disabled .select-tier-btn {
+                background: #aaa;
+                box-shadow: none;
+                cursor: not-allowed;
+            }
+
+            .tier-disabled-label {
+                display: inline-block;
+                margin-top: 8px;
+                font-size: 0.78rem;
+                color: #888;
+                font-style: italic;
+            }
+
             /* Payment Styles */
             .payment-amount-box {
                 background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
@@ -1106,10 +1126,17 @@
                         <h5 class="modal-title" id="tierModalLabel">Choose Your Member Tier</h5>
                     </div>
                     <div class="modal-body">
-                        <div class="tier-grid">
+                        <div class="tier-grid"> 
+                            @php $lowestTierCost = $tiers->min('cost'); @endphp
                             @foreach ($tiers as $index => $tier)
-                                {{-- @php $is_featured = ($index == 0) ? 'featured' : ''; @endphp --}}
-                                <div class="tier-card" id="featured_{{ $index }}">
+                                @php
+                                    $isLockedTier =
+                                        $isGlobalDomain &&
+                                        (float) ($tier->cost ?? 0) <= (float) $lowestTierCost &&
+                                        (float) $lowestTierCost > 0;
+                                @endphp
+                                <div class="tier-card {{ $isLockedTier ? 'tier-disabled' : '' }}"
+                                    id="featured_{{ $index }}">
                                     <div class="tier-name">{{ $tier->name }}</div>
                                     <div class="tier-price">
                                         @if (($tier->pricing_type ?? 'amount') === 'token')
@@ -1131,13 +1158,17 @@
                                         data-pricing-type="{{ $tier->pricing_type ?? 'amount' }}"
                                         data-tier-name="{{ $tier->name }}"
                                         data-agree-description="{{ e($tier->agree_description) }}"
-                                        data-tokens="{{ $tier->life_force_energy_tokens ?? '' }}">
+                                        data-tokens="{{ $tier->life_force_energy_tokens ?? '' }}"
+                                        {{ $isLockedTier ? 'disabled' : '' }}>
                                         @if (($tier->pricing_type ?? 'amount') === 'token')
                                             Subscribe (Tokens)
                                         @else
                                             {{ (float) ($tier->cost ?? 0) > 0 ? 'Subscribe' : 'Get Started' }}
                                         @endif
                                     </button>
+                                    @if ($isLockedTier)
+                                        <span class="tier-disabled-label">Not available on this domain</span>
+                                    @endif
                                 </div>
                             @endforeach
                         </div>
