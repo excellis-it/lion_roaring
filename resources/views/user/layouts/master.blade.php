@@ -108,6 +108,7 @@
                 display: flex;
                 align-items: center;
                 white-space: nowrap;
+                width: max-content;
                 animation: couponTickerScroll var(--ticker-duration, 30s) linear infinite;
                 will-change: transform;
             }
