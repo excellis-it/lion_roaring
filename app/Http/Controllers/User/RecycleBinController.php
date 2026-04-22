@@ -57,6 +57,7 @@ class RecycleBinController extends Controller
         'chatbot_keywords' => ChatbotKeyword::class,
         'bulletins' => Bulletin::class,
         'topics' => Topic::class,
+        'elearning_topics' => ElearningTopic::class,
         'files' => File::class,
         // Note: 'roles' removed - Spatie Role model doesn't use SoftDeletes by default
     ];
@@ -328,6 +329,7 @@ class RecycleBinController extends Controller
             'chatbot_keywords' => ['id', 'keyword', 'response'],
             'bulletins' => ['id', 'title', 'description'],
             'topics' => ['id', 'topic_name', 'education_type'],
+            'elearning_topics' => ['id', 'topic_name'],
             'files' => ['id', 'file_name', 'type'],
         ];
 
