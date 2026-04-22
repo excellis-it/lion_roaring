@@ -153,7 +153,7 @@ class ElearningSubCategoryController extends Controller
         Log::info($subcategory->name . ' deleted by ' . auth()->user()->email . ' deleted at ' . now());
         $subcategory->delete();
 
-        return response()->json(['message' => 'Sub Category deleted successfully.']);
+        return redirect()->route('elearning-sub-categories.index')->with('message', 'Sub Category deleted successfully.');
     }
 
     public function getSubcategories(Request $request)
