@@ -340,6 +340,127 @@
     @endphp
 
     <body style="background: #643271">
+
+    @if(!$agreementAlreadyAccepted)
+    {{-- Agreement Gate: full-screen overlay that must be completed before the form is accessible --}}
+    <div id="reg-agreement-gate" style="position:fixed;top:0;left:0;width:100%;height:100%;background:#fff;z-index:9999;overflow-y:auto;display:flex;flex-direction:column;">
+
+        {{-- Step 1: Article PDF --}}
+        <div id="reg-gate-step1" style="max-width:860px;margin:0 auto;padding:30px 20px;width:100%;">
+            <div style="text-align:center;margin-bottom:20px;">
+                @if(isset(Helper::getFooter()['footer_logo']))
+                    <img src="{{ Storage::url(Helper::getFooter()['footer_logo']) }}" alt="" style="max-height:60px;">
+                @else
+                    <img src="{{ asset('user_assets/images/logo.png') }}" alt="" style="max-height:60px;">
+                @endif
+            </div>
+            <h4 style="text-align:center;margin-bottom:16px;color:#643271;">Please Review Before Registering</h4>
+            <div style="background:#f9f9f9;border-radius:8px;padding:12px;margin-bottom:16px;font-size:13px;color:#555;display:flex;align-items:center;gap:8px;">
+                <i class="fa fa-mouse-pointer"></i> Please scroll to the bottom of the document to enable the agreement.
+            </div>
+            @if($articlePdfUrl)
+                <div id="reg-gate-article-pdf" style="min-height:400px;background:#525659;border-radius:6px;overflow:hidden;margin-bottom:16px;">
+                    <div style="text-align:center;padding:40px;">
+                        <div class="spinner-border" role="status" style="color:#fff;width:2.5rem;height:2.5rem;"></div>
+                        <p class="mt-3" style="color:#ddd;">Preparing document...</p>
+                    </div>
+                </div>
+            @else
+                <div style="background:#f0f0f0;border-radius:6px;padding:30px;text-align:center;margin-bottom:16px;color:#555;">
+                    <i class="fa fa-file-alt fa-3x" style="color:#643271;margin-bottom:12px;"></i>
+                    <p>Please confirm that you agree to the Articles of Association.</p>
+                </div>
+            @endif
+            <div id="reg-gate-step1-check" style="{{ $articlePdfUrl ? 'display:none;' : '' }}background:#f8f4ff;border-radius:8px;padding:16px;border:1px solid #e0d0f0;">
+                <div style="display:flex;align-items:flex-start;gap:10px;">
+                    <input type="checkbox" id="reg_article_check" style="margin-top:4px;width:18px;height:18px;accent-color:#643271;">
+                    <label for="reg_article_check" style="font-weight:600;color:#333;cursor:pointer;margin:0;">
+                        {{ $articleCheckboxText }}
+                    </label>
+                </div>
+                <div style="text-align:right;margin-top:16px;">
+                    <button type="button" id="reg-gate-next1-btn" onclick="regGateNext1()"
+                        style="background:#643271;color:#fff;border:none;border-radius:6px;padding:10px 28px;font-size:15px;font-weight:600;cursor:pointer;">
+                        Next <i class="fa fa-arrow-right"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        {{-- Step 2: Enter name + confirm initials + generate preview --}}
+        <div id="reg-gate-step2" style="display:none;max-width:860px;margin:0 auto;padding:30px 20px;width:100%;">
+            <div style="text-align:center;margin-bottom:20px;">
+                @if(isset(Helper::getFooter()['footer_logo']))
+                    <img src="{{ Storage::url(Helper::getFooter()['footer_logo']) }}" alt="" style="max-height:60px;">
+                @else
+                    <img src="{{ asset('user_assets/images/logo.png') }}" alt="" style="max-height:60px;">
+                @endif
+            </div>
+            <h4 style="text-align:center;margin-bottom:4px;color:#643271;">
+                {{ $registerAgreement->agreement_title ?? 'Lion Roaring PMA Agreement' }}
+            </h4>
+            <p style="text-align:center;color:#888;margin-bottom:20px;">Enter your name to personalise the agreement</p>
+            <div style="background:#f9f9f9;border-radius:8px;padding:20px;margin-bottom:16px;">
+                <label style="font-weight:600;margin-bottom:6px;display:block;">Full Name *</label>
+                <input type="text" id="reg_gate_signer_name" placeholder="Enter your full name"
+                    style="width:100%;padding:10px 14px;border:1.5px solid #ccc;border-radius:6px;font-size:15px;"
+                    oninput="regGateUpdateInitials()">
+                <div id="reg_gate_name_error" style="color:#dc3545;font-size:13px;margin-top:4px;display:none;">Please enter your full name.</div>
+                <div style="margin-top:14px;display:flex;align-items:flex-start;gap:10px;">
+                    <input type="checkbox" id="reg_gate_initials_check" style="margin-top:4px;width:18px;height:18px;accent-color:#643271;">
+                    <label for="reg_gate_initials_check" id="reg_gate_initials_label" style="font-weight:600;color:#333;cursor:pointer;margin:0;">I confirm my initials</label>
+                </div>
+                <div id="reg_gate_initials_error" style="color:#dc3545;font-size:13px;margin-top:4px;display:none;">Please confirm your initials.</div>
+            </div>
+            <div style="text-align:right;">
+                <button type="button" id="reg-gate-next2-btn" onclick="regGateNext2()"
+                    style="background:#643271;color:#fff;border:none;border-radius:6px;padding:10px 28px;font-size:15px;font-weight:600;cursor:pointer;">
+                    Next <i class="fa fa-arrow-right"></i>
+                </button>
+            </div>
+            <div id="reg-gate-step2-loader" style="display:none;text-align:center;margin-top:16px;">
+                <div class="spinner-border" role="status" style="color:#643271;width:2rem;height:2rem;"></div>
+                <p style="color:#643271;margin-top:8px;font-weight:600;">Generating Agreement PDF...</p>
+            </div>
+        </div>
+
+        {{-- Step 3: Preview personalised agreement PDF + final checkbox --}}
+        <div id="reg-gate-step3" style="display:none;max-width:860px;margin:0 auto;padding:30px 20px;width:100%;">
+            <div style="text-align:center;margin-bottom:20px;">
+                @if(isset(Helper::getFooter()['footer_logo']))
+                    <img src="{{ Storage::url(Helper::getFooter()['footer_logo']) }}" alt="" style="max-height:60px;">
+                @else
+                    <img src="{{ asset('user_assets/images/logo.png') }}" alt="" style="max-height:60px;">
+                @endif
+            </div>
+            <h4 style="text-align:center;margin-bottom:16px;color:#643271;">Review &amp; Agree</h4>
+            <div style="background:#f9f9f9;border-radius:8px;padding:12px;margin-bottom:16px;font-size:13px;color:#555;display:flex;align-items:center;gap:8px;">
+                <i class="fa fa-mouse-pointer"></i> Please scroll to the bottom of the document to enable agreement.
+            </div>
+            <div id="reg-gate-agreement-pdf" style="min-height:400px;background:#525659;border-radius:6px;overflow:hidden;margin-bottom:16px;">
+                <div style="text-align:center;padding:40px;">
+                    <div class="spinner-border" role="status" style="color:#fff;width:2.5rem;height:2.5rem;"></div>
+                    <p class="mt-3" style="color:#ddd;">Preparing document...</p>
+                </div>
+            </div>
+            <div id="reg-gate-step3-check" style="display:none;background:#f8f4ff;border-radius:8px;padding:16px;border:1px solid #e0d0f0;">
+                <div style="display:flex;align-items:flex-start;gap:10px;">
+                    <input type="checkbox" id="reg_final_check" style="margin-top:4px;width:18px;height:18px;accent-color:#643271;">
+                    <label for="reg_final_check" style="font-weight:600;color:#333;cursor:pointer;margin:0;">
+                        {{ $registerAgreement->checkbox_text ?? 'I have read and agreed to the Lion Roaring PMA Agreement' }}
+                    </label>
+                </div>
+                <div style="text-align:right;margin-top:16px;">
+                    <button type="button" onclick="regGateAccept()"
+                        style="background:#643271;color:#fff;border:none;border-radius:6px;padding:10px 28px;font-size:15px;font-weight:600;cursor:pointer;">
+                        I Agree &amp; Continue to Registration <i class="fa fa-check"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+    @endif
+
         <main>
             <section class="log-main">
                 <div class="container">
@@ -724,6 +845,33 @@
                                                     </div>
                                                 </div>
                                             </div>
+                                            {{-- Restore tier/payment state when server validation redirects back --}}
+                                            @if(old('tier_id'))
+                                                <input type="hidden" id="tier_id" name="tier_id" value="{{ old('tier_id') }}">
+                                                <input type="hidden" id="tier_pricing_type" name="tier_pricing_type" value="{{ old('tier_pricing_type', 'amount') }}">
+                                                @if(old('agree_accepted') == '1')
+                                                    <input type="hidden" id="agree_accepted" name="agree_accepted" value="1">
+                                                @endif
+                                                @if(old('stripeToken'))
+                                                    <input type="hidden" id="stripeToken" name="stripeToken" value="{{ old('stripeToken') }}">
+                                                @endif
+                                                @if(old('promo_code'))
+                                                    <input type="hidden" name="promo_code" value="{{ old('promo_code') }}">
+                                                @endif
+                                            @endif
+
+                                            @if ($errors->has('register_agreement'))
+                                                <div class="row mb-3">
+                                                    <div class="col-lg-12">
+                                                        <div style="color: #dc3545; background: #ffe6e6; padding: 12px 16px; border-radius: 6px; border-left: 4px solid #dc3545; font-size: 13px;">
+                                                            <i class="fa fa-exclamation-circle"></i>
+                                                            {{ $errors->first('register_agreement') }}
+                                                            Please fill in the form again and complete the registration process.
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            @endif
+
                                             <div class="row">
                                                 <div class="col-lg-6">
                                                     <div class="login-submit mt-lg-4 mt-2">
@@ -1883,6 +2031,157 @@
                 });
             });
         </script>
+
+    @if(!$agreementAlreadyAccepted)
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+    <script>
+    (function() {
+        pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+
+        var articlePdfUrl  = {!! json_encode($articlePdfUrl) !!};
+        var agreementPreviewRoute = "{{ route('register.agreement.preview') }}";
+        var csrfToken = "{{ csrf_token() }}";
+
+        // Render a PDF into a container div using PDF.js
+        // Calls onScrollReached() when user scrolls to the last page
+        function renderGatePdf(url, containerId, onScrollReached) {
+            var container = document.getElementById(containerId);
+            container.innerHTML = '<div style="text-align:center;padding:40px;"><div class="spinner-border" role="status" style="color:#fff;width:2.5rem;height:2.5rem;"></div><p class="mt-3" style="color:#ddd;">Preparing document...</p></div>';
+            pdfjsLib.getDocument(url).promise.then(function(pdf) {
+                container.innerHTML = '';
+                container.style.overflowY = 'auto';
+                container.style.maxHeight = '70vh';
+                container.style.padding = '16px';
+                var allPagesRendered = Promise.resolve();
+                for (var i = 1; i <= pdf.numPages; i++) {
+                    (function(pageNum, total) {
+                        allPagesRendered = allPagesRendered.then(function() {
+                            return pdf.getPage(pageNum).then(function(page) {
+                                var vp = page.getViewport({ scale: 1.5 });
+                                var canvas = document.createElement('canvas');
+                                canvas.style.display = 'block';
+                                canvas.style.maxWidth = '100%';
+                                canvas.style.marginBottom = '10px';
+                                canvas.style.boxShadow = '0 2px 10px rgba(0,0,0,0.5)';
+                                canvas.width = vp.width;
+                                canvas.height = vp.height;
+                                container.appendChild(canvas);
+                                if (pageNum === total) {
+                                    var sentinel = document.createElement('div');
+                                    sentinel.style.height = '1px';
+                                    container.appendChild(sentinel);
+                                    var obs = new IntersectionObserver(function(entries) {
+                                        if (entries[0].isIntersecting) {
+                                            onScrollReached();
+                                            obs.disconnect();
+                                        }
+                                    }, { threshold: 0.1, root: container });
+                                    obs.observe(sentinel);
+                                }
+                                return page.render({ canvasContext: canvas.getContext('2d'), viewport: vp }).promise;
+                            });
+                        });
+                    })(i, pdf.numPages);
+                }
+                return allPagesRendered;
+            }).catch(function(err) {
+                container.innerHTML = '<div style="color:#dc3545;padding:20px;background:#fff;border-radius:6px;margin:10px;">Failed to load document. Please try again.</div>';
+            });
+        }
+
+        // Step 1: render article PDF, reveal checkbox when user reaches the end
+        if (articlePdfUrl) {
+            renderGatePdf(articlePdfUrl, 'reg-gate-article-pdf', function() {
+                document.getElementById('reg-gate-step1-check').style.display = 'block';
+                document.getElementById('reg-gate-step1-check').scrollIntoView({ behavior: 'smooth' });
+            });
+        }
+
+        window.regGateNext1 = function() {
+            if (!document.getElementById('reg_article_check').checked) {
+                alert('Please check the agreement to continue.');
+                return;
+            }
+            document.getElementById('reg-gate-step1').style.display = 'none';
+            document.getElementById('reg-gate-step2').style.display = 'block';
+            window.scrollTo(0, 0);
+        };
+
+        window.regGateUpdateInitials = function() {
+            var name = (document.getElementById('reg_gate_signer_name').value || '').trim();
+            var parts = name.split(/\s+/).filter(Boolean);
+            var initials = parts.map(function(p) { return (p[0] || '').toUpperCase(); }).join('').slice(0, 4);
+            var lbl = document.getElementById('reg_gate_initials_label');
+            lbl.textContent = initials ? 'I confirm my initials: ' + initials : 'I confirm my initials';
+            document.getElementById('reg_gate_initials_check').checked = false;
+        };
+
+        window.regGateNext2 = function() {
+            var name = (document.getElementById('reg_gate_signer_name').value || '').trim();
+            var nameErr = document.getElementById('reg_gate_name_error');
+            var initialsErr = document.getElementById('reg_gate_initials_error');
+            nameErr.style.display = 'none';
+            initialsErr.style.display = 'none';
+
+            if (!name) {
+                nameErr.style.display = 'block';
+                return;
+            }
+            if (!document.getElementById('reg_gate_initials_check').checked) {
+                initialsErr.style.display = 'block';
+                return;
+            }
+
+            var btn = document.getElementById('reg-gate-next2-btn');
+            btn.disabled = true;
+            document.getElementById('reg-gate-step2-loader').style.display = 'block';
+
+            fetch(agreementPreviewRoute, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/x-www-form-urlencoded', 'X-CSRF-TOKEN': csrfToken },
+                body: '_token=' + encodeURIComponent(csrfToken) + '&signer_name=' + encodeURIComponent(name)
+            })
+            .then(function(r) { return r.json(); })
+            .then(function(res) {
+                if (!res || res.status !== true || !res.pdf_url) {
+                    throw new Error(res && res.message ? res.message : 'Could not generate agreement.');
+                }
+                document.getElementById('reg-gate-step2').style.display = 'none';
+                document.getElementById('reg-gate-step3').style.display = 'block';
+                window.scrollTo(0, 0);
+                renderGatePdf(res.pdf_url, 'reg-gate-agreement-pdf', function() {
+                    document.getElementById('reg-gate-step3-check').style.display = 'block';
+                    document.getElementById('reg-gate-step3-check').scrollIntoView({ behavior: 'smooth' });
+                });
+            })
+            .catch(function(err) {
+                alert(err.message || 'Could not generate agreement. Please try again.');
+            })
+            .finally(function() {
+                btn.disabled = false;
+                document.getElementById('reg-gate-step2-loader').style.display = 'none';
+            });
+        };
+
+        window.regGateAccept = function() {
+            if (!document.getElementById('reg_final_check').checked) {
+                alert('Please check the agreement to continue.');
+                return;
+            }
+            var gate = document.getElementById('reg-agreement-gate');
+            gate.style.transition = 'opacity 0.5s';
+            gate.style.opacity = '0';
+            setTimeout(function() {
+                gate.style.display = 'none';
+                document.body.style.overflow = '';
+            }, 500);
+        };
+
+        // Prevent page scroll while gate is visible
+        document.body.style.overflow = 'hidden';
+    })();
+    </script>
+    @endif
     </body>
 
 </html>

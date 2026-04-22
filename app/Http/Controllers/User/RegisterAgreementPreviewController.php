@@ -12,6 +12,15 @@ use PDF;
 
 class RegisterAgreementPreviewController extends Controller
 {
+    public function generateForRequest(Request $request, string $signerName): void
+    {
+        $signerName = trim($signerName);
+        if ($signerName === '') {
+            return;
+        }
+        $this->buildAndStoreAgreement($request, $signerName);
+    }
+
     public function generate(Request $request)
     {
         $request->validate([
@@ -19,6 +28,19 @@ class RegisterAgreementPreviewController extends Controller
         ]);
 
         $signerName = trim((string) $request->input('signer_name'));
+        $this->buildAndStoreAgreement($request, $signerName);
+
+        $pending = $request->session()->get('pending_register_agreement');
+
+        return response()->json([
+            'status' => true,
+            'token' => $pending['token'],
+            'pdf_url' => Storage::url($pending['tmp_path']),
+        ]);
+    }
+
+    private function buildAndStoreAgreement(Request $request, string $signerName): void
+    {
         $signerInitials = $this->makeInitials($signerName);
 
         $countryCode = strtoupper(Helper::getVisitorCountryCode() ?: 'US');
@@ -32,8 +54,6 @@ class RegisterAgreementPreviewController extends Controller
         $checkboxText = $template->checkbox_text ?? null;
 
         $html = $this->applyPlaceholders($html, $signerName, $signerInitials, $template);
-        // Always satisfy the requested "I, user name" line.
-        // $html = '<p><strong>I, ' . e($signerName) . '</strong></p>' . $html;
         $html = '<p></p>' . $html;
 
         $token = (string) Str::uuid();
@@ -57,12 +77,6 @@ class RegisterAgreementPreviewController extends Controller
             'agreement_title_snapshot' => $title,
             'agreement_description_snapshot' => $html,
             'checkbox_text_snapshot' => $checkboxText,
-        ]);
-
-        return response()->json([
-            'status' => true,
-            'token' => $token,
-            'pdf_url' => Storage::url($tmpPath),
         ]);
     }
 

@@ -29,6 +29,7 @@ use App\Models\UserSubscription;
 use App\Models\SubscriptionPayment;
 use App\Models\UserRegisterAgreement;
 use App\Models\SignupRule;
+use App\Http\Controllers\User\RegisterAgreementPreviewController;
 use Stripe\StripeClient;
 use Spatie\Permission\Models\Role;
 use Spatie\Permission\Models\Permission;
@@ -155,7 +156,21 @@ class AuthController extends Controller
             }
         }
 
-        return view('user.auth.register')->with(compact('eclessias', 'countries', 'tiers', 'generated_id_part', 'isGlobalDomain', 'lockedCountryId'));
+        $pending = request()->session()->get('pending_register_agreement');
+        $agreementAlreadyAccepted = is_array($pending)
+            && !empty($pending['tmp_path'])
+            && !empty($pending['signer_name'])
+            && Storage::disk('public')->exists($pending['tmp_path']);
+
+        $registerAgreement = Helper::getAgreements();
+        $articlePdfUrl     = Helper::getPDFAttribute();
+        $articleCheckboxText = Helper::getArticleCheckboxText();
+
+        return view('user.auth.register')->with(compact(
+            'eclessias', 'countries', 'tiers', 'generated_id_part',
+            'isGlobalDomain', 'lockedCountryId',
+            'agreementAlreadyAccepted', 'registerAgreement', 'articlePdfUrl', 'articleCheckboxText'
+        ));
     }
 
     public function registerCheck(Request $request)
@@ -193,13 +208,28 @@ class AuthController extends Controller
 
         $validator->after(function ($validator) use ($request) {
             $pending = $request->session()->get('pending_register_agreement');
-            if (!is_array($pending) || empty($pending['tmp_path']) || empty($pending['signer_name'])) {
-                $validator->errors()->add('register_agreement', 'Please review and accept the registration agreement before registering.');
-                return;
+
+            if (!is_array($pending) || empty($pending['tmp_path']) || empty($pending['signer_name']) ||
+                !Storage::disk('public')->exists($pending['tmp_path'])) {
+                // Session missing or expired — regenerate from submitted name
+                $firstName  = trim($request->input('first_name', ''));
+                $middleName = trim($request->input('middle_name', ''));
+                $lastName   = trim($request->input('last_name', ''));
+                $signerName = implode(' ', array_filter([$firstName, $middleName, $lastName]));
+
+                if ($signerName !== '') {
+                    try {
+                        app(RegisterAgreementPreviewController::class)->generateForRequest($request, $signerName);
+                        $pending = $request->session()->get('pending_register_agreement');
+                    } catch (\Throwable $e) {
+                        Log::error('Agreement auto-generate failed: ' . $e->getMessage());
+                        $pending = null;
+                    }
+                }
             }
 
-            if (!Storage::disk('public')->exists($pending['tmp_path'])) {
-                $validator->errors()->add('register_agreement', 'Agreement preview has expired. Please review the agreement again.');
+            if (!is_array($pending) || empty($pending['tmp_path']) || empty($pending['signer_name'])) {
+                $validator->errors()->add('register_agreement', 'Please review and accept the registration agreement before registering.');
                 return;
             }
 
@@ -238,7 +268,6 @@ class AuthController extends Controller
         });
 
         if ($validator->fails()) {
-            Log::error('' . $validator->errors()->first());
             return redirect()->back()
                 ->withErrors($validator)
                 ->withInput();
