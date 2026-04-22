@@ -6,6 +6,7 @@
             <td> {{ $strategy->file_extension }}</td>
             <td> {{ $strategy->user?->full_name ?? '--' }}</td>
             <td> {{ $strategy->country->name ?? '--' }}</td>
+            <td> {{ $strategy->created_at?->format('d M Y') ?? '--' }}</td>
             <td>
                 <div class="d-flex">
                     @if (auth()->user()->can('View Strategy'))
@@ -33,7 +34,7 @@
         </tr>
     @endforeach
     <tr class="toxic">
-        <td colspan="5">
+        <td colspan="6">
             <div class="d-flex justify-content-center">
                 {!! $strategies->links() !!}
             </div>
@@ -41,6 +42,6 @@
     </tr>
 @else
     <tr>
-        <td colspan="5" class="text-center">No data found</td>
+        <td colspan="6" class="text-center">No data found</td>
     </tr>
 @endif

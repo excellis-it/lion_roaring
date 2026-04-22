@@ -7,6 +7,7 @@
             <td> {{ $file->topic->topic_name ?? '--' }}</td>
             <td> {{ $file->country->name ?? '--' }}</td>
             <td> {{ $file->user?->full_name ?? '--' }}</td>
+            <td> {{ $file->created_at?->format('d M Y') ?? '--' }}</td>
             <td>
                 <div class="d-flex">
                     @if (auth()->user()->can('View Becoming Sovereigns'))
@@ -29,7 +30,9 @@
                             <i class="fa-solid fa-download"></i>
                         </a>
                     @endif
-                    @if (auth()->user()->can('Delete Becoming Sovereigns'))
+                    @if (
+                        (auth()->user()->can('Delete Becoming Sovereigns') && $file->user_id == auth()->user()->id) ||
+                            auth()->user()->hasNewRole('SUPER ADMIN'))
                         <a href="javascript:void(0)" id="delete"
                             data-route="{{ route('becoming-sovereign.delete', $file->id) . '?topic=' . ($new_topic ?? '') }}"
                             class="delete_icon">
@@ -41,7 +44,7 @@
         </tr>
     @endforeach
     <tr class="toxic">
-        <td colspan="7">
+        <td colspan="8">
             <div class="d-flex justify-content-center">
                 {!! $files->links() !!}
             </div>
@@ -49,6 +52,6 @@
     </tr>
 @else
     <tr>
-        <td colspan="7" class="text-center">No data found</td>
+        <td colspan="8" class="text-center">No data found</td>
     </tr>
 @endif

@@ -5,7 +5,8 @@
             <td> {{ $policy->file_name }}</td>
             <td> {{ $policy->file_extension }}</td>
             <td> {{ $policy->user?->full_name ?? '--' }}</td>
-            <td> {{ $policy->country->name ?? ''}}</td>
+            <td> {{ $policy->country->name ?? '' }}</td>
+            <td> {{ $policy->created_at?->format('d M Y') ?? '--' }}</td>
             <td>
                 <div class="d-flex">
                     @if (auth()->user()->can('View Policy'))

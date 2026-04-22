@@ -5,9 +5,9 @@
 @push('styles')
 @endpush
 @section('content')
-<section id="loading">
-    <div id="loading-content"></div>
-</section>
+    <section id="loading">
+        <div id="loading-content"></div>
+    </section>
     <div class="container-fluid">
         <div class="bg_white_border">
             <form>
@@ -75,6 +75,7 @@
                                                     Country
                                                 </th>
                                                 <th>Created By</th>
+                                                <th>Date</th>
                                                 <th></th>
                                             </tr>
                                         </thead>
@@ -86,8 +87,7 @@
                                     <input type="hidden" name="hidden_page" id="hidden_page" value="1" />
                                     <input type="hidden" name="hidden_column_name" id="hidden_column_name"
                                         value="id" />
-                                    <input type="hidden" name="hidden_sort_type" id="hidden_sort_type"
-                                        value="desc" />
+                                    <input type="hidden" name="hidden_sort_type" id="hidden_sort_type" value="desc" />
                                 </div>
                             </div>
                         </div>
@@ -140,8 +140,8 @@
                         sortby: sort_by,
                         sorttype: sort_type,
                         query: query,
-                        topic_id : topic_id,
-                        type : type
+                        topic_id: topic_id,
+                        type: type
                     },
                     success: function(data) {
                         $('#loading').removeClass('loading');
@@ -201,7 +201,7 @@
                 $(this).parent().addClass('active');
                 var topic_id = $('#topics').val();
                 var type = $('#type').val();
-                fetch_data(page, sort_type, column_name, query, topic_id , type);
+                fetch_data(page, sort_type, column_name, query, topic_id, type);
             });
 
             $(document).on('change', '#topics', function() {
@@ -226,29 +226,31 @@
         });
     </script>
 
-<script>
-    $(document).ready(function() {
-        $('#type').change(function() {
-            var type = $(this).val();
-            var url = "{{ route('topics.getTopics', ':type') }}";
-            url = url.replace(':type', type);
-            $.ajax({
-                url: url,
-                type: 'GET',
-                success: function(resp) {
-                    var html = '<option value="">Select Topics</option>';
-                    var oldTopic = "{{ old('topic_id') }}";
-                    $.each(resp.data, function(index, value) {
-                        if (oldTopic == value.id) {
-                            html += '<option value="' + value.id + '" selected>' + value.topic_name + '</option>';
-                        } else {
-                            html += '<option value="' + value.id + '">' + value.topic_name + '</option>';
-                        }
-                    });
-                    $('#topics').html(html);
-                }
+    <script>
+        $(document).ready(function() {
+            $('#type').change(function() {
+                var type = $(this).val();
+                var url = "{{ route('topics.getTopics', ':type') }}";
+                url = url.replace(':type', type);
+                $.ajax({
+                    url: url,
+                    type: 'GET',
+                    success: function(resp) {
+                        var html = '<option value="">Select Topics</option>';
+                        var oldTopic = "{{ old('topic_id') }}";
+                        $.each(resp.data, function(index, value) {
+                            if (oldTopic == value.id) {
+                                html += '<option value="' + value.id + '" selected>' +
+                                    value.topic_name + '</option>';
+                            } else {
+                                html += '<option value="' + value.id + '">' + value
+                                    .topic_name + '</option>';
+                            }
+                        });
+                        $('#topics').html(html);
+                    }
+                });
             });
         });
-    });
-</script>
+    </script>
 @endpush
