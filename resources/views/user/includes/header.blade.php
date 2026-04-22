@@ -7,8 +7,7 @@
 
     // Fetch active membership promo codes
     $membershipCoupons = MembershipPromoCode::where('status', 1)
-        ->where('start_date', '<=', $now)
-        ->where('end_date', '>=', $now)
+        ->whereDate('end_date', '>=', $now->toDateString())
         ->get()
         ->map(function ($coupon) {
             return (object) [
