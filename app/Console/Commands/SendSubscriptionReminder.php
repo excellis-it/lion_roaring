@@ -145,6 +145,7 @@ class SendSubscriptionReminder extends Command
 
                 // Deactivate account
                 $user->status = 0;
+                $user->is_accept = 0;
                 $user->save();
 
                 // Notify admin
@@ -200,9 +201,13 @@ class SendSubscriptionReminder extends Command
                 }
             }
 
-            $subject = $isFinal
-                ? 'Final Notice: Your membership has expired — account will be deactivated'
-                : ($measurement->renewal_reminder_subject ?? null);
+            $isExpired = $daysRemaining < 0 || $isFinal;
+
+            $subject = $isExpired
+                ? ($measurement->post_expiry_reminder_subject
+                    ?? 'Your membership has expired — please renew to avoid deactivation')
+                : ($measurement->renewal_reminder_subject
+                    ?? 'Your subscription will expire soon');
 
             $maildata = [
                 'name'              => $user->full_name ?? $user->first_name ?? 'Member',
@@ -212,7 +217,10 @@ class SendSubscriptionReminder extends Command
                 'days_remaining'    => max(0, (int) $daysRemaining),
                 'renew_url'         => route('user.membership.index'),
                 'custom_subject'    => $subject,
-                'custom_body'       => $measurement->renewal_reminder_body ?? null,
+                'custom_body'       => $isExpired
+                    ? ($measurement->post_expiry_reminder_body ?? null)
+                    : ($measurement->renewal_reminder_body ?? null),
+                'is_expired'        => $isExpired,
             ];
 
             $mailer = Mail::to($user->email);

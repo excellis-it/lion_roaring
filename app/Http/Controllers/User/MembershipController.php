@@ -200,6 +200,8 @@ class MembershipController extends Controller
                 'renewal_reminder_days' => 'nullable|integer|min:1|max:365',
                 'renewal_reminder_subject' => 'nullable|string|max:255',
                 'renewal_reminder_body' => 'nullable|string',
+                'post_expiry_reminder_subject' => 'nullable|string|max:255',
+                'post_expiry_reminder_body' => 'nullable|string',
             ]);
 
             $validated['renewal_reminder_days'] = $request->filled('renewal_reminder_days')
@@ -678,6 +680,7 @@ class MembershipController extends Controller
 
         // Deactivate the user account
         $user->status = 0;
+       // $user->is_accept = 0; // Also set is_accept to 0 to prevent login
         $user->save();
 
         // Notify all SUPER ADMIN users
