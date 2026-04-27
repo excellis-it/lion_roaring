@@ -202,6 +202,9 @@ class MembershipController extends Controller
                 'renewal_reminder_body' => 'nullable|string',
                 'post_expiry_reminder_subject' => 'nullable|string|max:255',
                 'post_expiry_reminder_body' => 'nullable|string',
+                'post_expiry_interval_1_days' => 'nullable|integer|min:1|max:365',
+                'post_expiry_interval_2_days' => 'nullable|integer|min:1|max:365',
+                'post_expiry_interval_3_days' => 'nullable|integer|min:1|max:365',
             ]);
 
             $validated['renewal_reminder_days'] = $request->filled('renewal_reminder_days')

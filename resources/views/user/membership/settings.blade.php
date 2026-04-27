@@ -76,8 +76,42 @@
                         </div>
                     </div>
 
-                    {{-- Post-Expiry Email Section --}}
+                    {{-- Post-Expiry Reminder Intervals --}}
                     <div class="col-md-12 mb-3 mt-3">
+                        <div class="heading_box mb-2">
+                            <h5 class="mb-0">Post-Expiry Reminder Schedule <small class="text-muted fw-normal">(days after expiry each reminder is sent)</small></h5>
+                        </div>
+                    </div>
+                    <div class="col-md-4 mb-3">
+                        <div class="box_label">
+                            <label>1st Reminder — Days After Expiry</label>
+                            <input type="number" class="form-control" name="post_expiry_interval_1_days" min="1" max="365"
+                                value="{{ old('post_expiry_interval_1_days', $measurement->post_expiry_interval_1_days ?? 3) }}"
+                                placeholder="e.g. 3">
+                            <small class="text-muted">Default: 3 days. Admin is also alerted at this point.</small>
+                        </div>
+                    </div>
+                    <div class="col-md-4 mb-3">
+                        <div class="box_label">
+                            <label>2nd Reminder — Days After Expiry</label>
+                            <input type="number" class="form-control" name="post_expiry_interval_2_days" min="1" max="365"
+                                value="{{ old('post_expiry_interval_2_days', $measurement->post_expiry_interval_2_days ?? 7) }}"
+                                placeholder="e.g. 7">
+                            <small class="text-muted">Default: 7 days.</small>
+                        </div>
+                    </div>
+                    <div class="col-md-4 mb-3">
+                        <div class="box_label">
+                            <label>3rd Reminder — Days After Expiry</label>
+                            <input type="number" class="form-control" name="post_expiry_interval_3_days" min="1" max="365"
+                                value="{{ old('post_expiry_interval_3_days', $measurement->post_expiry_interval_3_days ?? 14) }}"
+                                placeholder="e.g. 14">
+                            <small class="text-muted">Default: 14 days. Account is deactivated after this reminder.</small>
+                        </div>
+                    </div>
+
+                    {{-- Post-Expiry Email Section --}}
+                    <div class="col-md-12 mb-3 mt-2">
                         <div class="heading_box mb-2">
                             <h5 class="mb-0">Post-Expiry Email <small class="text-muted fw-normal">(sent after membership has expired)</small></h5>
                         </div>

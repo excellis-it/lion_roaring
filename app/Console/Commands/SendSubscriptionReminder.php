@@ -8,6 +8,7 @@ use App\Models\User;
 use App\Models\UserSubscription;
 use Carbon\Carbon;
 use Illuminate\Console\Command;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
 
@@ -24,12 +25,30 @@ class SendSubscriptionReminder extends Command
     public function handle()
     {
         $measurement = MembershipMeasurement::query()->first();
-        $adminEmail  = config('mail.from.address');
+        $adminEmail  = $this->resolveSuperAdminEmail();
 
         $this->sendPreExpiryReminders($measurement, $adminEmail);
         $this->sendPostExpiryReminders($measurement, $adminEmail);
 
         return 0;
+    }
+
+    private function resolveSuperAdminEmail(): string
+    {
+        // Prefer the user assigned the 'admin' role (role_id=1)
+        $row = DB::table('model_has_roles')
+            ->where('role_id', 1)
+            ->where('model_type', User::class)
+            ->first();
+
+        if ($row) {
+            $email = User::find($row->model_id)?->email;
+            if ($email) {
+                return $email;
+            }
+        }
+
+        return config('mail.from.address');
     }
 
     /**
@@ -118,11 +137,12 @@ class SendSubscriptionReminder extends Command
                 ? Carbon::parse($subscription->reminder_sent_at)
                 : null;
 
-            // Interval gates: remind at +3 days and +7 days after expiry
-            // count=0 means no post-expiry reminder yet → send at +3 days
-            // count=1 means 1 post-expiry reminder sent → send at +7 days
-            // count=2 means 2 post-expiry reminders sent → send at +14 days, then deactivate
-            $intervalMap = [0 => 3, 1 => 7, 2 => 14];
+            // Interval gates — configurable from Membership Settings (defaults: 3, 7, 14 days)
+            $intervalMap = [
+                0 => max(1, (int) ($measurement->post_expiry_interval_1_days ?? 3)),
+                1 => max(1, (int) ($measurement->post_expiry_interval_2_days ?? 7)),
+                2 => max(1, (int) ($measurement->post_expiry_interval_3_days ?? 14)),
+            ];
             $requiredDays = $intervalMap[$count] ?? 999;
 
             if ($daysSinceExpiry < $requiredDays) {
@@ -137,29 +157,47 @@ class SendSubscriptionReminder extends Command
             $newCount = $count + 1;
 
             if ($newCount >= 3) {
-                // Third and final notice — send, then deactivate
+                // Third and final notice — send, then permanently deactivate
                 $this->dispatchReminder($subscription, $user, $measurement, $adminEmail, -$daysSinceExpiry, true);
+
                 $subscription->reminder_sent_at = now();
                 $subscription->reminder_count   = 3;
                 $subscription->save();
 
-                // Deactivate account
-                $user->status = 0;
+                // Permanently deactivate account
+                $user->status    = 0;
                 $user->is_accept = 0;
                 $user->save();
 
-                // Notify admin
+                // Force via DB update as a safety net
+                DB::table('users')->where('id', $user->id)->update([
+                    'status'    => 0,
+                    'is_accept' => 0,
+                ]);
+
+                // Notify Super Admin with full detail
                 if ($adminEmail) {
                     try {
                         $adminData = [
-                            'name'              => 'Admin',
+                            'name'              => 'Super Admin',
                             'subscription_name' => $subscription->subscription_name ?? 'Membership',
                             'start_date'        => 'N/A',
                             'expire_date'       => $expireDate->format('F d, Y'),
                             'days_remaining'    => 0,
                             'renew_url'         => route('user.membership.index'),
-                            'custom_subject'    => 'Account Deactivated – ' . ($user->full_name ?? $user->email) . ' (3 reminders sent)',
-                            'custom_body'       => '<p>The account for <strong>' . e($user->full_name ?? $user->email) . '</strong> (' . e($user->email) . ') has been <strong>deactivated</strong> after 3 unpaid membership reminders.</p><p>Membership expired: ' . $expireDate->format('F d, Y') . '</p>',
+                            'custom_subject'    => '🔴 Account Deactivated: ' . ($user->full_name ?? $user->email),
+                            'custom_body'       => '<p>Hi Super Admin,</p>'
+                                . '<p>The following account has been <strong style="color:#c0392b;">permanently deactivated</strong> after 3 unpaid membership reminders:</p>'
+                                . '<table border="0" cellpadding="6" cellspacing="0" style="font-size:15px;color:#333;border-collapse:collapse;">'
+                                . '<tr><td style="font-weight:600;padding-right:16px;">Name</td><td>' . e($user->full_name ?? 'N/A') . '</td></tr>'
+                                . '<tr><td style="font-weight:600;">Email</td><td>' . e($user->email) . '</td></tr>'
+                                . '<tr><td style="font-weight:600;">User Type</td><td>' . e($user->user_type ?? 'N/A') . '</td></tr>'
+                                . '<tr><td style="font-weight:600;">Membership</td><td>' . e($subscription->subscription_name ?? 'Membership') . '</td></tr>'
+                                . '<tr><td style="font-weight:600;">Expired On</td><td style="color:#c0392b;">' . $expireDate->format('F d, Y') . '</td></tr>'
+                                . '<tr><td style="font-weight:600;">Days Since Expiry</td><td>' . $daysSinceExpiry . ' day(s)</td></tr>'
+                                . '</table>'
+                                . '<p style="margin-top:20px;">Status has been set to <strong>Deactivated</strong> (status=0, is_accept=0). The member must contact an administrator to reactivate.</p>',
+                            'is_expired' => true,
                         ];
                         Mail::to($adminEmail)->send(new SubscriptionReminderMail($adminData));
                     } catch (\Throwable $e) {
@@ -167,7 +205,7 @@ class SendSubscriptionReminder extends Command
                     }
                 }
 
-                Log::info('Account deactivated after 3 reminders: ' . $user->email);
+                Log::info('Account permanently deactivated after 3 reminders: ' . $user->email . ' (status=0, is_accept=0)');
                 $deactivated++;
             } else {
                 if ($this->dispatchReminder($subscription, $user, $measurement, $adminEmail, -$daysSinceExpiry)) {
@@ -175,6 +213,11 @@ class SendSubscriptionReminder extends Command
                     $subscription->reminder_count   = $newCount;
                     $subscription->save();
                     $sent++;
+
+                    // On first post-expiry reminder, send a dedicated admin alert
+                    if ($count === 0 && $adminEmail) {
+                        $this->notifyAdminExpired($user, $subscription, $expireDate, $adminEmail, $daysSinceExpiry);
+                    }
                 }
             }
         }
@@ -234,6 +277,32 @@ class SendSubscriptionReminder extends Command
         } catch (\Throwable $e) {
             Log::error('Subscription reminder failed for: ' . $user->email . ' — ' . $e->getMessage());
             return false;
+        }
+    }
+
+    private function notifyAdminExpired(User $user, UserSubscription $subscription, Carbon $expireDate, string $adminEmail, int $daysSinceExpiry): void
+    {
+        try {
+            $adminData = [
+                'name'              => 'Admin',
+                'subscription_name' => $subscription->subscription_name ?? 'Membership',
+                'start_date'        => 'N/A',
+                'expire_date'       => $expireDate->format('F d, Y'),
+                'days_remaining'    => 0,
+                'renew_url'         => route('user.membership.index'),
+                'custom_subject'    => '⚠️ Membership Expired: ' . ($user->full_name ?? $user->email),
+                'custom_body'       => '<p>Hi Admin,</p>'
+                    . '<p>The membership for <strong>' . e($user->full_name ?? $user->email) . '</strong>'
+                    . ' (' . e($user->email) . ') <strong>expired on ' . $expireDate->format('F d, Y') . '</strong>'
+                    . ' (' . $daysSinceExpiry . ' day(s) ago).</p>'
+                    . '<p>A renewal reminder has been sent to the member. If they do not renew, their account will be deactivated after the 3rd reminder.</p>'
+                    . '<p>User type: ' . e($user->user_type ?? 'N/A') . '</p>',
+                'is_expired'        => true,
+            ];
+            Mail::to($adminEmail)->send(new SubscriptionReminderMail($adminData));
+            Log::info('Admin expiry alert sent for: ' . $user->email);
+        } catch (\Throwable $e) {
+            Log::error('Admin expiry alert failed for ' . $user->email . ': ' . $e->getMessage());
         }
     }
 

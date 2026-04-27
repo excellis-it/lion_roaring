@@ -19,5 +19,8 @@ class MembershipMeasurement extends BaseModel
         'renewal_reminder_body',
         'post_expiry_reminder_subject',
         'post_expiry_reminder_body',
+        'post_expiry_interval_1_days',
+        'post_expiry_interval_2_days',
+        'post_expiry_interval_3_days',
     ];
 }
