@@ -577,14 +577,6 @@ class PartnerController extends Controller
             }
         }
 
-        $phone_number = $request->full_phone_number;
-        $phone_number_cleaned = preg_replace('/[\s\-\(\)]+/', '', $phone_number);
-
-        $check = User::whereRaw("REPLACE(REPLACE(REPLACE(REPLACE(phone, ' ', ''), '-', ''), '(', ''), ')', '') = ?", [$phone_number_cleaned])->count();
-        if ($check > 0) {
-            return redirect()->back()->withErrors(['phone' => 'Phone number already exists'])->withInput();
-        }
-
         $uniqueNumber = rand(1000, 9999);
         $lr_email = strtolower(trim($request->first_name)) . strtolower(trim($request->middle_name)) . strtolower(trim($request->last_name)) . $uniqueNumber . '@lionroaring.us';
 
@@ -855,13 +847,6 @@ class PartnerController extends Controller
             }
 
             $the_role = UserType::where('name', $request->role)->first();
-
-            $phone_number = $request->full_phone_number;
-            $phone_number_cleaned = preg_replace('/[\s\-\(\)]+/', '', $phone_number);
-            $check = User::whereRaw("REPLACE(REPLACE(REPLACE(REPLACE(phone, ' ', ''), '-', ''), '(', ''), ')', '') = ?", [$phone_number_cleaned])->where('id', '!=', $id)->count();
-            if ($check > 0) {
-                return redirect()->back()->withErrors(['phone' => 'Phone number already exists'])->withInput();
-            }
 
             $is_ecclesia_admin = 0;
             $the_role = UserType::where('name', $request->role)->first();

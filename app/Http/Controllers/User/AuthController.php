@@ -295,14 +295,6 @@ class AuthController extends Controller
                 ->withInput();
         }
 
-        $phone_number = $request->full_phone_number;
-        $phone_number_cleaned = preg_replace('/[\s\-\(\)]+/', '', $phone_number);
-
-        $check = User::whereRaw("REPLACE(REPLACE(REPLACE(REPLACE(phone, ' ', ''), '-', ''), '(', ''), ')', '') = ?", [$phone_number_cleaned])->count();
-        if ($check > 0) {
-            return redirect()->back()->withErrors(['phone_number' => 'Phone number already exists'])->withInput();
-        }
-
         $uniqueNumber = rand(1000, 9999);
         $lr_email = strtolower(trim($request->first_name)) . strtolower(trim($request->middle_name)) . strtolower(trim($request->last_name)) . $uniqueNumber . '@lionroaring.us';
 
@@ -647,13 +639,6 @@ class AuthController extends Controller
             // In case full_phone_number is not populated by JS correctly for this check, check phone_number
             // But existing code uses full_phone_number from request, which JS should send.
             $phone_number = $request->phone_number;
-        }
-
-        $phone_number_cleaned = preg_replace('/[\s\-\(\)]+/', '', $phone_number);
-
-        $check = User::whereRaw("REPLACE(REPLACE(REPLACE(REPLACE(phone, ' ', ''), '-', ''), '(', ''), ')', '') = ?", [$phone_number_cleaned])->count();
-        if ($check > 0) {
-            return response()->json(['status' => false, 'errors' => ['phone_number' => ['Phone number already exists']]]);
         }
 
         $currentCode = strtoupper(Helper::getVisitorCountryCode());

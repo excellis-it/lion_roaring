@@ -31,7 +31,7 @@
                                     <div class="col-md-3 ">
                                         <div class="box_label">
                                             <select name="education_type" id="type" class="form-select">
-                                                <option value="">Select Education Type</option>
+                                                <option value="">Select Category</option>
                                                 <option value="Becoming Sovereign">Becoming Sovereign</option>
                                                 <option value="Becoming Christ Like">Becoming Christ Like</option>
                                                 <option value="Becoming a Leader">Becoming a Leader</option>
@@ -41,7 +41,7 @@
                                     <div class="col-md-3 ">
                                         <div class="box_label">
                                             <select name="topic_id" id="topics" class="form-select">
-                                                <option value="">Select Topics</option>
+                                                <option value="">Select Subcategory</option>
 
                                             </select>
 

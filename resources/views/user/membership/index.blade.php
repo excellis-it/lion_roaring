@@ -82,18 +82,24 @@
                                 <small class="text-muted d-block mb-2">Membership progress: {{ $percent }}%</small> --}}
 
                                 <div class="mt-3">
-                                    <form action="{{ route('user.membership.renew') }}" method="POST">
+                                    <form action="{{ route('user.membership.renew') }}" method="POST" id="renewFormIndex">
                                         @csrf
+                                        <input type="hidden" name="promo_code" id="renew_promo_hidden">
+                                        <div class="input-group input-group-sm mb-2">
+                                            <input type="text" id="renew_promo_input" class="form-control" placeholder="Promo code (optional)">
+                                            <button type="button" class="btn btn-outline-secondary btn-sm" id="applyRenewPromo">Apply</button>
+                                        </div>
+                                        <div id="renew_promo_msg" class="small mb-2"></div>
                                         @if ($canRenew)
-                                            <button type="submit" class="btn btn-primary">Renew</button>
+                                            <button type="submit" class="btn btn-primary w-100">Renew Now</button>
                                         @else
                                             @php $daysToOpen = max(0, $remainingDays - 30); @endphp
-                                            <button type="button" class="btn btn-secondary" disabled>Renew (available in
+                                            <button type="button" class="btn btn-secondary w-100" disabled>Renew Now (available in
                                                 {{ $daysToOpen }} days)</button>
                                         @endif
                                     </form>
                                     <button type="button" class="btn btn-primary btn-sm mt-2 w-100" data-bs-toggle="modal"
-                                        data-bs-target="#cancelMembershipModal">Cancel Membership</button>
+                                        data-bs-target="#cancelMembershipModal">Cancel Plan</button>
                                 </div>
                             @else
                                 <p class="text-danger">No active subscription</p>
@@ -359,7 +365,7 @@
                     <button type="button" class="btn-close btn-close-white position-absolute" data-bs-dismiss="modal"
                         aria-label="Close" style="top: 20px; right: 20px; z-index: 10;"></button>
                     <div class="position-relative" style="z-index: 1;">
-                        <h4 class="modal-title text-white fw-bold mb-0" id="cancelMembershipModalLabel">Cancel Membership
+                        <h4 class="modal-title text-white fw-bold mb-0" id="cancelMembershipModalLabel">Cancel Plan
                         </h4>
                         <p class="text-white-50 mb-0 small"><i class="fa fa-exclamation-triangle me-1"></i> This action
                             cannot be undone</p>
@@ -367,7 +373,7 @@
                 </div>
                 <div class="modal-body p-4" style="margin-top: -20px; position: relative; z-index: 2;">
                     <div class="card border-0 shadow-sm p-4" style="border-radius: 15px;">
-                        <p class="mb-2"><strong>Are you sure you want to cancel your membership?</strong></p>
+                        <p class="mb-2"><strong>Are you sure you want to cancel your plan?</strong></p>
                         <ul class="text-muted small mb-0">
                             <li>Your subscription will be terminated immediately.</li>
                             <li>Your account will be deactivated.</li>
@@ -380,12 +386,12 @@
                 <div class="modal-footer border-0 p-4 pt-0 d-flex gap-2">
                     <button type="button" class="btn btn-light rounded-pill flex-grow-1 py-2 fw-bold text-muted border-0"
                         data-bs-dismiss="modal" style="background: #f8f9fa;">
-                        Keep Membership
+                        Keep Plan
                     </button>
                     <form action="{{ route('user.membership.cancel') }}" method="POST" class="flex-grow-1">
                         @csrf
                         <button type="submit" class="btn btn-danger w-100 rounded-pill py-2 fw-bold shadow-sm">
-                            Yes, Cancel Membership
+                            Yes, Cancel Plan
                         </button>
                     </form>
                 </div>
@@ -706,6 +712,36 @@
                 checkoutUrl += '?promo_code=' + encodeURIComponent(appliedPromoCode);
             }
             window.location.href = checkoutUrl;
+        });
+
+        // Promo code apply for renew button
+        document.getElementById('applyRenewPromo')?.addEventListener('click', function () {
+            var code = document.getElementById('renew_promo_input').value.trim();
+            var msgEl = document.getElementById('renew_promo_msg');
+            var hiddenEl = document.getElementById('renew_promo_hidden');
+            var tierId = {{ $user_subscription->plan_id ?? 'null' }};
+
+            if (!code) {
+                msgEl.innerHTML = '<span class="text-danger">Please enter a promo code.</span>';
+                return;
+            }
+
+            fetch('{{ route('user.membership.apply-promo') }}', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json', 'X-CSRF-TOKEN': '{{ csrf_token() }}'},
+                body: JSON.stringify({promo_code: code, tier_id: tierId})
+            })
+            .then(r => r.json())
+            .then(data => {
+                if (data.success) {
+                    hiddenEl.value = code;
+                    msgEl.innerHTML = '<span class="text-success">' + data.message + '</span>';
+                } else {
+                    hiddenEl.value = '';
+                    msgEl.innerHTML = '<span class="text-danger">' + data.message + '</span>';
+                }
+            })
+            .catch(() => { msgEl.innerHTML = '<span class="text-danger">Could not validate promo code.</span>'; });
         });
 
         @if (session('success'))

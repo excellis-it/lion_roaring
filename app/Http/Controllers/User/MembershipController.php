@@ -622,50 +622,107 @@ class MembershipController extends Controller
     public function renew(Request $request)
     {
         $user = Auth::user();
-        $sub = $user->userLastSubscription;
+        $sub  = $user->userLastSubscription;
         if (!$sub) {
             return redirect()->route('user.membership.index')->with('error', 'No subscription to renew');
         }
 
         $tier = MembershipTier::find($sub->plan_id);
         if (!$tier) {
-            return redirect()->route('user.membership.index')->with('error', 'Invalid membership tier');
+            return redirect()->route('user.membership.index')->with('error', 'Invalid tier');
         }
 
-        if (($tier->pricing_type ?? 'amount') === 'token' || (float)$tier->cost <= 0) {
+        // Resolve promo code
+        $promoCode      = null;
+        $discount       = 0;
+        $finalPrice     = (float) $tier->cost;
+
+        if ($request->filled('promo_code')) {
+            $promoCode = MembershipPromoCode::where('code', $request->promo_code)->first();
+            if ($promoCode && $promoCode->isValid()
+                && $promoCode->canBeUsedByUser($user->id)
+                && $promoCode->canBeAppliedToTier($tier->id)) {
+                $discount   = $promoCode->calculateDiscount($tier->cost);
+                $finalPrice = max(0, $tier->cost - $discount);
+            } else {
+                $promoCode = null;
+            }
+        }
+
+        // Token / free path
+        if (($tier->pricing_type ?? 'amount') === 'token' || $finalPrice <= 0) {
             $durationMonths = $tier->duration_months ?? 12;
             $sub->subscription_expire_date = now()->max($sub->subscription_expire_date)->addMonths($durationMonths);
             $sub->subscription_method = 'token';
             $sub->save();
             $this->syncTierPermissions($user, $tier);
-            return redirect()->route('user.membership.index')->with('success', 'Membership renewed successfully.');
+            return redirect()->route('user.membership.index')->with('success', 'Renewed successfully.');
         }
 
-        // Use Stripe checkout for renewals to collect payment
+        // Stripe checkout
         try {
-            $stripe = new StripeClient(env('STRIPE_SECRET'));
-            $successUrl = route('membership.checkout.success') . '?session_id={CHECKOUT_SESSION_ID}&tier_id=' . $tier->id . '&renew=1';
+            $stripe     = new StripeClient(env('STRIPE_SECRET'));
+            $successUrl = route('membership.checkout.success')
+                . '?session_id={CHECKOUT_SESSION_ID}&tier_id=' . $tier->id . '&renew=1';
+
+            $metadata = ['user_id' => $user->id, 'tier_id' => $tier->id, 'renew' => '1'];
+            if ($promoCode) {
+                $successUrl .= '&promo_code=' . urlencode($promoCode->code);
+                $metadata['promo_code'] = $promoCode->code;
+                $metadata['discount']   = $discount;
+            }
+
             $session = $stripe->checkout->sessions->create([
-                'success_url' => $successUrl,
-                'cancel_url' => route('user.membership.index'),
+                'success_url'          => $successUrl,
+                'cancel_url'           => route('user.membership.index'),
                 'payment_method_types' => ['card'],
-                'client_reference_id' => $user->id,
-                'customer_email' => $user->email,
-                'line_items' => [[
+                'client_reference_id'  => $user->id,
+                'customer_email'       => $user->email,
+                'line_items'           => [[
                     'price_data' => [
-                        'product_data' => ['name' => $tier->name . ' Membership Renewal'],
-                        'unit_amount' => (int) ($tier->cost * 100),
-                        'currency' => 'usd',
+                        'product_data' => ['name' => $tier->name . ' Renewal'],
+                        'unit_amount'  => (int) ($finalPrice * 100),
+                        'currency'     => 'usd',
                     ],
                     'quantity' => 1,
                 ]],
-                'mode' => 'payment',
-                'metadata' => ['user_id' => $user->id, 'tier_id' => $tier->id, 'renew' => '1'],
+                'mode'     => 'payment',
+                'metadata' => $metadata,
             ]);
             return redirect($session->url);
         } catch (\Throwable $th) {
             return redirect()->route('user.membership.index')->with('error', $th->getMessage());
         }
+    }
+
+    public function applyPromo(Request $request)
+    {
+        $user      = Auth::user();
+        $code      = $request->input('promo_code');
+        $tierId    = $request->input('tier_id');
+
+        $promoCode = MembershipPromoCode::where('code', $code)->first();
+
+        if (!$promoCode || !$promoCode->isValid()) {
+            return response()->json(['success' => false, 'message' => 'Invalid or expired promo code.']);
+        }
+        if (!$promoCode->canBeUsedByUser($user->id)) {
+            return response()->json(['success' => false, 'message' => 'You have already used this promo code.']);
+        }
+        if ($tierId && !$promoCode->canBeAppliedToTier((int) $tierId)) {
+            return response()->json(['success' => false, 'message' => 'This promo code does not apply to your plan.']);
+        }
+
+        $tier     = $tierId ? MembershipTier::find($tierId) : null;
+        $discount = $tier ? $promoCode->calculateDiscount($tier->cost) : 0;
+        $final    = $tier ? max(0, $tier->cost - $discount) : null;
+
+        $msg = 'Promo code applied!';
+        if ($tier) {
+            $msg .= ' Discount: $' . number_format($discount, 2) . '. Final: $' . number_format($final, 2) . '.';
+        }
+
+        return response()->json(['success' => true, 'message' => $msg, 'discount' => $discount]);
     }
 
     public function cancel(Request $request)

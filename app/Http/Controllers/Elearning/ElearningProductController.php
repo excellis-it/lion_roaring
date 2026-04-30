@@ -50,9 +50,12 @@ class ElearningProductController extends Controller
         // dd($products);
 
         $products_count  = $products->count();
-        $categories = ElearningCategory::where('status', 1)->orderBy('id', 'DESC')->get();
-        $topics = ElearningTopic::orderBy('id', 'desc')->get();
-        return view('elearning.products')->with(compact('products', 'categories', 'category_id', 'products_count', 'category', 'topics', 'subcategory', 'subcategory_id'));
+        $categories  = ElearningCategory::where('status', 1)->orderBy('id', 'DESC')->get();
+        $subcategories = $category_id
+            ? \App\Models\ElearningSubCategory::where('elearning_category_id', $category_id)->orderBy('id', 'asc')->get()
+            : \App\Models\ElearningSubCategory::orderBy('id', 'asc')->get();
+        $topics = ElearningTopic::orderBy('topic_name', 'asc')->get();
+        return view('elearning.products')->with(compact('products', 'categories', 'subcategories', 'topics', 'category_id', 'products_count', 'category', 'subcategory', 'subcategory_id'));
     }
 
     public static function productsFilter(Request $request)

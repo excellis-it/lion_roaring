@@ -95,15 +95,6 @@ class DashboardController extends Controller
             'zip' => 'required',
         ]);
         if (auth()->user()->can('Manage Profile')) {
-            $phone_number = $request->full_phone_number;
-            $phone_number_cleaned = preg_replace('/[\s\-\(\)]+/', '', $phone_number);
-            $check = ModelsUser::whereRaw("REPLACE(REPLACE(REPLACE(REPLACE(phone, ' ', ''), '-', ''), '(', ''), ')', '') = ?", [$phone_number_cleaned])
-                ->where('id', '!=', Auth::user()->id)
-                ->count();
-            if ($check > 0) {
-                return redirect()->back()->with('error', 'Phone number already exists.');
-            }
-
             $full_lion_roaring_id = $request->generated_id_part . $request->lion_roaring_id_suffix;
             if (ModelsUser::where('lion_roaring_id', $full_lion_roaring_id)->where('id', '!=', Auth::user()->id)->exists()) {
                 return redirect()->back()->withErrors(['lion_roaring_id_suffix' => 'This Lion Roaring ID already exists.'])->withInput();
