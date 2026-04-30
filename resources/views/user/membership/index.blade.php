@@ -12,6 +12,16 @@
                 : 0;
         @endphp
         <div class="bg_white_border py-4">
+            @if ($isExpired)
+                <div class="alert alert-danger d-flex align-items-center mb-3" role="alert">
+                    <i class="fa fa-exclamation-triangle me-2"></i>
+                    <div>
+                        Your membership expired on
+                        <strong>{{ \Carbon\Carbon::parse($user_subscription->subscription_expire_date)->format('F d, Y') }}</strong>.
+                        Please select a plan below to renew your account.
+                    </div>
+                </div>
+            @endif
             <div class="d-flex justify-content-between align-items-center mb-3">
                 <div>
                     <h3 class="mb-0">My Membership</h3>
@@ -82,22 +92,20 @@
                                 <small class="text-muted d-block mb-2">Membership progress: {{ $percent }}%</small> --}}
 
                                 <div class="mt-3">
-                                    <form action="{{ route('user.membership.renew') }}" method="POST" id="renewFormIndex">
-                                        @csrf
-                                        <input type="hidden" name="promo_code" id="renew_promo_hidden">
-                                        <div class="input-group input-group-sm mb-2">
-                                            <input type="text" id="renew_promo_input" class="form-control" placeholder="Promo code (optional)">
-                                            <button type="button" class="btn btn-outline-secondary btn-sm" id="applyRenewPromo">Apply</button>
-                                        </div>
-                                        <div id="renew_promo_msg" class="small mb-2"></div>
-                                        @if ($canRenew)
-                                            <button type="submit" class="btn btn-primary w-100">Renew Now</button>
-                                        @else
-                                            @php $daysToOpen = max(0, $remainingDays - 30); @endphp
-                                            <button type="button" class="btn btn-secondary w-100" disabled>Renew Now (available in
-                                                {{ $daysToOpen }} days)</button>
-                                        @endif
-                                    </form>
+                                    @if ($canRenew)
+                                        @php $currentTier = $tiers->firstWhere('id', $user_subscription->plan_id); @endphp
+                                        <button type="button" class="btn btn-primary w-100 js-promo-checkout"
+                                            data-tier-id="{{ $currentTier->id ?? '' }}"
+                                            data-tier-name="{{ $currentTier->name ?? $user_subscription->subscription_name }}"
+                                            data-tier-cost="{{ $currentTier->cost ?? $user_subscription->subscription_price }}"
+                                            data-renew="1">
+                                            Renew Now
+                                        </button>
+                                    @else
+                                        @php $daysToOpen = max(0, $remainingDays - 30); @endphp
+                                        <button type="button" class="btn btn-secondary w-100" disabled>Renew Now (available in
+                                            {{ $daysToOpen }} days)</button>
+                                    @endif
                                     <button type="button" class="btn btn-primary btn-sm mt-2 w-100" data-bs-toggle="modal"
                                         data-bs-target="#cancelMembershipModal">Cancel Plan</button>
                                 </div>
@@ -144,8 +152,16 @@
                                         <div class="mt-auto text-center">
                                             @if ($user_subscription)
                                                 @if ($tier->id == $user_subscription->plan_id)
-                                                    <span class="btn btn-sm btn-outline-primary disabled">Current
-                                                        Plan</span>
+                                                    @if ($canRenew || $isExpired)
+                                                        <button type="button"
+                                                            class="btn btn-upgrade btn-primary js-promo-checkout"
+                                                            data-tier-id="{{ $tier->id }}"
+                                                            data-tier-name="{{ $tier->name }}"
+                                                            data-tier-cost="{{ $tier->cost }}"
+                                                            data-renew="1">Renew Plan</button>
+                                                    @else
+                                                        <span class="btn btn-sm btn-outline-primary disabled">Current Plan</span>
+                                                    @endif
                                                 @elseif (($tier->pricing_type ?? 'amount') === 'token')
                                                     <button type="button"
                                                         class="btn btn-upgrade btn-primary js-token-subscribe"
@@ -173,6 +189,13 @@
                                                                 data-tier-cost="{{ $tier->cost }}">Upgrade to
                                                                 {{ $tier->name }}</button>
                                                         @endif
+                                                    @elseif ($canRenew || $isExpired)
+                                                        <button type="button"
+                                                            class="btn btn-upgrade btn-primary js-promo-checkout"
+                                                            data-tier-id="{{ $tier->id }}"
+                                                            data-tier-name="{{ $tier->name }}"
+                                                            data-tier-cost="{{ $tier->cost }}"
+                                                            data-renew="1">Downgrade to {{ $tier->name }}</button>
                                                     @else
                                                         <span class="btn btn-sm btn-outline-primary disabled"></span>
                                                     @endif
@@ -334,6 +357,17 @@
                             </button>
                         </div>
                         <div id="promoMessage" class="small mt-1 ms-3"></div>
+                    </div>
+
+                    <!-- Inline Card Payment -->
+                    <div class="px-2 mt-3" id="membershipCardSection" style="display:none;">
+                        <label class="form-label fw-bold small text-muted text-uppercase mb-2">
+                            <i class="fa fa-credit-card me-1"></i> Card Details
+                        </label>
+                        <div id="membership-card-element"
+                            style="border: 1px solid #dee2e6; border-radius: 8px; padding: 12px 14px; background: #fff;">
+                        </div>
+                        <div id="membership-card-errors" class="text-danger small mt-2"></div>
                     </div>
                 </div>
 
@@ -544,6 +578,7 @@
 @endpush
 
 @push('scripts')
+    <script src="https://js.stripe.com/v3/"></script>
     <script>
         // Existing functionality
         $(document).on('click', '.toggle-benefits', function(e) {
@@ -570,22 +605,53 @@
             }
         });
 
-        // Promo Code Modal Functionality
+        // ── Stripe inline card element ──────────────────────────────
+        var membershipStripe = Stripe('{{ env('STRIPE_KEY') }}');
+        var membershipElements = membershipStripe.elements();
+        var membershipCard = membershipElements.create('card', {
+            style: {
+                base: {
+                    color: '#32325d',
+                    fontFamily: '"Helvetica Neue", Helvetica, sans-serif',
+                    fontSmoothing: 'antialiased',
+                    fontSize: '16px',
+                    '::placeholder': { color: '#aab7c4' }
+                },
+                invalid: { color: '#fa755a', iconColor: '#fa755a' }
+            }
+        });
+        membershipCard.mount('#membership-card-element');
+        membershipCard.addEventListener('change', function(event) {
+            document.getElementById('membership-card-errors').textContent = event.error ? event.error.message : '';
+        });
+
+        // ── Promo Code Modal Functionality ─────────────────────────
         var currentTierId = null;
         var currentTierName = '';
         var currentTierCost = 0;
         var appliedPromoCode = '';
         var finalAmount = 0;
+        var isRenewMode = false;
+
+        function updateCardSectionVisibility() {
+            if (finalAmount > 0) {
+                $('#membershipCardSection').show();
+            } else {
+                $('#membershipCardSection').hide();
+            }
+        }
 
         $(document).on('click', '.js-promo-checkout', function() {
             currentTierId = $(this).data('tier-id');
             currentTierName = $(this).data('tier-name');
             currentTierCost = parseFloat($(this).data('tier-cost'));
+            isRenewMode = $(this).data('renew') == 1;
             appliedPromoCode = '';
             finalAmount = currentTierCost;
 
             // Reset modal
-            $('#selectedPlan').text(currentTierName + ' Membership');
+            var planLabel = isRenewMode ? currentTierName + ' Renewal' : currentTierName + ' Membership';
+            $('#selectedPlan').text(planLabel);
             $('#originalPrice').text('$' + currentTierCost.toFixed(2));
             $('#finalPrice').text('$' + currentTierCost.toFixed(2));
             $('#discountRow').hide();
@@ -593,11 +659,15 @@
             $('#promoCodeInput').val('').prop('readonly', false);
             $('#promoMessage').text('').removeClass('text-success text-danger');
             $('#applyPromoBtn').text('Apply').prop('disabled', false).removeClass('btn-success text-white');
-            $('#promoCodeModalTitle').text('Checkout - ' + currentTierName);
+            $('#promoCodeModalTitle').text((isRenewMode ? 'Renew' : 'Checkout') + ' - ' + currentTierName);
+            $('#membership-card-errors').text('');
+            $('#proceedToCheckout').prop('disabled', false);
+            updateCardSectionVisibility();
+
             if (finalAmount <= 0) {
-                $('#proceedToCheckout').html('Complete Subscription <i class="fa fa-arrow-right ms-2 small"></i>');
+                $('#proceedToCheckout').html('Complete Subscription <i class="fa fa-check-circle ms-2 small"></i>');
             } else {
-                $('#proceedToCheckout').html('Checkout <i class="fa fa-arrow-right ms-2 small"></i>');
+                $('#proceedToCheckout').html((isRenewMode ? 'Renew' : 'Checkout') + ' <i class="fa fa-arrow-right ms-2 small"></i>');
             }
 
             // Show modal
@@ -614,24 +684,17 @@
             var promoCode = $('#promoCodeInput').val().trim();
 
             if (!promoCode) {
-                $('#promoMessage').text('Please enter a promo code').removeClass('text-success').addClass(
-                    'text-danger');
+                $('#promoMessage').text('Please enter a promo code').removeClass('text-success').addClass('text-danger');
                 return;
             }
 
-            // Show loading
             $(this).prop('disabled', true).text('Validating...');
             $('#promoMessage').text('Validating promo code...').removeClass('text-success text-danger');
 
-            // AJAX validation
             $.ajax({
                 url: '{{ route('user.promo-codes.validate') }}',
                 method: 'POST',
-                data: {
-                    _token: '{{ csrf_token() }}',
-                    code: promoCode,
-                    tier_id: currentTierId
-                },
+                data: { _token: '{{ csrf_token() }}', code: promoCode, tier_id: currentTierId },
                 success: function(response) {
                     if (response.valid) {
                         appliedPromoCode = promoCode;
@@ -641,31 +704,21 @@
                         $('#discountAmount').text('-$' + discount.toFixed(2));
                         $('#finalPrice').text('$' + finalAmount.toFixed(2));
                         $('#discountRow').show();
-                        $('#promoMessage').html(
-                            '<i class="fa fa-check-circle me-1"></i> Promo code applied successfully!'
-                        ).removeClass(
-                            'text-danger').addClass('text-success');
+                        $('#promoMessage').html('<i class="fa fa-check-circle me-1"></i> Promo code applied successfully!').removeClass('text-danger').addClass('text-success');
                         $('#promoCodeInput').prop('readonly', true);
+                        updateCardSectionVisibility();
                         if (finalAmount <= 0) {
-                            $('#proceedToCheckout').html(
-                                'Complete Subscription <i class="fa fa-check-circle ms-2 small"></i>'
-                            );
+                            $('#proceedToCheckout').html('Complete Subscription <i class="fa fa-check-circle ms-2 small"></i>');
                         } else {
-                            $('#proceedToCheckout').html(
-                                'Checkout <i class="fa fa-arrow-right ms-2 small"></i>');
+                            $('#proceedToCheckout').html((isRenewMode ? 'Renew' : 'Checkout') + ' <i class="fa fa-arrow-right ms-2 small"></i>');
                         }
                     } else {
-                        $('#promoMessage').text(response.message || 'Invalid promo code').removeClass(
-                            'text-success').addClass('text-danger');
+                        $('#promoMessage').text(response.message || 'Invalid promo code').removeClass('text-success').addClass('text-danger');
                     }
                 },
                 error: function(xhr) {
-                    var message = 'Failed to validate promo code';
-                    if (xhr.responseJSON && xhr.responseJSON.message) {
-                        message = xhr.responseJSON.message;
-                    }
-                    $('#promoMessage').text(message).removeClass('text-success').addClass(
-                        'text-danger');
+                    var message = xhr.responseJSON && xhr.responseJSON.message ? xhr.responseJSON.message : 'Failed to validate promo code';
+                    $('#promoMessage').text(message).removeClass('text-success').addClass('text-danger');
                 },
                 complete: function() {
                     $('#applyPromoBtn').prop('disabled', false).text('Apply');
@@ -673,76 +726,64 @@
             });
         });
 
-        // Allow Enter key to apply promo code
         $('#promoCodeInput').on('keypress', function(e) {
-            if (e.which === 13) {
-                e.preventDefault();
-                $('#applyPromoBtn').click();
-            }
+            if (e.which === 13) { e.preventDefault(); $('#applyPromoBtn').click(); }
         });
 
-        // Proceed to checkout
+        // Proceed to checkout — inline Stripe payment
         $('#proceedToCheckout').on('click', function() {
-            // If final amount is 0 after promo discount, use the upgrade route (POST, no Stripe)
-            if (finalAmount <= 0) {
-                var form = $('<form>', {
+            var btn = $(this);
+            btn.prop('disabled', true).html('<span class="spinner-border spinner-border-sm me-1"></span> Processing...');
+            $('#membership-card-errors').text('');
+
+            function submitPayment(stripeToken) {
+                $.ajax({
+                    url: '{{ route('user.membership.inline-payment') }}',
                     method: 'POST',
-                    action: '{{ route('user.membership.upgrade', ':id') }}'.replace(':id', currentTierId)
+                    data: {
+                        _token: '{{ csrf_token() }}',
+                        tier_id: currentTierId,
+                        promo_code: appliedPromoCode || '',
+                        renew: isRenewMode ? 1 : 0,
+                        stripeToken: stripeToken || ''
+                    },
+                    success: function(response) {
+                        if (response.success) {
+                            // Close modal and redirect with success message
+                            $('#promoCodeModal').modal('hide');
+                            window.location.href = '{{ route('user.membership.index') }}?payment=success';
+                        } else {
+                            $('#membership-card-errors').text(response.message || 'Payment failed. Please try again.');
+                            btn.prop('disabled', false).html((isRenewMode ? 'Renew' : 'Checkout') + ' <i class="fa fa-arrow-right ms-2 small"></i>');
+                        }
+                    },
+                    error: function(xhr) {
+                        var msg = xhr.responseJSON && xhr.responseJSON.message ? xhr.responseJSON.message : 'An error occurred. Please try again.';
+                        $('#membership-card-errors').text(msg);
+                        btn.prop('disabled', false).html((isRenewMode ? 'Renew' : 'Checkout') + ' <i class="fa fa-arrow-right ms-2 small"></i>');
+                    }
                 });
-                form.append($('<input>', {
-                    type: 'hidden',
-                    name: '_token',
-                    value: '{{ csrf_token() }}'
-                }));
-                if (appliedPromoCode) {
-                    form.append($('<input>', {
-                        type: 'hidden',
-                        name: 'promo_code',
-                        value: appliedPromoCode
-                    }));
-                }
-                $('body').append(form);
-                form.submit();
-                return;
             }
 
-            // Paid plan: use Stripe checkout (GET)
-            var checkoutUrl = '{{ route('user.membership.checkout', ':id') }}'.replace(':id', currentTierId);
-            if (appliedPromoCode) {
-                checkoutUrl += '?promo_code=' + encodeURIComponent(appliedPromoCode);
+            if (finalAmount <= 0) {
+                // Free (promo covers full price) — no card needed
+                submitPayment('free_tier');
+            } else {
+                membershipStripe.createToken(membershipCard).then(function(result) {
+                    if (result.error) {
+                        $('#membership-card-errors').text(result.error.message);
+                        btn.prop('disabled', false).html((isRenewMode ? 'Renew' : 'Checkout') + ' <i class="fa fa-arrow-right ms-2 small"></i>');
+                    } else {
+                        submitPayment(result.token.id);
+                    }
+                });
             }
-            window.location.href = checkoutUrl;
         });
 
-        // Promo code apply for renew button
-        document.getElementById('applyRenewPromo')?.addEventListener('click', function () {
-            var code = document.getElementById('renew_promo_input').value.trim();
-            var msgEl = document.getElementById('renew_promo_msg');
-            var hiddenEl = document.getElementById('renew_promo_hidden');
-            var tierId = {{ $user_subscription->plan_id ?? 'null' }};
-
-            if (!code) {
-                msgEl.innerHTML = '<span class="text-danger">Please enter a promo code.</span>';
-                return;
-            }
-
-            fetch('{{ route('user.membership.apply-promo') }}', {
-                method: 'POST',
-                headers: {'Content-Type': 'application/json', 'X-CSRF-TOKEN': '{{ csrf_token() }}'},
-                body: JSON.stringify({promo_code: code, tier_id: tierId})
-            })
-            .then(r => r.json())
-            .then(data => {
-                if (data.success) {
-                    hiddenEl.value = code;
-                    msgEl.innerHTML = '<span class="text-success">' + data.message + '</span>';
-                } else {
-                    hiddenEl.value = '';
-                    msgEl.innerHTML = '<span class="text-danger">' + data.message + '</span>';
-                }
-            })
-            .catch(() => { msgEl.innerHTML = '<span class="text-danger">Could not validate promo code.</span>'; });
-        });
+        // Show success toast if redirected back after inline payment
+        @if (request('payment') === 'success')
+            toastr.success('Payment successful! Your membership has been updated.');
+        @endif
 
         @if (session('success'))
             toastr.success("{{ session('success') }}");
