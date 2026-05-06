@@ -10,8 +10,18 @@
             </div>
         </div>
         <div class="col-md-6">
-            <div class="d-flex justify-content-end">
-                <div class="">
+            <div class="d-flex justify-content-end gap-2">
+                <div>
+                    <select class="latest_filter" name="topic_filter" id="topic_filter">
+                        <option value="">All Topics</option>
+                        @if(isset($topics) && count($topics) > 0)
+                            @foreach($topics as $topic)
+                                <option value="{{ $topic->id }}">{{ $topic->topic_name }}</option>
+                            @endforeach
+                        @endif
+                    </select>
+                </div>
+                <div>
                     <select class="latest_filter" name="latest_filter" id="latest_filter">
                         <option value="Latest" selected>Latest</option>
                         <option value="A to Z">A to Z</option>

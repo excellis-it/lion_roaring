@@ -26,6 +26,7 @@ class UserSubscription extends BaseModel
         'subscription_expire_date',
         'reminder_for_expire_date',
         'reminder_sent_at',
+        'reminder_count',
     ];
 
 

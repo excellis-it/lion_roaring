@@ -27,10 +27,48 @@
                             <td style="padding: 40px 30px; color: #333333; line-height: 1.6;">
                                 @if (!empty($customBodyHtml))
                                     {!! $customBodyHtml !!}
+                                @elseif (!empty($maildata['is_expired']))
+                                    {{-- Post-expiry default template --}}
+                                    <h1 style="color: #c0392b; font-size: 24px; margin-top: 0; font-weight: 700; margin-bottom: 20px;">
+                                        Your membership has expired ⚠️
+                                    </h1>
+                                    <p style="font-size: 16px; margin-bottom: 20px; color: #555555;">
+                                        Hi <strong style="color: #1a1a1a;">{{ $maildata['name'] }}</strong>,
+                                    </p>
+                                    <p style="font-size: 16px; margin-bottom: 20px; color: #555555;">
+                                        Your <strong style="color: #1a1a1a;">{{ $maildata['subscription_name'] }}</strong>
+                                        membership expired on
+                                        <strong style="color: #c0392b;">{{ $maildata['expire_date'] }}</strong>.
+                                    </p>
+
+                                    <div style="background-color: #fff5f5; border-left: 4px solid #c0392b; padding: 20px; margin: 25px 0; border-radius: 0 6px 6px 0;">
+                                        <p style="margin: 0; font-size: 15px; color: #c0392b; font-weight: 600;">
+                                            ⚠️ If you do not renew your membership, your account will be deactivated.
+                                        </p>
+                                    </div>
+
+                                    <p style="font-size: 16px; margin-bottom: 25px; color: #555555;">
+                                        Please renew now to keep your access active and avoid losing your account.
+                                    </p>
+
+                                    <table border="0" cellpadding="0" cellspacing="0" width="100%" style="margin: 30px 0;">
+                                        <tr>
+                                            <td align="center">
+                                                <a href="{{ $maildata['renew_url'] ?? route('user.membership.index') }}"
+                                                    style="background-color: #c0392b; color: #ffffff; padding: 14px 28px; text-decoration: none; border-radius: 5px; font-weight: bold; display: inline-block; font-size: 16px;">
+                                                    Renew Membership Now
+                                                </a>
+                                            </td>
+                                        </tr>
+                                    </table>
+
+                                    <p style="font-size: 16px; margin-top: 30px; color: #1a1a1a;">Best regards,<br>
+                                        <strong style="color: #d4af37;">The {{ config('app.name') }} Team</strong>
+                                    </p>
                                 @else
-                                    <h1
-                                        style="color: #1a1a1a; font-size: 24px; margin-top: 0; font-weight: 700; margin-bottom: 20px;">
-                                        Your subscription will renew soon ⏰
+                                    {{-- Pre-expiry default template --}}
+                                    <h1 style="color: #1a1a1a; font-size: 24px; margin-top: 0; font-weight: 700; margin-bottom: 20px;">
+                                        Your subscription will expire soon ⏰
                                     </h1>
                                     <p style="font-size: 16px; margin-bottom: 20px; color: #555555;">
                                         Hi <strong style="color: #1a1a1a;">{{ $maildata['name'] }}</strong>,
@@ -42,38 +80,28 @@
                                         <strong style="color: #d4af37;">{{ $maildata['expire_date'] }}</strong>.
                                     </p>
 
-                                    <div
-                                        style="background-color: #fffdf5; border-left: 4px solid #d4af37; padding: 20px; margin: 25px 0; border-radius: 0 6px 6px 0;">
-                                        <h3 style="margin-top: 0; color: #d4af37; font-size: 18px;">Subscription Details
-                                        </h3>
+                                    <div style="background-color: #fffdf5; border-left: 4px solid #d4af37; padding: 20px; margin: 25px 0; border-radius: 0 6px 6px 0;">
+                                        <h3 style="margin-top: 0; color: #d4af37; font-size: 18px;">Subscription Details</h3>
                                         <table border="0" cellpadding="0" cellspacing="0" width="100%"
                                             style="font-size: 15px; color: #555555;">
                                             <tr>
-                                                <td style="padding: 6px 0; font-weight: 600; color: #333; width: 40%;">
-                                                    Plan:
-                                                </td>
+                                                <td style="padding: 6px 0; font-weight: 600; color: #333; width: 40%;">Plan:</td>
                                                 <td style="padding: 6px 0;">{{ $maildata['subscription_name'] }}</td>
                                             </tr>
                                             <tr>
-                                                <td style="padding: 6px 0; font-weight: 600; color: #333;">Start Date:
-                                                </td>
+                                                <td style="padding: 6px 0; font-weight: 600; color: #333;">Start Date:</td>
                                                 <td style="padding: 6px 0;">{{ $maildata['start_date'] }}</td>
                                             </tr>
                                             <tr>
-                                                <td style="padding: 6px 0; font-weight: 600; color: #333;">Expiry Date:
-                                                </td>
+                                                <td style="padding: 6px 0; font-weight: 600; color: #333;">Expiry Date:</td>
                                                 <td style="padding: 6px 0;">
-                                                    <span
-                                                        style="color: #e74c3c; font-weight: 600;">{{ $maildata['expire_date'] }}</span>
+                                                    <span style="color: #e74c3c; font-weight: 600;">{{ $maildata['expire_date'] }}</span>
                                                 </td>
                                             </tr>
                                             <tr>
-                                                <td style="padding: 6px 0; font-weight: 600; color: #333;">Days
-                                                    Remaining:</td>
+                                                <td style="padding: 6px 0; font-weight: 600; color: #333;">Days Remaining:</td>
                                                 <td style="padding: 6px 0;">
-                                                    <span
-                                                        style="color: #e74c3c; font-weight: 600;">{{ $maildata['days_remaining'] }}
-                                                        day(s)</span>
+                                                    <span style="color: #e74c3c; font-weight: 600;">{{ $maildata['days_remaining'] }} day(s)</span>
                                                 </td>
                                             </tr>
                                         </table>
@@ -84,8 +112,7 @@
                                         subscription before it expires.
                                     </p>
 
-                                    <table border="0" cellpadding="0" cellspacing="0" width="100%"
-                                        style="margin: 30px 0;">
+                                    <table border="0" cellpadding="0" cellspacing="0" width="100%" style="margin: 30px 0;">
                                         <tr>
                                             <td align="center">
                                                 <a href="{{ $maildata['renew_url'] ?? route('user.membership.index') }}"
@@ -97,9 +124,7 @@
                                     </table>
 
                                     <p style="font-size: 14px; color: #999999; margin-top: 20px;">
-                                        If you have already renewed or do not wish to continue, you can safely ignore
-                                        this
-                                        email.
+                                        If you have already renewed or do not wish to continue, you can safely ignore this email.
                                     </p>
 
                                     <p style="font-size: 16px; margin-top: 30px; color: #1a1a1a;">Best regards,<br>

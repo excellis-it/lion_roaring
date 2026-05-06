@@ -571,6 +571,8 @@ Route::prefix('user')->middleware(['user', 'preventBackHistory', 'userActivity',
         Route::post('/token-subscribe/{tier}', [UserMembershipController::class, 'tokenSubscribe'])->name('user.membership.token-subscribe');
         Route::post('/renew', [UserMembershipController::class, 'renew'])->name('user.membership.renew');
         Route::post('/cancel', [UserMembershipController::class, 'cancel'])->name('user.membership.cancel');
+        Route::post('/apply-promo', [UserMembershipController::class, 'applyPromo'])->name('user.membership.apply-promo');
+        Route::post('/inline-payment', [UserMembershipController::class, 'processInlinePayment'])->name('user.membership.inline-payment');
 
         // Management routes
         Route::get('/manage', [UserMembershipController::class, 'manage'])->name('user.membership.manage');

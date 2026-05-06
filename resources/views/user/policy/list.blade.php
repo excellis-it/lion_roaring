@@ -1,6 +1,6 @@
 @extends('user.layouts.master')
 @section('title')
-Policy and Guidance List - {{ env('APP_NAME') }}
+    Policy and Guidance List - {{ env('APP_NAME') }}
 @endsection
 @push('styles')
 @endpush
@@ -49,6 +49,7 @@ Policy and Guidance List - {{ env('APP_NAME') }}
                                                             class="fa fa-arrow-down"></i></span></th>
                                                 <th>Created By</th>
                                                 <th>Country</th>
+                                                <th>Date</th>
                                                 <th></th>
                                             </tr>
                                         </thead>
@@ -60,8 +61,7 @@ Policy and Guidance List - {{ env('APP_NAME') }}
                                     <input type="hidden" name="hidden_page" id="hidden_page" value="1" />
                                     <input type="hidden" name="hidden_column_name" id="hidden_column_name"
                                         value="id" />
-                                    <input type="hidden" name="hidden_sort_type" id="hidden_sort_type"
-                                        value="desc" />
+                                    <input type="hidden" name="hidden_sort_type" id="hidden_sort_type" value="desc" />
                                 </div>
                             </div>
                         </div>
@@ -112,8 +112,8 @@ Policy and Guidance List - {{ env('APP_NAME') }}
                         sortby: sort_by,
                         sorttype: sort_type,
                         query: query,
-                        topic_id : topic_id,
-                        type : type
+                        topic_id: topic_id,
+                        type: type
                     },
                     success: function(data) {
                         $('tbody').html(data.data);
@@ -171,7 +171,7 @@ Policy and Guidance List - {{ env('APP_NAME') }}
                 $(this).parent().addClass('active');
                 var topic_id = $('#topics').val();
                 var type = $('#type').val();
-                fetch_data(page, sort_type, column_name, query, topic_id , type);
+                fetch_data(page, sort_type, column_name, query, topic_id, type);
             });
 
             $(document).on('change', '#topics', function() {
@@ -195,5 +195,4 @@ Policy and Guidance List - {{ env('APP_NAME') }}
             });
         });
     </script>
-
 @endpush

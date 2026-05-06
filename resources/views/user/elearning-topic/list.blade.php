@@ -50,14 +50,14 @@
                                                         <td>
                                                             <div class="d-flex">
                                                                 @if (auth()->user()->can('Edit Elearning Topic'))
-                                                                    <a href="{{ route('elearning-topics.edit', Crypt::encrypt($topic->id)) }}"
+                                                                    <a href="{{ route('elearning-topics.edit', $topic->id) }}"
                                                                         class="edit_icon me-2">
                                                                         <i class="ti ti-edit"></i>
                                                                     </a>
                                                                 @endif
                                                                 @if (auth()->user()->can('Delete Elearning Topic'))
                                                                     <a href="javascript:void(0);"
-                                                                        data-route="{{ route('elearning-topics.delete', Crypt::encrypt($topic->id)) }}"
+                                                                        data-route="{{ route('elearning-topics.delete', $topic->id) }}"
                                                                         class="delete_icon" id="delete">
                                                                         <i class="ti ti-trash"></i>
                                                                     </a>
