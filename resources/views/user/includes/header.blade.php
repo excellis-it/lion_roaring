@@ -148,9 +148,9 @@
                 @endif
 
                 {{-- User type chip --}}
-                <span class="badge-user-type">
+                {{-- <span class="badge-user-type">
                     <i class="fa-solid fa-user-tag me-1"></i>User Type : {{ $userType }}
-                </span>
+                </span> --}}
             </li>
 
             <li class="nav-item dropdown">
