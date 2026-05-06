@@ -78,11 +78,6 @@ class ChatbotController extends Controller
 
             $message = "Nice to meet you, {$request->guest_name}! 😊 How can I assist you today?";
 
-            // Translate if needed
-            if ($conversation->language !== 'en') {
-                $message = $this->translateText($message, $conversation->language, 'en');
-            }
-
             return response()->json([
                 'success' => true,
                 'message' => $message,
