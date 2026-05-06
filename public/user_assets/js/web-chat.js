@@ -14,7 +14,7 @@ $(document).ready(function () {
     });
     let ip_address = window.Laravel.ipAddress;
     let socket_port = window.Laravel.socketPort;
-    let socket = io(ip_address + ":" + socket_port);
+    let socket = io(socket_port ? ip_address + ":" + socket_port : ip_address);
 
     $(document).on("click", ".user-list", function (e) {
         var getUserID = $(this).attr("data-id");

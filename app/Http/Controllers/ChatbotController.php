@@ -137,6 +137,11 @@ class ChatbotController extends Controller
             ->orderBy('id', 'asc')
             ->get();
 
+        // Strip HTML from answers (stored as rich HTML from WYSIWYG editor) for plain-text chatbot rendering
+        foreach ($questions as $q) {
+            $q->answer = trim(preg_replace('/\s+/', ' ', html_entity_decode(strip_tags($q->answer), ENT_QUOTES | ENT_HTML5, 'UTF-8')));
+        }
+
         // Translate FAQs if needed
         if ($request->session_id) {
             $conversation = ChatbotConversation::where('session_id', $request->session_id)->first();

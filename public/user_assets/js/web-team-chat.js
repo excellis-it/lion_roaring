@@ -7,7 +7,7 @@ $(document).ready(function () {
     });
     let ip_address = window.Laravel.ipAddress;
     let socket_port = window.Laravel.socketPort;
-    let socket = io(ip_address + ":" + socket_port);
+    let socket = io(socket_port ? ip_address + ":" + socket_port : ip_address);
     var sender_id = window.Laravel.authUserId;
     var role = window.Laravel.authUserRole;
     var groupDefaultImage = window.Laravel.assetUrls.groupDefaultImage;

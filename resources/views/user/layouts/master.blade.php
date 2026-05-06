@@ -521,7 +521,7 @@
             });
             let ip_address = "{{ env('IP_ADDRESS') }}";
             let socket_port = '{{ env('SOCKET_PORT') }}';
-            let socket = io(ip_address + ':' + socket_port);
+            let socket = io(socket_port ? ip_address + ':' + socket_port : ip_address);
             var sender_id = {{ auth()->user()->id }};
             @if (auth()->user()->hasNewRole('SUPER ADMIN'))
                 var role = 'admin';

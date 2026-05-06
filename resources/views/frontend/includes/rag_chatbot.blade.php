@@ -1,11 +1,10 @@
 <!-- RAG Chatbot Widget -->
-<script src="http://localhost:5000/ragChatWidget.js"></script>
+<script src="http://localhost:10046/ragChatWidget.js"></script>
 <script>
   window.RAGWidget.init({
-    apiBase: "http://localhost:5000/api",
-    botId: "69d605fab71466ec512c6198",
-    authToken: "2f5865412065d3d1b16e39dd52b1d422e781f5e3014c2e48748ff5121e69a16e",
-    // Host page integration
+    apiBase: "http://localhost:10047/api",
+    botId: "69fb16097653e4bdd23386ea",
+    authToken: "d098d32e615f11fb9bfa5daa450375834df6cdefd006f7f250727415e4420565",
     hostLanguagesUrl: "{{ route('chatbot.languages') }}",
     hostSearchUrl: "{{ route('chatbot.search-keywords') }}",
     hostProductUrl: "{{ route('e-store.product-details', ['slug' => ':slug']) }}",
