@@ -78,11 +78,6 @@ class ChatbotController extends Controller
 
             $message = "Nice to meet you, {$request->guest_name}! 😊 How can I assist you today?";
 
-            // Translate if needed
-            if ($conversation->language !== 'en') {
-                $message = $this->translateText($message, $conversation->language, 'en');
-            }
-
             return response()->json([
                 'success' => true,
                 'message' => $message,
@@ -136,6 +131,11 @@ class ChatbotController extends Controller
         $questions = Faq::where('country_code', $countryCode)
             ->orderBy('id', 'asc')
             ->get();
+
+        // Strip HTML from answers (stored as rich HTML from WYSIWYG editor) for plain-text chatbot rendering
+        foreach ($questions as $q) {
+            $q->answer = trim(preg_replace('/\s+/', ' ', html_entity_decode(strip_tags($q->answer), ENT_QUOTES | ENT_HTML5, 'UTF-8')));
+        }
 
         // Translate FAQs if needed
         if ($request->session_id) {

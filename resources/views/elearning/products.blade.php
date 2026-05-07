@@ -10,8 +10,16 @@
 @endpush
 
 @section('content')
+    @php
+        $bannerImage = asset('ecom_assets/images/banner.jpg');
+        if (isset($subcategory) && $subcategory && $subcategory->image) {
+            $bannerImage = Storage::url($subcategory->image);
+        } elseif (isset($category) && $category && $category->image) {
+            $bannerImage = Storage::url($category->image);
+        }
+    @endphp
     <section class="inner_banner_sec"
-        style="background-image: url({{ asset('ecom_assets/images/banner.jpg') }}); background-position: center; background-repeat: no-repeat; background-size: cover">
+        style="background-image: url('{{ $bannerImage }}'); background-position: center; background-repeat: no-repeat; background-size: cover">
         <div class="container">
             <div class="row justify-content-center">
                 <div class="col-xxl-6 col-xl-8 col-md-12">
