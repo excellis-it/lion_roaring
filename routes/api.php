@@ -222,6 +222,8 @@ Route::prefix('v3')->middleware(['userActivity'])->group(function () {
         Route::post('newsletter', [CmsController::class, 'newsletter']);
         // site settings
         Route::get('site-settings', [CmsController::class, 'siteSettings']);
+        Route::get('menu', [CmsController::class, 'frontendMenu']);
+        Route::get('membership-tiers', [CmsController::class, 'publicMembershipTiers']);
     });
 
     // donation

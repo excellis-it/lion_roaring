@@ -10,6 +10,8 @@ use App\Models\Footer;
 use App\Models\Gallery;
 use App\Models\HomeCms;
 use App\Models\MemberPrivacyPolicy;
+use App\Models\MembershipTier;
+use App\Models\MembershipMeasurement;
 use App\Models\Newsletter;
 use App\Models\Organization;
 use App\Models\OrganizationCenter;
@@ -370,8 +372,19 @@ class CmsController extends Controller
 
     public function home(Request $request)
     {
+        // Mobile clients pass `country_code` (ISO-2 or 'GL') so the same helper-based
+        // country filtering used by the website applies. We seed the per-request
+        // session keys the Helper reads from; since the request is stateless this
+        // only affects the current invocation.
+        $code = strtoupper(trim((string) $request->input('country_code', '')));
+        if ($code !== '') {
+            $ip = $request->ip();
+            session(['visitor_country_code_' . $ip => $code]);
+            session(['visitor_country_flag_code_' . $ip => $code]);
+        }
+
         try {
-            $home = HomeCms::orderBy('id', 'desc')->first();
+            $home = Helper::getVisitorCmsContent('HomeCms', true, false, 'id', 'desc', null);
             if ($home) {
                 $home = fractal($home, new HomeTransformers())->toArray()['data'];
                 return response()->json(['message' => 'home', 'status' => true, 'home' => $home], $this->successStatus);
@@ -830,6 +843,47 @@ class CmsController extends Controller
     }
 
     // get site settings
+
+     public function frontendMenu()
+     {
+         $keys = [
+             'home',
+             'private_ecclesia',
+             'ecclesia_covenant',
+             'mandate_of_kingdom_precepts_and_dominion',
+             'gallery',
+             'faq',
+             'membership',
+             'contact_us',
+         ];
+         $menu = [];
+         foreach ($keys as $key) {
+             $menu[$key] = Helper::getMenuName($key);
+         }
+         return response()->json(['status' => true, 'menu' => $menu], 200);
+     }
+
+     public function publicMembershipTiers()
+     {
+         $tiers = MembershipTier::with('benefits')->get()->map(function ($tier) {
+             return [
+                 'id'                      => $tier->id,
+                 'name'                    => $tier->name,
+                 'description'             => $tier->description,
+                 'cost'                    => $tier->cost,
+                 'duration_months'         => $tier->duration_months,
+                 'pricing_type'            => $tier->pricing_type ?? 'amount',
+                 'life_force_energy_tokens'=> $tier->life_force_energy_tokens,
+                 'benefits'                => $tier->benefits->map(fn($b) => $b->benefit)->values(),
+             ];
+         });
+         $measurement = MembershipMeasurement::first();
+         return response()->json([
+             'status'      => true,
+             'tiers'       => $tiers,
+             'measurement' => $measurement ? ['label' => $measurement->label] : null,
+         ], 200);
+     }
 
      public function siteSettings() {
          try {
