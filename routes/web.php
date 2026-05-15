@@ -1372,6 +1372,11 @@ Route::prefix('e-store')->middleware(['user', 'preventBackHistory', 'userActivit
     Route::get('/page/{slug}', [EstoreCmsController::class, 'cmsPageContent'])->name('e-store.cms-page');
 });
 
+// Signed guest download (no login) — links sent in order confirmation emails
+Route::get('/e-store/download-order-file/{order}/{file}', [EstoreProductController::class, 'downloadOrderFile'])
+    ->name('e-store.guest-download-file')
+    ->middleware(['signed', 'throttle:30,1']);
+
 // Dynamic routes for categories
 $categories = collect();
 if (!app()->runningInConsole() && Schema::hasTable('categories')) {

@@ -1717,7 +1717,7 @@ class ProductController extends Controller
     }
 
     /**
-     * Securely download a digital product file.
+     * Securely download a digital product file (logged-in users).
      */
     public function downloadFile($fileId)
     {
@@ -1737,24 +1737,39 @@ class ProductController extends Controller
             return back()->with('error', 'Product association not found');
         }
 
-        // Verify purchase
         if (!$product->isPurchasedByUser(auth()->id())) {
             return back()->with('error', 'You must purchase this product before downloading its files.');
         }
 
-        $filePath = $productFile->file_location;
+        $response = $productFile->streamDownloadResponse();
 
-        if (\Illuminate\Support\Facades\Storage::disk('public')->exists($filePath)) {
-            $fullPath = storage_path('app/public/' . $filePath);
-            return response()->download($fullPath);
-        }
-
-        if (\Illuminate\Support\Facades\Storage::exists($filePath)) {
-            $fullPath = storage_path('app/' . $filePath);
-            return response()->download($fullPath);
+        if ($response) {
+            return $response;
         }
 
         return back()->with('error', 'Physical file not found on server.');
+    }
+
+    /**
+     * Download via signed URL from order email (no login required).
+     */
+    public function downloadOrderFile(EstoreOrder $order, ProductFile $file)
+    {
+        if ($order->payment_status !== 'paid') {
+            abort(403, 'This order is not eligible for download.');
+        }
+
+        if (!$file->belongsToOrder($order)) {
+            abort(403, 'This file does not belong to your order.');
+        }
+
+        $response = $file->streamDownloadResponse();
+
+        if ($response) {
+            return $response;
+        }
+
+        abort(404, 'File not found on server.');
     }
 
     public function orderSuccess($orderId)

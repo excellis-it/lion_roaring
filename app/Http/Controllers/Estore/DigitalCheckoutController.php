@@ -395,7 +395,7 @@ class DigitalCheckoutController extends Controller
                     $myOrdersUrl = route('e-store.my-orders');
 
                     $productForEmail = Product::with('files')->find($product->id);
-                    $emailExtras = ProductFile::emailExtrasForProducts([$productForEmail ?? $product]);
+                    $emailExtras = ProductFile::emailExtrasForProducts([$productForEmail ?? $product], $order);
                     $orderButtons = "<p><a href='" . $myOrdersUrl . "' style='display:inline-block;padding:10px 20px;background:#000;color:#fff;text-decoration:none;border-radius:5px;'>View Order History</a></p>"
                         . $emailExtras['html'];
 
