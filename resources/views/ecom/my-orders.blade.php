@@ -39,6 +39,14 @@
                                                     $hasDigital = $order->orderItems->contains(function ($i) {
                                                         return optional($i->product)->product_type === 'digital';
                                                     });
+                                                    $digitalFiles = collect();
+                                                    foreach ($order->orderItems as $item) {
+                                                        if (optional($item->product)->product_type === 'digital' && $item->product->files->count() > 0) {
+                                                            foreach ($item->product->files as $file) {
+                                                                $digitalFiles->push($file);
+                                                            }
+                                                        }
+                                                    }
                                                 @endphp
                                                 <div class="text-start mt-2">
                                                     @php
@@ -73,7 +81,24 @@
 
                                                     <div class="mt-2 small">
 
-                                                        @if ($hasDigital)
+                                                        @if ($hasDigital && $digitalFiles->isNotEmpty())
+                                                            @if ($digitalFiles->count() === 1)
+                                                                <a href="{{ route('e-store.download-file', $digitalFiles->first()->id) }}"
+                                                                    class="text-success ms-2 text-decoration-none fw-semibold">
+                                                                    <i class="fas fa-download"></i> Download
+                                                                </a>
+                                                            @else
+                                                                <span class="text-success ms-2 fw-semibold">
+                                                                    <i class="fas fa-download"></i> Downloadable:
+                                                                </span>
+                                                                @foreach ($digitalFiles as $file)
+                                                                    <a href="{{ route('e-store.download-file', $file->id) }}"
+                                                                        class="text-success ms-2 text-decoration-none d-inline-block">
+                                                                        {{ basename($file->file_location) }}
+                                                                    </a>@if (!$loop->last), @endif
+                                                                @endforeach
+                                                            @endif
+                                                        @elseif ($hasDigital)
                                                             <span class="text-success ms-2"><i class="fas fa-download"></i>
                                                                 Downloadable</span>
                                                         @else

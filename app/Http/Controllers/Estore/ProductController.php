@@ -1597,7 +1597,7 @@ class ProductController extends Controller
         if (!auth()->check()) {
             return redirect()->route('home')->with('error', 'Please login to view your orders');
         }
-        $orders = EstoreOrder::with(['orderItems.product', 'orderStatus'])
+        $orders = EstoreOrder::with(['orderItems.product.files', 'orderStatus'])
             ->where('user_id', auth()->id())
             ->whereIn('payment_status', ['paid', 'refunded'])
             ->orderBy('created_at', 'desc')
