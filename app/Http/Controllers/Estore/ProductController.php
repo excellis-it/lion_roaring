@@ -1537,16 +1537,18 @@ class ProductController extends Controller
                     text-decoration: none;
                     border-radius: 5px;
                 ">View Order Details</a>';
+                $emailExtras = ProductFile::emailExtrasForOrder($order);
+
                 $body = str_replace(
                     ['{customer_name}', '{customer_email}', '{order_list}', '{order_id}', '{arriving_date}', '{total_order_value}', '{order_details_url_button}'],
                     [
-                        $order->first_name ?? '' . ' ' . $order->last_name ?? '',
+                        ($order->first_name ?? '') . ' ' . ($order->last_name ?? ''),
                         $order->email ?? '',
                         $orderList,
                         $order->order_number ?? '',
                         $order->expected_delivery_date ? Carbon::parse($order->expected_delivery_date)->format('M d, Y') : '',
                         number_format($order->total_amount ?? 0, 2),
-                        $orderDetailsUrlButton
+                        $orderDetailsUrlButton . $emailExtras['html']
                     ],
                     $template->body
                 );
@@ -1554,7 +1556,7 @@ class ProductController extends Controller
                 try {
                     // Send email
                     Mail::to($order->email)
-                        ->send(new OrderStatusUpdatedMail($order, $body));
+                        ->send(new OrderStatusUpdatedMail($order, $body, $emailExtras['attachments']));
                 } catch (\Throwable $th) {
                     Log::error('Failed to send order status email: ' . $th->getMessage());
                 }
