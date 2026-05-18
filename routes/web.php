@@ -1421,6 +1421,7 @@ Route::prefix('e-learning')->middleware(['user', 'agreement.signed'])->group(fun
     Route::get('/product/{slug}', [ElearningProductController::class, 'productDetails'])->name('e-learning.product-details');
     Route::get('/all-products', [ElearningProductController::class, 'products'])->name('e-learning.all-products');
     Route::get('/products-filter', [ElearningProductController::class, 'productsFilter'])->name('e-learning.products-filter');
+    Route::get('/get-subcategories', [ElearningProductController::class, 'getSubcategories'])->name('e-learning.get-subcategories');
     Route::post('/product-add-review', [ElearningProductController::class, 'productAddReview'])->name('e-learning.product-add-review');
 
     $categories = collect();

@@ -51,9 +51,10 @@ class ElearningProductController extends Controller
 
         $products_count  = $products->count();
         $categories  = ElearningCategory::where('status', 1)->orderBy('id', 'DESC')->get();
+        $subcategoriesQuery = \App\Models\ElearningSubCategory::where('status', 1)->orderBy('id', 'asc');
         $subcategories = $category_id
-            ? \App\Models\ElearningSubCategory::where('elearning_category_id', $category_id)->orderBy('id', 'asc')->get()
-            : \App\Models\ElearningSubCategory::orderBy('id', 'asc')->get();
+            ? $subcategoriesQuery->where('elearning_category_id', $category_id)->get()
+            : $subcategoriesQuery->get();
         $topics = ElearningTopic::orderBy('topic_name', 'asc')->get();
         return view('elearning.products')->with(compact('products', 'categories', 'subcategories', 'topics', 'category_id', 'products_count', 'category', 'subcategory', 'subcategory_id'));
     }
@@ -77,8 +78,13 @@ class ElearningProductController extends Controller
                 $products->whereIn('category_id', $category_id);
             }
 
-            if (!empty($request->elearning_sub_category_id)) {
-                $products->where('elearning_sub_category_id', $request->elearning_sub_category_id);
+            $subCategoryIds = $request->elearning_sub_category_id ?? [];
+            if (! is_array($subCategoryIds)) {
+                $subCategoryIds = $subCategoryIds ? [$subCategoryIds] : [];
+            }
+            $subCategoryIds = array_filter($subCategoryIds);
+            if (! empty($subCategoryIds)) {
+                $products->whereIn('elearning_sub_category_id', $subCategoryIds);
             }
 
             if (!empty($topic_id)) {
@@ -175,5 +181,22 @@ class ElearningProductController extends Controller
         $view = view('elearning.partials.product-review', compact('reviews'))->render();
 
         return response()->json(['status' => true, 'message' => 'Review submitted successfully', 'view' => $view]);
+    }
+
+    public function getSubcategories(Request $request)
+    {
+        $categoryIds = $request->category_id ?? [];
+        if (! is_array($categoryIds)) {
+            $categoryIds = $categoryIds ? [$categoryIds] : [];
+        }
+        $categoryIds = array_filter($categoryIds);
+
+        $query = \App\Models\ElearningSubCategory::where('status', 1)->orderBy('id', 'asc');
+
+        if (! empty($categoryIds)) {
+            $query->whereIn('elearning_category_id', $categoryIds);
+        }
+
+        return response()->json(['data' => $query->get(['id', 'name', 'elearning_category_id'])]);
     }
 }
