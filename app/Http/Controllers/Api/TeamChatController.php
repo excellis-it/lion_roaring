@@ -277,10 +277,15 @@ class TeamChatController extends Controller
                 return $b['last_message']->created_at <=> $a['last_message']->created_at; // Sort by latest message timestamp
             });
 
-            // Get members who are not the authenticated user
-            $members = User::with('roles')->orderBy('first_name', 'asc')->where('id', '!=', auth()->id())->where('status', true)->whereHas('roles', function ($query) {
-                $query->whereIn('type', [1, 2, 3]);
-            })->get();
+            // Get members who are not the authenticated user (visibility aligned with web)
+            $members = User::with('roles')->orderBy('first_name', 'asc')
+                ->where('id', '!=', auth()->id())
+                ->where('status', true)
+                ->whereHas('roles', function ($query) {
+                    $query->whereIn('type', [1, 2, 3]);
+                })
+                ->visibleToAuthUser()
+                ->get();
 
             return response()->json([
                 'msg' => 'Teams listed successfully',
@@ -658,15 +663,20 @@ class TeamChatController extends Controller
             $team->isMeAdmin = Helper::checkAdminTeam(auth()->user()->id, $team->id);
             $team->isMeRemoved = Helper::checkRemovedFromTeam($team->id, auth()->user()->id);
             $allusers = User::where('status', 1)->pluck('id')->toArray();
-            // Get team chat messages
-            $team_chats = TeamChat::where('team_id', $team_id)
+            $page = max(1, (int) $request->input('page', 1));
+            $perPage = (int) $request->input('per_page', 20);
+
+            $team_chatsPaginator = TeamChat::where('team_id', $team_id)
                 ->whereIn('user_id', $allusers)
                 ->whereHas('chatMembers', function ($query) {
                     $query->where('user_id', auth()->id());
                 })
                 ->with('user')
                 ->orderBy('created_at', 'desc')
-                ->get();
+                ->paginate($perPage, ['*'], 'page', $page);
+
+            $team_chats = $team_chatsPaginator->getCollection()->reverse()->values();
+            $hasMoreMessages = $team_chatsPaginator->hasMorePages();
 
             $team_chats->each(function ($chat) {
                 $chat->isMe = ($chat->user_id == auth()->id()) ? true : false;
@@ -699,12 +709,13 @@ class TeamChatController extends Controller
             $team_member_ids = $all_team_members->pluck('user_id'); // Get user IDs of team members
 
             $not_team_members = User::with('roles')->orderBy('first_name', 'asc')
-                ->whereNotIn('id', $team_member_ids) // Exclude team members
-                ->where('id', '!=', auth()->id()) // Exclude the current user
+                ->whereNotIn('id', $team_member_ids)
+                ->where('id', '!=', auth()->id())
                 ->where('status', true)
                 ->whereHas('roles', function ($query) {
                     $query->whereIn('type', [1, 2, 3]);
                 })
+                ->visibleToAuthUser()
                 ->get();
 
             $team_member_name = '';
@@ -720,7 +731,10 @@ class TeamChatController extends Controller
                 'team' => $team,
                 'team_chats' => $team_chats,
                 'team_member_names' => $team_member_name,
-                'not_team_member' => $not_team_members
+                'not_team_member' => $not_team_members,
+                'has_more_messages' => $hasMoreMessages,
+                'current_page' => $team_chatsPaginator->currentPage(),
+                'last_page' => $team_chatsPaginator->lastPage(),
             ], 200);
         } catch (\Throwable $th) {
             return response()->json(['msg' => $th->getMessage(), 'status' => false], 201);
@@ -809,95 +823,98 @@ class TeamChatController extends Controller
     public function send(Request $request)
     {
         try {
-            // Create new chat entry
-            $team_chat = new TeamChat();
-            $team_chat->team_id = $request->team_id;
-            $team_chat->user_id = auth()->id();
+            $input_message = Helper::formatChatSendMessage($request->message);
+            $files = $request->file('files') ?? ($request->file('file') ? [$request->file('file')] : []);
+            $team_chats = [];
 
-            // $input_message = Helper::formatChatSendMessage($request->message);
-            $input_message = $request->message;
-            // Handle file or message content
-            if ($request->file) {
-                if (!empty($input_message)) {
-                    $team_chat->message = $input_message;
-                } else {
-                    $team_chat->message = ' ';
+            if (!empty($files)) {
+                foreach ($files as $index => $file) {
+                    $team_chat = new TeamChat();
+                    $team_chat->team_id = $request->team_id;
+                    $team_chat->user_id = auth()->id();
+                    $team_chat->message = ($index === 0 && !empty($input_message)) ? $input_message : ' ';
+                    $team_chat->attachment = $this->imageUpload($file, 'team-chat');
+                    $team_chat->attachment_name = $file->getClientOriginalName();
+                    $team_chat->save();
+                    $team_chats[] = $team_chat;
                 }
-                $team_chat->attachment = $this->imageUpload($request->file('file'), 'team-chat');
-                $team_chat->attachment_name = $request->file('file')->getClientOriginalName();
-                $message_type = $this->detectMessageType($request->file('file'));
             } else {
+                $team_chat = new TeamChat();
+                $team_chat->team_id = $request->team_id;
+                $team_chat->user_id = auth()->id();
                 $team_chat->message = $input_message;
                 $team_chat->attachment = '';
-                $message_type = 'text';
+                $team_chat->save();
+                $team_chats[] = $team_chat;
             }
-            $team_chat->save();
 
-            // Retrieve team members and team data
             $team_members = TeamMember::where('team_id', $request->team_id)
                 ->where('is_removed', false)
                 ->get();
-
             $team = Team::find($request->team_id);
+            $lastTeamChat = null;
+            $lastChatMemberIds = [];
 
-            foreach ($team_members as $team_member) {
-                $chat_member = new ChatMember();
-                $chat_member->chat_id = $team_chat->id;
-                $chat_member->user_id = $team_member->user_id;
-                $chat_member->is_seen = $team_member->user_id == auth()->id();
-                $chat_member->save();
+            foreach ($team_chats as $team_chat) {
+                foreach ($team_members as $team_member) {
+                    $chat_member = new ChatMember();
+                    $chat_member->chat_id = $team_chat->id;
+                    $chat_member->user_id = $team_member->user_id;
+                    $chat_member->is_seen = $team_member->user_id == auth()->id();
+                    $chat_member->save();
 
-                // Create notifications for other members
-                if ($team_member->user_id != auth()->id()) {
-                    $notification = new Notification();
-                    $notification->user_id = $team_member->user_id;
-                    $notification->chat_id = $team_chat->id;
-                    $notification->message = 'You have a new message in <b>' . $team->name . '</b> group.';
-                    $notification->type = 'Team';
-                    $notification->save();
+                    if ($team_member->user_id != auth()->id()) {
+                        $notification = new Notification();
+                        $notification->user_id = $team_member->user_id;
+                        $notification->chat_id = $team_chat->id;
+                        $notification->message = 'You have a new message in <b>' . $team->name . '</b> group.';
+                        $notification->type = 'Team';
+                        $notification->save();
 
-                    // Send FCM notification
-                    $member = User::find($team_member->user_id);
-                    if ($member && $member->fcm_token) {
-                        try {
-                            $messageText = $request->file ? 'Sent an attachment' : $input_message;
-                            $this->fcmService->sendToDevice(
-                                $member->fcm_token,
-                                $team->name,
-                                auth()->user()->full_name . ': ' . $messageText,
-                                [
-                                    'type' => 'team',
-                                    'team_id' => (string) $request->team_id,
-                                    'team_name' => $team->name,
-                                    'chat_id' => (string) $team_chat->id,
-                                    'sender_id' => (string) auth()->id(),
-                                    'sender_name' => auth()->user()->full_name,
-                                    'message' => $input_message,
-                                    'attachment' => $request->file ? Storage::url($team_chat->attachment) : '',
-                                    'attachment_name' => $request->file ? ($team_chat->attachment_name ?? basename($team_chat->attachment)) : null,
-                                    'msg_type' => $message_type,
-                                    'notification_id' => (string) $notification->id
-                                ]
-                            );
-                        } catch (Exception $e) {
-                            Log::error('FCM team chat notification failed: ' . $e->getMessage());
+                        $member = User::find($team_member->user_id);
+                        if ($member && $member->fcm_token) {
+                            try {
+                                $hasAttachment = !empty($team_chat->attachment);
+                                $message_type = $hasAttachment ? $this->detectMessageType($team_chat->attachment) : 'text';
+                                $messageText = $hasAttachment ? 'Sent an attachment' : $input_message;
+                                $this->fcmService->sendToDevice(
+                                    $member->fcm_token,
+                                    $team->name,
+                                    auth()->user()->full_name . ': ' . $messageText,
+                                    [
+                                        'type' => 'team',
+                                        'team_id' => (string) $request->team_id,
+                                        'team_name' => $team->name,
+                                        'chat_id' => (string) $team_chat->id,
+                                        'sender_id' => (string) auth()->id(),
+                                        'sender_name' => auth()->user()->full_name,
+                                        'message' => $team_chat->message,
+                                        'attachment' => $hasAttachment ? Storage::url($team_chat->attachment) : '',
+                                        'attachment_name' => $hasAttachment ? ($team_chat->attachment_name ?? basename($team_chat->attachment)) : null,
+                                        'msg_type' => $message_type,
+                                        'notification_id' => (string) $notification->id,
+                                    ]
+                                );
+                            } catch (Exception $e) {
+                                Log::error('FCM team chat notification failed: ' . $e->getMessage());
+                            }
                         }
                     }
                 }
+
+                $lastTeamChat = $team_chat;
+                $lastChatMemberIds = ChatMember::where('chat_id', $team_chat->id)->pluck('user_id')->toArray();
             }
 
-            // Get chat member IDs and chat details
-            $chat_member_id = ChatMember::where('chat_id', $team_chat->id)->pluck('user_id')->toArray();
-            $chat = TeamChat::where('id', $team_chat->id)->with('user', 'chatMembers')->first();
+            $chat = TeamChat::where('id', $lastTeamChat->id)->with('user', 'chatMembers')->first();
             $chat->created_at_formatted = $chat->created_at->format('h:i a') . ' Today';
 
-            // JSON response with chat and member IDs
             return response()->json([
                 'message' => 'Message sent successfully.',
                 'status' => true,
                 'chat' => $chat,
                 'created_at_formatted' => $chat->created_at_formatted,
-                'chat_member_id' => $chat_member_id
+                'chat_member_id' => $lastChatMemberIds,
             ], 200);
         } catch (\Throwable $th) {
             return response()->json(['msg' => $th->getMessage(), 'success' => false], 201);
@@ -1011,6 +1028,7 @@ class TeamChatController extends Controller
                 ->whereHas('roles', function ($query) {
                     $query->whereIn('type', [1, 2, 3]);
                 })
+                ->visibleToAuthUser()
                 ->get(['id', 'first_name', 'last_name']);
 
             return response()->json([

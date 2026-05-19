@@ -83,7 +83,15 @@ class MembershipApiController extends Controller
 
         $tier = MembershipTier::find($sub->plan_id);
         $now = now();
-        $expired = $sub->subscription_expire_date && \Carbon\Carbon::parse($sub->subscription_expire_date)->isPast();
+        $expireDate = $sub->subscription_expire_date
+            ? \Carbon\Carbon::parse($sub->subscription_expire_date)
+            : null;
+        $expired = $expireDate && $expireDate->isPast();
+        $daysUntilExpiry = $expireDate
+            ? (int) $now->diffInDays($expireDate, false)
+            : null;
+        $canRenew = $expireDate
+            && ($expired || ($daysUntilExpiry !== null && $daysUntilExpiry <= 30 && $daysUntilExpiry >= 0));
 
         return response()->json([
             'status' => true,
@@ -92,9 +100,8 @@ class MembershipApiController extends Controller
                 'subscription' => $sub,
                 'tier' => $tier,
                 'is_expired' => $expired,
-                'days_until_expiry' => $sub->subscription_expire_date
-                    ? (int) $now->diffInDays(\Carbon\Carbon::parse($sub->subscription_expire_date), false)
-                    : null,
+                'days_until_expiry' => $daysUntilExpiry,
+                'can_renew' => $canRenew,
             ],
         ], $this->successStatus);
     }
