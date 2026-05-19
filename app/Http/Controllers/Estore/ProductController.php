@@ -1537,16 +1537,18 @@ class ProductController extends Controller
                     text-decoration: none;
                     border-radius: 5px;
                 ">View Order Details</a>';
+                $emailExtras = ProductFile::emailExtrasForOrder($order);
+
                 $body = str_replace(
                     ['{customer_name}', '{customer_email}', '{order_list}', '{order_id}', '{arriving_date}', '{total_order_value}', '{order_details_url_button}'],
                     [
-                        $order->first_name ?? '' . ' ' . $order->last_name ?? '',
+                        ($order->first_name ?? '') . ' ' . ($order->last_name ?? ''),
                         $order->email ?? '',
                         $orderList,
                         $order->order_number ?? '',
                         $order->expected_delivery_date ? Carbon::parse($order->expected_delivery_date)->format('M d, Y') : '',
                         number_format($order->total_amount ?? 0, 2),
-                        $orderDetailsUrlButton
+                        $orderDetailsUrlButton . $emailExtras['html']
                     ],
                     $template->body
                 );
@@ -1554,7 +1556,7 @@ class ProductController extends Controller
                 try {
                     // Send email
                     Mail::to($order->email)
-                        ->send(new OrderStatusUpdatedMail($order, $body));
+                        ->send(new OrderStatusUpdatedMail($order, $body, $emailExtras['attachments']));
                 } catch (\Throwable $th) {
                     Log::error('Failed to send order status email: ' . $th->getMessage());
                 }
@@ -1597,7 +1599,7 @@ class ProductController extends Controller
         if (!auth()->check()) {
             return redirect()->route('home')->with('error', 'Please login to view your orders');
         }
-        $orders = EstoreOrder::with(['orderItems.product', 'orderStatus'])
+        $orders = EstoreOrder::with(['orderItems.product.files', 'orderStatus'])
             ->where('user_id', auth()->id())
             ->whereIn('payment_status', ['paid', 'refunded'])
             ->orderBy('created_at', 'desc')
@@ -1715,7 +1717,7 @@ class ProductController extends Controller
     }
 
     /**
-     * Securely download a digital product file.
+     * Securely download a digital product file (logged-in users).
      */
     public function downloadFile($fileId)
     {
@@ -1735,24 +1737,39 @@ class ProductController extends Controller
             return back()->with('error', 'Product association not found');
         }
 
-        // Verify purchase
         if (!$product->isPurchasedByUser(auth()->id())) {
             return back()->with('error', 'You must purchase this product before downloading its files.');
         }
 
-        $filePath = $productFile->file_location;
+        $response = $productFile->streamDownloadResponse();
 
-        if (\Illuminate\Support\Facades\Storage::disk('public')->exists($filePath)) {
-            $fullPath = storage_path('app/public/' . $filePath);
-            return response()->download($fullPath);
-        }
-
-        if (\Illuminate\Support\Facades\Storage::exists($filePath)) {
-            $fullPath = storage_path('app/' . $filePath);
-            return response()->download($fullPath);
+        if ($response) {
+            return $response;
         }
 
         return back()->with('error', 'Physical file not found on server.');
+    }
+
+    /**
+     * Download via signed URL from order email (no login required).
+     */
+    public function downloadOrderFile(EstoreOrder $order, ProductFile $file)
+    {
+        if ($order->payment_status !== 'paid') {
+            abort(403, 'This order is not eligible for download.');
+        }
+
+        if (!$file->belongsToOrder($order)) {
+            abort(403, 'This file does not belong to your order.');
+        }
+
+        $response = $file->streamDownloadResponse();
+
+        if ($response) {
+            return $response;
+        }
+
+        abort(404, 'File not found on server.');
     }
 
     public function orderSuccess($orderId)

@@ -1372,6 +1372,11 @@ Route::prefix('e-store')->middleware(['user', 'preventBackHistory', 'userActivit
     Route::get('/page/{slug}', [EstoreCmsController::class, 'cmsPageContent'])->name('e-store.cms-page');
 });
 
+// Signed guest download (no login) — links sent in order confirmation emails
+Route::get('/e-store/download-order-file/{order}/{file}', [EstoreProductController::class, 'downloadOrderFile'])
+    ->name('e-store.guest-download-file')
+    ->middleware(['signed', 'throttle:30,1']);
+
 // Dynamic routes for categories
 $categories = collect();
 if (!app()->runningInConsole() && Schema::hasTable('categories')) {
@@ -1416,6 +1421,7 @@ Route::prefix('e-learning')->middleware(['user', 'agreement.signed'])->group(fun
     Route::get('/product/{slug}', [ElearningProductController::class, 'productDetails'])->name('e-learning.product-details');
     Route::get('/all-products', [ElearningProductController::class, 'products'])->name('e-learning.all-products');
     Route::get('/products-filter', [ElearningProductController::class, 'productsFilter'])->name('e-learning.products-filter');
+    Route::get('/get-subcategories', [ElearningProductController::class, 'getSubcategories'])->name('e-learning.get-subcategories');
     Route::post('/product-add-review', [ElearningProductController::class, 'productAddReview'])->name('e-learning.product-add-review');
 
     $categories = collect();

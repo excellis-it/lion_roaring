@@ -12,6 +12,7 @@ use App\Models\MemberPrivacyPolicy;
 use App\Models\EstoreOrder;
 use App\Models\EstoreOrderItem;
 use App\Models\Product;
+use App\Models\ProductFile;
 use App\Models\Review;
 use App\Models\EcomContactCms;
 use App\Traits\ImageTrait;
@@ -780,16 +781,23 @@ class EstoreCmsController extends Controller
                     border-radius: 5px;
                 ">View Order Details</a>';
 
+                $emailExtras = ['attachments' => [], 'html' => ''];
+                $cancelledSlug = $isPickup ? 'pickup_cancelled' : 'cancelled';
+                $cancelledStatus = OrderStatus::where('slug', $cancelledSlug)->first();
+                if (!$cancelledStatus || $request->status != $cancelledStatus->id) {
+                    $emailExtras = ProductFile::emailExtrasForOrder($order);
+                }
+
                 $body = str_replace(
                     ['{customer_name}', '{customer_email}', '{order_list}', '{order_id}', '{arriving_date}', '{total_order_value}', '{order_details_url_button}', '{order_note}'],
                     [
-                        $order->first_name ?? '' . ' ' . $order->last_name ?? '',
+                        ($order->first_name ?? '') . ' ' . ($order->last_name ?? ''),
                         $order->email ?? '',
                         $orderList,
                         $order->order_number ?? '',
                         $order->expected_delivery_date ? Carbon::parse($order->expected_delivery_date)->format('M d, Y') : '',
                         number_format($order->total_amount ?? 0, 2),
-                        $orderDetailsUrlButton,
+                        $orderDetailsUrlButton . $emailExtras['html'],
                         $order->notes ?? ''
                     ],
                     $template->body
@@ -798,7 +806,7 @@ class EstoreCmsController extends Controller
                 try {
                     // Send email
                     Mail::to($order->email)
-                        ->send(new OrderStatusUpdatedMail($order, $body));
+                        ->send(new OrderStatusUpdatedMail($order, $body, $emailExtras['attachments']));
                 } catch (\Throwable $th) {
                     Log::error('Failed to send order status email: ' . $th->getMessage());
                 }

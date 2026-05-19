@@ -8,6 +8,7 @@ use App\Models\EstoreOrder;
 use App\Models\EstoreOrderItem;
 use App\Models\EstoreSetting;
 use App\Models\Product;
+use App\Models\ProductFile;
 use App\Models\Review;
 use App\Models\EstoreCart;
 use App\Models\WareHouse;
@@ -187,7 +188,7 @@ class DigitalCheckoutController extends Controller
             return response()->json(['status' => false, 'message' => 'Please login to continue']);
         }
 
-        $product = Product::findOrFail($request->product_id);
+        $product = Product::with('files')->findOrFail($request->product_id);
 
         if ($product->product_type !== 'digital') {
             return response()->json(['status' => false, 'message' => 'Invalid product type']);
@@ -393,6 +394,11 @@ class DigitalCheckoutController extends Controller
                     $orderList = view('user.emails.order_list_table', ['order' => $order])->render();
                     $myOrdersUrl = route('e-store.my-orders');
 
+                    $productForEmail = Product::with('files')->find($product->id);
+                    $emailExtras = ProductFile::emailExtrasForProducts([$productForEmail ?? $product], $order);
+                    $orderButtons = "<p><a href='" . $myOrdersUrl . "' style='display:inline-block;padding:10px 20px;background:#000;color:#fff;text-decoration:none;border-radius:5px;'>View Order History</a></p>"
+                        . $emailExtras['html'];
+
                     $body = str_replace(
                         ['{customer_name}', '{customer_email}', '{order_list}', '{order_id}', '{arriving_date}', '{total_order_value}', '{order_details_url_button}', '{order_note}'],
                         [
@@ -402,13 +408,13 @@ class DigitalCheckoutController extends Controller
                             $order->order_number ?? '',
                             '', // Digital products don't have arriving date usually
                             number_format($order->total_amount ?? 0, 2),
-                            "<p><a href='" . $myOrdersUrl . "' style='display:inline-block;padding:10px 20px;background:#000;color:#fff;text-decoration:none;border-radius:5px;'>View Order History</a></p>",
+                            $orderButtons,
                             $order->notes ?? '',
                         ],
                         $template->body
                     );
 
-                    Mail::to($order->email)->send(new OrderStatusUpdatedMail($order, $body));
+                    Mail::to($order->email)->send(new OrderStatusUpdatedMail($order, $body, $emailExtras['attachments']));
                 }
             } catch (\Throwable $th) {
                 Log::error('Failed to send digital order status email to customer: ' . $th->getMessage());

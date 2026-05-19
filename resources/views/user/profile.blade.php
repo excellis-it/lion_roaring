@@ -88,7 +88,7 @@
                                                             $user_subscription->subscription_expire_date,
                                                         );
                                                     @endphp
-                                                    {{ $exp->format('M j, Y') }}
+                                                    {{ $exp->format('F j, Y') }}
                                                     (
                                                     @if ($exp->isPast())
                                                         Expired ({{ $exp->diffForHumans() }})
@@ -197,7 +197,7 @@
                                         <div class="box_label">
                                             <label>Member since</label>
                                             <input type="text" class="form-control"
-                                                value="{{ Auth::user()->created_at->format('d/m/Y') }}" readonly>
+                                                value="{{ Auth::user()->created_at->format('F j, Y') }}" readonly>
                                         </div>
                                     </div>
                                     {{-- phone number --}}

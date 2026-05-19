@@ -1337,66 +1337,124 @@
         })();
     </script>
     <script>
-        $(document).ready(function() {
-            $('#sign-in-form').submit(function(e) {
-                e.preventDefault();
+        document.addEventListener('DOMContentLoaded', function() {
+            function showBsModal(id) {
+                var el = document.getElementById(id);
+                if (!el || typeof bootstrap === 'undefined') {
+                    return null;
+                }
+                return bootstrap.Modal.getOrCreateInstance(el);
+            }
 
-                var formData = $(this).serialize();
-                var url = $(this).attr('action');
-                var submitButton = $('#login-submit');
-                submitButton.prop('disabled', true).val('Loading...');
+            function hideBsModal(id) {
+                var el = document.getElementById(id);
+                if (!el || typeof bootstrap === 'undefined') {
+                    return;
+                }
+                var instance = bootstrap.Modal.getInstance(el);
+                if (instance) {
+                    instance.hide();
+                }
+            }
 
-                $.ajax({
-                    url: url,
-                    type: $(this).attr('method'),
-                    data: formData,
-                    success: function(response) {
-                        if (response.status == true) {
+            var loginForm = document.getElementById('sign-in-form');
+            if (loginForm) {
+                loginForm.addEventListener('submit', function(e) {
+                    e.preventDefault();
+
+                    var submitButton = document.getElementById('login-submit');
+                    if (submitButton) {
+                        submitButton.disabled = true;
+                        submitButton.value = 'Loading...';
+                    }
+
+                    fetch(loginForm.action, {
+                        method: loginForm.method || 'POST',
+                        body: new FormData(loginForm),
+                        headers: {
+                            'X-Requested-With': 'XMLHttpRequest',
+                            'Accept': 'application/json',
+                        },
+                    }).then(function(response) {
+                        return response.json().then(function(data) {
+                            if (!response.ok) {
+                                throw {
+                                    data: data
+                                };
+                            }
+                            return data;
+                        });
+                    }).then(function(response) {
+                        if (response.status === true) {
                             if (response.otp_required) {
-                                $('#otpModalEstore').modal('show');
+                                hideBsModal('loginModalEstore');
+                                var otpModal = showBsModal('otpModalEstore');
+                                if (otpModal) {
+                                    otpModal.show();
+                                }
                             } else {
-                                //  window.location.href = response.redirect;
                                 window.location.reload();
                             }
                         } else {
-                            $('.text-danger').html('');
-                            toastr.error(response.message);
-                            submitButton.prop('disabled', false).val('Log In');
+                            if (typeof toastr !== 'undefined') {
+                                toastr.error(response.message);
+                            }
+                            if (submitButton) {
+                                submitButton.disabled = false;
+                                submitButton.value = 'Log In';
+                            }
                         }
-                    },
-                    error: function(xhr) {
-                        $('.text-danger').html('');
-                        var errors = xhr.responseJSON.errors;
-                        $.each(errors, function(key, value) {
-                            toastr.error(value[0]);
-                        });
-                        submitButton.prop('disabled', false).val('Log In');
-                    }
+                    }).catch(function(err) {
+                        if (submitButton) {
+                            submitButton.disabled = false;
+                            submitButton.value = 'Log In';
+                        }
+                        if (err && err.data && err.data.errors) {
+                            Object.keys(err.data.errors).forEach(function(key) {
+                                if (typeof toastr !== 'undefined') {
+                                    toastr.error(err.data.errors[key][0]);
+                                }
+                            });
+                            return;
+                        }
+                        if (typeof toastr !== 'undefined') {
+                            toastr.error('Unable to sign in. Please try again.');
+                        }
+                    });
                 });
-            });
+            }
 
-            $('#otp-form').submit(function(e) {
-                e.preventDefault();
+            var otpForm = document.getElementById('otp-form');
+            if (otpForm) {
+                otpForm.addEventListener('submit', function(e) {
+                    e.preventDefault();
 
-                var formData = $(this).serialize();
-                var url = $(this).attr('action');
-                $.ajax({
-                    url: url,
-                    type: $(this).attr('method'),
-                    data: formData,
-                    success: function(response) {
-                        if (response.status == true) {
-                            // window.location.href = response.redirect;
+                    fetch(otpForm.action, {
+                        method: otpForm.method || 'POST',
+                        body: new FormData(otpForm),
+                        headers: {
+                            'X-Requested-With': 'XMLHttpRequest',
+                            'Accept': 'application/json',
+                        },
+                    }).then(function(response) {
+                        return response.json();
+                    }).then(function(response) {
+                        if (response.status === true) {
                             window.location.reload();
                         } else {
-                            $('#otp-error').text(response.message);
+                            var otpError = document.getElementById('otp-error');
+                            if (otpError) {
+                                otpError.textContent = response.message;
+                            }
                         }
-                    },
-                    error: function(xhr) {
-                        $('#otp-error').text('Invalid Code');
-                    }
+                    }).catch(function() {
+                        var otpError = document.getElementById('otp-error');
+                        if (otpError) {
+                            otpError.textContent = 'Invalid Code';
+                        }
+                    });
                 });
-            });
+            }
         });
     </script>
 
