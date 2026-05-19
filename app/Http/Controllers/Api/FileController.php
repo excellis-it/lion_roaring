@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Http\Controllers\Api\Concerns\AppliesEducationScope;
 use App\Http\Controllers\Controller;
 use App\Models\File;
 use App\Models\Topic;
@@ -23,6 +24,7 @@ use App\Services\NotificationService;
  */
 class FileController extends Controller
 {
+    use AppliesEducationScope;
     use ImageTrait;
 
     /**
@@ -121,9 +123,7 @@ class FileController extends Controller
     {
         try {
             $new_topic = $request->topic ?? '';
-
-            $user_type = auth()->user()->user_type ?? 'Global';
-            $user_country = auth()->user()->country ?? null;
+            $ctx = $this->educationScopeContext();
 
             $filesQuery = File::query();
 
@@ -131,22 +131,24 @@ class FileController extends Controller
                 $filesQuery->where('topic_id', $new_topic);
             }
 
-            if ($user_type !== 'Global' && $user_country) {
-                $filesQuery->where('country_id', $user_country);
+            if ($request->filled('type')) {
+                $filesQuery->where('type', $request->get('type'));
             }
 
-            $files = $filesQuery->orderBy('id', 'desc')->paginate(15);
-
-            $files->getCollection()->transform(function ($file) {
-                $file->file_topic_name = Topic::where('id', $file->topic_id)->value('topic_name');
-                return $file;
-            });
-
-            if ($user_type == 'Global') {
-                $topics = Topic::orderBy('topic_name', 'asc')->get();
-            } else {
-                $topics = Topic::orderBy('topic_name', 'asc')->where('country_id', $user_country)->get();
+            if ($request->filled('search')) {
+                $this->applyEducationFileSearch($filesQuery, $request->get('search'));
             }
+
+            $this->applyEducationFileScope($filesQuery, $ctx);
+
+            $files = $this->enrichEducationFilePaginator(
+                $filesQuery->orderBy('id', 'desc')->paginate(15)
+            );
+
+            $topics = $this->applyEducationTopicScope(
+                Topic::orderBy('topic_name', 'asc'),
+                $ctx
+            )->get();
 
             return response()->json([
                 'data' => $files,
@@ -220,13 +222,9 @@ class FileController extends Controller
                 });
             }
 
-            $user_type = auth()->user()->user_type ?? 'Global';
-            $user_country = auth()->user()->country ?? null;
-            if ($user_type !== 'Global' && $user_country) {
-                $filesQuery->where('country_id', $user_country);
-            }
+            $ctx = $this->educationScopeContext();
+            $this->applyEducationFileScope($filesQuery, $ctx);
 
-            // Order and paginate the results
             $files = $filesQuery->orderBy($sort_by, $sort_type)->paginate(15);
 
             // Return paginated files in JSON format
@@ -277,14 +275,11 @@ class FileController extends Controller
     public function topics()
     {
         try {
-            $user_type = auth()->user()->user_type ?? 'Global';
-            $user_country = auth()->user()->country ?? null;
-
-            if ($user_type == 'Global') {
-                $topics = Topic::orderBy('topic_name', 'asc')->get();
-            } else {
-                $topics = Topic::orderBy('topic_name', 'asc')->where('country_id', $user_country)->get();
-            }
+            $ctx = $this->educationScopeContext();
+            $topics = $this->applyEducationTopicScope(
+                Topic::orderBy('topic_name', 'asc'),
+                $ctx
+            )->get();
 
             return response()->json([
                 'data' => $topics,
@@ -339,29 +334,17 @@ class FileController extends Controller
     public function store(Request $request)
     {
         try {
-            $user_type = auth()->user()->user_type ?? 'Global';
-            $user_country = auth()->user()->country ?? null;
+            $ctx = $this->educationScopeContext();
+            $country_id = $this->resolveEducationCountryId($request, $ctx);
+            $request->merge(['country_id' => $country_id]);
 
-            // Accept either single file upload or array of files
-            if ($user_type === 'Global') {
-                $validated = Validator::make($request->all(), [
-                    'topic_id' => 'required|exists:topics,id',
-                    'type' => 'required',
-                    'file' => 'required',
-                    'file.*' => 'file',
-                    'country_id' => 'required|exists:countries,id',
-                ]);
-                $country_id = $request->get('country_id');
-            } else {
-                $request->merge(['country_id' => $user_country]);
-                $validated = Validator::make($request->all(), [
-                    'topic_id' => 'required|exists:topics,id',
-                    'type' => 'required',
-                    'file' => 'required',
-                    'file.*' => 'file',
-                ]);
-                $country_id = $user_country;
-            }
+            $validated = Validator::make($request->all(), [
+                'topic_id' => 'required|exists:topics,id',
+                'type' => 'required',
+                'file' => 'required',
+                'file.*' => 'file',
+                'country_id' => 'required|exists:countries,id',
+            ]);
 
             if ($validated->fails()) {
                 return response()->json([
@@ -381,10 +364,16 @@ class FileController extends Controller
                 $file_extension = $file->getClientOriginalExtension();
                 $file_upload = $this->imageUpload($file, 'files');
 
-                // Check if a file with the same name and extension already exists
-                if ($user_type === 'Global') {
+                if ($ctx['is_super_admin']) {
                     $check = File::where('file_name', $file_name)
                         ->where('file_extension', $file_extension)
+                        ->first();
+                } elseif ($ctx['is_global_scope']) {
+                    $check = File::where('file_name', $file_name)
+                        ->where('file_extension', $file_extension)
+                        ->whereHas('country', function ($query) {
+                            $query->where('code', 'GL');
+                        })
                         ->first();
                 } else {
                     $check = File::where('file_name', $file_name)
