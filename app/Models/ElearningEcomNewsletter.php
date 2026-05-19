@@ -8,4 +8,10 @@ use Illuminate\Database\Eloquent\Model;
 class ElearningEcomNewsletter extends BaseModel
 {
     use HasFactory;
+
+    protected $fillable = [
+        'name',
+        'email',
+        'message',
+    ];
 }

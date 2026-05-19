@@ -610,19 +610,15 @@ class EstoreProductController extends Controller
     public function cartList(Request $request)
     {
         try {
-            $cartQuery = EstoreCart::with('product');
-            if (auth()->check()) {
-                $cartQuery->where('user_id', auth()->id());
-            } else {
-                $cartQuery->where('session_id', session()->getId());
-            }
-            $items = $cartQuery->get();
+            $summary = (new \App\Services\EstoreCartSummaryService())->summarizeForCartPage(
+                auth()->user(),
+                $request->input('promo_code')
+            );
 
-            $total = $items->sum(function ($i) {
-                return $i->price * $i->quantity;
-            });
-
-            return response()->json(['data' => ['items' => $items, 'total' => $total], 'status' => true], 200);
+            return response()->json([
+                'data' => $summary,
+                'status' => true,
+            ], 200);
         } catch (\Exception $e) {
             return response()->json(['message' => 'Something went wrong. ' . $e->getMessage(), 'status' => false], 201);
         }

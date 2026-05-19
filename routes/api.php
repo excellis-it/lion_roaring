@@ -72,6 +72,9 @@ Route::prefix('v3')->middleware(['userActivity'])->group(function () {
         Route::get('/category-products/{slug}', [ElearningController::class, 'productsByCategorySlug']);
         Route::get('/product/{slug}', [ElearningController::class, 'productDetails']);
         Route::get('/products-filter', [ElearningController::class, 'productsFilter']);
+        Route::get('/get-subcategories', [ElearningController::class, 'getSubcategories']);
+        Route::get('/topics-list', [ElearningController::class, 'topicsList']);
+        Route::post('/newsletter', [ElearningController::class, 'newsletterStore']);
 
         // Navigation
         Route::get('/categories/{id}/sub-categories', [ElearningController::class, 'subCategoriesByCategory'])->whereNumber('id');
@@ -109,6 +112,7 @@ Route::prefix('v3')->middleware(['userActivity'])->group(function () {
     Route::group(['prefix' => 'e-store'], function () {
         // Public home endpoint that returns home CMS content and featured/new products
         Route::get('/store-home', [EstoreController::class, 'storeHome']);
+        Route::get('/contact', [EstoreController::class, 'contact']);
         // Header (logo & menu categories)
         Route::get('/header', [EstoreController::class, 'header']);
         // Footer CMS
@@ -184,6 +188,8 @@ Route::prefix('v3')->middleware(['userActivity'])->group(function () {
             // Order actions (RESTful)
             Route::post('/orders/{id}/cancel', [CheckoutController::class, 'cancelOrderById'])->whereNumber('id');
             Route::get('/orders/{id}/track', [CheckoutController::class, 'trackOrder'])->whereNumber('id');
+            Route::get('/orders/{id}/invoice', [CheckoutController::class, 'downloadInvoice'])->whereNumber('id');
+            Route::get('/download-file/{fileId}', [CheckoutController::class, 'downloadDigitalFile'])->whereNumber('fileId');
 
             // Address book
             Route::get('/addresses', [AddressController::class, 'index']);

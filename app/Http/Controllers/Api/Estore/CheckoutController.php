@@ -20,6 +20,8 @@ use App\Models\Notification;
 use App\Models\OrderEmailTemplate;
 use App\Models\EstoreRefund;
 use App\Models\EstorePromoCode;
+use App\Models\ProductFile;
+use App\Http\Controllers\User\EstoreCmsController;
 use App\Services\PromoCodeService;
 use App\Services\PromoCodeValidator;
 use App\Services\DisplayPriceService;
@@ -567,12 +569,22 @@ class CheckoutController extends Controller
      */
     public function myOrders(Request $request)
     {
-        $orders = EstoreOrder::where('user_id', auth()->id())->where('payment_status', 'paid')->orderBy('created_at', 'desc')->paginate(10);
+        $estoreSettings = EstoreSetting::first();
+        $orders = EstoreOrder::with(['orderStatus', 'orderItems.product.files'])
+            ->where('user_id', auth()->id())
+            ->where('payment_status', 'paid')
+            ->orderBy('created_at', 'desc')
+            ->paginate(10);
+
+        $orders->getCollection()->transform(function (EstoreOrder $order) use ($estoreSettings) {
+            return $this->appendOrderPresentationFields($order, $estoreSettings);
+        });
 
         return response()->json([
             'status' => true,
             'message' => 'Orders fetched successfully',
-            'orders' => $orders
+            'orders' => $orders,
+            'max_refundable_days' => $estoreSettings->refund_max_days ?? $estoreSettings->max_refundable_days ?? 10,
         ], 200);
     }
 
@@ -607,7 +619,7 @@ class CheckoutController extends Controller
         }
 
         // Get order with relationships
-        $order = EstoreOrder::with(['orderItems', 'payments'])
+        $order = EstoreOrder::with(['orderItems.product.files', 'payments', 'orderStatus'])
             ->where('id', $request->order_id)
             ->where('user_id', auth()->id())
             ->first();
@@ -631,7 +643,7 @@ class CheckoutController extends Controller
 
         // Get estore settings
         $estoreSettings = EstoreSetting::first();
-        $max_refundable_days = $estoreSettings->max_refundable_days ?? 10;
+        $max_refundable_days = $estoreSettings->refund_max_days ?? $estoreSettings->max_refundable_days ?? 10;
 
         // Get all active order statuses
         $allStatuses = OrderStatus::where('is_active', 1)
@@ -709,6 +721,8 @@ class CheckoutController extends Controller
 
         // Get current status details
         $currentStatus = OrderStatus::find($currentStatusId);
+
+        $order = $this->appendOrderPresentationFields($order, $estoreSettings);
 
         return response()->json([
             'status' => true,
@@ -1022,16 +1036,25 @@ class CheckoutController extends Controller
             }
         }
 
-        $breakdown = (new DisplayPriceService())->calculateCart($cartItems, $selected, $promo);
+        $orderMethod = (int) $request->input('order_method', 0);
+        $paymentType = $request->input('payment_type', 'debit');
+
+        $summary = (new \App\Services\EstoreCartSummaryService())->summarizeForCheckout(
+            auth()->user(),
+            $request->input('promo_code'),
+            $orderMethod,
+            $paymentType,
+            $selected
+        );
 
         if ($promoMessage) {
-            $breakdown['promo_code_error'] = $promoMessage;
+            $summary['promo_code_error'] = $promoMessage;
         }
 
         return response()->json([
             'status' => true,
             'message' => 'Display prices calculated.',
-            'data' => $breakdown,
+            'data' => $summary,
         ]);
     }
 
@@ -1128,6 +1151,124 @@ class CheckoutController extends Controller
     {
         $request->merge(['order_id' => $id]);
         return $this->cancelOrder($request);
+    }
+
+    /**
+     * GET /e-store/orders/{id}/invoice — PDF download for mobile (Bearer auth).
+     * @authenticated
+     */
+    public function downloadInvoice(int $id)
+    {
+        if (!auth()->check()) {
+            return response()->json(['status' => false, 'message' => 'Please login to continue'], 401);
+        }
+
+        $order = EstoreOrder::with('orderStatus')
+            ->where('id', $id)
+            ->where('user_id', auth()->id())
+            ->first();
+
+        if (!$order) {
+            return response()->json(['status' => false, 'message' => 'Order not found'], 404);
+        }
+
+        $slug = optional($order->orderStatus)->slug ?? '';
+        $isDelivered = in_array($slug, ['delivered', 'pickup_picked_up'], true);
+        $hasDigital = EstoreOrderItem::where('order_id', $order->id)
+            ->whereHas('product', fn ($q) => $q->where('product_type', 'digital'))
+            ->exists();
+
+        if ($order->payment_status !== 'paid' || (!$isDelivered && !$hasDigital)) {
+            return response()->json(['status' => false, 'message' => 'Invoice not available for this order.'], 403);
+        }
+
+        return app(EstoreCmsController::class)->downloadInvoice($order);
+    }
+
+    /**
+     * GET /e-store/download-file/{fileId} — digital product file (Bearer auth).
+     * @authenticated
+     */
+    public function downloadDigitalFile(int $fileId)
+    {
+        if (!auth()->check()) {
+            return response()->json(['status' => false, 'message' => 'Please login to continue'], 401);
+        }
+
+        $productFile = ProductFile::with('product')->find($fileId);
+
+        if (!$productFile || !$productFile->product) {
+            return response()->json(['status' => false, 'message' => 'File not found'], 404);
+        }
+
+        if (!$productFile->product->isPurchasedByUser(auth()->id())) {
+            return response()->json(['status' => false, 'message' => 'You must purchase this product before downloading.'], 403);
+        }
+
+        $response = $productFile->streamDownloadResponse();
+
+        if ($response) {
+            return $response;
+        }
+
+        return response()->json(['status' => false, 'message' => 'File not found on server.'], 404);
+    }
+
+    /**
+     * Extra fields for mobile order list/detail (parity with web e-store views).
+     */
+    protected function appendOrderPresentationFields(EstoreOrder $order, ?EstoreSetting $settings = null): EstoreOrder
+    {
+        $settings = $settings ?? EstoreSetting::first();
+        $slug = optional($order->orderStatus)->slug ?? '';
+        $orderHasDigital = $order->relationLoaded('orderItems')
+            ? $order->orderItems->contains(fn ($i) => optional($i->product)->product_type === 'digital')
+            : false;
+        $isFinalDelivered = in_array($slug, ['delivered', 'pickup_picked_up'], true);
+        $isFinalCancelled = in_array($slug, ['cancelled', 'pickup_cancelled'], true);
+        $allowedSlugs = $order->is_pickup
+            ? ['pickup_pending', 'pickup_processing']
+            : ['pending', 'processing'];
+        $cancelHours = (int) ($settings->cancel_within_hours ?? 24);
+        $elapsedMinutes = (int) $order->created_at->diffInMinutes(now());
+        $minutesLeft = max(0, ($cancelHours * 60) - $elapsedMinutes);
+
+        $order->setAttribute('order_has_digital_product', $orderHasDigital);
+        $order->setAttribute('digital_files', $this->collectDigitalFiles($order));
+        $order->setAttribute('can_download_invoice', $order->payment_status === 'paid' && ($isFinalDelivered || $orderHasDigital));
+        $order->setAttribute('can_cancel', !$orderHasDigital
+            && in_array($slug, $allowedSlugs, true)
+            && $order->payment_status === 'paid'
+            && $elapsedMinutes < ($cancelHours * 60));
+        $order->setAttribute('cancel_minutes_left', $minutesLeft);
+        $order->setAttribute('cancel_within_hours', $cancelHours);
+        $order->setAttribute('is_final_cancelled', $isFinalCancelled);
+        $order->setAttribute('is_final_delivered', $isFinalDelivered);
+        $order->setAttribute('is_refunded', $order->payment_status === 'refunded');
+
+        return $order;
+    }
+
+    protected function collectDigitalFiles(EstoreOrder $order): array
+    {
+        $files = [];
+        if (!$order->relationLoaded('orderItems')) {
+            return $files;
+        }
+        foreach ($order->orderItems as $item) {
+            if (optional($item->product)->product_type !== 'digital') {
+                continue;
+            }
+            foreach ($item->product->files ?? [] as $file) {
+                $files[] = [
+                    'id' => $file->id,
+                    'name' => basename($file->file_location ?? 'download'),
+                    'product_name' => $item->product_name,
+                ];
+            }
+        }
+
+        return $files;
     }
 
     /**

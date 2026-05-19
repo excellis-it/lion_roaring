@@ -746,6 +746,102 @@ class Helper
         return $image ? $image->original_path : null;
     }
 
+    /**
+     * Resolve a storage-relative path to an absolute public URL.
+     * Falls back to the original (uncompressed) file when the compressed asset is missing.
+     */
+    public static function publicStorageUrl(?string $path): ?string
+    {
+        if ($path === null || trim($path) === '') {
+            return null;
+        }
+
+        $path = trim($path);
+
+        if (str_starts_with($path, 'http://') || str_starts_with($path, 'https://')) {
+            return $path;
+        }
+
+        $relative = ltrim($path, '/');
+        if (str_starts_with($relative, 'storage/')) {
+            $relative = substr($relative, strlen('storage/'));
+        }
+
+        $disk = Storage::disk('public');
+        $resolved = $relative;
+
+        if (! $disk->exists($resolved)) {
+            $original = self::getOriginalImage($relative);
+            if ($original && $disk->exists($original)) {
+                $resolved = $original;
+            } else {
+                return null;
+            }
+        }
+
+        $url = $disk->url($resolved);
+
+        if (str_starts_with($url, 'http://') || str_starts_with($url, 'https://')) {
+            return $url;
+        }
+
+        return rtrim(config('app.url'), '/').'/'.ltrim($url, '/');
+    }
+
+    /**
+     * @param  array<int, array<string, mixed>>  $slides
+     * @return array<int, array<string, mixed>>
+     */
+    public static function transformEcomSliderData($slides): array
+    {
+        if (! is_array($slides)) {
+            return [];
+        }
+
+        return array_values(array_map(function ($slide) {
+            if (! is_array($slide)) {
+                return $slide;
+            }
+            if (! empty($slide['image'])) {
+                $slide['image'] = self::publicStorageUrl($slide['image']);
+            }
+
+            return $slide;
+        }, $slides));
+    }
+
+    /**
+     * @param  array<string, mixed>  $content
+     * @return array<string, mixed>
+     */
+    public static function transformEcomHomeContent(array $content): array
+    {
+        $imageKeys = [
+            'header_logo',
+            'banner_image',
+            'banner_image_small',
+            'new_arrival_image',
+            'about_section_image',
+            'shop_now_image',
+        ];
+
+        foreach ($imageKeys as $key) {
+            if (! empty($content[$key])) {
+                $content[$key] = self::publicStorageUrl($content[$key]);
+            }
+        }
+
+        if (! empty($content['slider_data'])) {
+            $content['slider_data'] = self::transformEcomSliderData($content['slider_data']);
+        }
+
+        if (! empty($content['slider_data_second'])) {
+            $content['slider_data_second'] = self::transformEcomSliderData($content['slider_data_second']);
+        }
+
+        return $content;
+    }
+
     public static function getEstoreProductStartingPrice($productId)
     {
         $warehouseProducts = \App\Models\WarehouseProduct::where('product_id', $productId)->get();

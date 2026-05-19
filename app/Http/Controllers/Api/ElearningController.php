@@ -3,13 +3,17 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Helpers\Helper;
 use Illuminate\Http\Request;
 use App\Models\ElearningCategory;
 use App\Models\ElearningProduct;
 use App\Models\ElearningReview;
 use App\Models\ElearningEcomHomeCms;
+use App\Models\ElearningEcomNewsletter;
 use App\Models\ElearningSubCategory;
 use App\Models\ElearningTopic;
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Validator;
 
 /**
  * @group E-learning
@@ -19,6 +23,9 @@ use App\Models\ElearningTopic;
 
 class ElearningController extends Controller
 {
+    /** @var array<int, string> */
+    private const PRODUCT_RELATIONS = ['image', 'elearningTopic', 'category', 'subcategory'];
+
     //
     /**
      * Fetch Products
@@ -155,22 +162,62 @@ class ElearningController extends Controller
     public function storeHome(Request $request)
     {
         try {
-            $categories = ElearningCategory::where('status', 1)->orderBy('id', 'DESC')->get();
-            $feature_products = ElearningProduct::with(['image', 'elearningTopic'])->where('status', 1)->where('feature_product', 1)->orderBy('id', 'DESC')->get();
-            $new_products = ElearningProduct::with(['image', 'elearningTopic'])->where('status', 1)->orderBy('id', 'DESC')->limit(10)->get();
-            $section_titles = ElearningEcomHomeCms::orderBy('id', 'desc')->first();
+            $categories = ElearningCategory::where('status', 1)->orderBy('name')->get();
+            $feature_products = ElearningProduct::with(self::PRODUCT_RELATIONS)
+                ->where('status', 1)
+                ->where('feature_product', 1)
+                ->orderByDesc('id')
+                ->get();
+            $new_products = ElearningProduct::with(self::PRODUCT_RELATIONS)
+                ->where('status', 1)
+                ->orderByDesc('id')
+                ->limit(10)
+                ->get();
+            $books = ElearningProduct::with(self::PRODUCT_RELATIONS)
+                ->where('status', 1)
+                ->whereHas('category', fn ($q) => $q->where('slug', 'books'))
+                ->orderByDesc('id')
+                ->limit(10)
+                ->get();
+            $lockets = ElearningProduct::with(self::PRODUCT_RELATIONS)
+                ->where('status', 1)
+                ->whereHas('category', fn ($q) => $q->where('slug', 'lockets'))
+                ->orderByDesc('id')
+                ->limit(10)
+                ->get();
+
+            $cms = Helper::getVisitorCmsContent('ElearningEcomHomeCms', true, false, 'id', 'desc', null);
+            $content = $cms ? $cms->toArray() : [];
+            $section_titles = $cms ?? ElearningEcomHomeCms::orderBy('id', 'desc')->first();
+
+            $footerCms = Helper::getElearningFooterCms();
+            $footer = $footerCms ? $footerCms->toArray() : null;
+            if (is_array($footer)) {
+                $articlesPdf = Helper::getPDFAttribute();
+                $footer['articles_agreement_url'] = $articlesPdf
+                    ? (str_starts_with($articlesPdf, 'http')
+                        ? $articlesPdf
+                        : url($articlesPdf))
+                    : null;
+            }
 
             return response()->json([
+                'status' => true,
+                'message' => 'Store home.',
+                'content' => $content,
                 'section_titles' => $section_titles,
                 'categories' => $categories,
                 'feature_products' => $feature_products,
                 'new_products' => $new_products,
-
+                'books' => $books,
+                'lockets' => $lockets,
+                'footer' => $footer,
             ], 200);
         } catch (\Exception $e) {
             return response()->json([
-                'message' => 'An error occurred while fetching the products.'
-            ], 201);
+                'status' => false,
+                'message' => 'An error occurred while fetching the products.',
+            ], 500);
         }
     }
 
@@ -244,17 +291,45 @@ class ElearningController extends Controller
     public function productDetails($slug)
     {
         try {
-            $product = ElearningProduct::with('image')->where('slug', $slug)->first();
+            $product = ElearningProduct::with(array_merge(self::PRODUCT_RELATIONS, ['images']))
+                ->where('slug', $slug)
+                ->where('status', 1)
+                ->first();
 
             if (!$product) {
-                return response()->json(['message' => 'Product not found.'], 201);
+                return response()->json([
+                    'status' => false,
+                    'message' => 'Product not found.',
+                ], 404);
             }
 
+            $related_products = ElearningProduct::with(self::PRODUCT_RELATIONS)
+                ->where('category_id', $product->category_id)
+                ->where('id', '!=', $product->id)
+                ->where('status', 1)
+                ->orderByDesc('id')
+                ->limit(8)
+                ->get();
+
+            $reviews = $product->reviews()
+                ->where('status', 1)
+                ->with(['user:id,first_name,last_name,profile_picture'])
+                ->orderByDesc('id')
+                ->limit(20)
+                ->get();
+
             return response()->json([
+                'status' => true,
+                'message' => 'Product details.',
                 'product' => $product,
+                'related_products' => $related_products,
+                'reviews' => $reviews,
             ], 200);
         } catch (\Exception $e) {
-            return response()->json(['message' => 'Error fetching product details.'], 201);
+            return response()->json([
+                'status' => false,
+                'message' => 'Error fetching product details.',
+            ], 500);
         }
     }
 
@@ -279,31 +354,32 @@ class ElearningController extends Controller
     public function productsFilter(Request $request)
     {
         try {
-            // $page = $request->get('page', 1);
-            // $limit = 12;
-            // $offset = ($page - 1) * $limit;
-            $category_id = $request->category_id ?? [];
+            $categoryIds = $this->normalizeIdList($request->input('category_id'));
             $latest_filter = $request->latestFilter ?? '';
             $search = $request->search ?? '';
 
-            $products = ElearningProduct::with(['image', 'elearningTopic'])->where('status', 1);
+            $products = ElearningProduct::with(self::PRODUCT_RELATIONS)->where('status', 1);
 
-            if (!empty($category_id)) {
-                $products->whereIn('category_id', $category_id);
+            if (! empty($categoryIds)) {
+                $products->whereIn('category_id', $categoryIds);
             }
 
-            // Topic filter
-            $elearning_topic_id = $request->elearning_topic_id ?? [];
+            $elearningTopicIds = $this->normalizeIdList($request->input('elearning_topic_id'));
             $elearning_topic_search = $request->elearning_topic_search ?? '';
 
-            if (!empty($elearning_topic_id)) {
-                $products->whereIn('elearning_topic_id', $elearning_topic_id);
+            if (! empty($elearningTopicIds)) {
+                $products->whereIn('elearning_topic_id', $elearningTopicIds);
             }
 
-            if (!empty($elearning_topic_search)) {
+            if (! empty($elearning_topic_search)) {
                 $products->whereHas('elearningTopic', function ($q) use ($elearning_topic_search) {
                     $q->where('topic_name', 'LIKE', "%$elearning_topic_search%");
                 });
+            }
+
+            $subCategoryIds = $this->normalizeIdList($request->input('elearning_sub_category_id'));
+            if (! empty($subCategoryIds)) {
+                $products->whereIn('elearning_sub_category_id', $subCategoryIds);
             }
 
             if (!empty($latest_filter)) {
@@ -325,15 +401,88 @@ class ElearningController extends Controller
             $products_count = $products->count();
 
             //  $products = $products->skip($offset)->take($limit)->get();
-            $products = $products->paginate(12);
+            $perPage = max(1, min(50, (int) $request->input('per_page', 12)));
+            $products = $products->paginate($perPage);
 
             return response()->json([
+                'status' => true,
+                'message' => 'Filtered products.',
                 'products' => $products,
                 'products_count' => $products_count,
             ], 200);
-        } catch (\Exception $e) {
-            return response()->json(['message' => 'Error filtering products.'], 201);
+        } catch (\Throwable $e) {
+            report($e);
+
+            return response()->json([
+                'status' => false,
+                'message' => 'Error filtering products.',
+            ], 500);
         }
+    }
+
+    /**
+     * POST /e-learning/newsletter
+     */
+    public function newsletterStore(Request $request): \Illuminate\Http\JsonResponse
+    {
+        $validator = Validator::make($request->all(), [
+            'newsletter_email' => 'required|email|unique:elearning_ecom_newsletters,email',
+            'newsletter_name' => 'nullable|string|max:255',
+            'newsletter_message' => 'nullable|string|max:2000',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json([
+                'status' => false,
+                'message' => $validator->errors()->first(),
+            ], 422);
+        }
+
+        ElearningEcomNewsletter::create([
+            'name' => $request->input('newsletter_name', ''),
+            'email' => $request->newsletter_email,
+            'message' => $request->input('newsletter_message', ''),
+        ]);
+
+        return response()->json([
+            'status' => true,
+            'message' => 'Thank you for subscribing to our newsletter.',
+        ]);
+    }
+
+    /**
+     * GET /e-learning/get-subcategories?category_id[]=1
+     * Used by the collection filter sidebar (same as web).
+     */
+    public function getSubcategories(Request $request): \Illuminate\Http\JsonResponse
+    {
+        $categoryIds = $this->normalizeIdList($request->input('category_id'));
+
+        $query = ElearningSubCategory::where('status', 1)->orderBy('name');
+
+        if (! empty($categoryIds)) {
+            $query->whereIn('elearning_category_id', $categoryIds);
+        }
+
+        return response()->json([
+            'status' => true,
+            'message' => 'Sub-categories.',
+            'data' => $query->get(['id', 'name', 'elearning_category_id']),
+        ]);
+    }
+
+    /**
+     * GET /e-learning/topics-list
+     */
+    public function topicsList(): \Illuminate\Http\JsonResponse
+    {
+        $topics = ElearningTopic::orderBy('topic_name')->get(['id', 'topic_name']);
+
+        return response()->json([
+            'status' => true,
+            'message' => 'Topics.',
+            'data' => $topics,
+        ]);
     }
 
     /**
@@ -405,5 +554,25 @@ class ElearningController extends Controller
             'message' => 'Products by topic.',
             'data' => $products,
         ]);
+    }
+
+    /**
+     * Mobile clients often send filter ids as a single query value (e.g. category_id=18).
+     * Laravel's whereIn() requires an array — normalize scalars and arrays alike.
+     *
+     * @param  mixed  $value
+     * @return array<int, int>
+     */
+    private function normalizeIdList($value): array
+    {
+        if ($value === null || $value === '' || $value === []) {
+            return [];
+        }
+
+        if (! is_array($value)) {
+            $value = [$value];
+        }
+
+        return array_values(array_filter(array_map('intval', $value), static fn (int $id) => $id > 0));
     }
 }
