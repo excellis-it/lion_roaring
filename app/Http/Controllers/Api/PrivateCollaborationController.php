@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\API;
 
+use App\Http\Controllers\Api\Concerns\AppliesPmaCountryFromRequest;
 use App\Http\Controllers\Controller;
 use App\Models\PrivateCollaboration;
 use App\Models\CollaborationInvitation;
@@ -26,6 +27,7 @@ use Carbon\Carbon;
  */
 class PrivateCollaborationController extends Controller
 {
+    use AppliesPmaCountryFromRequest;
     /**
      * List All Private Collaborations
      *
@@ -113,19 +115,17 @@ class PrivateCollaborationController extends Controller
             return response()->json(['status' => false, 'message' => 'Permission denied.'], 403);
         }
 
-        // Determine country based on user type
-        $countryId = auth()->user()->user_type === 'Global' ? $request->country_id : auth()->user()->country;
+        $countryId = $this->resolvePmaCountryId($request);
         $request->merge(['country_id' => $countryId]);
 
-        $validator = Validator::make($request->all(), [
+        $validator = Validator::make($request->all(), array_merge([
             'title' => 'required|string',
             'description' => 'nullable|string',
             'start_time' => 'required|date',
             'end_time' => 'required|date|after:start_time',
             'meeting_link' => 'nullable|url',
             'create_zoom' => 'nullable|boolean',
-            'country_id' => 'required|exists:countries,id',
-        ]);
+        ], $this->pmaCountryValidationRules()));
 
         if ($validator->fails()) {
             return response()->json(['status' => false, 'errors' => $validator->errors()], 201);

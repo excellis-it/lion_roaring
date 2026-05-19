@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\API;
 
+use App\Http\Controllers\Api\Concerns\AppliesPmaCountryFromRequest;
 use App\Http\Controllers\Controller;
 use App\Models\Bulletin;
 use Illuminate\Http\Request;
@@ -15,6 +16,7 @@ use App\Services\NotificationService;
 
 class BulletinController extends Controller
 {
+    use AppliesPmaCountryFromRequest;
     /**
      * Bulletins List
      *
@@ -43,7 +45,7 @@ class BulletinController extends Controller
             $user_type = Auth::user()->user_type ?? 'Global';
             $user_country = Auth::user()->country ?? null;
 
-            $bulletins = Bulletin::when($searchQuery, function ($query) use ($searchQuery) {
+            $bulletins = Bulletin::with('country')->when($searchQuery, function ($query) use ($searchQuery) {
                     $query->where(function ($subQuery) use ($searchQuery) {
                         $subQuery->where('title', 'like', "%{$searchQuery}%")
                             ->orWhere('description', 'like', "%{$searchQuery}%");
@@ -57,6 +59,13 @@ class BulletinController extends Controller
                 })
                 ->orderBy('id', 'desc')
                 ->paginate(15);
+
+            $bulletins->getCollection()->transform(function ($bulletin) {
+                $bulletin->country_name = $bulletin->country?->name ?? '--';
+
+                return $bulletin;
+            });
+
             return response()->json($bulletins, 200);
         } catch (\Exception $e) {
             return response()->json(['error' => 'Failed to load bulletins.'], 500);
@@ -230,24 +239,13 @@ class BulletinController extends Controller
      */
     public function store(Request $request)
     {
-        $user_type = Auth::user()->user_type ?? 'Global';
-        $user_country = Auth::user()->country ?? null;
+        $country_id = $this->resolvePmaCountryId($request);
+        $request->merge(['country_id' => $country_id]);
 
-        if ($user_type === 'Global') {
-            $validated = Validator::make($request->all(), [
-                'title' => 'required|string|max:255',
-                'description' => 'required|string',
-                'country_id' => 'required|exists:countries,id',
-            ]);
-            $country_id = $request->get('country_id');
-        } else {
-            $validated = Validator::make($request->all(), [
-                'title' => 'required|string|max:255',
-                'description' => 'required|string',
-            ]);
-            $country_id = $user_country;
-            $request->merge(['country_id' => $country_id]);
-        }
+        $validated = Validator::make($request->all(), array_merge([
+            'title' => 'required|string|max:255',
+            'description' => 'required|string',
+        ], $this->pmaCountryValidationRules()));
 
         if ($validated->fails()) {
             return response()->json(['error' => $validated->errors()], 201);
@@ -294,23 +292,22 @@ class BulletinController extends Controller
      */
     public function update(Request $request, $id)
     {
+        $country_id = $this->resolvePmaCountryId($request);
+        $request->merge(['country_id' => $country_id]);
+
         $user_type = Auth::user()->user_type ?? 'Global';
         $user_country = Auth::user()->country ?? null;
 
-        if ($user_type === 'Global') {
-            $validated = Validator::make($request->all(), [
+        if ($this->requiresPmaCountryFromRequest()) {
+            $validated = Validator::make($request->all(), array_merge([
                 'title' => 'string|max:255',
                 'description' => 'string',
-                'country_id' => 'required|exists:countries,id',
-            ]);
-            $country_id = $request->get('country_id');
+            ], $this->pmaCountryValidationRules()));
         } else {
             $validated = Validator::make($request->all(), [
                 'title' => 'string|max:255',
                 'description' => 'string',
             ]);
-            $country_id = $user_country;
-            $request->merge(['country_id' => $country_id]);
         }
 
         if ($validated->fails()) {
