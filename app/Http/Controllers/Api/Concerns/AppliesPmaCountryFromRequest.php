@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Api\Concerns;
 
+use App\Models\Country;
 use Illuminate\Http\Request;
 
 trait AppliesPmaCountryFromRequest
@@ -15,11 +16,20 @@ trait AppliesPmaCountryFromRequest
 
     protected function resolvePmaCountryId(Request $request): int
     {
-        if ($this->requiresPmaCountryFromRequest()) {
+        $user = auth()->user();
+
+        if ($user->hasNewRole('SUPER ADMIN') || $user->user_type === 'Global') {
             return (int) $request->input('country_id');
         }
 
-        return (int) auth()->user()->country;
+        $currentCountry = Country::findByCurrentRequest();
+        $isOnGlobalServer = $currentCountry && $currentCountry->is_global;
+
+        if ($user->user_type === 'G_R' && $isOnGlobalServer) {
+            return (int) Country::where('code', 'GL')->value('id');
+        }
+
+        return (int) $user->country;
     }
 
     /**

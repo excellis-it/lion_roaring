@@ -2,8 +2,10 @@
 
 namespace App\Http\Controllers\API;
 
+use App\Http\Controllers\Api\Concerns\AppliesPmaContentScope;
 use App\Http\Controllers\Api\Concerns\AppliesPmaCountryFromRequest;
 use App\Http\Controllers\Controller;
+use App\Models\Country;
 use App\Models\PrivateCollaboration;
 use App\Models\CollaborationInvitation;
 use App\Models\User;
@@ -28,6 +30,7 @@ use Carbon\Carbon;
 class PrivateCollaborationController extends Controller
 {
     use AppliesPmaCountryFromRequest;
+    use AppliesPmaContentScope;
     /**
      * List All Private Collaborations
      *
@@ -62,16 +65,9 @@ class PrivateCollaborationController extends Controller
             $searchQuery = trim((string) $request->get('search', ''));
             $searchQuery = $searchQuery !== '' ? $searchQuery : null;
 
-            $userType = auth()->user()->user_type ?? null;
-            $userCountry = auth()->user()->country ?? null;
+            $ctx = $this->pmaScopeContext();
 
             $query = PrivateCollaboration::with(['user', 'invitations.user'])
-                ->where(function ($query) {
-                    $query->where('user_id', auth()->id())
-                        ->orWhereHas('invitations', function ($q) {
-                            $q->where('user_id', auth()->id());
-                        });
-                })
                 ->when($searchQuery, function ($q) use ($searchQuery) {
                     $q->where(function ($sq) use ($searchQuery) {
                         $sq->where('title', 'like', "%{$searchQuery}%")
@@ -79,9 +75,7 @@ class PrivateCollaborationController extends Controller
                     });
                 });
 
-            if ($userType !== 'Global') {
-                $query->where('country_id', $userCountry);
-            }
+            $this->applyPmaPrivateCollaborationScope($query, $ctx);
 
             $collaborations = $query->orderBy('id', 'desc')->paginate(15);
 
@@ -125,6 +119,8 @@ class PrivateCollaborationController extends Controller
             'end_time' => 'required|date|after:start_time',
             'meeting_link' => 'nullable|url',
             'create_zoom' => 'nullable|boolean',
+            'invitees' => 'required|array|min:1',
+            'invitees.*' => 'integer|exists:users,id',
         ], $this->pmaCountryValidationRules()));
 
         if ($validator->fails()) {
@@ -162,12 +158,24 @@ class PrivateCollaborationController extends Controller
                 }
             }
 
+            $invitees = $request->input('invitees', []);
+            $eligibleCount = User::whereIn('id', $invitees)
+                ->whereHas('roles.permissions', function ($q) {
+                    $q->where('name', 'Manage Private Collaboration');
+                })
+                ->where('id', '!=', auth()->id())
+                ->count();
+
+            if (count($invitees) !== $eligibleCount) {
+                return response()->json([
+                    'status' => false,
+                    'message' => 'One or more selected invitees are not eligible for invitation.',
+                ], 422);
+            }
+
             $collaboration = PrivateCollaboration::create($data);
 
-            // Send invitations to eligible users & notify
-            $this->sendInvitationsToEligibleUsers($collaboration);
-            $userName = Auth::user()->full_name ?? (Auth::user()->first_name . ' ' . Auth::user()->last_name);
-            NotificationService::notifyAllUsers('New collaboration created by ' . $userName, 'collaboration');
+            $this->sendInvitationsToSelectedUsers($collaboration, $invitees);
 
             return response()->json(['status' => true, 'message' => 'Private collaboration created successfully and invitations sent.', 'data' => $collaboration], 200);
         } catch (\Exception $e) {
@@ -384,22 +392,11 @@ class PrivateCollaborationController extends Controller
                 return response()->json(['status' => false, 'message' => 'Permission denied.'], 403);
             }
 
-            $userType = auth()->user()->user_type ?? null;
-            $userCountry = auth()->user()->country ?? null;
+            $ctx = $this->pmaScopeContext();
+            $query = PrivateCollaboration::with(['user', 'invitations.user']);
+            $this->applyPmaPrivateCollaborationScope($query, $ctx);
 
-            $query = PrivateCollaboration::with(['user', 'invitations.user'])
-                ->where(function ($query) {
-                    $query->where('user_id', auth()->id())
-                        ->orWhereHas('invitations', function ($q) {
-                            $q->where('user_id', auth()->id());
-                        });
-                });
-
-            if ($userType !== 'Global') {
-                $query->where('country_id', $userCountry);
-            }
-
-            $collaborations = $query->get()
+            $collaborations = $query->orderBy('id', 'desc')->get()
                 ->map(function ($collaboration) {
                     $isCreator = $collaboration->user_id == auth()->id();
                     $invitation = $collaboration->invitations->where('user_id', auth()->id())->first();
@@ -506,23 +503,97 @@ class PrivateCollaborationController extends Controller
         }
     }
 
-    protected function sendInvitationsToEligibleUsers($collaboration)
+    /**
+     * Eligible users for collaboration invitees (mirrors web getEligibleUsers).
+     */
+    public function getEligibleUsers(Request $request)
     {
-        $users = User::whereHas('roles.permissions', function ($query) {
-            $query->where('name', 'Manage Private Collaboration');
-        })->where('id', '!=', auth()->id())->get();
+        if (! auth()->user()->can('Create Private Collaboration')) {
+            return response()->json(['status' => false, 'message' => 'Permission denied.'], 403);
+        }
+
+        $request->validate([
+            'country_id' => 'required|exists:countries,id',
+        ]);
+
+        $country = Country::findOrFail($request->country_id);
+        $authUser = auth()->user();
+
+        if ($country->code == 'GL') {
+            $users = User::whereHas('userRole', function ($query) {
+                $query->where('name', '!=', 'SUPER ADMIN');
+            })->whereIn('user_type', ['Global', 'G_R'])
+                ->where('status', 1)
+                ->where('id', '!=', auth()->id())
+                ->orderBy('first_name')->orderBy('last_name')->get();
+        } else {
+            $usersQuery = User::whereHas('userRole', function ($query) {
+                $query->where('name', '!=', 'SUPER ADMIN');
+            })->where('id', '!=', auth()->id())
+                ->whereIn('user_type', ['Regional', 'G_R'])
+                ->where('status', 1)
+                ->where('country', $country->id);
+
+            if ($authUser && $authUser->is_ecclesia_admin == 1) {
+                $manageEcclesiaIds = is_array($authUser->manage_ecclesia)
+                    ? $authUser->manage_ecclesia
+                    : explode(',', (string) ($authUser->manage_ecclesia ?? ''));
+                $usersQuery->where(function ($q) use ($manageEcclesiaIds) {
+                    $q->where(function ($sub) use ($manageEcclesiaIds) {
+                        $sub->whereIn('ecclesia_id', $manageEcclesiaIds)->whereNotNull('ecclesia_id');
+                    });
+                    foreach ($manageEcclesiaIds as $id) {
+                        $id = trim($id);
+                        if ($id !== '') {
+                            $q->orWhereRaw('FIND_IN_SET(?, manage_ecclesia)', [$id]);
+                        }
+                    }
+                });
+            }
+
+            $users = $usersQuery->orderBy('first_name')->orderBy('last_name')->get();
+        }
+
+        $result = $users->map(function ($user) {
+            return [
+                'id' => $user->id,
+                'text' => $user->full_name.' <'.$user->email.'>',
+                'full_name' => $user->full_name,
+                'email' => $user->email,
+            ];
+        });
+
+        return response()->json(['status' => true, 'users' => $result], 200);
+    }
+
+    protected function sendInvitationsToSelectedUsers($collaboration, array $userIds = []): void
+    {
+        if (empty($userIds)) {
+            return;
+        }
+
+        $users = User::whereIn('id', $userIds)->where('id', '!=', auth()->id())->get();
 
         foreach ($users as $user) {
-            CollaborationInvitation::create([
-                'collaboration_id' => $collaboration->id,
-                'user_id' => $user->id,
-                'status' => 'pending',
-            ]);
+            CollaborationInvitation::updateOrCreate(
+                ['collaboration_id' => $collaboration->id, 'user_id' => $user->id],
+                ['status' => 'pending']
+            );
 
             try {
                 Mail::to($user->email)->send(new CollaborationInvitationMail($collaboration, $user));
             } catch (\Exception $e) {
-                Log::error('Failed to send invitation email to user ' . $user->id . ': ' . $e->getMessage());
+                Log::error('Failed to send invitation email to user '.$user->id.': '.$e->getMessage());
+            }
+
+            try {
+                NotificationService::notifyUser(
+                    $user->id,
+                    'You have been invited to a collaboration: '.$collaboration->title,
+                    'collaboration'
+                );
+            } catch (\Exception $e) {
+                Log::error('Failed to send in-app notification to user '.$user->id.': '.$e->getMessage());
             }
         }
     }

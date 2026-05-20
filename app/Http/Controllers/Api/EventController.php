@@ -2,16 +2,23 @@
 
 namespace App\Http\Controllers\API;
 
+use App\Http\Controllers\Api\Concerns\AppliesPmaContentScope;
+use App\Http\Controllers\Api\Concerns\AppliesPmaCountryFromRequest;
 use App\Http\Controllers\Controller;
+use App\Mail\EventInvitation;
+use App\Models\Country;
 use App\Models\Event;
 use App\Models\EventRsvp;
 use App\Models\EventPayment;
+use App\Models\User;
 use App\Services\CheckoutPaymentService;
 use App\Services\NotificationService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Str;
 
 /**
@@ -22,6 +29,9 @@ use Illuminate\Support\Str;
 
 class EventController extends Controller
 {
+    use AppliesPmaContentScope;
+    use AppliesPmaCountryFromRequest;
+
     /**
      * List All events
      * @queryParam search string optional for search. Example: "abc"
@@ -60,20 +70,28 @@ class EventController extends Controller
             $searchQuery = trim((string) $request->get('search', ''));
             $searchQuery = $searchQuery !== '' ? $searchQuery : null;
 
-            $userType = auth()->user()->user_type ?? null;
-            $userCountry = auth()->user()->country ?? null;
+            $ctx = $this->pmaScopeContext();
 
-            $query = Event::with('user')
+            $query = Event::with(['user', 'country'])
                 ->when($searchQuery, function ($query) use ($searchQuery) {
-                    $query->where('title', 'like', "%{$searchQuery}%")
-                        ->orWhere('description', 'like', "%{$searchQuery}%");
+                    $query->where(function ($q) use ($searchQuery) {
+                        $q->where('title', 'like', "%{$searchQuery}%")
+                            ->orWhere('description', 'like', "%{$searchQuery}%");
+                    });
                 });
 
-            if ($userType !== 'Global') {
-                $query->where('country_id', $userCountry);
-            }
+            $this->applyPmaEventScope($query, $ctx);
 
             $events = $query->orderBy('id', 'desc')->paginate(15);
+
+            $events->getCollection()->transform(function ($event) {
+                $event->user_rsvp_status = EventRsvp::where('event_id', $event->id)
+                    ->where('user_id', auth()->id())
+                    ->value('status');
+                $event->is_host = auth()->id() === $event->user_id;
+
+                return $event;
+            });
 
             return response()->json($events, 200);
         } catch (\Exception $e) {
@@ -112,23 +130,23 @@ class EventController extends Controller
             return response()->json(['status' => false, 'message' => 'Permission denied.'], 403);
         }
 
-        // Determine country based on user type
-        $countryId = auth()->user()->user_type === 'Global' ? $request->country_id : auth()->user()->country;
+        $countryId = $this->resolvePmaCountryId($request);
 
         // Normalize send_notification checkbox variants
         $sendNotification = $request->has('send_notification') && ($request->send_notification === 'on' || $request->send_notification === true || $request->send_notification === '1');
 
         $request->merge(['country_id' => $countryId, 'send_notification' => $sendNotification]);
 
-        $rules = [
+        $rules = array_merge([
             'title' => 'required|string|max:255',
             'description' => 'required|string',
             'start' => 'required|date',
             'end' => 'required|date|after:start',
-            'country_id' => 'required|exists:countries,id',
             'type' => 'required|in:free,paid',
             'capacity' => 'nullable|integer|min:1',
-        ];
+            'event_link' => 'nullable|string',
+            'send_notification' => 'nullable|boolean',
+        ], $this->pmaCountryValidationRules());
 
         if ($request->type === 'paid') {
             $rules['price'] = 'required|numeric|min:0.01';
@@ -220,14 +238,18 @@ class EventController extends Controller
     public function show($id)
     {
         try {
-            $userType = auth()->user()->user_type ?? null;
-            $userCountry = auth()->user()->country ?? null;
-
-            if ($userType === 'Global') {
-                $event = Event::with('user')->findOrFail($id);
-            } else {
-                $event = Event::with('user')->where('country_id', $userCountry)->findOrFail($id);
+            if (! auth()->user()->can('View Event')) {
+                return response()->json(['error' => 'Permission denied.'], 403);
             }
+
+            $ctx = $this->pmaScopeContext();
+            $query = Event::with('user');
+            $this->applyPmaEventScope($query, $ctx);
+            $event = $query->findOrFail($id);
+            $event->user_rsvp_status = EventRsvp::where('event_id', $event->id)
+                ->where('user_id', auth()->id())
+                ->value('status');
+            $event->is_host = auth()->id() === $event->user_id;
 
             return response()->json(['data' => $event], 200);
         } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
@@ -257,19 +279,18 @@ class EventController extends Controller
             return response()->json(['status' => false, 'message' => 'Permission denied.'], 403);
         }
 
-        // Determine country based on user type
-        $countryId = auth()->user()->user_type === 'Global' ? $request->country_id : auth()->user()->country;
+        $countryId = $this->resolvePmaCountryId($request);
         $request->merge(['country_id' => $countryId]);
 
-        $rules = [
+        $rules = array_merge([
             'title' => 'required|string|max:255',
             'description' => 'required|string',
             'start' => 'required|date',
             'end' => 'required|date|after:start',
-            'country_id' => 'required|exists:countries,id',
             'type' => 'required|in:free,paid',
             'capacity' => 'nullable|integer|min:1',
-        ];
+            'event_link' => 'nullable|string',
+        ], $this->pmaCountryValidationRules());
 
         if ($request->type === 'paid') {
             $rules['price'] = 'required|numeric|min:0.01';
@@ -390,15 +411,11 @@ class EventController extends Controller
                 return response()->json(['status' => false, 'message' => 'Permission denied.'], 403);
             }
 
-            $userType = auth()->user()->user_type ?? null;
-            $userCountry = auth()->user()->country ?? null;
+            $ctx = $this->pmaScopeContext();
+            $query = Event::query();
+            $this->applyPmaEventScope($query, $ctx);
 
-            $query = Event::orderBy('id', 'desc');
-            if ($userType !== 'Global') {
-                $query->where('country_id', $userCountry);
-            }
-
-            $events = $query->get()->map(function ($event) {
+            $events = $query->orderBy('id', 'desc')->get()->map(function ($event) {
                 return [
                     'id' => $event->id,
                     'title' => $event->title,
@@ -667,5 +684,49 @@ class EventController extends Controller
             'message' => 'Payment confirmed.',
             'data' => $paymentRow->fresh()->load('rsvp'),
         ]);
+    }
+
+    /**
+     * Send in-app and email notifications for a new/updated live event (mirrors web LiveEventController).
+     */
+    protected function sendNotifications(Event $event, string $message): void
+    {
+        $query = User::where('status', 1)->where('is_accept', 1);
+
+        if (! auth()->user()->hasNewRole('SUPER ADMIN')) {
+            $currentCountry = Country::findByCurrentRequest();
+            $isOnGlobalServer = $currentCountry && $currentCountry->is_global;
+            $userType = auth()->user()->user_type;
+
+            if ($userType == 'Global' || ($userType == 'G_R' && $isOnGlobalServer)) {
+                $query->whereIn('user_type', ['Global', 'G_R']);
+            } else {
+                $query->whereIn('user_type', ['Regional', 'G_R'])
+                    ->where('country', auth()->user()->country);
+
+                if (auth()->user()->is_ecclesia_admin == 1) {
+                    $manageEcclesiaIds = is_array(auth()->user()->manage_ecclesia)
+                        ? auth()->user()->manage_ecclesia
+                        : explode(',', (string) (auth()->user()->manage_ecclesia ?? ''));
+                    $query->whereIn('ecclesia_id', $manageEcclesiaIds);
+                }
+            }
+        }
+
+        $users = $query->get();
+
+        foreach ($users as $user) {
+            try {
+                NotificationService::saveNotification($user->id, $message, 'live_event');
+            } catch (\Exception $e) {
+                Log::error('Failed to send in-app notification to user '.$user->id.': '.$e->getMessage());
+            }
+
+            try {
+                Mail::to($user->email)->queue(new EventInvitation($event));
+            } catch (\Exception $e) {
+                Log::error('Failed to send event invitation email to '.$user->email.': '.$e->getMessage());
+            }
+        }
     }
 }

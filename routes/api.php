@@ -514,6 +514,7 @@ Route::prefix('v3')->middleware(['userActivity'])->group(function () {
 
         Route::prefix('private-collaborations')->group(function () {
             Route::get('/load', [PrivateCollaborationController::class, 'index']);
+            Route::get('/eligible-users', [PrivateCollaborationController::class, 'getEligibleUsers']);
             Route::post('/store', [PrivateCollaborationController::class, 'store']);
             Route::get('/view/{id}', [PrivateCollaborationController::class, 'show']);
             Route::post('/edit/{id}', [PrivateCollaborationController::class, 'update']);
