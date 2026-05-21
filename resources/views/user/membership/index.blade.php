@@ -1,5 +1,5 @@
 @extends('user.layouts.master')
-@section('title', 'My Membership')
+@section('title', 'My Plan')
 @section('content')
     @php use App\Helpers\Helper; @endphp
 
@@ -16,7 +16,7 @@
                 <div class="alert alert-danger d-flex align-items-center mb-3" role="alert">
                     <i class="fa fa-exclamation-triangle me-2"></i>
                     <div>
-                        Your membership expired on
+                        Your plan expired on
                         <strong>{{ \Carbon\Carbon::parse($user_subscription->subscription_expire_date)->format('F d, Y') }}</strong>.
                         Please select a plan below to renew your account.
                     </div>
@@ -24,7 +24,7 @@
             @endif
             <div class="d-flex justify-content-between align-items-center mb-3">
                 <div>
-                    <h3 class="mb-0">My Membership</h3>
+                    <h3 class="mb-0">My Plan</h3>
                     <p class="text-muted small mb-0">Manage your plan — renew, upgrade and view benefits</p>
                 </div>
                 <div class="text-end d-none d-md-block">
@@ -36,7 +36,7 @@
                     <div
                         class="card p-4 h-100 text-center {{ $user_subscription ? 'current-card' : '' }} membership-current-card">
                         <div class="mb-3 d-flex align-items-center justify-content-center">
-                            <h5 class="mb-0 me-2">{{ $measurement->membership_card_title ?? 'My Current Membership' }}</h5>
+                            <h5 class="mb-0 me-2">{{ $measurement->membership_card_title ?? 'My Current Plan' }}</h5>
 
                         </div>
                         <div class="my-3 text-start">
@@ -44,10 +44,13 @@
                                 @php
                                     $expireDate = \Carbon\Carbon::parse($user_subscription->subscription_expire_date);
                                     $remainingDays = now()->diffInDays($expireDate, false);
-                                    $canRenew = ($remainingDays <= 30 && $remainingDays >= 0) || $expireDate->isPast();
+                                    $canRenew = true;
                                 @endphp
 
                                 <h4 class="mb-1">{{ $user_subscription->subscription_name }}</h4>
+                                <div class="text-muted">Email:
+                                    <strong>{{ auth()->user()->email ?? 'N/A' }}</strong>
+                                </div>
                                 @if ($user_subscription->subscription_start_date)
                                     <div class="text-muted">Started:
                                         <strong>{{ date('F j, Y', strtotime($user_subscription->subscription_start_date)) }}</strong>
@@ -103,7 +106,8 @@
                                         </button>
                                     @else
                                         @php $daysToOpen = max(0, $remainingDays - 30); @endphp
-                                        <button type="button" class="btn btn-secondary w-100" disabled>Renew Now (available in
+                                        <button type="button" class="btn btn-secondary w-100" disabled>Renew Now (available
+                                            in
                                             {{ $daysToOpen }} days)</button>
                                     @endif
                                     <button type="button" class="btn btn-primary btn-sm mt-2 w-100" data-bs-toggle="modal"
@@ -157,10 +161,11 @@
                                                             class="btn btn-upgrade btn-primary js-promo-checkout"
                                                             data-tier-id="{{ $tier->id }}"
                                                             data-tier-name="{{ $tier->name }}"
-                                                            data-tier-cost="{{ $tier->cost }}"
-                                                            data-renew="1">Renew Plan</button>
+                                                            data-tier-cost="{{ $tier->cost }}" data-renew="1">Renew
+                                                            Plan</button>
                                                     @else
-                                                        <span class="btn btn-sm btn-outline-primary disabled">Current Plan</span>
+                                                        <span class="btn btn-sm btn-outline-primary disabled">Current
+                                                            Plan</span>
                                                     @endif
                                                 @elseif (($tier->pricing_type ?? 'amount') === 'token')
                                                     <button type="button"
@@ -194,8 +199,8 @@
                                                             class="btn btn-upgrade btn-primary js-promo-checkout"
                                                             data-tier-id="{{ $tier->id }}"
                                                             data-tier-name="{{ $tier->name }}"
-                                                            data-tier-cost="{{ $tier->cost }}"
-                                                            data-renew="1">Downgrade to {{ $tier->name }}</button>
+                                                            data-tier-cost="{{ $tier->cost }}" data-renew="1">Downgrade
+                                                            to {{ $tier->name }}</button>
                                                     @else
                                                         <span class="btn btn-sm btn-outline-primary disabled"></span>
                                                     @endif
@@ -252,7 +257,8 @@
                         aria-label="Close" style="top: 20px; right: 20px; z-index: 10;"></button>
                     <div class="position-relative" style="z-index: 1;">
                         <h4 class="modal-title text-white fw-bold mb-0" id="tokenAgreeModalTitle">Tier - Agreement</h4>
-                        <p class="text-white-50 mb-0 small"><i class="fa fa-file-signature me-1"></i> Terms & Conditions</p>
+                        <p class="text-white-50 mb-0 small"><i class="fa fa-file-signature me-1"></i> Terms & Conditions
+                        </p>
                     </div>
                 </div>
 
@@ -615,9 +621,14 @@
                     fontFamily: '"Helvetica Neue", Helvetica, sans-serif',
                     fontSmoothing: 'antialiased',
                     fontSize: '16px',
-                    '::placeholder': { color: '#aab7c4' }
+                    '::placeholder': {
+                        color: '#aab7c4'
+                    }
                 },
-                invalid: { color: '#fa755a', iconColor: '#fa755a' }
+                invalid: {
+                    color: '#fa755a',
+                    iconColor: '#fa755a'
+                }
             }
         });
         membershipCard.mount('#membership-card-element');
@@ -667,7 +678,8 @@
             if (finalAmount <= 0) {
                 $('#proceedToCheckout').html('Complete Subscription <i class="fa fa-check-circle ms-2 small"></i>');
             } else {
-                $('#proceedToCheckout').html((isRenewMode ? 'Renew' : 'Checkout') + ' <i class="fa fa-arrow-right ms-2 small"></i>');
+                $('#proceedToCheckout').html((isRenewMode ? 'Renew' : 'Checkout') +
+                    ' <i class="fa fa-arrow-right ms-2 small"></i>');
             }
 
             // Show modal
@@ -684,7 +696,8 @@
             var promoCode = $('#promoCodeInput').val().trim();
 
             if (!promoCode) {
-                $('#promoMessage').text('Please enter a promo code').removeClass('text-success').addClass('text-danger');
+                $('#promoMessage').text('Please enter a promo code').removeClass('text-success').addClass(
+                    'text-danger');
                 return;
             }
 
@@ -694,7 +707,11 @@
             $.ajax({
                 url: '{{ route('user.promo-codes.validate') }}',
                 method: 'POST',
-                data: { _token: '{{ csrf_token() }}', code: promoCode, tier_id: currentTierId },
+                data: {
+                    _token: '{{ csrf_token() }}',
+                    code: promoCode,
+                    tier_id: currentTierId
+                },
                 success: function(response) {
                     if (response.valid) {
                         appliedPromoCode = promoCode;
@@ -704,21 +721,29 @@
                         $('#discountAmount').text('-$' + discount.toFixed(2));
                         $('#finalPrice').text('$' + finalAmount.toFixed(2));
                         $('#discountRow').show();
-                        $('#promoMessage').html('<i class="fa fa-check-circle me-1"></i> Promo code applied successfully!').removeClass('text-danger').addClass('text-success');
+                        $('#promoMessage').html(
+                            '<i class="fa fa-check-circle me-1"></i> Promo code applied successfully!'
+                        ).removeClass('text-danger').addClass('text-success');
                         $('#promoCodeInput').prop('readonly', true);
                         updateCardSectionVisibility();
                         if (finalAmount <= 0) {
-                            $('#proceedToCheckout').html('Complete Subscription <i class="fa fa-check-circle ms-2 small"></i>');
+                            $('#proceedToCheckout').html(
+                                'Complete Subscription <i class="fa fa-check-circle ms-2 small"></i>'
+                            );
                         } else {
-                            $('#proceedToCheckout').html((isRenewMode ? 'Renew' : 'Checkout') + ' <i class="fa fa-arrow-right ms-2 small"></i>');
+                            $('#proceedToCheckout').html((isRenewMode ? 'Renew' : 'Checkout') +
+                                ' <i class="fa fa-arrow-right ms-2 small"></i>');
                         }
                     } else {
-                        $('#promoMessage').text(response.message || 'Invalid promo code').removeClass('text-success').addClass('text-danger');
+                        $('#promoMessage').text(response.message || 'Invalid promo code').removeClass(
+                            'text-success').addClass('text-danger');
                     }
                 },
                 error: function(xhr) {
-                    var message = xhr.responseJSON && xhr.responseJSON.message ? xhr.responseJSON.message : 'Failed to validate promo code';
-                    $('#promoMessage').text(message).removeClass('text-success').addClass('text-danger');
+                    var message = xhr.responseJSON && xhr.responseJSON.message ? xhr.responseJSON
+                        .message : 'Failed to validate promo code';
+                    $('#promoMessage').text(message).removeClass('text-success').addClass(
+                        'text-danger');
                 },
                 complete: function() {
                     $('#applyPromoBtn').prop('disabled', false).text('Apply');
@@ -727,13 +752,17 @@
         });
 
         $('#promoCodeInput').on('keypress', function(e) {
-            if (e.which === 13) { e.preventDefault(); $('#applyPromoBtn').click(); }
+            if (e.which === 13) {
+                e.preventDefault();
+                $('#applyPromoBtn').click();
+            }
         });
 
         // Proceed to checkout — inline Stripe payment
         $('#proceedToCheckout').on('click', function() {
             var btn = $(this);
-            btn.prop('disabled', true).html('<span class="spinner-border spinner-border-sm me-1"></span> Processing...');
+            btn.prop('disabled', true).html(
+                '<span class="spinner-border spinner-border-sm me-1"></span> Processing...');
             $('#membership-card-errors').text('');
 
             function submitPayment(stripeToken) {
@@ -751,16 +780,21 @@
                         if (response.success) {
                             // Close modal and redirect with success message
                             $('#promoCodeModal').modal('hide');
-                            window.location.href = '{{ route('user.membership.index') }}?payment=success';
+                            window.location.href =
+                                '{{ route('user.membership.index') }}?payment=success';
                         } else {
-                            $('#membership-card-errors').text(response.message || 'Payment failed. Please try again.');
-                            btn.prop('disabled', false).html((isRenewMode ? 'Renew' : 'Checkout') + ' <i class="fa fa-arrow-right ms-2 small"></i>');
+                            $('#membership-card-errors').text(response.message ||
+                                'Payment failed. Please try again.');
+                            btn.prop('disabled', false).html((isRenewMode ? 'Renew' : 'Checkout') +
+                                ' <i class="fa fa-arrow-right ms-2 small"></i>');
                         }
                     },
                     error: function(xhr) {
-                        var msg = xhr.responseJSON && xhr.responseJSON.message ? xhr.responseJSON.message : 'An error occurred. Please try again.';
+                        var msg = xhr.responseJSON && xhr.responseJSON.message ? xhr.responseJSON
+                            .message : 'An error occurred. Please try again.';
                         $('#membership-card-errors').text(msg);
-                        btn.prop('disabled', false).html((isRenewMode ? 'Renew' : 'Checkout') + ' <i class="fa fa-arrow-right ms-2 small"></i>');
+                        btn.prop('disabled', false).html((isRenewMode ? 'Renew' : 'Checkout') +
+                            ' <i class="fa fa-arrow-right ms-2 small"></i>');
                     }
                 });
             }
@@ -772,7 +806,8 @@
                 membershipStripe.createToken(membershipCard).then(function(result) {
                     if (result.error) {
                         $('#membership-card-errors').text(result.error.message);
-                        btn.prop('disabled', false).html((isRenewMode ? 'Renew' : 'Checkout') + ' <i class="fa fa-arrow-right ms-2 small"></i>');
+                        btn.prop('disabled', false).html((isRenewMode ? 'Renew' : 'Checkout') +
+                            ' <i class="fa fa-arrow-right ms-2 small"></i>');
                     } else {
                         submitPayment(result.token.id);
                     }
