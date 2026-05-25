@@ -12,6 +12,7 @@ use App\Models\Ecclesia;
 use App\Models\Team;
 use App\Models\TeamMember;
 use App\Models\User;
+use App\Helpers\Helper;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Crypt;
@@ -32,8 +33,15 @@ class PartnerController extends Controller
     /**
      * List Of Members
      * @queryParam search string optional for search. Example: "abc"
+      * @queryParam status string optional Filter by status (1/0/active/inactive). Example: active
+      * @queryParam country_id int optional Filter by country id. Example: 101
+      * @queryParam has_agreement int optional Filter by registration agreement (1=yes,0=no). Example: 1
+      * @queryParam sortby string optional Sort field: id, name, user_name, email, phone, address, user_type, country, created_at. Example: name
+      * @queryParam sorttype string optional Sort direction: asc or desc. Example: desc
      *
      * @response 200 {
+      *    "status": true,
+      *    "message": "Members fetched successfully.",
      *    "data": {
      *        "current_page": 1,
      *        "data": [
@@ -139,7 +147,8 @@ class PartnerController extends Controller
      *    }
      * }
      *
-     * @response 201 {
+     * @response 500 {
+     *    "status": false,
      *    "message": "Error occurred while fetching the partners."
      * }
      */
@@ -150,68 +159,158 @@ class PartnerController extends Controller
             $query = $request->get('search');
             $searchQuery = str_replace(" ", "%", $query);
             $user = Auth::user();
-            $is_user_ecclesia_admin = $user->is_ecclesia_admin;
+            $firstRoleType = (int) ($user->userRole?->type ?? 0);
+            $isSuperAdmin = ($user->userRole?->name ?? '') === 'SUPER ADMIN';
+            $isEcclesiaUser = (int) ($user->userRole?->is_ecclesia ?? 0) === 1;
             $user_ecclesia_id = $user->ecclesia_id;
+            $currentCode = strtoupper(Helper::getVisitorCountryCode());
+            $sortBy = $request->get('sortby', 'id');
+            $sortType = strtolower((string) $request->get('sorttype', 'desc')) === 'asc' ? 'asc' : 'desc';
+            $status = $request->get('status');
+            $countryId = $request->get('country_id');
+            $hasAgreement = $request->get('has_agreement');
 
             // Build the query with search filters (name, email, phone)
-            $partners = User::with(['ecclesia', 'roles'])
-                ->whereHas('roles', function ($q) {
-                    $q->where('name', '!=', 'SUPER ADMIN');
+            $partners = User::with(['ecclesia', 'userRole', 'roles', 'countries', 'states', 'warehouses', 'userRegisterAgreement'])
+                ->leftJoin('user_types as ut', 'users.user_type_id', '=', 'ut.id')
+                ->where(function ($q) {
+                    $q->whereNull('ut.id')
+                        ->orWhere(function ($subQ) {
+                            $subQ->where('ut.name', '!=', 'SUPER ADMIN');
+                        });
                 })
+                ->select('users.*')
                 ->when($searchQuery, function ($query) use ($searchQuery) {
                     $query->where(function ($q) use ($searchQuery) {
-                        $q->where('id', 'like', "%{$searchQuery}%")
-                            ->orWhereRaw('CONCAT(COALESCE(first_name, ""), " ", COALESCE(middle_name, ""), " ", COALESCE(last_name, "")) LIKE ?', ["%{$searchQuery}%"])
-                            ->orWhere('email', 'like', "%{$searchQuery}%")
-                            ->orWhere('phone', 'like', "%{$searchQuery}%");
+                        $q->where('users.id', 'like', "%{$searchQuery}%")
+                            ->orWhereRaw('CONCAT(COALESCE(users.first_name, ""), " ", COALESCE(users.middle_name, ""), " ", COALESCE(users.last_name, "")) LIKE ?', ["%{$searchQuery}%"])
+                            ->orWhere('users.email', 'like', "%{$searchQuery}%")
+                            ->orWhere('users.phone', 'like', "%{$searchQuery}%")
+                            ->orWhere('users.user_name', 'like', "%{$searchQuery}%")
+                            ->orWhere('users.user_type', 'like', "%{$searchQuery}%")
+                            ->orWhereHas('countries', function ($countryQuery) use ($searchQuery) {
+                                $countryQuery->where('name', 'like', "%{$searchQuery}%");
+                            });
                         //   ->orWhere('address', 'like', "%{$searchQuery}%")
                         //   ->orWhere('city', 'like', "%{$searchQuery}%")
                         //   ->orWhere('state', 'like', "%{$searchQuery}%")
                         //   ->orWhere('country', 'like', "%{$searchQuery}%");
                     });
-                })
-                ->orderBy('id', 'desc');
-
-            if ($is_user_ecclesia_admin == 1) {
-                $manage_ecclesia_ids = is_array($user->manage_ecclesia)
-                    ? $user->manage_ecclesia
-                    : explode(',', $user->manage_ecclesia);
-
-                $partners->whereHas('roles', function ($q) {
-                    $q->whereIn('type', [2, 3]);
-                })
-                    ->where(function ($q) use ($manage_ecclesia_ids, $user) {
-                        $q->whereIn('ecclesia_id', $manage_ecclesia_ids)->whereNotNull('ecclesia_id')
-                            ->orWhere('created_id', $user->id)->orWhere('id', auth()->id());
-                    });
-            } elseif ($user->hasNewRole('SUPER ADMIN')) {
-                $partners->whereHas('roles', function ($q) {
-                    $q->whereIn('type', [2, 3]);
-                })
-                    ->where('id', '!=', $user->id);
-            } else {
-                $partners->where(function ($q) use ($user_ecclesia_id, $user) {
-                    $q->where('ecclesia_id', $user_ecclesia_id)->whereNotNull('ecclesia_id')
-                        ->orWhere('created_id', $user->id)->orWhere('id', auth()->id());
                 });
+
+            if ($status !== null && $status !== '') {
+                if ($status === 'active') {
+                    $partners->where('status', 1);
+                } elseif ($status === 'inactive') {
+                    $partners->where('status', 0);
+                } elseif (in_array((string) $status, ['0', '1'], true)) {
+                    $partners->where('status', (int) $status);
+                }
+            }
+
+            if (!empty($countryId)) {
+                $partners->where('country', $countryId);
+            }
+
+            if ($hasAgreement === '1') {
+                $partners->whereHas('userRegisterAgreement');
+            } elseif ($hasAgreement === '0') {
+                $partners->whereDoesntHave('userRegisterAgreement');
+            }
+
+            if ($isSuperAdmin) {
+                $partners->where(function ($q) {
+                    $q->whereNull('ut.id')
+                        ->orWhereHas('userRole', function ($subQ) {
+                            $subQ->whereIn('type', [2, 3]);
+                        });
+                })->where('users.id', '!=', $user->id);
+            } else {
+                $partners->where('users.status', 1);
+
+                if ($user->user_type == 'Global') {
+                    $partners->whereIn('users.user_type', ['Global', 'G_R']);
+                } elseif ($user->user_type == 'G_R') {
+                    if ($currentCode == 'GL') {
+                        $partners->whereIn('users.user_type', ['Global', 'G_R']);
+                    } else {
+                        $manage_ecclesia_ids = is_array($user->manage_ecclesia)
+                            ? $user->manage_ecclesia
+                            : explode(',', $user->manage_ecclesia);
+
+                        $partners->where('users.country', $user->country)
+                            ->whereIn('users.user_type', ['Regional', 'G_R'])
+                            ->where(function ($q) {
+                                $q->whereNull('ut.id')
+                                    ->orWhereHas('userRole', function ($subQ) {
+                                        $subQ->whereIn('type', [2, 3]);
+                                    });
+                            });
+
+                        if ($isEcclesiaUser) {
+                            $partners->where(function ($q) use ($manage_ecclesia_ids, $user) {
+                                $q->where(function ($sub) use ($manage_ecclesia_ids) {
+                                    $sub->whereIn('users.ecclesia_id', $manage_ecclesia_ids)->whereNotNull('users.ecclesia_id');
+                                });
+                                foreach ($manage_ecclesia_ids as $id) {
+                                    $id = trim($id);
+                                    if ($id !== '') {
+                                        $q->orWhereRaw('FIND_IN_SET(?, users.manage_ecclesia)', [$id]);
+                                    }
+                                }
+                                $q->orWhere('users.created_id', $user->id);
+                                $q->orWhere('users.id', auth()->id());
+                            });
+                        }
+                    }
+                } elseif ($user->user_type == 'Regional') {
+                    $partners->where('users.country', $user->country)
+                        ->whereIn('users.user_type', ['Regional', 'G_R']);
+
+                    if ($isEcclesiaUser) {
+                        $manage_ecclesia_ids = is_array($user->manage_ecclesia)
+                            ? $user->manage_ecclesia
+                            : explode(',', $user->manage_ecclesia);
+
+                        $partners->where(function ($q) use ($manage_ecclesia_ids, $user) {
+                            $q->where(function ($sub) use ($manage_ecclesia_ids) {
+                                $sub->whereIn('users.ecclesia_id', $manage_ecclesia_ids)->whereNotNull('users.ecclesia_id');
+                            });
+                            foreach ($manage_ecclesia_ids as $id) {
+                                $id = trim($id);
+                                if ($id !== '') {
+                                    $q->orWhereRaw('FIND_IN_SET(?, users.manage_ecclesia)', [$id]);
+                                }
+                            }
+                            $q->orWhere('users.created_id', $user->id);
+                            $q->orWhere('users.id', auth()->id());
+                        });
+                    }
+                }
+            }
+
+            $allowedSortColumns = ['id', 'user_name', 'email', 'phone', 'address', 'user_type', 'country', 'created_at'];
+            if ($sortBy === 'name') {
+                $partners->orderByRaw('CONCAT(COALESCE(first_name, ""), " ", COALESCE(middle_name, ""), " ", COALESCE(last_name, "")) ' . $sortType);
+            } elseif (in_array($sortBy, $allowedSortColumns, true)) {
+                $partners->orderBy($sortBy, $sortType);
+            } else {
+                $partners->orderBy('id', 'desc');
             }
 
             // Call paginate after the conditions
-            $partners = $partners->paginate(15);
-
-            // Ensure accessor is loaded
-            $partners->getCollection()->transform(function ($partner) {
-                $partner->ecclesia_access = $partner->ecclesia_access; // Ensure it's appended
-                return $partner;
-            });
+            $paginatedPartners = $partners->paginate(15);
 
             // Return successful response with partner data
             return response()->json([
-                'data' => $partners
+                'status' => true,
+                'message' => 'Members fetched successfully.',
+                'data' => $paginatedPartners
             ], 200);
         } catch (\Exception $e) {
             // Return error response in case of failure
             return response()->json([
+                'status' => false,
                 'message' => 'Error occurred while fetching the partners.',
                 'error' => $e->getMessage() // Useful for debugging
             ], 500);
@@ -248,14 +347,17 @@ class PartnerController extends Controller
             // $ecclesias = Ecclesia::orderBy('id', 'desc')->get();
 
 
-            $auth_user_ecclesia_id = Auth::user()->ecclesia_id;
-            if (Auth::user()->getFirstUserRoleType() == 1) {
+            $authUser = Auth::user();
+            $authUserRoleType = (int) ($authUser->userRole?->type ?? 0);
+            $authUserIsEcclesia = (int) ($authUser->userRole?->is_ecclesia ?? 0) === 1;
+            $auth_user_ecclesia_id = $authUser->ecclesia_id;
+            if ($authUserRoleType == 1) {
                 $roles = Role::with('permissions')->whereIn('type', [2, 3])->get();
                 $eclessias = Ecclesia::orderBy('id', 'asc')->get();
-            } elseif (Auth::user()->getFirstUserRoleType() == 2 || Auth::user()->getFirstUserRoleType() == 3) {
+            } elseif ($authUserRoleType == 2 || $authUserRoleType == 3) {
                 $roles = Role::with('permissions')->whereIn('type', [2, 3])->get();
-                if (Auth::user()->isEcclesiaUser()) {
-                    $eclessias = Auth::user()->getEcclesiaAccessAttribute();
+                if ($authUserIsEcclesia) {
+                    $eclessias = $authUser->ecclesia_access;
                 } else {
                     $eclessias = Ecclesia::where('id', $auth_user_ecclesia_id)->orderBy('id', 'asc')->get();
                 }
@@ -676,19 +778,22 @@ class PartnerController extends Controller
     public function viewPartner($id)
     {
         try {
-            $partner = User::with(['ecclesia', 'roles'])->findOrFail($id);
+            $partner = User::with(['ecclesia', 'userRole', 'countries', 'states', 'warehouses', 'userRegisterAgreement'])->findOrFail($id);
             //   $eclessias = Ecclesia::orderBy('id', 'asc')->get();
             $countries = Country::orderBy('name', 'asc')->get();
             //   $roles = Role::with('permissions')->where('name', '!=', 'SUPER ADMIN')->get();
 
-            $auth_user_ecclesia_id = Auth::user()->ecclesia_id;
-            if (Auth::user()->getFirstUserRoleType() == 1) {
+            $authUser = Auth::user();
+            $authUserRoleType = (int) ($authUser->userRole?->type ?? 0);
+            $authUserIsEcclesia = (int) ($authUser->userRole?->is_ecclesia ?? 0) === 1;
+            $auth_user_ecclesia_id = $authUser->ecclesia_id;
+            if ($authUserRoleType == 1) {
                 $roles = Role::with('permissions')->whereIn('type', [2, 3])->get();
                 $eclessias = Ecclesia::orderBy('id', 'asc')->get();
-            } elseif (Auth::user()->getFirstUserRoleType() == 2 || Auth::user()->getFirstUserRoleType() == 3) {
+            } elseif ($authUserRoleType == 2 || $authUserRoleType == 3) {
                 $roles = Role::with('permissions')->whereIn('type', [2, 3])->get();
-                if (Auth::user()->isEcclesiaUser()) {
-                    $eclessias = Auth::user()->getEcclesiaAccessAttribute();
+                if ($authUserIsEcclesia) {
+                    $eclessias = $authUser->ecclesia_access;
                 } else {
                     $eclessias = Ecclesia::where('id', $auth_user_ecclesia_id)->orderBy('id', 'asc')->get();
                 }
