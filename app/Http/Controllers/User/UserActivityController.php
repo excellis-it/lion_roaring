@@ -22,12 +22,16 @@ class UserActivityController extends Controller
     public function index(Request $request)
     {
         if (Auth::user()->can('Manage User Activity')) {
+            $countryQuery = UserActivity::query()
+                ->leftJoin('users', 'user_activities.user_id', '=', 'users.id')
+                ->leftJoin('countries', 'users.country', '=', 'countries.id');
+
             $stats = [
                 'total_activities' => UserActivity::count(),
-                'activities_by_country_count' => UserActivity::whereNotNull('country_name')
-                    ->where('country_name', '!=', '')
-                    ->distinct('country_name')
-                    ->count('country_name'),
+                'activities_by_country_count' => (clone $countryQuery)
+                    ->whereNotNull('countries.id')
+                    ->selectRaw('COUNT(DISTINCT countries.id) as aggregate')
+                    ->value('aggregate') ?? 0,
                 'activities_by_user_count' => UserActivity::whereNotNull('user_id')
                     ->distinct('user_id')
                     ->count('user_id'),
@@ -58,9 +62,9 @@ class UserActivityController extends Controller
             ];
 
             $filters = [
-                'countries' => UserActivity::selectRaw('DISTINCT country_name')
-                    ->whereNotNull('country_name')
-                    ->where('country_name', '!=', '')
+                'countries' => (clone $countryQuery)
+                    ->whereNotNull('countries.id')
+                    ->selectRaw('DISTINCT countries.name as country_name')
                     ->orderBy('country_name')
                     ->pluck('country_name'),
                 'activity_types' => UserActivity::selectRaw('DISTINCT activity_type')
@@ -87,10 +91,14 @@ class UserActivityController extends Controller
     public function listPage(Request $request)
     {
         if (Auth::user()->can('Manage User Activity')) {
+            $countryQuery = UserActivity::query()
+                ->leftJoin('users', 'user_activities.user_id', '=', 'users.id')
+                ->leftJoin('countries', 'users.country', '=', 'countries.id');
+
             $filters = [
-                'countries' => UserActivity::selectRaw('DISTINCT country_name')
-                    ->whereNotNull('country_name')
-                    ->where('country_name', '!=', '')
+                'countries' => (clone $countryQuery)
+                    ->whereNotNull('countries.id')
+                    ->selectRaw('DISTINCT countries.name as country_name')
                     ->orderBy('country_name')
                     ->pluck('country_name'),
                 'activity_types' => UserActivity::selectRaw('DISTINCT activity_type')
@@ -123,32 +131,46 @@ class UserActivityController extends Controller
         // Debug log to see what filters are received
         Log::info('User Activity Filters Received:', $request->all());
 
-        $query = UserActivity::query();
+        $query = UserActivity::query()
+            ->leftJoin('users', 'user_activities.user_id', '=', 'users.id')
+            ->leftJoin('countries', 'users.country', '=', 'countries.id');
 
         // Apply filters
         if ($request->filled('user_name')) {
-            $query->where('user_name', 'like', '%' . $request->user_name . '%');
+            $query->where('user_activities.user_name', 'like', '%' . $request->user_name . '%');
         }
         if ($request->filled('email')) {
-            $query->where('email', 'like', '%' . $request->email . '%');
+            $query->where('user_activities.email', 'like', '%' . $request->email . '%');
         }
         if ($request->filled('user_roles')) {
-            $query->where('user_roles', 'like', '%' . $request->user_roles . '%');
+            $query->where('user_activities.user_roles', 'like', '%' . $request->user_roles . '%');
         }
         if ($request->filled('country_name')) {
-            $query->where('country_name', $request->country_name);
+            $query->where('countries.name', $request->country_name);
         }
         if ($request->filled('activity_type')) {
-            $query->where('activity_type', $request->activity_type);
+            $query->where('user_activities.activity_type', $request->activity_type);
         }
         if ($request->filled('date_from')) {
-            $query->whereDate('activity_date', '>=', $request->date_from);
+            $query->whereDate('user_activities.activity_date', '>=', $request->date_from);
         }
         if ($request->filled('date_to')) {
-            $query->whereDate('activity_date', '<=', $request->date_to);
+            $query->whereDate('user_activities.activity_date', '<=', $request->date_to);
         }
 
-        $activities = $query->orderBy('id', 'desc')->paginate($request->get('per_page', 10));
+        $activities = $query
+            ->select('user_activities.*')
+            ->addSelect('countries.name as profile_country_name')
+            ->addSelect('countries.code as profile_country_code')
+            ->orderBy('user_activities.id', 'desc')
+            ->paginate($request->get('per_page', 10));
+        $activities->getCollection()->transform(function ($activity) {
+            $activity->country_name = $activity->profile_country_name;
+            $activity->country_code = $activity->profile_country_code;
+            unset($activity->profile_country_name, $activity->profile_country_code);
+
+            return $activity;
+        });
 
         // Debug log to see query results
         Log::info('Activities Query Result Count:', ['count' => $activities->total()]);
@@ -165,8 +187,11 @@ class UserActivityController extends Controller
             return response()->json(['error' => 'Unauthorized'], 403);
         }
 
-        $data = UserActivity::selectRaw('country_name, COUNT(*) as count')
-            ->groupBy('country_name')
+        $data = UserActivity::leftJoin('users', 'user_activities.user_id', '=', 'users.id')
+            ->leftJoin('countries', 'users.country', '=', 'countries.id')
+            ->selectRaw('countries.name as country_name, countries.code as country_code, COUNT(*) as count')
+            ->whereNotNull('countries.id')
+            ->groupBy('countries.name', 'countries.code')
             ->having('count', '>', 0)
             ->orderBy('count', 'desc')
             ->paginate($request->get('per_page', 10));
@@ -202,9 +227,11 @@ class UserActivityController extends Controller
             return response()->json(['error' => 'Unauthorized'], 403);
         }
 
-        $query = UserActivity::selectRaw('user_id, MAX(user_name) as user_name, MAX(email) as email, MAX(country_name) as country_name, MAX(activity_date) as last_seen')
+        $query = UserActivity::leftJoin('users', 'user_activities.user_id', '=', 'users.id')
+            ->leftJoin('countries', 'users.country', '=', 'countries.id')
+            ->selectRaw('user_activities.user_id, MAX(user_activities.user_name) as user_name, MAX(user_activities.email) as email, MAX(countries.name) as country_name, MAX(countries.code) as country_code, MAX(user_activities.activity_date) as last_seen')
             ->whereNotNull('user_id')
-            ->groupBy('user_id');
+            ->groupBy('user_activities.user_id');
 
         $data = $query->orderBy('last_seen', 'desc')->paginate($request->get('per_page', 10));
 
@@ -220,10 +247,11 @@ class UserActivityController extends Controller
             return response()->json(['error' => 'Unauthorized'], 403);
         }
 
-        $query = UserActivity::selectRaw('country_name, MAX(country_code) as country_code, COUNT(DISTINCT user_id) as member_count, MAX(activity_date) as last_activity')
-            ->whereNotNull('country_name')
-            ->where('country_name', '!=', '')
-            ->groupBy('country_name');
+        $query = UserActivity::leftJoin('users', 'user_activities.user_id', '=', 'users.id')
+            ->leftJoin('countries', 'users.country', '=', 'countries.id')
+            ->selectRaw('countries.name as country_name, countries.code as country_code, COUNT(DISTINCT user_activities.user_id) as member_count, MAX(user_activities.activity_date) as last_activity')
+            ->whereNotNull('countries.id')
+            ->groupBy('countries.name', 'countries.code');
 
         $data = $query->orderBy('member_count', 'desc')->paginate($request->get('per_page', 10));
 

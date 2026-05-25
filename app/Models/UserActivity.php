@@ -6,7 +6,6 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Log;
 use App\Models\User;
-use App\Helpers\Helper;
 
 class UserActivity extends BaseModel
 {
@@ -39,8 +38,15 @@ class UserActivity extends BaseModel
         try {
             $user = auth()->user();
             $ip = request()->ip();
-            $countryCode = Helper::getVisitorCountryCode(); // existing helper
-            $countryName = Helper::getVisitorCountryName();
+            $profileUser = null;
+
+            if (isset($data['user_id'])) {
+                $profileUser = User::with('countries')->find($data['user_id']);
+            } elseif ($user) {
+                $profileUser = User::with('countries')->find($user->id);
+            }
+
+            $profileCountry = $profileUser?->countries;
 
             $userRoles = $user ? implode(',', $user->getRoleNames()->toArray()) : null;
 
@@ -65,8 +71,8 @@ class UserActivity extends BaseModel
                 'user_roles'        => $userData['user_roles'] ?? $userRoles ?? '-',
                 'ecclesia_name'      => optional($user?->ecclesia)->name ?? '-',
                 'ip'                 => $ip ?? '-',
-                'country_code'       => $countryCode,
-                'country_name'       => $countryName,
+                'country_code'       => $profileCountry?->code,
+                'country_name'       => $profileCountry?->name,
                 'device_mac'         => $data['device_mac'] ?? null,
                 'device_type'        => request()->header('User-Agent'),
                 'browser'            => self::getBrowserName(),

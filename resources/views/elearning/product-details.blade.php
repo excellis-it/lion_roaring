@@ -99,7 +99,7 @@
                     </div>
                     <div class=""><a
                             href="{{ isset($product->affiliate_link) ? $product->affiliate_link : 'javascript:void(0);' }}"
-                            class="red_btn w-100 text-center"><span> Buy Now</span></a>
+                            class="red_btn w-100 text-center"><span> Donation or seed/gift</span></a>
                     </div>
 
 

@@ -61,7 +61,7 @@ class CmsController extends Controller
 
     public function gallery()
     {
-        $galleries = Helper::getVisitorCmsContent('Gallery', false, true, 'id', 'desc', null);
+        $galleries = Helper::getVisitorCmsContent('Gallery', false, false, 'id', 'desc', null);
         return view('frontend.gallery')->with('galleries', $galleries);
     }
 
