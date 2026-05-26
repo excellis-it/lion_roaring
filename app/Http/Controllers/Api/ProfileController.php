@@ -648,6 +648,74 @@ class ProfileController extends Controller
     }
 
     /**
+     * In-App Notification Count
+     *
+     * Returns the total count of unread, non-deleted in-app notifications.
+     * Mirrors Helper::notificationCount() — matches the web header bell number.
+     *
+     * @authenticated
+     *
+     * @response 200 {
+     *   "status": true,
+     *   "data": { "total": 885 }
+     * }
+     */
+    public function inAppNotificationCount(Request $request)
+    {
+        $user = $request->user();
+
+        // Non-chat notifications: all unread, non-deleted
+        $baseCount = Notification::where('user_id', $user->id)
+            ->where('is_read', 0)
+            ->where('is_delete', 0)
+            ->where('type', '!=', 'Chat')
+            ->count();
+
+        // Chat notifications: unread, non-deleted, filtered by valid sender
+        $chatCount = Notification::where('user_id', $user->id)
+            ->where('is_read', 0)
+            ->where('is_delete', 0)
+            ->where('type', 'Chat')
+            ->whereHas('chat.sender', function ($query) use ($user) {
+                $query->where('status', 1)
+                    ->whereHas('userRole', function ($q) {
+                        $q->whereIn('type', [1, 2, 3]);
+                    });
+
+                if (!$user->hasNewRole('SUPER ADMIN')) {
+                    $userType    = $user->user_type;
+                    $countryName = $user->country;
+                    $authId      = $user->id;
+
+                    $query->where(function ($q) use ($userType, $countryName, $authId) {
+                        if ($userType === 'Global') {
+                            $q->where(function ($sq) {
+                                $sq->where('user_type', 'Global')
+                                    ->whereDoesntHave('userRole', fn ($r) => $r->where('name', 'SUPER ADMIN'));
+                            })->orWhere(function ($sq) use ($authId) {
+                                $sq->whereHas('userRole', fn ($r) => $r->where('name', 'SUPER ADMIN'))
+                                    ->whereHas('chatSender', fn ($c) => $c->where('reciver_id', $authId));
+                            });
+                        } else {
+                            $q->where('country', $countryName)
+                                ->whereDoesntHave('userRole', fn ($r) => $r->where('name', 'SUPER ADMIN'))
+                                ->orWhere(function ($sq) use ($authId) {
+                                    $sq->whereHas('userRole', fn ($r) => $r->where('name', 'SUPER ADMIN'))
+                                        ->whereHas('chatSender', fn ($c) => $c->where('reciver_id', $authId));
+                                });
+                        }
+                    });
+                }
+            })
+            ->count();
+
+        return response()->json([
+            'status' => true,
+            'data'   => ['total' => $baseCount + $chatCount],
+        ], 200);
+    }
+
+    /**
      * Build Lion Roaring ID prefix/suffix for profile display and editing (matches web user profile).
      *
      * @return array{prefix: string, suffix: string}

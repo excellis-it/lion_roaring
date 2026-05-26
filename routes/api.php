@@ -287,6 +287,9 @@ Route::prefix('v3')->middleware(['userActivity'])->group(function () {
         // Get total unread messages count mail,chat,team-chat
         Route::get('unread-messages-count', [ProfileController::class, 'unreadMessagesCount'])->name('unread.messages.count');
 
+        // Get in-app notification count (matches web header bell count)
+        Route::get('notification-count', [ProfileController::class, 'inAppNotificationCount'])->name('notification.count');
+
         // Update Fcm Token
         Route::post('update-fcm-token', [ProfileController::class, 'updateFcmToken']);
 
