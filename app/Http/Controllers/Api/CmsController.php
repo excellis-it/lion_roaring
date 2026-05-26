@@ -863,6 +863,46 @@ class CmsController extends Controller
          return response()->json(['status' => true, 'menu' => $menu], 200);
      }
 
+    /**
+     * PMA panel sidebar menu labels (matches web user panel sidebar keys).
+     */
+    public function panelMenu()
+    {
+        $defaults = [
+            'dashboard' => 'Dashboard',
+            'messaging' => 'Messaging',
+            'education' => 'Education',
+            'bulletins' => 'Bulletins',
+            'all_members' => 'All Members',
+            'strategy' => 'Strategy',
+            'policy_guidance' => 'Policy & Guidance',
+            'membership' => 'Membership',
+            'chatbot' => 'ChatBot',
+            'chats' => 'Chats',
+            'team' => 'Team',
+            'mail' => 'Mail',
+            'topics' => 'Topics',
+            'becoming_sovereign' => 'Becoming Sovereign',
+            'becoming_christ_like' => 'Becoming Christ Like',
+            'becoming_leader' => 'Becoming a Leader',
+            'files' => 'Files',
+            'bulletin_board' => 'Bulletin Board',
+            'create_bulletins' => 'Create Bulletins',
+            'job_posting' => 'Job Posting',
+            'meeting_schedule' => 'Meeting Schedule',
+            'live_events' => 'Live Events',
+            'private_collaboration' => 'Private Collaboration',
+            'logout' => 'Logout',
+        ];
+
+        $menu = [];
+        foreach ($defaults as $key => $default) {
+            $menu[$key] = Helper::getMenuName($key, $default);
+        }
+
+        return response()->json(['status' => true, 'menu' => $menu], 200);
+    }
+
      public function publicMembershipTiers()
      {
          $tiers = MembershipTier::with('benefits')->get()->map(function ($tier) {
