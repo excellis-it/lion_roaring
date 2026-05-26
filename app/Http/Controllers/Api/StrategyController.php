@@ -3,14 +3,15 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
-use Illuminate\Http\Request;
+use App\Models\Country;
 use App\Models\Strategy;
 use App\Traits\ImageTrait;
+use App\Services\NotificationService;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
-use Illuminate\Support\Facades\Auth;
-use App\Services\NotificationService;
 
 /**
  * @group Strategy
@@ -92,22 +93,67 @@ class StrategyController extends Controller
     public function index(Request $request)
     {
         try {
-            // Get search term from the request (e.g., file name or user id)
-            $searchQuery = $request->get('search');
+            $searchQuery = $request->get('query', $request->get('search', ''));
+            $searchQuery = str_replace(' ', '%', $searchQuery);
 
+            $sortBy = $request->get('sortby', 'id');
+            $sortType = $request->get('sorttype', 'desc');
 
-            // Query strategies with optional search functionality
-            $strategies = Strategy::when($searchQuery, function ($query) use ($searchQuery) {
-                $query->where('file_name', 'like', "%$searchQuery%")
-                    ->orWhere('file_extension', 'like', "%$searchQuery%");
-            })
-                ->orderBy('id', 'desc')
+            $strategies = Strategy::with(['user', 'country'])
+                ->when($searchQuery, function ($query) use ($searchQuery) {
+                    $query->where(function ($search) use ($searchQuery) {
+                        $search->where('id', 'like', "%$searchQuery%")
+                            ->orWhere('file_name', 'like', "%$searchQuery%")
+                            ->orWhere('file_extension', 'like', "%$searchQuery%")
+                            ->orWhereHas('country', function ($countryQuery) use ($searchQuery) {
+                                $countryQuery->where('name', 'like', "%$searchQuery%");
+                            });
+                    });
+                })
+                ->when($request->topic_id, function ($query) use ($request) {
+                    $query->whereHas('topic', function ($topicQuery) use ($request) {
+                        $topicQuery->where('id', $request->topic_id);
+                    });
+                })
+                ->when($request->type, function ($query) use ($request) {
+                    $query->where('type', $request->type);
+                })
+                ->when(auth()->user()->user_type !== 'SUPER ADMIN', function ($query) {
+                    $user = auth()->user();
+                    $userType = $user->user_type;
+                    $userCountry = $user->country;
+                    $currentCountry = Country::findByCurrentRequest();
+                    $isOnGlobalServer = $currentCountry && $currentCountry->is_global;
+
+                    if ($userType === 'Global' || ($userType === 'G_R' && $isOnGlobalServer)) {
+                        $query->whereHas('country', function ($countryQuery) {
+                            $countryQuery->where('code', 'GL');
+                        })->whereHas('user', function ($userQuery) {
+                            $userQuery->whereIn('user_type', ['Global', 'G_R']);
+                        });
+                    } else {
+                        $query->where('country_id', $userCountry)->whereHas('user', function ($userQuery) {
+                            $userQuery->whereIn('user_type', ['Regional', 'G_R']);
+                        });
+
+                        if ($user->is_ecclesia_admin == 1) {
+                            $manageEcclesiaIds = is_array($user->manage_ecclesia)
+                                ? $user->manage_ecclesia
+                                : explode(',', $user->manage_ecclesia ?? '');
+
+                            $query->where(function ($ecclesiaQuery) use ($manageEcclesiaIds, $user) {
+                                $ecclesiaQuery->whereHas('user', function ($userQuery) use ($manageEcclesiaIds) {
+                                    $userQuery->whereIn('ecclesia_id', $manageEcclesiaIds);
+                                })->orWhere('user_id', $user->id);
+                            });
+                        }
+                    }
+                })
+                ->orderBy($sortBy, $sortType)
                 ->paginate(15);
 
-            // Return success response with strategy data
             return response()->json(['data' => $strategies], 200);
         } catch (\Exception $e) {
-            // Return error response if fetching strategies fails
             return response()->json(['error' => 'Failed to fetch strategies.'], 201);
         }
     }
@@ -152,9 +198,8 @@ class StrategyController extends Controller
             $strategy->file = $file_path;
             $strategy->save();
 
-            $userName = Auth::user()->getFullNameAttribute();
-            $noti = NotificationService::notifyAllUsers('New Strategy created by ' . $userName, 'strategy');
-
+            $userName = Auth::user()?->full_name ?? 'Unknown User';
+            NotificationService::notifyAllUsers('New Strategy created by ' . $userName, 'strategy');
 
             return response()->json(['message' => 'Strategy(s) uploaded successfully.'], 200);
         } catch (\Exception $e) {
@@ -173,7 +218,6 @@ class StrategyController extends Controller
     public function delete($id)
     {
         try {
-
             $strategy = Strategy::find($id);
             if ($strategy) {
                 if (Storage::disk('public')->exists($strategy->file)) {
@@ -199,13 +243,14 @@ class StrategyController extends Controller
     public function download($id)
     {
         try {
-
             $strategy = Strategy::find($id);
             if ($strategy && Storage::disk('public')->exists($strategy->file)) {
-                return response()->download(Storage::disk('public')->path($strategy->file));
-            } else {
-                return response()->json(['error' => 'Strategy not found.'], 201);
+                $filePath = storage_path('app/public/' . $strategy->file);
+
+                return response()->download($filePath);
             }
+
+            return response()->json(['error' => 'Strategy not found.'], 201);
         } catch (\Exception $e) {
             return response()->json(['error' => 'Failed to download strategy.'], 201);
         }
@@ -222,13 +267,12 @@ class StrategyController extends Controller
     public function view($id)
     {
         try {
-
-            $strategy = Strategy::find($id);
+            $strategy = Strategy::with(['user', 'country'])->find($id);
             if ($strategy) {
                 return response()->json(['data' => $strategy], 200);
-            } else {
-                return response()->json(['error' => 'Strategy not found.'], 201);
             }
+
+            return response()->json(['error' => 'Strategy not found.'], 201);
         } catch (\Exception $e) {
             return response()->json(['error' => 'Failed to fetch strategy details.'], 201);
         }
