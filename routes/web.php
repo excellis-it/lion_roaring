@@ -898,6 +898,7 @@ Route::prefix('user')->middleware(['user', 'preventBackHistory', 'userActivity',
     // select warehouse product variation stock
     Route::post('/select-warehouse-variation-stock', [WareHouseController::class, 'selectWarehouseVariationStock'])->name('products.select.warehouse.variation.stock');
     Route::post('/warehouse-variation/update-quantity', [WareHouseController::class, 'updateWarehouseVariationQuantity'])->name('warehouse.variation.update-quantity');
+    Route::post('/warehouse-variation/reset-stock', [WareHouseController::class, 'resetWarehouseVariationStock'])->name('warehouse.variation.reset-stock');
     // warehouse product management
     Route::get('/ware-houses/{id}/products', [WareHouseController::class, 'products'])->name('ware-houses.products');
     Route::get('/ware-houses/{id}/products/add', [WareHouseController::class, 'addProduct'])->name('ware-houses.products.add');

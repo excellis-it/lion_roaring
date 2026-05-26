@@ -750,6 +750,73 @@ class WareHouseController extends Controller
         }
     }
 
+    public function resetWarehouseVariationStock(Request $request)
+    {
+        $request->validate([
+            'warehouse_id' => 'required|integer|exists:ware_houses,id',
+            'product_id' => 'required|integer|exists:products,id',
+            'variation_id' => 'nullable|integer|exists:product_variations,id',
+        ]);
+
+        $warehouseId = (int) $request->warehouse_id;
+        $productId = (int) $request->product_id;
+        $variationId = $request->filled('variation_id') ? (int) $request->variation_id : null;
+
+        if (!auth()->user()->canManageWarehouse($warehouseId) || !auth()->user()->isWarehouseAdmin()) {
+            return response()->json(['status' => false, 'message' => 'Unauthorized'], 403);
+        }
+
+        $updatedRows = [];
+
+        DB::transaction(function () use ($warehouseId, $productId, $variationId, &$updatedRows) {
+            $warehouseVariations = WarehouseProductVariation::where('warehouse_id', $warehouseId)
+                ->where('product_id', $productId)
+                ->when($variationId, function ($query) use ($variationId) {
+                    $query->where('product_variation_id', $variationId);
+                })
+                ->get();
+
+            foreach ($warehouseVariations as $warehouseVariation) {
+                $variation = ProductVariation::find($warehouseVariation->product_variation_id);
+
+                if (!$variation) {
+                    continue;
+                }
+
+                $currentWarehouseQty = (int) ($warehouseVariation->warehouse_quantity ?? 0);
+
+                if ($currentWarehouseQty > 0) {
+                    $variation->stock_quantity += $currentWarehouseQty;
+                    $variation->save();
+                }
+
+                $warehouseVariation->warehouse_quantity = 0;
+                $warehouseVariation->save();
+
+                $warehouseProduct = WarehouseProduct::where('warehouse_id', $warehouseId)
+                    ->where('product_variation_id', $warehouseVariation->product_variation_id)
+                    ->first();
+
+                if ($warehouseProduct) {
+                    $warehouseProduct->quantity = 0;
+                    $warehouseProduct->save();
+                }
+
+                $updatedRows[] = [
+                    'variation_id' => $warehouseVariation->product_variation_id,
+                    'admin_available_quantity' => (int) $variation->stock_quantity,
+                    'warehouse_available_quantity' => 0,
+                ];
+            }
+        });
+
+        return response()->json([
+            'status' => true,
+            'data' => $updatedRows,
+            'message' => 'Warehouse stock reset successfully',
+        ]);
+    }
+
 
     // warehouseProductsList
     public function warehouseProductsList($id)

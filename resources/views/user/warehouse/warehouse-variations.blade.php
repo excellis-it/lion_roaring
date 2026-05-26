@@ -146,6 +146,7 @@
                     <div class="row">
                         <div class="w-100 text-end d-flex align-items-center justify-content-end mt-3">
                             <button type="button" class="print_btn me-2 submit-data-button">Update</button>
+                            <button type="button" class="print_btn me-2 reset-wa-stock-button">Reset WA Stock</button>
                             <a href="{{ route('products.index') }}" class="print_btn print_btn_vv">Cancel</a>
                         </div>
                     </div>
@@ -298,6 +299,62 @@
         <script>
             const WAREHOUSE_ID = {{ $wareHouse->id }};
             const UPDATE_VARIATION_QTY_URL = "{{ route('warehouse.variation.update-quantity') }}";
+            const RESET_VARIATION_STOCK_URL = "{{ route('warehouse.variation.reset-stock') }}";
+
+            function syncVariationRows(data) {
+                if (!data) {
+                    return;
+                }
+
+                // If object keyed by id
+                if (!Array.isArray(data) && typeof data === 'object') {
+                    Object.keys(data).forEach(function(vid) {
+                        const avail = data[vid].admin_available_quantity ?? data[vid];
+                        const warehouse_available_quantity = data[vid].warehouse_available_quantity ?? data[vid];
+                        const $row = $(
+                            '#variation-products-container-data .warehouse-variation-product-entry[data-id="' +
+                            vid + '"]');
+
+                        if ($row.length) {
+                            $row.find('input[name$="[available_quantity]"]').val(avail)
+                                .css('background-color', '#edd4d4');
+                            $row.find('input[name$="[warehouse_quantity]"]').val(warehouse_available_quantity)
+                                .css('background-color', '#d4edda');
+                            setTimeout(() => $row.find('input[name$="[available_quantity]"]').css('background-color',
+                                ''), 1000);
+                            setTimeout(() => $row.find('input[name$="[warehouse_quantity]"]').css('background-color',
+                                ''), 1000);
+                            $row.find('input[name$="[quantity]"]').val('');
+                        }
+                    });
+                    return;
+                }
+
+                if (Array.isArray(data)) {
+                    data.forEach(function(item) {
+                        const vid = item.variation_id ?? item.id;
+                        const avail = item.admin_available_quantity ?? item.available_quantity ?? item
+                            .admin_available_quantity;
+                        const warehouse_available_quantity = item.warehouse_available_quantity ?? item
+                            .warehouse_quantity ?? item.warehouse_available_quantity;
+                        const $row = $(
+                            '#variation-products-container-data .warehouse-variation-product-entry[data-id="' +
+                            vid + '"]');
+
+                        if ($row.length) {
+                            $row.find('input[name$="[available_quantity]"]').val(avail)
+                                .css('background-color', '#edd4d4');
+                            $row.find('input[name$="[warehouse_quantity]"]').val(warehouse_available_quantity)
+                                .css('background-color', '#d4edda');
+                            setTimeout(() => $row.find('input[name$="[available_quantity]"]').css('background-color',
+                                ''), 1000);
+                            setTimeout(() => $row.find('input[name$="[warehouse_quantity]"]').css('background-color',
+                                ''), 1000);
+                            $row.find('input[name$="[quantity]"]').val('');
+                        }
+                    });
+                }
+            }
 
             // Keep track of previous values on focus (useful to revert if server rejects)
             $(document).on('focus', '#variation-products-container-data input[name$="[quantity]"]', function() {
@@ -347,65 +404,7 @@
                     }),
                     success: function(resp) {
                         if (resp.status) {
-                            // resp.data can be an object keyed by variation_id or an array of {variation_id, admin_available_quantity}
-                            const data = resp.data || {};
-
-                            // If object keyed by id
-                            if (!Array.isArray(data) && typeof data === 'object') {
-                                Object.keys(data).forEach(function(vid) {
-                                    const avail = data[vid].admin_available_quantity ?? data[vid];
-                                    const warehouse_available_quantity = data[vid]
-                                        .warehouse_available_quantity ?? data[vid];
-                                    const $row = $(
-                                        '#variation-products-container-data .warehouse-variation-product-entry[data-id="' +
-                                        vid + '"]');
-
-
-                                    if ($row.length) {
-                                        $row.find('input[name$="[available_quantity]"]').val(avail)
-                                            .css('background-color', '#edd4d4');
-                                        $row.find('input[name$="[warehouse_quantity]"]').val(
-                                                warehouse_available_quantity)
-                                            .css('background-color', '#d4edda');
-                                        setTimeout(() => $row.find(
-                                            'input[name$="[available_quantity]"]').css(
-                                            'background-color', ''), 1000);
-                                        setTimeout(() => $row.find(
-                                            'input[name$="[warehouse_quantity]"]').css(
-                                            'background-color', ''), 1000);
-
-                                        $row.find('input[name$="[quantity]"]').val('');
-
-                                    }
-                                });
-                            } else if (Array.isArray(data)) {
-                                data.forEach(function(item) {
-                                    const vid = item.variation_id ?? item.id;
-                                    const avail = item.admin_available_quantity ?? item
-                                        .available_quantity ?? item.admin_available_quantity;
-                                    const warehouse_available_quantity = item
-                                        .warehouse_available_quantity ?? item
-                                        .warehouse_quantity ?? item.warehouse_available_quantity;
-                                    const $row = $(
-                                        '#variation-products-container-data .warehouse-variation-product-entry[data-id="' +
-                                        vid + '"]');
-                                    if ($row.length) {
-                                        $row.find('input[name$="[available_quantity]"]').val(avail)
-                                            .css('background-color', '#edd4d4');
-                                        $row.find('input[name$="[warehouse_quantity]"]').val(
-                                                warehouse_available_quantity)
-                                            .css('background-color', '#d4edda');
-                                        setTimeout(() => $row.find(
-                                            'input[name$="[available_quantity]"]').css(
-                                            'background-color', ''), 1000);
-                                        setTimeout(() => $row.find(
-                                            'input[name$="[warehouse_quantity]"]').css(
-                                            'background-color', ''), 1000);
-                                        $row.find('input[name$="[quantity]"]').val('');
-                                    }
-                                });
-                            }
-
+                            syncVariationRows(resp.data || {});
                             toastr.success(resp.message || 'Quantities updated successfully');
                         } else {
                             toastr.error(resp.message || 'Update failed');
@@ -431,6 +430,77 @@
                     },
                     complete: function() {
                         $btn.prop('disabled', false).text('Update');
+                    }
+                });
+            });
+
+            $(document).on('click', '.reset-wa-stock-button', function(e) {
+                e.preventDefault();
+
+                const $btn = $(this);
+                $btn.prop('disabled', true).text('Resetting...');
+
+                $.ajax({
+                    url: RESET_VARIATION_STOCK_URL,
+                    method: 'POST',
+                    data: {
+                        _token: '{{ csrf_token() }}',
+                        warehouse_id: WAREHOUSE_ID,
+                        product_id: {{ $product->id }},
+                    },
+                    success: function(resp) {
+                        if (resp.status) {
+                            syncVariationRows(resp.data || []);
+                            toastr.success(resp.message || 'Warehouse stock reset successfully');
+                        } else {
+                            toastr.error(resp.message || 'Reset failed');
+                        }
+                    },
+                    error: function(xhr) {
+                        toastr.error(xhr.responseJSON?.message || 'Server error');
+                    },
+                    complete: function() {
+                        $btn.prop('disabled', false).text('Reset WA Stock');
+                    }
+                });
+            });
+
+            $(document).on('click', '.reset-wa-row-stock-button', function(e) {
+                e.preventDefault();
+
+                const $btn = $(this);
+                const variationId = $btn.data('variation-id');
+                const $row = $btn.closest('.warehouse-variation-product-entry');
+
+                if (!variationId) {
+                    toastr.error('Variation not found');
+                    return;
+                }
+
+                $btn.prop('disabled', true).text('Resetting...');
+
+                $.ajax({
+                    url: RESET_VARIATION_STOCK_URL,
+                    method: 'POST',
+                    data: {
+                        _token: '{{ csrf_token() }}',
+                        warehouse_id: WAREHOUSE_ID,
+                        product_id: {{ $product->id }},
+                        variation_id: variationId,
+                    },
+                    success: function(resp) {
+                        if (resp.status) {
+                            syncVariationRows(resp.data || []);
+                            toastr.success(resp.message || 'SKU stock reset successfully');
+                        } else {
+                            toastr.error(resp.message || 'Reset failed');
+                        }
+                    },
+                    error: function(xhr) {
+                        toastr.error(xhr.responseJSON?.message || 'Server error');
+                    },
+                    complete: function() {
+                        $btn.prop('disabled', false).text('Reset SKU Stock');
                     }
                 });
             });
