@@ -77,6 +77,7 @@ class MembershipApiController extends Controller
             return response()->json([
                 'status' => true,
                 'message' => 'No active subscription.',
+                'in_app_membership' => (bool) config('lion_roaring.in_app_membership'),
                 'data' => null,
             ], $this->successStatus);
         }
@@ -96,6 +97,7 @@ class MembershipApiController extends Controller
         return response()->json([
             'status' => true,
             'message' => 'Current subscription.',
+            'in_app_membership' => (bool) config('lion_roaring.in_app_membership'),
             'data' => [
                 'subscription' => $sub,
                 'tier' => $tier,

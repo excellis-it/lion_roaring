@@ -58,6 +58,7 @@ class ProfileController extends Controller
         return response()->json([
             'status' => true,
             'message' => 'Profile details',
+            'in_app_membership' => (bool) config('lion_roaring.in_app_membership'),
             'data' => $data,
         ], $this->successStatus);
     }
