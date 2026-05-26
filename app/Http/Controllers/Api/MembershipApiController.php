@@ -90,8 +90,8 @@ class MembershipApiController extends Controller
         $daysUntilExpiry = $expireDate
             ? (int) $now->diffInDays($expireDate, false)
             : null;
-        $canRenew = $expireDate
-            && ($expired || ($daysUntilExpiry !== null && $daysUntilExpiry <= 30 && $daysUntilExpiry >= 0));
+        // Web PMA sets $canRenew = true whenever the user has a subscription.
+        $canRenew = true;
 
         return response()->json([
             'status' => true,
