@@ -59,8 +59,15 @@ class BulletinController extends Controller
 
             $bulletins = $bulletins->orderBy('id', 'desc')->paginate(15);
 
-            $bulletins->getCollection()->transform(function ($bulletin) {
+            $isSuperAdmin = $ctx['is_super_admin'];
+
+            $bulletins->getCollection()->transform(function ($bulletin) use ($isSuperAdmin) {
                 $bulletin->country_name = $bulletin->country?->name ?? '--';
+
+                if ($isSuperAdmin) {
+                    $name = trim((string) ($bulletin->user?->full_name ?? ''));
+                    $bulletin->upload_by_full_name = $name !== '' ? $name : 'Unknown';
+                }
 
                 return $bulletin;
             });
