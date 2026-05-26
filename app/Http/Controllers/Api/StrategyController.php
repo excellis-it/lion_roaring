@@ -118,7 +118,7 @@ class StrategyController extends Controller
                 ->when($request->type, function ($query) use ($request) {
                     $query->where('type', $request->type);
                 })
-                ->when(auth()->user()->user_type !== 'SUPER ADMIN', function ($query) {
+                ->when(!auth()->user()->hasNewRole('SUPER ADMIN'), function ($query) {
                     $user = auth()->user();
                     $userType = $user->user_type;
                     $userCountry = $user->country;
