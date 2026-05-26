@@ -156,10 +156,14 @@ class EstoreProductController extends Controller
             return response()->json(['message' => 'Validation failed', 'errors' => $validator->errors()->first(), 'status' => false], 201);
         }
         try {
-            $product = Product::where('slug', $request->slug)->with('image', 'colors', 'sizes', 'reviews')->first();
+            $product = Product::where('slug', $request->slug)
+                ->with('image', 'colors', 'sizes', 'reviews', 'otherCharges', 'files')
+                ->first();
             if (!$product) {
                 return response()->json(['message' => 'Product not found', 'status' => false], 201);
             }
+
+            $isDigital = $product->product_type === 'digital';
 
             // Determine nearest warehouse
             $nearbyWareHouseId = WareHouse::where('is_active', 1)->first()?->id ?? 0;
@@ -178,13 +182,9 @@ class EstoreProductController extends Controller
                 $nearbyWareHouseId = $nearest['warehouse']->id;
             }
 
-            // Find an initial warehouse product (respecting product_type and variations)
+            // Digital products have no warehouse stock — price comes from the product record.
             $warehouseProduct = null;
-            if ($product->product_type != 'simple') {
-                $warehouseProduct = WarehouseProduct::where('warehouse_id', $nearbyWareHouseId)
-                    ->where('product_id', $product->id)
-                    ->first();
-            } else {
+            if (!$isDigital) {
                 $warehouseProduct = WarehouseProduct::where('warehouse_id', $nearbyWareHouseId)
                     ->where('product_id', $product->id)
                     ->first();
@@ -238,7 +238,31 @@ class EstoreProductController extends Controller
             // in the product data array in colors set all the colors from Product variationUniqueColors
             $product->variation_colors_images = $product->variation_unique_color_first_images;
 
-            return response()->json(['data' => ['product' => $product, 'warehouse_product' => $warehouseProduct, 'product_images' => $productImages, 'related' => $related_products, 'cart_count' => $cartCount, 'cart_item' => $cartItem], 'status' => true], 200);
+            $digitalMeta = null;
+            if ($isDigital) {
+                $basePrice = ($product->sale_price > 0) ? (float) $product->sale_price : (float) $product->price;
+                $digitalMeta = [
+                    'display_price' => $product->getDisplayPrice($product->price),
+                    'listing_charges_breakdown' => $product->getListingChargesBreakdown($product->price),
+                    'files' => $product->files->map(fn ($f) => [
+                        'id' => $f->id,
+                        'file_location' => $f->file_location,
+                    ])->values(),
+                ];
+            }
+
+            return response()->json([
+                'data' => [
+                    'product' => $product,
+                    'warehouse_product' => $warehouseProduct,
+                    'product_images' => $productImages,
+                    'related' => $related_products,
+                    'cart_count' => $cartCount,
+                    'cart_item' => $cartItem,
+                    'digital_meta' => $digitalMeta,
+                ],
+                'status' => true,
+            ], 200);
         } catch (\Exception $e) {
             return response()->json(['message' => 'Something went wrong. ' . $e->getMessage(), 'status' => false], 201);
         }
@@ -472,6 +496,13 @@ class EstoreProductController extends Controller
             $product = Product::find($request->product_id);
             if (!$product) {
                 return response()->json(['message' => 'Product not found', 'status' => false], 201);
+            }
+
+            if ($product->product_type === 'digital') {
+                return response()->json([
+                    'status' => false,
+                    'message' => 'Digital products use direct checkout. Tap Donation or seed/gift on the product page.',
+                ], 201);
             }
 
             // determine nearest warehouse

@@ -185,6 +185,10 @@ Route::prefix('v3')->middleware(['userActivity'])->group(function () {
             Route::post('/checkout/confirm', [CheckoutController::class, 'confirmCheckout']);
             Route::post('/checkout/signature', [CheckoutController::class, 'uploadSignature']);
 
+            // Digital product checkout (single product, no cart/shipping)
+            Route::post('/digital-checkout/display-prices', [\App\Http\Controllers\Api\Estore\DigitalCheckoutController::class, 'displayPrices']);
+            Route::post('/digital-checkout/confirm', [\App\Http\Controllers\Api\Estore\DigitalCheckoutController::class, 'confirm']);
+
             // Order actions (RESTful)
             Route::post('/orders/{id}/cancel', [CheckoutController::class, 'cancelOrderById'])->whereNumber('id');
             Route::get('/orders/{id}/track', [CheckoutController::class, 'trackOrder'])->whereNumber('id');
