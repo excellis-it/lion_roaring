@@ -568,6 +568,7 @@ Route::prefix('v3')->middleware(['userActivity'])->group(function () {
         Route::prefix('partners')->group(function () {
             Route::get('/list', [PartnerController::class, 'list']);
             Route::get('/create-form-data', [PartnerController::class, 'loadCreateData']);
+            Route::get('/ecclesias', [PartnerController::class, 'listEcclesias']);
             // Route::post('/store', [PartnerController::class, 'storePartner']);
             Route::get('/view/{id}', [PartnerController::class, 'viewPartner']);
             Route::post('/update/{id}', [PartnerController::class, 'updatePartner']);

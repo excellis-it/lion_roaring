@@ -48,19 +48,65 @@ class ProfileController extends Controller
 
     public function profile(Request $request)
     {
-        $user = $request->user()->load('ecclesia', 'countries', 'states', 'roles', 'userLastSubscription');
+        $user = $request->user()->load([
+            'ecclesia:id,name',
+            'countries:id,name,code',
+            'states:id,name,country_id',
+            'userRole:id,name,type,is_ecclesia',
+            'userLastSubscription',
+        ]);
         $idParts = $this->resolveLionRoaringIdParts($user);
-
-        $data = $user->toArray();
-        $data['generated_id_part'] = $idParts['prefix'];
-        $data['lion_roaring_id_suffix'] = $idParts['suffix'];
 
         return response()->json([
             'status' => true,
             'message' => 'Profile details',
             'in_app_membership' => (bool) config('lion_roaring.in_app_membership'),
-            'data' => $data,
+            'data' => $this->formatProfilePayload($user, $idParts),
         ], $this->successStatus);
+    }
+
+    /**
+     * Slim profile payload for mobile (avoids huge nested relation graphs).
+     *
+     * @param  array{prefix: string, suffix: string}  $idParts
+     */
+    private function formatProfilePayload(User $user, array $idParts): array
+    {
+        return [
+            'id' => $user->id,
+            'ecclesia_id' => $user->ecclesia_id,
+            'user_name' => $user->user_name,
+            'first_name' => $user->first_name,
+            'middle_name' => $user->middle_name,
+            'last_name' => $user->last_name,
+            'email' => $user->email,
+            'phone' => $user->phone,
+            'phone_country_code_name' => $user->phone_country_code_name,
+            'profile_picture' => $user->profile_picture,
+            'address' => $user->address,
+            'address2' => $user->address2,
+            'city' => $user->city,
+            'state' => $user->state,
+            'country' => $user->country,
+            'zip' => $user->zip,
+            'status' => $user->status,
+            'user_type' => $user->user_type,
+            'lion_roaring_id' => $user->lion_roaring_id,
+            'roar_id' => $user->roar_id,
+            'generated_id_part' => $idParts['prefix'],
+            'lion_roaring_id_suffix' => $idParts['suffix'],
+            'time_zone' => $user->time_zone,
+            'location_lat' => $user->location_lat,
+            'location_lng' => $user->location_lng,
+            'location_address' => $user->location_address,
+            'created_at' => $user->created_at,
+            'updated_at' => $user->updated_at,
+            'ecclesia' => $user->ecclesia,
+            'countries' => $user->countries,
+            'states' => $user->states,
+            'user_role' => $user->userRole,
+            'user_last_subscription' => $user->userLastSubscription,
+        ];
     }
 
     /**
