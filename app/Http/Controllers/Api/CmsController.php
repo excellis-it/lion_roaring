@@ -34,6 +34,7 @@ use App\Transformers\OurGovernanceTransformers;
 use App\Transformers\PrincipalTransformers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
 use Spatie\Fractalistic\Fractal;
 use App\Mail\NewsletterSubscription;
@@ -437,10 +438,17 @@ class CmsController extends Controller
 
     /**
      * Our organization center
-     * @bodyParam slug string required The slug of the our governance. Example: lion-roaring-innovation-center, lion-roaring-education-center-1709707179.
+     * @bodyParam slug string required The slug of the our organization. Example: lion-roaring-innovation-center, lion-roaring-humanitarian-center.
+     * @bodyParam country_code string optional ISO-2 or GL for country-scoped org lookup. Example: US
      * @response 200{
      * "message": "Organization Center",
      * "status": true,
+     * "our_organization": {
+     *     "slug": "lion-roaring-humanitarian-center",
+     *     "name": "Lion Roaring Humanitarian Center",
+     *     "description": "...",
+     *     "image": "http://127.0.0.1:8000/storage/our_organizations/example.jpg"
+     * },
      * "our_organization_centers": [
      *    {
      *        "id": 4,
@@ -462,7 +470,8 @@ class CmsController extends Controller
     public function organizationCenter(Request $request)
     {
         $validator = Validator::make($request->all(), [
-            'slug' => 'required|exists:our_organizations,slug'
+            'slug' => 'required|exists:our_organizations,slug',
+            'country_code' => 'nullable|string|max:10',
         ]);
 
         if ($validator->fails()) {
@@ -470,14 +479,28 @@ class CmsController extends Controller
         }
 
         try {
-            $our_organizatiion = OurOrganization::where('slug', $request->slug)->first();
-            $our_organization_centers = OrganizationCenter::where('our_organization_id', $our_organizatiion->id)->orderBy('id', 'desc')->get();
+            $this->seedVisitorCountryFromRequest($request);
 
-            if ($our_organization_centers) {
-                return response()->json(['message' => 'Organization center', 'status' => true, 'our_organization_centers' => $our_organization_centers], $this->successStatus);
-            } else {
-                return response()->json(['message' => 'No organization center found', 'status' => false], 201);
+            $our_organization = $this->resolveOurOrganizationBySlug($request->slug);
+            if (! $our_organization) {
+                return response()->json(['message' => 'No organization found for this country', 'status' => false], 201);
             }
+
+            $our_organization_centers = OrganizationCenter::where('our_organization_id', $our_organization->id)
+                ->orderBy('id', 'desc')
+                ->get();
+
+            return response()->json([
+                'message' => 'Organization center',
+                'status' => true,
+                'our_organization' => [
+                    'slug' => $our_organization->slug,
+                    'name' => $our_organization->name,
+                    'description' => $our_organization->description,
+                    'image' => $our_organization->image ? Storage::url($our_organization->image) : null,
+                ],
+                'our_organization_centers' => $our_organization_centers,
+            ], $this->successStatus);
         } catch (\Throwable $th) {
             return response()->json(['message' => $th->getMessage(), 'status' => false], 401);
         }
@@ -486,6 +509,7 @@ class CmsController extends Controller
     /**
      * Organization center details
      * @bodyParam slug string required The slug of the organization center. Example: lion-roaring-foundation.
+     * @bodyParam country_code string optional ISO-2 or GL for country-scoped parent org validation. Example: US
      * @response 200{
      *  "message": "Organization center details",
      *   "status": true,
@@ -502,7 +526,8 @@ class CmsController extends Controller
     public function organizationCenterDetails(Request $request)
     {
         $validator = Validator::make($request->all(), [
-            'slug' => 'required|exists:organization_centers,slug'
+            'slug' => 'required|exists:organization_centers,slug',
+            'country_code' => 'nullable|string|max:10',
         ]);
 
         if ($validator->fails()) {
@@ -510,14 +535,66 @@ class CmsController extends Controller
         }
 
         try {
-            $details = OrganizationCenter::where('slug', $request->slug)->first();
-            if ($details) {
-                $details = fractal($details, new OrganizationCenterTransformers())->toArray()['data'];
-                return response()->json(['message' => 'Organization center details', 'status' => true, 'details' => $details], $this->successStatus);
+            $this->seedVisitorCountryFromRequest($request);
+
+            $center = OrganizationCenter::with('ourOrganization')
+                ->where('slug', $request->slug)
+                ->first();
+
+            if (! $center) {
+                return response()->json(['message' => 'No organization center found', 'status' => false], 201);
             }
+
+            $parentOrg = $center->ourOrganization;
+            if ($parentOrg) {
+                $resolved = $this->resolveOurOrganizationBySlug($parentOrg->slug);
+                if (! $resolved || $resolved->id !== $parentOrg->id) {
+                    return response()->json(['message' => 'No organization center found for this country', 'status' => false], 201);
+                }
+            }
+
+            $details = fractal($center, new OrganizationCenterTransformers())->toArray()['data'];
+
+            return response()->json(['message' => 'Organization center details', 'status' => true, 'details' => $details], $this->successStatus);
         } catch (\Throwable $th) {
             return response()->json(['message' => $th->getMessage(), 'status' => false], 401);
         }
+    }
+
+    /**
+     * Seed visitor country session from mobile request (same as home endpoint).
+     */
+    private function seedVisitorCountryFromRequest(Request $request): void
+    {
+        $code = strtoupper(trim((string) $request->input('country_code', '')));
+        if ($code !== '') {
+            $ip = $request->ip();
+            session(['visitor_country_code_' . $ip => $code]);
+            session(['visitor_country_flag_code_' . $ip => $code]);
+        }
+    }
+
+    /**
+     * Resolve our_organization by slug for the current visitor country (US fallback).
+     */
+    private function resolveOurOrganizationBySlug(string $slug): ?OurOrganization
+    {
+        $countryCode = Helper::getVisitorCountryCode();
+        if (empty($countryCode)) {
+            $countryCode = 'US';
+        }
+
+        $org = OurOrganization::where('slug', $slug)
+            ->where('country_code', $countryCode)
+            ->first();
+
+        if (! $org && $countryCode !== 'US') {
+            $org = OurOrganization::where('slug', $slug)
+                ->where('country_code', 'US')
+                ->first();
+        }
+
+        return $org;
     }
 
     /**
