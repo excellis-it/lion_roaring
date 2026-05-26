@@ -161,7 +161,8 @@ class StrategyController extends Controller
     /**
      * Create strategies
      *
-     * @bodyParam file file required files to upload.
+     * @bodyParam file file[] required files to upload. Example: ["strategy1.pdf", "strategy2.pdf"]
+     * @bodyParam country_id int optional Country ID for SUPER ADMIN uploads. Example: 1
      *
      * @response 200 scenario="success" {"message": "Strategy(s) uploaded successfully."}
      * @response 201 scenario="error" {"error": "Validation failed or duplicate strategy found."}
@@ -170,33 +171,36 @@ class StrategyController extends Controller
     {
         try {
             $validated = Validator::make($request->all(), [
-                'file' => 'required|file',
+                'file' => 'required|array',
+                'file.*' => 'required',
+                'country_id' => 'nullable|exists:countries,id',
             ]);
 
             if ($validated->fails()) {
                 return response()->json(['error' => $validated->errors()->first()], 201);
             }
 
-            $file = $request->file('file');
+            foreach ($request->file('file') as $file) {
+                $file_name = $file->getClientOriginalName();
+                $file_extension = $file->getClientOriginalExtension();
+                $file_path = $this->imageUpload($file, 'strategies');
 
-            $file_name = $file->getClientOriginalName();
-            $file_extension = $file->getClientOriginalExtension();
-            $file_path = $this->imageUpload($file, 'strategies');
+                $check = Strategy::where('file_name', $file_name)
+                    ->where('file_extension', $file_extension)
+                    ->first();
 
-            $check = Strategy::where('file_name', $file_name)
-                ->where('file_extension', $file_extension)
-                ->first();
+                if ($check) {
+                    return response()->json(['error' => 'The strategy name "' . $file_name . '" has already been taken.'], 201);
+                }
 
-            if ($check) {
-                return response()->json(['error' => 'The strategy name "' . $file_name . '" has already been taken.'], 201);
+                $strategy = new Strategy();
+                $strategy->user_id = auth()->id();
+                $strategy->country_id = $request->country_id ?? auth()->user()->country;
+                $strategy->file_name = $file_name;
+                $strategy->file_extension = $file_extension;
+                $strategy->file = $file_path;
+                $strategy->save();
             }
-
-            $strategy = new Strategy();
-            $strategy->user_id = auth()->id();
-            $strategy->file_name = $file_name;
-            $strategy->file_extension = $file_extension;
-            $strategy->file = $file_path;
-            $strategy->save();
 
             $userName = Auth::user()?->full_name ?? 'Unknown User';
             NotificationService::notifyAllUsers('New Strategy created by ' . $userName, 'strategy');
