@@ -233,6 +233,7 @@ Route::prefix('v3')->middleware(['userActivity'])->group(function () {
         // site settings
         Route::get('site-settings', [CmsController::class, 'siteSettings']);
         Route::get('menu', [CmsController::class, 'frontendMenu']);
+        Route::get('country-languages', [CmsController::class, 'countryLanguages']);
         Route::get('panel-menu', [CmsController::class, 'panelMenu']);
         Route::get('membership-tiers', [CmsController::class, 'publicMembershipTiers']);
     });

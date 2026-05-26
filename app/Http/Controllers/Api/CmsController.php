@@ -1002,6 +1002,36 @@ class CmsController extends Controller
          ], 200);
      }
 
+     /**
+      * Country-linked languages for the mobile language picker.
+      *
+      * @queryParam country_code string ISO-2 or GL. Example: US
+      *
+      * @response 200 {
+      *   "status": true,
+      *   "languages": [{ "code": "en", "name": "English" }]
+      * }
+      */
+     public function countryLanguages(Request $request)
+     {
+         try {
+             $code = strtoupper(trim((string) $request->input('country_code', 'GL')));
+             $languages = Helper::getLanguagesForCountryCode($code !== '' ? $code : 'GL');
+
+             $payload = $languages->map(fn ($lang) => [
+                 'code' => $lang->code,
+                 'name' => $lang->name,
+             ])->values();
+
+             return response()->json([
+                 'status' => true,
+                 'languages' => $payload,
+             ], $this->successStatus);
+         } catch (\Throwable $th) {
+             return response()->json(['message' => $th->getMessage(), 'status' => false], 401);
+         }
+     }
+
      public function siteSettings() {
          try {
              $settings = SiteSetting::first();

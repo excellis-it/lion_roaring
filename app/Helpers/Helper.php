@@ -1058,6 +1058,38 @@ class Helper
     }
 
     /**
+     * Languages available for a country code (stateless; used by mobile API).
+     * GL = global country languages or all translate_languages.
+     * Regional = country's linked languages, always including English.
+     */
+    public static function getLanguagesForCountryCode(string $countryCode): \Illuminate\Support\Collection
+    {
+        $code = strtoupper(trim($countryCode));
+
+        if ($code === '' || $code === 'GL') {
+            $row = \App\Models\Country::with('languages')->where('is_global', true)->first();
+            if ($row && $row->languages->isNotEmpty()) {
+                return $row->languages->sortBy('name')->values();
+            }
+
+            return \App\Models\TranslateLanguage::orderBy('name', 'asc')->get();
+        }
+
+        $row = \App\Models\Country::with('languages')->whereRaw('UPPER(code) = ?', [$code])->first();
+        $languages = $row ? $row->languages : collect();
+
+        $hasEnglish = $languages->contains(fn ($lang) => strtolower($lang->code ?? '') === 'en');
+        if (! $hasEnglish) {
+            $english = \App\Models\TranslateLanguage::whereRaw('LOWER(code) = ?', ['en'])->first();
+            if ($english) {
+                $languages = $languages->push($english);
+            }
+        }
+
+        return $languages->sortBy('name')->values();
+    }
+
+    /**
      * Refresh the visitor_country_languages session with fresh data from DB.
      * Call this after adding/updating languages on a country via Country Management
      * so that the chatbot, e-commerce, and all other pages immediately reflect the changes.
