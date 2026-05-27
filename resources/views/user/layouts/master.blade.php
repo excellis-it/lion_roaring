@@ -264,11 +264,7 @@
         </div>
         <div class="dark-transparent sidebartoggler"></div>
         @include('frontend.includes.google_translate')
-        @if (env('CHATBOT') == 'AI')
-            @include('frontend.includes.ai_chatbot')
-        @else
-            @include('frontend.includes.chatbot')
-        @endif
+        @include('frontend.includes.chatbot_widget')
     </div>
     <script src="{{ asset('user_assets/js/jquery.min.js') }}"></script>
     <script src="{{ asset('user_assets/js/simplebar.min.js') }}"></script>
@@ -340,60 +336,7 @@
         };
     </script>
 
-    <script>
-        window.Laravel = {
-            csrfToken: '{{ csrf_token() }}',
-            authUserId: {{ auth()->user()->id }},
-            authUserRole: "{{ auth()->user()->hasNewRole('SUPER ADMIN') ? 'admin' : 'user' }}",
-            authTimeZone: "{{ auth()->user()->time_zone ?? 'UTC' }}",
-            ipAddress: "{{ env('IP_ADDRESS') }}",
-            socketPort: "{{ env('SOCKET_PORT') }}",
-            storageUrl: "{{ Storage::url('') }}",
-            assetUrls: {
-                profileDummy: '{{ asset('user_assets/images/profile_dummy.png') }}',
-                fileIcon: '{{ asset('user_assets/images/file.png') }}',
-                groupDefaultImage: '{{ asset('user_assets/images/group.jpg') }}',
-            },
-            userInfo: {
-                firstName: "{{ auth()->user()->first_name }}",
-                middleName: "{{ auth()->user()->middle_name }}",
-                lastName: "{{ auth()->user()->last_name }}",
-                profilePicture: "{{ auth()->user()->profile_picture }}"
-            },
-            routes: {
-                chatbotMessage: "{{ route('chatbot.message') }}",
-
-                notificationList: "{{ route('notification.list') }}",
-                notificationClear: "{{ route('notification.clear') }}",
-
-                // chat routes
-                chatLoad: "{{ route('chats.load') }}",
-                chatSend: "{{ route('chats.send') }}",
-                chatList: "{{ route('chats.chat-list') }}",
-                chatClear: "{{ route('chats.clear') }}",
-                chatRemove: "{{ route('chats.remove') }}",
-                chatSeen: "{{ route('chats.seen') }}",
-                chatNotification: "{{ route('chats.notification') }}",
-                notificationRead: "{{ route('notification.read', ['type' => '__TYPE__', 'id' => '__ID__']) }}",
-
-                // team chat routes
-                teamChatLoad: "{{ route('team-chats.load') }}",
-                teamChatSend: "{{ route('team-chats.send') }}",
-                teamChatGroupList: "{{ route('team-chats.group-list') }}",
-                teamChatGroupInfo: "{{ route('team-chats.group-info') }}",
-                teamChatUpdateGroupImage: "{{ route('team-chats.update-group-image') }}",
-                teamChatEditNameDes: "{{ route('team-chats.edit-name-des') }}",
-                teamChatRemoveMember: "{{ route('team-chats.remove-member') }}",
-                teamChatMakeAdmin: "{{ route('team-chats.make-admin') }}",
-                teamChatExitFromGroup: "{{ route('team-chats.exit-from-group') }}",
-                teamChatDeleteGroup: "{{ route('team-chats.delete-group') }}",
-                teamChatRemoveChat: "{{ route('team-chats.remove-chat') }}",
-                teamChatClearAllConversation: "{{ route('team-chats.clear-all-conversation') }}",
-                teamChatSeen: "{{ route('team-chats.seen') }}",
-                teamChatNotification: "{{ route('team-chats.notification') }}",
-            }
-        };
-    </script>
+    @include('user.includes.laravel_globals_script')
 
 
 
@@ -401,47 +344,7 @@
 
 
 
-    <script>
-        @if (Session::has('message'))
-            toastr.options = {
-                "closeButton": true,
-                "progressBar": true,
-                "positionClass": "toast-bottom-right", // Change position to bottom right
-                "timeOut": "3000", // Duration before it auto-closes
-            }
-            toastr.success("{{ session('message') }}");
-        @endif
-
-        @if (Session::has('error'))
-            toastr.options = {
-                "closeButton": true,
-                "progressBar": true,
-                "positionClass": "toast-bottom-right", // Change position to bottom right
-                "timeOut": "3000",
-            }
-            toastr.error("{{ session('error') }}");
-        @endif
-
-        @if (Session::has('info'))
-            toastr.options = {
-                "closeButton": true,
-                "progressBar": true,
-                "positionClass": "toast-bottom-right", // Change position to bottom right
-                "timeOut": "3000",
-            }
-            toastr.info("{{ session('info') }}");
-        @endif
-
-        @if (Session::has('warning'))
-            toastr.options = {
-                "closeButton": true,
-                "progressBar": true,
-                "positionClass": "toast-bottom-right", // Change position to bottom right
-                "timeOut": "3000",
-            }
-            toastr.warning("{{ session('warning') }}");
-        @endif
-    </script>
+    @include('frontend.includes.toastr_flash')
 
 
     <script>
@@ -515,6 +418,7 @@
     <script src="{{ asset('user_assets/js/web-team-chat.js') }}"></script>
 
 
+    @include('user.includes.socket_init_data')
     <script>
         $(document).ready(function() {
 
@@ -523,15 +427,12 @@
                     "X-CSRF-TOKEN": $('meta[name="csrf-token"]').attr("content"),
                 },
             });
-            let ip_address = "{{ env('IP_ADDRESS') }}";
-            let socket_port = '{{ env('SOCKET_PORT') }}';
+            var socketCfg = JSON.parse(document.getElementById('socket-init-data').textContent);
+            let ip_address = socketCfg.ipAddress;
+            let socket_port = socketCfg.socketPort;
             let socket = io(socket_port ? ip_address + ':' + socket_port : ip_address);
-            var sender_id = {{ auth()->user()->id }};
-            @if (auth()->user()->hasNewRole('SUPER ADMIN'))
-                var role = 'admin';
-            @else
-                var role = 'user';
-            @endif
+            var sender_id = socketCfg.senderId;
+            var role = socketCfg.role;
 
 
 
@@ -1055,7 +956,7 @@
 
         function fetchLatestEmails(page = 1) {
             $.ajax({
-                url: '{{ route('mail.inbox-email-list') }}',
+                url: window.Laravel.routes.mailInboxList,
                 method: 'GET',
                 data: {
                     page: page,
@@ -1093,7 +994,7 @@
 
         function fetchSentEmails(page = 1) {
             $.ajax({
-                url: '{{ route('mail.sent-email-list') }}',
+                url: window.Laravel.routes.mailSentList,
                 method: 'GET',
                 data: {
                     page: page,
@@ -1130,7 +1031,7 @@
 
         function fetchStarEmails(page = 1) {
             $.ajax({
-                url: '{{ route('mail.star-email-list') }}',
+                url: window.Laravel.routes.mailStarList,
                 method: 'GET',
                 data: {
                     page: page,
@@ -1167,7 +1068,7 @@
 
         function fetchTrashEmails(page = 1) {
             $.ajax({
-                url: '{{ route('mail.trash-email-list') }}',
+                url: window.Laravel.routes.mailTrashList,
                 method: 'GET',
                 data: {
                     page: page,

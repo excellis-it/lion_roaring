@@ -385,39 +385,7 @@
     <script src="{{ asset('ecom_assets/js/custom.js') }}"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/js/toastr.min.js"></script>
-    <script>
-        @if (Session::has('message'))
-            toastr.options = {
-                "closeButton": true,
-                "progressBar": true
-            }
-            toastr.success("{{ session('message') }}");
-        @endif
-
-        @if (Session::has('error'))
-            toastr.options = {
-                "closeButton": true,
-                "progressBar": true
-            }
-            toastr.error("{{ session('error') }}");
-        @endif
-
-        @if (Session::has('info'))
-            toastr.options = {
-                "closeButton": true,
-                "progressBar": true
-            }
-            toastr.info("{{ session('info') }}");
-        @endif
-
-        @if (Session::has('warning'))
-            toastr.options = {
-                "closeButton": true,
-                "progressBar": true
-            }
-            toastr.warning("{{ session('warning') }}");
-        @endif
-    </script>
+    @include('frontend.includes.toastr_flash', ['toastrPositionClass' => 'toast-top-right'])
     <script>
         $(document).ready(function() {
             $(document).on('submit', '#submit-newsletter', function(e) {
@@ -561,11 +529,7 @@
     </script>
     @stack('scripts')
     @include('frontend.includes.google_translate')
-     @if (env('CHATBOT') == 'AI')
-        @include('frontend.includes.ai_chatbot')
-    @else
-        @include('frontend.includes.chatbot')
-    @endif
+     @include('frontend.includes.chatbot_widget')
 </body>
 
 </html>
