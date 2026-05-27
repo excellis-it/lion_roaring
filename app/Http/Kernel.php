@@ -69,6 +69,7 @@ class Kernel extends HttpKernel
         'super_admin' => \App\Http\Middleware\SuperAdminMiddleware::class,
         'member.access' => \App\Http\Middleware\MemberAccess::class,
         'api.member.access' => \App\Http\Middleware\ApiMemberAccess::class,
+        'member.sovereign' => \App\Http\Middleware\EnsureMemberSovereign::class,
         'preventBackHistory' => \App\Http\Middleware\PreventBackHistory::class,
         'role' => \Spatie\Permission\Middlewares\RoleMiddleware::class,
         // 'permission' => \Spatie\Permission\Middlewares\PermissionMiddleware::class,

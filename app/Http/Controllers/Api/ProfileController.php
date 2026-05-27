@@ -109,6 +109,7 @@ class ProfileController extends Controller
             'user_last_subscription' => $user->userLastSubscription,
             'has_register_agreement' => UserRegisterAgreement::where('user_id', $user->id)->exists(),
             'has_signature' => !empty($user->signature),
+            'is_member_sovereign' => $user->isMemberSovereign(),
         ];
     }
 

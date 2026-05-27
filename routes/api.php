@@ -312,7 +312,7 @@ Route::prefix('v3')->middleware(['userActivity'])->group(function () {
         Route::post('register-agreement/preview', [ArticleController::class, 'previewRegisterAgreement']);
         Route::post('register-agreement/sign', [ArticleController::class, 'signRegisterAgreement']);
 
-        Route::prefix('membership')->group(function () {
+        Route::prefix('membership')->middleware('member.sovereign')->group(function () {
             Route::get('/tiers', [MembershipApiController::class, 'tiers']);
             Route::get('/tiers/{id}', [MembershipApiController::class, 'tierDetail']);
             Route::get('/current', [MembershipApiController::class, 'current']);
