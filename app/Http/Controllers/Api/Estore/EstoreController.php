@@ -89,7 +89,21 @@ class EstoreController extends Controller
                     ->get()
             );
 
-            $homeCms = Helper::getVisitorCmsContent('EcomHomeCms', true, false, 'id', 'desc', null);
+            $countryCode = strtoupper(trim((string) $request->input('country_code', 'US')));
+            if ($countryCode === '') {
+                $countryCode = 'US';
+            }
+
+            $homeCms = EcomHomeCms::where('country_code', $countryCode)
+                ->orderBy('id', 'desc')
+                ->first();
+
+            if (! $homeCms && $countryCode !== 'US') {
+                $homeCms = EcomHomeCms::where('country_code', 'US')
+                    ->orderBy('id', 'desc')
+                    ->first();
+            }
+
             $content = [];
             if ($homeCms) {
                 $content = [
@@ -109,9 +123,9 @@ class EstoreController extends Controller
                     'new_arrival_image' => $homeCms->new_arrival_image,
                     'new_product_title' => $homeCms->new_product_title,
                     'new_product_subtitle' => $homeCms->new_product_subtitle,
-                    'slider_data' => $homeCms->slider_data,
+                    'slider_data' => Helper::decodeEcomSliderData($homeCms->getRawOriginal('slider_data') ?? $homeCms->slider_data),
                     'slider_data_second_title' => $homeCms->slider_data_second_title,
-                    'slider_data_second' => $homeCms->slider_data_second,
+                    'slider_data_second' => Helper::decodeEcomSliderData($homeCms->getRawOriginal('slider_data_second') ?? $homeCms->slider_data_second),
                     'about_section_title' => $homeCms->about_section_title,
                     'about_section_image' => $homeCms->about_section_image,
                     'about_section_text_one_title' => $homeCms->about_section_text_one_title,

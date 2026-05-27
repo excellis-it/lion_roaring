@@ -789,12 +789,55 @@ class Helper
     }
 
     /**
-     * @param  array<int, array<string, mixed>>  $slides
+     * Decode e-store home slider JSON (handles array, JSON string, or double-encoded JSON).
+     *
+     * @return array<int, array<string, mixed>>
+     */
+    public static function decodeEcomSliderData(mixed $value): array
+    {
+        if ($value === null || $value === '') {
+            return [];
+        }
+
+        if (is_array($value)) {
+            return array_is_list($value) ? $value : array_values($value);
+        }
+
+        if (! is_string($value)) {
+            return [];
+        }
+
+        $decoded = json_decode($value, true);
+        if (is_array($decoded)) {
+            if (array_is_list($decoded)) {
+                return $decoded;
+            }
+            if (isset($decoded['title']) || isset($decoded['image'])) {
+                return [$decoded];
+            }
+
+            return array_values($decoded);
+        }
+
+        // Double-encoded JSON string stored in DB (json string inside json string).
+        if (is_string($decoded)) {
+            $inner = json_decode($decoded, true);
+            if (is_array($inner)) {
+                return array_is_list($inner) ? $inner : array_values($inner);
+            }
+        }
+
+        return [];
+    }
+
+    /**
+     * @param  array<int, array<string, mixed>>|string|null  $slides
      * @return array<int, array<string, mixed>>
      */
     public static function transformEcomSliderData($slides): array
     {
-        if (! is_array($slides)) {
+        $slides = self::decodeEcomSliderData($slides);
+        if ($slides === []) {
             return [];
         }
 
