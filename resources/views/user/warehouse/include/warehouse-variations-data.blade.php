@@ -125,6 +125,10 @@
                         <input type="number" min="0"
                             name="variation_products[{{ $index }}][warehouse_quantity]" class="form-control"
                             value="{{ $variation->warehouse_quantity }}" readonly>
+                        <button type="button" class="btn btn-sm btn-outline-warning mt-2 reset-wa-row-stock-button"
+                            data-variation-id="{{ $variation->id }}">
+                            Reset SKU Stock
+                        </button>
                     </div>
                 </div>
 
