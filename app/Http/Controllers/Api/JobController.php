@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers\API;
 
+use App\Http\Controllers\Api\Concerns\AppliesPmaContentScope;
+use App\Http\Controllers\Api\Concerns\AppliesPmaCountryFromRequest;
 use App\Http\Controllers\Controller;
 use App\Models\Job;
 use Illuminate\Http\Request;
@@ -16,6 +18,9 @@ use App\Services\NotificationService;
 
 class JobController extends Controller
 {
+    use AppliesPmaContentScope;
+    use AppliesPmaCountryFromRequest;
+
     /**
      * All Job Posts
      * @queryParam search string optional for search. Example: "abc"
@@ -70,25 +75,33 @@ class JobController extends Controller
     public function index(Request $request)
     {
         try {
-            // Fetch the search query from the request
-            $searchQuery = $request->get('search');
-
-            $user_type = auth()->user()->user_type ?? 'Global';
-            $user_country = auth()->user()->country ?? null;
-
-            // Apply the search filter if searchQuery is provided
-            $jobsQuery = Job::with('user')
-                ->when($searchQuery, function ($query) use ($searchQuery) {
-                    $query->where('job_title', 'like', "%{$searchQuery}%")
-                        ->orWhere('job_description', 'like', "%{$searchQuery}%");
-                });
-
-            // Apply country scope for non-Global users
-            if ($user_type !== 'Global' && $user_country) {
-                $jobsQuery->where('country_id', $user_country);
+            if (! auth()->user()->can('Manage Job Postings')) {
+                return response()->json(['error' => 'Permission denied.'], 403);
             }
 
+            $searchQuery = $request->get('search');
+            $ctx = $this->pmaScopeContext();
+
+            $jobsQuery = Job::with(['user', 'country'])
+                ->when($searchQuery, function ($query) use ($searchQuery) {
+                    $query->where(function ($q) use ($searchQuery) {
+                        $q->where('job_title', 'like', "%{$searchQuery}%")
+                            ->orWhere('job_description', 'like', "%{$searchQuery}%");
+                    });
+                });
+
+            $this->applyPmaJobScope($jobsQuery, $ctx);
+
             $jobs = $jobsQuery->orderBy('id', 'desc')->paginate(15);
+
+            $jobs->getCollection()->transform(function ($job) {
+                $job->country_name = $job->country?->name ?? '--';
+                $job->posted_by_name = $job->user?->full_name
+                    ?? trim(($job->user?->first_name ?? '').' '.($job->user?->last_name ?? ''))
+                    ?: '--';
+
+                return $job;
+            });
 
             return response()->json($jobs, 200);
         } catch (\Exception $e) {
@@ -131,14 +144,14 @@ class JobController extends Controller
     public function show($id)
     {
         try {
-            $user_type = auth()->user()->user_type ?? 'Global';
-            $user_country = auth()->user()->country ?? null;
-
-            if ($user_type == 'Global') {
-                $job = Job::with('user')->findOrFail($id);
-            } else {
-                $job = Job::with('user')->where('country_id', $user_country)->findOrFail($id);
+            if (! auth()->user()->can('View Job Postings')) {
+                return response()->json(['error' => 'Permission denied.'], 403);
             }
+
+            $ctx = $this->pmaScopeContext();
+            $query = Job::with('user');
+            $this->applyPmaJobScope($query, $ctx);
+            $job = $query->findOrFail($id);
 
             return response()->json(['data' => $job], 200);
         } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
@@ -194,40 +207,25 @@ class JobController extends Controller
     public function store(Request $request)
     {
         try {
-            $user_type = auth()->user()->user_type ?? 'Global';
-            $user_country = auth()->user()->country ?? null;
-
-            if ($user_type === 'Global') {
-                $validated = $request->validate([
-                    'job_title' => 'required',
-                    'job_description' => 'required',
-                    'job_type' => 'required',
-                    'job_location' => 'required',
-                    'job_salary' => 'nullable|numeric',
-                    'currency' => 'nullable',
-                    'job_experience' => 'nullable|numeric',
-                    'contact_person' => 'nullable',
-                    'contact_email' => 'nullable|email',
-                    'list_of_values' => 'nullable|required_with:job_salary',
-                    'country_id' => 'required|exists:countries,id',
-                ]);
-                $country_id = $request->get('country_id');
-            } else {
-                $request->merge(['country_id' => $user_country]);
-                $validated = $request->validate([
-                    'job_title' => 'required',
-                    'job_description' => 'required',
-                    'job_type' => 'required',
-                    'job_location' => 'required',
-                    'job_salary' => 'nullable|numeric',
-                    'currency' => 'nullable',
-                    'job_experience' => 'nullable|numeric',
-                    'contact_person' => 'nullable',
-                    'contact_email' => 'nullable|email',
-                    'list_of_values' => 'nullable|required_with:job_salary',
-                ]);
-                $country_id = $user_country;
+            if (! auth()->user()->can('Create Job Postings')) {
+                return response()->json(['error' => 'Permission denied.'], 403);
             }
+
+            $country_id = $this->resolvePmaCountryId($request);
+            $request->merge(['country_id' => $country_id]);
+
+            $validated = $request->validate(array_merge([
+                'job_title' => 'required',
+                'job_description' => 'required',
+                'job_type' => 'required',
+                'job_location' => 'required',
+                'job_salary' => 'nullable|numeric',
+                'currency' => 'nullable',
+                'job_experience' => 'nullable|numeric',
+                'contact_person' => 'nullable',
+                'contact_email' => 'nullable|email',
+                'list_of_values' => 'nullable|required_with:job_salary',
+            ], $this->pmaCountryValidationRules()));
 
             // Create a new job entry
             $job = new Job();
@@ -313,6 +311,10 @@ class JobController extends Controller
     public function update(Request $request, $id)
     {
         try {
+            if (! auth()->user()->can('Edit Job Postings')) {
+                return response()->json(['error' => 'Permission denied.'], 403);
+            }
+
             $user_type = auth()->user()->user_type ?? 'Global';
             $user_country = auth()->user()->country ?? null;
 
@@ -409,6 +411,10 @@ class JobController extends Controller
     public function delete($id)
     {
         try {
+            if (! auth()->user()->can('Delete Job Postings')) {
+                return response()->json(['error' => 'Permission denied.'], 403);
+            }
+
             // Find the job by ID
             $job = Job::findOrFail($id);
 

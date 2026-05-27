@@ -19,7 +19,13 @@ use App\Models\User;
 use App\Models\Notification;
 use App\Models\OrderEmailTemplate;
 use App\Models\EstoreRefund;
+use App\Models\EstorePromoCode;
+use App\Models\ProductFile;
+use App\Http\Controllers\User\EstoreCmsController;
 use App\Services\PromoCodeService;
+use App\Services\PromoCodeValidator;
+use App\Services\DisplayPriceService;
+use App\Services\CheckoutPaymentService;
 use App\Mail\OrderNotificationMail;
 use App\Mail\OrderStatusUpdatedMail;
 use Illuminate\Http\Request;
@@ -563,12 +569,22 @@ class CheckoutController extends Controller
      */
     public function myOrders(Request $request)
     {
-        $orders = EstoreOrder::where('user_id', auth()->id())->where('payment_status', 'paid')->orderBy('created_at', 'desc')->paginate(10);
+        $estoreSettings = EstoreSetting::first();
+        $orders = EstoreOrder::with(['orderStatus', 'orderItems.product.files'])
+            ->where('user_id', auth()->id())
+            ->where('payment_status', 'paid')
+            ->orderBy('created_at', 'desc')
+            ->paginate(10);
+
+        $orders->getCollection()->transform(function (EstoreOrder $order) use ($estoreSettings) {
+            return $this->appendOrderPresentationFields($order, $estoreSettings);
+        });
 
         return response()->json([
             'status' => true,
             'message' => 'Orders fetched successfully',
-            'orders' => $orders
+            'orders' => $orders,
+            'max_refundable_days' => $estoreSettings->refund_max_days ?? $estoreSettings->max_refundable_days ?? 10,
         ], 200);
     }
 
@@ -603,7 +619,7 @@ class CheckoutController extends Controller
         }
 
         // Get order with relationships
-        $order = EstoreOrder::with(['orderItems', 'payments'])
+        $order = EstoreOrder::with(['orderItems.product.files', 'payments', 'orderStatus'])
             ->where('id', $request->order_id)
             ->where('user_id', auth()->id())
             ->first();
@@ -627,7 +643,7 @@ class CheckoutController extends Controller
 
         // Get estore settings
         $estoreSettings = EstoreSetting::first();
-        $max_refundable_days = $estoreSettings->max_refundable_days ?? 10;
+        $max_refundable_days = $estoreSettings->refund_max_days ?? $estoreSettings->max_refundable_days ?? 10;
 
         // Get all active order statuses
         $allStatuses = OrderStatus::where('is_active', 1)
@@ -705,6 +721,8 @@ class CheckoutController extends Controller
 
         // Get current status details
         $currentStatus = OrderStatus::find($currentStatusId);
+
+        $order = $this->appendOrderPresentationFields($order, $estoreSettings);
 
         return response()->json([
             'status' => true,
@@ -933,6 +951,687 @@ class CheckoutController extends Controller
             return response()->json([
                 'status' => false,
                 'message' => 'Failed to cancel order: ' . $e->getMessage()
+            ], 500);
+        }
+    }
+
+    /**
+     * POST /e-store/promo-code/validate
+     * @bodyParam code string required Promo code
+     * @authenticated
+     */
+    public function validatePromoCode(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'code' => 'required|string',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json(['status' => false, 'message' => $validator->errors()->first()], 422);
+        }
+
+        $cartItems = EstoreCart::where('user_id', auth()->id())
+            ->with(['product', 'warehouseProduct'])
+            ->get()
+            ->map(function ($c) {
+                $unit = (float) ($c->price ?? $c->warehouseProduct?->price ?? 0);
+                return [
+                    'product_id' => $c->product_id,
+                    'subtotal' => $unit * (int) ($c->quantity ?? 1),
+                ];
+            })->toArray();
+
+        if (empty($cartItems)) {
+            return response()->json(['status' => false, 'message' => 'Your cart is empty.'], 422);
+        }
+
+        $result = PromoCodeValidator::validateEstore($request->code, auth()->id(), $cartItems);
+
+        if (!$result['valid']) {
+            return response()->json(['status' => false, 'message' => $result['message']], 422);
+        }
+
+        return response()->json([
+            'status' => true,
+            'message' => $result['message'],
+            'data' => [
+                'code' => $result['code'],
+                'discount_amount' => $result['discount_amount'],
+                'is_percentage' => $result['is_percentage'],
+                'original_price' => $result['original_price'],
+                'final_price' => $result['final_price'],
+            ],
+        ]);
+    }
+
+    /**
+     * POST /e-store/checkout/display-prices
+     * @bodyParam selected_checkout_charges object optional  Keyed by cart id, array of charge_name.
+     * @bodyParam promo_code string optional
+     * @authenticated
+     */
+    public function displayPrices(Request $request)
+    {
+        $cartItems = EstoreCart::where('user_id', auth()->id())
+            ->with(['product.otherCharges', 'warehouseProduct'])
+            ->get();
+
+        if ($cartItems->isEmpty()) {
+            return response()->json(['status' => false, 'message' => 'Your cart is empty.'], 422);
+        }
+
+        $selected = (array) $request->input('selected_checkout_charges', []);
+        $promo = null;
+        $promoMessage = null;
+        if ($request->filled('promo_code')) {
+            $items = $cartItems->map(fn ($c) => [
+                'product_id' => $c->product_id,
+                'subtotal' => (float) ($c->price ?? $c->warehouseProduct?->price ?? 0) * (int) ($c->quantity ?? 1),
+            ])->toArray();
+            $result = PromoCodeValidator::validateEstore($request->promo_code, auth()->id(), $items);
+            if ($result['valid']) {
+                $promo = $result['promo_code'];
+            } else {
+                $promoMessage = $result['message'];
+            }
+        }
+
+        $orderMethod = (int) $request->input('order_method', 0);
+        $paymentType = $request->input('payment_type', 'debit');
+
+        $summary = (new \App\Services\EstoreCartSummaryService())->summarizeForCheckout(
+            auth()->user(),
+            $request->input('promo_code'),
+            $orderMethod,
+            $paymentType,
+            $selected
+        );
+
+        if ($promoMessage) {
+            $summary['promo_code_error'] = $promoMessage;
+        }
+
+        return response()->json([
+            'status' => true,
+            'message' => 'Display prices calculated.',
+            'data' => $summary,
+        ]);
+    }
+
+    /**
+     * POST /e-store/checkout/payment-intent
+     * Creates a Stripe PaymentIntent for flutter_stripe PaymentSheet.
+     * @bodyParam amount number required  Final total in major units.
+     * @bodyParam currency string optional Defaults to USD.
+     * @bodyParam order_draft_id int optional  For linking a draft order.
+     * @authenticated
+     */
+    public function createPaymentIntent(Request $request, CheckoutPaymentService $payment)
+    {
+        $validator = Validator::make($request->all(), [
+            'amount' => 'required|numeric|min:0.5',
+            'currency' => 'nullable|string|size:3',
+            'order_draft_id' => 'nullable|integer',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json(['status' => false, 'message' => $validator->errors()->first()], 422);
+        }
+
+        $result = $payment->createIntent(
+            (float) $request->amount,
+            $request->input('currency', 'USD'),
+            auth()->user(),
+            [
+                'type' => 'estore',
+                'order_draft_id' => $request->input('order_draft_id'),
+            ]
+        );
+
+        if (!$result['success']) {
+            return response()->json(['status' => false, 'message' => $result['error']], 500);
+        }
+
+        return response()->json([
+            'status' => true,
+            'message' => 'Payment intent created.',
+            'data' => [
+                'payment_intent_id' => $result['payment_intent_id'],
+                'client_secret' => $result['client_secret'],
+                'ephemeral_key' => $result['ephemeral_key'],
+                'customer_id' => $result['customer_id'],
+                'publishable_key' => $result['publishable_key'],
+            ],
+        ]);
+    }
+
+    /**
+     * POST /e-store/checkout/signature
+     * Attaches a signature image to an order after checkout.
+     * @bodyParam order_id int required
+     * @bodyParam signature_image file required  PNG/JPEG upload.
+     * @authenticated
+     */
+    public function uploadSignature(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'order_id' => 'required|integer|exists:estore_orders,id',
+            'signature_image' => 'required|image|mimes:png,jpg,jpeg|max:2048',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json(['status' => false, 'message' => $validator->errors()->first()], 422);
+        }
+
+        $order = EstoreOrder::where('id', $request->order_id)
+            ->where('user_id', auth()->id())
+            ->first();
+
+        if (!$order) {
+            return response()->json(['status' => false, 'message' => 'Order not found.'], 404);
+        }
+
+        $path = $request->file('signature_image')->store('order-signatures', 'public');
+        $order->signature_image = $path;
+        $order->save();
+
+        return response()->json([
+            'status' => true,
+            'message' => 'Signature attached.',
+            'data' => ['signature_image' => $path],
+        ]);
+    }
+
+    /**
+     * POST /e-store/orders/{id}/cancel
+     * Thin wrapper around cancelOrder that takes id from URL path.
+     * @authenticated
+     */
+    public function cancelOrderById(int $id, Request $request)
+    {
+        $request->merge(['order_id' => $id]);
+        return $this->cancelOrder($request);
+    }
+
+    /**
+     * GET /e-store/orders/{id}/invoice — PDF download for mobile (Bearer auth).
+     * @authenticated
+     */
+    public function downloadInvoice(int $id)
+    {
+        if (!auth()->check()) {
+            return response()->json(['status' => false, 'message' => 'Please login to continue'], 401);
+        }
+
+        $order = EstoreOrder::with('orderStatus')
+            ->where('id', $id)
+            ->where('user_id', auth()->id())
+            ->first();
+
+        if (!$order) {
+            return response()->json(['status' => false, 'message' => 'Order not found'], 404);
+        }
+
+        $slug = optional($order->orderStatus)->slug ?? '';
+        $isDelivered = in_array($slug, ['delivered', 'pickup_picked_up'], true);
+        $hasDigital = EstoreOrderItem::where('order_id', $order->id)
+            ->whereHas('product', fn ($q) => $q->where('product_type', 'digital'))
+            ->exists();
+
+        if ($order->payment_status !== 'paid' || (!$isDelivered && !$hasDigital)) {
+            return response()->json(['status' => false, 'message' => 'Invoice not available for this order.'], 403);
+        }
+
+        return app(EstoreCmsController::class)->downloadInvoice($order);
+    }
+
+    /**
+     * GET /e-store/download-file/{fileId} — digital product file (Bearer auth).
+     * @authenticated
+     */
+    public function downloadDigitalFile(int $fileId)
+    {
+        if (!auth()->check()) {
+            return response()->json(['status' => false, 'message' => 'Please login to continue'], 401);
+        }
+
+        $productFile = ProductFile::with('product')->find($fileId);
+
+        if (!$productFile || !$productFile->product) {
+            return response()->json(['status' => false, 'message' => 'File not found'], 404);
+        }
+
+        if (!$productFile->product->isPurchasedByUser(auth()->id())) {
+            return response()->json(['status' => false, 'message' => 'You must purchase this product before downloading.'], 403);
+        }
+
+        $response = $productFile->streamDownloadResponse();
+
+        if ($response) {
+            return $response;
+        }
+
+        return response()->json(['status' => false, 'message' => 'File not found on server.'], 404);
+    }
+
+    /**
+     * Extra fields for mobile order list/detail (parity with web e-store views).
+     */
+    protected function appendOrderPresentationFields(EstoreOrder $order, ?EstoreSetting $settings = null): EstoreOrder
+    {
+        $settings = $settings ?? EstoreSetting::first();
+        $slug = optional($order->orderStatus)->slug ?? '';
+        $orderHasDigital = $order->relationLoaded('orderItems')
+            ? $order->orderItems->contains(fn ($i) => optional($i->product)->product_type === 'digital')
+            : false;
+        $isFinalDelivered = in_array($slug, ['delivered', 'pickup_picked_up'], true);
+        $isFinalCancelled = in_array($slug, ['cancelled', 'pickup_cancelled'], true);
+        $allowedSlugs = $order->is_pickup
+            ? ['pickup_pending', 'pickup_processing']
+            : ['pending', 'processing'];
+        $cancelHours = (int) ($settings->cancel_within_hours ?? 24);
+        $elapsedMinutes = (int) $order->created_at->diffInMinutes(now());
+        $minutesLeft = max(0, ($cancelHours * 60) - $elapsedMinutes);
+
+        $order->setAttribute('order_has_digital_product', $orderHasDigital);
+        $order->setAttribute('digital_files', $this->collectDigitalFiles($order));
+        $order->setAttribute('can_download_invoice', $order->payment_status === 'paid' && ($isFinalDelivered || $orderHasDigital));
+        $order->setAttribute('can_cancel', !$orderHasDigital
+            && in_array($slug, $allowedSlugs, true)
+            && $order->payment_status === 'paid'
+            && $elapsedMinutes < ($cancelHours * 60));
+        $order->setAttribute('cancel_minutes_left', $minutesLeft);
+        $order->setAttribute('cancel_within_hours', $cancelHours);
+        $order->setAttribute('is_final_cancelled', $isFinalCancelled);
+        $order->setAttribute('is_final_delivered', $isFinalDelivered);
+        $order->setAttribute('is_refunded', $order->payment_status === 'refunded');
+
+        return $order;
+    }
+
+    protected function collectDigitalFiles(EstoreOrder $order): array
+    {
+        $files = [];
+        if (!$order->relationLoaded('orderItems')) {
+            return $files;
+        }
+        foreach ($order->orderItems as $item) {
+            if (optional($item->product)->product_type !== 'digital') {
+                continue;
+            }
+            foreach ($item->product->files ?? [] as $file) {
+                $files[] = [
+                    'id' => $file->id,
+                    'name' => basename($file->file_location ?? 'download'),
+                    'product_name' => $item->product_name,
+                ];
+            }
+        }
+
+        return $files;
+    }
+
+    /**
+     * GET /e-store/orders/{id}/track
+     * Returns a focused status timeline for mobile order tracking.
+     * @authenticated
+     */
+    public function trackOrder(int $id)
+    {
+        $order = EstoreOrder::with('orderStatus')
+            ->where('id', $id)
+            ->where('user_id', auth()->id())
+            ->first();
+
+        if (!$order) {
+            return response()->json(['status' => false, 'message' => 'Order not found.'], 404);
+        }
+
+        $statuses = OrderStatus::where('is_active', 1)
+            ->where('is_pickup', $order->is_pickup ? 1 : 0)
+            ->orderBy('sort_order')
+            ->get(['id', 'name', 'slug', 'sort_order']);
+
+        $currentId = $order->status;
+        $current = $statuses->firstWhere('id', $currentId);
+        $cancelSlug = $order->is_pickup ? 'pickup_cancelled' : 'cancelled';
+        $isCancelled = $current && $current->slug === $cancelSlug;
+
+        $timeline = $statuses->map(function ($s) use ($currentId, $isCancelled, $cancelSlug) {
+            $reached = false;
+            if ($isCancelled) {
+                $reached = $s->slug === $cancelSlug || $s->sort_order === 1;
+            } else {
+                $reached = $s->id <= $currentId;
+            }
+            return [
+                'id' => $s->id,
+                'name' => $s->name,
+                'slug' => $s->slug,
+                'sort_order' => $s->sort_order,
+                'reached' => $reached,
+                'is_current' => $s->id === $currentId,
+            ];
+        })->values();
+
+        return response()->json([
+            'status' => true,
+            'message' => 'Order tracking.',
+            'data' => [
+                'order_id' => $order->id,
+                'order_number' => $order->order_number,
+                'is_pickup' => (bool) $order->is_pickup,
+                'current_status' => $current,
+                'is_cancelled' => $isCancelled,
+                'expected_delivery_date' => $order->expected_delivery_date,
+                'timeline' => $timeline,
+            ],
+        ]);
+    }
+
+    /**
+     * POST /e-store/checkout/confirm
+     *
+     * Finalizes an order after the mobile client has successfully charged a
+     * Stripe PaymentIntent via flutter_stripe PaymentSheet.
+     *
+     * Difference from `processCheckout`:
+     *   - No PaymentIntent creation — that happens in `/checkout/payment-intent`.
+     *   - Verifies the supplied `payment_intent_id` with Stripe (guards against
+     *     spoofed success) before materializing the order.
+     *   - Idempotent: re-posting the same `payment_intent_id` returns the
+     *     already-created order instead of double-charging stock/email/etc.
+     *
+     * @bodyParam payment_intent_id string required
+     * @bodyParam first_name string required
+     * @bodyParam last_name string required
+     * @bodyParam email string required
+     * @bodyParam phone string required
+     * @bodyParam address_line_1 string required
+     * @bodyParam address_line_2 string nullable
+     * @bodyParam city string required
+     * @bodyParam state string required
+     * @bodyParam pincode string required
+     * @bodyParam country string required
+     * @bodyParam order_method int nullable 1 = pickup, 0 = delivery
+     * @bodyParam payment_type string nullable 'credit' | 'debit' | 'paymentsheet'
+     * @bodyParam promo_code string nullable
+     * @authenticated
+     */
+    public function confirmCheckout(Request $request, \App\Services\CheckoutPaymentService $payment)
+    {
+        if (!auth()->check()) {
+            return response()->json(['status' => false, 'message' => 'Please login to continue'], 401);
+        }
+
+        $validator = Validator::make($request->all(), [
+            'payment_intent_id' => 'required|string',
+            'first_name' => 'required|string|max:255',
+            'last_name' => 'required|string|max:255',
+            'email' => 'required|email|max:255',
+            'phone' => 'required|string|max:20',
+            'address_line_1' => 'required|string|max:500',
+            'address_line_2' => 'nullable|string|max:500',
+            'city' => 'required|string|max:255',
+            'state' => 'required|string|max:255',
+            'pincode' => 'required|string|max:20',
+            'country' => 'required|string|max:255',
+            'order_method' => 'nullable|integer|in:0,1',
+            'payment_type' => 'nullable|string|max:50',
+            'promo_code' => 'nullable|string',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json(['status' => false, 'message' => $validator->errors()->first()], 422);
+        }
+
+        // Idempotency — same intent_id means we already created this order.
+        $existingPayment = EstorePayment::where('stripe_payment_intent_id', $request->payment_intent_id)->first();
+        if ($existingPayment) {
+            $existingOrder = EstoreOrder::find($existingPayment->order_id);
+            if ($existingOrder) {
+                return response()->json([
+                    'status' => true,
+                    'message' => 'Order already recorded for this payment.',
+                    'order_id' => $existingOrder->id,
+                    'order_number' => $existingOrder->order_number,
+                    'total_amount' => $existingOrder->total_amount,
+                    'order' => $existingOrder,
+                ], 200);
+            }
+        }
+
+        // Verify the intent with Stripe — never trust client-supplied success.
+        $verification = $payment->verifyIntent($request->payment_intent_id);
+        if (!($verification['success'] ?? false)) {
+            return response()->json([
+                'status' => false,
+                'message' => 'Payment not completed. Status: ' . ($verification['status'] ?? 'unknown'),
+            ], 402);
+        }
+
+        $is_pickup = (int) $request->input('order_method', 0);
+
+        $carts = EstoreCart::where('user_id', auth()->id())
+            ->with(['product.otherCharges', 'warehouseProduct'])
+            ->get();
+
+        if ($carts->isEmpty()) {
+            return response()->json(['status' => false, 'message' => 'Your cart is empty'], 400);
+        }
+
+        $estoreSettings = EstoreSetting::first();
+
+        // Recalculate server-side (authoritative) — never trust client totals.
+        $recalculatedSubtotal = 0;
+        $cartItems = [];
+        foreach ($carts as $cart) {
+            $warehouseProduct = $cart->warehouseProduct;
+            $currentWarehousePrice = $warehouseProduct?->price ?? 0;
+            if (($cart->price ?? 0) != $currentWarehousePrice && !($cart->product?->is_free)) {
+                $cart->old_price = $cart->price;
+                $cart->price = $currentWarehousePrice;
+                $cart->save();
+            }
+            $cart->other_charges = $cart->product?->otherCharges?->sum('charge_amount') ?? 0;
+            $unitPrice = $cart->price ?? $currentWarehousePrice;
+            $itemSubtotal = ($unitPrice * $cart->quantity) + ($cart->other_charges ?? 0);
+            $recalculatedSubtotal += $itemSubtotal;
+            $cartItems[] = ['product_id' => $cart->product_id, 'subtotal' => $itemSubtotal];
+        }
+
+        $subtotal = $recalculatedSubtotal;
+
+        // Promo
+        $appliedPromoCode = $request->promo_code;
+        $promoDiscount = 0;
+        if ($appliedPromoCode && $subtotal > 0) {
+            $validation = PromoCodeService::validatePromoCode($appliedPromoCode, auth()->id(), $cartItems);
+            if ($validation['valid']) {
+                $promoDiscount = PromoCodeService::calculateDiscount($validation['promo_code'], $subtotal, $cartItems);
+            } else {
+                return response()->json(['status' => false, 'message' => $validation['message'] ?? 'Invalid promo code'], 422);
+            }
+        }
+
+        // Shipping / tax / totals
+        $shippingCost = $deliveryCost = $taxAmount = 0;
+        $totalItems = array_sum(array_map(fn($c) => isset($c['quantity']) ? (int)$c['quantity'] : 0, $carts->toArray()));
+        if ($estoreSettings) {
+            if ($is_pickup == 0 || !$estoreSettings->is_pickup_available) {
+                if (is_array($estoreSettings->shipping_rules) && count($estoreSettings->shipping_rules) > 0) {
+                    $shippingForQty = $estoreSettings->getShippingForQuantity($totalItems);
+                    $shippingCost = $shippingForQty['shipping_cost'];
+                    $deliveryCost = $shippingForQty['delivery_cost'];
+                } else {
+                    $shippingCost = $estoreSettings->shipping_cost ?? 0;
+                    $deliveryCost = $estoreSettings->delivery_cost ?? 0;
+                }
+            }
+            $taxAmount = (($subtotal - $promoDiscount) * ($estoreSettings->tax_percentage ?? 0)) / 100;
+        }
+        $totalAmount = $subtotal - $promoDiscount + $shippingCost + $deliveryCost + $taxAmount;
+
+        // Soft amount check — we don't fail on tiny drift but do log if the
+        // Stripe amount deviates significantly from our recomputed total.
+        $stripeAmount = (float) ($verification['amount'] ?? 0);
+        if ($stripeAmount > 0 && abs($stripeAmount - $totalAmount) > 0.02) {
+            Log::warning('confirmCheckout: Stripe amount differs from recomputed total', [
+                'stripe' => $stripeAmount,
+                'recomputed' => $totalAmount,
+                'user_id' => auth()->id(),
+            ]);
+        }
+
+        DB::beginTransaction();
+        try {
+            $warehouseId = $carts->first()->warehouse_id ?? null;
+            $wareHouse = WareHouse::find($warehouseId);
+
+            $cancelHours = $estoreSettings->cancel_within_hours ?? 0;
+            $statusSlug = $is_pickup
+                ? 'pickup_processing'
+                : (($cancelHours == 0) ? 'processing' : 'pending');
+
+            $order_status = OrderStatus::where('slug', $statusSlug)
+                ->where('is_pickup', $is_pickup ? 1 : 0)
+                ->first();
+            if (!$order_status) {
+                $statusSlug = $is_pickup ? 'pickup_pending' : 'pending';
+                $order_status = OrderStatus::where('slug', $statusSlug)
+                    ->where('is_pickup', $is_pickup ? 1 : 0)
+                    ->first();
+            }
+
+            $order = EstoreOrder::create([
+                'warehouse_id' => $warehouseId,
+                'is_pickup' => $is_pickup,
+                'user_id' => auth()->id(),
+                'first_name' => $request->first_name,
+                'last_name' => $request->last_name,
+                'email' => $request->email,
+                'phone' => $request->phone,
+                'address_line_1' => $request->address_line_1,
+                'address_line_2' => $request->address_line_2,
+                'city' => $request->city,
+                'state' => $request->state,
+                'pincode' => $request->pincode,
+                'country' => $request->country,
+                'subtotal' => $subtotal,
+                'tax_amount' => $taxAmount,
+                'shipping_amount' => $shippingCost,
+                'handling_amount' => $deliveryCost,
+                'total_amount' => $totalAmount,
+                'credit_card_fee' => 0,
+                'payment_type' => $request->input('payment_type', 'paymentsheet'),
+                'payment_status' => 'paid',
+                'status' => $order_status->id ?? null,
+                'warehouse_name' => $wareHouse->name ?? null,
+                'warehouse_address' => $wareHouse->address ?? null,
+                'promo_code' => $appliedPromoCode,
+                'promo_discount' => $promoDiscount,
+                'expected_delivery_date' => (!$is_pickup) ? now()->addDays($estoreSettings->expected_delivery_days ?? 7) : null,
+            ]);
+
+            foreach ($carts as $cart) {
+                $size = Size::find($cart->size_id);
+                $color = Color::find($cart->color_id);
+                $wareHouseProduct = WareHouse::find($cart->warehouse_id);
+
+                EstoreOrderItem::create([
+                    'order_id' => $order->id,
+                    'product_id' => $cart->product_id,
+                    'warehouse_product_id' => $cart->warehouse_product_id ?? null,
+                    'warehouse_id' => $cart->warehouse_id,
+                    'product_name' => $cart->product->name ?? 'Unknown Product',
+                    'product_image' => $cart->product->getProductFirstImage($cart->color_id) ?? null,
+                    'price' => $cart->price ?? ($cart->warehouseProduct->price ?? 0),
+                    'quantity' => $cart->quantity,
+                    'size_id' => $cart->size_id,
+                    'color_id' => $cart->color_id,
+                    'size' => $size->size ?? null,
+                    'color' => $color->color_name ?? null,
+                    'warehouse_name' => $wareHouseProduct->name ?? null,
+                    'warehouse_address' => $wareHouseProduct->address ?? null,
+                    'other_charges' => json_encode(
+                        $cart->product?->otherCharges?->map(fn($charge) => [
+                            'charge_name' => $charge->charge_name ?? '',
+                            'charge_amount' => $charge->charge_amount ?? 0,
+                        ]) ?? []
+                    ),
+                    'total' => ((($cart->price ?? ($cart->warehouseProduct?->price ?? 0))) * $cart->quantity) + ($cart->other_charges ?? 0),
+                ]);
+
+                // Stock decrement — same logic as processCheckout.
+                $warehouseProductRow = WarehouseProduct::where('warehouse_id', $cart->warehouse_id)
+                    ->where('id', $cart->warehouse_product_id)
+                    ->where('product_id', $cart->product_id)
+                    ->first();
+                if ($warehouseProductRow) {
+                    $warehouseProductRow->decrement('quantity', $cart->quantity);
+                    $wpv = WarehouseProductVariation::where('warehouse_id', $cart->warehouse_id)
+                        ->where('product_variation_id', $warehouseProductRow->product_variation_id)
+                        ->where('product_id', $cart->product_id)
+                        ->first();
+                    if ($wpv) {
+                        $wpv->warehouse_quantity = max(0, ($wpv->warehouse_quantity ?? 0) - $cart->quantity);
+                        $wpv->updated_at = now();
+                        $wpv->save();
+                    }
+                }
+            }
+
+            // Payment row — links order to the Stripe intent.
+            EstorePayment::create([
+                'order_id' => $order->id,
+                'stripe_payment_intent_id' => $request->payment_intent_id,
+                'payment_method' => 'stripe',
+                'payment_type' => $request->input('payment_type', 'paymentsheet'),
+                'amount' => $totalAmount,
+                'currency' => 'USD',
+                'status' => 'succeeded',
+                'payment_details' => [
+                    'payment_intent_id' => $request->payment_intent_id,
+                    'amount' => $stripeAmount,
+                    'currency' => $verification['currency'] ?? 'usd',
+                ],
+                'paid_at' => now(),
+            ]);
+
+            // Clear cart AFTER everything else succeeds.
+            EstoreCart::where('user_id', auth()->id())->delete();
+
+            DB::commit();
+
+            return response()->json([
+                'status' => true,
+                'message' => 'Order placed successfully',
+                'order_id' => $order->id,
+                'order_number' => $order->order_number,
+                'total_amount' => $totalAmount,
+                'order' => [
+                    'id' => $order->id,
+                    'order_number' => $order->order_number,
+                    'total_amount' => $order->total_amount,
+                    'subtotal' => $order->subtotal,
+                    'tax_amount' => $order->tax_amount,
+                    'shipping_amount' => $order->shipping_amount,
+                    'promo_discount' => $order->promo_discount,
+                    'payment_status' => $order->payment_status,
+                    'status' => $order->status,
+                    'created_at' => $order->created_at,
+                ],
+            ], 200);
+        } catch (\Exception $e) {
+            DB::rollback();
+            Log::error('confirmCheckout failed: ' . $e->getMessage(), [
+                'user_id' => auth()->id(),
+                'payment_intent_id' => $request->payment_intent_id,
+                'trace' => $e->getTraceAsString(),
+            ]);
+            return response()->json([
+                'status' => false,
+                'message' => 'Order creation failed: ' . $e->getMessage(),
             ], 500);
         }
     }

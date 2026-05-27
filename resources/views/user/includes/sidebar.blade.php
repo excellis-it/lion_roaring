@@ -753,14 +753,16 @@
                          </a>
                      </li>
                  @endif
-                 <li class="sidebar-item">
-                     <a class="sidebar-link" href="{{ route('user.membership.index') }}" aria-expanded="false">
-                         <span>
-                             <img src="{{ asset('user_assets/images/ICON/membership.png') }}" alt="">
-                         </span>
-                         <span class="hide-menu">{{ Helper::getMenuName('membership', 'Membership') }}</span>
-                     </a>
-                 </li>
+                @if (Auth::check() && Auth::user()->membershipPanelApplicable())
+                    <li class="sidebar-item">
+                        <a class="sidebar-link" href="{{ route('user.membership.index') }}" aria-expanded="false">
+                            <span>
+                                <img src="{{ asset('user_assets/images/ICON/membership.png') }}" alt="">
+                            </span>
+                            <span class="hide-menu">{{ Helper::getMenuName('membership', 'Membership') }}</span>
+                        </a>
+                    </li>
+                @endif
 
                  {{-- Restore - SUPER ADMIN Only --}}
                  @if (Auth::check() && Auth::user()->hasNewRole('SUPER ADMIN'))

@@ -2,12 +2,24 @@
 
 namespace App\Http\Controllers\API;
 
+use App\Http\Controllers\Api\Concerns\AppliesPmaContentScope;
+use App\Http\Controllers\Api\Concerns\AppliesPmaCountryFromRequest;
 use App\Http\Controllers\Controller;
+use App\Mail\EventInvitation;
+use App\Models\Country;
 use App\Models\Event;
+use App\Models\EventRsvp;
+use App\Models\EventPayment;
+use App\Models\User;
+use App\Services\CheckoutPaymentService;
+use App\Services\NotificationService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Auth;
-use App\Services\NotificationService;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Str;
 
 /**
  * @group Events
@@ -17,6 +29,9 @@ use App\Services\NotificationService;
 
 class EventController extends Controller
 {
+    use AppliesPmaContentScope;
+    use AppliesPmaCountryFromRequest;
+
     /**
      * List All events
      * @queryParam search string optional for search. Example: "abc"
@@ -55,20 +70,28 @@ class EventController extends Controller
             $searchQuery = trim((string) $request->get('search', ''));
             $searchQuery = $searchQuery !== '' ? $searchQuery : null;
 
-            $userType = auth()->user()->user_type ?? null;
-            $userCountry = auth()->user()->country ?? null;
+            $ctx = $this->pmaScopeContext();
 
-            $query = Event::with('user')
+            $query = Event::with(['user', 'country'])
                 ->when($searchQuery, function ($query) use ($searchQuery) {
-                    $query->where('title', 'like', "%{$searchQuery}%")
-                        ->orWhere('description', 'like', "%{$searchQuery}%");
+                    $query->where(function ($q) use ($searchQuery) {
+                        $q->where('title', 'like', "%{$searchQuery}%")
+                            ->orWhere('description', 'like', "%{$searchQuery}%");
+                    });
                 });
 
-            if ($userType !== 'Global') {
-                $query->where('country_id', $userCountry);
-            }
+            $this->applyPmaEventScope($query, $ctx);
 
             $events = $query->orderBy('id', 'desc')->paginate(15);
+
+            $events->getCollection()->transform(function ($event) {
+                $event->user_rsvp_status = EventRsvp::where('event_id', $event->id)
+                    ->where('user_id', auth()->id())
+                    ->value('status');
+                $event->is_host = auth()->id() === $event->user_id;
+
+                return $event;
+            });
 
             return response()->json($events, 200);
         } catch (\Exception $e) {
@@ -107,23 +130,23 @@ class EventController extends Controller
             return response()->json(['status' => false, 'message' => 'Permission denied.'], 403);
         }
 
-        // Determine country based on user type
-        $countryId = auth()->user()->user_type === 'Global' ? $request->country_id : auth()->user()->country;
+        $countryId = $this->resolvePmaCountryId($request);
 
         // Normalize send_notification checkbox variants
         $sendNotification = $request->has('send_notification') && ($request->send_notification === 'on' || $request->send_notification === true || $request->send_notification === '1');
 
         $request->merge(['country_id' => $countryId, 'send_notification' => $sendNotification]);
 
-        $rules = [
+        $rules = array_merge([
             'title' => 'required|string|max:255',
             'description' => 'required|string',
             'start' => 'required|date',
             'end' => 'required|date|after:start',
-            'country_id' => 'required|exists:countries,id',
             'type' => 'required|in:free,paid',
             'capacity' => 'nullable|integer|min:1',
-        ];
+            'event_link' => 'nullable|string',
+            'send_notification' => 'nullable|boolean',
+        ], $this->pmaCountryValidationRules());
 
         if ($request->type === 'paid') {
             $rules['price'] = 'required|numeric|min:0.01';
@@ -215,14 +238,18 @@ class EventController extends Controller
     public function show($id)
     {
         try {
-            $userType = auth()->user()->user_type ?? null;
-            $userCountry = auth()->user()->country ?? null;
-
-            if ($userType === 'Global') {
-                $event = Event::with('user')->findOrFail($id);
-            } else {
-                $event = Event::with('user')->where('country_id', $userCountry)->findOrFail($id);
+            if (! auth()->user()->can('View Event')) {
+                return response()->json(['error' => 'Permission denied.'], 403);
             }
+
+            $ctx = $this->pmaScopeContext();
+            $query = Event::with('user');
+            $this->applyPmaEventScope($query, $ctx);
+            $event = $query->findOrFail($id);
+            $event->user_rsvp_status = EventRsvp::where('event_id', $event->id)
+                ->where('user_id', auth()->id())
+                ->value('status');
+            $event->is_host = auth()->id() === $event->user_id;
 
             return response()->json(['data' => $event], 200);
         } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
@@ -252,19 +279,18 @@ class EventController extends Controller
             return response()->json(['status' => false, 'message' => 'Permission denied.'], 403);
         }
 
-        // Determine country based on user type
-        $countryId = auth()->user()->user_type === 'Global' ? $request->country_id : auth()->user()->country;
+        $countryId = $this->resolvePmaCountryId($request);
         $request->merge(['country_id' => $countryId]);
 
-        $rules = [
+        $rules = array_merge([
             'title' => 'required|string|max:255',
             'description' => 'required|string',
             'start' => 'required|date',
             'end' => 'required|date|after:start',
-            'country_id' => 'required|exists:countries,id',
             'type' => 'required|in:free,paid',
             'capacity' => 'nullable|integer|min:1',
-        ];
+            'event_link' => 'nullable|string',
+        ], $this->pmaCountryValidationRules());
 
         if ($request->type === 'paid') {
             $rules['price'] = 'required|numeric|min:0.01';
@@ -385,15 +411,11 @@ class EventController extends Controller
                 return response()->json(['status' => false, 'message' => 'Permission denied.'], 403);
             }
 
-            $userType = auth()->user()->user_type ?? null;
-            $userCountry = auth()->user()->country ?? null;
+            $ctx = $this->pmaScopeContext();
+            $query = Event::query();
+            $this->applyPmaEventScope($query, $ctx);
 
-            $query = Event::orderBy('id', 'desc');
-            if ($userType !== 'Global') {
-                $query->where('country_id', $userCountry);
-            }
-
-            $events = $query->get()->map(function ($event) {
+            $events = $query->orderBy('id', 'desc')->get()->map(function ($event) {
                 return [
                     'id' => $event->id,
                     'title' => $event->title,
@@ -419,6 +441,292 @@ class EventController extends Controller
             return response()->json(['error' => 'events not found.'], 404);
         } catch (\Exception $e) {
             return response()->json(['error' => 'Failed to load event calender data.'], 201);
+        }
+    }
+
+    /**
+     * POST /events/{id}/rsvp
+     * Creates or re-confirms the authenticated user's RSVP for a free event.
+     * For paid events, returns `requires_payment: true` so the client invokes
+     * `/events/{id}/payment` next.
+     * @bodyParam notes string optional
+     */
+    public function rsvp(Request $request, int $id)
+    {
+        $event = Event::find($id);
+        if (!$event) {
+            return response()->json(['status' => false, 'message' => 'Event not found.'], 404);
+        }
+
+        if (!$event->hasCapacity()) {
+            return response()->json(['status' => false, 'message' => 'Event is at full capacity.'], 422);
+        }
+
+        $existing = EventRsvp::where('event_id', $event->id)
+            ->where('user_id', Auth::id())
+            ->first();
+
+        if ($event->isPaid()) {
+            $rsvp = $existing ?: EventRsvp::create([
+                'event_id' => $event->id,
+                'user_id' => Auth::id(),
+                'status' => 'pending',
+                'rsvp_date' => now(),
+                'notes' => $request->input('notes'),
+            ]);
+
+            if ($existing && $existing->status === 'cancelled') {
+                $existing->update(['status' => 'pending', 'rsvp_date' => now()]);
+            }
+
+            return response()->json([
+                'status' => true,
+                'message' => 'Payment required to confirm RSVP.',
+                'data' => [
+                    'rsvp' => $rsvp->fresh(),
+                    'requires_payment' => true,
+                    'amount' => (float) $event->price,
+                    'currency' => 'USD',
+                ],
+            ]);
+        }
+
+        if ($existing) {
+            if ($existing->status === 'cancelled') {
+                $existing->update(['status' => 'confirmed', 'rsvp_date' => now(), 'notes' => $request->input('notes')]);
+            }
+            return response()->json([
+                'status' => true,
+                'message' => 'RSVP confirmed.',
+                'data' => ['rsvp' => $existing->fresh(), 'requires_payment' => false],
+            ]);
+        }
+
+        $rsvp = EventRsvp::create([
+            'event_id' => $event->id,
+            'user_id' => Auth::id(),
+            'status' => 'confirmed',
+            'rsvp_date' => now(),
+            'notes' => $request->input('notes'),
+        ]);
+
+        return response()->json([
+            'status' => true,
+            'message' => 'RSVP confirmed.',
+            'data' => ['rsvp' => $rsvp, 'requires_payment' => false],
+        ]);
+    }
+
+    /**
+     * DELETE /events/{id}/rsvp
+     */
+    public function cancelRsvp(int $id)
+    {
+        $rsvp = EventRsvp::where('event_id', $id)
+            ->where('user_id', Auth::id())
+            ->first();
+
+        if (!$rsvp) {
+            return response()->json(['status' => false, 'message' => 'RSVP not found.'], 404);
+        }
+
+        $rsvp->update(['status' => 'cancelled']);
+
+        return response()->json(['status' => true, 'message' => 'RSVP cancelled.']);
+    }
+
+    /**
+     * GET /events/my-rsvps
+     */
+    public function myRsvps(Request $request)
+    {
+        $perPage = max(1, min(50, (int) $request->input('per_page', 20)));
+
+        $rsvps = EventRsvp::with(['event', 'payment'])
+            ->where('user_id', Auth::id())
+            ->orderByDesc('rsvp_date')
+            ->paginate($perPage);
+
+        return response()->json([
+            'status' => true,
+            'message' => 'My RSVPs.',
+            'data' => $rsvps,
+        ]);
+    }
+
+    /**
+     * POST /events/{id}/payment
+     * Creates a Stripe PaymentIntent for a paid event and attaches it to the RSVP.
+     * Mobile client calls this after RSVP returns `requires_payment: true`.
+     */
+    public function createPaymentIntent(int $id, CheckoutPaymentService $payment)
+    {
+        $event = Event::find($id);
+        if (!$event) {
+            return response()->json(['status' => false, 'message' => 'Event not found.'], 404);
+        }
+
+        if (!$event->isPaid() || (float) $event->price <= 0) {
+            return response()->json(['status' => false, 'message' => 'Event does not require payment.'], 422);
+        }
+
+        if (!$event->hasCapacity()) {
+            return response()->json(['status' => false, 'message' => 'Event is at full capacity.'], 422);
+        }
+
+        $rsvp = EventRsvp::firstOrCreate(
+            ['event_id' => $event->id, 'user_id' => Auth::id()],
+            ['status' => 'pending', 'rsvp_date' => now()]
+        );
+
+        $pending = EventPayment::create([
+            'event_id' => $event->id,
+            'user_id' => Auth::id(),
+            'rsvp_id' => $rsvp->id,
+            'transaction_id' => 'TXN-' . strtoupper(Str::random(12)),
+            'amount' => $event->price,
+            'currency' => 'USD',
+            'status' => 'pending',
+            'payment_method' => 'stripe',
+        ]);
+
+        $result = $payment->createIntent(
+            (float) $event->price,
+            'USD',
+            Auth::user(),
+            [
+                'type' => 'event',
+                'event_id' => $event->id,
+                'rsvp_id' => $rsvp->id,
+                'payment_id' => $pending->id,
+            ]
+        );
+
+        if (!$result['success']) {
+            $pending->update(['status' => 'failed']);
+            return response()->json(['status' => false, 'message' => $result['error']], 500);
+        }
+
+        $pending->update(['stripe_payment_intent_id' => $result['payment_intent_id']]);
+
+        return response()->json([
+            'status' => true,
+            'message' => 'Payment intent created.',
+            'data' => [
+                'payment_id' => $pending->id,
+                'rsvp_id' => $rsvp->id,
+                'payment_intent_id' => $result['payment_intent_id'],
+                'client_secret' => $result['client_secret'],
+                'ephemeral_key' => $result['ephemeral_key'],
+                'customer_id' => $result['customer_id'],
+                'publishable_key' => $result['publishable_key'],
+            ],
+        ]);
+    }
+
+    /**
+     * POST /events/{id}/payment/confirm
+     * Mobile client calls after PaymentSheet succeeds. Verifies with Stripe,
+     * flips payment+RSVP to confirmed.
+     * @bodyParam payment_id int required
+     */
+    public function confirmPayment(int $id, Request $request, CheckoutPaymentService $payment)
+    {
+        $validator = Validator::make($request->all(), [
+            'payment_id' => 'required|integer',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json(['status' => false, 'message' => $validator->errors()->first()], 422);
+        }
+
+        $paymentRow = EventPayment::where('id', $request->payment_id)
+            ->where('event_id', $id)
+            ->where('user_id', Auth::id())
+            ->first();
+
+        if (!$paymentRow) {
+            return response()->json(['status' => false, 'message' => 'Payment not found.'], 404);
+        }
+
+        if ($paymentRow->status === 'completed') {
+            return response()->json([
+                'status' => true,
+                'message' => 'Payment already completed.',
+                'data' => $paymentRow->load('rsvp'),
+            ]);
+        }
+
+        if (!$paymentRow->stripe_payment_intent_id) {
+            return response()->json(['status' => false, 'message' => 'No payment intent attached.'], 422);
+        }
+
+        $verification = $payment->verifyIntent($paymentRow->stripe_payment_intent_id);
+        if (!($verification['success'] ?? false)) {
+            return response()->json([
+                'status' => false,
+                'message' => 'Payment not completed. Status: ' . ($verification['status'] ?? 'unknown'),
+            ], 402);
+        }
+
+        DB::transaction(function () use ($paymentRow) {
+            $paymentRow->update([
+                'status' => 'completed',
+                'paid_at' => now(),
+            ]);
+            if ($paymentRow->rsvp_id) {
+                EventRsvp::where('id', $paymentRow->rsvp_id)->update(['status' => 'confirmed']);
+            }
+        });
+
+        return response()->json([
+            'status' => true,
+            'message' => 'Payment confirmed.',
+            'data' => $paymentRow->fresh()->load('rsvp'),
+        ]);
+    }
+
+    /**
+     * Send in-app and email notifications for a new/updated live event (mirrors web LiveEventController).
+     */
+    protected function sendNotifications(Event $event, string $message): void
+    {
+        $query = User::where('status', 1)->where('is_accept', 1);
+
+        if (! auth()->user()->hasNewRole('SUPER ADMIN')) {
+            $currentCountry = Country::findByCurrentRequest();
+            $isOnGlobalServer = $currentCountry && $currentCountry->is_global;
+            $userType = auth()->user()->user_type;
+
+            if ($userType == 'Global' || ($userType == 'G_R' && $isOnGlobalServer)) {
+                $query->whereIn('user_type', ['Global', 'G_R']);
+            } else {
+                $query->whereIn('user_type', ['Regional', 'G_R'])
+                    ->where('country', auth()->user()->country);
+
+                if (auth()->user()->is_ecclesia_admin == 1) {
+                    $manageEcclesiaIds = is_array(auth()->user()->manage_ecclesia)
+                        ? auth()->user()->manage_ecclesia
+                        : explode(',', (string) (auth()->user()->manage_ecclesia ?? ''));
+                    $query->whereIn('ecclesia_id', $manageEcclesiaIds);
+                }
+            }
+        }
+
+        $users = $query->get();
+
+        foreach ($users as $user) {
+            try {
+                NotificationService::saveNotification($user->id, $message, 'live_event');
+            } catch (\Exception $e) {
+                Log::error('Failed to send in-app notification to user '.$user->id.': '.$e->getMessage());
+            }
+
+            try {
+                Mail::to($user->email)->queue(new EventInvitation($event));
+            } catch (\Exception $e) {
+                Log::error('Failed to send event invitation email to '.$user->email.': '.$e->getMessage());
+            }
         }
     }
 }

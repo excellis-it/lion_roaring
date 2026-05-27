@@ -43,6 +43,10 @@ class DashboardController extends Controller
 
     public function userSubscription()
     {
+        if (!auth()->user()->membershipPanelApplicable()) {
+            return redirect()->route('user.dashboard');
+        }
+
         return redirect()->route('user.membership.index');
     }
 

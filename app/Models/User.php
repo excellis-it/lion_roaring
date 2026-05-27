@@ -278,6 +278,27 @@ class User extends Authenticatable
 
         return $this->userRole()->where('name', $roles)->exists();
     }
+
+    public function isMemberSovereign(): bool
+    {
+        return $this->hasNewRole('MEMBER_SOVEREIGN');
+    }
+
+    /**
+     * Web user panel: member-plan UI, checks, and redirects (always on for MEMBER_SOVEREIGN).
+     */
+    public function membershipPanelApplicable(): bool
+    {
+        return $this->isMemberSovereign();
+    }
+
+    /**
+     * Flutter app: member-plan UI and gates (also requires IN_APP_MEMBERSHIP).
+     */
+    public function membershipAppApplicable(): bool
+    {
+        return (bool) config('lion_roaring.in_app_membership') && $this->isMemberSovereign();
+    }
     // default delivery address
     public function defaultDeliveryAddress()
     {

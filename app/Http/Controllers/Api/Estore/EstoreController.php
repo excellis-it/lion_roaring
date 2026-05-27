@@ -3,12 +3,14 @@
 namespace App\Http\Controllers\Api\Estore;
 
 use App\Http\Controllers\Controller;
+use App\Helpers\Helper;
 use App\Models\EcomHomeCms;
 use App\Models\EcomFooterCms;
 use App\Models\EcomCmsPage;
 use App\Models\EcomNewsletter;
 use App\Models\Category;
 use App\Models\Product;
+use App\Models\WareHouse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use GuzzleHttp\Client;
@@ -28,15 +30,118 @@ class EstoreController extends Controller
     public function storeHome(Request $request)
     {
         try {
-            $countryCode = strtoupper($request->input('country_code') ?? 'US');
-            $topParentCategories = Category::where('status', 1)->whereNull('parent_id')->orderBy('id', 'DESC')->get();
-            $feature_products = Product::where('is_deleted', false)->where('status', 1)->where('feature_product', 1)->orderBy('id', 'DESC')->get();
-            $new_products = Product::where('is_deleted', false)->where('is_new_product', 1)->where('status', 1)->orderBy('id', 'DESC')->limit(10)->get();
+            $nearbyWareHouseId = WareHouse::where('is_active', 1)->first()?->id ?? 0;
+            $originLat = null;
+            $originLng = null;
+            $user = auth()->user();
+            if ($user) {
+                $originLat = $user->location_lat;
+                $originLng = $user->location_lng;
+            }
+            $nearest = Helper::getNearestWarehouse($originLat, $originLng);
+            if (! empty($nearest['warehouse']->id ?? null)) {
+                $nearbyWareHouseId = $nearest['warehouse']->id;
+            }
 
-            $homeCms = EcomHomeCms::where('country_code', $countryCode)->orderBy('id', 'desc')->first();
-            $content = $homeCms ? $homeCms : [];
+            $topParentCategories = Category::where('status', 1)
+                ->whereNull('parent_id')
+                ->orderBy('id', 'DESC')
+                ->get()
+                ->map(function ($category) {
+                    if ($category->image) {
+                        $category->image = Helper::publicStorageUrl($category->image);
+                    }
+                    if ($category->background_image) {
+                        $category->background_image = Helper::publicStorageUrl($category->background_image);
+                    }
 
-            
+                    return $category;
+                });
+
+            $mapProductImages = function ($products) {
+                return $products->map(function ($product) {
+                    if ($product->main_image) {
+                        $product->main_image = Helper::publicStorageUrl($product->main_image);
+                    }
+                    if ($product->background_image) {
+                        $product->background_image = Helper::publicStorageUrl($product->background_image);
+                    }
+
+                    return $product;
+                });
+            };
+
+            $feature_products = $mapProductImages(
+                Product::where('is_deleted', false)
+                    ->where('status', 1)
+                    ->where('feature_product', 1)
+                    ->with(['otherCharges', 'images'])
+                    ->orderBy('id', 'DESC')
+                    ->get()
+            );
+            $new_products = $mapProductImages(
+                Product::where('is_deleted', false)
+                    ->where('is_new_product', 1)
+                    ->where('status', 1)
+                    ->with(['otherCharges', 'images'])
+                    ->orderBy('id', 'DESC')
+                    ->limit(10)
+                    ->get()
+            );
+
+            $countryCode = strtoupper(trim((string) $request->input('country_code', 'US')));
+            if ($countryCode === '') {
+                $countryCode = 'US';
+            }
+
+            $homeCms = EcomHomeCms::where('country_code', $countryCode)
+                ->orderBy('id', 'desc')
+                ->first();
+
+            if (! $homeCms && $countryCode !== 'US') {
+                $homeCms = EcomHomeCms::where('country_code', 'US')
+                    ->orderBy('id', 'desc')
+                    ->first();
+            }
+
+            $content = [];
+            if ($homeCms) {
+                $content = [
+                    'id' => $homeCms->id,
+                    'country_code' => $homeCms->country_code,
+                    'header_logo' => $homeCms->header_logo,
+                    'banner_title' => $homeCms->banner_title,
+                    'banner_subtitle' => $homeCms->banner_subtitle,
+                    'banner_image' => $homeCms->banner_image,
+                    'banner_image_small' => $homeCms->banner_image_small,
+                    'product_category_title' => $homeCms->product_category_title,
+                    'product_category_subtitle' => $homeCms->product_category_subtitle,
+                    'featured_product_title' => $homeCms->featured_product_title,
+                    'featured_product_subtitle' => $homeCms->featured_product_subtitle,
+                    'new_arrival_title' => $homeCms->new_arrival_title,
+                    'new_arrival_subtitle' => $homeCms->new_arrival_subtitle,
+                    'new_arrival_image' => $homeCms->new_arrival_image,
+                    'new_product_title' => $homeCms->new_product_title,
+                    'new_product_subtitle' => $homeCms->new_product_subtitle,
+                    'slider_data' => Helper::decodeEcomSliderData($homeCms->getRawOriginal('slider_data') ?? $homeCms->slider_data),
+                    'slider_data_second_title' => $homeCms->slider_data_second_title,
+                    'slider_data_second' => Helper::decodeEcomSliderData($homeCms->getRawOriginal('slider_data_second') ?? $homeCms->slider_data_second),
+                    'about_section_title' => $homeCms->about_section_title,
+                    'about_section_image' => $homeCms->about_section_image,
+                    'about_section_text_one_title' => $homeCms->about_section_text_one_title,
+                    'about_section_text_one_content' => $homeCms->about_section_text_one_content,
+                    'about_section_text_two_title' => $homeCms->about_section_text_two_title,
+                    'about_section_text_two_content' => $homeCms->about_section_text_two_content,
+                    'about_section_text_three_title' => $homeCms->about_section_text_three_title,
+                    'about_section_text_three_content' => $homeCms->about_section_text_three_content,
+                    'shop_now_title' => $homeCms->shop_now_title,
+                    'shop_now_description' => $homeCms->shop_now_description,
+                    'shop_now_button_text' => $homeCms->shop_now_button_text,
+                    'shop_now_button_link' => $homeCms->shop_now_button_link,
+                    'shop_now_image' => $homeCms->shop_now_image,
+                ];
+                $content = Helper::transformEcomHomeContent($content);
+            }
 
             return response()->json([
                 'data' => [
@@ -45,12 +150,43 @@ class EstoreController extends Controller
                     'feature_products' => $feature_products,
                     'new_products' => $new_products,
                 ],
-                'status' => true
+                'status' => true,
             ], 200);
         } catch (\Exception $e) {
             return response()->json([
                 'message' => 'Something went wrong. Please try again later.',
-                'status' => false
+                'status' => false,
+            ], 201);
+        }
+    }
+
+    /**
+     * Public Contact page CMS (matches web e-store contact page).
+     */
+    public function contact(Request $request)
+    {
+        try {
+            $contactCms = Helper::getVisitorCmsContent('EcomContactCms', true, false, 'id', 'desc', null);
+            if (! $contactCms) {
+                return response()->json([
+                    'message' => 'Contact page not found.',
+                    'status' => false,
+                ], 404);
+            }
+
+            $payload = $contactCms->toArray();
+            if (! empty($payload['banner_image'])) {
+                $payload['banner_image'] = Helper::publicStorageUrl($payload['banner_image']) ?? $payload['banner_image'];
+            }
+
+            return response()->json([
+                'data' => $payload,
+                'status' => true,
+            ], 200);
+        } catch (\Exception $e) {
+            return response()->json([
+                'message' => 'Something went wrong. Please try again later.',
+                'status' => false,
             ], 201);
         }
     }
@@ -141,7 +277,12 @@ class EstoreController extends Controller
             if (! $footer) {
                 return response()->json(['message' => 'Footer not found', 'status' => false], 201);
             }
-            return response()->json(['data' => $footer, 'status' => true], 200);
+            $payload = $footer->toArray();
+            if (! empty($payload['footer_logo'])) {
+                $payload['footer_logo'] = Helper::publicStorageUrl($payload['footer_logo']);
+            }
+
+            return response()->json(['data' => $payload, 'status' => true], 200);
         } catch (\Exception $e) {
             return response()->json(['message' => 'Something went wrong. Please try again later.', 'status' => false], 201);
         }
@@ -251,5 +392,43 @@ class EstoreController extends Controller
         } catch (\Exception $e) {
             return response()->json(['status' => false, 'message' => $e->getMessage()], 201);
         }
+    }
+
+    /**
+     * GET /e-store/warehouses/nearest
+     * Ranks active warehouses by distance. Falls back to all active warehouses when lat/lng are
+     * missing or no warehouse has coordinates (matches April 8 null-warehouse safety fix).
+     *
+     * @queryParam latitude  number optional  User latitude.
+     * @queryParam longitude number optional  User longitude.
+     * @queryParam limit     int    optional  Default 10.
+     */
+    public function nearestWarehouses(Request $request)
+    {
+        $lat = $request->input('latitude');
+        $lng = $request->input('longitude');
+        $limit = max(1, min(50, (int) $request->input('limit', 10)));
+
+        $query = WareHouse::where('is_active', 1);
+
+        if (is_numeric($lat) && is_numeric($lng)) {
+            $query->whereNotNull('location_lat')
+                ->whereNotNull('location_lng')
+                ->selectRaw(
+                    '*, (6371 * acos(cos(radians(?)) * cos(radians(location_lat)) * cos(radians(location_lng) - radians(?)) + sin(radians(?)) * sin(radians(location_lat)))) AS distance_km',
+                    [$lat, $lng, $lat]
+                )
+                ->orderBy('distance_km');
+        } else {
+            $query->orderBy('name');
+        }
+
+        $warehouses = $query->take($limit)->get();
+
+        return response()->json([
+            'status' => true,
+            'message' => 'Warehouses.',
+            'data' => $warehouses,
+        ]);
     }
 }

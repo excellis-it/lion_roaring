@@ -78,6 +78,7 @@
                                                 {{ Auth::user()->ecclesia ? 'Ecclesia: ' . Auth::user()->ecclesia->name : '' }}
                                             </b>
                                         </span>
+                                        @if (auth()->user()->membershipPanelApplicable())
                                         <div class="mt-2">
                                             @php $user_subscription = auth()->user()->userLastSubscription ?? null; @endphp
                                             @if ($user_subscription)
@@ -108,6 +109,7 @@
                                                     Membership</a>
                                             @endif
                                         </div>
+                                        @endif
                                     </div>
                                 </div>
                             </div>

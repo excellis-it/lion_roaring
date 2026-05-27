@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers\API;
 
+use App\Http\Controllers\Api\Concerns\AppliesPmaContentScope;
+use App\Http\Controllers\Api\Concerns\AppliesPmaCountryFromRequest;
 use App\Http\Controllers\Controller;
 use App\Models\Bulletin;
 use Illuminate\Http\Request;
@@ -15,6 +17,8 @@ use App\Services\NotificationService;
 
 class BulletinController extends Controller
 {
+    use AppliesPmaCountryFromRequest;
+    use AppliesPmaContentScope;
     /**
      * Bulletins List
      *
@@ -36,27 +40,38 @@ class BulletinController extends Controller
     public function index(Request $request)
     {
         try {
-            // Fetch the search query from the request
+            if (! auth()->user()->can('Manage Bulletin')) {
+                return response()->json(['error' => 'Permission denied.'], 403);
+            }
+
             $searchQuery = $request->get('search');
+            $ctx = $this->pmaScopeContext();
 
-            // Fetch bulletins with optional search filtering
-            $user_type = Auth::user()->user_type ?? 'Global';
-            $user_country = Auth::user()->country ?? null;
-
-            $bulletins = Bulletin::when($searchQuery, function ($query) use ($searchQuery) {
+            $bulletins = Bulletin::with(['country', 'user'])
+                ->when($searchQuery, function ($query) use ($searchQuery) {
                     $query->where(function ($subQuery) use ($searchQuery) {
                         $subQuery->where('title', 'like', "%{$searchQuery}%")
                             ->orWhere('description', 'like', "%{$searchQuery}%");
                     });
-                })
-                ->when(!Auth::user()->hasNewRole('SUPER ADMIN'), function ($query) use ($user_type, $user_country) {
-                    $query->where('user_id', Auth::id());
-                    if ($user_type !== 'Global' && $user_country) {
-                        $query->where('country_id', $user_country);
-                    }
-                })
-                ->orderBy('id', 'desc')
-                ->paginate(15);
+                });
+
+            $this->applyPmaCreatorContentScope($bulletins, $ctx);
+
+            $bulletins = $bulletins->orderBy('id', 'desc')->paginate(15);
+
+            $isSuperAdmin = $ctx['is_super_admin'];
+
+            $bulletins->getCollection()->transform(function ($bulletin) use ($isSuperAdmin) {
+                $bulletin->country_name = $bulletin->country?->name ?? '--';
+
+                if ($isSuperAdmin) {
+                    $name = trim((string) ($bulletin->user?->full_name ?? ''));
+                    $bulletin->upload_by_full_name = $name !== '' ? $name : 'Unknown';
+                }
+
+                return $bulletin;
+            });
+
             return response()->json($bulletins, 200);
         } catch (\Exception $e) {
             return response()->json(['error' => 'Failed to load bulletins.'], 500);
@@ -88,18 +103,14 @@ class BulletinController extends Controller
     public function show($id)
     {
         try {
-            $user_type = Auth::user()->user_type ?? 'Global';
-            $user_country = Auth::user()->country ?? null;
-
-            if (Auth::user()->hasNewRole('SUPER ADMIN')) {
-                $bulletin = Bulletin::find($id);
-            } else {
-                if ($user_type == 'Global') {
-                    $bulletin = Bulletin::where('user_id', Auth::id())->find($id);
-                } else {
-                    $bulletin = Bulletin::where('user_id', Auth::id())->where('country_id', $user_country)->find($id);
-                }
+            if (! auth()->user()->can('Manage Bulletin')) {
+                return response()->json(['error' => 'Permission denied.'], 403);
             }
+
+            $ctx = $this->pmaScopeContext();
+            $query = Bulletin::query();
+            $this->applyPmaCreatorContentScope($query, $ctx);
+            $bulletin = $query->find($id);
 
             if (!$bulletin) {
                 return response()->json(['error' => 'Bulletin not found.'], 201);
@@ -187,17 +198,24 @@ class BulletinController extends Controller
     public function allBulletins(Request $request)
     {
         try {
-            // Fetch the search query from the request
-            $searchQuery = $request->get('search');
+            if (! auth()->user()->can('Manage Bulletin')) {
+                return response()->json(['error' => 'Permission denied.'], 403);
+            }
 
-            // Apply the search filter if searchQuery is provided
+            $searchQuery = $request->get('search');
+            $ctx = $this->pmaScopeContext();
+
             $bulletins = Bulletin::with('user')
                 ->when($searchQuery, function ($query) use ($searchQuery) {
-                    $query->where('title', 'like', "%{$searchQuery}%")
-                        ->orWhere('description', 'like', "%{$searchQuery}%");
-                })
-                ->orderBy('id', 'desc')
-                ->paginate(15);
+                    $query->where(function ($q) use ($searchQuery) {
+                        $q->where('title', 'like', "%{$searchQuery}%")
+                            ->orWhere('description', 'like', "%{$searchQuery}%");
+                    });
+                });
+
+            $this->applyPmaCreatorContentScope($bulletins, $ctx);
+
+            $bulletins = $bulletins->orderBy('id', 'desc')->paginate(15);
 
             return response()->json($bulletins, 200);
         } catch (\Exception $e) {
@@ -230,24 +248,17 @@ class BulletinController extends Controller
      */
     public function store(Request $request)
     {
-        $user_type = Auth::user()->user_type ?? 'Global';
-        $user_country = Auth::user()->country ?? null;
-
-        if ($user_type === 'Global') {
-            $validated = Validator::make($request->all(), [
-                'title' => 'required|string|max:255',
-                'description' => 'required|string',
-                'country_id' => 'required|exists:countries,id',
-            ]);
-            $country_id = $request->get('country_id');
-        } else {
-            $validated = Validator::make($request->all(), [
-                'title' => 'required|string|max:255',
-                'description' => 'required|string',
-            ]);
-            $country_id = $user_country;
-            $request->merge(['country_id' => $country_id]);
+        if (! auth()->user()->can('Create Bulletin')) {
+            return response()->json(['error' => 'Permission denied.'], 403);
         }
+
+        $country_id = $this->resolvePmaCountryId($request);
+        $request->merge(['country_id' => $country_id]);
+
+        $validated = Validator::make($request->all(), array_merge([
+            'title' => 'required|string|max:255',
+            'description' => 'required|string',
+        ], $this->pmaCountryValidationRules()));
 
         if ($validated->fails()) {
             return response()->json(['error' => $validated->errors()], 201);
@@ -294,23 +305,26 @@ class BulletinController extends Controller
      */
     public function update(Request $request, $id)
     {
+        if (! auth()->user()->can('Edit Bulletin')) {
+            return response()->json(['error' => 'Permission denied.'], 403);
+        }
+
+        $country_id = $this->resolvePmaCountryId($request);
+        $request->merge(['country_id' => $country_id]);
+
         $user_type = Auth::user()->user_type ?? 'Global';
         $user_country = Auth::user()->country ?? null;
 
-        if ($user_type === 'Global') {
-            $validated = Validator::make($request->all(), [
+        if ($this->requiresPmaCountryFromRequest()) {
+            $validated = Validator::make($request->all(), array_merge([
                 'title' => 'string|max:255',
                 'description' => 'string',
-                'country_id' => 'required|exists:countries,id',
-            ]);
-            $country_id = $request->get('country_id');
+            ], $this->pmaCountryValidationRules()));
         } else {
             $validated = Validator::make($request->all(), [
                 'title' => 'string|max:255',
                 'description' => 'string',
             ]);
-            $country_id = $user_country;
-            $request->merge(['country_id' => $country_id]);
         }
 
         if ($validated->fails()) {
@@ -358,6 +372,10 @@ class BulletinController extends Controller
     public function destroy($id)
     {
         try {
+            if (! auth()->user()->can('Delete Bulletin')) {
+                return response()->json(['error' => 'Permission denied.'], 403);
+            }
+
             $user_type = Auth::user()->user_type ?? 'Global';
             $user_country = Auth::user()->country ?? null;
 

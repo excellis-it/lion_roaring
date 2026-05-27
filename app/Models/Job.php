@@ -21,6 +21,7 @@ class Job extends BaseModel
         'contact_person',
         'contact_email',
         'list_of_values',
+        'currency',
     ];
 
     public function user()

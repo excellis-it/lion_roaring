@@ -751,9 +751,13 @@ class EmailController extends Controller
     public function composeMailUsers()
     {
         try {
-            $users = User::with('roles')->where('status', true)->whereHas('roles', function ($query) {
-                $query->whereIn('type', [1, 2, 3]);
-            })->get(['id', 'email']);
+            $users = User::with('roles')->where('status', true)
+                ->where('id', '!=', auth()->id())
+                ->whereHas('roles', function ($query) {
+                    $query->whereIn('type', [1, 2, 3]);
+                })
+                ->visibleToAuthUser()
+                ->get(['id', 'email', 'first_name', 'middle_name', 'last_name']);
             return response()->json(['message' => 'Users loaded successfully.', 'status' => true, 'users' => $users], 200);
         } catch (\Exception $e) {
             return response()->json(['message' => 'An error occurred while loading the compose mail users.', 'status' => false, 'error' => $e->getMessage()], 201);

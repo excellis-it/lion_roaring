@@ -2,8 +2,8 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Http\Controllers\Api\Concerns\AppliesEducationScope;
 use App\Http\Controllers\Controller;
-use App\Models\Country;
 use App\Models\File;
 use App\Models\Topic;
 use App\Traits\ImageTrait;
@@ -23,6 +23,7 @@ use App\Services\NotificationService;
  */
 class BecomingSovereignController extends Controller
 {
+    use AppliesEducationScope;
     use ImageTrait;
 
     /**
@@ -121,12 +122,7 @@ class BecomingSovereignController extends Controller
     {
         try {
             $new_topic = $request->topic ?? '';
-
-            $user = auth()->user();
-            $user_type = $user->user_type ?? 'Global';
-            $user_country = $user->country ?? null;
-            $currentCountry = Country::findByCurrentRequest();
-            $isOnGlobalServer = $currentCountry && $currentCountry->is_global;
+            $ctx = $this->educationScopeContext();
 
             $filesQuery = File::query()->where('type', 'Becoming Sovereign');
 
@@ -134,47 +130,21 @@ class BecomingSovereignController extends Controller
                 $filesQuery->where('topic_id', $new_topic);
             }
 
-            // Apply country and user_type filter
-            if ($user_type == 'Global' || ($user_type == 'G_R' && $isOnGlobalServer)) {
-                $filesQuery->whereHas('country', function ($q) {
-                    $q->where('code', 'GL');
-                })->whereHas('user', function ($q) {
-                    $q->whereIn('user_type', ['Global', 'G_R']);
-                });
-            } elseif ($user_country) {
-                $filesQuery->where('country_id', $user_country)
-                    ->whereHas('user', function ($q) {
-                        $q->whereIn('user_type', ['Regional', 'G_R']);
-                    });
+            $this->applyEducationFileScope($filesQuery, $ctx);
 
-                // Ecclesia filtering
-                if ($user->is_ecclesia_admin == 1) {
-                    $manage_ecclesia_ids = is_array($user->manage_ecclesia)
-                        ? $user->manage_ecclesia
-                        : explode(',', $user->manage_ecclesia ?? '');
-                    $filesQuery->where(function ($q) use ($manage_ecclesia_ids, $user) {
-                        $q->whereHas('user', function ($uq) use ($manage_ecclesia_ids) {
-                            $uq->whereIn('ecclesia_id', $manage_ecclesia_ids);
-                        })->orWhere('user_id', $user->id);
-                    });
-                }
+            if ($request->filled('search')) {
+                $this->applyEducationFileSearch($filesQuery, $request->get('search'));
             }
 
-            // Paginate results to match user panel
-            $files = $filesQuery->orderBy('id', 'desc')->paginate(15);
+            $files = $this->enrichEducationFilePaginator(
+                $filesQuery->orderBy('id', 'desc')->paginate(15)
+            );
 
-            // Attach topic name to each file in the collection
-            $files->getCollection()->transform(function ($file) {
-                $file->file_topic_name = Topic::where('id', $file->topic_id)->value('topic_name');
-                return $file;
-            });
-
-            // Topics should respect user scope (Global vs Regional)
-            if ($user_type == 'Global' || ($user_type == 'G_R' && $isOnGlobalServer)) {
-                $topics = Topic::orderBy('topic_name', 'asc')->where('education_type', 'Becoming Sovereign')->get();
-            } else {
-                $topics = Topic::orderBy('topic_name', 'asc')->where('education_type', 'Becoming Sovereign')->where('country_id', $user_country)->get();
-            }
+            $topics = $this->applyEducationTopicScope(
+                Topic::orderBy('topic_name', 'asc'),
+                $ctx,
+                'Becoming Sovereign'
+            )->get();
 
             return response()->json([
                 'data' => $files,
@@ -249,37 +219,8 @@ class BecomingSovereignController extends Controller
                 });
             }
 
-            // Apply country filter based on authenticated user
-            $user = auth()->user();
-            $user_type = $user->user_type ?? 'Global';
-            $user_country = $user->country ?? null;
-            $currentCountry = Country::findByCurrentRequest();
-            $isOnGlobalServer = $currentCountry && $currentCountry->is_global;
-
-            if ($user_type == 'Global' || ($user_type == 'G_R' && $isOnGlobalServer)) {
-                $filesQuery->whereHas('country', function ($q) {
-                    $q->where('code', 'GL');
-                })->whereHas('user', function ($q) {
-                    $q->whereIn('user_type', ['Global', 'G_R']);
-                });
-            } elseif ($user_country) {
-                $filesQuery->where('country_id', $user_country)
-                    ->whereHas('user', function ($q) {
-                        $q->whereIn('user_type', ['Regional', 'G_R']);
-                    });
-
-                // Ecclesia filtering
-                if ($user->is_ecclesia_admin == 1) {
-                    $manage_ecclesia_ids = is_array($user->manage_ecclesia)
-                        ? $user->manage_ecclesia
-                        : explode(',', $user->manage_ecclesia ?? '');
-                    $filesQuery->where(function ($q) use ($manage_ecclesia_ids, $user) {
-                        $q->whereHas('user', function ($uq) use ($manage_ecclesia_ids) {
-                            $uq->whereIn('ecclesia_id', $manage_ecclesia_ids);
-                        })->orWhere('user_id', $user->id);
-                    });
-                }
-            }
+            $ctx = $this->educationScopeContext();
+            $this->applyEducationFileScope($filesQuery, $ctx);
 
             // Order and paginate the results
             $files = $filesQuery->orderBy($sort_by, $sort_type)->paginate(15);
@@ -331,16 +272,12 @@ class BecomingSovereignController extends Controller
     public function topics()
     {
         try {
-            $user_type = auth()->user()->user_type ?? 'Global';
-            $user_country = auth()->user()->country ?? null;
-            $currentCountry = Country::findByCurrentRequest();
-            $isOnGlobalServer = $currentCountry && $currentCountry->is_global;
-
-            if ($user_type == 'Global' || ($user_type == 'G_R' && $isOnGlobalServer)) {
-                $topics = Topic::orderBy('topic_name', 'asc')->where('education_type', 'Becoming Sovereign')->get();
-            } else {
-                $topics = Topic::orderBy('topic_name', 'asc')->where('education_type', 'Becoming Sovereign')->where('country_id', $user_country)->get();
-            }
+            $ctx = $this->educationScopeContext();
+            $topics = $this->applyEducationTopicScope(
+                Topic::orderBy('topic_name', 'asc'),
+                $ctx,
+                'Becoming Sovereign'
+            )->get();
 
             return response()->json([
                 'data' => $topics,
@@ -395,26 +332,17 @@ class BecomingSovereignController extends Controller
     public function store(Request $request)
     {
         try {
-            $user_type = auth()->user()->user_type ?? 'Global';
-            $user_country = auth()->user()->country ?? null;
-            $currentCountry = Country::findByCurrentRequest();
-            $isOnGlobalServer = $currentCountry && $currentCountry->is_global;
+            $ctx = $this->educationScopeContext();
+            $country_id = $this->resolveEducationCountryId($request, $ctx);
+            $request->merge(['country_id' => $country_id]);
 
-            if ($user_type === 'Global' || ($user_type === 'G_R' && $isOnGlobalServer)) {
-                $validated = Validator::make($request->all(), [
-                    'file' => 'required|file',
-                    'topic_id' => 'required|exists:topics,id',
-                    'country_id' => 'required|exists:countries,id',
-                ]);
-                $country_id = $request->get('country_id');
-            } else {
-                $validated = Validator::make($request->all(), [
-                    'file' => 'required|file',
-                    'topic_id' => 'required|exists:topics,id',
-                ]);
-                $country_id = $user_country;
-                $request->merge(['country_id' => $country_id]);
-            }
+            $rules = [
+                'file' => 'required|file',
+                'topic_id' => 'required|exists:topics,id',
+                'country_id' => 'required|exists:countries,id',
+            ];
+
+            $validated = Validator::make($request->all(), $rules);
 
             // If validation fails
             if ($validated->fails()) {
@@ -431,10 +359,16 @@ class BecomingSovereignController extends Controller
             $file_extension = $file->getClientOriginalExtension();
             $file_upload = $this->imageUpload($file, 'files');
 
-            // Check if a file with the same name and extension already exists
-            if ($user_type === 'Global' || ($user_type === 'G_R' && $isOnGlobalServer)) {
+            if ($ctx['is_super_admin']) {
                 $check = File::where('file_name', $file_name)
                     ->where('file_extension', $file_extension)
+                    ->first();
+            } elseif ($ctx['is_global_scope']) {
+                $check = File::where('file_name', $file_name)
+                    ->where('file_extension', $file_extension)
+                    ->whereHas('country', function ($query) {
+                        $query->where('code', 'GL');
+                    })
                     ->first();
             } else {
                 $check = File::where('file_name', $file_name)
@@ -510,16 +444,14 @@ class BecomingSovereignController extends Controller
     public function view(Request $request, $id)
     {
         try {
-            $user_type = auth()->user()->user_type ?? 'Global';
-            $user_country = auth()->user()->country ?? null;
-            $currentCountry = Country::findByCurrentRequest();
-            $isOnGlobalServer = $currentCountry && $currentCountry->is_global;
+            $ctx = $this->educationScopeContext();
+            $file = File::with('country')->findOrFail($id);
 
-            // Find the file by ID within user scope (if not Global)
-            if ($user_type == 'Global' || ($user_type == 'G_R' && $isOnGlobalServer)) {
-                $file = File::findOrFail($id);
-            } else {
-                $file = File::where('country_id', $user_country)->findOrFail($id);
+            if (! $ctx['is_super_admin'] && ! $this->canAccessFileInScope($file, $ctx)) {
+                return response()->json([
+                    'message' => 'File not found.',
+                    'status' => false,
+                ], 404);
             }
 
             // Check if a specific topic is provided (optional)
@@ -579,48 +511,47 @@ class BecomingSovereignController extends Controller
     public function update(Request $request, $id)
     {
         try {
-            $user_type = auth()->user()->user_type ?? 'Global';
-            $user_country = auth()->user()->country ?? null;
-            $currentCountry = Country::findByCurrentRequest();
-            $isOnGlobalServer = $currentCountry && $currentCountry->is_global;
+            $ctx = $this->educationScopeContext();
+            $country_id = $this->resolveEducationCountryId($request, $ctx);
+            $request->merge(['country_id' => $country_id]);
 
-            if ($user_type === 'Global' || ($user_type === 'G_R' && $isOnGlobalServer)) {
-                $validatedData = $request->validate([
-                    'topic_id' => 'required|exists:topics,id',
-                    'file' => 'file',
-                    'country_id' => 'required|exists:countries,id',
-                ]);
-                $country_id = $request->get('country_id');
-            } else {
-                $country_id = $user_country;
-                $request->merge(['country_id' => $country_id]);
-                $validatedData = $request->validate([
-                    'topic_id' => 'required|exists:topics,id',
-                    'file' => 'file',
-                ]);
-            }
+            $request->validate([
+                'topic_id' => 'required|exists:topics,id',
+                'file' => 'nullable|file',
+                'country_id' => 'required|exists:countries,id',
+            ]);
 
-            // Find the file respecting country scope for non-global users
-            if ($user_type == 'Global' || ($user_type == 'G_R' && $isOnGlobalServer)) {
-                $file = File::findOrFail($id);
-            } else {
-                $file = File::where('country_id', $country_id)->findOrFail($id);
+            $file = File::with('country')->findOrFail($id);
+
+            if (! $ctx['is_super_admin'] && ! $this->canAccessFileInScope($file, $ctx)) {
+                return response()->json([
+                    'message' => 'File not found.',
+                    'status' => false,
+                ], 404);
             }
 
             if ($request->hasFile('file')) {
-                // Retrieve new file details
                 $file_name = $request->file('file')->getClientOriginalName();
                 $file_extension = $request->file('file')->getClientOriginalExtension();
 
-                // Check if a file with the same name and extension exists (respect country scope)
-                if ($user_type === 'Global' || ($user_type === 'G_R' && $isOnGlobalServer)) {
+                if ($ctx['is_super_admin']) {
                     $existingFile = File::where('file_name', $file_name)
                         ->where('file_extension', $file_extension)
+                        ->where('id', '!=', $id)
+                        ->first();
+                } elseif ($ctx['is_global_scope']) {
+                    $existingFile = File::where('file_name', $file_name)
+                        ->where('file_extension', $file_extension)
+                        ->where('id', '!=', $id)
+                        ->whereHas('country', function ($query) {
+                            $query->where('code', 'GL');
+                        })
                         ->first();
                 } else {
                     $existingFile = File::where('file_name', $file_name)
                         ->where('file_extension', $file_extension)
                         ->where('country_id', $country_id)
+                        ->where('id', '!=', $id)
                         ->first();
                 }
 
@@ -687,18 +618,10 @@ class BecomingSovereignController extends Controller
     public function delete(Request $request, $id)
     {
         try {
-            $user_type = auth()->user()->user_type ?? 'Global';
-            $user_country = auth()->user()->country ?? null;
-            $currentCountry = Country::findByCurrentRequest();
-            $isOnGlobalServer = $currentCountry && $currentCountry->is_global;
+            $ctx = $this->educationScopeContext();
+            $file = File::with('country')->find($id);
 
-            if ($user_type == 'Global' || ($user_type == 'G_R' && $isOnGlobalServer)) {
-                $file = File::find($id);
-            } else {
-                $file = File::where('country_id', $user_country)->find($id);
-            }
-
-            if (!$file) {
+            if (! $file || (! $ctx['is_super_admin'] && ! $this->canAccessFileInScope($file, $ctx))) {
                 return response()->json([
                     'message' => 'File not found.',
                     'status' => false
@@ -740,18 +663,10 @@ class BecomingSovereignController extends Controller
     public function download($id)
     {
         try {
-            $user_type = auth()->user()->user_type ?? 'Global';
-            $user_country = auth()->user()->country ?? null;
-            $currentCountry = Country::findByCurrentRequest();
-            $isOnGlobalServer = $currentCountry && $currentCountry->is_global;
+            $ctx = $this->educationScopeContext();
+            $file = File::with('country')->find($id);
 
-            if ($user_type == 'Global' || ($user_type == 'G_R' && $isOnGlobalServer)) {
-                $file = File::find($id);
-            } else {
-                $file = File::where('country_id', $user_country)->find($id);
-            }
-
-            if (!$file) {
+            if (! $file || (! $ctx['is_super_admin'] && ! $this->canAccessFileInScope($file, $ctx))) {
                 return response()->json([
                     'message' => 'File not found.',
                     'status' => false

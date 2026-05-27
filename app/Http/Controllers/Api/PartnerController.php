@@ -12,6 +12,8 @@ use App\Models\Ecclesia;
 use App\Models\Team;
 use App\Models\TeamMember;
 use App\Models\User;
+use App\Helpers\Helper;
+use App\Services\PartnerMemberApiService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Crypt;
@@ -29,11 +31,23 @@ use Spatie\Permission\Models\Role;
 
 class PartnerController extends Controller
 {
+    public function __construct(
+        protected PartnerMemberApiService $partnerMemberApi
+    ) {
+    }
+
     /**
      * List Of Members
      * @queryParam search string optional for search. Example: "abc"
+      * @queryParam status string optional Filter by status (1/0/active/inactive). Example: active
+      * @queryParam country_id int optional Filter by country id. Example: 101
+      * @queryParam has_agreement int optional Filter by registration agreement (1=yes,0=no). Example: 1
+      * @queryParam sortby string optional Sort field: id, name, user_name, email, phone, address, user_type, country, created_at. Example: name
+      * @queryParam sorttype string optional Sort direction: asc or desc. Example: desc
      *
      * @response 200 {
+      *    "status": true,
+      *    "message": "Members fetched successfully.",
      *    "data": {
      *        "current_page": 1,
      *        "data": [
@@ -139,7 +153,8 @@ class PartnerController extends Controller
      *    }
      * }
      *
-     * @response 201 {
+     * @response 500 {
+     *    "status": false,
      *    "message": "Error occurred while fetching the partners."
      * }
      */
@@ -150,68 +165,164 @@ class PartnerController extends Controller
             $query = $request->get('search');
             $searchQuery = str_replace(" ", "%", $query);
             $user = Auth::user();
-            $is_user_ecclesia_admin = $user->is_ecclesia_admin;
+            $firstRoleType = (int) ($user->userRole?->type ?? 0);
+            $isSuperAdmin = ($user->userRole?->name ?? '') === 'SUPER ADMIN';
+            $isEcclesiaUser = (int) ($user->userRole?->is_ecclesia ?? 0) === 1;
             $user_ecclesia_id = $user->ecclesia_id;
+            $currentCode = strtoupper(Helper::getVisitorCountryCode());
+            $sortBy = $request->get('sortby', 'id');
+            $sortType = strtolower((string) $request->get('sorttype', 'desc')) === 'asc' ? 'asc' : 'desc';
+            $status = $request->get('status');
+            $countryId = $request->get('country_id');
+            $hasAgreement = $request->get('has_agreement');
 
             // Build the query with search filters (name, email, phone)
-            $partners = User::with(['ecclesia', 'roles'])
-                ->whereHas('roles', function ($q) {
-                    $q->where('name', '!=', 'SUPER ADMIN');
+            $partners = User::with([
+                'ecclesia:id,name',
+                'userRole:id,name,type,is_ecclesia',
+                'countries:id,name',
+                'states:id,name',
+                'userRegisterAgreement:id,user_id,pdf_path,signer_name,agreement_title_snapshot',
+            ])
+                ->leftJoin('user_types as ut', 'users.user_type_id', '=', 'ut.id')
+                ->where(function ($q) {
+                    $q->whereNull('ut.id')
+                        ->orWhere(function ($subQ) {
+                            $subQ->where('ut.name', '!=', 'SUPER ADMIN');
+                        });
                 })
+                ->select('users.*')
                 ->when($searchQuery, function ($query) use ($searchQuery) {
                     $query->where(function ($q) use ($searchQuery) {
-                        $q->where('id', 'like', "%{$searchQuery}%")
-                            ->orWhereRaw('CONCAT(COALESCE(first_name, ""), " ", COALESCE(middle_name, ""), " ", COALESCE(last_name, "")) LIKE ?', ["%{$searchQuery}%"])
-                            ->orWhere('email', 'like', "%{$searchQuery}%")
-                            ->orWhere('phone', 'like', "%{$searchQuery}%");
+                        $q->where('users.id', 'like', "%{$searchQuery}%")
+                            ->orWhereRaw('CONCAT(COALESCE(users.first_name, ""), " ", COALESCE(users.middle_name, ""), " ", COALESCE(users.last_name, "")) LIKE ?', ["%{$searchQuery}%"])
+                            ->orWhere('users.email', 'like', "%{$searchQuery}%")
+                            ->orWhere('users.phone', 'like', "%{$searchQuery}%")
+                            ->orWhere('users.user_name', 'like', "%{$searchQuery}%")
+                            ->orWhere('users.user_type', 'like', "%{$searchQuery}%")
+                            ->orWhereHas('countries', function ($countryQuery) use ($searchQuery) {
+                                $countryQuery->where('name', 'like', "%{$searchQuery}%");
+                            });
                         //   ->orWhere('address', 'like', "%{$searchQuery}%")
                         //   ->orWhere('city', 'like', "%{$searchQuery}%")
                         //   ->orWhere('state', 'like', "%{$searchQuery}%")
                         //   ->orWhere('country', 'like', "%{$searchQuery}%");
                     });
-                })
-                ->orderBy('id', 'desc');
-
-            if ($is_user_ecclesia_admin == 1) {
-                $manage_ecclesia_ids = is_array($user->manage_ecclesia)
-                    ? $user->manage_ecclesia
-                    : explode(',', $user->manage_ecclesia);
-
-                $partners->whereHas('roles', function ($q) {
-                    $q->whereIn('type', [2, 3]);
-                })
-                    ->where(function ($q) use ($manage_ecclesia_ids, $user) {
-                        $q->whereIn('ecclesia_id', $manage_ecclesia_ids)->whereNotNull('ecclesia_id')
-                            ->orWhere('created_id', $user->id)->orWhere('id', auth()->id());
-                    });
-            } elseif ($user->hasNewRole('SUPER ADMIN')) {
-                $partners->whereHas('roles', function ($q) {
-                    $q->whereIn('type', [2, 3]);
-                })
-                    ->where('id', '!=', $user->id);
-            } else {
-                $partners->where(function ($q) use ($user_ecclesia_id, $user) {
-                    $q->where('ecclesia_id', $user_ecclesia_id)->whereNotNull('ecclesia_id')
-                        ->orWhere('created_id', $user->id)->orWhere('id', auth()->id());
                 });
+
+            if ($status !== null && $status !== '') {
+                if ($status === 'active') {
+                    $partners->where('status', 1);
+                } elseif ($status === 'inactive') {
+                    $partners->where('status', 0);
+                } elseif (in_array((string) $status, ['0', '1'], true)) {
+                    $partners->where('status', (int) $status);
+                }
+            }
+
+            if (!empty($countryId)) {
+                $partners->where('country', $countryId);
+            }
+
+            if ($hasAgreement === '1') {
+                $partners->whereHas('userRegisterAgreement');
+            } elseif ($hasAgreement === '0') {
+                $partners->whereDoesntHave('userRegisterAgreement');
+            }
+
+            if ($isSuperAdmin) {
+                $partners->where(function ($q) {
+                    $q->whereNull('ut.id')
+                        ->orWhereHas('userRole', function ($subQ) {
+                            $subQ->whereIn('type', [2, 3]);
+                        });
+                })->where('users.id', '!=', $user->id);
+            } else {
+                $partners->where('users.status', 1);
+
+                if ($user->user_type == 'Global') {
+                    $partners->whereIn('users.user_type', ['Global', 'G_R']);
+                } elseif ($user->user_type == 'G_R') {
+                    if ($currentCode == 'GL') {
+                        $partners->whereIn('users.user_type', ['Global', 'G_R']);
+                    } else {
+                        $manage_ecclesia_ids = is_array($user->manage_ecclesia)
+                            ? $user->manage_ecclesia
+                            : explode(',', $user->manage_ecclesia);
+
+                        $partners->where('users.country', $user->country)
+                            ->whereIn('users.user_type', ['Regional', 'G_R'])
+                            ->where(function ($q) {
+                                $q->whereNull('ut.id')
+                                    ->orWhereHas('userRole', function ($subQ) {
+                                        $subQ->whereIn('type', [2, 3]);
+                                    });
+                            });
+
+                        if ($isEcclesiaUser) {
+                            $partners->where(function ($q) use ($manage_ecclesia_ids, $user) {
+                                $q->where(function ($sub) use ($manage_ecclesia_ids) {
+                                    $sub->whereIn('users.ecclesia_id', $manage_ecclesia_ids)->whereNotNull('users.ecclesia_id');
+                                });
+                                foreach ($manage_ecclesia_ids as $id) {
+                                    $id = trim($id);
+                                    if ($id !== '') {
+                                        $q->orWhereRaw('FIND_IN_SET(?, users.manage_ecclesia)', [$id]);
+                                    }
+                                }
+                                $q->orWhere('users.created_id', $user->id);
+                                $q->orWhere('users.id', auth()->id());
+                            });
+                        }
+                    }
+                } elseif ($user->user_type == 'Regional') {
+                    $partners->where('users.country', $user->country)
+                        ->whereIn('users.user_type', ['Regional', 'G_R']);
+
+                    if ($isEcclesiaUser) {
+                        $manage_ecclesia_ids = is_array($user->manage_ecclesia)
+                            ? $user->manage_ecclesia
+                            : explode(',', $user->manage_ecclesia);
+
+                        $partners->where(function ($q) use ($manage_ecclesia_ids, $user) {
+                            $q->where(function ($sub) use ($manage_ecclesia_ids) {
+                                $sub->whereIn('users.ecclesia_id', $manage_ecclesia_ids)->whereNotNull('users.ecclesia_id');
+                            });
+                            foreach ($manage_ecclesia_ids as $id) {
+                                $id = trim($id);
+                                if ($id !== '') {
+                                    $q->orWhereRaw('FIND_IN_SET(?, users.manage_ecclesia)', [$id]);
+                                }
+                            }
+                            $q->orWhere('users.created_id', $user->id);
+                            $q->orWhere('users.id', auth()->id());
+                        });
+                    }
+                }
+            }
+
+            $allowedSortColumns = ['id', 'user_name', 'email', 'phone', 'address', 'user_type', 'country', 'created_at'];
+            if ($sortBy === 'name') {
+                $partners->orderByRaw('CONCAT(COALESCE(first_name, ""), " ", COALESCE(middle_name, ""), " ", COALESCE(last_name, "")) ' . $sortType);
+            } elseif (in_array($sortBy, $allowedSortColumns, true)) {
+                $partners->orderBy($sortBy, $sortType);
+            } else {
+                $partners->orderBy('id', 'desc');
             }
 
             // Call paginate after the conditions
-            $partners = $partners->paginate(15);
-
-            // Ensure accessor is loaded
-            $partners->getCollection()->transform(function ($partner) {
-                $partner->ecclesia_access = $partner->ecclesia_access; // Ensure it's appended
-                return $partner;
-            });
+            $paginatedPartners = $partners->paginate(15);
 
             // Return successful response with partner data
             return response()->json([
-                'data' => $partners
+                'status' => true,
+                'message' => 'Members fetched successfully.',
+                'data' => $paginatedPartners
             ], 200);
         } catch (\Exception $e) {
             // Return error response in case of failure
             return response()->json([
+                'status' => false,
                 'message' => 'Error occurred while fetching the partners.',
                 'error' => $e->getMessage() // Useful for debugging
             ], 500);
@@ -244,39 +355,32 @@ class PartnerController extends Controller
     public function loadCreateData()
     {
         try {
-            // $roles = Role::with('permissions')->where('name', '!=', 'SUPER ADMIN')->get();
-            // $ecclesias = Ecclesia::orderBy('id', 'desc')->get();
-
-
-            $auth_user_ecclesia_id = Auth::user()->ecclesia_id;
-            if (Auth::user()->getFirstUserRoleType() == 1) {
-                $roles = Role::with('permissions')->whereIn('type', [2, 3])->get();
-                $eclessias = Ecclesia::orderBy('id', 'asc')->get();
-            } elseif (Auth::user()->getFirstUserRoleType() == 2 || Auth::user()->getFirstUserRoleType() == 3) {
-                $roles = Role::with('permissions')->whereIn('type', [2, 3])->get();
-                if (Auth::user()->isEcclesiaUser()) {
-                    $eclessias = Auth::user()->getEcclesiaAccessAttribute();
-                } else {
-                    $eclessias = Ecclesia::where('id', $auth_user_ecclesia_id)->orderBy('id', 'asc')->get();
-                }
-            } else {
-                $roles = Role::with('permissions')->whereIn('type', [2, 3])->get();
-                $eclessias = Ecclesia::orderBy('id', 'asc')->get();
-            }
-
-            $countries = Country::orderBy('name', 'asc')->get();
-
-
-
-            return response()->json([
-                'roles' => $roles,
-                'ecclesias' => $eclessias,
-                'countries' => $countries
-            ], 200);
+            return response()->json($this->partnerMemberApi->buildFormData(), 200);
         } catch (\Exception $e) {
             return response()->json([
                 'message' => 'Failed to load data.',
                 'error' => $e->getMessage()
+            ], 201);
+        }
+    }
+
+    /**
+     * Ecclesias for partner create/edit (filtered by country + user type like web).
+     */
+    public function listEcclesias(Request $request)
+    {
+        try {
+            return response()->json([
+                'status' => true,
+                'data' => $this->partnerMemberApi->listEcclesiasForPartner(
+                    $request->get('country'),
+                    $request->get('user_type')
+                ),
+            ], 200);
+        } catch (\Exception $e) {
+            return response()->json([
+                'message' => 'Failed to load ecclesias.',
+                'error' => $e->getMessage(),
             ], 201);
         }
     }
@@ -311,95 +415,13 @@ class PartnerController extends Controller
      */
     public function storePartner(Request $request)
     {
+        [$ok, $message, $code] = $this->partnerMemberApi->store($request);
 
-        $validator = Validator::make($request->all(), [
-            'user_name' => 'required|unique:users',
-            'ecclesia_id' => 'nullable|exists:ecclesias,id',
-            'role' => 'required',
-            'first_name' => 'required',
-            'last_name' => 'required',
-            'middle_name' => 'nullable',
-            'email' => 'required|unique:users|regex:/^([a-z0-9\+_\-]+)(\.[a-z0-9\+_\-]+)*@([a-z0-9\-]+\.)+[a-z]{2,6}$/ix',
-            'password' => ['required', 'string', 'regex:/^(?=.*[@$%&])[^\s]{8,}$/'],
-            'confirm_password' => 'required|min:8|same:password',
-            'address' => 'required',
-            'country' => 'required',
-            'state' => 'required',
-            'city' => 'required',
-            'zip' => 'required',
-            'address2' => 'nullable',
-            'phone' => 'required',
-        ], [
-            'password.regex' => 'The password must be at least 8 characters long and include at least one special character from @$%&.',
-        ]);
-
-        if ($validator->fails()) {
-            return response()->json([
-                'status' => false,
-                'errors' => $validator->errors()->first()
-            ], 201);
-        }
-
-        // try {
-        $uniqueNumber = rand(1000, 9999);
-        $lr_email = strtolower(trim($request->first_name)) . strtolower(trim($request->middle_name)) . strtolower(trim($request->last_name)) . $uniqueNumber . '@lionroaring.us';
-
-
-        $is_ecclesia_admin = 0;
-        $the_role = Role::where('name', $request->role)->first();
-        if ($the_role->is_ecclesia == 1) {
-            $is_ecclesia_admin = 1;
-
-            if ($request->manage_ecclesia == [] || $request->manage_ecclesia == null) {
-                return response()->json(['message' => 'Required - House Of ECCLESIA if Role is an ECCLESIA.', 'stauts' => false], 201);
-            }
-        }
-        Log::info($request->all());
-        $data = new User();
-        $data->created_id = auth()->id();
-        $data->user_name = $request->user_name;
-        $data->first_name = $request->first_name;
-        $data->last_name = $request->last_name;
-        $data->middle_name = $request->middle_name;
-        $data->personal_email = $lr_email ? str_replace(' ', '', $lr_email) : null;
-        $data->email = $request->email;
-        $data->password = bcrypt($request->password);
-        $data->address = $request->address;
-        $data->country = $request->country;
-        $data->state = $request->state;
-        $data->city = $request->city;
-        $data->zip = $request->zip;
-        $data->address2 = $request->address2;
-        $data->ecclesia_id = $request->ecclesia_id;
-        $data->is_ecclesia_admin = $is_ecclesia_admin;
-        $data->user_name = $request->user_name;
-        $data->phone = $request->phone;
-        $data->phone_country_code_name = $request->phone_country_code_name;
-        $data->status = 1;
-        $data->is_accept = 1;
-
-
-        $data->manage_ecclesia = $request->has('manage_ecclesia') ? implode(',', $request->manage_ecclesia) : null;
-
-
-
-        $data->save();
-        $data->assignRole($request->role);
-
-        Mail::to($request->email)->send(new RegistrationMail([
-            'name' => $request->first_name . ' ' . $request->last_name,
-            'email' => $request->email,
-            'password' => $request->password,
-            'type' => ucfirst(strtolower($request->role)),
-        ]));
-
-        return response()->json(['message' => 'Customer created successfully.', 'stauts' => true], 200);
-        // } catch (\Exception $e) {
-        //     return response()->json([
-        //         'message' => 'Failed to create user.',
-        //         'error' => $e->getMessage(),
-        //     ], 201);
-        // }
+        return response()->json([
+            'status' => $ok,
+            'message' => $message,
+            'errors' => $ok ? null : $message,
+        ], $code);
     }
 
 
@@ -434,81 +456,13 @@ class PartnerController extends Controller
      */
     public function updatePartner(Request $request, $id)
     {
+        [$ok, $message, $code] = $this->partnerMemberApi->update($request, (int) $id);
 
-
-        $validator = Validator::make($request->all(), [
-            // 'role' => 'required',
-            'role' => 'required',
-            'first_name' => 'required',
-            'last_name' => 'required',
-            'middle_name' => 'nullable',
-            'email' => 'required|regex:/^([a-z0-9\+_\-]+)(\.[a-z0-9\+_\-]+)*@([a-z0-9\-]+\.)+[a-z]{2,6}$/ix|unique:users,email,' . $id,
-            'address' => 'required',
-            'phone' => 'required',
-            'ecclesia_id' => 'nullable|exists:ecclesias,id',
-            'country' => 'required',
-            'state' => 'required',
-            'city' => 'required',
-            'zip' => 'required',
-            'address2' => 'nullable',
-            'password' => ['nullable', 'string', 'regex:/^(?=.*[@$%&])[^\s]{8,}$/'],
-            'confirm_password' => 'nullable|min:8|same:password',
-        ], [
-            'password.regex' => 'The password must be at least 8 characters long and include at least one special character from @$%&.',
-        ]);
-
-        if ($validator->fails()) {
-            return response()->json([
-                'status' => false,
-                'errors' => $validator->errors()->first()
-            ], 201);
-        }
-
-
-        // try {
-
-        $is_ecclesia_admin = 0;
-        $the_role = Role::where('name', $request->role)->first();
-        if ($the_role->is_ecclesia == 1) {
-            $is_ecclesia_admin = 1;
-            if ($request->manage_ecclesia == [] || $request->manage_ecclesia == null) {
-                return response()->json(['message' => 'Required - House Of ECCLESIA if Role is an ECCLESIA.', 'stauts' => false], 201);
-            }
-        }
-
-
-        $data = User::findOrFail($id);
-        $data->first_name = $request->first_name;
-        $data->last_name = $request->last_name;
-        $data->middle_name = $request->middle_name;
-        $data->email = $request->email;
-        $data->address = $request->address;
-        $data->country = $request->country;
-        $data->state = $request->state;
-        $data->city = $request->city;
-        $data->zip = $request->zip;
-        $data->address2 = $request->address2;
-        $data->ecclesia_id = $request->ecclesia_id;
-        $data->is_ecclesia_admin = $is_ecclesia_admin;
-        $data->phone = $request->phone;
-        $data->phone_country_code_name = $request->phone_country_code_name;
-        if ($request->password) {
-            $data->password = bcrypt($request->password);
-        }
-
-        $data->manage_ecclesia = $request->has('manage_ecclesia') ? implode(',', $request->manage_ecclesia) : null;
-
-        $data->save();
-        // $data->roles()->detach(); // Remove all roles first
-        $data->syncRoles([$the_role->name]); // Assign new role
-
-        return response()->json(['message' => 'Member updated successfully.', 'stauts' => true], 200);
-        // } catch (\Exception $e) {
-        //     return response()->json([
-        //         'message' => 'Failed to update member.',
-        //         'error' => $e->getMessage(),
-        //     ], 201);
-        // }
+        return response()->json([
+            'status' => $ok,
+            'message' => $message,
+            'errors' => $ok ? null : $message,
+        ], $code);
     }
 
 
@@ -676,33 +630,10 @@ class PartnerController extends Controller
     public function viewPartner($id)
     {
         try {
-            $partner = User::with(['ecclesia', 'roles'])->findOrFail($id);
-            //   $eclessias = Ecclesia::orderBy('id', 'asc')->get();
-            $countries = Country::orderBy('name', 'asc')->get();
-            //   $roles = Role::with('permissions')->where('name', '!=', 'SUPER ADMIN')->get();
+            $partner = User::with(['roles.permissions', 'ecclesia', 'countries', 'states', 'userLastSubscription'])
+                ->findOrFail($id);
 
-            $auth_user_ecclesia_id = Auth::user()->ecclesia_id;
-            if (Auth::user()->getFirstUserRoleType() == 1) {
-                $roles = Role::with('permissions')->whereIn('type', [2, 3])->get();
-                $eclessias = Ecclesia::orderBy('id', 'asc')->get();
-            } elseif (Auth::user()->getFirstUserRoleType() == 2 || Auth::user()->getFirstUserRoleType() == 3) {
-                $roles = Role::with('permissions')->whereIn('type', [2, 3])->get();
-                if (Auth::user()->isEcclesiaUser()) {
-                    $eclessias = Auth::user()->getEcclesiaAccessAttribute();
-                } else {
-                    $eclessias = Ecclesia::where('id', $auth_user_ecclesia_id)->orderBy('id', 'asc')->get();
-                }
-            } else {
-                $roles = Role::with('permissions')->whereIn('type', [2, 3])->get();
-                $eclessias = Ecclesia::orderBy('id', 'asc')->get();
-            }
-
-            return response()->json([
-                'roles' => $roles,
-                'eclessias' => $eclessias,
-                'countries' => $countries,
-                'partner' => $partner
-            ], 200);
+            return response()->json($this->partnerMemberApi->buildPartnerEditPayload($partner), 200);
         } catch (\Exception $e) {
             return response()->json([
                 'message' => 'Failed to fetch partner.',

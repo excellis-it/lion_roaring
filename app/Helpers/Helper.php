@@ -746,6 +746,145 @@ class Helper
         return $image ? $image->original_path : null;
     }
 
+    /**
+     * Resolve a storage-relative path to an absolute public URL.
+     * Falls back to the original (uncompressed) file when the compressed asset is missing.
+     */
+    public static function publicStorageUrl(?string $path): ?string
+    {
+        if ($path === null || trim($path) === '') {
+            return null;
+        }
+
+        $path = trim($path);
+
+        if (str_starts_with($path, 'http://') || str_starts_with($path, 'https://')) {
+            return $path;
+        }
+
+        $relative = ltrim($path, '/');
+        if (str_starts_with($relative, 'storage/')) {
+            $relative = substr($relative, strlen('storage/'));
+        }
+
+        $disk = Storage::disk('public');
+        $resolved = $relative;
+
+        if (! $disk->exists($resolved)) {
+            $original = self::getOriginalImage($relative);
+            if ($original && $disk->exists($original)) {
+                $resolved = $original;
+            } else {
+                return null;
+            }
+        }
+
+        $url = $disk->url($resolved);
+
+        if (str_starts_with($url, 'http://') || str_starts_with($url, 'https://')) {
+            return $url;
+        }
+
+        return rtrim(config('app.url'), '/').'/'.ltrim($url, '/');
+    }
+
+    /**
+     * Decode e-store home slider JSON (handles array, JSON string, or double-encoded JSON).
+     *
+     * @return array<int, array<string, mixed>>
+     */
+    public static function decodeEcomSliderData(mixed $value): array
+    {
+        if ($value === null || $value === '') {
+            return [];
+        }
+
+        if (is_array($value)) {
+            return array_is_list($value) ? $value : array_values($value);
+        }
+
+        if (! is_string($value)) {
+            return [];
+        }
+
+        $decoded = json_decode($value, true);
+        if (is_array($decoded)) {
+            if (array_is_list($decoded)) {
+                return $decoded;
+            }
+            if (isset($decoded['title']) || isset($decoded['image'])) {
+                return [$decoded];
+            }
+
+            return array_values($decoded);
+        }
+
+        // Double-encoded JSON string stored in DB (json string inside json string).
+        if (is_string($decoded)) {
+            $inner = json_decode($decoded, true);
+            if (is_array($inner)) {
+                return array_is_list($inner) ? $inner : array_values($inner);
+            }
+        }
+
+        return [];
+    }
+
+    /**
+     * @param  array<int, array<string, mixed>>|string|null  $slides
+     * @return array<int, array<string, mixed>>
+     */
+    public static function transformEcomSliderData($slides): array
+    {
+        $slides = self::decodeEcomSliderData($slides);
+        if ($slides === []) {
+            return [];
+        }
+
+        return array_values(array_map(function ($slide) {
+            if (! is_array($slide)) {
+                return $slide;
+            }
+            if (! empty($slide['image'])) {
+                $slide['image'] = self::publicStorageUrl($slide['image']);
+            }
+
+            return $slide;
+        }, $slides));
+    }
+
+    /**
+     * @param  array<string, mixed>  $content
+     * @return array<string, mixed>
+     */
+    public static function transformEcomHomeContent(array $content): array
+    {
+        $imageKeys = [
+            'header_logo',
+            'banner_image',
+            'banner_image_small',
+            'new_arrival_image',
+            'about_section_image',
+            'shop_now_image',
+        ];
+
+        foreach ($imageKeys as $key) {
+            if (! empty($content[$key])) {
+                $content[$key] = self::publicStorageUrl($content[$key]);
+            }
+        }
+
+        if (! empty($content['slider_data'])) {
+            $content['slider_data'] = self::transformEcomSliderData($content['slider_data']);
+        }
+
+        if (! empty($content['slider_data_second'])) {
+            $content['slider_data_second'] = self::transformEcomSliderData($content['slider_data_second']);
+        }
+
+        return $content;
+    }
+
     public static function getEstoreProductStartingPrice($productId)
     {
         $warehouseProducts = \App\Models\WarehouseProduct::where('product_id', $productId)->get();
@@ -959,6 +1098,38 @@ class Helper
         // Fallback: all active languages
         $allLanguages = \App\Models\TranslateLanguage::orderBy('name', 'asc')->get();
         return $allLanguages;
+    }
+
+    /**
+     * Languages available for a country code (stateless; used by mobile API).
+     * GL = global country languages or all translate_languages.
+     * Regional = country's linked languages, always including English.
+     */
+    public static function getLanguagesForCountryCode(string $countryCode): \Illuminate\Support\Collection
+    {
+        $code = strtoupper(trim($countryCode));
+
+        if ($code === '' || $code === 'GL') {
+            $row = \App\Models\Country::with('languages')->where('is_global', true)->first();
+            if ($row && $row->languages->isNotEmpty()) {
+                return $row->languages->sortBy('name')->values();
+            }
+
+            return \App\Models\TranslateLanguage::orderBy('name', 'asc')->get();
+        }
+
+        $row = \App\Models\Country::with('languages')->whereRaw('UPPER(code) = ?', [$code])->first();
+        $languages = $row ? $row->languages : collect();
+
+        $hasEnglish = $languages->contains(fn ($lang) => strtolower($lang->code ?? '') === 'en');
+        if (! $hasEnglish) {
+            $english = \App\Models\TranslateLanguage::whereRaw('LOWER(code) = ?', ['en'])->first();
+            if ($english) {
+                $languages = $languages->push($english);
+            }
+        }
+
+        return $languages->sortBy('name')->values();
     }
 
     /**

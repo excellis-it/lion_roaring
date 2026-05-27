@@ -22,17 +22,19 @@ class MemberAccess
             return $next($request);
         }
 
-        // SUPER ADMIN always bypasses subscription check
         if ($user->hasNewRole('SUPER ADMIN')) {
             return $next($request);
         }
 
-        // Always allow membership routes and logout so user can renew or sign out
+        // Membership gate applies only to MEMBER_SOVEREIGN (other roles are not blocked).
+        if (!$user->isMemberSovereign()) {
+            return $next($request);
+        }
+
         if ($request->is('user/membership', 'user/membership/*', 'user/logout')) {
             return $next($request);
         }
 
-        // Check subscription status for any user who has a subscription record
         try {
             $sub = $user->userLastSubscription;
 
@@ -41,16 +43,12 @@ class MemberAccess
                     return redirect()->route('user.membership.index')
                         ->with('error', 'Your membership has expired. Please renew to reactivate your account.');
                 }
-                // Active subscription — allow
+
                 return $next($request);
             }
 
-            // User has no subscription — only block if they have a MEMBER_SOVEREIGN role
-            // (other roles like G_R admin may legitimately have no subscription record)
-            if ($user->hasNewRole('MEMBER_SOVEREIGN')) {
-                return redirect()->route('user.membership.index')
-                    ->with('error', 'You need an active membership to access this section. Please subscribe.');
-            }
+            return redirect()->route('user.membership.index')
+                ->with('error', 'You need an active membership to access this section. Please subscribe.');
         } catch (\Throwable $e) {
             Log::error('MemberAccess middleware error for user ' . $user->id . ': ' . $e->getMessage());
         }

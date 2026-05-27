@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers\API;
 
+use App\Http\Controllers\Api\Concerns\AppliesPmaContentScope;
+use App\Http\Controllers\Api\Concerns\AppliesPmaCountryFromRequest;
 use App\Http\Controllers\Controller;
 use App\Models\Meeting;
 use Illuminate\Http\Request;
@@ -21,6 +23,9 @@ use App\Services\NotificationService;
 
 class MeetingController extends Controller
 {
+    use AppliesPmaContentScope;
+    use AppliesPmaCountryFromRequest;
+
     /**
      * List All Meetings
      * @queryParam search string optional for search. Example: "abc"
@@ -52,23 +57,22 @@ class MeetingController extends Controller
     public function index(Request $request)
     {
         try {
-            // Fetch the search query from the request
+            if (! auth()->user()->can('Manage Meeting Schedule')) {
+                return response()->json(['error' => 'Permission denied.'], 403);
+            }
+
             $searchQuery = $request->get('search');
+            $ctx = $this->pmaScopeContext();
 
-            $user_type = auth()->user()->user_type ?? 'Global';
-            $user_country = auth()->user()->country ?? null;
-
-            // Apply the search filter if searchQuery is provided
             $meetingsQuery = Meeting::with('user')
                 ->when($searchQuery, function ($query) use ($searchQuery) {
-                    $query->where('title', 'like', "%{$searchQuery}%")
-                        ->orWhere('description', 'like', "%{$searchQuery}%");
+                    $query->where(function ($q) use ($searchQuery) {
+                        $q->where('title', 'like', "%{$searchQuery}%")
+                            ->orWhere('description', 'like', "%{$searchQuery}%");
+                    });
                 });
 
-            // Apply country scope for non-Global users
-            if ($user_type !== 'Global' && $user_country) {
-                $meetingsQuery->where('country_id', $user_country);
-            }
+            $this->applyPmaCreatorContentScope($meetingsQuery, $ctx);
 
             $meetings = $meetingsQuery->orderBy('id', 'desc')->paginate(15);
 
@@ -108,32 +112,21 @@ class MeetingController extends Controller
      */
     public function store(Request $request)
     {
-        $user_type = auth()->user()->user_type ?? 'Global';
-        $user_country = auth()->user()->country ?? null;
-
-        if ($user_type === 'Global') {
-            $validator = Validator::make($request->all(), [
-                'title' => 'required|string',
-                'description' => 'nullable|string',
-                'start_time' => 'required|date',
-                'end_time' => 'required|date|after:start_time',
-                'meeting_link' => 'nullable|url',
-                'create_zoom' => 'nullable|boolean',
-                'country_id' => 'required|exists:countries,id',
-            ]);
-            $country_id = $request->get('country_id');
-        } else {
-            $validator = Validator::make($request->all(), [
-                'title' => 'required|string',
-                'description' => 'nullable|string',
-                'start_time' => 'required|date',
-                'end_time' => 'required|date|after:start_time',
-                'meeting_link' => 'nullable|url',
-                'create_zoom' => 'nullable|boolean',
-            ]);
-            $country_id = $user_country;
-            $request->merge(['country_id' => $country_id]);
+        if (! auth()->user()->can('Create Meeting Schedule')) {
+            return response()->json(['error' => 'Permission denied.'], 403);
         }
+
+        $country_id = $this->resolvePmaCountryId($request);
+        $request->merge(['country_id' => $country_id]);
+
+        $validator = Validator::make($request->all(), array_merge([
+            'title' => 'required|string',
+            'description' => 'nullable|string',
+            'start_time' => 'required|date',
+            'end_time' => 'required|date|after:start_time',
+            'meeting_link' => 'nullable|url',
+            'create_zoom' => 'nullable|boolean',
+        ], $this->pmaCountryValidationRules()));
 
         if ($validator->fails()) {
             return response()->json(['errors' => $validator->errors()], 201);
@@ -230,14 +223,14 @@ class MeetingController extends Controller
     public function show($id)
     {
         try {
-            $user_type = auth()->user()->user_type ?? 'Global';
-            $user_country = auth()->user()->country ?? null;
-
-            if ($user_type == 'Global') {
-                $meeting = Meeting::with('user')->findOrFail($id);
-            } else {
-                $meeting = Meeting::with('user')->where('country_id', $user_country)->findOrFail($id);
+            if (! auth()->user()->can('View Meeting Schedule')) {
+                return response()->json(['error' => 'Permission denied.'], 403);
             }
+
+            $ctx = $this->pmaScopeContext();
+            $query = Meeting::with('user');
+            $this->applyPmaCreatorContentScope($query, $ctx);
+            $meeting = $query->findOrFail($id);
 
             return response()->json(['data' => $meeting], 200);
         } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
@@ -266,32 +259,21 @@ class MeetingController extends Controller
      */
     public function update(Request $request, $id)
     {
-        $user_type = auth()->user()->user_type ?? 'Global';
-        $user_country = auth()->user()->country ?? null;
-
-        if ($user_type === 'Global') {
-            $validator = Validator::make($request->all(), [
-                'title' => 'required|string|max:255',
-                'description' => 'nullable|string',
-                'start_time' => 'required|date',
-                'end_time' => 'required|date|after:start_time',
-                'meeting_link' => 'nullable|url',
-                'create_zoom' => 'nullable|boolean',
-                'country_id' => 'required|exists:countries,id',
-            ]);
-            $country_id = $request->get('country_id');
-        } else {
-            $validator = Validator::make($request->all(), [
-                'title' => 'required|string|max:255',
-                'description' => 'nullable|string',
-                'start_time' => 'required|date',
-                'end_time' => 'required|date|after:start_time',
-                'meeting_link' => 'nullable|url',
-                'create_zoom' => 'nullable|boolean',
-            ]);
-            $country_id = $user_country;
-            $request->merge(['country_id' => $country_id]);
+        if (! auth()->user()->can('Edit Meeting Schedule')) {
+            return response()->json(['error' => 'Permission denied.'], 403);
         }
+
+        $country_id = $this->resolvePmaCountryId($request);
+        $request->merge(['country_id' => $country_id]);
+
+        $validator = Validator::make($request->all(), array_merge([
+            'title' => 'required|string|max:255',
+            'description' => 'nullable|string',
+            'start_time' => 'required|date',
+            'end_time' => 'required|date|after:start_time',
+            'meeting_link' => 'nullable|url',
+            'create_zoom' => 'nullable|boolean',
+        ], $this->pmaCountryValidationRules()));
 
         if ($validator->fails()) {
             return response()->json(['errors' => $validator->errors()], 422); // Use 422 for validation errors
@@ -301,11 +283,6 @@ class MeetingController extends Controller
             // Allow updates by owner or SUPER ADMIN
             $meeting = Meeting::findOrFail($id);
             if ($meeting->user_id !== auth()->id() && !auth()->user()->hasNewRole('SUPER ADMIN')) {
-                return response()->json(['error' => 'Meeting not found.'], 404);
-            }
-
-            // Ensure country scope for non-Global
-            if ($user_type !== 'Global' && $meeting->country_id != $country_id) {
                 return response()->json(['error' => 'Meeting not found.'], 404);
             }
 
@@ -359,6 +336,10 @@ class MeetingController extends Controller
     public function destroy($id)
     {
         try {
+            if (! auth()->user()->can('Delete Meeting Schedule')) {
+                return response()->json(['error' => 'Permission denied.'], 403);
+            }
+
             $meeting = Meeting::findOrFail($id);
 
             // Allow deletion by owner or SUPER ADMIN
@@ -426,14 +407,15 @@ class MeetingController extends Controller
     public function fetchCalenderData()
     {
         try {
-            $user_type = auth()->user()->user_type ?? 'Global';
-            $user_country = auth()->user()->country ?? null;
-
-            if ($user_type == 'Global') {
-                $meetings = Meeting::orderBy('id', 'desc')->get(['id', 'title', 'description', 'start_time as start', 'end_time as end', 'meeting_link']);
-            } else {
-                $meetings = Meeting::where('country_id', $user_country)->orderBy('id', 'desc')->get(['id', 'title', 'description', 'start_time as start', 'end_time as end', 'meeting_link']);
+            if (! auth()->user()->can('Manage Meeting Schedule')) {
+                return response()->json(['error' => 'Permission denied.'], 403);
             }
+
+            $ctx = $this->pmaScopeContext();
+            $query = Meeting::query();
+            $this->applyPmaCreatorContentScope($query, $ctx);
+            $meetings = $query->orderBy('id', 'desc')
+                ->get(['id', 'title', 'description', 'start_time as start', 'end_time as end', 'meeting_link']);
 
             return response()->json(['message' => 'Calender data fetched successfully.', 'data' => $meetings], 200);
         } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {

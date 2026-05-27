@@ -14,7 +14,10 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use App\Helpers\Helper;
 use App\Models\WareHouse;
+use App\Models\MarketMaterialRate;
+use App\Services\MarketRateService;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Cache;
 
 /**
  * @group E-Store Product APIs
@@ -153,10 +156,14 @@ class EstoreProductController extends Controller
             return response()->json(['message' => 'Validation failed', 'errors' => $validator->errors()->first(), 'status' => false], 201);
         }
         try {
-            $product = Product::where('slug', $request->slug)->with('image', 'colors', 'sizes', 'reviews')->first();
+            $product = Product::where('slug', $request->slug)
+                ->with('image', 'colors', 'sizes', 'reviews', 'otherCharges', 'files')
+                ->first();
             if (!$product) {
                 return response()->json(['message' => 'Product not found', 'status' => false], 201);
             }
+
+            $isDigital = $product->product_type === 'digital';
 
             // Determine nearest warehouse
             $nearbyWareHouseId = WareHouse::where('is_active', 1)->first()?->id ?? 0;
@@ -175,13 +182,9 @@ class EstoreProductController extends Controller
                 $nearbyWareHouseId = $nearest['warehouse']->id;
             }
 
-            // Find an initial warehouse product (respecting product_type and variations)
+            // Digital products have no warehouse stock — price comes from the product record.
             $warehouseProduct = null;
-            if ($product->product_type != 'simple') {
-                $warehouseProduct = WarehouseProduct::where('warehouse_id', $nearbyWareHouseId)
-                    ->where('product_id', $product->id)
-                    ->first();
-            } else {
+            if (!$isDigital) {
                 $warehouseProduct = WarehouseProduct::where('warehouse_id', $nearbyWareHouseId)
                     ->where('product_id', $product->id)
                     ->first();
@@ -235,7 +238,31 @@ class EstoreProductController extends Controller
             // in the product data array in colors set all the colors from Product variationUniqueColors
             $product->variation_colors_images = $product->variation_unique_color_first_images;
 
-            return response()->json(['data' => ['product' => $product, 'warehouse_product' => $warehouseProduct, 'product_images' => $productImages, 'related' => $related_products, 'cart_count' => $cartCount, 'cart_item' => $cartItem], 'status' => true], 200);
+            $digitalMeta = null;
+            if ($isDigital) {
+                $basePrice = ($product->sale_price > 0) ? (float) $product->sale_price : (float) $product->price;
+                $digitalMeta = [
+                    'display_price' => $product->getDisplayPrice($product->price),
+                    'listing_charges_breakdown' => $product->getListingChargesBreakdown($product->price),
+                    'files' => $product->files->map(fn ($f) => [
+                        'id' => $f->id,
+                        'file_location' => $f->file_location,
+                    ])->values(),
+                ];
+            }
+
+            return response()->json([
+                'data' => [
+                    'product' => $product,
+                    'warehouse_product' => $warehouseProduct,
+                    'product_images' => $productImages,
+                    'related' => $related_products,
+                    'cart_count' => $cartCount,
+                    'cart_item' => $cartItem,
+                    'digital_meta' => $digitalMeta,
+                ],
+                'status' => true,
+            ], 200);
         } catch (\Exception $e) {
             return response()->json(['message' => 'Something went wrong. ' . $e->getMessage(), 'status' => false], 201);
         }
@@ -471,6 +498,13 @@ class EstoreProductController extends Controller
                 return response()->json(['message' => 'Product not found', 'status' => false], 201);
             }
 
+            if ($product->product_type === 'digital') {
+                return response()->json([
+                    'status' => false,
+                    'message' => 'Digital products use direct checkout. Tap Donation or seed/gift on the product page.',
+                ], 201);
+            }
+
             // determine nearest warehouse
             $nearbyWareHouseId = WareHouse::where('is_active', 1)->first()?->id ?? 0;
             $originLat = null;
@@ -607,19 +641,15 @@ class EstoreProductController extends Controller
     public function cartList(Request $request)
     {
         try {
-            $cartQuery = EstoreCart::with('product');
-            if (auth()->check()) {
-                $cartQuery->where('user_id', auth()->id());
-            } else {
-                $cartQuery->where('session_id', session()->getId());
-            }
-            $items = $cartQuery->get();
+            $summary = (new \App\Services\EstoreCartSummaryService())->summarizeForCartPage(
+                auth()->user(),
+                $request->input('promo_code')
+            );
 
-            $total = $items->sum(function ($i) {
-                return $i->price * $i->quantity;
-            });
-
-            return response()->json(['data' => ['items' => $items, 'total' => $total], 'status' => true], 200);
+            return response()->json([
+                'data' => $summary,
+                'status' => true,
+            ], 200);
         } catch (\Exception $e) {
             return response()->json(['message' => 'Something went wrong. ' . $e->getMessage(), 'status' => false], 201);
         }
@@ -753,5 +783,53 @@ class EstoreProductController extends Controller
         } catch (\Exception $e) {
             return response()->json(['message' => 'Something went wrong. ' . $e->getMessage(), 'status' => false], 201);
         }
+    }
+
+    /**
+     * GET /e-store/products/{id}/market-price
+     * Returns current price for market-priced products (precious metals). Cached 60s per product
+     * so many clients watching the same product don't each hit the upstream rate API.
+     *
+     * @urlParam id int required Product id.
+     */
+    public function marketPrice(int $id)
+    {
+        $product = Product::find($id);
+        if (!$product) {
+            return response()->json(['status' => false, 'message' => 'Product not found.'], 404);
+        }
+
+        if (!$product->is_market_priced || !$product->market_material_id) {
+            return response()->json([
+                'status' => true,
+                'message' => 'Product is not market-priced.',
+                'data' => [
+                    'is_market_priced' => false,
+                    'price' => (float) $product->price,
+                ],
+            ]);
+        }
+
+        $payload = Cache::remember("market_price:product:{$id}", 60, function () use ($product) {
+            $rate = MarketRateService::getLatestRateForMaterial((int) $product->market_material_id);
+            $product->refresh();
+
+            return [
+                'is_market_priced' => true,
+                'price' => (float) $product->price,
+                'rate_per_gram' => $rate?->rate_per_gram !== null ? (float) $rate->rate_per_gram : null,
+                'usd_per_ounce' => $rate?->usd_per_ounce !== null ? (float) $rate->usd_per_ounce : null,
+                'market_grams' => (float) $product->market_grams,
+                'market_unit' => $product->market_unit,
+                'fetched_at' => $rate?->fetched_at,
+                'market_rate_at' => $product->market_rate_at,
+            ];
+        });
+
+        return response()->json([
+            'status' => true,
+            'message' => 'Market price.',
+            'data' => $payload,
+        ]);
     }
 }

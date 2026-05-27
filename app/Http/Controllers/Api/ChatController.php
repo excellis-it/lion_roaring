@@ -134,40 +134,56 @@ class ChatController extends Controller
      * ]
      */
 
+    /**
+     * Base query for chat user listings (aligned with web PMA visibility rules).
+     */
+    private function baseChatUsersQuery()
+    {
+        $usersQuery = User::with(['roles', 'chatSender'])
+            ->where('id', '!=', auth()->id())
+            ->where('status', 1)
+            ->whereHas('roles', function ($query) {
+                $query->whereIn('type', [1, 2, 3]);
+            });
+
+        if (!auth()->user()->hasNewRole('SUPER ADMIN')) {
+            $authId = auth()->id();
+            $usersQuery->where(function ($query) use ($authId) {
+                $query->where(function ($q) {
+                    $q->visibleToAuthUser();
+                })
+                    ->orWhere(function ($q) use ($authId) {
+                        $q->whereHas('userRole', function ($r) {
+                            $r->where('name', 'SUPER ADMIN');
+                        })->whereHas('chatSender', function ($chat) use ($authId) {
+                            $chat->where('reciver_id', $authId);
+                        });
+                    });
+            });
+        }
+
+        return $usersQuery;
+    }
+
     public function chats(Request $request)
     {
         try {
             $search_query = $request->input('search');
 
+            $usersQuery = $this->baseChatUsersQuery();
+
             if (!empty($search_query)) {
-                // return $chat_users = [];
-                // If search query is provided, filter users based on the search
-                $chat_users = User::with('roles')
-                    ->where('id', '!=', auth()->id())
-                    ->where('status', 1)
-                    ->whereHas('roles', function ($query) {
-                        $query->whereIn('type', [1, 2, 3]);
-                    })
-                    ->where(function ($q) use ($search_query) {
-                        $q->where('user_name', 'LIKE', "%{$search_query}%")
-                            ->orWhere('first_name', 'LIKE', "%{$search_query}%")
-                            ->orWhere('middle_name', 'LIKE', "%{$search_query}%")
-                            ->orWhere('last_name', 'LIKE', "%{$search_query}%")
-                            ->orWhere('email', 'LIKE', "%{$search_query}%")
-                            // ->orWhereRaw("CONCAT(IFNULL(first_name, ''), ' ', IFNULL(middle_name, ''), ' ', IFNULL(last_name, '')) LIKE ?", ["%{$search_query}%"]);
-                            ->orWhereRaw("TRIM(CONCAT_WS(' ', first_name, middle_name, last_name)) LIKE ?", ["%{$search_query}%"]);
-                    })
-                    ->get();
-            } else {
-                // If no search query, get all chat users
-                $chat_users = User::with('roles')
-                    ->where('id', '!=', auth()->id())
-                    ->where('status', 1)
-                    ->whereHas('roles', function ($query) {
-                        $query->whereIn('type', [1, 2, 3]);
-                    })
-                    ->get();
+                $usersQuery->where(function ($q) use ($search_query) {
+                    $q->where('user_name', 'LIKE', "%{$search_query}%")
+                        ->orWhere('first_name', 'LIKE', "%{$search_query}%")
+                        ->orWhere('middle_name', 'LIKE', "%{$search_query}%")
+                        ->orWhere('last_name', 'LIKE', "%{$search_query}%")
+                        ->orWhere('email', 'LIKE', "%{$search_query}%")
+                        ->orWhereRaw("TRIM(CONCAT_WS(' ', first_name, middle_name, last_name)) LIKE ?", ["%{$search_query}%"]);
+                });
             }
+
+            $chat_users = $usersQuery->get();
 
             // $chat_users = User::with('roles')->where('id', '!=', auth()->id())
             //     ->where('status', 1)
@@ -302,54 +318,76 @@ class ChatController extends Controller
     public function load(Request $request)
     {
         try {
+            $perPage = (int) $request->input('per_page', 30);
+            $beforeChatId = (int) $request->input('before_chat_id', 0);
+            $receiverId = $request->sender_receiver_id;
 
-            $chats = Chat::where(function ($query) use ($request) {
-                $query->where('sender_id', auth()->id())
-                    ->where('reciver_id', $request->sender_receiver_id)
-                    ->where('deleted_for_sender', 0)
-                    ->where('delete_from_sender_id', 0);
-            })
-                ->orWhere(function ($query) use ($request) {
-                    $query->where('sender_id', $request->sender_receiver_id)
+            $baseQuery = Chat::where(function ($query) use ($receiverId) {
+                $query->where(function ($q) use ($receiverId) {
+                    $q->where('sender_id', auth()->id())
+                        ->where('reciver_id', $receiverId)
+                        ->where('deleted_for_sender', 0)
+                        ->where('delete_from_sender_id', 0);
+                })->orWhere(function ($q) use ($receiverId) {
+                    $q->where('sender_id', $receiverId)
                         ->where('reciver_id', auth()->id())
                         ->where('deleted_for_reciver', 0)
                         ->where('delete_from_receiver_id', 0);
-                })
-                ->orderBy('created_at', 'desc')
+                });
+            });
+
+            if ($beforeChatId > 0) {
+                $baseQuery->where('id', '<', $beforeChatId);
+            }
+
+            $chatsDesc = (clone $baseQuery)
+                ->orderBy('id', 'desc')
+                ->limit($perPage + 1)
                 ->get();
-            // return $chats;
-            // Mark unseen messages as seen
+
+            $hasMore = $chatsDesc->count() > $perPage;
+            if ($hasMore) {
+                $chatsDesc = $chatsDesc->take($perPage);
+            }
+
+            $chats = $chatsDesc->sortBy('id')->values();
+            $oldestChatId = $chats->isNotEmpty() ? $chats->first()->id : null;
+
+            $unseen_chat = collect();
+            if ($beforeChatId <= 0) {
+                $unseen_chat = Chat::where('sender_id', $receiverId)
+                    ->where('reciver_id', auth()->id())
+                    ->where('seen', 0)
+                    ->where('delete_from_receiver_id', 0)
+                    ->get();
+
+                Chat::where('sender_id', $receiverId)
+                    ->where('reciver_id', auth()->id())
+                    ->where('seen', 0)
+                    ->update(['seen' => 1]);
+            }
+
             $chats->each(function ($chat) {
-                if ($chat->reciver_id == auth()->id() && $chat->seen == 0) {
-                    $chat->update(['seen' => 1]);
-                }
-                $chat->isMe = ($chat->sender_id == auth()->id()) ? true : false;
-                $chat->isSeen = ($chat->seen == 1) ? true : false;
+                $chat->isMe = ($chat->sender_id == auth()->id());
+                $chat->isSeen = ($chat->seen == 1);
 
                 if ($chat->created_at->format('d M Y') == date('d M Y')) {
-                    $chat->time = $chat->created_at->format('h:iA') . ' ' . 'Today';
+                    $chat->time = $chat->created_at->format('h:iA') . ' Today';
                 } elseif ($chat->created_at->format('d M Y') == date('d M Y', strtotime('-1 day'))) {
-                    $chat->time = $chat->created_at->format('h:iA') . ' ' . 'Yesterday';
+                    $chat->time = $chat->created_at->format('h:iA') . ' Yesterday';
                 } else {
                     $chat->time = $chat->created_at->format('h:iA') . ' ' . $chat->created_at->format('d M Y');
                 }
             });
 
-            $chat_count = $chats->count();
-
-            // Get unseen chats
-            $unseen_chat = Chat::where('sender_id', $request->sender_receiver_id)
-                ->where('reciver_id', auth()->id())
-                ->where('seen', 0)
-                ->where('delete_from_receiver_id', 0)
-                ->get();
-
             return response()->json([
-                'message' => 'Show Chat',
+                'message' => $beforeChatId > 0 ? 'Older chats loaded' : 'Show Chat',
                 'status' => true,
-                'chat_count' => $chat_count,
+                'chat_count' => $chats->count(),
                 'unseen_chat' => $unseen_chat,
                 'chats' => $chats,
+                'has_more' => $hasMore,
+                'oldest_chat_id' => $oldestChatId,
             ], 200);
         } catch (\Throwable $th) {
             return response()->json([
@@ -451,80 +489,80 @@ class ChatController extends Controller
                     ->where('reciver_id', auth()->id());
             })->count();
 
-            //  $input_message = Helper::formatChatSendMessage($request->message);
-            $input_message = $request->message;
+            $input_message = Helper::formatChatSendMessage($request->message);
+            $themessage = !empty($input_message) ? $input_message : ' ';
 
-            $themessage = $input_message;
-            if (!empty($themessage)) {
-                $themessage = $request->message;
+            $files = $request->file('files') ?? ($request->file('file') ? [$request->file('file')] : []);
+            $createdChats = [];
+
+            if (!empty($files)) {
+                foreach ($files as $index => $file) {
+                    $uploadedFile = $this->imageUpload($file, 'chat');
+                    $messageForFile = ($index === 0) ? $themessage : ' ';
+                    $createdChats[] = Chat::create([
+                        'sender_id' => auth()->id(),
+                        'reciver_id' => $request->reciver_id,
+                        'message' => $messageForFile,
+                        'attachment' => $uploadedFile,
+                        'attachment_name' => $file->getClientOriginalName(),
+                    ]);
+                }
             } else {
-                $themessage = ' ';
-            }
-
-            if ($request->file) {
-                $file = $this->imageUpload($request->file('file'), 'chat');
-                $attachmentName = $request->file('file')->getClientOriginalName();
-                $chatData = Chat::create([
+                $createdChats[] = Chat::create([
                     'sender_id' => auth()->id(),
                     'reciver_id' => $request->reciver_id,
                     'message' => $themessage,
-                    'attachment' => $file,
-                    'attachment_name' => $attachmentName,
+                    'attachment' => '',
                 ]);
-                $message_type = $this->detectMessageType($request->file('file'));
-            } else {
-                $chatData = Chat::create([
-                    'sender_id' => auth()->id(),
-                    'reciver_id' => $request->reciver_id,
-                    'message' => $themessage,
-                    'attachment' => ''
-                ]);
-                $message_type = 'text';
             }
 
-            // Get chat data with sender and receiver
-            $chat = Chat::with('sender', 'reciver')->find($chatData->id);
-            $chat->created_at_formatted = $chat->created_at->format('Y-m-d H:i:s');
-
-
-            $notification = new Notification();
-            $notification->user_id = $request->reciver_id;
-            $notification->chat_id = $chat->id;
-            $notification->message = 'You have a <b>new message</b> from ' . auth()->user()->full_name;
-            $notification->type = 'Chat';
-            $notification->save();
-
-
-            // Send FCM notification to receiver
             $receiver = User::find($request->reciver_id);
-            if ($receiver && $receiver->fcm_token) {
-                try {
-                    $this->fcmService->sendToDevice(
-                        $receiver->fcm_token,
-                        'New Message from ' . auth()->user()->full_name,
-                        $request->file ? 'Sent an attachment' : $themessage,
-                        [
-                            'type' => 'chat',
-                            'chat_id' => (string) $chat->id,
-                            'sender_id' => (string) auth()->id(),
-                            'sender_name' => auth()->user()->full_name,
-                            'message' => $themessage,
-                            'attachment' => $request->file ? Storage::url($chat->attachment) : '',
-                            'attachment_name' => $request->file ? ($chat->attachment_name ?? basename($chat->attachment)) : null,
-                            'msg_type' => $message_type,
-                            'timestamp' => $chat->created_at_formatted
-                        ]
-                    );
-                } catch (Exception $e) {
-                    Log::error('FCM chat notification failed: ' . $e->getMessage());
+            $lastChat = null;
+
+            foreach ($createdChats as $chatData) {
+                $chat = Chat::with('sender', 'reciver')->find($chatData->id);
+                $chat->created_at_formatted = $chat->created_at->format('Y-m-d H:i:s');
+                $lastChat = $chat;
+
+                $notification = new Notification();
+                $notification->user_id = $request->reciver_id;
+                $notification->chat_id = $chat->id;
+                $notification->message = 'You have a <b>new message</b> from ' . auth()->user()->full_name;
+                $notification->type = 'Chat';
+                $notification->save();
+
+                if ($receiver && $receiver->fcm_token) {
+                    try {
+                        $hasAttachment = !empty($chat->attachment);
+                        $message_type = $hasAttachment ? $this->detectMessageType($chat->attachment) : 'text';
+                        $this->fcmService->sendToDevice(
+                            $receiver->fcm_token,
+                            'Message from ' . auth()->user()->full_name,
+                            $hasAttachment ? 'Sent an attachment' : $themessage,
+                            [
+                                'type' => 'chat',
+                                'chat_id' => (string) $chat->id,
+                                'sender_id' => (string) auth()->id(),
+                                'sender_name' => auth()->user()->full_name,
+                                'message' => $chat->message,
+                                'attachment' => $hasAttachment ? Storage::url($chat->attachment) : '',
+                                'attachment_name' => $hasAttachment ? ($chat->attachment_name ?? basename($chat->attachment)) : null,
+                                'msg_type' => $message_type,
+                                'timestamp' => $chat->created_at_formatted,
+                            ]
+                        );
+                    } catch (Exception $e) {
+                        Log::error('FCM chat notification failed: ' . $e->getMessage());
+                    }
                 }
             }
 
             return response()->json([
                 'msg' => 'Message sent successfully',
-                'chat' => $chat,
+                'chat' => $lastChat,
+                'chats' => collect($createdChats)->map(fn ($c) => Chat::with('sender', 'reciver')->find($c->id)),
                 'chat_count' => $chat_count,
-                'success' => true
+                'success' => true,
             ], 200);
         } catch (\Throwable $th) {
             return response()->json(['msg' => $th->getMessage(), 'success' => false], 201);
@@ -863,17 +901,14 @@ class ChatController extends Controller
         try {
             $query = $request->input('query');
 
-            $chat_users = User::with('roles')
-                ->where('id', '!=', auth()->id())
-                ->where('status', 1)
-                ->whereHas('roles', function ($query) {
-                    $query->whereIn('type', [1, 2, 3]);
-                })
+            $chat_users = $this->baseChatUsersQuery()
                 ->where(function ($q) use ($query) {
                     $q->where('user_name', 'LIKE', "%{$query}%")
                         ->orWhere('first_name', 'LIKE', "%{$query}%")
+                        ->orWhere('middle_name', 'LIKE', "%{$query}%")
                         ->orWhere('last_name', 'LIKE', "%{$query}%")
-                        ->orWhere('email', 'LIKE', "%{$query}%");
+                        ->orWhere('email', 'LIKE', "%{$query}%")
+                        ->orWhereRaw("TRIM(CONCAT_WS(' ', first_name, middle_name, last_name)) LIKE ?", ["%{$query}%"]);
                 })
                 ->get();
 

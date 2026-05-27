@@ -90,19 +90,69 @@ class PolicyGuidenceController extends Controller
     public function index(Request $request)
     {
         try {
-            // Get search term from the request (e.g., file name or user id)
-            $searchQuery = $request->get('search');
+            // Mirror web fetchData: accept sort params and `query` (fallback to `search`)
+            $sort_by = $request->get('sortby', 'id');
+            $sort_type = $request->get('sorttype', 'desc');
+            $query = $request->get('query', $request->get('search', ''));
+            $query = str_replace(' ', '%', $query);
 
+            $policies = Policy::with(['user', 'country'])
+                ->where(function ($q) use ($query) {
+                    $q->where('id', 'like', '%' . $query . '%')
+                        ->orWhere('file_name', 'like', '%' . $query . '%')
+                        ->orWhere('file_extension', 'like', '%' . $query . '%');
+                });
 
-            // Query policies with optional search functionality
-            $policies = Policy::when($searchQuery, function ($query) use ($searchQuery) {
-                $query->where('file_name', 'like', "%$searchQuery%")
-                    ->orWhere('file_extension', 'like', "%$searchQuery%");
-            })
-                ->orderBy('id', 'desc')
-                ->paginate(15);
+            // topic and type filters
+            if ($request->get('topic_id')) {
+                $policies->whereHas('topic', function ($q) use ($request) {
+                    $q->where('id', $request->get('topic_id'));
+                });
+            }
+            if ($request->get('type')) {
+                $policies->where('type', $request->get('type'));
+            }
 
-            // Return success response with policy data
+            // enforce visibility rules like the web controller
+            $user = Auth::user();
+            $user_type = $user->user_type;
+            $user_country = $user->country;
+
+            if (! $user->hasNewRole('SUPER ADMIN')) {
+                $currentCountry = \App\Models\Country::findByCurrentRequest();
+                $isOnGlobalServer = $currentCountry && $currentCountry->is_global;
+
+                if ($user_type == 'Global' || ($user_type == 'G_R' && $isOnGlobalServer)) {
+                    $policies->whereHas('country', function ($q) {
+                        $q->where('code', 'GL');
+                    })->whereHas('user', function ($q) {
+                        $q->whereIn('user_type', ['Global', 'G_R'])->where('status', 1);
+                    });
+                } else {
+                    $policies->where('country_id', $user_country)->whereHas('user', function ($q) {
+                        $q->whereIn('user_type', ['Regional', 'G_R'])->where('status', 1);
+                    });
+
+                    if ($user->is_ecclesia_admin == 1) {
+                        $manage_ecclesia_ids = is_array($user->manage_ecclesia)
+                            ? $user->manage_ecclesia
+                            : explode(',', $user->manage_ecclesia ?? '');
+                        $policies->where(function ($q) use ($manage_ecclesia_ids, $user) {
+                            $q->whereHas('user', function ($uq) use ($manage_ecclesia_ids) {
+                                $uq->where(function ($sub) use ($manage_ecclesia_ids) {
+                                    $sub->whereIn('ecclesia_id', $manage_ecclesia_ids)->whereNotNull('ecclesia_id');
+                                    foreach ($manage_ecclesia_ids as $id) {
+                                        $sub->orWhereRaw('FIND_IN_SET(?, manage_ecclesia)', [trim($id)]);
+                                    }
+                                });
+                            })->orWhere('user_id', $user->id);
+                        });
+                    }
+                }
+            }
+
+            $policies = $policies->orderBy($sort_by, $sort_type)->paginate(15);
+
             return response()->json(['data' => $policies], 200);
         } catch (\Exception $e) {
             // Return error response if fetching policies fails
@@ -113,7 +163,8 @@ class PolicyGuidenceController extends Controller
     /**
      * Create policies
      *
-     * @bodyParam file file required files to upload.
+     * @bodyParam file file[] required files to upload. Example: ["policy1.pdf", "policy2.pdf"]
+     * @bodyParam country_id int optional Country ID for SUPER ADMIN uploads. Example: 1
      *
      * @response 200 scenario="success" {"message": "Policy(s) uploaded successfully."}
      * @response 201 scenario="error" {"error": "Validation failed or duplicate policy found."}
@@ -122,33 +173,36 @@ class PolicyGuidenceController extends Controller
     {
         try {
             $validated = Validator::make($request->all(), [
-                'file' => 'required|file',
+                'file' => 'required|array',
+                'file.*' => 'required',
+                'country_id' => 'nullable|exists:countries,id',
             ]);
 
             if ($validated->fails()) {
                 return response()->json(['error' => $validated->errors()->first()], 201);
             }
 
-            $file = $request->file('file');
+            foreach ($request->file('file') as $file) {
+                $file_name = $file->getClientOriginalName();
+                $file_extension = $file->getClientOriginalExtension();
+                $file_path = $this->imageUpload($file, 'policies');
 
-            $file_name = $file->getClientOriginalName();
-            $file_extension = $file->getClientOriginalExtension();
-            $file_path = $this->imageUpload($file, 'policies');
+                $check = Policy::where('file_name', $file_name)
+                    ->where('file_extension', $file_extension)
+                    ->first();
 
-            $check = Policy::where('file_name', $file_name)
-                ->where('file_extension', $file_extension)
-                ->first();
+                if ($check) {
+                    return response()->json(['error' => 'The policy name "' . $file_name . '" has already been taken.'], 201);
+                }
 
-            if ($check) {
-                return response()->json(['error' => 'The policy name "' . $file_name . '" has already been taken.'], 201);
+                $policy = new Policy();
+                $policy->user_id = auth()->id();
+                $policy->country_id = $request->country_id ?? auth()->user()->country;
+                $policy->file_name = $file_name;
+                $policy->file_extension = $file_extension;
+                $policy->file = $file_path;
+                $policy->save();
             }
-
-            $policy = new Policy();
-            $policy->user_id = auth()->id();
-            $policy->file_name = $file_name;
-            $policy->file_extension = $file_extension;
-            $policy->file = $file_path;
-            $policy->save();
 
             $userName = Auth::user()->getFullNameAttribute();
             $noti = NotificationService::notifyAllUsers('New Policy created by ' . $userName, 'policy');

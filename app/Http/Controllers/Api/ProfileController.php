@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Models\UserRegisterAgreement;
 use App\Traits\ImageTrait;
 use Illuminate\Http\Request;
 use App\Models\User;
@@ -48,8 +49,68 @@ class ProfileController extends Controller
 
     public function profile(Request $request)
     {
-        $user = $request->user()->load('ecclesia', 'countries', 'states', 'roles');
-        return response()->json(['status' => true, 'message' => 'Profile details', 'data' => $user], $this->successStatus);
+        $user = $request->user()->load([
+            'ecclesia:id,name',
+            'countries:id,name,code',
+            'states:id,name,country_id',
+            'userRole:id,name,type,is_ecclesia',
+            'userLastSubscription',
+        ]);
+        $idParts = $this->resolveLionRoaringIdParts($user);
+
+        return response()->json([
+            'status' => true,
+            'message' => 'Profile details',
+            'in_app_membership' => (bool) config('lion_roaring.in_app_membership'),
+            'data' => $this->formatProfilePayload($user, $idParts),
+        ], $this->successStatus);
+    }
+
+    /**
+     * Slim profile payload for mobile (avoids huge nested relation graphs).
+     *
+     * @param  array{prefix: string, suffix: string}  $idParts
+     */
+    private function formatProfilePayload(User $user, array $idParts): array
+    {
+        return [
+            'id' => $user->id,
+            'ecclesia_id' => $user->ecclesia_id,
+            'user_name' => $user->user_name,
+            'first_name' => $user->first_name,
+            'middle_name' => $user->middle_name,
+            'last_name' => $user->last_name,
+            'email' => $user->email,
+            'phone' => $user->phone,
+            'phone_country_code_name' => $user->phone_country_code_name,
+            'profile_picture' => $user->profile_picture,
+            'address' => $user->address,
+            'address2' => $user->address2,
+            'city' => $user->city,
+            'state' => $user->state,
+            'country' => $user->country,
+            'zip' => $user->zip,
+            'status' => $user->status,
+            'user_type' => $user->user_type,
+            'lion_roaring_id' => $user->lion_roaring_id,
+            'roar_id' => $user->roar_id,
+            'generated_id_part' => $idParts['prefix'],
+            'lion_roaring_id_suffix' => $idParts['suffix'],
+            'time_zone' => $user->time_zone,
+            'location_lat' => $user->location_lat,
+            'location_lng' => $user->location_lng,
+            'location_address' => $user->location_address,
+            'created_at' => $user->created_at,
+            'updated_at' => $user->updated_at,
+            'ecclesia' => $user->ecclesia,
+            'countries' => $user->countries,
+            'states' => $user->states,
+            'user_role' => $user->userRole,
+            'user_last_subscription' => $user->userLastSubscription,
+            'has_register_agreement' => UserRegisterAgreement::where('user_id', $user->id)->exists(),
+            'has_signature' => !empty($user->signature),
+            'is_member_sovereign' => $user->isMemberSovereign(),
+        ];
     }
 
     /**
@@ -79,6 +140,9 @@ class ProfileController extends Controller
             'first_name' => 'required|string|max:255',
             'last_name' => 'required|string|max:255',
             'middle_name' => 'nullable|string|max:255',
+            'lion_roaring_id_suffix' => 'required|digits:4',
+            'generated_id_part' => 'required|string',
+            'roar_id' => 'nullable|string|max:255',
             'address' => 'required|string|max:255',
             'phone_number' => 'required',
             'country' => 'required',
@@ -92,9 +156,20 @@ class ProfileController extends Controller
         }
 
         $user = $request->user();
+        $fullLionRoaringId = $request->generated_id_part . $request->lion_roaring_id_suffix;
+
+        if (User::where('lion_roaring_id', $fullLionRoaringId)->where('id', '!=', $user->id)->exists()) {
+            return response()->json([
+                'message' => 'This Lion Roaring ID already exists.',
+                'status' => false,
+            ], 201);
+        }
+
         $user->first_name = $request->first_name;
         $user->middle_name = $request->middle_name;
         $user->last_name = $request->last_name;
+        $user->lion_roaring_id = $fullLionRoaringId;
+        $user->roar_id = $request->roar_id;
         $user->address = $request->address ?? '';
         $user->address2 = $request->address2 ?? '';
         $user->country = $request->country ?? '';
@@ -128,8 +203,11 @@ class ProfileController extends Controller
     {
         $validator = validator($request->all(), [
             'old_password' => 'required|min:8|password',
-            'new_password' => 'required|min:8|different:old_password',
+            'new_password' => ['required', 'different:old_password', 'regex:/^(?=.*[@$%&])[^\s]{8,}$/'],
             'confirm_password' => 'required|min:8|same:new_password',
+        ], [
+            'old_password.password' => 'Old password is not correct',
+            'new_password.regex' => 'The password must be at least 8 characters long and include at least one special character from @$%&',
         ]);
 
         if ($validator->fails()) {
@@ -618,5 +696,102 @@ class ProfileController extends Controller
                 'total' => $totalCount,
             ]
         ], $this->successStatus);
+    }
+
+    /**
+     * In-App Notification Count
+     *
+     * Returns the total count of unread, non-deleted in-app notifications.
+     * Mirrors Helper::notificationCount() — matches the web header bell number.
+     *
+     * @authenticated
+     *
+     * @response 200 {
+     *   "status": true,
+     *   "data": { "total": 885 }
+     * }
+     */
+    public function inAppNotificationCount(Request $request)
+    {
+        $user = $request->user();
+
+        // Non-chat notifications: all unread, non-deleted
+        $baseCount = Notification::where('user_id', $user->id)
+            ->where('is_read', 0)
+            ->where('is_delete', 0)
+            ->where('type', '!=', 'Chat')
+            ->count();
+
+        // Chat notifications: unread, non-deleted, filtered by valid sender
+        $chatCount = Notification::where('user_id', $user->id)
+            ->where('is_read', 0)
+            ->where('is_delete', 0)
+            ->where('type', 'Chat')
+            ->whereHas('chat.sender', function ($query) use ($user) {
+                $query->where('status', 1)
+                    ->whereHas('userRole', function ($q) {
+                        $q->whereIn('type', [1, 2, 3]);
+                    });
+
+                if (!$user->hasNewRole('SUPER ADMIN')) {
+                    $userType    = $user->user_type;
+                    $countryName = $user->country;
+                    $authId      = $user->id;
+
+                    $query->where(function ($q) use ($userType, $countryName, $authId) {
+                        if ($userType === 'Global') {
+                            $q->where(function ($sq) {
+                                $sq->where('user_type', 'Global')
+                                    ->whereDoesntHave('userRole', fn ($r) => $r->where('name', 'SUPER ADMIN'));
+                            })->orWhere(function ($sq) use ($authId) {
+                                $sq->whereHas('userRole', fn ($r) => $r->where('name', 'SUPER ADMIN'))
+                                    ->whereHas('chatSender', fn ($c) => $c->where('reciver_id', $authId));
+                            });
+                        } else {
+                            $q->where('country', $countryName)
+                                ->whereDoesntHave('userRole', fn ($r) => $r->where('name', 'SUPER ADMIN'))
+                                ->orWhere(function ($sq) use ($authId) {
+                                    $sq->whereHas('userRole', fn ($r) => $r->where('name', 'SUPER ADMIN'))
+                                        ->whereHas('chatSender', fn ($c) => $c->where('reciver_id', $authId));
+                                });
+                        }
+                    });
+                }
+            })
+            ->count();
+
+        return response()->json([
+            'status' => true,
+            'data'   => ['total' => $baseCount + $chatCount],
+        ], 200);
+    }
+
+    /**
+     * Build Lion Roaring ID prefix/suffix for profile display and editing (matches web user profile).
+     *
+     * @return array{prefix: string, suffix: string}
+     */
+    private function resolveLionRoaringIdParts(User $user): array
+    {
+        $todayCount = User::withTrashed()->whereDate('created_at', now()->toDateString())->count();
+        $sequence = str_pad($todayCount + 1, 4, '0', STR_PAD_LEFT);
+        $datePart = now()->format('mdY');
+        $generatedPrefix = 'LR' . $sequence . $datePart;
+
+        $existingId = (string) ($user->lion_roaring_id ?? '');
+        $currentPrefix = $generatedPrefix;
+        $currentSuffix = '';
+
+        if (strlen($existingId) >= 14 && substr($existingId, 0, 2) === 'LR') {
+            $currentPrefix = substr($existingId, 0, 14);
+            $currentSuffix = substr($existingId, 14);
+        } elseif ($existingId !== '') {
+            $currentSuffix = $existingId;
+        }
+
+        return [
+            'prefix' => $currentPrefix,
+            'suffix' => $currentSuffix,
+        ];
     }
 }
