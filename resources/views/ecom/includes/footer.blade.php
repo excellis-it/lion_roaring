@@ -68,7 +68,7 @@
                         <li><a href="{{ route('e-store') }}">Home</a></li>
                         {{-- <li><a href="{{ route('e-store.all-products') }}">Our Collections</a></li> --}}
                         <li>
-                            <a href="{{ Helper::getPDFAttribute() ?? 'javascript:void(0);' }}" target="_blank">Article
+                            <a href="{{ Helper::getPDFAttribute() ?? 'javascript:void(0);' }}" target="_blank">Articles
                                 of
                                 Agreement</a>
                         </li>
@@ -76,8 +76,8 @@
                         <li><a href="{{ route('e-store.contact') }}">Contact us</a></li>
                         {{-- <li><a href="{{ route('privacy-policy.e-store.cms-page') }}">Privacy Policy</a></li>
                         <li><a href="{{ route('terms-and-condition.e-store.cms-page') }}">Terms and Conditions</a></li> --}}
-                        <li><a href="{{ route('e-store.cms-page', ['slug' => 'privacy-policy']) }}">Privacy Policy</a></li>
-                        <li><a href="{{ route('terms-and-conditions') }}">Terms and Conditions</a></li>
+                        <li><a href="{{ route('privacy-policy') }}" aria-current="page">{{ Helper::getMenuName('pages_privacy_policy', 'Privacy Policy') }}</a></li>
+                        <li><a href="{{ route('terms-and-conditions') }}" aria-current="page">{{ Helper::getMenuName('pages_terms_and_conditions', 'Terms and Conditions') }}</a></li>
 
                     </ul>
                 </div>

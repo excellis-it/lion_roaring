@@ -15,6 +15,8 @@ class UserType extends BaseModel
 
     protected $fillable = [
         'name',
+        'is_ecclesia',
+        'is_admin',
     ];
 
     public function users()

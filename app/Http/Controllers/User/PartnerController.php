@@ -101,57 +101,77 @@ class PartnerController extends Controller
                         });
                 })
                     ->where('users.id', '!=', $user->id);
-            } elseif ($user->user_type == 'Global') {
-                $partners->whereIn('users.user_type', ['Global', 'G_R']);
-            } elseif ($user->user_type == 'G_R') {
-                if ($currentCode == 'GL') {
+            } else {
+                // Hide inactive users for all non-SUPER ADMIN viewers
+                $partners->where('users.status', 1);
+
+                if ($user->user_type == 'Global') {
                     $partners->whereIn('users.user_type', ['Global', 'G_R']);
-                } else {
-                    $manage_ecclesia_ids = is_array($user->manage_ecclesia)
-                        ? $user->manage_ecclesia
-                        : explode(',', $user->manage_ecclesia);
-                    // print_r($manage_ecclesia_ids);
-                    // die;
-                    $partners->where(function ($q) {
-                        // Include users with deleted user types OR users with type 2 or 3
-                        $q->whereNull('ut.id')
-                            ->orWhereHas('userRole', function ($subQ) {
-                                $subQ->whereIn('type', [2, 3]);
+                } elseif ($user->user_type == 'G_R') {
+                    if ($currentCode == 'GL') {
+                        $partners->whereIn('users.user_type', ['Global', 'G_R']);
+                    } else {
+                        $manage_ecclesia_ids = is_array($user->manage_ecclesia)
+                            ? $user->manage_ecclesia
+                            : explode(',', $user->manage_ecclesia);
+
+                        $partners->where('users.country', $user->country)
+                            ->whereIn('users.user_type', ['Regional', 'G_R'])
+                            ->where(function ($q) {
+                                // Include users with deleted user types OR users with type 2 or 3
+                                $q->whereNull('ut.id')
+                                    ->orWhereHas('userRole', function ($subQ) {
+                                        $subQ->whereIn('type', [2, 3]);
+                                    });
                             });
-                    })
-                        ->where(function ($q) use ($manage_ecclesia_ids, $user) {
-                            $q->whereIn('users.ecclesia_id', $manage_ecclesia_ids)->whereNotNull('users.ecclesia_id')
-                                ->orWhere('users.created_id', $user->id)->orWhere('users.id', auth()->id());
+
+                        // ECCLESIA admin: filter by shared House of Ecclesia
+                        if ($is_user_ecclesia_admin == 1) {
+                            $partners->where(function ($q) use ($manage_ecclesia_ids, $user) {
+                                // A) Members assigned to one of the houses I manage
+                                $q->where(function ($sub) use ($manage_ecclesia_ids) {
+                                    $sub->whereIn('users.ecclesia_id', $manage_ecclesia_ids)->whereNotNull('users.ecclesia_id');
+                                });
+                                // B) Other ECCLESIA admins who manage any of the same houses
+                                foreach ($manage_ecclesia_ids as $id) {
+                                    $id = trim($id);
+                                    if ($id !== '') {
+                                        $q->orWhereRaw('FIND_IN_SET(?, users.manage_ecclesia)', [$id]);
+                                    }
+                                }
+                                // C) Users I created
+                                $q->orWhere('users.created_id', $user->id);
+                                // D) Myself
+                                $q->orWhere('users.id', auth()->id());
+                            });
+                        }
+                    }
+                } elseif ($user->user_type == 'Regional') {
+                    $partners->where('users.country', $user->country)
+                        ->whereIn('users.user_type', ['Regional', 'G_R']);
+
+                    if ($is_user_ecclesia_admin == 1) {
+                        $manage_ecclesia_ids = is_array($user->manage_ecclesia)
+                            ? $user->manage_ecclesia
+                            : explode(',', $user->manage_ecclesia);
+                        $partners->where(function ($q) use ($manage_ecclesia_ids, $user) {
+                            // A) Members assigned to one of the houses I manage
+                            $q->where(function ($sub) use ($manage_ecclesia_ids) {
+                                $sub->whereIn('users.ecclesia_id', $manage_ecclesia_ids)->whereNotNull('users.ecclesia_id');
+                            });
+                            // B) Other ECCLESIA admins who manage any of the same houses
+                            foreach ($manage_ecclesia_ids as $id) {
+                                $id = trim($id);
+                                if ($id !== '') {
+                                    $q->orWhereRaw('FIND_IN_SET(?, users.manage_ecclesia)', [$id]);
+                                }
+                            }
+                            // C) Users I created
+                            $q->orWhere('users.created_id', $user->id);
+                            // D) Myself
+                            $q->orWhere('users.id', auth()->id());
                         });
-                    $partners->where('users.country', $user->country)->whereIn('users.user_type', ['Regional', 'G_R']);
-                }
-            } elseif ($is_user_ecclesia_admin == 1) {
-                $manage_ecclesia_ids = is_array($user->manage_ecclesia)
-                    ? $user->manage_ecclesia
-                    : explode(',', $user->manage_ecclesia);
-                // print_r($manage_ecclesia_ids);
-                // die;
-                $partners->where(function ($q) {
-                    // Include users with deleted user types OR users with type 2 or 3
-                    $q->whereNull('ut.id')
-                        ->orWhereHas('userRole', function ($subQ) {
-                            $subQ->whereIn('type', [2, 3]);
-                        });
-                })
-                    ->where(function ($q) use ($manage_ecclesia_ids, $user) {
-                        $q->whereIn('users.ecclesia_id', $manage_ecclesia_ids)->whereNotNull('users.ecclesia_id')
-                            ->orWhere('users.created_id', $user->id)->orWhere('users.id', auth()->id());
-                    });
-            }
-            // else {
-            //     $partners->where(function ($q) use ($user_ecclesia_id, $user) {
-            //         $q->where('users.ecclesia_id', $user_ecclesia_id)->whereNotNull('users.ecclesia_id')
-            //             ->orWhere('users.created_id', $user->id)->orWhere('users.id', auth()->id());
-            //     });
-            // }
-            if (!$user->hasNewRole('SUPER ADMIN') && $user->user_type != 'Global' && $user->user_type != 'G_R') {
-                if ($user->user_type == 'Regional') {
-                    $partners->where('users.country', $user->country)->whereIn('users.user_type', ['Regional', 'G_R']);
+                    }
                 }
             }
 
@@ -557,14 +577,6 @@ class PartnerController extends Controller
             }
         }
 
-        $phone_number = $request->full_phone_number;
-        $phone_number_cleaned = preg_replace('/[\s\-\(\)]+/', '', $phone_number);
-
-        $check = User::whereRaw("REPLACE(REPLACE(REPLACE(REPLACE(phone, ' ', ''), '-', ''), '(', ''), ')', '') = ?", [$phone_number_cleaned])->count();
-        if ($check > 0) {
-            return redirect()->back()->withErrors(['phone' => 'Phone number already exists'])->withInput();
-        }
-
         $uniqueNumber = rand(1000, 9999);
         $lr_email = strtolower(trim($request->first_name)) . strtolower(trim($request->middle_name)) . strtolower(trim($request->last_name)) . $uniqueNumber . '@lionroaring.us';
 
@@ -627,6 +639,12 @@ class PartnerController extends Controller
         $data->personal_email = $lr_email ? str_replace(' ', '', $lr_email) : null;
         $data->email = $request->email;
         $user_type = $request->user_type;
+
+        // Force user_type to G_R when role is configured as Admin
+        if ($the_role->is_admin == 1) {
+            $user_type = 'G_R';
+        }
+
         $data->user_type = $user_type;
         $data->user_type_id = $the_role->id;
         $data->password = bcrypt($request->password);
@@ -830,13 +848,6 @@ class PartnerController extends Controller
 
             $the_role = UserType::where('name', $request->role)->first();
 
-            $phone_number = $request->full_phone_number;
-            $phone_number_cleaned = preg_replace('/[\s\-\(\)]+/', '', $phone_number);
-            $check = User::whereRaw("REPLACE(REPLACE(REPLACE(REPLACE(phone, ' ', ''), '-', ''), '(', ''), ')', '') = ?", [$phone_number_cleaned])->where('id', '!=', $id)->count();
-            if ($check > 0) {
-                return redirect()->back()->withErrors(['phone' => 'Phone number already exists'])->withInput();
-            }
-
             $is_ecclesia_admin = 0;
             $the_role = UserType::where('name', $request->role)->first();
             if ($the_role->is_ecclesia == 1) {
@@ -857,6 +868,11 @@ class PartnerController extends Controller
             $data->roar_id = $request->roar_id;
             $data->email = $request->email;
             $user_type = $request->user_type;
+
+            // Force user_type to G_R when role is configured as Admin
+            if ($the_role->is_admin == 1) {
+                $user_type = 'G_R';
+            }
 
             $data->user_type = $user_type;
             $data->user_type_id = $the_role->id; // SAVE USER_TYPE_ID
@@ -1052,64 +1068,72 @@ class PartnerController extends Controller
             // Apply role, user_type and ecclesia filters
             if ($user->hasNewRole('SUPER ADMIN')) {
                 $partners->where(function ($q) {
-                    // Include users with deleted user types OR users with type 2 or 3
                     $q->whereNull('ut.id')
                         ->orWhereHas('userRole', function ($subQ) {
                             $subQ->whereIn('type', [2, 3]);
                         });
                 })
                     ->where('users.id', '!=', $user->id);
-            } elseif ($user->user_type == 'Global') {
-                $partners->whereIn('users.user_type', ['Global', 'G_R']);
-            } elseif ($user->user_type == 'G_R') {
-                if ($currentCode == 'GL') {
+            } else {
+                $partners->where('users.status', 1);
+
+                if ($user->user_type == 'Global') {
                     $partners->whereIn('users.user_type', ['Global', 'G_R']);
-                } else {
-                    $manage_ecclesia_ids = is_array($user->manage_ecclesia)
-                        ? $user->manage_ecclesia
-                        : explode(',', $user->manage_ecclesia);
-                    // print_r($manage_ecclesia_ids);
-                    // die;
-                    $partners->where(function ($q) {
-                        // Include users with deleted user types OR users with type 2 or 3
-                        $q->whereNull('ut.id')
-                            ->orWhereHas('userRole', function ($subQ) {
-                                $subQ->whereIn('type', [2, 3]);
+                } elseif ($user->user_type == 'G_R') {
+                    if ($currentCode == 'GL') {
+                        $partners->whereIn('users.user_type', ['Global', 'G_R']);
+                    } else {
+                        $manage_ecclesia_ids = is_array($user->manage_ecclesia)
+                            ? $user->manage_ecclesia
+                            : explode(',', $user->manage_ecclesia);
+
+                        $partners->where('users.country', $user->country)
+                            ->whereIn('users.user_type', ['Regional', 'G_R'])
+                            ->where(function ($q) {
+                                $q->whereNull('ut.id')
+                                    ->orWhereHas('userRole', function ($subQ) {
+                                        $subQ->whereIn('type', [2, 3]);
+                                    });
                             });
-                    })
-                        ->where(function ($q) use ($manage_ecclesia_ids, $user) {
-                            $q->whereIn('users.ecclesia_id', $manage_ecclesia_ids)->whereNotNull('users.ecclesia_id')
-                                ->orWhere('users.created_id', $user->id)->orWhere('users.id', auth()->id());
-                        });
-                    $partners->where('users.country', $user->country)->whereIn('users.user_type', ['Regional', 'G_R']);
-                }
-            } elseif ($is_user_ecclesia_admin == 1) {
-                $manage_ecclesia_ids = is_array($user->manage_ecclesia)
-                    ? $user->manage_ecclesia
-                    : explode(',', $user->manage_ecclesia);
 
-                $partners->where(function ($q) {
-                    // Include users with deleted user types OR users with type 2 or 3
-                    $q->whereNull('ut.id')
-                        ->orWhereHas('userRole', function ($subQ) {
-                            $subQ->whereIn('type', [2, 3]);
-                        });
-                })
-                    ->where(function ($q) use ($manage_ecclesia_ids, $user) {
-                        $q->whereIn('users.ecclesia_id', $manage_ecclesia_ids)->whereNotNull('users.ecclesia_id')
-                            ->orWhere('users.created_id', $user->id)->orWhere('users.id', auth()->id());
-                    });
-            }
-            // else {
-            //     $partners->where(function ($q) use ($user_ecclesia_id, $user) {
-            //         $q->where('users.ecclesia_id', $user_ecclesia_id)->whereNotNull('users.ecclesia_id')
-            //             ->orWhere('users.created_id', $user->id)->orWhere('users.id', auth()->id());
-            //     });
-            // }
+                        if ($is_user_ecclesia_admin == 1) {
+                            $partners->where(function ($q) use ($manage_ecclesia_ids, $user) {
+                                $q->where(function ($sub) use ($manage_ecclesia_ids) {
+                                    $sub->whereIn('users.ecclesia_id', $manage_ecclesia_ids)->whereNotNull('users.ecclesia_id');
+                                });
+                                foreach ($manage_ecclesia_ids as $id) {
+                                    $id = trim($id);
+                                    if ($id !== '') {
+                                        $q->orWhereRaw('FIND_IN_SET(?, users.manage_ecclesia)', [$id]);
+                                    }
+                                }
+                                $q->orWhere('users.created_id', $user->id);
+                                $q->orWhere('users.id', auth()->id());
+                            });
+                        }
+                    }
+                } elseif ($user->user_type == 'Regional') {
+                    $partners->where('users.country', $user->country)
+                        ->whereIn('users.user_type', ['Regional', 'G_R']);
 
-            if (!$user->hasNewRole('SUPER ADMIN')) {
-                if ($user->user_type == 'Regional') {
-                    $partners->where('users.country', $user->country)->whereIn('users.user_type', ['Regional', 'G_R']);
+                    if ($is_user_ecclesia_admin == 1) {
+                        $manage_ecclesia_ids = is_array($user->manage_ecclesia)
+                            ? $user->manage_ecclesia
+                            : explode(',', $user->manage_ecclesia);
+                        $partners->where(function ($q) use ($manage_ecclesia_ids, $user) {
+                            $q->where(function ($sub) use ($manage_ecclesia_ids) {
+                                $sub->whereIn('users.ecclesia_id', $manage_ecclesia_ids)->whereNotNull('users.ecclesia_id');
+                            });
+                            foreach ($manage_ecclesia_ids as $id) {
+                                $id = trim($id);
+                                if ($id !== '') {
+                                    $q->orWhereRaw('FIND_IN_SET(?, users.manage_ecclesia)', [$id]);
+                                }
+                            }
+                            $q->orWhere('users.created_id', $user->id);
+                            $q->orWhere('users.id', auth()->id());
+                        });
+                    }
                 }
             }
             // Sorting logic

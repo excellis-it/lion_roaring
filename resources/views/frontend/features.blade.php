@@ -28,7 +28,7 @@
             <div class="row justify-content-center mb-5">
                 <div class="col-xl-5 col-lg-6 mb-4" data-aos="fade-up" data-aos-duration="1000">
                     <div class="">
-                        <div class="img1">
+                        <div class="feature-detail-img">
                             <img src="{{ Storage::url($organization_center->image) ?? 'https://via.placeholder.com/150' }}"
                                 alt="">
                         </div>

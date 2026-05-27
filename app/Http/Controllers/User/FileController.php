@@ -27,7 +27,10 @@ class FileController extends Controller
             $user_country = $user->country;
 
             if (!$user->hasNewRole('SUPER ADMIN')) {
-                if ($user_type == 'Global') {
+                $currentCountry = Country::findByCurrentRequest();
+                $isOnGlobalServer = $currentCountry && $currentCountry->is_global;
+
+                if ($user_type == 'Global' || ($user_type == 'G_R' && $isOnGlobalServer)) {
                     $files = File::orderBy('id', 'desc')->whereHas('country', function ($query) {
                         $query->where('code', 'GL');
                     })->paginate(15);
@@ -157,17 +160,20 @@ class FileController extends Controller
 
     public function delete($id)
     {
-        if (auth()->user()->can('Delete File')) {
-            $file = File::find($id);
-            if ($file) {
-                Log::info($file->file_name . ' deleted by ' . auth()->user()->email . ' deleted at ' . now());
-                $file->delete();
-                // delete file from storage
-                Storage::disk('public')->delete($file->file);
-                return redirect()->route('file.index')->with('message', 'File deleted successfully.');
-            } else {
-                return redirect()->route('file.index')->with('error', 'File not found.');
-            }
+        $file = File::find($id);
+        if (!$file) {
+            return redirect()->route('file.index')->with('error', 'File not found.');
+        }
+
+        if (
+            (auth()->user()->can('Delete File') && $file->user_id == auth()->user()->id) ||
+            auth()->user()->hasNewRole('SUPER ADMIN')
+        ) {
+            Log::info($file->file_name . ' deleted by ' . auth()->user()->email . ' deleted at ' . now());
+            $file->delete();
+            // delete file from storage
+            Storage::disk('public')->delete($file->file);
+            return redirect()->route('file.index')->with('message', 'File deleted successfully.');
         } else {
             abort(403, 'You do not have permission to access this page.');
         }
@@ -365,20 +371,20 @@ class FileController extends Controller
         $user = auth()->user();
         $user_type = $user->user_type;
         $user_country = $user->country;
-        $country_id_ex = null;
-        if ($user_type == 'Global') {
-            $country = Country::where('code', 'GL')->first();
-            $country_id_ex = $country->id;
-        } elseif ($user_type == 'Regional') {
-            $country_id_ex = $user_country;
+
+        $query = Topic::where('education_type', $type);
+
+        if (!$user->hasNewRole('SUPER ADMIN')) {
+            if ($user_type == 'Global') {
+                $query->whereHas('country', function ($q) {
+                    $q->where('code', 'GL');
+                });
+            } else {
+                $query->where('country_id', $user_country);
+            }
         }
 
-        $country_id = auth()->user()->hasNewRole('SUPER ADMIN') ? $request->country_id : $country_id_ex;
-
-
-
-        $topics = Topic::where('education_type', $type)->where('country_id', $country_id)
-            ->orderBy('topic_name', 'asc')->get();
+        $topics = $query->orderBy('topic_name', 'asc')->get();
         return response()->json(['data' => $topics]);
     }
 

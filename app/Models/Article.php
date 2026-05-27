@@ -12,7 +12,8 @@ class Article extends BaseModel
 
     protected $fillable = [
         'country_code',
-        'pdf'
+        'pdf',
+        'checkbox_text'
     ];
 
     public function getCreatedAtAttribute($value)

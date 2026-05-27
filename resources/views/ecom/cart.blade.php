@@ -81,35 +81,48 @@
                                                         <li>Unit Price</li>
                                                         <li class="ms-auto">
                                                             @php
-                                                                $displayPrice =
+                                                                $basePrice =
                                                                     $item->price ??
                                                                     ($item->warehouseProduct->price ?? 0);
                                                                 $unitPrice =
-                                                                    $item->meta['current_price'] ?? $displayPrice;
+                                                                    $item->meta['current_price'] ?? $basePrice;
 
-                                                                $unitOtherCharges = 0; // This will store the sum of percentage-based charges per unit
-                                                                $fixedChargesTotal = 0; // This will store the sum of fixed charges per item
+                                                                // Calculate listing charges per unit for display price
+                                                                $unitListingCharges = 0;
+                                                                $unitCheckoutCharges = 0;
+                                                                $fixedListingCharges = 0;
+                                                                $fixedCheckoutCharges = 0;
                                                                 if ($item->product?->otherCharges) {
                                                                     foreach ($item->product->otherCharges as $charge) {
+                                                                        $displayAt = $charge->display_at ?? 'listing';
                                                                         if ($charge->charge_type == 'percentage') {
-                                                                            $unitOtherCharges +=
-                                                                                $unitPrice *
-                                                                                ($charge->charge_amount / 100);
+                                                                            if ($displayAt === 'listing') {
+                                                                                $unitListingCharges += $unitPrice * ($charge->charge_amount / 100);
+                                                                            } else {
+                                                                                $unitCheckoutCharges += $unitPrice * ($charge->charge_amount / 100);
+                                                                            }
                                                                         } else {
-                                                                            // Fixed charge per line
-                                                                            $fixedChargesTotal +=
-                                                                                $charge->charge_amount;
+                                                                            if ($displayAt === 'listing') {
+                                                                                $fixedListingCharges += $charge->charge_amount;
+                                                                            } else {
+                                                                                $fixedCheckoutCharges += $charge->charge_amount;
+                                                                            }
                                                                         }
                                                                     }
                                                                 }
+
+                                                                // Display price includes listing charges
+                                                                $unitDisplayPrice = $unitPrice + $unitListingCharges + ($fixedListingCharges / max($item->quantity, 1));
+                                                                $unitOtherCharges = $unitListingCharges + $unitCheckoutCharges;
+                                                                $fixedChargesTotal = $fixedListingCharges + $fixedCheckoutCharges;
                                                             @endphp
                                                             @if (isset($item->meta['price_changed']) && $item->meta['price_changed'])
                                                                 <span style="text-decoration: none;"
-                                                                    class="fw-bold text-dark">{{ number_format($item->meta['current_price'], 2) }}</span>
+                                                                    class="fw-bold text-dark">${{ number_format($item->product->getDisplayPrice($item->meta['current_price']), 2) }}</span>
                                                                 <span
-                                                                    class="text-decoration-line-through text-muted">{{ number_format($item->meta['original_price'], 2) }}</span>
+                                                                    class="text-decoration-line-through text-muted">${{ number_format($item->meta['original_price'], 2) }}</span>
                                                             @else
-                                                                {{ number_format($displayPrice, 2) }}
+                                                                ${{ number_format($item->product->getDisplayPrice($basePrice), 2) }}
                                                             @endif
                                                         </li>
                                                     </ul>
@@ -122,30 +135,27 @@
                                                             stock.</div>
                                                     @endif
 
-                                                    <!-- Display other charges if any -->
+                                                    <!-- Display checkout-only charges as separate line items -->
                                                     @if (isset($item->product->otherCharges) && $item->product->otherCharges->count() > 0)
                                                         @foreach ($item->product->otherCharges as $otherCharge)
-                                                            <ul class="wl_price other-charge-row"
-                                                                data-charge-type="{{ $otherCharge->charge_type }}"
-                                                                data-charge-amount="{{ $otherCharge->charge_amount }}">
-                                                                <li>{{ $otherCharge->charge_name }}
-                                                                    {{-- {{ $otherCharge->charge_type == 'percentage' ? '' : 'Fixed' }} --}}
-                                                                </li>
-                                                                <li class="ms-auto charge-value">
-                                                                    @php
-                                                                        $chargeVal = 0;
-                                                                        if ($otherCharge->charge_type == 'percentage') {
-                                                                            $chargeVal =
-                                                                                $unitPrice *
-                                                                                $item->quantity *
-                                                                                ($otherCharge->charge_amount / 100);
-                                                                        } else {
-                                                                            $chargeVal = $otherCharge->charge_amount;
-                                                                        }
-                                                                    @endphp
-                                                                    ${{ number_format($chargeVal, 2) }}
-                                                                </li>
-                                                            </ul>
+                                                            @if (($otherCharge->display_at ?? 'listing') === 'checkout')
+                                                                <ul class="wl_price other-charge-row"
+                                                                    data-charge-type="{{ $otherCharge->charge_type }}"
+                                                                    data-charge-amount="{{ $otherCharge->charge_amount }}">
+                                                                    <li>{{ $otherCharge->charge_name }}</li>
+                                                                    <li class="ms-auto charge-value">
+                                                                        @php
+                                                                            $chargeVal = 0;
+                                                                            if ($otherCharge->charge_type == 'percentage') {
+                                                                                $chargeVal = $unitPrice * $item->quantity * ($otherCharge->charge_amount / 100);
+                                                                            } else {
+                                                                                $chargeVal = $otherCharge->charge_amount;
+                                                                            }
+                                                                        @endphp
+                                                                        ${{ number_format($chargeVal, 2) }}
+                                                                    </li>
+                                                                </ul>
+                                                            @endif
                                                         @endforeach
                                                     @endif
 

@@ -415,8 +415,11 @@
     </script>
     @stack('scripts')
     @include('frontend.includes.google_translate')
-    {{-- @include('frontend.includes.chatbot') --}}
-    @include('frontend.includes.rag_chatbot')
+      @if (env('CHATBOT') == 'AI')
+         @include('frontend.includes.ai_chatbot')
+    @else
+        @include('frontend.includes.chatbot')
+    @endif
 </body>
 
 </html>

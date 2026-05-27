@@ -222,6 +222,13 @@ class JobpostingController extends Controller
     public function update(Request $request, $id)
     {
         if (auth()->user()->can('Edit Job Postings')) {
+            $job = Job::findOrFail($id);
+
+            // Only the creator or SUPER ADMIN can update
+            if (!auth()->user()->hasNewRole('SUPER ADMIN') && $job->created_by != auth()->id()) {
+                abort(403, 'You do not have permission to edit this job posting.');
+            }
+
             $user = auth()->user();
             $user_type = $user->user_type;
             $user_country = $user->country;
@@ -254,7 +261,6 @@ class JobpostingController extends Controller
                 'country_id' => 'required',
             ]);
 
-            $job = Job::findOrFail($id);
             $job->job_title = $request->job_title;
             $job->job_description = $request->job_description;
             $job->job_type = $request->job_type;

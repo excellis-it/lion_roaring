@@ -17,10 +17,10 @@ class File extends BaseModel
         return $this->belongsTo(Topic::class);
     }
 
-    // user who uploaded the file
+    // user who uploaded the file — withTrashed so name persists after account deletion
     public function user()
     {
-        return $this->belongsTo(User::class, 'user_id');
+        return $this->belongsTo(User::class, 'user_id')->withTrashed();
     }
 
     public function country()

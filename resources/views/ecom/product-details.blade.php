@@ -104,25 +104,43 @@
                             {{ $product->short_description }}
                         </div>
                         @if ($product->product_type != 'digital')
+                            @php
+                                $warehousePrice = $wareHouseHaveProductVariables?->price ?? 0;
+                                $detailDisplayPrice = $product->getDisplayPrice($warehousePrice);
+                                $listingChargesBreakdown = $product->getListingChargesBreakdown($warehousePrice);
+                            @endphp
                             <div class="price my-2 warehouse-product-price-div">
                                 @if ($product->is_free ?? false)
                                     <span class="badge bg-success">FREE</span>
                                 @else
-                                    $<span
-                                        id="warehouse-product-price">{{ $wareHouseHaveProductVariables?->price ?? '' }}</span>
+                                    $<span id="warehouse-product-price">{{ number_format($detailDisplayPrice, 2) }}</span>
+                                    <input type="hidden" id="warehouse-product-base-price" value="{{ $warehousePrice }}">
                                 @endif
+                            </div>
+                            <div class="mb-2" id="listing-charges-info" {!! count($listingChargesBreakdown) == 0 ? 'style="display:none"' : '' !!}>
+                                <small class="text-muted">
+                                    Includes:
+                                    @foreach ($listingChargesBreakdown as $lc)
+                                        {{ $lc['name'] }}
+                                        ({{ $lc['type'] == 'percentage' ? $lc['amount'] . '%' : '$' . number_format($lc['amount'], 2) }})
+                                        {{ !$loop->last ? ',' : '' }}
+                                    @endforeach
+                                </small>
                             </div>
                         @else
                             <div class="price my-2 ">
                                 @if ($product->is_free ?? false)
                                     <span class="badge bg-success">FREE</span>
                                 @else
+                                    @php
+                                        $digitalDisplayPrice = $product->getDisplayPrice($product->price);
+                                    @endphp
                                     @if (($product['sale_price'] ?? false) || ($product->sale_price ?? false))
-                                        <span class="">${{ $product['sale_price'] }}</span>
+                                        <span class="">${{ number_format($product['sale_price'], 2) }}</span>
                                         <span
-                                            class=" text-muted text-decoration-line-through">${{ $product['price'] }}</span>
+                                            class=" text-muted text-decoration-line-through">${{ number_format($product['price'], 2) }}</span>
                                     @else
-                                        <span class="">${{ $product['price'] }}</span>
+                                        <span class="">${{ number_format($digitalDisplayPrice, 2) }}</span>
                                     @endif
                                 @endif
                             </div>
@@ -136,7 +154,10 @@
                         <div class=" mb-2">
                             <div class="theme-text subtitle">Description:</div>
                             <div class="subtitle p-descrition-text">
-                                {!! $product->description !!}
+                                {!! strip_tags(
+                                    $product->description,
+                                    '<p><br><b><strong><i><em><u><ul><ol><li><a><h1><h2><h3><h4><h5><h6><table><thead><tbody><tr><td><th><img><span><div><blockquote><hr><sub><sup>',
+                                ) !!}
                             </div>
                         </div>
                         {{-- @dd($product); --}}
@@ -361,7 +382,7 @@
                                         <input type="hidden" name="product_id" value="{{ $product->id }}">
                                         <button type="submit" class="red_btn w-100 text-center border-0"
                                             style="text-decoration: none; display: block;">
-                                            <span>Buy Now </span>
+                                            <span>Donation or seed/gift </span>
                                         </button>
                                     </form>
                                 </div>
@@ -388,7 +409,10 @@
                 <div class="tab-content mb-3">
                     <div class="tab-pane active" id="home">
                         <div class="description">
-                            {!! $product->specification !!}
+                            {!! strip_tags(
+                                $product->specification,
+                                '<p><br><b><strong><i><em><u><ul><ol><li><a><h1><h2><h3><h4><h5><h6><table><thead><tbody><tr><td><th><img><span><div><blockquote><hr><sub><sup>',
+                            ) !!}
                         </div>
                     </div>
                     <div class="tab-pane fade" id="menu1">
@@ -835,7 +859,28 @@
                         // update warehouse-product-id input value
                         $("#warehouse-product-id").val(response.data.id);
                         $("#product-variation-id").val(response.data.product_variation_id);
-                        $("#warehouse-product-price").text(response.data.price);
+                        // Use display price (includes listing charges) if available
+                        var priceToShow = response.display_price ? parseFloat(response.display_price).toFixed(
+                            2) : parseFloat(response.data.price).toFixed(2);
+                        $("#warehouse-product-price").text(priceToShow);
+                        $("#warehouse-product-base-price").val(response.data.price);
+
+                        // Update listing charges breakdown
+                        if (response.listing_charges_breakdown && response.listing_charges_breakdown.length >
+                            0) {
+                            var breakdownText = 'Includes: ';
+                            response.listing_charges_breakdown.forEach(function(lc, idx) {
+                                breakdownText += lc.name + ' (' + (lc.type === 'percentage' ? lc
+                                    .amount + '%' : '$' + parseFloat(lc.amount).toFixed(2)) + ')';
+                                if (idx < response.listing_charges_breakdown.length - 1)
+                                    breakdownText += ', ';
+                            });
+                            if ($('#listing-charges-info').length) {
+                                $('#listing-charges-info').html(breakdownText).show();
+                            }
+                        } else {
+                            $('#listing-charges-info').hide();
+                        }
                         // Update max quantity and rebuild options to reflect returned quantity
                         var qty = parseInt(response.data.quantity) || 0;
                         currentWarehouseQty = qty;

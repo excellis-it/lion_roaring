@@ -1,3 +1,4 @@
+{{-- 
 <!DOCTYPE html>
 <html lang="en-US">
 
@@ -62,11 +63,11 @@
                                             }
                                             return null;
                                         }
-
+                                        
                                         // Get user's timezone based on IP address
                                         $ip = $_SERVER['REMOTE_ADDR'];
                                         $timezone = getTimezoneFromIp($ip);
-
+                                        
                                         if ($timezone) {
                                             // Set the default timezone
                                             date_default_timezone_set($timezone);
@@ -74,10 +75,10 @@
                                             // Fallback timezone
                                             date_default_timezone_set('UTC');
                                         }
-
+                                        
                                         // Get the current hour in 24-hour format
                                         $time = date('H');
-
+                                        
                                         // Determine greeting based on time
                                         if ($time < '12') {
                                             echo 'Perfect morning';
@@ -116,12 +117,7 @@
                                                     @endforeach
                                                 @endif
                                             </p>
-                                            {{-- <div class="check-main">
-                                            <div class="form-group">
-                                                <input type="checkbox" id="pma_check">
-                                                <label for="pma_check">Remember Me</label>
-                                            </div>
-                                        </div> --}}
+                                           
                                             <p class="login-submit mt-lg-4 mt-2">
                                                 <input type="submit" name="wp-submit" id="login-submit"
                                                     class="button button-primary w-100" value="Login">
@@ -251,4 +247,6 @@
         </script>
     </body>
 
-</html>
+</html> --}}
+
+// no longer used this login, login is now in main page modal view.

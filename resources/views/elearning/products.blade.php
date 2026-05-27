@@ -10,8 +10,16 @@
 @endpush
 
 @section('content')
+    @php
+        $bannerImage = asset('ecom_assets/images/banner.jpg');
+        if (isset($subcategory) && $subcategory && $subcategory->image) {
+            $bannerImage = Storage::url($subcategory->image);
+        } elseif (isset($category) && $category && $category->image) {
+            $bannerImage = Storage::url($category->image);
+        }
+    @endphp
     <section class="inner_banner_sec"
-        style="background-image: url({{ asset('ecom_assets/images/banner.jpg') }}); background-position: center; background-repeat: no-repeat; background-size: cover">
+        style="background-image: url('{{ $bannerImage }}'); background-position: center; background-repeat: no-repeat; background-size: cover">
         <div class="container">
             <div class="row justify-content-center">
                 <div class="col-xxl-6 col-xl-8 col-md-12">
@@ -83,33 +91,34 @@
                         </div>
                     @endif
                     <div class="padding_filter">
-                        <div class="accordion" id="topicgroup">
+                        <div class="accordion" id="subcategorygroup">
                             <div class="accordion-item">
-                                <h2 class="accordion-header" id="headingTopic">
+                                <h2 class="accordion-header" id="headingSubcategory">
                                     <button class="accordion-button" type="button" data-bs-toggle="collapse"
-                                        data-bs-target="#collapseTopic" aria-expanded="true" aria-controls="collapseTopic">
-                                        Topics
+                                        data-bs-target="#collapseSubcategory" aria-expanded="true" aria-controls="collapseSubcategory">
+                                        Subcategories
                                     </button>
                                 </h2>
-                                <div id="collapseTopic" class="accordion-collapse collapse show"
-                                    aria-labelledby="headingTopic" data-bs-parent="#topicgroup">
+                                <div id="collapseSubcategory" class="accordion-collapse collapse show"
+                                    aria-labelledby="headingSubcategory" data-bs-parent="#subcategorygroup">
                                     <div class="accordion-body">
                                         <div class="new">
                                             <div class="mb-2">
-                                                <input type="text" id="elearning-topic-search" class="form-control"
-                                                    placeholder="Search topics" />
+                                                <input type="text" id="elearning-subcategory-search" class="form-control"
+                                                    placeholder="Search subcategories" />
                                             </div>
-                                            @if (isset($topics) && count($topics) > 0)
-                                                @foreach ($topics as $topic)
-                                                    <div class="form-group">
-                                                        <input type="checkbox" id="topic{{ $topic->id }}"
-                                                            name="elearning_topic_id" value="{{ $topic->id }}">
-                                                        <label
-                                                            for="topic{{ $topic->id }}">{{ $topic->topic_name }}</label>
+                                            <div id="elearning-subcategory-list">
+                                            @if (isset($subcategories) && count($subcategories) > 0)
+                                                @foreach ($subcategories as $sub)
+                                                    <div class="form-group subcategory-item">
+                                                        <input type="checkbox" id="subcategory{{ $sub->id }}"
+                                                            name="elearning_sub_category_id" value="{{ $sub->id }}"
+                                                            @if (isset($subcategory_id) && $subcategory_id == $sub->id) checked @endif>
+                                                        <label for="subcategory{{ $sub->id }}">{{ $sub->name }}</label>
                                                     </div>
                                                 @endforeach
                                             @endif
-
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
@@ -214,8 +223,74 @@
         $(document).ready(function() {
             var page = 1;
             var loading = false;
-            var numSlick = 0; // Initialize numSlick variable
-            var elearning_sub_category_id = '{{ isset($subcategory_id) ? $subcategory_id : '' }}';
+            var numSlick = 0;
+
+            function collectFilters() {
+                var prices = [], category_id = [], sub_ids = [], topic_ids = [];
+                $('input[name="price"]:checked').each(function() { prices.push($(this).val()); });
+                $('input[name="elearning_sub_category_id"]:checked').each(function() { sub_ids.push($(this).val()); });
+                var topicVal = $('#topic_filter').val();
+                if (topicVal) topic_ids.push(topicVal);
+                var latestFilter = $('#latest_filter').val();
+                var search = $('#serach-product').val();
+                @if ($category_id != '')
+                    category_id.push('{{ $category_id }}');
+                @else
+                    $('input[name="category_id"]:checked').each(function() { category_id.push($(this).val()); });
+                @endif
+                return { prices, category_id, sub_ids, topic_ids, latestFilter, search };
+            }
+
+            function reloadProducts() {
+                var f = collectFilters();
+                showLoading();
+                page = 1;
+                $('#products').html('');
+                loadMoreProducts(page, f.prices, f.category_id, f.latestFilter, f.search, f.topic_ids, '', f.sub_ids);
+            }
+
+            function renderSubcategories(subcategories, previouslyChecked) {
+                var $list = $('#elearning-subcategory-list');
+                $list.empty();
+                if (!subcategories || subcategories.length === 0) {
+                    return;
+                }
+                $.each(subcategories, function(_, sub) {
+                    var $item = $('<div class="form-group subcategory-item">');
+                    var $input = $('<input type="checkbox">').attr({
+                        id: 'subcategory' + sub.id,
+                        name: 'elearning_sub_category_id',
+                        value: sub.id
+                    }).prop('checked', previouslyChecked.indexOf(String(sub.id)) > -1);
+                    var $label = $('<label>').attr('for', 'subcategory' + sub.id).text(sub.name);
+                    $item.append($input, $label);
+                    $list.append($item);
+                });
+            }
+
+            function refreshSubcategories(categoryIds, callback) {
+                var previouslyChecked = [];
+                $('input[name="elearning_sub_category_id"]:checked').each(function() {
+                    previouslyChecked.push($(this).val());
+                });
+
+                $.ajax({
+                    url: '{{ route('e-learning.get-subcategories') }}',
+                    type: 'GET',
+                    data: { category_id: categoryIds },
+                    success: function(response) {
+                        renderSubcategories(response.data || [], previouslyChecked);
+                        if (typeof callback === 'function') {
+                            callback();
+                        }
+                    },
+                    error: function() {
+                        if (typeof callback === 'function') {
+                            callback();
+                        }
+                    }
+                });
+            }
 
 
             // Show loading GIF function
@@ -239,145 +314,42 @@
                 if (scrollTop > lastProductOffset && !loading) {
                     loading = true;
                     page++;
-                    var prices = [];
-                    var category_id = [];
-                    var elearning_topic_id = [];
-                    var elearning_topic_search = $('#elearning-topic-search').val();
-                    var search = $('#serach-product').val();
-
-
-                    $('input[name="price"]:checked').each(function() {
-                        prices.push($(this).val());
-                    });
-
-                    $('input[name="elearning_topic_id"]:checked').each(function() {
-                        elearning_topic_id.push($(this).val());
-                    });
-
-                    var latestFilter = $('#latest_filter').val();
-
-                    @if ($category_id != '')
-                        var cat = '{{ $category_id }}';
-                        category_id.push(cat);
-                    @else
-                        $('input[name="category_id"]:checked').each(function() {
-                            category_id.push($(this).val());
-                        });
-                    @endif
-
-                    showLoading(); // Show loading GIF
-                    loadMoreProducts(page, prices, category_id, latestFilter, search, elearning_topic_id,
-                        elearning_topic_search, elearning_sub_category_id); // Load more products
+                    var f = collectFilters();
+                    showLoading();
+                    loadMoreProducts(page, f.prices, f.category_id, f.latestFilter, f.search, f.topic_ids, '', f.sub_ids);
                 }
             }
 
-            // Filter products by frame shape, size, material, price, gender
+            // When categories change, refresh subcategory list then reload products
+            $(document).on('change', 'input[name="category_id"]', function() {
+                var f = collectFilters();
+                refreshSubcategories(f.category_id, reloadProducts);
+            });
+
+            // Filter products on other checkbox/select changes
             $(document).on('change',
-                'input[name="price"], #latest_filter, input[name="category_id"], input[name="elearning_topic_id"]',
+                'input[name="price"], #latest_filter, #topic_filter, input[name="elearning_sub_category_id"]',
                 function() {
-                    var prices = [];
-                    var category_id = [];
-                    var elearning_topic_id = [];
-                    var search = $('#serach-product').val();
-
-                    $('input[name="price"]:checked').each(function() {
-                        prices.push($(this).val());
-                    });
-
-                    $('input[name="elearning_topic_id"]:checked').each(function() {
-                        elearning_topic_id.push($(this).val());
-                    });
-
-
-                    var latestFilter = $('#latest_filter').val();
-
-                    @if ($category_id != '')
-                        var cat = '{{ $category_id }}';
-                        category_id.push(cat);
-                    @else
-                        $('input[name="category_id"]:checked').each(function() {
-                            category_id.push($(this).val());
-                        });
-                    @endif
-
-                    showLoading(); // Show loading GIF before making the AJAX request
-
-                    // Reset page to 1 and container for new filtered results
-                    page = 1;
-                    $('#products').html('');
-
-                    loadMoreProducts(page, prices, category_id, latestFilter, search, elearning_topic_id, '',
-                        elearning_sub_category_id);
+                    reloadProducts();
                 });
+
+            // Subcategory search filter
+            $(document).on('keyup', '#elearning-subcategory-search', function() {
+                var q = $(this).val().toLowerCase();
+                $('.subcategory-item').each(function() {
+                    $(this).toggle($(this).find('label').text().toLowerCase().indexOf(q) > -1);
+                });
+            });
 
             // Search products
             $(document).on('submit', '#product-search-form', function(e) {
                 e.preventDefault();
-                var search = $('#serach-product').val();
-                var prices = [];
-                var category_id = [];
-                var elearning_topic_id = [];
-
-
-                $('input[name="price"]:checked').each(function() {
-                    prices.push($(this).val());
-                });
-
-                $('input[name="elearning_topic_id"]:checked').each(function() {
-                    elearning_topic_id.push($(this).val());
-                });
-
-                var latestFilter = $('#latest_filter').val();
-
-                @if ($category_id != '')
-                    var cat = '{{ $category_id }}';
-                    category_id.push(cat);
-                @else
-                    $('input[name="category_id"]:checked').each(function() {
-                        category_id.push($(this).val());
-                    });
-                @endif
-
-                page = 1;
-                $('#products').html('');
-
-                loadMoreProducts(page, prices, category_id, latestFilter, search, elearning_topic_id, '',
-                    elearning_sub_category_id);
+                reloadProducts();
             });
 
-            $(document).on('keyup', '#serach-product, #elearning-topic-search', function(e) {
+            $(document).on('keyup', '#serach-product', function(e) {
                 e.preventDefault();
-                var search = $('#serach-product').val();
-                var prices = [];
-                var category_id = [];
-                var elearning_topic_id = [];
-                var elearning_topic_search = $('#elearning-topic-search').val();
-
-
-                $('input[name="price"]:checked').each(function() {
-                    prices.push($(this).val());
-                });
-
-                $('input[name="elearning_topic_id"]:checked').each(function() {
-                    elearning_topic_id.push($(this).val());
-                });
-
-                var latestFilter = $('#latest_filter').val();
-
-                @if ($category_id != '')
-                    var cat = '{{ $category_id }}';
-                    category_id.push(cat);
-                @else
-                    $('input[name="category_id"]:checked').each(function() {
-                        category_id.push($(this).val());
-                    });
-                @endif
-
-                page = 1;
-                $('#products').html('');
-
-                loadMoreProducts(page, prices, category_id, latestFilter, search, elearning_topic_id,
-                    elearning_topic_search, elearning_sub_category_id);
+                reloadProducts();
             });
 
 

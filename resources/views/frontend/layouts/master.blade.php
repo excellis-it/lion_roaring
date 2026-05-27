@@ -587,11 +587,11 @@
                                     }
                                     return null;
                                 }
-                                
+
                                 // Get user's timezone based on IP address
                                 $ip = $_SERVER['REMOTE_ADDR'];
                                 $timezone = getTimezoneFromIp($ip);
-                                
+
                                 if ($timezone) {
                                     // Set the default timezone
                                     date_default_timezone_set($timezone);
@@ -599,10 +599,10 @@
                                     // Fallback timezone
                                     date_default_timezone_set('UTC');
                                 }
-                                
+
                                 // Get the current hour in 24-hour format
                                 $time = date('H');
-                                
+
                                 // Determine greeting based on time
                                 if ($time < '12') {
                                     echo 'Perfect morning';
@@ -847,7 +847,7 @@
                                         <div class="form-group mb-0">
                                             <input type="checkbox" id="pma_register_check1">
                                             <label for="pma_register_check1" class="fw-bold text-dark h5 mb-0">
-                                                I have read and agree to the Articles of Association
+                                                {{ Helper::getArticleCheckboxText() }}
                                             </label>
                                         </div>
                                     </div>
@@ -880,9 +880,12 @@
                     </div>
                     <div class="modal-body" style="position: relative;">
                         {{-- Loading overlay for PDF generation --}}
-                        <div id="registerSecondLoader" style="display:none; position:absolute; top:0; left:0; width:100%; height:100%; background:rgba(255,255,255,0.9); z-index:10; border-radius:12px;">
-                            <div style="display:flex; flex-direction:column; align-items:center; justify-content:center; height:100%;">
-                                <div class="spinner-border" role="status" style="width:3rem; height:3rem; color:#643271;">
+                        <div id="registerSecondLoader"
+                            style="display:none; position:absolute; top:0; left:0; width:100%; height:100%; background:rgba(255,255,255,0.9); z-index:10; border-radius:12px;">
+                            <div
+                                style="display:flex; flex-direction:column; align-items:center; justify-content:center; height:100%;">
+                                <div class="spinner-border" role="status"
+                                    style="width:3rem; height:3rem; color:#643271;">
                                     <span class="visually-hidden">Loading...</span>
                                 </div>
                                 <p class="mt-3 fw-bold" style="color:#643271;">Generating Agreement PDF...</p>
@@ -1523,71 +1526,130 @@
         }
     </script>
     <script>
-        $(document).ready(function() {
-            $('#sign-in-form').submit(function(e) {
-                e.preventDefault();
+        document.addEventListener('DOMContentLoaded', function() {
+            function showBsModal(id) {
+                var el = document.getElementById(id);
+                if (!el || typeof bootstrap === 'undefined') {
+                    return null;
+                }
+                return bootstrap.Modal.getOrCreateInstance(el);
+            }
 
-                var formData = $(this).serialize();
-                var url = $(this).attr('action');
-                var submitButton = $('#login-submit');
-                submitButton.prop('disabled', true).val('Loading...');
+            function hideBsModal(id) {
+                var el = document.getElementById(id);
+                if (!el || typeof bootstrap === 'undefined') {
+                    return;
+                }
+                var instance = bootstrap.Modal.getInstance(el);
+                if (instance) {
+                    instance.hide();
+                }
+            }
 
-                $.ajax({
-                    url: url,
-                    type: $(this).attr('method'),
-                    data: formData,
-                    success: function(response) {
-                        if (response.status == true) {
+            var loginForm = document.getElementById('sign-in-form');
+            if (loginForm) {
+                loginForm.addEventListener('submit', function(e) {
+                    e.preventDefault();
+
+                    var submitButton = document.getElementById('login-submit');
+                    if (submitButton) {
+                        submitButton.disabled = true;
+                        submitButton.value = 'Loading...';
+                    }
+
+                    fetch(loginForm.action, {
+                        method: loginForm.method || 'POST',
+                        body: new FormData(loginForm),
+                        headers: {
+                            'X-Requested-With': 'XMLHttpRequest',
+                            'Accept': 'application/json',
+                        },
+                    }).then(function(response) {
+                        return response.json().then(function(data) {
+                            if (!response.ok) {
+                                throw {
+                                    data: data
+                                };
+                            }
+                            return data;
+                        });
+                    }).then(function(response) {
+                        if (response.status === true) {
                             if (response.otp_required) {
-                                $('#otpModal').modal('show');
-                            } else {
+                                hideBsModal('loginModal');
+                                var otpModal = showBsModal('otpModal');
+                                if (otpModal) {
+                                    otpModal.show();
+                                }
+                            } else if (response.redirect) {
                                 window.location.href = response.redirect;
                             }
                         } else {
-                            $('.text-danger').html('');
-                            toastr.error(response.message);
-                            submitButton.prop('disabled', false).val('Log In');
+                            if (typeof toastr !== 'undefined') {
+                                toastr.error(response.message);
+                            }
+                            if (submitButton) {
+                                submitButton.disabled = false;
+                                submitButton.value = 'Log In';
+                            }
                         }
-                    },
-                    error: function(xhr) {
-                        $('.text-danger').html('');
-                        var errors = xhr.responseJSON.errors;
-                        $.each(errors, function(key, value) {
-                            toastr.error(value[0]);
-                        });
-                        submitButton.prop('disabled', false).val('Log In');
-                    }
+                    }).catch(function(err) {
+                        if (submitButton) {
+                            submitButton.disabled = false;
+                            submitButton.value = 'Log In';
+                        }
+                        if (err && err.data && err.data.errors) {
+                            Object.keys(err.data.errors).forEach(function(key) {
+                                if (typeof toastr !== 'undefined') {
+                                    toastr.error(err.data.errors[key][0]);
+                                }
+                            });
+                            return;
+                        }
+                        if (typeof toastr !== 'undefined') {
+                            toastr.error('Unable to sign in. Please try again.');
+                        }
+                    });
                 });
-            });
+            }
 
-            $('#otp-form').submit(function(e) {
-                e.preventDefault();
+            var otpForm = document.getElementById('otp-form');
+            if (otpForm) {
+                otpForm.addEventListener('submit', function(e) {
+                    e.preventDefault();
 
-                var formData = $(this).serialize();
-                var url = $(this).attr('action');
-                $.ajax({
-                    url: url,
-                    type: $(this).attr('method'),
-                    data: formData,
-                    success: function(response) {
-                        if (response.status == true) {
-                            // Check for event registration redirect in sessionStorage
+                    fetch(otpForm.action, {
+                        method: otpForm.method || 'POST',
+                        body: new FormData(otpForm),
+                        headers: {
+                            'X-Requested-With': 'XMLHttpRequest',
+                            'Accept': 'application/json',
+                        },
+                    }).then(function(response) {
+                        return response.json();
+                    }).then(function(response) {
+                        if (response.status === true) {
                             var eventRedirect = sessionStorage.getItem('post_login_redirect');
                             if (eventRedirect) {
                                 sessionStorage.removeItem('post_login_redirect');
                                 window.location.href = eventRedirect;
-                            } else {
+                            } else if (response.redirect) {
                                 window.location.href = response.redirect;
                             }
                         } else {
-                            $('#otp-error').text(response.message);
+                            var otpError = document.getElementById('otp-error');
+                            if (otpError) {
+                                otpError.textContent = response.message;
+                            }
                         }
-                    },
-                    error: function(xhr) {
-                        $('#otp-error').text('Invalid Code');
-                    }
+                    }).catch(function() {
+                        var otpError = document.getElementById('otp-error');
+                        if (otpError) {
+                            otpError.textContent = 'Invalid Code';
+                        }
+                    });
                 });
-            });
+            }
         });
     </script>
     <script>
@@ -1776,11 +1838,12 @@
     </script>
 
 
-   @stack('scripts')
-{{-- @include('frontend.includes.chatbot') --}}
-
-@include('frontend.includes.rag_chatbot')
-
+    @stack('scripts')
+    @if (env('CHATBOT') == 'AI')
+        @include('frontend.includes.ai_chatbot')
+    @else
+        @include('frontend.includes.chatbot')
+    @endif
 </body>
 
 </html>

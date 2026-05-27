@@ -25,7 +25,7 @@ class Kernel extends ConsoleKernel
         // $schedule->command('inspire')->hourly();
         $schedule->command('delete:job')->daily();
         $schedule->command('mails:update-deleted-status')->daily();
-        $schedule->command('subscription:send-reminder --days=7')->daily();
+        $schedule->command('subscription:send-reminder')->daily();
     }
 
     /**

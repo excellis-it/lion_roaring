@@ -14,5 +14,16 @@ class ProductOtherCharge extends BaseModel
         'charge_name',
         'charge_amount',
         'charge_type',
+        'display_at',
     ];
+
+    public function scopeListing($query)
+    {
+        return $query->where('display_at', 'listing');
+    }
+
+    public function scopeCheckout($query)
+    {
+        return $query->where('display_at', 'checkout');
+    }
 }

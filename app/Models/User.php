@@ -171,6 +171,9 @@ class User extends Authenticatable
             return $query;
         }
 
+        // Hide inactive users from all listings
+        $query->where('status', 1);
+
         $userType = $authUser->user_type;
         $currentCountry = Country::findByCurrentRequest();
         $isOnGlobalServer = $currentCountry && $currentCountry->is_global;
@@ -186,7 +189,7 @@ class User extends Authenticatable
             $query->whereIn('user_type', ['Regional', 'G_R'])
                 ->where('country', $authUser->country);
 
-            // If ecclesia role, also filter by same ecclesia
+            // If ecclesia admin, also filter by shared House of Ecclesia
             $is_user_ecclesia_admin = $authUser->is_ecclesia_admin;
             if ($is_user_ecclesia_admin == 1) {
                 $manage_ecclesia_ids = is_array($authUser->manage_ecclesia)
@@ -201,11 +204,22 @@ class User extends Authenticatable
                         });
                 })
                     ->where(function ($q) use ($manage_ecclesia_ids, $authUser) {
-                        $q->whereIn('ecclesia_id', $manage_ecclesia_ids)->whereNotNull('ecclesia_id')
-                            ->orWhere('created_id', $authUser->id)->orWhere('id', auth()->id());
+                        // A) Members assigned to one of the houses I manage
+                        $q->where(function ($sub) use ($manage_ecclesia_ids) {
+                            $sub->whereIn('ecclesia_id', $manage_ecclesia_ids)->whereNotNull('ecclesia_id');
+                        });
+                        // B) Other ECCLESIA admins who manage any of the same houses I manage
+                        foreach ($manage_ecclesia_ids as $id) {
+                            $id = trim($id);
+                            if ($id !== '') {
+                                $q->orWhereRaw('FIND_IN_SET(?, manage_ecclesia)', [$id]);
+                            }
+                        }
+                        // C) Users I created
+                        $q->orWhere('created_id', $authUser->id);
+                        // D) Myself
+                        $q->orWhere('id', auth()->id());
                     });
-
-                // $query->where('ecclesia_id', $authUser->ecclesia_id);
             }
         }
 

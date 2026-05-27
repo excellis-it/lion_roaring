@@ -37,6 +37,7 @@ use Stripe\PaymentIntent;
 use App\Models\EstoreRefund;
 use App\Models\ProductVariation;
 use App\Models\WarehouseProductVariation;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Storage;
 use App\Services\PromoCodeService;
 use App\Models\EstorePromoCode;
@@ -61,7 +62,7 @@ class ProductController extends Controller
         $userSessionId = session()->getId();
         $cartCount = $isAuth ? EstoreCart::where('user_id', auth()->id())->count() : EstoreCart::where('session_id', $userSessionId)->count();
 
-        $nearbyWareHouseId = WareHouse::where('is_active', 1)->first()->id;
+        $nearbyWareHouseId = WareHouse::where('is_active', 1)->first()?->id ?? 0;
         $originLat = null;
         $originLng = null;
         $isUser = auth()->user();
@@ -86,7 +87,7 @@ class ProductController extends Controller
                 ->where('quantity', '>', 0);
         })->pluck('id')->toArray();
 
-        $getProduct = Product::where('slug', $slug)->first();
+        $getProduct = Product::where('slug', $slug)->with('otherCharges')->first();
 
         $wareHouseHaveProductVariables = WarehouseProduct::where('product_id', $getProduct->id)
             ->where('warehouse_id', $nearbyWareHouseId)
@@ -161,7 +162,7 @@ class ProductController extends Controller
         $childCategoriesList = [];
         $category_name = null;
 
-        $nearbyWareHouseId = WareHouse::where('is_active', 1)->first()->id;
+        $nearbyWareHouseId = WareHouse::where('is_active', 1)->first()?->id ?? 0;
         $originLat = null;
         $originLng = null;
         $isUser = auth()->user();
@@ -188,7 +189,7 @@ class ProductController extends Controller
         // if ($wareHouseProducts ) {
         //    $products = Product::whereIn('id', $wareHouseProducts)->where('status', 1);
         // } else {
-        $products = Product::where('is_deleted', false)->where('status', 1);
+        $products = Product::where('is_deleted', false)->where('status', 1)->with('otherCharges');
         //  }
 
 
@@ -239,7 +240,7 @@ class ProductController extends Controller
 
 
 
-            $nearbyWareHouseId = WareHouse::where('is_active', 1)->first()->id;
+            $nearbyWareHouseId = WareHouse::where('is_active', 1)->first()?->id ?? 0;
             $originLat = null;
             $originLng = null;
             $isUser = auth()->user();
@@ -265,7 +266,7 @@ class ProductController extends Controller
             //  if ($wareHouseProducts) {
             //     $products = Product::whereIn('id', $wareHouseProducts)->where('status', 1)->with('image');
             //  } else {
-            $products = Product::where('is_deleted', false)->where('status', 1)->with('image');
+            $products = Product::where('is_deleted', false)->where('status', 1)->with('image', 'otherCharges');
             //  }
 
             if (!empty($category_id)) {
@@ -328,16 +329,17 @@ class ProductController extends Controller
             $products_count = $productsCountQuery->count();
 
             // Get the paginated products
-            $products = $products->skip($offset)
+            $productsCollection = $products->skip($offset)
                 ->take($limit)
-                ->get()->toArray();
+                ->get();
 
-            //  return $products;
-
-            // is the product in wishlist
-            foreach ($products as &$product) {
-                $product['is_in_wishlist'] = (new Product())->isInWishlist($product['id']);
-            }
+            // Calculate display price before converting to array
+            $products = $productsCollection->map(function ($product) {
+                $arr = $product->toArray();
+                $arr['display_price'] = $product->getDisplayPrice($product->price);
+                $arr['is_in_wishlist'] = $product->isInWishlist($product->id);
+                return $arr;
+            })->toArray();
 
             $category = !empty($category_id) ? Category::whereIn('id', $category_id)->get()->toArray() : null;
             $isAuth = auth()->check();
@@ -773,18 +775,27 @@ class ProductController extends Controller
                 $hasChanges = true;
             }
 
-            // Calculate other charges
-            $otherCharges = 0;
+            // Calculate other charges separated by display_at
+            $listingCharges = 0;
+            $checkoutCharges = 0;
             if ($cart->product?->otherCharges) {
                 foreach ($cart->product->otherCharges as $charge) {
+                    $displayAt = $charge->display_at ?? 'listing';
                     if ($charge->charge_type == 'percentage') {
-                        $otherCharges += (($cart->price ?? $currentWarehousePrice) * $cart->quantity * ($charge->charge_amount / 100));
+                        $chargeAmount = (($cart->price ?? $currentWarehousePrice) * $cart->quantity * ($charge->charge_amount / 100));
                     } else {
-                        // Fixed charge is now per line item, not per quantity
-                        $otherCharges += $charge->charge_amount;
+                        $chargeAmount = $charge->charge_amount;
+                    }
+
+                    if ($displayAt === 'listing') {
+                        $listingCharges += $chargeAmount;
+                    } else {
+                        $checkoutCharges += $chargeAmount;
                     }
                 }
             }
+
+            $otherCharges = $listingCharges + $checkoutCharges;
 
             if (!$meta['out_of_stock']) {
                 $cart->subtotal = ($cart->price ?? 0) * $cart->quantity + ($otherCharges ?? 0);
@@ -792,6 +803,8 @@ class ProductController extends Controller
             } else {
                 $cart->subtotal = 0;
             }
+            $cart->listing_charges = $listingCharges;
+            $cart->checkout_charges = $checkoutCharges;
 
             $cart->setAttribute('meta', $meta);
         }
@@ -877,18 +890,34 @@ class ProductController extends Controller
                 $hasChanges = true;
             }
 
-            $otherCharges = 0;
+            // Separate listing vs checkout charges
+            $listingCharges = 0;
+            $checkoutChargesTotal = 0;
+            $checkoutChargesList = [];
             if ($cart->product?->otherCharges) {
                 foreach ($cart->product->otherCharges as $charge) {
+                    $displayAt = $charge->display_at ?? 'listing';
                     if ($charge->charge_type == 'percentage') {
-                        $otherCharges += (($cart->price ?? $currentWarehousePrice) * $cart->quantity * ($charge->charge_amount / 100));
+                        $chargeAmount = (($cart->price ?? $currentWarehousePrice) * $cart->quantity * ($charge->charge_amount / 100));
                     } else {
-                        // Fixed charge is now per line item, not per quantity
-                        $otherCharges += $charge->charge_amount;
+                        $chargeAmount = $charge->charge_amount;
+                    }
+
+                    if ($displayAt === 'listing') {
+                        $listingCharges += $chargeAmount;
+                    } else {
+                        $checkoutChargesTotal += $chargeAmount;
+                        $checkoutChargesList[] = [
+                            'charge_name' => $charge->charge_name,
+                            'charge_type' => $charge->charge_type,
+                            'charge_amount' => $charge->charge_amount,
+                            'calculated_amount' => $chargeAmount,
+                        ];
                     }
                 }
             }
-            $itemSubtotal = $outOfStock ? 0 : ((($cart->price ?? 0) * $cart->quantity) + ($otherCharges ?? 0));
+            $otherCharges = $listingCharges + $checkoutChargesTotal;
+            $itemSubtotal = $outOfStock ? 0 : ((($cart->price ?? 0) * $cart->quantity) + ($listingCharges));
             $subtotal += $itemSubtotal;
 
             $cartItems[] = [
@@ -898,6 +927,9 @@ class ProductController extends Controller
                 'product_image' => $cart->product->getProductFirstImage($cart->color_id) ?? '',
                 'price' => $cart->price ?? 0,
                 'quantity' => $cart->quantity,
+                'listing_charges' => $listingCharges,
+                'checkout_charges' => $checkoutChargesTotal,
+                'checkout_charges_list' => $checkoutChargesList,
                 'other_charges' => $otherCharges,
                 'subtotal' => $itemSubtotal,
                 'price_changed' => $priceChanged,
@@ -949,7 +981,13 @@ class ProductController extends Controller
             }
         }
 
-        $total = $subtotal - $promoDiscount + $shippingCost + $deliveryCost + $taxAmount;
+        // Sum checkout-only charges across all items
+        $totalCheckoutCharges = 0;
+        foreach ($cartItems as $ci) {
+            $totalCheckoutCharges += $ci['checkout_charges'] ?? 0;
+        }
+
+        $total = $subtotal + $totalCheckoutCharges - $promoDiscount + $shippingCost + $deliveryCost + $taxAmount;
 
         // Get nearest warehouse based on user location
         $nearestWarehouse = null;
@@ -991,6 +1029,7 @@ class ProductController extends Controller
             'deliveryCost',
             'taxAmount',
             'total',
+            'totalCheckoutCharges',
             'cartCount',
             'estoreSettings',
             'hasChanges',
@@ -1008,6 +1047,22 @@ class ProductController extends Controller
             return response()->json(['status' => false, 'message' => 'Please login to continue']);
         }
 
+        // Prevent concurrent duplicate orders from the same user
+        $lockKey = 'checkout_lock_user_' . auth()->id();
+        $lock = Cache::lock($lockKey, 30); // 30 second lock
+        if (!$lock->get()) {
+            return response()->json(['status' => false, 'message' => 'Your order is already being processed. Please wait.'], 429);
+        }
+
+        try {
+            return $this->executeCheckout($request);
+        } finally {
+            $lock->release();
+        }
+    }
+
+    private function executeCheckout(Request $request)
+    {
         $request->validate([
             'first_name' => 'required|string|max:255',
             'last_name' => 'required|string|max:255',
@@ -1036,6 +1091,7 @@ class ProductController extends Controller
         $hasBlockingStockIssue = false;
         $recalculatedSubtotal = 0;
         $cartItems = [];
+        $selectedCheckoutCharges = $request->input('checkout_charges', []);
 
         foreach ($carts as $cart) {
             $warehouseProduct = $cart->warehouseProduct;
@@ -1065,20 +1121,30 @@ class ProductController extends Controller
                 $cart->save();
             }
 
-            $otherChargesTotal = 0;
+            $listingChargesTotal = 0;
+            $checkoutChargesTotal = 0;
             if ($cart->product?->otherCharges) {
                 foreach ($cart->product->otherCharges as $charge) {
+                    $displayAt = $charge->display_at ?? 'listing';
                     if ($charge->charge_type == 'percentage') {
-                        $otherChargesTotal += (($cart->price ?? $currentWarehousePrice) * $cart->quantity * ($charge->charge_amount / 100));
+                        $chargeAmt = (($cart->price ?? $currentWarehousePrice) * $cart->quantity * ($charge->charge_amount / 100));
                     } else {
-                        // Fixed charge is now per line item, not per quantity
-                        $otherChargesTotal += $charge->charge_amount;
+                        $chargeAmt = $charge->charge_amount;
+                    }
+
+                    if ($displayAt === 'listing') {
+                        $listingChargesTotal += $chargeAmt;
+                    } else {
+                        $checkoutChargesTotal += $chargeAmt;
                     }
                 }
             }
-            $cart->other_charges = $otherChargesTotal;
+
+            $cart->listing_charges = $listingChargesTotal;
+            $cart->checkout_charges_total = $checkoutChargesTotal;
+            $cart->other_charges = $listingChargesTotal; // listing charges are always included
             $unitPrice = $cart->price ?? ($currentWarehousePrice);
-            $itemSubtotal = ($unitPrice * $cart->quantity) + ($cart->other_charges ?? 0);
+            $itemSubtotal = ($unitPrice * $cart->quantity) + $listingChargesTotal;
             $recalculatedSubtotal += $itemSubtotal;
 
             $cartItems[] = [
@@ -1130,28 +1196,42 @@ class ProductController extends Controller
             $taxAmount = (($subtotal - $promoDiscount) * ($estoreSettings->tax_percentage ?? 0)) / 100;
         }
 
-        $withAmount = $subtotal - $promoDiscount + $shippingCost + $deliveryCost + $taxAmount;
+        // Validate checkout charges against actual DB records — ignore any names not in DB
+        $requestedCheckoutCharges = $request->input('checkout_charges', []);
+        $validCheckoutChargeNames = [];
+        foreach ($carts as $cart) {
+            if (!empty($cart->product?->otherCharges)) {
+                foreach ($cart->product->otherCharges as $charge) {
+                    if (($charge->display_at ?? 'listing') === 'checkout') {
+                        $validCheckoutChargeNames[] = $charge->charge_name;
+                    }
+                }
+            }
+        }
+        $selectedCheckoutCharges = array_intersect($requestedCheckoutCharges, array_unique($validCheckoutChargeNames));
+
+        // Calculate selected checkout charges total using DB values only
+        $orderCheckoutChargesTotal = 0;
+        foreach ($carts as $cart) {
+            if (!empty($cart->product?->otherCharges)) {
+                foreach ($cart->product->otherCharges as $charge) {
+                    if (($charge->display_at ?? 'listing') === 'checkout' && in_array($charge->charge_name, $selectedCheckoutCharges)) {
+                        if ($charge->charge_type == 'percentage') {
+                            $orderCheckoutChargesTotal += (($cart->price ?? 0) * $cart->quantity * ($charge->charge_amount / 100));
+                        } else {
+                            $orderCheckoutChargesTotal += $charge->charge_amount;
+                        }
+                    }
+                }
+            }
+        }
+
+        $withAmount = $subtotal + $orderCheckoutChargesTotal - $promoDiscount + $shippingCost + $deliveryCost + $taxAmount;
         $creditCardFee = ($request->payment_type === 'credit')
             ? ($withAmount * ($estoreSettings->credit_card_percentage ?? 0)) / 100
             : 0;
 
         $totalAmount = $withAmount + $creditCardFee;
-
-        $otherCharges = [];
-        foreach ($carts as $cart) {
-            if (!empty($cart->product?->otherCharges)) {
-                foreach ($cart->product->otherCharges as $charge) {
-                    $chargeVal = 0;
-                    if ($charge->charge_type == 'percentage') {
-                        $chargeVal = (($cart->price ?? $currentWarehousePrice) * $cart->quantity * ($charge->charge_amount / 100));
-                    } else {
-                        // Fixed charge is now per line item, not per quantity
-                        $chargeVal = $charge->charge_amount;
-                    }
-                    $otherCharges[$charge->charge_name] = ($otherCharges[$charge->charge_name] ?? 0) + $chargeVal;
-                }
-            }
-        }
 
         DB::beginTransaction();
 
@@ -1207,6 +1287,27 @@ class ProductController extends Controller
                 $expectedDeliveryDate = now()->addDays($daysToAdd);
             }
 
+            // Save signature image if provided
+            $signaturePath = null;
+            if ($request->filled('signature_image')) {
+                $signatureData = $request->input('signature_image');
+                if (preg_match('/^data:image\/(png|jpeg|jpg|webp);base64,/', $signatureData, $type)) {
+                    $base64Payload = substr($signatureData, strpos($signatureData, ',') + 1);
+                    // Reject if base64 payload exceeds ~1MB decoded
+                    if (strlen($base64Payload) > 1400000) {
+                        Log::warning('Signature image too large', ['user_id' => auth()->id()]);
+                    } else {
+                        $decoded = base64_decode($base64Payload, true);
+                        if ($decoded !== false) {
+                            $extension = strtolower($type[1]);
+                            $fileName = 'signatures/' . uniqid('sig_') . '.' . $extension;
+                            Storage::disk('public')->put($fileName, $decoded);
+                            $signaturePath = $fileName;
+                        }
+                    }
+                }
+            }
+
             $order = EstoreOrder::create([
                 'warehouse_id' => $warehouseId,
                 'is_pickup' => $is_pickup,
@@ -1228,6 +1329,7 @@ class ProductController extends Controller
                 'total_amount' => $totalAmount,
                 'credit_card_fee' => $creditCardFee,
                 'payment_type' => $request->payment_type,
+                'signature_image' => $signaturePath,
                 'payment_status' => 'paid',
                 'status' => $order_status->id ?? null,
                 'warehouse_name' => $wareHouse->name ?? null,
@@ -1247,11 +1349,17 @@ class ProductController extends Controller
                 $detailedCharges = [];
                 if ($cart->product?->otherCharges) {
                     foreach ($cart->product->otherCharges as $charge) {
+                        $displayAt = $charge->display_at ?? 'listing';
+
+                        // Skip checkout charges that were not selected
+                        if ($displayAt === 'checkout' && !in_array($charge->charge_name, $selectedCheckoutCharges)) {
+                            continue;
+                        }
+
                         $cAmount = 0;
                         if ($charge->charge_type == 'percentage') {
                             $cAmount = (($cart->price ?? ($cart->warehouseProduct?->price ?? 0)) * $cart->quantity * ($charge->charge_amount / 100));
                         } else {
-                            // Fixed charge is now per line item, not per quantity
                             $cAmount = $charge->charge_amount;
                         }
                         $itemOtherChargesTotal += $cAmount;
@@ -1259,7 +1367,8 @@ class ProductController extends Controller
                             'charge_name' => $charge->charge_name ?? '',
                             'charge_type' => $charge->charge_type ?? 'fixed',
                             'charge_amount' => $charge->charge_amount ?? 0,
-                            'calculated_amount' => $cAmount
+                            'calculated_amount' => $cAmount,
+                            'display_at' => $displayAt,
                         ];
                     }
                 }
@@ -1283,28 +1392,43 @@ class ProductController extends Controller
                     'total' => ((($cart->price ?? ($cart->warehouseProduct?->price ?? 0))) * $cart->quantity) + $itemOtherChargesTotal,
                 ]);
 
+                // Lock row to prevent race condition on concurrent orders
                 $warehouseProduct = WarehouseProduct::where('warehouse_id', $cart->warehouse_id)
                     ->where('id', $cart->warehouse_product_id)
                     ->where('product_id', $cart->product_id)
+                    ->lockForUpdate()
                     ->first();
 
                 if ($warehouseProduct) {
+                    // Pre-decrement validation: ensure stock won't go negative
+                    if ($warehouseProduct->quantity < $cart->quantity) {
+                        DB::rollBack();
+                        return response()->json([
+                            'status' => false,
+                            'message' => "Insufficient stock for '{$cart->product->name}'. Only {$warehouseProduct->quantity} left."
+                        ], 422);
+                    }
+
                     $warehouseProduct->decrement('quantity', $cart->quantity);
                     Log::info('Warehouse product stock updated', ['product_id' => $warehouseProduct->id, 'new_quantity' => $warehouseProduct->quantity]);
 
                     $wareHouseProductVariation = WarehouseProductVariation::where('warehouse_id', $cart->warehouse_id)
                         ->where('product_variation_id', $warehouseProduct->product_variation_id)
                         ->where('product_id', $cart->product_id)
+                        ->lockForUpdate()
                         ->first();
 
                     if ($wareHouseProductVariation) {
-                        $newWarehouseQty = max(0, ($wareHouseProductVariation->warehouse_quantity ?? 0) - $cart->quantity);
-                        $wareHouseProductVariation->warehouse_quantity = $newWarehouseQty;
+                        if ($wareHouseProductVariation->warehouse_quantity < $cart->quantity) {
+                            $wareHouseProductVariation->warehouse_quantity = 0;
+                        } else {
+                            $wareHouseProductVariation->warehouse_quantity -= $cart->quantity;
+                        }
                         $wareHouseProductVariation->updated_at = now();
                         $wareHouseProductVariation->save();
                         Log::info('Warehouse product variation stock updated', [
                             'warehouse_product_variation_id' => $wareHouseProductVariation->id,
-                            'new_quantity' => $newWarehouseQty
+                            'new_quantity' => $wareHouseProductVariation->warehouse_quantity
                         ]);
                     } else {
                         Log::warning('WarehouseProductVariation not found for order item', [
@@ -1413,16 +1537,18 @@ class ProductController extends Controller
                     text-decoration: none;
                     border-radius: 5px;
                 ">View Order Details</a>';
+                $emailExtras = ProductFile::emailExtrasForOrder($order);
+
                 $body = str_replace(
                     ['{customer_name}', '{customer_email}', '{order_list}', '{order_id}', '{arriving_date}', '{total_order_value}', '{order_details_url_button}'],
                     [
-                        $order->first_name ?? '' . ' ' . $order->last_name ?? '',
+                        ($order->first_name ?? '') . ' ' . ($order->last_name ?? ''),
                         $order->email ?? '',
                         $orderList,
                         $order->order_number ?? '',
                         $order->expected_delivery_date ? Carbon::parse($order->expected_delivery_date)->format('M d, Y') : '',
                         number_format($order->total_amount ?? 0, 2),
-                        $orderDetailsUrlButton
+                        $orderDetailsUrlButton . $emailExtras['html']
                     ],
                     $template->body
                 );
@@ -1430,7 +1556,7 @@ class ProductController extends Controller
                 try {
                     // Send email
                     Mail::to($order->email)
-                        ->send(new OrderStatusUpdatedMail($order, $body));
+                        ->send(new OrderStatusUpdatedMail($order, $body, $emailExtras['attachments']));
                 } catch (\Throwable $th) {
                     Log::error('Failed to send order status email: ' . $th->getMessage());
                 }
@@ -1473,7 +1599,7 @@ class ProductController extends Controller
         if (!auth()->check()) {
             return redirect()->route('home')->with('error', 'Please login to view your orders');
         }
-        $orders = EstoreOrder::with(['orderItems.product', 'orderStatus'])
+        $orders = EstoreOrder::with(['orderItems.product.files', 'orderStatus'])
             ->where('user_id', auth()->id())
             ->whereIn('payment_status', ['paid', 'refunded'])
             ->orderBy('created_at', 'desc')
@@ -1591,7 +1717,7 @@ class ProductController extends Controller
     }
 
     /**
-     * Securely download a digital product file.
+     * Securely download a digital product file (logged-in users).
      */
     public function downloadFile($fileId)
     {
@@ -1611,24 +1737,39 @@ class ProductController extends Controller
             return back()->with('error', 'Product association not found');
         }
 
-        // Verify purchase
         if (!$product->isPurchasedByUser(auth()->id())) {
             return back()->with('error', 'You must purchase this product before downloading its files.');
         }
 
-        $filePath = $productFile->file_location;
+        $response = $productFile->streamDownloadResponse();
 
-        if (\Illuminate\Support\Facades\Storage::disk('public')->exists($filePath)) {
-            $fullPath = storage_path('app/public/' . $filePath);
-            return response()->download($fullPath);
-        }
-
-        if (\Illuminate\Support\Facades\Storage::exists($filePath)) {
-            $fullPath = storage_path('app/' . $filePath);
-            return response()->download($fullPath);
+        if ($response) {
+            return $response;
         }
 
         return back()->with('error', 'Physical file not found on server.');
+    }
+
+    /**
+     * Download via signed URL from order email (no login required).
+     */
+    public function downloadOrderFile(EstoreOrder $order, ProductFile $file)
+    {
+        if ($order->payment_status !== 'paid') {
+            abort(403, 'This order is not eligible for download.');
+        }
+
+        if (!$file->belongsToOrder($order)) {
+            abort(403, 'This file does not belong to your order.');
+        }
+
+        $response = $file->streamDownloadResponse();
+
+        if ($response) {
+            return $response;
+        }
+
+        abort(404, 'File not found on server.');
     }
 
     public function orderSuccess($orderId)
@@ -1744,7 +1885,7 @@ class ProductController extends Controller
             if (!$product) {
                 return response()->json(['status' => false, 'message' => 'Product not found']);
             }
-            $nearbyWareHouseId = WareHouse::where('is_active', 1)->first()->id; // first id from warehouses
+            $nearbyWareHouseId = WareHouse::where('is_active', 1)->first()?->id ?? 0; // first id from warehouses
             $originLat = null;
             $originLng = null;
             $isUser = auth()->user();
@@ -1807,7 +1948,18 @@ class ProductController extends Controller
                 return response()->json(['status' => false, 'message' => 'Item Out Of Stock']);
             }
 
-            return response()->json(['status' => true, 'data' => $warehouseProduct, 'productImages' => $productImages]);
+            // Calculate display price including listing charges
+            $product->load('otherCharges');
+            $displayPrice = $product->getDisplayPrice($warehouseProduct->price);
+            $listingChargesBreakdown = $product->getListingChargesBreakdown($warehouseProduct->price);
+
+            return response()->json([
+                'status' => true,
+                'data' => $warehouseProduct,
+                'productImages' => $productImages,
+                'display_price' => $displayPrice,
+                'listing_charges_breakdown' => $listingChargesBreakdown,
+            ]);
         }
     }
 

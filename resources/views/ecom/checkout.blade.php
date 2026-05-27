@@ -177,19 +177,18 @@
                             <div class="bill_details">
                                 <h4>Bill Details</h4>
                                 <div class="bill_text">
-                                    {{-- Cart items --}}
+                                    {{-- Cart items (price includes listing charges) --}}
                                     @foreach ($cartItems as $item)
                                         <ul>
                                             <li>{{ $item['product_name'] }} ({{ $item['quantity'] }}x)</li>
-                                            @php
-                                                $new_subtotal = $item['price'] * $item['quantity'];
-                                            @endphp
-                                            <li>${{ number_format($new_subtotal, 2) }}</li>
+                                            <li>${{ number_format($item['subtotal'], 2) }}</li>
                                         </ul>
-                                        @if ($item['other_charges'] > 0)
+                                        @if ($item['listing_charges'] > 0)
                                             <ul class="text-muted small">
-                                                <li style="padding-left: 15px;">• Additional charges</li>
-                                                <li>${{ number_format($item['other_charges'], 2) }}</li>
+                                                <li style="color: #989696;padding-left: 15px;">• Charges included with
+                                                    product</li>
+                                                <li style="color: #989696;">
+                                                    ${{ number_format($item['listing_charges'], 2) }}</li>
                                             </ul>
                                         @endif
                                     @endforeach
@@ -202,6 +201,43 @@
                                             ${{ number_format($subtotal, 2) }}
                                         </li>
                                     </ul>
+
+                                    {{-- Checkout-only charges (optional, selectable) --}}
+                                    @php
+                                        $allCheckoutCharges = [];
+                                        $totalCheckoutCharges = 0;
+                                        foreach ($cartItems as $item) {
+                                            foreach ($item['checkout_charges_list'] ?? [] as $cc) {
+                                                $key = $cc['charge_name'];
+                                                if (!isset($allCheckoutCharges[$key])) {
+                                                    $allCheckoutCharges[$key] = [
+                                                        'name' => $cc['charge_name'],
+                                                        'total' => 0,
+                                                    ];
+                                                }
+                                                $allCheckoutCharges[$key]['total'] += $cc['calculated_amount'];
+                                                $totalCheckoutCharges += $cc['calculated_amount'];
+                                            }
+                                        }
+                                    @endphp
+
+                                    @if (count($allCheckoutCharges) > 0)
+                                        @foreach ($allCheckoutCharges as $ccKey => $ccItem)
+                                            <ul class="checkout-optional-charge">
+                                                <li>
+                                                    <label class="form-check-label d-flex align-items-center">
+                                                        <input type="checkbox"
+                                                            class="form-check-input me-2 checkout-charge-checkbox"
+                                                            name="checkout_charges[]" value="{{ $ccKey }}"
+                                                            data-amount="{{ $ccItem['total'] }}" checked>
+                                                        {{ $ccItem['name'] }}
+                                                    </label>
+                                                </li>
+                                                <li class="checkout-charge-amount">
+                                                    ${{ number_format($ccItem['total'], 2) }}</li>
+                                            </ul>
+                                        @endforeach
+                                    @endif
 
                                     @if (isset($appliedPromoCode) && $appliedPromoCode && $promoDiscount > 0)
                                         <ul class="text-success">
@@ -291,13 +327,31 @@
                             <div id="card-element" class="form-control p-3"></div>
                             <div id="card-errors" class="text-danger mt-2"></div>
 
+                            {{-- Digital Signature Pad (shown when Required Signature is checked) --}}
+                            <div id="signature-section" class="mt-4" style="display: none;">
+                                <h5 class="mb-3 fw-bold">Required Signature</h5>
+                                <p class="text-muted small">Please sign below to confirm your order. This signature is
+                                    required for delivery.</p>
+                                <div id="signature-pad-wrapper" class="border rounded p-2 bg-light"
+                                    style="position: relative;">
+                                    <canvas id="signature-pad"
+                                        style="border: 1px solid #ccc; border-radius: 4px; background: #fff; display: block; width: 100%; height: 150px; cursor: crosshair; touch-action: none;"></canvas>
+                                    <button type="button" class="btn btn-sm btn-outline-secondary mt-2"
+                                        id="clear-signature">Clear Signature</button>
+                                </div>
+                                <input type="hidden" name="signature_image" id="signature-image-input">
+                                <div id="signature-error" class="text-danger mt-1" style="display: none;">Signature is
+                                    required when "Required Signature" is selected.</div>
+                            </div>
+
                             <!-- Submit -->
                             <div class="col-md-12 mt-3  d-flex align-item-center justify-content-end gap-2">
                                 <button type="submit" class="red_btn text-center border-0" id="submit-payment">
                                     <span>PLACE ORDER</span>
                                 </button>
                                 {{-- add a cancel to back to cart page --}}
-                                <a href="{{ route('e-store.cart') }}" class="red_btn text-center border-0 "><span>Cancel</span></a>
+                                <a href="{{ route('e-store.cart') }}"
+                                    class="red_btn text-center border-0 "><span>Cancel</span></a>
                             </div>
                         </div>
                     </div>
@@ -309,6 +363,7 @@
 
 @push('scripts')
     <script src="https://js.stripe.com/v3/"></script>
+    <script src="https://cdn.jsdelivr.net/npm/signature_pad@4.1.7/dist/signature_pad.umd.min.js"></script>
     <script>
         document.addEventListener("DOMContentLoaded", function() {
             const paymentRadios = document.querySelectorAll("input[name='payment_type']");
@@ -384,8 +439,17 @@
                     document.getElementById("delivery-cost-row")?.style.setProperty("display", "none");
                 }
 
-                const baseTotal = costs.subtotal - costs.promoDiscount + costs.tax + (isPickup ? 0 : (shippingInfo
-                    .shipping + shippingInfo.delivery));
+                // Calculate selected checkout charges
+                let selectedCheckoutCharges = 0;
+                document.querySelectorAll('.checkout-charge-checkbox').forEach(function(cb) {
+                    if (cb.checked) {
+                        selectedCheckoutCharges += parseFloat(cb.dataset.amount) || 0;
+                    }
+                });
+
+                const baseTotal = costs.subtotal + selectedCheckoutCharges - costs.promoDiscount + costs.tax + (
+                    isPickup ? 0 : (shippingInfo
+                        .shipping + shippingInfo.delivery));
 
                 let finalTotal = baseTotal;
 
@@ -404,6 +468,11 @@
             // Attach listeners
             paymentRadios.forEach(radio => radio.addEventListener("change", calculateTotal));
             orderMethodRadios.forEach(radio => radio.addEventListener("change", calculateTotal));
+
+            // Checkout charge checkboxes
+            document.querySelectorAll('.checkout-charge-checkbox').forEach(function(cb) {
+                cb.addEventListener("change", calculateTotal);
+            });
 
             // text change when radio button change
             orderMethodRadios.forEach(radio => radio.addEventListener("change", function() {
@@ -427,6 +496,82 @@
 
             // Initial run
             calculateTotal();
+
+            // Signature pad setup
+            const signatureCanvas = document.getElementById('signature-pad');
+            const signatureSection = document.getElementById('signature-section');
+            let signaturePad = null;
+
+            if (signatureCanvas) {
+                // Properly size canvas internal resolution to match CSS display size
+                function resizeSignatureCanvas() {
+                    const rect = signatureCanvas.getBoundingClientRect();
+                    signatureCanvas.width = rect.width;
+                    signatureCanvas.height = rect.height;
+                    const ctx = signatureCanvas.getContext('2d');
+                    ctx.fillStyle = 'rgb(255, 255, 255)';
+                    ctx.fillRect(0, 0, signatureCanvas.width, signatureCanvas.height);
+                }
+
+                signaturePad = new SignaturePad(signatureCanvas, {
+                    backgroundColor: 'rgb(255, 255, 255)',
+                    penColor: 'rgb(0, 0, 0)',
+                    minWidth: 1,
+                    maxWidth: 2.5,
+                });
+                window._signaturePad = signaturePad;
+
+                window.addEventListener('resize', function() {
+                    const data = signaturePad.toData();
+                    resizeSignatureCanvas();
+                    signaturePad.fromData(data);
+                });
+
+                document.getElementById('clear-signature').addEventListener('click', function() {
+                    signaturePad.clear();
+                    document.getElementById('signature-image-input').value = '';
+                });
+            }
+
+            // Toggle signature section based on any checkout charge with "signature" in name
+            function toggleSignatureSection() {
+                let signatureRequired = false;
+                document.querySelectorAll('.checkout-charge-checkbox').forEach(function(cb) {
+                    if (cb.value.toLowerCase().includes('signature') && cb.checked) {
+                        signatureRequired = true;
+                    }
+                });
+
+                if (signatureRequired) {
+                    signatureSection.style.display = 'block';
+                    if (signaturePad) {
+                        setTimeout(function() {
+                            resizeSignatureCanvas();
+                            signaturePad.clear();
+                        }, 50);
+                    }
+                } else {
+                    signatureSection.style.display = 'none';
+                }
+            }
+
+            function resizeSignatureCanvas() {
+                if (!signatureCanvas) return;
+                const rect = signatureCanvas.getBoundingClientRect();
+                signatureCanvas.width = rect.width;
+                signatureCanvas.height = rect.height;
+                const ctx = signatureCanvas.getContext('2d');
+                ctx.fillStyle = 'rgb(255, 255, 255)';
+                ctx.fillRect(0, 0, signatureCanvas.width, signatureCanvas.height);
+            }
+
+            // Listen for checkout charge checkbox changes to toggle signature
+            document.querySelectorAll('.checkout-charge-checkbox').forEach(function(cb) {
+                cb.addEventListener('change', toggleSignatureSection);
+            });
+
+            // Initial check
+            toggleSignatureSection();
         });
     </script>
 
@@ -468,6 +613,20 @@
             if (missingFields.length > 0) {
                 toastr.error('Please fill in the following fields: ' + missingFields.join(', '));
                 return;
+            }
+
+            // Check if Required Signature is selected and signature is provided
+            const signatureSection = document.getElementById('signature-section');
+            if (signatureSection && signatureSection.style.display !== 'none') {
+                const sigPad = window._signaturePad;
+                if (!sigPad || sigPad.isEmpty()) {
+                    document.getElementById('signature-error').style.display = 'block';
+                    toastr.error('Please provide your signature before placing the order.');
+                    return;
+                }
+                document.getElementById('signature-error').style.display = 'none';
+                // Set the signature data as base64 PNG
+                document.getElementById('signature-image-input').value = sigPad.toDataURL('image/png');
             }
 
             $('#submit-payment').prop('disabled', true).find('span').text('Processing...');

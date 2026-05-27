@@ -30,7 +30,7 @@ class HomeController extends Controller
         $session_id = session()->getId();
         $this->updateCartUserId();
 
-        $nearbyWareHouseId = WareHouse::where('is_active', 1)->first()->id; // first id from warehouses
+        $nearbyWareHouseId = WareHouse::where('is_active', 1)->first()?->id ?? 0; // first id from warehouses
         $originLat = null;
         $originLng = null;
         $isUser = auth()->user();
@@ -62,8 +62,8 @@ class HomeController extends Controller
 
         // $feature_products = Product::whereIn('id', $wareHouseProducts)->where('status', 1)->where('feature_product', 1)->orderBy('id', 'DESC')->get();
         // $new_products = Product::whereIn('id', $wareHouseProducts)->where('status', 1)->orderBy('id', 'DESC')->limit(10)->get();
-        $feature_products = Product::where('is_deleted', false)->where('status', 1)->where('feature_product', 1)->orderBy('id', 'DESC')->get();
-        $new_products = Product::where('is_deleted', false)->where('is_new_product', 1)->where('status', 1)->orderBy('id', 'DESC')->limit(10)->get();
+        $feature_products = Product::where('is_deleted', false)->where('status', 1)->where('feature_product', 1)->with('otherCharges')->orderBy('id', 'DESC')->get();
+        $new_products = Product::where('is_deleted', false)->where('is_new_product', 1)->where('status', 1)->with('otherCharges')->orderBy('id', 'DESC')->limit(10)->get();
         $books = Product::where('is_deleted', false)->whereIn('id', $wareHouseProducts)->where('status', 1)->whereHas('category', function ($q) {
             $q->where('slug', 'books');
         })->orderBy('id', 'DESC')->limit(10)->get();

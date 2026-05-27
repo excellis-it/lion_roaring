@@ -7,8 +7,7 @@
 
     // Fetch active membership promo codes
     $membershipCoupons = MembershipPromoCode::where('status', 1)
-        ->where('start_date', '<=', $now)
-        ->where('end_date', '>=', $now)
+        ->whereDate('end_date', '>=', $now->toDateString())
         ->get()
         ->map(function ($coupon) {
             return (object) [
@@ -127,21 +126,32 @@
             </li>
 
             {{-- ── Account Type Indicator ──────────────────────────── --}}
-            @if (Auth::user()->user_type == 'Global')
-                <li class="nav-item d-none d-lg-flex align-items-center px-2">
+            @php
+                $domainCountry  = Helper::getCountryByDomain();
+                $isGlobalDomain = $domainCountry && $domainCountry->is_global;
+                $userType       = Auth::user()->user_type;
+            @endphp
+
+            <li class="nav-item d-none d-lg-flex align-items-center px-2 gap-2">
+                {{-- Location pill: driven purely by domain --}}
+                @if ($isGlobalDomain)
                     <span class="badge-global">
-                        <i class="fa-solid fa-globe"></i> Global
+                        <i class="fa-solid fa-globe me-1"></i>Global
                     </span>
-                </li>
-            @elseif(Auth::user()->user_type == 'Regional')
-                <li class="nav-item d-none d-lg-flex align-items-center px-2">
+                @else
                     <span class="badge-regional">
-                        <img src="{{ asset('frontend_assets/images/flags/' . strtolower(Auth::user()->countries->code) . '.png') }}"
-                            height="12px" alt="">
-                        {{ Auth::user()->countries->name ?? 'Regional' }}
+                        @if ($domainCountry && $domainCountry->code)
+                            <img src="{{ asset('frontend_assets/images/flags/' . strtolower($domainCountry->code) . '.png') }}" height="12px" alt="">
+                        @endif
+                        {{ $domainCountry->name ?? '' }}
                     </span>
-                </li>
-            @endif
+                @endif
+
+                {{-- User type chip --}}
+                {{-- <span class="badge-user-type">
+                    <i class="fa-solid fa-user-tag me-1"></i>User Type : {{ $userType }}
+                </span> --}}
+            </li>
 
             <li class="nav-item dropdown">
                 <a class="nav-link nav-icon-hover" href="javascript:void(0)" id="drop2">
@@ -203,17 +213,25 @@
                                 <p class="mb-0 d-flex text-dark align-items-center gap-2">
                                     <i class="ti ti-mail fs-4"></i> {{ Auth::user()->email }}
                                 </p>
-                                @if (Auth::user()->user_type == 'Global')
-                                    <span class="badge-global small-badge">
-                                        <i class="fa-solid fa-globe"></i> Global
+                                <div class="d-flex align-items-center flex-wrap gap-1 mt-1">
+                                    {{-- Location chip: domain-based --}}
+                                    @if ($isGlobalDomain)
+                                        <span class="badge-global small-badge">
+                                            <i class="fa-solid fa-globe me-1"></i>Global
+                                        </span>
+                                    @else
+                                        <span class="badge-regional small-badge">
+                                            @if ($domainCountry && $domainCountry->code)
+                                                <img src="{{ asset('frontend_assets/images/flags/' . strtolower($domainCountry->code) . '.png') }}" height="11px" alt="">
+                                            @endif
+                                            {{ $domainCountry->name ?? '' }}
+                                        </span>
+                                    @endif
+                                    {{-- User type chip --}}
+                                    <span class="badge-user-type small-badge">
+                                        <i class="fa-solid fa-user-tag me-1"></i>User Type : {{ $userType }}
                                     </span>
-                                @elseif(Auth::user()->user_type == 'Regional')
-                                    <span class="badge-regional small-badge ms-1">
-                                        <img src="{{ asset('frontend_assets/images/flags/' . strtolower(Auth::user()->countries->code) . '.png') }}"
-                                            height="12px" alt="">
-                                        {{ Auth::user()->countries->name ?? 'Regional' }}
-                                    </span>
-                                @endif
+                                </div>
                             </div>
                         </div>
                         <div class="message-body">

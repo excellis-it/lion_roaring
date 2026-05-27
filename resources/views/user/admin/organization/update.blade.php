@@ -129,6 +129,43 @@
             background: #dc2626;
         }
 
+        .gallery-item .drag-handle {
+            position: absolute;
+            top: 6px;
+            left: 6px;
+            background: rgba(255, 255, 255, 0.9);
+            color: #64748b;
+            border: none;
+            border-radius: 6px;
+            width: 28px;
+            height: 28px;
+            cursor: grab;
+            font-size: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 3;
+            box-shadow: 0 1px 4px rgba(0, 0, 0, .15);
+            transition: background .2s, color .2s;
+        }
+
+        .gallery-item .drag-handle:hover {
+            background: #fff;
+            color: #334155;
+        }
+
+        .gallery-item .drag-handle:active {
+            cursor: grabbing;
+        }
+
+        .gallery-item.sortable-ghost {
+            opacity: 0.4;
+        }
+
+        .gallery-item.sortable-chosen {
+            box-shadow: 0 4px 20px rgba(99, 102, 241, .35);
+        }
+
         .upload-dropzone {
             border: 2.5px dashed #c7d2fe;
             border-radius: 14px;
@@ -373,7 +410,8 @@
                                     <p class="gallery-section-label">Existing Images</p>
                                     <div class="existing-gallery-grid" id="existing-gallery-grid">
                                         @foreach ($organization->images as $image)
-                                            <div class="gallery-item" id="gallery-item-{{ $image->id }}">
+                                            <div class="gallery-item" id="gallery-item-{{ $image->id }}" data-id="{{ $image->id }}">
+                                                <span class="drag-handle" title="Drag to reorder"><i class="fas fa-grip-vertical"></i></span>
                                                 <img src="{{ Storage::url($image->image) }}" alt="Gallery Image">
                                                 <div class="delete-overlay">
                                                     <button type="button" class="delete-gallery-btn"
@@ -808,6 +846,38 @@
             });
         })();
     </script>
+
+    {{-- SortableJS for image reordering --}}
+    <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.0/Sortable.min.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            var grid = document.getElementById('existing-gallery-grid');
+            if (!grid) return;
+            Sortable.create(grid, {
+                handle: '.drag-handle',
+                animation: 200,
+                ghostClass: 'sortable-ghost',
+                chosenClass: 'sortable-chosen',
+                onEnd: function() {
+                    var items = grid.querySelectorAll('.gallery-item[data-id]');
+                    var order = Array.from(items).map(function(el) { return el.getAttribute('data-id'); });
+                    $.ajax({
+                        url: "{{ route('user.admin.organization.image.reorder') }}",
+                        method: 'POST',
+                        data: {
+                            _token: $("meta[name='csrf-token']").attr('content'),
+                            order: order
+                        },
+                        success: function(res) {
+                            if (res.status) toastr.success('Image order updated');
+                        },
+                        error: function() { toastr.error('Failed to update image order'); }
+                    });
+                }
+            });
+        });
+    </script>
+
     <script>
         $(document).ready(function() {
             // window.allEditors = {};

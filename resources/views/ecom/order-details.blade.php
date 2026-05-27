@@ -171,9 +171,9 @@
                                                 </div>
                                             @endif
                                         </div>
-                                        <div class="col-md-2 text-center">
+                                        {{-- <div class="col-md-2 text-center">
                                             <p class="mb-0">${{ number_format($item->price, 2) }}</p>
-                                        </div>
+                                        </div> --}}
                                         @php
                                             // Calculate total for this item
                                             $itemTotal = $item->price * $item->quantity;
@@ -441,6 +441,16 @@
                                         @endif
                                     </div>
                                 @endforeach
+                            </div>
+                        @endif
+
+                        @if (!empty($order->signature_image))
+                            <div class="signature-section mt-4">
+                                <h5>Customer Signature</h5>
+                                <div class="bg-light p-3 rounded">
+                                    <img src="{{ Storage::url($order->signature_image) }}" alt="Customer Signature"
+                                        style="max-width: 400px; border: 1px solid #ddd; border-radius: 4px; background: #fff; width:100%;">
+                                </div>
                             </div>
                         @endif
 

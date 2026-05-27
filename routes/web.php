@@ -570,6 +570,9 @@ Route::prefix('user')->middleware(['user', 'preventBackHistory', 'userActivity',
         Route::get('/checkout/success', [UserMembershipController::class, 'checkoutSuccess'])->name('user.membership.checkout.success');
         Route::post('/token-subscribe/{tier}', [UserMembershipController::class, 'tokenSubscribe'])->name('user.membership.token-subscribe');
         Route::post('/renew', [UserMembershipController::class, 'renew'])->name('user.membership.renew');
+        Route::post('/cancel', [UserMembershipController::class, 'cancel'])->name('user.membership.cancel');
+        Route::post('/apply-promo', [UserMembershipController::class, 'applyPromo'])->name('user.membership.apply-promo');
+        Route::post('/inline-payment', [UserMembershipController::class, 'processInlinePayment'])->name('user.membership.inline-payment');
 
         // Management routes
         Route::get('/manage', [UserMembershipController::class, 'manage'])->name('user.membership.manage');
@@ -895,6 +898,7 @@ Route::prefix('user')->middleware(['user', 'preventBackHistory', 'userActivity',
     // select warehouse product variation stock
     Route::post('/select-warehouse-variation-stock', [WareHouseController::class, 'selectWarehouseVariationStock'])->name('products.select.warehouse.variation.stock');
     Route::post('/warehouse-variation/update-quantity', [WareHouseController::class, 'updateWarehouseVariationQuantity'])->name('warehouse.variation.update-quantity');
+    Route::post('/warehouse-variation/reset-stock', [WareHouseController::class, 'resetWarehouseVariationStock'])->name('warehouse.variation.reset-stock');
     // warehouse product management
     Route::get('/ware-houses/{id}/products', [WareHouseController::class, 'products'])->name('ware-houses.products');
     Route::get('/ware-houses/{id}/products/add', [WareHouseController::class, 'addProduct'])->name('ware-houses.products.add');
@@ -1034,6 +1038,7 @@ Route::prefix('user')->middleware(['user', 'preventBackHistory', 'userActivity',
 
     Route::prefix('roles')->group(function () {
         Route::get('/role-delete/{id}', [RolePermissionsController::class, 'delete'])->name('roles.delete');
+        Route::get('/affected-users/{id}', [RolePermissionsController::class, 'affectedUsers'])->name('roles.affected-users');
     });
 
     Route::prefix('partners')->group(function () {
@@ -1214,6 +1219,7 @@ Route::prefix('user')->middleware(['user', 'preventBackHistory', 'userActivity',
             Route::get('/contact-us-delete/{id}', [UserAdminContactusController::class, 'delete'])->name('contact-us.delete');
 
             Route::get('/organizations-image-delete', [UserAdminOrganizationController::class, 'imageDelete'])->name('organization.image.delete');
+            Route::post('/organizations-image-reorder', [UserAdminOrganizationController::class, 'imageReorder'])->name('organization.image.reorder');
 
             Route::prefix('faq')->group(function () {
                 Route::get('/faq-delete/{id}', [UserAdminFaqController::class, 'delete'])->name('faq.delete');
@@ -1267,10 +1273,10 @@ Route::prefix('e-store')->middleware(['user', 'preventBackHistory', 'userActivit
     Route::get('/live-search', [EstoreProductController::class, 'liveSearch'])->name('e-store.live-search');
     Route::get('/products-filter', [EstoreProductController::class, 'productsFilter'])->name('e-store.products-filter');
     Route::post('/product-add-review', [EstoreProductController::class, 'productAddReview'])->name('e-store.product-add-review');
-    Route::post('/add-to-cart', [EstoreProductController::class, 'addToCart'])->name('e-store.add-to-cart');
-    Route::post('/remove-from-cart', [EstoreProductController::class, 'removeFromCart'])->name('e-store.remove-from-cart');
-    Route::post('/update-cart', [EstoreProductController::class, 'updateCart'])->name('e-store.update-cart');
-    Route::post('/clear-cart', [EstoreProductController::class, 'clearCart'])->name('e-store.clear-cart');
+    Route::post('/add-to-cart', [EstoreProductController::class, 'addToCart'])->name('e-store.add-to-cart')->middleware('throttle:60,1');
+    Route::post('/remove-from-cart', [EstoreProductController::class, 'removeFromCart'])->name('e-store.remove-from-cart')->middleware('throttle:60,1');
+    Route::post('/update-cart', [EstoreProductController::class, 'updateCart'])->name('e-store.update-cart')->middleware('throttle:60,1');
+    Route::post('/clear-cart', [EstoreProductController::class, 'clearCart'])->name('e-store.clear-cart')->middleware('throttle:30,1');
     Route::get('/cart-count', [EstoreProductController::class, 'cartCount'])->name('e-store.cart-count');
     Route::get('/cart-list', [EstoreProductController::class, 'cartList'])->name('e-store.cart-list');
     Route::get('/check-product-in-cart', [EstoreProductController::class, 'checkProductInCart'])->name('e-store.check-product-in-cart');
@@ -1279,16 +1285,16 @@ Route::prefix('e-store')->middleware(['user', 'preventBackHistory', 'userActivit
 
 
     // e-store.apply-promo-code
-    Route::post('/apply-promo-code', [EstoreProductController::class, 'applyPromoCode'])->name('e-store.apply-promo-code');
+    Route::post('/apply-promo-code', [EstoreProductController::class, 'applyPromoCode'])->name('e-store.apply-promo-code')->middleware('throttle:10,1');
     // e-store.remove-promo-code
-    Route::post('/remove-promo-code', [EstoreProductController::class, 'removePromoCode'])->name('e-store.remove-promo-code');
+    Route::post('/remove-promo-code', [EstoreProductController::class, 'removePromoCode'])->name('e-store.remove-promo-code')->middleware('throttle:10,1');
 
-    Route::post('/process-checkout', [EstoreProductController::class, 'processCheckout'])->name('e-store.process-checkout');
+    Route::post('/process-checkout', [EstoreProductController::class, 'processCheckout'])->name('e-store.process-checkout')->middleware('throttle:5,1');
 
     // Digital Checkout Routes
     Route::post('/initiate-digital-checkout', [DigitalCheckoutController::class, 'initiateCheckout'])->name('e-store.initiate-digital-checkout');
     Route::get('/digital-checkout', [DigitalCheckoutController::class, 'checkout'])->name('e-store.digital-checkout');
-    Route::post('/process-digital-checkout', [DigitalCheckoutController::class, 'processCheckout'])->name('e-store.process-digital-checkout');
+    Route::post('/process-digital-checkout', [DigitalCheckoutController::class, 'processCheckout'])->name('e-store.process-digital-checkout')->middleware('throttle:5,1');
 
     // Digital Promo Code
     Route::post('/digital/apply-promo-code', [DigitalCheckoutController::class, 'applyPromoCode'])->name('e-store.digital.apply-promo-code');
@@ -1312,7 +1318,7 @@ Route::prefix('e-store')->middleware(['user', 'preventBackHistory', 'userActivit
 
 
     // e-store.cancel-order
-    Route::post('/cancel-order', [EstoreProductController::class, 'cancelOrder'])->name('e-store.cancel-order');
+    Route::post('/cancel-order', [EstoreProductController::class, 'cancelOrder'])->name('e-store.cancel-order')->middleware('throttle:5,1');
 
     // add to wishlist
     Route::post('/product/add-to-wishlist', [EstoreProductController::class, 'addToWishlist'])->name('e-store.add-to-wishlist');
@@ -1367,6 +1373,11 @@ Route::prefix('e-store')->middleware(['user', 'preventBackHistory', 'userActivit
     Route::get('/page/{slug}', [EstoreCmsController::class, 'cmsPageContent'])->name('e-store.cms-page');
 });
 
+// Signed guest download (no login) — links sent in order confirmation emails
+Route::get('/e-store/download-order-file/{order}/{file}', [EstoreProductController::class, 'downloadOrderFile'])
+    ->name('e-store.guest-download-file')
+    ->middleware(['signed', 'throttle:30,1']);
+
 // Dynamic routes for categories
 $categories = collect();
 if (!app()->runningInConsole() && Schema::hasTable('categories')) {
@@ -1411,6 +1422,7 @@ Route::prefix('e-learning')->middleware(['user', 'agreement.signed'])->group(fun
     Route::get('/product/{slug}', [ElearningProductController::class, 'productDetails'])->name('e-learning.product-details');
     Route::get('/all-products', [ElearningProductController::class, 'products'])->name('e-learning.all-products');
     Route::get('/products-filter', [ElearningProductController::class, 'productsFilter'])->name('e-learning.products-filter');
+    Route::get('/get-subcategories', [ElearningProductController::class, 'getSubcategories'])->name('e-learning.get-subcategories');
     Route::post('/product-add-review', [ElearningProductController::class, 'productAddReview'])->name('e-learning.product-add-review');
 
     $categories = collect();

@@ -219,23 +219,26 @@ class MarketRateService
 
             $newPrice = (float) $ratePerGram * $gramsQty;
 
-            $product->price = $newPrice;
-            $product->sale_price = null;
-            $product->market_rate_per_gram = $ratePerGram;
-            $product->market_rate_at = $fetchedAt;
-            $product->is_free = false;
-            $product->save();
+            // Wrap all three table updates in a transaction for consistency
+            \DB::transaction(function () use ($product, $newPrice, $ratePerGram, $fetchedAt) {
+                $product->price = $newPrice;
+                $product->sale_price = null;
+                $product->market_rate_per_gram = $ratePerGram;
+                $product->market_rate_at = $fetchedAt;
+                $product->is_free = false;
+                $product->save();
 
-            ProductVariation::where('product_id', $product->id)->update([
-                'price' => $newPrice,
-                'sale_price' => null,
-                'before_sale_price' => null,
-            ]);
+                ProductVariation::where('product_id', $product->id)->update([
+                    'price' => $newPrice,
+                    'sale_price' => null,
+                    'before_sale_price' => null,
+                ]);
 
-            WarehouseProduct::where('product_id', $product->id)->update([
-                'price' => $newPrice,
-                'before_sale_price' => null,
-            ]);
+                WarehouseProduct::where('product_id', $product->id)->update([
+                    'price' => $newPrice,
+                    'before_sale_price' => null,
+                ]);
+            });
         }
     }
 

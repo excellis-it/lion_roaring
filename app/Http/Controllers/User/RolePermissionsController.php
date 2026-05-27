@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\User;
 
 use App\Http\Controllers\Controller;
+use App\Models\User;
 use App\Models\UserType;
 use App\Models\UserTypePermission;
 use Illuminate\Http\Request;
@@ -67,6 +68,7 @@ class RolePermissionsController extends Controller
         $request->validate([
             'role_name' => 'required|unique:user_types,name',
             'is_ecclesia' => 'required',
+            'is_admin' => 'required',
         ]);
 
         $name             = $request['role_name'];
@@ -75,6 +77,7 @@ class RolePermissionsController extends Controller
         $role->type = 2;
         $role->guard_name = 'web';
         $role->is_ecclesia = $request['is_ecclesia'];
+        $role->is_admin = $request['is_admin'];
         $role->save();
 
         if ($name != 'MEMBER_SOVEREIGN' && $request->has('permissions')) {
@@ -146,12 +149,22 @@ class RolePermissionsController extends Controller
         $request->validate([
             'role_name' => 'required|unique:user_types,name,' . $id,
             'is_ecclesia' => 'required',
+            'is_admin' => 'required',
         ]);
 
         $role = UserType::findOrFail($id);
+        $wasAdmin = $role->is_admin;
         $role->name = $request->role_name;
         $role->is_ecclesia = $request['is_ecclesia'];
+        $role->is_admin = $request['is_admin'];
         $role->save();
+
+        // If is_admin changed from 0 to 1, bulk-update all assigned users' user_type to G_R
+        if ($wasAdmin == 0 && $request['is_admin'] == 1) {
+            User::where('user_type_id', $role->id)
+                ->where('user_type', '!=', 'G_R')
+                ->update(['user_type' => 'G_R']);
+        }
 
         if ($role->name != 'MEMBER_SOVEREIGN') {
             UserTypePermission::where('user_type_id', $role->id)->delete();
@@ -220,5 +233,33 @@ class RolePermissionsController extends Controller
             return response()->json(['success' => true, 'message' => 'Role deleted successfully.']);
         }
         return redirect()->back()->with('message', 'Role deleted successfully.');
+    }
+
+    /**
+     * Get users affected by changing is_admin to Yes for a given role.
+     */
+    public function affectedUsers($id)
+    {
+        $id = Crypt::decrypt($id);
+        $role = UserType::findOrFail($id);
+
+        $users = User::where('user_type_id', $role->id)
+            ->where('user_type', '!=', 'G_R')
+            ->select('id', 'first_name', 'last_name', 'middle_name', 'email', 'user_type')
+            ->get()
+            ->map(function ($user) use ($role) {
+                return [
+                    'full_name' => trim($user->first_name . ' ' . ($user->middle_name ? $user->middle_name . ' ' : '') . $user->last_name),
+                    'email' => $user->email,
+                    'role_name' => $role->name,
+                    'current_user_type' => $user->user_type,
+                    'new_user_type' => 'G_R',
+                ];
+            });
+
+        return response()->json([
+            'count' => $users->count(),
+            'users' => $users,
+        ]);
     }
 }

@@ -12,7 +12,8 @@
 
 /* ─── Global / Regional Account Type Badges ─────────────────────────── */
 .badge-global,
-.badge-regional {
+.badge-regional,
+.badge-gr {
     display: inline-flex;
     align-items: center;
     gap: 5px;
@@ -58,9 +59,69 @@
     font-size: 11px;
 }
 
-/* Compact variant used inside dropdown card */
+/* Global·Regional hybrid – teal-to-purple gradient pill */
+.badge-gr {
+    background: linear-gradient(135deg, #4e2a84 0%, #1a7a6e 100%);
+    color: #ffffff !important;
+    border-color: transparent;
+    box-shadow: 0 0 0 3px rgba(78, 42, 132, 0.25),
+                0 4px 10px rgba(0, 0, 0, 0.18);
+}
+
+.badge-gr i {
+    color: #ffffff;
+    font-size: 11px;
+}
+
+/* User type chip — base structure */
+.badge-user-type {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 4px 11px;
+    border-radius: 30px;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.4px;
+    white-space: nowrap;
+    line-height: 1;
+    cursor: default;
+    user-select: none;
+    transition: all 0.2s ease;
+}
+
+/* Navbar (purple background) — frosted white pill */
+.app-header .badge-user-type {
+    color: #ffffff !important;
+    background: rgba(255, 255, 255, 0.18);
+    border: 1.5px solid rgba(255, 255, 255, 0.55);
+    box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.08),
+                0 3px 8px rgba(0, 0, 0, 0.18);
+    text-transform: uppercase;
+}
+
+.app-header .badge-user-type i {
+    color: #ffffff;
+    font-size: 10px;
+}
+
+/* Profile dropdown (white background) — purple-tinted pill */
+.profile-dropdown .badge-user-type {
+    color: #643271 !important;
+    background: rgba(100, 50, 113, 0.08);
+    border: 1.5px solid rgba(100, 50, 113, 0.25);
+}
+
+.profile-dropdown .badge-user-type i {
+    color: #643271;
+    font-size: 10px;
+}
+
+/* Compact variant */
 .badge-global.small-badge,
-.badge-regional.small-badge {
+.badge-regional.small-badge,
+.badge-gr.small-badge,
+.badge-user-type.small-badge {
     font-size: 10px;
     padding: 3px 8px;
 }
@@ -2845,6 +2906,11 @@ section {
 
 .ck-content ul{
     list-style: inside !important;
+}
+
+.ck-content,
+.ck-content *{
+    font-family: var(--main-font) !important;
 }
 
 

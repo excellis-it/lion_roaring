@@ -171,7 +171,7 @@ class ChatbotController extends Controller
     {
         // Use the same helper used by the header dropdown
         $languagesCol = Helper::getVisitorCountryLanguages();
-        
+
         $languages = [];
         foreach ($languagesCol as $lang) {
             $languages[] = [

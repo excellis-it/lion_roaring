@@ -31,9 +31,9 @@
                                             <select name="topic_id" id="topics" class="form-select">
                                                 <option value="">Select Topics</option>
                                                 @foreach ($topics as $topic)
-                                                <option value="{{ $topic->id }}"
-                                                    {{ isset($_GET['topic']) && $_GET['topic'] == $topic->id ? 'selected' : '' }}>
-                                                    {{ $topic->topic_name }}</option>
+                                                    <option value="{{ $topic->id }}"
+                                                        {{ isset($_GET['topic']) && $_GET['topic'] == $topic->id ? 'selected' : '' }}>
+                                                        {{ $topic->topic_name }}</option>
                                                 @endforeach
                                             </select>
                                         </div>
@@ -67,6 +67,7 @@
                                                     Country
                                                 </th>
                                                 <th>Created By</th>
+                                                <th>Date</th>
                                                 <th></th>
                                             </tr>
                                         </thead>
@@ -78,8 +79,7 @@
                                     <input type="hidden" name="hidden_page" id="hidden_page" value="1" />
                                     <input type="hidden" name="hidden_column_name" id="hidden_column_name"
                                         value="id" />
-                                    <input type="hidden" name="hidden_sort_type" id="hidden_sort_type"
-                                        value="desc" />
+                                    <input type="hidden" name="hidden_sort_type" id="hidden_sort_type" value="desc" />
                                 </div>
                             </div>
                         </div>

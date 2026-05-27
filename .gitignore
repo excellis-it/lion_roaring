@@ -21,3 +21,4 @@ codes.zip
 /.DS_Store
 /.ai
 /.mcp
+.claude/settings.json

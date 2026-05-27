@@ -50,7 +50,7 @@
                                     <form id="filter-form">
                                         <div class="row">
                                             <div class="col-md-3 mb-2">
-                                                <label class="form-label">User Name</label>
+                                                <label class="form-label">Name</label>
                                                 <input type="text" name="user_name" class="form-control"
                                                     value="{{ request('user_name') }}" placeholder="Search by name">
                                             </div>
@@ -59,11 +59,11 @@
                                                 <input type="email" name="email" class="form-control"
                                                     value="{{ request('email') }}" placeholder="Search by email">
                                             </div>
-                                            <div class="col-md-3 mb-2">
-                                                <label class="form-label">Role</label>
+                                            {{-- <div class="col-md-3 mb-2">
+                                                <label class="form-label">Username</label>
                                                 <select name="user_roles" class="form-control">
                                                     <option value=""
-                                                        {{ request('user_roles') == '' ? 'selected' : '' }}>All Roles
+                                                        {{ request('user_roles') == '' ? 'selected' : '' }}>All Username
                                                     </option>
                                                     @foreach ($filters['roles'] as $role)
                                                         @if (trim((string) $role) === '')
@@ -75,7 +75,7 @@
                                                         </option>
                                                     @endforeach
                                                 </select>
-                                            </div>
+                                            </div> --}}
                                             <div class="col-md-3 mb-2">
                                                 <label class="form-label">Country</label>
                                                 <select name="country_name" class="form-control">
@@ -139,9 +139,9 @@
                                         <thead class="color_head">
                                             <tr>
                                                 <th>#</th>
-                                                <th>User Name</th>
+                                                <th>Name</th>
                                                 <th>Email</th>
-                                                <th>User Role</th>
+                                                <th>Username</th>
                                                 <th>Ecclesia Name</th>
                                                 <th>IP</th>
                                                 <th>Country Code</th>

@@ -147,18 +147,23 @@
                     <li><a href="{{ route('e-learning') }}">Home</a></li>
                     {{-- <li><a href="{{ route('e-learning.all-products') }}">Our Collections</a></li> --}}
                     <li>
-                        <a href="{{ Helper::getPDFAttribute() ?? 'javascript:void(0);' }}" target="_blank">Article of
+                        <a href="{{ Helper::getPDFAttribute() ?? 'javascript:void(0);' }}" target="_blank">Articles of
                             Agreement</a>
                     </li>
                     <li><a href="{{ route('contact-us') }}">Contact us</a></li>
                     @if (Helper::getElearningCmsPages() && count(Helper::getElearningCmsPages()) > 0)
-                        @foreach (Helper::getElearningCmsPages() as $page)
+                        {{-- @foreach (Helper::getElearningCmsPages() as $page)
                             <li><a
                                     href="{{ route('e-learning.cms-page', ['slug' => $page->slug]) }}">{{ $page->page_name }}</a>
                             </li>
-                        @endforeach
+                        @endforeach --}}
 
-                        <li><a href="{{ route('terms-and-conditions') }}">Terms & Conditions</a></li>
+                        <li><a href="{{ route('privacy-policy') }}"
+                                aria-current="page">{{ Helper::getMenuName('pages_privacy_policy', 'Privacy Policy') }}</a>
+                        </li>
+                        <li><a href="{{ route('terms-and-conditions') }}"
+                                aria-current="page">{{ Helper::getMenuName('pages_terms_and_conditions', 'Terms and Conditions') }}</a>
+                        </li>
                     @endif
                 </ul>
             </div>

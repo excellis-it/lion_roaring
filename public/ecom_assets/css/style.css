@@ -1505,6 +1505,11 @@ white-space: nowrap;
 
 .filter .search_color input {
     font-size: 15px;
+    color: #fff !important;
+}
+
+.filter .search_color input:focus {
+    color: #fff !important;
 }
 
 .filter .search_color input::placeholder {

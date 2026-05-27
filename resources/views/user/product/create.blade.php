@@ -781,14 +781,13 @@
                                                     <h3>Other Charges</h3>
                                                 </div>
                                             </div>
-                                            <div class="col-md-4 mb-2">
+                                            <div class="col-md-3 mb-2">
                                                 <div class="box_label">
                                                     <label>Other Charges</label>
                                                     <div>
                                                         <div class="mb-2">
                                                             <input type="text" name="other_charges[0][charge_name]"
                                                                 class="form-control" placeholder="Ex. Package Charge">
-                                                            {{-- showing error message --}}
                                                             <span class="text-danger"
                                                                 id="other_charges.0.charge_name_error"></span>
                                                         </div>
@@ -796,7 +795,7 @@
                                                 </div>
                                             </div>
 
-                                            <div class="col-md-3 mb-2">
+                                            <div class="col-md-2 mb-2">
                                                 <div class="box_label">
                                                     <label>Charge Type</label>
                                                     <div class="mb-2">
@@ -808,8 +807,7 @@
                                                 </div>
                                             </div>
 
-
-                                            <div class="col-md-3 mb-2">
+                                            <div class="col-md-2 mb-2">
                                                 <div class="box_label">
                                                     <label>Amount/Percent</label>
                                                     <div>
@@ -818,10 +816,22 @@
                                                                 name="other_charges[0][charge_amount]"
                                                                 class="form-control" placeholder="Charge Amount"
                                                                 min="0.00">
-                                                            {{-- showing error message --}}
                                                             <span class="text-danger"
                                                                 id="other_charges.0.charge_amount_error"></span>
                                                         </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <div class="col-md-3 mb-2">
+                                                <div class="box_label">
+                                                    <label>Display At</label>
+                                                    <div class="mb-2">
+                                                        <select name="other_charges[0][display_at]"
+                                                            class="form-control charge-display-at">
+                                                            <option value="listing">Include in Display Price</option>
+                                                            <option value="checkout" selected>Checkout Only</option>
+                                                        </select>
                                                     </div>
                                                 </div>
                                             </div>
@@ -1576,15 +1586,17 @@
                 let otherChargeIndex = 1; // Start from 1 since we already have one input
 
                 $('.add-more-other-charge').on('click', function() {
+                    const isMarketPriced = $('#use_market_price').is(':checked');
+                    const defaultDisplayAt = isMarketPriced ? 'listing' : 'checkout';
                     const newChargeHtml = `
                     <div class="row">
-                        <div class="col-md-4 mb-2">
+                        <div class="col-md-3 mb-2">
                             <div class="box_label">
                                 <input type="text" name="other_charges[${otherChargeIndex}][charge_name]" class="form-control" placeholder="Ex. Shipping Charge">
                                 <span class="text-danger" id="other_charges.${otherChargeIndex}.charge_name_error"></span>
                             </div>
                         </div>
-                        <div class="col-md-3 mb-2">
+                        <div class="col-md-2 mb-2">
                             <div class="box_label">
                                 <div class="mb-2">
                                     <select name="other_charges[${otherChargeIndex}][charge_type]" class="form-control">
@@ -1594,11 +1606,21 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="col-md-3 mb-2">
+                        <div class="col-md-2 mb-2">
                             <div class="box_label">
                                 <input step="any" type="number" name="other_charges[${otherChargeIndex}][charge_amount]" class="form-control" placeholder="Charge Amount" min="0.00">
                                 <span class="text-danger" id="other_charges.${otherChargeIndex}.charge_amount_error"></span>
                                 </div>
+                        </div>
+                        <div class="col-md-3 mb-2">
+                            <div class="box_label">
+                                <div class="mb-2">
+                                    <select name="other_charges[${otherChargeIndex}][display_at]" class="form-control charge-display-at">
+                                        <option value="listing" ${defaultDisplayAt === 'listing' ? 'selected' : ''}>Include in Display Price</option>
+                                        <option value="checkout" ${defaultDisplayAt === 'checkout' ? 'selected' : ''}>Checkout Only</option>
+                                    </select>
+                                </div>
+                            </div>
                         </div>
                         <div class="col-md-2 mb-2">
                             <div class="box_label">
