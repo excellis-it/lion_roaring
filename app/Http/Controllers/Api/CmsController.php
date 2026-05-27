@@ -905,15 +905,32 @@ class CmsController extends Controller
      *   "status": false
      * }
      */
-    public function detailsPage()
+    public function detailsPage(Request $request)
     {
+        $code = strtoupper(trim((string) $request->input('country_code', '')));
+        if ($code !== '') {
+            $ip = $request->ip();
+            session(['visitor_country_code_' . $ip => $code]);
+            session(['visitor_country_flag_code_' . $ip => $code]);
+        }
+
         try {
-            $details = Detail::orderBy('id', 'asc')->select('image', 'description')->get();
-            if ($details) {
-                return response()->json(['message' => 'Details', 'status' => true, 'details' => $details], $this->successStatus);
-            } else {
-                return response()->json(['message' => 'No details found', 'status' => false], 201);
+            // Match frontend CmsController@details: visitor country + id desc.
+            $details = Helper::getVisitorCmsContent('Detail', false, false, 'id', 'desc', null);
+
+            if ($details->isNotEmpty()) {
+                $payload = $details->map(function ($detail) {
+                    return [
+                        'id' => $detail->id,
+                        'image' => $detail->image ? Storage::url($detail->image) : null,
+                        'description' => $detail->description ?? null,
+                    ];
+                })->values();
+
+                return response()->json(['message' => 'Details', 'status' => true, 'details' => $payload], $this->successStatus);
             }
+
+            return response()->json(['message' => 'No details found', 'status' => false], 201);
         } catch (\Throwable $th) {
             return response()->json(['message' => $th->getMessage(), 'status' => false], 401);
         }
