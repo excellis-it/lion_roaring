@@ -201,6 +201,7 @@ Route::prefix('v3')->middleware(['userActivity'])->group(function () {
             Route::get('/addresses/{id}', [AddressController::class, 'show'])->whereNumber('id');
             Route::put('/addresses/{id}', [AddressController::class, 'update'])->whereNumber('id');
             Route::delete('/addresses/{id}', [AddressController::class, 'destroy'])->whereNumber('id');
+            Route::post('/addresses/default', [AddressController::class, 'setDefault']);
         }); // end e-store
 
         // Public e-store utility endpoints (outside auth group)
