@@ -17,6 +17,10 @@ class ApiMemberAccess
      */
     public function handle(Request $request, Closure $next)
     {
+        if (!config('lion_roaring.in_app_membership')) {
+            return $next($request);
+        }
+
         if (auth()->check() && isset(auth()->user()->userSubscription) && auth()->user()->userLastSubscription != null) {
             if (auth()->user()->userLastSubscription->subscription_expire_date >= date('Y-m-d')) {
                 return $next($request);

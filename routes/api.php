@@ -309,6 +309,7 @@ Route::prefix('v3')->middleware(['userActivity'])->group(function () {
 
         // Articles + Register Agreement acceptance (auth)
         Route::post('articles/{id}/accept', [ArticleController::class, 'accept'])->whereNumber('id');
+        Route::post('register-agreement/preview', [ArticleController::class, 'previewRegisterAgreement']);
         Route::post('register-agreement/sign', [ArticleController::class, 'signRegisterAgreement']);
 
         Route::prefix('membership')->group(function () {

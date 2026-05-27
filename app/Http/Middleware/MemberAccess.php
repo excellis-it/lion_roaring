@@ -12,6 +12,10 @@ class MemberAccess
 {
     public function handle(Request $request, Closure $next)
     {
+        if (!config('lion_roaring.in_app_membership')) {
+            return $next($request);
+        }
+
         if (!auth()->check()) {
             return $next($request);
         }

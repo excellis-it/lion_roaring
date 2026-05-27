@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Models\UserRegisterAgreement;
 use App\Traits\ImageTrait;
 use Illuminate\Http\Request;
 use App\Models\User;
@@ -106,6 +107,8 @@ class ProfileController extends Controller
             'states' => $user->states,
             'user_role' => $user->userRole,
             'user_last_subscription' => $user->userLastSubscription,
+            'has_register_agreement' => UserRegisterAgreement::where('user_id', $user->id)->exists(),
+            'has_signature' => !empty($user->signature),
         ];
     }
 
