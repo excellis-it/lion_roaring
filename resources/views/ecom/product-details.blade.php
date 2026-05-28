@@ -20,6 +20,30 @@
             border-color: #643171;
             border: 4px solid;
         }
+
+        /* ---------- Product gallery: keep original look, remove "boxes" ---------- */
+        /* Keep original sizing from ecom css (500px main, 120px thumbs).
+           Only neutralize the grey block that appears on contain images. */
+        .catagory_sec.product_details .slider_left .slid_big_img {
+            background: transparent !important; /* remove grey fill (#EBEBEB) */
+        }
+
+        /* Keep original thumbnail sizing/style, but remove grey fill so it doesn't look like 2 boxes */
+        .catagory_sec.product_details .slider_left .slid_small_img {
+            background: transparent !important;
+        }
+
+        /* Also hide slick dots (they appear as small blocks under thumbs) */
+        .catagory_sec.product_details .slider_left .slider-nav .slick-dots {
+            display: none !important;
+        }
+
+        /* Avoid focus/outline blocks on slick slides */
+        .slider_left .slick-slide,
+        .slider_left .slick-slide:focus,
+        .slider_left .slick-slide *:focus {
+            outline: none !important;
+        }
     </style>
 @endpush
 
@@ -660,6 +684,18 @@
         });
     </script>
     <script>
+        function resetZoomOnImage(img) {
+            if (!img) return;
+            img.style.transformOrigin = 'center center';
+            img.style.transform = 'scale(1)';
+        }
+
+        function resetAllZoomInSlider() {
+            document
+                .querySelectorAll('.slider_left .slider-for img')
+                .forEach(resetZoomOnImage);
+        }
+
         function enableZoomOnSlide(slide) {
             const img = slide.querySelector('img');
             if (!img) return;
@@ -676,8 +712,7 @@
             }
 
             function resetZoom() {
-                img.style.transformOrigin = 'center center';
-                img.style.transform = 'scale(1)';
+                resetZoomOnImage(img);
             }
 
             slide.addEventListener('mousemove', moveZoom);
@@ -687,7 +722,8 @@
 
 
         function initZoom() {
-            const visibleSlides = document.querySelectorAll('.slick-slide .slid_big_img');
+            // Bind zoom to slick-generated slides (avoid relying on pre-slick DOM)
+            const visibleSlides = document.querySelectorAll('.slider_left .slider-for .slick-slide .slid_big_img');
             visibleSlides.forEach(slide => {
                 const img = slide.querySelector('img');
                 if (!img) return;
@@ -700,7 +736,53 @@
                     });
                 }
             });
+
+            // Ensure any previous zoom state is cleared after re-init
+            resetAllZoomInSlider();
+
+            // If slick is active, reset zoom on slide changes too
+            if (window.jQuery && jQuery.fn && jQuery.fn.slick) {
+                const $sliderFor = jQuery('.slider_left .slider-for');
+                if ($sliderFor.length) {
+                    $sliderFor.off('beforeChange.resetZoom afterChange.resetZoom');
+                    $sliderFor.on('beforeChange.resetZoom afterChange.resetZoom', function () {
+                        resetAllZoomInSlider();
+                    });
+                }
+            }
         }
+
+        // Make sure zoom is initialized when slick initializes the gallery (custom.js does this)
+        $(document).ready(function () {
+            if (!(window.jQuery && $.fn && $.fn.slick)) {
+                return;
+            }
+
+            const $sliderFor = $('.slider_left .slider-for');
+            if (!$sliderFor.length) {
+                return;
+            }
+
+            // When slick finishes init/reInit, attach zoom handlers
+            $sliderFor.off('init.zoom reInit.zoom').on('init.zoom reInit.zoom', function () {
+                // Defer one tick so slick has placed slides in DOM
+                setTimeout(function () {
+                    initZoom();
+                }, 0);
+            });
+
+            // When slide changes, ensure the new active slide has zoom enabled
+            $sliderFor.off('afterChange.zoom').on('afterChange.zoom', function () {
+                initZoom();
+            });
+
+            // If slick was initialized before this script ran, run once
+            if ($sliderFor.hasClass('slick-initialized')) {
+                setTimeout(function () {
+                    initZoom();
+                }, 0);
+            }
+        });
         // Flag from backend whether this product is free
         const IS_FREE_PRODUCT = {{ $product->is_free ?? false ? 'true' : 'false' }};
         const MAX_ORDER_QUANTITY = {{ $maxOrderQty ?? 'null' }};
