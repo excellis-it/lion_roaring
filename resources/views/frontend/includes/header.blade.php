@@ -109,7 +109,7 @@
                             </div>
                         </div>
                         <div class="right_tran ms-1">
-                            <div id="google_translate_element"></div>
+                            @include('frontend.includes.language_switcher')
                         </div>
                     </div>
                     <div class="right-site-btns d-flex">

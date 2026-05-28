@@ -3,6 +3,9 @@ document.addEventListener("DOMContentLoaded", function () {
         const isDisabled = selectEl.disabled;
         const wrapper = document.createElement("div");
         wrapper.classList.add("cst-select-wrapper");
+        if (selectEl.classList.contains("languageSwitcher")) {
+            wrapper.classList.add("language-switcher-wrapper");
+        }
         wrapper.style.position = "relative";
         wrapper.style.display = "inline-block";
         wrapper.style.fontFamily = "Arial, sans-serif";
@@ -12,7 +15,7 @@ document.addEventListener("DOMContentLoaded", function () {
         display.classList.add("cst-select-display");
         display.style.border = "1px solid #ccc";
         display.style.padding = "6px 10px";
-        display.style.borderRadius = "5px";
+        display.style.borderRadius = "20px";
         display.style.cursor = isDisabled ? "not-allowed" : "pointer";
         display.style.display = "flex";
         display.style.alignItems = "center";

@@ -1,4 +1,4 @@
-<div id="google_translate_element" style="position: absolute; opacity: 0; width: 0; height: 0; overflow: hidden;"></div>
+<div id="google_translate_element_mount" class="google-translate-mount" aria-hidden="true"></div>
 
 <script>
     // Use Helper::getVisitorCountryLanguages() — returns all active languages when no country selected

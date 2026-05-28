@@ -2465,6 +2465,43 @@ li.slick-active button {
     height: auto;
 }
 
+/* Google widget stays in DOM for translation; header uses custom languageSwitcher */
+.google-translate-mount {
+    position: absolute !important;
+    width: 1px !important;
+    height: 1px !important;
+    margin: -1px !important;
+    padding: 0 !important;
+    overflow: hidden !important;
+    clip: rect(0, 0, 0, 0) !important;
+    white-space: nowrap !important;
+    border: 0 !important;
+    opacity: 0 !important;
+    pointer-events: none !important;
+}
+
+.google-translate-mount .goog-te-combo {
+    position: absolute !important;
+    left: -9999px !important;
+    width: 1px !important;
+    height: 1px !important;
+    opacity: 0 !important;
+    pointer-events: none !important;
+}
+
+.right_tran .cst-select-wrapper {
+    min-width: 140px;
+}
+
+.right_tran .cst-select-display {
+    min-width: 140px;
+    border: none;
+    border-radius: 20px !important;
+    background: #fff;
+    font-size: 14px;
+    padding: 6px 12px;
+}
+
 .gt_float_switcher .gt_options {
     position: absolute !important;
     background: #fff !important;

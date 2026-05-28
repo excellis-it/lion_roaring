@@ -1,4 +1,4 @@
-<div id="google_translate_element" style="position: absolute; opacity: 0; width: 0; height: 0; overflow: hidden;"></div>
+<div id="google_translate_element_mount" class="google-translate-mount" aria-hidden="true"></div>
 
 
 <script>
@@ -200,7 +200,7 @@
         new google.translate.TranslateElement({
             // pageLanguage: 'en',
             includedLanguages: includedLanguages,
-        }, 'google_translate_element');
+        }, 'google_translate_element_mount');
 
         // Watch for the dropdown and intercept English selection
         waitForTranslateSelect(function(selectEl) {
@@ -213,8 +213,78 @@
                     setTimeout(function() { window.location.reload(); }, 100);
                 }
             }, true);
+            initLanguageSwitcher(selectEl);
         }, 5000);
     }
+
+    /**
+     * Active language from googtrans cookie or translated page state.
+     */
+    function getActiveTranslateLang() {
+        const match = document.cookie.match(/(?:^|;\s*)googtrans=\/auto\/([^;]+)/);
+        if (match && match[1]) {
+            return match[1];
+        }
+        const html = document.documentElement;
+        if (
+            html.classList.contains('translated-ltr') ||
+            html.classList.contains('translated-rtl')
+        ) {
+            return html.getAttribute('lang') || 'en';
+        }
+        return 'en';
+    }
+
+    /**
+     * Custom header language UI (opens downward on Safari; native .goog-te-combo is hidden).
+     */
+    function initLanguageSwitcher(googTeSelect) {
+        const customSelect = document.getElementById('languageSwitcher');
+        if (!customSelect || customSelect.dataset.translateBound === '1') {
+            return;
+        }
+        customSelect.dataset.translateBound = '1';
+
+        const active = getActiveTranslateLang();
+        const matched = Array.from(customSelect.options).find(function (opt) {
+            return opt.value === active || opt.value.startsWith(active + '|');
+        });
+        if (matched && customSelect.value !== matched.value) {
+            customSelect.value = matched.value;
+            const wrapper = customSelect.closest('.cst-select-wrapper');
+            const display = wrapper && wrapper.querySelector('.cst-select-content');
+            if (display) {
+                display.textContent = matched.text;
+            }
+        }
+
+        customSelect.addEventListener('change', function () {
+            const lang = customSelect.value;
+            if (!lang) {
+                return;
+            }
+            if (lang === 'en') {
+                clearGoogleTranslateCookies();
+                window.location.reload();
+                return;
+            }
+            if (window.changeGoogleTranslateLanguage) {
+                window.changeGoogleTranslateLanguage(lang);
+            }
+        });
+
+        if (googTeSelect) {
+            googTeSelect.setAttribute('tabindex', '-1');
+            googTeSelect.setAttribute('aria-hidden', 'true');
+        }
+    }
+
+    document.addEventListener('DOMContentLoaded', function () {
+        const customSelect = document.getElementById('languageSwitcher');
+        if (customSelect && customSelect.dataset.translateBound !== '1') {
+            initLanguageSwitcher(document.querySelector('.goog-te-combo'));
+        }
+    });
 </script>
 <script type="text/javascript" src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit">
 </script>
