@@ -66,3 +66,17 @@
         </div>
     @endforeach
 @endif
+
+@if ((!isset($own_review) || !$own_review) && count($reviews) === 0)
+    <div class="p-4 mt-2" style="border: 1px dashed #d7d7d7; border-radius: 10px; background: #fff;">
+        <h5 class="mb-2" style="color:#202d4d;">No reviews yet</h5>
+        <p class="mb-0" style="color:#5b667a;">
+            Be the first to review this product.
+            @auth
+                If you’ve purchased it, you can submit your review above.
+            @else
+                Please log in to leave a review.
+            @endauth
+        </p>
+    </div>
+@endif
