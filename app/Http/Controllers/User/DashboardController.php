@@ -282,59 +282,39 @@ class DashboardController extends Controller
             ->where('is_read', 0)    // Not read
             ->count();
 
-        // Count unread individual chats where user is receiver and not deleted
-        // AND sender is an active user with valid role (matching chat list display logic)
+        // Count unread individual chats where user is receiver and not deleted.
+        // IMPORTANT: Use the SAME visibility rules as ChatController::chats() so the sidebar badge
+        // matches the users actually visible in the chat list.
         $chatCount = Chat::where('reciver_id', $user->id)
             ->where('seen', 0)
             ->where('deleted_for_reciver', 0)
             ->where('delete_from_receiver_id', 0)
             ->whereHas('sender', function ($query) use ($user) {
-                // Only count messages from active users with valid roles
                 $query->where('status', 1)
                     ->whereHas('userRole', function ($q) {
                         $q->whereIn('type', [1, 2, 3]);
                     });
 
                 $isSuperAdmin = $user->hasNewRole('SUPER ADMIN');
-
-                if (!$isSuperAdmin) {
-                    $user_type = $user->user_type;
-                    $country_name = $user->country;
-                    $authId = $user->id;
-
-                    $query->where(function ($q) use ($user_type, $country_name, $authId) {
-                        if ($user_type == 'Global') {
-                            // Global user: see Global non-SA users + Super Admins who messaged me first
-                            $q->where(function ($sq) {
-                                $sq->where('user_type', 'Global')
-                                    ->whereDoesntHave('userRole', function ($r) {
-                                        $r->where('name', 'SUPER ADMIN');
-                                    });
-                            })->orWhere(function ($sq) use ($authId) {
-                                $sq->whereHas('userRole', function ($r) {
-                                    $r->where('name', 'SUPER ADMIN');
-                                })->whereHas('chatSender', function ($chat) use ($authId) {
-                                    $chat->where('reciver_id', $authId);
-                                });
-                            });
-                        } else {
-                            // Regional user: see same-country Regional non-SA users + Super Admins who messaged me first
-                            $q->where(function ($sq) use ($country_name) {
-                                $sq->where('user_type', 'Regional')
-                                    ->where('country', $country_name)
-                                    ->whereDoesntHave('userRole', function ($r) {
-                                        $r->where('name', 'SUPER ADMIN');
-                                    });
-                            })->orWhere(function ($sq) use ($authId) {
-                                $sq->whereHas('userRole', function ($r) {
-                                    $r->where('name', 'SUPER ADMIN');
-                                })->whereHas('chatSender', function ($chat) use ($authId) {
-                                    $chat->where('reciver_id', $authId);
-                                });
-                            });
-                        }
-                    });
+                if ($isSuperAdmin) {
+                    return;
                 }
+
+                $authId = $user->id;
+                $query->where(function ($q) use ($authId) {
+                    // Users matching visibility rules
+                    $q->where(function ($qq) {
+                        $qq->visibleToAuthUser();
+                    })
+                    // OR Super Admins who have messaged me first
+                    ->orWhere(function ($qq) use ($authId) {
+                        $qq->whereHas('userRole', function ($r) {
+                            $r->where('name', 'SUPER ADMIN');
+                        })->whereHas('chatSender', function ($chat) use ($authId) {
+                            $chat->where('reciver_id', $authId);
+                        });
+                    });
+                });
             })
             ->count();
 
