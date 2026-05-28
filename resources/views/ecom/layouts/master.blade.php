@@ -122,6 +122,15 @@
         }
     </style>
     <style>
+        /* E-Store: best-effort image "protection" (deterrent, not DRM) */
+        .ecom-protect-images img {
+            -webkit-user-drag: none;
+            user-drag: none;
+            -webkit-touch-callout: none; /* iOS Safari long-press menu */
+            user-select: none;
+        }
+    </style>
+    <style>
         /* Prevent body scroll while loading */
         body.loading {
             overflow: hidden;
@@ -335,7 +344,7 @@
     @stack('styles')
 </head>
 
-<body class="loading">
+<body class="loading ecom-protect-images">
     <script>
         // Ensure loader is visible immediately
         document.body.classList.add('loading');
@@ -385,6 +394,34 @@
     <script src="{{ asset('ecom_assets/js/custom.js') }}"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/js/toastr.min.js"></script>
+    <script>
+        (function () {
+            // Block right-click / long-press save for images inside E-Store pages
+            // (Deterrent only; images can still be retrieved from network.)
+            function isEcomImageTarget(target) {
+                if (!target) return false;
+                // direct image
+                if (target.tagName && target.tagName.toLowerCase() === 'img') return true;
+                // sometimes right click on wrappers; find closest img
+                return !!(target.closest && target.closest('img'));
+            }
+
+            document.addEventListener('contextmenu', function (e) {
+                if (isEcomImageTarget(e.target)) {
+                    e.preventDefault();
+                    try {
+                        // if (window.toastr) toastr.info('Image saving is disabled on this page.');
+                    } catch (_) {}
+                }
+            }, { capture: true });
+
+            document.addEventListener('dragstart', function (e) {
+                if (isEcomImageTarget(e.target)) {
+                    e.preventDefault();
+                }
+            }, { capture: true });
+        })();
+    </script>
     <script>
         @if (Session::has('message'))
             toastr.options = {
