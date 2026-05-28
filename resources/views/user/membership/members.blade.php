@@ -66,6 +66,32 @@
         </div>
     </div>
 
+    <!-- Edit Expire Date Modal -->
+    <div class="modal fade" id="editExpireDateModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Update Expire Date</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="mb-2 text-muted">
+                        Member: <strong id="expireModalUserName">-</strong>
+                    </div>
+                    <input type="hidden" id="expireModalSubscriptionId" value="">
+                    <label class="form-label">Expire Date</label>
+                    <input type="date" class="form-control" id="expireModalDate" />
+                    <div class="text-danger small mt-2" id="expireModalError" style="display:none;"></div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="button" class="btn" id="expireModalSaveBtn"
+                        style="background:#6f42c1;color:#fff;">Save</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <style>
         #members-container.loading {
             opacity: 0.5;
@@ -183,6 +209,64 @@
                             scrollTop: 0
                         }, 'slow');
                     }
+                });
+
+                // Edit expire date (member-wise)
+                const modalEl = document.getElementById('editExpireDateModal');
+                const modal = modalEl ? new bootstrap.Modal(modalEl) : null;
+
+                $(document).on('click', '.btn-edit-expire-date', function() {
+                    $('#expireModalError').hide().text('');
+                    const subId = $(this).data('subscription-id');
+                    const user = $(this).data('user');
+                    const date = $(this).data('expire-date');
+                    $('#expireModalSubscriptionId').val(subId);
+                    $('#expireModalUserName').text(user || '-');
+                    $('#expireModalDate').val(date || '');
+                    if (modal) modal.show();
+                });
+
+                $('#expireModalSaveBtn').on('click', function() {
+                    const subId = $('#expireModalSubscriptionId').val();
+                    const date = $('#expireModalDate').val();
+                    $('#expireModalError').hide().text('');
+
+                    if (!subId || !date) {
+                        $('#expireModalError').show().text('Expire date is required.');
+                        return;
+                    }
+
+                    const url = "{{ route('user.membership.members.update-expire-date', ['subscription' => '__ID__']) }}"
+                        .replace('__ID__', subId);
+
+                    $.ajax({
+                        url: url,
+                        type: 'POST',
+                        data: {
+                            _token: "{{ csrf_token() }}",
+                            expire_date: date
+                        },
+                        success: function(resp) {
+                            if (resp && resp.status) {
+                                $('#expire-date-cell-' + resp.subscription_id).text(resp.expire_date);
+                                if (modal) modal.hide();
+                                toastr.success('Expire date updated.');
+                                // refresh list to keep sorting/pagination consistent
+                                loadMembers();
+                            } else {
+                                $('#expireModalError').show().text('Failed to update.');
+                            }
+                        },
+                        error: function(xhr) {
+                            let msg = 'Failed to update.';
+                            if (xhr.responseJSON && xhr.responseJSON.message) {
+                                msg = xhr.responseJSON.message;
+                            } else if (xhr.responseJSON && xhr.responseJSON.errors && xhr.responseJSON.errors.expire_date) {
+                                msg = xhr.responseJSON.errors.expire_date[0];
+                            }
+                            $('#expireModalError').show().text(msg);
+                        }
+                    });
                 });
             });
         </script>

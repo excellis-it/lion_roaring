@@ -352,6 +352,7 @@ class PartnerController extends Controller
                     'Create Membership',
                     'Edit Membership',
                     'Delete Membership',
+                    'Edit Membership Expire Date'
 
                 ],
                 Helper::getMenuName('membership_settings', 'Membership Settings') => [

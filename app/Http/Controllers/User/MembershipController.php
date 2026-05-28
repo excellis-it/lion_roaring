@@ -15,6 +15,8 @@ use Illuminate\Support\Facades\Auth;
 use App\Models\User;
 use Stripe\StripeClient;
 use Spatie\Permission\Models\Permission;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Validation\Rule;
 
 class MembershipController extends Controller
 {
@@ -274,6 +276,95 @@ class MembershipController extends Controller
         }
 
         return view('user.membership.members', compact('members', 'measurement'));
+    }
+
+    public function bulkUpdateExpireDate(Request $request)
+    {
+        if (!auth()->user()->hasNewRole('SUPER ADMIN')) {
+            abort(403, 'Unauthorized');
+        }
+
+        if (!auth()->user()->can('Manage Membership')) {
+            abort(403, 'Unauthorized');
+        }
+
+        $validated = $request->validate([
+            'expire_date' => 'required|date',
+            // Optional: apply to current filters
+            'search' => 'nullable|string|max:255',
+            'method' => 'nullable|in:amount,token',
+            'date_from' => 'nullable|date',
+            'date_to' => 'nullable|date',
+        ]);
+
+        $expireDate = \Carbon\Carbon::parse($validated['expire_date'])->startOfDay();
+
+        $date_after = '2025-11-01';
+        $query = UserSubscription::where('created_at', '>', $date_after);
+
+        if (!empty($validated['search'])) {
+            $search = $validated['search'];
+            $query->where(function ($q) use ($search) {
+                $q->where('subscription_name', 'like', "%{$search}%")
+                    ->orWhere('promo_code', 'like', "%{$search}%")
+                    ->orWhereHas('user', function ($uq) use ($search) {
+                        $uq->where('first_name', 'like', "%{$search}%")
+                            ->orWhere('last_name', 'like', "%{$search}%")
+                            ->orWhere('email', 'like', "%{$search}%");
+                    });
+            });
+        }
+
+        if (!empty($validated['method'])) {
+            $query->where('subscription_method', $validated['method']);
+        }
+
+        if (!empty($validated['date_from'])) {
+            $query->whereDate('subscription_start_date', '>=', $validated['date_from']);
+        }
+
+        if (!empty($validated['date_to'])) {
+            $query->whereDate('subscription_start_date', '<=', $validated['date_to']);
+        }
+
+        $updated = 0;
+        DB::transaction(function () use ($query, $expireDate, &$updated) {
+            $updated = $query->update([
+                'subscription_expire_date' => $expireDate,
+                'reminder_for_expire_date' => $expireDate,
+            ]);
+        });
+
+        return redirect()
+            ->route('user.membership.members', $request->only(['search', 'method', 'date_from', 'date_to']))
+            ->with('success', "Expiration date updated for {$updated} member(s).");
+    }
+
+    public function updateMemberExpireDate(Request $request, UserSubscription $subscription)
+    {
+        if (!auth()->user()->can('Edit Membership Expire Date')) {
+            abort(403, 'Unauthorized');
+        }
+
+        // Non-super admins can only edit their own subscription
+        if (!auth()->user()->hasNewRole('SUPER ADMIN') && (int) $subscription->user_id !== (int) auth()->id()) {
+            abort(403, 'Unauthorized');
+        }
+
+        $validated = $request->validate([
+            'expire_date' => 'required|date',
+        ]);
+
+        $expireDate = \Carbon\Carbon::parse($validated['expire_date'])->startOfDay();
+        $subscription->subscription_expire_date = $expireDate;
+        $subscription->reminder_for_expire_date = $expireDate;
+        $subscription->save();
+
+        return response()->json([
+            'status' => true,
+            'subscription_id' => $subscription->id,
+            'expire_date' => $expireDate->format('M d, Y'),
+        ]);
     }
 
     public function memberPayments(User $user)

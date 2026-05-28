@@ -585,6 +585,8 @@ Route::prefix('user')->middleware(['user', 'preventBackHistory', 'userActivity',
         Route::get('/delete/{membership}', [UserMembershipController::class, 'delete'])->name('user.membership.delete');
         Route::match(['get', 'post'], '/settings', [UserMembershipController::class, 'settings'])->name('user.membership.settings');
         Route::get('/members', [UserMembershipController::class, 'members'])->name('user.membership.members');
+        Route::post('/members/bulk-expire-date', [UserMembershipController::class, 'bulkUpdateExpireDate'])->name('user.membership.members.bulk-expire-date');
+        Route::post('/members/{subscription}/expire-date', [UserMembershipController::class, 'updateMemberExpireDate'])->name('user.membership.members.update-expire-date');
         Route::get('/members/{user}/payments', [UserMembershipController::class, 'memberPayments'])->name('user.membership.member.payments');
         Route::get('/payments', [UserMembershipController::class, 'payments'])->name('user.membership.payments');
     });

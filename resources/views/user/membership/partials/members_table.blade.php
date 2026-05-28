@@ -60,11 +60,20 @@
                         @endif
                     </td>
                     <td>{{ \Carbon\Carbon::parse($m->subscription_start_date)->format('M d, Y') }}</td>
-                    <td>{{ \Carbon\Carbon::parse($m->subscription_expire_date)->format('M d, Y') }}</td>
+                    <td id="expire-date-cell-{{ $m->id }}">{{ \Carbon\Carbon::parse($m->subscription_expire_date)->format('M d, Y') }}</td>
                     <td>
                         @if ($m->user)
                             <a href="{{ route('user.membership.member.payments', $m->user_id) }}" class="btn btn-sm"
                                 style="background: #6f42c1; color: white;">View Payments</a>
+                            @if (auth()->user()->can('Edit Membership Expire Date'))
+                                <button type="button" class="btn btn-sm ms-1 btn-edit-expire-date"
+                                    style="background:#198754;color:#fff;"
+                                    data-subscription-id="{{ $m->id }}"
+                                    data-user="{{ $m->user->first_name }} {{ $m->user->last_name }}"
+                                    data-expire-date="{{ \Carbon\Carbon::parse($m->subscription_expire_date)->format('Y-m-d') }}">
+                                    Edit Expire Date
+                                </button>
+                            @endif
                         @else
                             <button class="btn btn-sm btn-secondary" disabled>No User</button>
                         @endif

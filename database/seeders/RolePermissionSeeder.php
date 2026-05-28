@@ -282,6 +282,7 @@ class RolePermissionSeeder extends Seeder
             ["name" => "View Membership Members"],
             ["name" => "Manage Membership Payments"],
             ["name" => "View Membership Payments"],
+            ["name" => "Edit Membership Expire Date"],
 
             // Order status + templates
             ["name" => "Manage Order Status"],
