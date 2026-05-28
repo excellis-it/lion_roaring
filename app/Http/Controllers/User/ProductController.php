@@ -675,8 +675,18 @@ class ProductController extends Controller
                     $rules['market_unit'] = 'required|in:g,oz';
                 }
 
+                // Stock is always required for simple products
+                $rules['quantity'] = 'required|integer|min:0';
+
                 if (!$useMarketPrice && !$request->boolean('is_free')) {
-                    $rules['price'] = 'required|numeric|min:0';
+                    // If user is turning OFF market pricing and didn't enter a manual price,
+                    // keep the existing product price instead of forcing an error.
+                    $priceProvided = $request->filled('price');
+                    if ($product->is_market_priced && !$priceProvided) {
+                        $rules['price'] = 'nullable|numeric|min:0';
+                    } else {
+                        $rules['price'] = 'required|numeric|min:0';
+                    }
                 }
             }
 
@@ -797,14 +807,23 @@ class ProductController extends Controller
                 $product->price = $computedMarketPrice;
                 $product->sale_price = null;
                 $product->is_free = false;
+                $product->quantity = (int) $request->quantity;
             } else {
                 $product->is_free = $request->has('is_free');
                 if ($product->is_free) {
                     $product->price = 0;
                     $product->sale_price = null;
+                    if ($product->product_type === 'simple') {
+                        $product->quantity = (int) $request->quantity;
+                    }
                 } elseif ($product->product_type === 'simple') {
-                    $product->price = $request->price;
-                    $product->sale_price = $request->sale_price ?? null;
+                    // If market pricing was disabled and no manual price provided, retain existing price.
+                    $product->price = $request->filled('price') ? $request->price : $product->price;
+                    // If sale_price isn't provided, keep existing sale_price (avoid wiping).
+                    $product->sale_price = $request->filled('sale_price')
+                        ? $request->sale_price
+                        : $product->sale_price;
+                    $product->quantity = (int) $request->quantity;
                 } elseif ($product->product_type === 'digital') {
                     $product->price = $request->digital_price;
                     $product->sale_price = $request->digital_sale_price ?? null;

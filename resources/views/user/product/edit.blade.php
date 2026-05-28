@@ -600,6 +600,18 @@
                                                         @endif
                                                     </div>
                                                 </div>
+
+                                                <div class="col-md-3 mb-2" id="stock-qty-field">
+                                                    <div class="box_label">
+                                                        <label for="quantity"> Stock Quantity*</label>
+                                                        <input type="number" step="1" min="0" name="quantity"
+                                                            id="quantity" class="form-control"
+                                                            value="{{ old('quantity', $product->quantity) }}">
+                                                        @if ($errors->has('quantity'))
+                                                            <span class="error">{{ $errors->first('quantity') }}</span>
+                                                        @endif
+                                                    </div>
+                                                </div>
                                             </div>
                                         </div>
                                     @endif
@@ -1344,17 +1356,29 @@
                 const salePriceField = document.getElementById('sale-price-field');
                 const priceField = document.getElementById('price-field');
                 const marketFields = document.querySelectorAll('.market-price-fields');
+                const salePriceInput = document.getElementById('sale_price');
+
+                // Cache manual values so toggling market price doesn't lose them
+                let lastManualPrice = priceInput ? priceInput.value : '';
+                let lastManualSalePrice = salePriceInput ? salePriceInput.value : '';
 
                 function togglePriceFields() {
                     const digitalPriceInput = document.getElementById('digital_price');
                     const digitalSalePriceInput = document.getElementById('digital_sale_price');
-                    const salePriceInput = document.getElementById('sale_price');
 
                     if (!priceInput && !digitalPriceInput) return;
                     const isFree = isFreeCheckbox && isFreeCheckbox.checked;
                     const useMarket = useMarketCheckbox && useMarketCheckbox.checked;
 
                     if (useMarket) {
+                        // remember last manual values before clearing/disable
+                        if (priceInput && !priceInput.disabled) {
+                            lastManualPrice = priceInput.value;
+                        }
+                        if (salePriceInput && !salePriceInput.disabled) {
+                            lastManualSalePrice = salePriceInput.value;
+                        }
+
                         if (priceField) priceField.style.display = 'none';
                         if (salePriceField) salePriceField.style.display = 'none';
                         marketFields.forEach(el => (el.style.display = 'block'));
@@ -1385,6 +1409,20 @@
                         if (salePriceField) salePriceField.style.display = 'block';
                         marketFields.forEach(el => (el.style.display = 'none'));
                         if (isFreeCheckbox) isFreeCheckbox.disabled = false;
+
+                        // restore cached manual values if fields are empty
+                        if (priceInput) {
+                            priceInput.disabled = false;
+                            if (!priceInput.value && lastManualPrice) {
+                                priceInput.value = lastManualPrice;
+                            }
+                        }
+                        if (salePriceInput) {
+                            salePriceInput.disabled = false;
+                            if (!salePriceInput.value && lastManualSalePrice) {
+                                salePriceInput.value = lastManualSalePrice;
+                            }
+                        }
 
                         if (isFree) {
                             if (priceInput) {
