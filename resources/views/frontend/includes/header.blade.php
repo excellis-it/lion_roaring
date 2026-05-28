@@ -30,6 +30,23 @@
                             $canSwitchCountry = !auth()->check() || (auth()->check() && auth()->user()->hasNewRole('SUPER ADMIN'));
                         @endphp
                         <div class="input-group input-group-sm">
+                            <style>
+                                /* Make it obvious the country list is a dropdown (header) */
+                                .header-flag-box .countrySwitcher {
+                                    -webkit-appearance: none;
+                                    -moz-appearance: none;
+                                    appearance: none;
+                                    padding-right: 2.1rem !important; /* room for arrow */
+                                    background-repeat: no-repeat;
+                                    background-position: right 0.75rem center;
+                                    background-size: 0.8rem 0.8rem;
+                                    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20' fill='none'%3E%3Cpath d='M5 7l5 6 5-6' stroke='%23202d4d' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+                                }
+
+                                .header-flag-box .countrySwitcher:disabled {
+                                    background-image: none;
+                                }
+                            </style>
                             <select class="countrySwitcher form-select form-select-sm cst-select cst-select-bottom"
                                 {{ !$canSwitchCountry ? 'disabled' : '' }}
                                 {{ !$canSwitchCountry ? 'style=opacity:0.7;cursor:not-allowed;' : '' }}

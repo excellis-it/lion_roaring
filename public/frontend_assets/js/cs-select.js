@@ -2,12 +2,14 @@ document.addEventListener("DOMContentLoaded", function () {
     document.querySelectorAll("select.cst-select").forEach(function (selectEl) {
         const isDisabled = selectEl.disabled;
         const wrapper = document.createElement("div");
+        wrapper.classList.add("cst-select-wrapper");
         wrapper.style.position = "relative";
         wrapper.style.display = "inline-block";
         wrapper.style.fontFamily = "Arial, sans-serif";
 
         // visible display
         const display = document.createElement("div");
+        display.classList.add("cst-select-display");
         display.style.border = "1px solid #ccc";
         display.style.padding = "6px 10px";
         display.style.borderRadius = "5px";
@@ -21,12 +23,14 @@ document.addEventListener("DOMContentLoaded", function () {
         if (isDisabled) display.style.opacity = "0.7";
 
         const content = document.createElement("div");
+        content.classList.add("cst-select-content");
         content.style.display = "flex";
         content.style.alignItems = "center";
         content.style.gap = "6px";
         display.appendChild(content);
 
         const arrow = document.createElement("span");
+        arrow.classList.add("cst-select-arrow");
         arrow.textContent = "▼";
         arrow.style.fontSize = "12px";
         arrow.style.color = "#555";
@@ -34,6 +38,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
         // dropdown container
         const list = document.createElement("div");
+        list.classList.add("cst-select-list");
         list.style.position = "absolute";
         list.style.left = "0";
         list.style.right = "0";
@@ -42,10 +47,10 @@ document.addEventListener("DOMContentLoaded", function () {
         list.style.background = "#fff";
         list.style.zIndex = "9999";
         list.style.display = "none";
-        list.style.maxHeight = "240px";
-        list.style.overflowY = "auto";
+        // Safari often auto-hides scrollbars; keep scroll functionality in an inner area
+        // so the bottom hint can stay pinned and not scroll away.
+        list.style.overflow = "hidden";
         list.style.boxShadow = "0 4px 10px rgba(0,0,0,0.1)";
-        list.style.paddingTop = "38px"; // space for fixed search
         list.style.boxSizing = "border-box";
 
         // direction classes
@@ -65,6 +70,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
         // fixed search box
         const searchInput = document.createElement("input");
+        searchInput.classList.add("cst-select-search");
         searchInput.type = "text";
         searchInput.placeholder = "Search...";
         searchInput.style.position = "absolute";
@@ -89,9 +95,26 @@ document.addEventListener("DOMContentLoaded", function () {
         wrapper.appendChild(display);
         wrapper.appendChild(list);
 
+        // scroll area (options) — this is the element that scrolls
+        const scrollArea = document.createElement("div");
+        scrollArea.classList.add("cst-select-scroll-area");
+        scrollArea.style.maxHeight = "var(--cst-select-max-height, 240px)";
+        scrollArea.style.overflowY = "auto";
+        scrollArea.style.paddingTop = "38px"; // space for fixed search
+        scrollArea.style.boxSizing = "border-box";
+        list.appendChild(scrollArea);
+
         // option container
         const optionContainer = document.createElement("div");
-        list.appendChild(optionContainer);
+        optionContainer.classList.add("cst-select-options");
+        scrollArea.appendChild(optionContainer);
+
+        // Scroll hint (helps Safari users discover more items)
+        const scrollHint = document.createElement("div");
+        scrollHint.classList.add("cst-select-scroll-hint");
+        scrollHint.innerHTML =
+            "<span>Scroll for more</span><span class='cst-select-scroll-hint-icon'>▼</span>";
+        list.appendChild(scrollHint);
 
         // build options
         Array.from(selectEl.options).forEach(function (opt) {
@@ -166,6 +189,7 @@ document.addEventListener("DOMContentLoaded", function () {
             searchInput.focus();
             searchInput.value = "";
             filterOptions("");
+            updateScrollHint();
         });
 
         // close dropdown on outside click
@@ -180,9 +204,26 @@ document.addEventListener("DOMContentLoaded", function () {
                 const text = opt.innerText.toLowerCase();
                 opt.style.display = text.includes(keyword) ? "flex" : "none";
             });
+            // After filtering, recompute scroll hint visibility
+            updateScrollHint();
         }
         searchInput.addEventListener("input", (e) =>
             filterOptions(e.target.value)
         );
+
+        function updateScrollHint() {
+            // show hint only when list is open and there is more content below
+            if (list.style.display === "none") {
+                scrollHint.style.display = "none";
+                return;
+            }
+            const hasScroll = scrollArea.scrollHeight > scrollArea.clientHeight + 2;
+            const atBottom =
+                Math.ceil(scrollArea.scrollTop + scrollArea.clientHeight) >=
+                scrollArea.scrollHeight - 2;
+            scrollHint.style.display = hasScroll && !atBottom ? "flex" : "none";
+        }
+
+        scrollArea.addEventListener("scroll", updateScrollHint);
     });
 });
