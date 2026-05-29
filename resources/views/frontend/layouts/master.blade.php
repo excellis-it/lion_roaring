@@ -1034,7 +1034,11 @@
             }
         </script> --}}
     <!-- make sure this line sets the session languages (you already have this) -->
-    @include('frontend.includes.session_languages_script')
+    <script>
+        // Use Helper::getVisitorCountryLanguages() — returns all active languages when no country selected
+        window.sessionLanguages = @json(\App\Helpers\Helper::getVisitorCountryLanguages());
+        // console.log(window.sessionLanguages);
+    </script>
 
     <!-- Google Translate initialization + robust allowed-language logic -->
     @include('frontend.includes.google_translate')
@@ -1045,7 +1049,47 @@
 
 
 
-    @include('frontend.includes.toastr_flash')
+    <script>
+        @if (Session::has('message'))
+            toastr.options = {
+                "closeButton": true,
+                "progressBar": true,
+                "positionClass": "toast-bottom-right", // Change position to bottom right
+                "timeOut": "3000", // Duration before it auto-closes
+            }
+            toastr.success("{{ session('message') }}");
+        @endif
+
+        @if (Session::has('error'))
+            toastr.options = {
+                "closeButton": true,
+                "progressBar": true,
+                "positionClass": "toast-bottom-right", // Change position to bottom right
+                "timeOut": "3000",
+            }
+            toastr.error("{{ session('error') }}");
+        @endif
+
+        @if (Session::has('info'))
+            toastr.options = {
+                "closeButton": true,
+                "progressBar": true,
+                "positionClass": "toast-bottom-right", // Change position to bottom right
+                "timeOut": "3000",
+            }
+            toastr.info("{{ session('info') }}");
+        @endif
+
+        @if (Session::has('warning'))
+            toastr.options = {
+                "closeButton": true,
+                "progressBar": true,
+                "positionClass": "toast-bottom-right", // Change position to bottom right
+                "timeOut": "3000",
+            }
+            toastr.warning("{{ session('warning') }}");
+        @endif
+    </script>
 
 
     <script>
@@ -1102,6 +1146,14 @@
             });
         });
     </script>
+    {{-- <script>
+        $(document).ready(function() {
+            @if (Session::has('agree'))
+            @else
+                $('#onload_popup').modal('show');
+            @endif
+        });
+    </script> --}}
     {{-- PDF.js Library --}}
     <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
     <script>
@@ -1213,9 +1265,58 @@
 
 
 
+    <script>
+        $(document).ready(function() {
+            var cardTypeImages = {
+                'visa': '{{ 'frontend_assets/images/visa.png' }}',
+                'mastercard': '{{ 'frontend_assets/images/mastercard.png' }}',
+                'amex': '{{ 'frontend_assets/images/amex.png' }}',
+                'unknown': '{{ 'frontend_assets/images/unknown.webp' }}'
+            };
+
+            $('#card-number').on('keyup change', function() {
+                var cardNumber = $(this).val();
+                var cardType = $.payment.cardType(cardNumber);
+
+                var cardTypeImage = cardTypeImages[cardType] || cardTypeImages['unknown'];
+                $('#card-type-image').attr('src', cardTypeImage);
+
+                // Adjust CVV validation based on card type
+                var cvvLength = cardType === 'amex' ? 4 : 3;
+                $('#card-cvc').attr('maxlength', cvvLength);
+            });
+        });
+
+        // $(document).on('click', '#submit-btn', function(){
+        //     $('#loading').addClass('loading');
+        //     $('#loading-content').addClass('loading-content');
+        // })
+    </script>
     <script type="text/javascript" src="https://js.stripe.com/v2/"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.payment/1.4.1/jquery.payment.min.js"></script>
-    @include('frontend.includes.card_payment_images_script')
+
+    <script>
+        $(document).ready(function() {
+            var cardTypeImages = {
+                'visa': '{{ 'frontend_assets/images/visa.png' }}',
+                'mastercard': '{{ 'frontend_assets/images/mastercard.png' }}',
+                'amex': '{{ 'frontend_assets/images/amex.png' }}',
+                'unknown': '{{ 'frontend_assets/images/unknown.webp' }}'
+            };
+
+            $('#card-number').on('keyup change', function() {
+                var cardNumber = $(this).val();
+                var cardType = $.payment.cardType(cardNumber);
+
+                var cardTypeImage = cardTypeImages[cardType] || cardTypeImages['unknown'];
+                $('#card-type-image').attr('src', cardTypeImage);
+
+                // Adjust CVV validation based on card type
+                var cvvLength = cardType === 'amex' ? 4 : 3;
+                $('#card-cvc').attr('maxlength', cvvLength);
+            });
+        });
+    </script>
     <script type="text/javascript">
         // $(function() {
 
@@ -1677,7 +1778,29 @@
 
 
 
-    @include('frontend.includes.donation_popup_script')
+    <script>
+        $(document).ready(function() {
+
+            const sessions = @json(session()->all());
+            console.log('Sessions:', sessions);
+
+            const isDonation = "{{ request('is_donation') }}" === "yes";
+            const hasAgree = {{ session()->has('agree') ? 'true' : 'false' }};
+
+            setTimeout(() => {
+
+                if (isDonation) {
+                    $('#onload_popup').modal('hide');
+                    $('#exampleModalToggle2').modal('show');
+                } else {
+                    if (!hasAgree) {
+                        $('#onload_popup').modal('show');
+                    }
+                }
+
+            }, 300); // IMPORTANT
+        });
+    </script>
 
     <script>
         // Hide loader when page is fully loaded
