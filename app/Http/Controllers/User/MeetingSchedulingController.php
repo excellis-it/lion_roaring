@@ -74,8 +74,8 @@ class MeetingSchedulingController extends Controller
             $request->validate([
                 'title' => 'required',
                 'description' => 'required',
-                'start_time' => 'required',
-                'end_time' => 'required|after:start_time',
+                'start_time' => 'required|date',
+                'end_time' => 'required|date|after:start_time',
                 'meeting_link' => 'nullable',
                 'country_id' => 'required',
                 // link_source will be 'external' or 'zoom'; create_zoom hidden flag for JS simplicity
@@ -205,8 +205,8 @@ class MeetingSchedulingController extends Controller
             $request->validate([
                 'title' => 'required',
                 'description' => 'required',
-                'start_time' => 'required',
-                'end_time' => 'required|after:start_time',
+                'start_time' => 'required|date',
+                'end_time' => 'required|date|after:start_time',
                 'meeting_link' => 'nullable',
                 'country_id' => 'required',
             ]);

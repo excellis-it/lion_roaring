@@ -2,12 +2,14 @@
 
 namespace App\Models;
 
+use App\Models\Concerns\SafeDateTimes;
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\Model;
 
 class PrivateCollaboration extends BaseModel
 {
     use HasFactory;
+    use SafeDateTimes;
 
     protected $fillable = [
         'country_id',
@@ -22,36 +24,45 @@ class PrivateCollaboration extends BaseModel
     ];
 
     protected $casts = [
-        'start_time' => 'datetime',
-        'end_time' => 'datetime',
         'create_zoom' => 'boolean',
         'is_zoom' => 'boolean',
     ];
 
-    /**
-     * Get the user who created this collaboration
-     */
+    public function setStartTimeAttribute($value): void
+    {
+        $this->attributes['start_time'] = $this->normalizeDateTimeInput($value);
+    }
+
+    public function setEndTimeAttribute($value): void
+    {
+        $this->attributes['end_time'] = $this->normalizeDateTimeInput($value);
+    }
+
+    public function getStartTimeAttribute($value): ?Carbon
+    {
+        return $this->parseStoredDateTime($value);
+    }
+
+    public function getEndTimeAttribute($value): ?Carbon
+    {
+        return $this->parseStoredDateTime($value);
+    }
 
     public function country()
     {
         return $this->belongsTo(Country::class);
     }
+
     public function user()
     {
         return $this->belongsTo(User::class);
     }
 
-    /**
-     * Get all invitations for this collaboration
-     */
     public function invitations()
     {
         return $this->hasMany(CollaborationInvitation::class, 'collaboration_id');
     }
 
-    /**
-     * Get users who have been invited to this collaboration
-     */
     public function invitedUsers()
     {
         return $this->belongsToMany(User::class, 'collaboration_invitations', 'collaboration_id', 'user_id')
@@ -59,9 +70,6 @@ class PrivateCollaboration extends BaseModel
             ->withTimestamps();
     }
 
-    /**
-     * Get users who have accepted the invitation
-     */
     public function acceptedUsers()
     {
         return $this->belongsToMany(User::class, 'collaboration_invitations', 'collaboration_id', 'user_id')
@@ -70,9 +78,6 @@ class PrivateCollaboration extends BaseModel
             ->withTimestamps();
     }
 
-    /**
-     * Check if a user has accepted the invitation
-     */
     public function hasUserAccepted($userId)
     {
         return $this->invitations()
@@ -81,9 +86,6 @@ class PrivateCollaboration extends BaseModel
             ->exists();
     }
 
-    /**
-     * Check if user is the creator
-     */
     public function isCreator($userId)
     {
         return $this->user_id == $userId;

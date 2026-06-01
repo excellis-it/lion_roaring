@@ -2,14 +2,14 @@
 
 namespace App\Models;
 
+use App\Models\Concerns\SafeDateTimes;
 use Carbon\Carbon;
-use DateTimeZone;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\Model;
 
 class Event extends BaseModel
 {
     use HasFactory;
+    use SafeDateTimes;
 
     protected $fillable = [
         'user_id',
@@ -29,8 +29,6 @@ class Event extends BaseModel
     ];
 
     protected $casts = [
-        'start' => 'datetime',
-        'end' => 'datetime',
         'send_notification' => 'boolean',
         'price' => 'decimal:2',
         'capacity' => 'integer',
@@ -130,71 +128,42 @@ class Event extends BaseModel
     }
 
 
-    protected function resolveUserTimezone(?string $tz): string
+    public function setStartAttribute($value): void
     {
-        // some common legacy mappings
-        $aliases = [
-            'Asia/Calcutta' => 'Asia/Kolkata',
-            // add more if you need…
-        ];
-
-        // map deprecated → correct
-        $tz = $aliases[$tz] ?? $tz;
-
-        // final check
-        return in_array($tz, DateTimeZone::listIdentifiers())
-            ? $tz
-            : config('app.timezone');
+        $this->attributes['start'] = $this->normalizeDateTimeInput($value);
     }
 
-    public function getCreatedAtAttribute($value)
+    public function setEndAttribute($value): void
     {
-        $tz = auth()->check()
-            ? $this->resolveUserTimezone(auth()->user()->time_zone)
-            : config('app.timezone');
-        $datetime = Carbon::parse($value, $this->resolveUserTimezone($this->time_zone));
-        return Carbon::parse($datetime)->timezone($tz);
+        $this->attributes['end'] = $this->normalizeDateTimeInput($value);
     }
 
-    public function getUpdatedAtAttribute($value)
+    public function getCreatedAtAttribute($value): ?Carbon
     {
-        $tz = auth()->check()
-            ? $this->resolveUserTimezone(auth()->user()->time_zone)
-            : config('app.timezone');
-        $datetime = Carbon::parse($value, $this->resolveUserTimezone($this->time_zone));
-        return Carbon::parse($datetime)->timezone($tz);
+        return $this->parseStoredDateTime($value, $this->attributes['time_zone'] ?? $this->time_zone ?? null);
     }
 
-    /**
-     * Get the event start time in user's timezone
-     */
-    public function getStartAttribute($value)
+    public function getUpdatedAtAttribute($value): ?Carbon
     {
-        if (!$value) return null;
-
-        $tz = auth()->check()
-            ? $this->resolveUserTimezone(auth()->user()->time_zone)
-            : config('app.timezone');
-
-        // Parse the start time from event's timezone and convert to user's timezone
-        $datetime = Carbon::parse($value, $this->resolveUserTimezone($this->time_zone));
-        return $datetime->timezone($tz);
+        return $this->parseStoredDateTime($value, $this->attributes['time_zone'] ?? $this->time_zone ?? null);
     }
 
-    /**
-     * Get the event end time in user's timezone
-     */
-    public function getEndAttribute($value)
+    public function getStartAttribute($value): ?Carbon
     {
-        if (!$value) return null;
+        if (!$value) {
+            return null;
+        }
 
-        $tz = auth()->check()
-            ? $this->resolveUserTimezone(auth()->user()->time_zone)
-            : config('app.timezone');
+        return $this->parseStoredDateTime($value, $this->attributes['time_zone'] ?? $this->time_zone ?? null);
+    }
 
-        // Parse the end time from event's timezone and convert to user's timezone
-        $datetime = Carbon::parse($value, $this->resolveUserTimezone($this->time_zone));
-        return $datetime->timezone($tz);
+    public function getEndAttribute($value): ?Carbon
+    {
+        if (!$value) {
+            return null;
+        }
+
+        return $this->parseStoredDateTime($value, $this->attributes['time_zone'] ?? $this->time_zone ?? null);
     }
 
     /**
