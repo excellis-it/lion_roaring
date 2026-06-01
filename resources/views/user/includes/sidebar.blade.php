@@ -1258,24 +1258,33 @@
                          <div class="collapse {{ Request::is('user/admin/chatbot*') ? 'show' : '' }}"
                              id="collapseChatbot">
                              <div class="menu_bb">
-                                 <a href="{{ route('user.admin.chatbot.index') }}">
-                                     <span><img src="{{ asset('user_assets/images/dashboard.png') }}"
-                                             alt=""></span>
-                                     <span>{{ Helper::getMenuName('chatbot_dashboard', 'Dashboard') }}</span>
-                                 </a>
-                                 @if (Gate::check('Manage Chatbot Keywords'))
-                                     <a href="{{ route('user.admin.chatbot.keywords') }}">
-                                         <span><img src="{{ asset('user_assets/images/keyword.png') }}"
+                                 @if (env('CHATBOT') == 'AI')
+                                     <a href="https://chatbot.lionroaring.us/" target="_blank"
+                                         rel="noopener noreferrer">
+                                         <span><img src="{{ asset('user_assets/images/dashboard.png') }}"
                                                  alt=""></span>
-                                         <span>{{ Helper::getMenuName('chatbot_keywords', 'Keywords') }}</span>
+                                         <span>{{ Helper::getMenuName('chatbot_dashboard', 'Dashboard') }}</span>
                                      </a>
-                                 @endif
-                                 @if (Gate::check('View Chatbot History'))
-                                     <a href="{{ route('user.admin.chatbot.conversations') }}">
-                                         <span><img src="{{ asset('user_assets/images/history.png') }}"
+                                 @else
+                                     <a href="{{ route('user.admin.chatbot.index') }}">
+                                         <span><img src="{{ asset('user_assets/images/dashboard.png') }}"
                                                  alt=""></span>
-                                         <span>{{ Helper::getMenuName('chatbot_history', 'History') }}</span>
+                                         <span>{{ Helper::getMenuName('chatbot_dashboard', 'Dashboard') }}</span>
                                      </a>
+                                     @if (Gate::check('Manage Chatbot Keywords'))
+                                         <a href="{{ route('user.admin.chatbot.keywords') }}">
+                                             <span><img src="{{ asset('user_assets/images/keyword.png') }}"
+                                                     alt=""></span>
+                                             <span>{{ Helper::getMenuName('chatbot_keywords', 'Keywords') }}</span>
+                                         </a>
+                                     @endif
+                                     @if (Gate::check('View Chatbot History'))
+                                         <a href="{{ route('user.admin.chatbot.conversations') }}">
+                                             <span><img src="{{ asset('user_assets/images/history.png') }}"
+                                                     alt=""></span>
+                                             <span>{{ Helper::getMenuName('chatbot_history', 'History') }}</span>
+                                         </a>
+                                     @endif
                                  @endif
                              </div>
                          </div>
