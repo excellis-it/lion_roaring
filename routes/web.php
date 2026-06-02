@@ -564,17 +564,15 @@ Route::prefix('user')->middleware(['user', 'preventBackHistory', 'userActivity']
 
 Route::prefix('user')->middleware(['user', 'preventBackHistory', 'userActivity', 'member.access', 'agreement.signed'])->group(function () {
     Route::prefix('membership')->group(function () {
-        Route::middleware('member.sovereign')->group(function () {
-            Route::get('/', [UserMembershipController::class, 'index'])->name('user.membership.index');
-            Route::post('/upgrade/{tier}', [UserMembershipController::class, 'upgrade'])->name('user.membership.upgrade');
-            Route::get('/checkout/{tier}', [UserMembershipController::class, 'checkout'])->name('user.membership.checkout');
-            Route::get('/checkout/success', [UserMembershipController::class, 'checkoutSuccess'])->name('user.membership.checkout.success');
-            Route::post('/token-subscribe/{tier}', [UserMembershipController::class, 'tokenSubscribe'])->name('user.membership.token-subscribe');
-            Route::post('/renew', [UserMembershipController::class, 'renew'])->name('user.membership.renew');
-            Route::post('/cancel', [UserMembershipController::class, 'cancel'])->name('user.membership.cancel');
-            Route::post('/apply-promo', [UserMembershipController::class, 'applyPromo'])->name('user.membership.apply-promo');
-            Route::post('/inline-payment', [UserMembershipController::class, 'processInlinePayment'])->name('user.membership.inline-payment');
-        });
+        Route::get('/', [UserMembershipController::class, 'index'])->name('user.membership.index');
+        Route::post('/upgrade/{tier}', [UserMembershipController::class, 'upgrade'])->name('user.membership.upgrade');
+        Route::get('/checkout/{tier}', [UserMembershipController::class, 'checkout'])->name('user.membership.checkout');
+        Route::get('/checkout/success', [UserMembershipController::class, 'checkoutSuccess'])->name('user.membership.checkout.success');
+        Route::post('/token-subscribe/{tier}', [UserMembershipController::class, 'tokenSubscribe'])->name('user.membership.token-subscribe');
+        Route::post('/renew', [UserMembershipController::class, 'renew'])->name('user.membership.renew');
+        Route::post('/cancel', [UserMembershipController::class, 'cancel'])->name('user.membership.cancel');
+        Route::post('/apply-promo', [UserMembershipController::class, 'applyPromo'])->name('user.membership.apply-promo');
+        Route::post('/inline-payment', [UserMembershipController::class, 'processInlinePayment'])->name('user.membership.inline-payment');
 
         // Management routes
         Route::get('/manage', [UserMembershipController::class, 'manage'])->name('user.membership.manage');

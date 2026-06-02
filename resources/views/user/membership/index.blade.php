@@ -25,10 +25,10 @@
             <div class="d-flex justify-content-between align-items-center mb-3">
                 <div>
                     <h3 class="mb-0">My Plan</h3>
-                    <p class="text-muted small mb-0">Manage your plan — renew, upgrade and view benefits</p>
+                    <p class="text-muted small mb-0">Manage your plan — renew, change plans, and view benefits</p>
                 </div>
                 <div class="text-end d-none d-md-block">
-                    <small class="text-muted">Tip: Upgrade to unlock more benefits</small>
+                    <small class="text-muted">Tip: Change plans to unlock more benefits</small>
                 </div>
             </div>
             <div class="row">
@@ -188,19 +188,19 @@
                                                             </form>
                                                         @else
                                                             <button type="button"
-                                                                class="btn btn-upgrade btn-primary js-promo-checkout"
-                                                                data-tier-id="{{ $tier->id }}"
-                                                                data-tier-name="{{ $tier->name }}"
-                                                                data-tier-cost="{{ $tier->cost }}">Upgrade to
-                                                                {{ $tier->name }}</button>
+                                                            class="btn btn-upgrade btn-primary js-promo-checkout"
+                                                            data-tier-id="{{ $tier->id }}"
+                                                            data-tier-name="{{ $tier->name }}"
+                                                            data-tier-cost="{{ $tier->cost }}">Change plan to
+                                                            {{ $tier->name }}</button>
                                                         @endif
                                                     @elseif ($canRenew || $isExpired)
                                                         <button type="button"
                                                             class="btn btn-upgrade btn-primary js-promo-checkout"
                                                             data-tier-id="{{ $tier->id }}"
                                                             data-tier-name="{{ $tier->name }}"
-                                                            data-tier-cost="{{ $tier->cost }}" data-renew="1">Downgrade
-                                                            to {{ $tier->name }}</button>
+                                                            data-tier-cost="{{ $tier->cost }}" data-renew="1">Change
+                                                            plan to {{ $tier->name }}</button>
                                                     @else
                                                         <span class="btn btn-sm btn-outline-primary disabled"></span>
                                                     @endif

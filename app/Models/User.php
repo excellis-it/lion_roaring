@@ -289,7 +289,7 @@ class User extends Authenticatable
      */
     public function membershipPanelApplicable(): bool
     {
-        return $this->isMemberSovereign();
+        return !$this->hasNewRole('SUPER ADMIN');
     }
 
     /**
@@ -297,7 +297,7 @@ class User extends Authenticatable
      */
     public function membershipAppApplicable(): bool
     {
-        return (bool) config('lion_roaring.in_app_membership') && $this->isMemberSovereign();
+        return (bool) config('lion_roaring.in_app_membership') && !$this->hasNewRole('SUPER ADMIN');
     }
     // default delivery address
     public function defaultDeliveryAddress()

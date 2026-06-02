@@ -6,7 +6,7 @@ use Closure;
 use Illuminate\Http\Request;
 
 /**
- * Restricts member self-service membership routes/APIs to MEMBER_SOVEREIGN users.
+ * Restricts membership routes/APIs to all non-super-admin users.
  * IN_APP_MEMBERSHIP only affects the Flutter app (see membershipAppApplicable).
  */
 class EnsureMemberSovereign
@@ -15,15 +15,15 @@ class EnsureMemberSovereign
     {
         $user = auth()->user();
 
-        if (!$user || !$user->isMemberSovereign()) {
+        if (!$user || $user->hasNewRole('SUPER ADMIN')) {
             if ($request->expectsJson()) {
                 return response()->json([
                     'status' => false,
-                    'message' => 'Membership is only available for Member Sovereign accounts.',
+                    'message' => 'Membership is not available for Super Admin accounts.',
                 ], 403);
             }
 
-            abort(403, 'Membership is only available for Member Sovereign accounts.');
+            abort(403, 'Membership is not available for Super Admin accounts.');
         }
 
         return $next($request);

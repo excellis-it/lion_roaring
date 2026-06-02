@@ -26,11 +26,6 @@ class MemberAccess
             return $next($request);
         }
 
-        // Membership gate applies only to MEMBER_SOVEREIGN (other roles are not blocked).
-        if (!$user->isMemberSovereign()) {
-            return $next($request);
-        }
-
         if ($request->is('user/membership', 'user/membership/*', 'user/logout')) {
             return $next($request);
         }
