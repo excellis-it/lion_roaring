@@ -568,6 +568,7 @@ class ChatController extends Controller
                                 'type' => 'chat',
                                 'chat_id' => (string) $chat->id,
                                 'sender_id' => (string) auth()->id(),
+                                'receiver_id' => (string) $request->reciver_id,
                                 'sender_name' => auth()->user()->full_name,
                                 'message' => $chat->message,
                                 'attachment' => $hasAttachment ? Storage::url($chat->attachment) : '',
