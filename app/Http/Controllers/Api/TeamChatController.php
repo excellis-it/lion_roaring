@@ -41,6 +41,90 @@ class TeamChatController extends Controller
     }
 
     /**
+     * Batch-load last message and unseen counts for team list (avoids N+1 queries).
+     */
+    private function attachTeamListMeta(array &$teams, int $authId): void
+    {
+        $teamIds = collect($teams)->pluck('id')->filter()->values()->all();
+        if (empty($teamIds)) {
+            return;
+        }
+
+        $unseenCounts = ChatMember::query()
+            ->join('team_chats', 'chat_members.chat_id', '=', 'team_chats.id')
+            ->where('chat_members.user_id', $authId)
+            ->where('chat_members.is_seen', 0)
+            ->whereNull('chat_members.deleted_at')
+            ->whereIn('team_chats.team_id', $teamIds)
+            ->whereNull('team_chats.deleted_at')
+            ->whereExists(function ($query) use ($authId, $teamIds) {
+                $query->selectRaw('1')
+                    ->from('team_members')
+                    ->whereColumn('team_members.team_id', 'team_chats.team_id')
+                    ->where('team_members.user_id', $authId)
+                    ->where('team_members.is_removed', false)
+                    ->whereNull('team_members.deleted_at');
+            })
+            ->groupBy('team_chats.team_id')
+            ->selectRaw('team_chats.team_id, COUNT(*) as aggregate')
+            ->pluck('aggregate', 'team_id');
+
+        $lastMessageIds = TeamChat::query()
+            ->selectRaw('MAX(team_chats.id) as id, team_chats.team_id')
+            ->whereIn('team_chats.team_id', $teamIds)
+            ->whereHas('chatMembers', function ($query) use ($authId) {
+                $query->where('user_id', $authId);
+            })
+            ->groupBy('team_chats.team_id')
+            ->pluck('id', 'team_id');
+
+        $lastMessages = $lastMessageIds->isNotEmpty()
+            ? TeamChat::whereIn('id', $lastMessageIds->values())->get()->keyBy('team_id')
+            : collect();
+
+        $adminTeamIds = TeamMember::query()
+            ->where('user_id', $authId)
+            ->whereIn('team_id', $teamIds)
+            ->where('is_admin', true)
+            ->where('is_removed', false)
+            ->pluck('team_id')
+            ->flip();
+
+        $removedTeamIds = TeamMember::query()
+            ->where('user_id', $authId)
+            ->whereIn('team_id', $teamIds)
+            ->where('is_removed', true)
+            ->pluck('team_id')
+            ->flip();
+
+        foreach ($teams as &$team) {
+            $teamId = $team['id'];
+            $team['unseen_chat_count'] = (int) ($unseenCounts[$teamId] ?? 0);
+            $team['last_message'] = $lastMessages->get($teamId);
+            $team['isMeAdmin'] = $adminTeamIds->has($teamId);
+            $team['isMeRemoved'] = $removedTeamIds->has($teamId);
+        }
+        unset($team);
+    }
+
+    private function teamListLastMessageTimestamp($lastMessage): ?int
+    {
+        if ($lastMessage === null) {
+            return null;
+        }
+
+        $createdAt = is_array($lastMessage)
+            ? ($lastMessage['created_at'] ?? null)
+            : $lastMessage->created_at;
+
+        if ($createdAt === null) {
+            return null;
+        }
+
+        return strtotime((string) $createdAt) ?: null;
+    }
+
+    /**
      * List of Group Chats
      *
      * Retrieves the list of teams that the authenticated user is part of, ordered by the last message sent in the team. It also includes the team members.
@@ -257,35 +341,35 @@ class TeamChatController extends Controller
             //     $query->where('user_id', auth()->id());
             // })->orderBy('id', 'desc')->get()->toArray();
 
-            // Get the last message sent in each team
-            $teams = array_map(function ($team) {
-                $team['last_message'] = $this->userLastMessage($team['id'], auth()->id());
-                $team['unseen_chat_count'] = Helper::getTeamCountUnseenMessage(auth()->id(), $team['id']);
-                $team['isMeAdmin'] = Helper::checkAdminTeam(auth()->user()->id, $team['id']);
-                $team['isMeRemoved'] = Helper::checkRemovedFromTeam($team['id'], auth()->user()->id);
-                return $team;
-            }, $teams);
+            $this->attachTeamListMeta($teams, (int) auth()->id());
 
-            // Sort teams based on the latest message
             usort($teams, function ($a, $b) {
-                if ($a['last_message'] === null) {
-                    return 1; // Move teams with no messages to the end
+                $aTime = $this->teamListLastMessageTimestamp($a['last_message'] ?? null);
+                $bTime = $this->teamListLastMessageTimestamp($b['last_message'] ?? null);
+                if ($aTime === null) {
+                    return 1;
                 }
-                if ($b['last_message'] === null) {
-                    return -1; // Move teams with no messages to the end
+                if ($bTime === null) {
+                    return -1;
                 }
-                return $b['last_message']->created_at <=> $a['last_message']->created_at; // Sort by latest message timestamp
+
+                return $bTime <=> $aTime;
             });
 
-            // Get members who are not the authenticated user (visibility aligned with web)
-            $members = User::with('roles')->orderBy('first_name', 'asc')
-                ->where('id', '!=', auth()->id())
-                ->where('status', true)
-                ->whereHas('roles', function ($query) {
-                    $query->whereIn('type', [1, 2, 3]);
-                })
-                ->visibleToAuthUser()
-                ->get();
+            $members = [];
+            if ($request->boolean('include_members', true)) {
+                $members = User::query()
+                    ->select(['id', 'user_name', 'first_name', 'middle_name', 'last_name', 'email', 'profile_picture', 'status'])
+                    ->with('roles')
+                    ->orderBy('first_name', 'asc')
+                    ->where('id', '!=', auth()->id())
+                    ->where('status', true)
+                    ->whereHas('roles', function ($query) {
+                        $query->whereIn('type', [1, 2, 3]);
+                    })
+                    ->visibleToAuthUser()
+                    ->get();
+            }
 
             return response()->json([
                 'msg' => 'Teams listed successfully',
@@ -655,27 +739,35 @@ class TeamChatController extends Controller
     {
         try {
             $team_id = $request->team_id;
+            $includeMembers = $request->boolean('include_members', false);
 
-            // Get team information with members
             $team = Team::where('id', $team_id)
-                ->with(['members', 'members.user'])
+                ->with([
+                    'members' => function ($query) {
+                        $query->where('is_removed', false);
+                    },
+                    'members.user:id,user_name,first_name,middle_name,last_name,profile_picture,email',
+                ])
                 ->first();
+
+            if (!$team) {
+                return response()->json(['msg' => 'Team not found', 'status' => false], 201);
+            }
+
             $team->isMeAdmin = Helper::checkAdminTeam(auth()->user()->id, $team->id);
             $team->isMeRemoved = Helper::checkRemovedFromTeam($team->id, auth()->user()->id);
-            $allusers = User::where('status', 1)->pluck('id')->toArray();
             $page = max(1, (int) $request->input('page', 1));
             $perPage = (int) $request->input('per_page', 20);
 
             $team_chatsPaginator = TeamChat::where('team_id', $team_id)
-                ->whereIn('user_id', $allusers)
                 ->whereHas('chatMembers', function ($query) {
                     $query->where('user_id', auth()->id());
                 })
-                ->with('user')
-                ->orderBy('created_at', 'desc')
+                ->with('user:id,user_name,first_name,middle_name,last_name,profile_picture')
+                ->orderBy('id', 'desc')
                 ->paginate($perPage, ['*'], 'page', $page);
 
-            $team_chats = $team_chatsPaginator->getCollection()->reverse()->values();
+            $team_chats = $team_chatsPaginator->getCollection()->sortBy('id')->values();
             $hasMoreMessages = $team_chatsPaginator->hasMorePages();
 
             $team_chats->each(function ($chat) {
@@ -689,44 +781,38 @@ class TeamChatController extends Controller
                 }
             });
 
-            // Mark chat as seen for the authenticated user
             ChatMember::where('user_id', auth()->id())
                 ->whereHas('chat', function ($query) use ($team_id) {
                     $query->where('team_id', $team_id);
                 })
                 ->update(['is_seen' => true]);
 
-            // Get comma-separated team member names
-            $team_members = TeamMember::where('team_id', $team_id)
-                ->where('is_removed', false)
-                ->with('user')
-                ->get();
-
-            $all_team_members = TeamMember::where('team_id', $team_id)
-                ->with('user')
-                ->get();
-
-            $team_member_ids = $all_team_members->pluck('user_id'); // Get user IDs of team members
-
-            $not_team_members = User::with('roles')->orderBy('first_name', 'asc')
-                ->whereNotIn('id', $team_member_ids)
-                ->where('id', '!=', auth()->id())
-                ->where('status', true)
-                ->whereHas('roles', function ($query) {
-                    $query->whereIn('type', [1, 2, 3]);
-                })
-                ->visibleToAuthUser()
-                ->get();
-
-            $team_member_name = '';
-            foreach ($team_members as $member) {
-                $team_member_name .= ($member->user->first_name ?? '') . ' ' .
+            $team_member_name = $team->members
+                ->map(fn ($member) => trim(
+                    ($member->user->first_name ?? '') . ' ' .
                     ($member->user->middle_name ?? '') . ' ' .
-                    ($member->user->last_name ?? '') . ', ';
-            }
-            $team_member_name = rtrim($team_member_name, ', ');
+                    ($member->user->last_name ?? '')
+                ))
+                ->filter()
+                ->implode(', ');
 
-            // Respond with JSON data
+            $not_team_members = collect();
+            if ($includeMembers) {
+                $team_member_ids = TeamMember::where('team_id', $team_id)->pluck('user_id');
+                $not_team_members = User::query()
+                    ->select(['id', 'user_name', 'first_name', 'middle_name', 'last_name', 'email', 'profile_picture'])
+                    ->with('roles:id,name,type,is_ecclesia,guard_name')
+                    ->orderBy('first_name', 'asc')
+                    ->whereNotIn('id', $team_member_ids)
+                    ->where('id', '!=', auth()->id())
+                    ->where('status', true)
+                    ->whereHas('roles', function ($query) {
+                        $query->whereIn('type', [1, 2, 3]);
+                    })
+                    ->visibleToAuthUser()
+                    ->get();
+            }
+
             return response()->json([
                 'team' => $team,
                 'team_chats' => $team_chats,

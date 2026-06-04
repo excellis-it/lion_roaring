@@ -139,7 +139,7 @@ class ChatController extends Controller
      */
     private function baseChatUsersQuery()
     {
-        $usersQuery = User::with(['roles', 'chatSender'])
+        $usersQuery = User::query()
             ->where('id', '!=', auth()->id())
             ->where('status', 1)
             ->whereHas('roles', function ($query) {
@@ -165,12 +165,66 @@ class ChatController extends Controller
         return $usersQuery;
     }
 
+    /**
+     * Batch-load unseen counts and last messages for chat list users (avoids N+1 queries).
+     */
+    private function attachChatListMeta($chatUsers, int $authId): void
+    {
+        $partnerIds = $chatUsers->pluck('id')->filter()->values()->all();
+        if (empty($partnerIds)) {
+            return;
+        }
+
+        $unseenCounts = Chat::query()
+            ->where('reciver_id', $authId)
+            ->whereIn('sender_id', $partnerIds)
+            ->where('seen', 0)
+            ->where('deleted_for_reciver', 0)
+            ->where('delete_from_receiver_id', 0)
+            ->groupBy('sender_id')
+            ->selectRaw('sender_id, COUNT(*) as aggregate')
+            ->pluck('aggregate', 'sender_id');
+
+        $lastMessageIds = Chat::query()
+            ->selectRaw(
+                'MAX(id) as id, CASE WHEN sender_id = ? THEN reciver_id ELSE sender_id END as partner_id',
+                [$authId]
+            )
+            ->where(function ($query) use ($authId, $partnerIds) {
+                $query->where(function ($q) use ($authId, $partnerIds) {
+                    $q->where('sender_id', $authId)
+                        ->whereIn('reciver_id', $partnerIds)
+                        ->where('deleted_for_sender', 0)
+                        ->where('delete_from_sender_id', 0);
+                })->orWhere(function ($q) use ($authId, $partnerIds) {
+                    $q->whereIn('sender_id', $partnerIds)
+                        ->where('reciver_id', $authId)
+                        ->where('deleted_for_reciver', 0)
+                        ->where('delete_from_receiver_id', 0);
+                });
+            })
+            ->groupBy('partner_id')
+            ->pluck('id', 'partner_id');
+
+        $lastMessages = $lastMessageIds->isNotEmpty()
+            ? Chat::whereIn('id', $lastMessageIds->values())->get()->keyBy(function ($chat) use ($authId) {
+                return (int) ($chat->sender_id == $authId ? $chat->reciver_id : $chat->sender_id);
+            })
+            : collect();
+
+        $chatUsers->each(function ($chatUser) use ($unseenCounts, $lastMessages) {
+            $chatUser->chat_count = (int) ($unseenCounts[$chatUser->id] ?? 0);
+            $chatUser->last_message = $lastMessages->get($chatUser->id);
+        });
+    }
+
     public function chats(Request $request)
     {
         try {
             $search_query = $request->input('search');
 
-            $usersQuery = $this->baseChatUsersQuery();
+            $usersQuery = $this->baseChatUsersQuery()
+                ->with('roles:id,name,type,is_ecclesia,guard_name');
 
             if (!empty($search_query)) {
                 $usersQuery->where(function ($q) use ($search_query) {
@@ -184,36 +238,7 @@ class ChatController extends Controller
             }
 
             $chat_users = $usersQuery->get();
-
-            // $chat_users = User::with('roles')->where('id', '!=', auth()->id())
-            //     ->where('status', 1)
-            //     ->whereHas('roles', function ($query) {
-            //         $query->whereIn('type', [1, 2, 3]);
-            //     })
-            //     ->get();
-
-            // Calculate unseen chat count and last message for each user
-            $chat_users->each(function ($chat_user) {
-                $chat_user->chat_count = Helper::getCountUnseenMessage(auth()->id(), $chat_user->id);
-
-                // Get the last message
-                $chat_user->last_message = Chat::where(function ($query) use ($chat_user) {
-                    $query->where(function ($subQuery) use ($chat_user) {
-                        $subQuery->where('sender_id', $chat_user->id)
-                            ->where('reciver_id', auth()->id())->where('deleted_for_reciver', 0)->where('delete_from_receiver_id', 0);
-                    })->orWhere(function ($subQuery) use ($chat_user) {
-                        $subQuery->where('sender_id', auth()->id())
-                            ->where('reciver_id', $chat_user->id)->where('deleted_for_sender', 0)->where('delete_from_sender_id', 0);
-                    });
-                })
-                    // ->where(function ($query) {
-                    //     $query->where('deleted_for_reciver', 0)
-                    //         ->orWhere('deleted_for_sender', 0);
-                    // })
-                    ->orderBy('created_at', 'desc')->first();
-            });
-
-            // Convert to array
+            $this->attachChatListMeta($chat_users, (int) auth()->id());
             $chat_users = $chat_users->toArray();
 
             // Sort users based on the latest message timestamp, placing users with no messages at the end
@@ -902,6 +927,7 @@ class ChatController extends Controller
             $query = $request->input('query');
 
             $chat_users = $this->baseChatUsersQuery()
+                ->with('roles:id,name,type,is_ecclesia,guard_name')
                 ->where(function ($q) use ($query) {
                     $q->where('user_name', 'LIKE', "%{$query}%")
                         ->orWhere('first_name', 'LIKE', "%{$query}%")
@@ -912,28 +938,7 @@ class ChatController extends Controller
                 })
                 ->get();
 
-            // Calculate unseen chat count and last message for each user
-            $chat_users->each(function ($chat_user) {
-                $chat_user->chat_count = Helper::getCountUnseenMessage(auth()->id(), $chat_user->id);
-
-                // Get the last message
-                $chat_user->last_message = Chat::where(function ($query) use ($chat_user) {
-                    $query->where(function ($subQuery) use ($chat_user) {
-                        $subQuery->where('sender_id', $chat_user->id)
-                            ->where('reciver_id', auth()->id())
-                            ->where('deleted_for_reciver', 0)
-                            ->where('delete_from_receiver_id', 0);
-                    })->orWhere(function ($subQuery) use ($chat_user) {
-                        $subQuery->where('sender_id', auth()->id())
-                            ->where('reciver_id', $chat_user->id)
-                            ->where('deleted_for_sender', 0)
-                            ->where('delete_from_sender_id', 0);
-                    });
-                })
-                    ->orderBy('created_at', 'desc')->first();
-            });
-
-            // Convert to array
+            $this->attachChatListMeta($chat_users, (int) auth()->id());
             $chat_users = $chat_users->toArray();
 
             // Sort users based on the latest message timestamp, placing users with no messages at the end
