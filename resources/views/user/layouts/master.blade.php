@@ -422,6 +422,16 @@
             toastr.error("{{ session('error') }}");
         @endif
 
+        @if (request()->query('instance_error'))
+            toastr.options = {
+                "closeButton": true,
+                "progressBar": true,
+                "positionClass": "toast-bottom-right",
+                "timeOut": "5000",
+            }
+            toastr.error(@json(request()->query('instance_error')));
+        @endif
+
         @if (Session::has('info'))
             toastr.options = {
                 "closeButton": true,

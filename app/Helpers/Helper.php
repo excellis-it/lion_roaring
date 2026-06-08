@@ -1263,4 +1263,158 @@ class Helper
 
         return $default ?? ucfirst(str_replace('_', ' ', $key));
     }
+
+    /**
+     * Whether the user's type is allowed on the current domain instance.
+     */
+    public static function userCanAccessCurrentInstance($user = null): bool
+    {
+        $user = $user ?? auth()->user();
+        if (!$user) {
+            return true;
+        }
+
+        if ($user->hasNewRole('SUPER ADMIN')) {
+            return true;
+        }
+
+        $domainCountry = \App\Models\Country::findByCurrentRequest();
+        if (!$domainCountry) {
+            return true;
+        }
+
+        $isGlobalDomain = (bool) $domainCountry->is_global;
+        $userCountry = $user->country ? \App\Models\Country::find($user->country) : null;
+
+        switch ($user->user_type) {
+            case 'Global':
+                return $isGlobalDomain;
+
+            case 'Regional':
+                return $userCountry
+                    && !$isGlobalDomain
+                    && (int) $domainCountry->id === (int) $userCountry->id;
+
+            case 'G_R':
+                if ($isGlobalDomain) {
+                    return true;
+                }
+
+                return $userCountry
+                    && (int) $domainCountry->id === (int) $userCountry->id;
+
+            default:
+                return true;
+        }
+    }
+
+    /**
+     * URL for the instance this user should use when on the wrong domain.
+     */
+    public static function resolveUserInstanceRedirectUrl($user = null): ?string
+    {
+        $user = $user ?? auth()->user();
+        if (!$user || self::userCanAccessCurrentInstance($user)) {
+            return null;
+        }
+
+        $userCountry = $user->country ? \App\Models\Country::find($user->country) : null;
+
+        if ($user->user_type === 'Regional' && $userCountry) {
+            return self::getCountryRedirectUrl($userCountry->code);
+        }
+
+        if ($user->user_type === 'Global') {
+            return self::getMainUrl();
+        }
+
+        if ($user->user_type === 'G_R') {
+            if ($userCountry) {
+                return self::getCountryRedirectUrl($userCountry->code);
+            }
+
+            return self::getMainUrl();
+        }
+
+        return self::getMainUrl();
+    }
+
+    public static function userInstanceAccessMessage($user = null): string
+    {
+        $user = $user ?? auth()->user();
+        if (!$user) {
+            return 'You do not have access to this site instance.';
+        }
+
+        $userCountry = $user->country ? \App\Models\Country::find($user->country) : null;
+
+        switch ($user->user_type) {
+            case 'Regional':
+                return 'You are a Regional user. Please sign in on your assigned country site'
+                    . ($userCountry ? ' (' . $userCountry->name . ').' : '.');
+
+            case 'Global':
+                return 'You are a Global user. Please sign in on the Global site.';
+
+            case 'G_R':
+                return 'Please use the Global site or your assigned regional site'
+                    . ($userCountry ? ' (' . $userCountry->name . ').' : '.');
+
+            default:
+                return 'You do not have access to this site instance.';
+        }
+    }
+
+    /**
+     * Remember which domain the user signed in on.
+     */
+    public static function recordLoginContext(): void
+    {
+        $domainCountry = \App\Models\Country::findByCurrentRequest();
+
+        session([
+            'auth_login_host' => request()->getHost(),
+            'auth_login_port' => request()->getPort(),
+            'auth_login_country_id' => $domainCountry ? (int) $domainCountry->id : null,
+        ]);
+    }
+
+    /**
+     * True when the current request is on the same domain the user signed in on.
+     */
+    public static function loginContextMatchesCurrentRequest(): bool
+    {
+        if (!session()->has('auth_login_host')) {
+            return true;
+        }
+
+        if (session('auth_login_host') !== request()->getHost()) {
+            return false;
+        }
+
+        return (string) session('auth_login_port') === (string) request()->getPort();
+    }
+
+    /**
+     * User type + sign-in domain must both match the current site.
+     */
+    public static function userHasValidInstanceSession($user = null): bool
+    {
+        $user = $user ?? auth()->user();
+        if (!$user) {
+            return true;
+        }
+
+        return self::userCanAccessCurrentInstance($user)
+            && self::loginContextMatchesCurrentRequest();
+    }
+
+    public static function userInstanceLogoutMessage($user = null): string
+    {
+        if (!self::loginContextMatchesCurrentRequest()) {
+            return 'You have been signed out because this session was started on a different site. Please sign in again here.';
+        }
+
+        return self::userInstanceAccessMessage($user) . ' You have been signed out.';
+    }
 }

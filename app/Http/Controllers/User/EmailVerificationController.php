@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\User;
 
+use App\Helpers\Helper;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Session;
@@ -100,8 +101,20 @@ class EmailVerificationController extends Controller
 
         $verify_otp->delete();
         $user->update(['time_zone' => $request->time_zone]);
+
+        if (!$user->hasNewRole('SUPER ADMIN') && !Helper::userCanAccessCurrentInstance($user)) {
+            Session::forget('user_id');
+
+            return response()->json([
+                'message' => Helper::userInstanceAccessMessage($user),
+                'status' => false,
+                'redirect_url' => Helper::resolveUserInstanceRedirectUrl($user),
+            ]);
+        }
+
         $this->updateCartUserId($userId);
         Auth::login($user);
+        Helper::recordLoginContext();
         Session::forget('user_id');
         return response()->json(['message' => 'Code verified successfully', 'status' => true, 'redirect' => route('user.profile')]);
     }

@@ -35,6 +35,7 @@ class Kernel extends HttpKernel
             \Illuminate\Session\Middleware\StartSession::class,
             // \Illuminate\Session\Middleware\AuthenticateSession::class,
             \Illuminate\View\Middleware\ShareErrorsFromSession::class,
+            \App\Http\Middleware\EnsureUserInstanceAccess::class,
             \App\Http\Middleware\VerifyCsrfToken::class,
             \Illuminate\Routing\Middleware\SubstituteBindings::class,
             \App\Http\Middleware\UserActivityLogger::class,
@@ -77,5 +78,6 @@ class Kernel extends HttpKernel
         'userActivity' => \App\Http\Middleware\UserActivityLogger::class,
         'event.access' => \App\Http\Middleware\CheckEventAccess::class,
         'agreement.signed' => \App\Http\Middleware\CheckAgreementSigned::class,
+        'user.instance' => \App\Http\Middleware\EnsureUserInstanceAccess::class,
     ];
 }

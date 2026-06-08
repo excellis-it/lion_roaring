@@ -77,19 +77,32 @@ class AuthController extends Controller
 
                 // dd($country->id, $user->country);
                 if (!$user->hasNewRole('SUPER ADMIN')) {
-                    if (!$country) {
-                        return response()->json(['message' => 'Please select your country from the dropdown first.', 'status' => false]);
-                    }
+                    $domainCountry = Country::findByCurrentRequest();
 
-                    if (($user->user_type != 'G_R') && ($user->user_type == 'Regional') && ($country->id != $user->country)) {
-                        return response()->json(['message' => 'You are not from ' . $country->name . '! Please change the country from dropdown.', 'status' => false]);
-                    } elseif (($user->user_type != 'G_R') && ($user->user_type == 'Global') && ($country->code != 'GL')) {
-                        return response()->json(['message' => 'You are a Global user! Please change the country to Global.', 'status' => false]);
+                    if ($domainCountry) {
+                        if (!Helper::userCanAccessCurrentInstance($user)) {
+                            return response()->json([
+                                'message' => Helper::userInstanceAccessMessage($user),
+                                'status' => false,
+                                'redirect_url' => Helper::resolveUserInstanceRedirectUrl($user),
+                            ]);
+                        }
+                    } else {
+                        if (!$country) {
+                            return response()->json(['message' => 'Please select your country from the dropdown first.', 'status' => false]);
+                        }
+
+                        if (($user->user_type != 'G_R') && ($user->user_type == 'Regional') && ($country->id != $user->country)) {
+                            return response()->json(['message' => 'You are not from ' . $country->name . '! Please change the country from dropdown.', 'status' => false]);
+                        } elseif (($user->user_type != 'G_R') && ($user->user_type == 'Global') && ($country->code != 'GL')) {
+                            return response()->json(['message' => 'You are a Global user! Please change the country to Global.', 'status' => false]);
+                        }
                     }
                 }
 
                 if ($is_demo_login) {
                     Auth::login($user);
+                    Helper::recordLoginContext();
                     Session::put('user_id', $user->id);
 
                     UserActivity::logActivity([

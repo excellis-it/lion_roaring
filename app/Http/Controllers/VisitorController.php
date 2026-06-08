@@ -34,6 +34,18 @@ class VisitorController extends Controller
                         'message' => 'You are a Global user. You can only access the Global domain.',
                     ], 403);
                 }
+            } elseif ($user->user_type == 'G_R') {
+                $userCountry = \App\Models\Country::find($user->country);
+                $allowedGlobal = $requestedCode === 'GL';
+                $allowedRegional = $userCountry && strtoupper($userCountry->code) === $requestedCode;
+
+                if (!$allowedGlobal && !$allowedRegional) {
+                    return response()->json([
+                        'status' => 'error',
+                        'message' => 'You can only switch between Global and your assigned country'
+                            . ($userCountry ? ' (' . $userCountry->name . ').' : '.'),
+                    ], 403);
+                }
             }
         }
 
