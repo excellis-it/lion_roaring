@@ -364,31 +364,6 @@ class FileController extends Controller
                 $file_extension = $file->getClientOriginalExtension();
                 $file_upload = $this->imageUpload($file, 'files');
 
-                if ($ctx['is_super_admin']) {
-                    $check = File::where('file_name', $file_name)
-                        ->where('file_extension', $file_extension)
-                        ->first();
-                } elseif ($ctx['is_global_scope']) {
-                    $check = File::where('file_name', $file_name)
-                        ->where('file_extension', $file_extension)
-                        ->whereHas('country', function ($query) {
-                            $query->where('code', 'GL');
-                        })
-                        ->first();
-                } else {
-                    $check = File::where('file_name', $file_name)
-                        ->where('file_extension', $file_extension)
-                        ->where('country_id', $country_id)
-                        ->first();
-                }
-
-                if ($check) {
-                    return response()->json([
-                        'message' => 'The file name "' . $file_name . '" has already been taken.',
-                        'status' => false
-                    ], 201);
-                }
-
                 // Save the new file details to the database
                 $fileModel = new File();
                 $fileModel->user_id = auth()->id();
@@ -548,26 +523,6 @@ class FileController extends Controller
                 // Retrieve new file details
                 $file_name = $request->file('file')->getClientOriginalName();
                 $file_extension = $request->file('file')->getClientOriginalExtension();
-
-                // Check if a file with the same name and extension exists
-                if ($user_type === 'Global') {
-                    $existingFile = File::where('file_name', $file_name)
-                        ->where('file_extension', $file_extension)
-                        ->first();
-                } else {
-                    $existingFile = File::where('file_name', $file_name)
-                        ->where('file_extension', $file_extension)
-                        ->where('country_id', $country_id)
-                        ->first();
-                }
-
-                if ($existingFile) {
-                    return response()->json([
-                        'message' => 'The file name has already been taken.',
-                        'errors' => ['file' => ['The file name has already been taken.']],
-                        'status' => false
-                    ], 201);
-                }
 
                 // Upload and update file details
                 $file_upload = $this->imageUpload($request->file('file'), 'files');

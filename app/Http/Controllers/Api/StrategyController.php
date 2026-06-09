@@ -185,14 +185,6 @@ class StrategyController extends Controller
                 $file_extension = $file->getClientOriginalExtension();
                 $file_path = $this->imageUpload($file, 'strategies');
 
-                $check = Strategy::where('file_name', $file_name)
-                    ->where('file_extension', $file_extension)
-                    ->first();
-
-                if ($check) {
-                    return response()->json(['error' => 'The strategy name "' . $file_name . '" has already been taken.'], 201);
-                }
-
                 $strategy = new Strategy();
                 $strategy->user_id = auth()->id();
                 $strategy->country_id = $request->country_id ?? auth()->user()->country;

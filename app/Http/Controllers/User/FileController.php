@@ -113,32 +113,6 @@ class FileController extends Controller
             $file_extension = $file->getClientOriginalExtension();
             $file_path = $this->imageUpload($file, 'files');
 
-            // Check if a file with the same name and extension already exists for the user
-            if (!$user->hasNewRole('SUPER ADMIN')) {
-                if ($user_type == 'Global') {
-                    $check = File::where('file_name', $file_name)
-                        ->where('file_extension', $file_extension)
-                        ->whereHas('country', function ($query) {
-                            $query->where('code', 'GL');
-                        })
-                        ->first();
-                } else {
-                    $check = File::where('file_name', $file_name)
-                        ->where('file_extension', $file_extension)
-                        ->where('country_id', $user_country)
-                        ->first();
-                }
-            } else {
-                $check = File::where('file_name', $file_name)
-                    ->where('file_extension', $file_extension)
-                    ->first();
-            }
-
-            // Return validation error if file already exists
-            if ($check) {
-                return redirect()->back()->withErrors(['file' => 'The file name "' . $file_name . '" has already been taken.'])->withInput();
-            }
-
             // Save the new file details to the database
             $file_upload = new File();
             $file_upload->user_id = auth()->id();
@@ -324,32 +298,6 @@ class FileController extends Controller
             $file_name = $request->file('file')->getClientOriginalName();
             $file_extension = $request->file('file')->getClientOriginalExtension();
             $file_upload = $this->imageUpload($request->file('file'), 'files');
-
-            // Check if a file with the same name and extension already exists for the current user
-            if (!$user->hasNewRole('SUPER ADMIN')) {
-                if ($user_type == 'Global') {
-                    $check = File::where('file_name', $file_name)
-                        ->where('file_extension', $file_extension)
-                        ->whereHas('country', function ($query) {
-                            $query->where('code', 'GL');
-                        })
-                        ->first();
-                } else {
-                    $check = File::where('file_name', $file_name)
-                        ->where('file_extension', $file_extension)
-                        ->where('country_id', $user_country)
-                        ->first();
-                }
-            } else {
-                $check = File::where('file_name', $file_name)
-                    ->where('file_extension', $file_extension)
-                    ->first();
-            }
-
-            // Return validation error if file already exists
-            if ($check) {
-                return redirect()->back()->withErrors(['file' => 'The file name has already been taken.'])->withInput();
-            }
 
             // Update file details
             $file->file_name = $file_name;

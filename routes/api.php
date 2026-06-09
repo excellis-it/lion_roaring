@@ -543,6 +543,10 @@ Route::prefix('v3')->middleware(['userActivity'])->group(function () {
             Route::post('/delete/{id}', [EventController::class, 'destroy']);
             Route::get('/event-calender-fetch-data', [EventController::class, 'fetchCalenderData']);
 
+            // Creator-facing RSVP + payment lists
+            Route::get('/{id}/rsvps', [EventController::class, 'rsvpsList'])->whereNumber('id');
+            Route::get('/{id}/payments', [EventController::class, 'paymentsList'])->whereNumber('id');
+
             // RSVP + payment
             Route::get('/my-rsvps', [EventController::class, 'myRsvps']);
             Route::post('/{id}/rsvp', [EventController::class, 'rsvp'])->whereNumber('id');

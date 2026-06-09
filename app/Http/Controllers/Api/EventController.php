@@ -687,6 +687,107 @@ class EventController extends Controller
     }
 
     /**
+     * GET /events/{id}/rsvps
+     * Creator-facing RSVP list for an event (mirrors web LiveEventController@viewRsvps).
+     * Returns RSVP rows (with attendee + payment status) plus aggregate counts.
+     */
+    public function rsvpsList(int $id)
+    {
+        if (!auth()->user()->can('Manage Event')) {
+            return response()->json(['status' => false, 'message' => 'Permission denied.'], 403);
+        }
+
+        try {
+            $event = Event::with(['rsvps.user', 'rsvps.payment'])->findOrFail($id);
+
+            $rsvps = $event->rsvps->map(function ($rsvp) {
+                return [
+                    'id' => $rsvp->id,
+                    'user_name' => $rsvp->user ? $rsvp->user->getFullNameAttribute() : null,
+                    'email' => $rsvp->user->email ?? null,
+                    'rsvp_date' => optional($rsvp->rsvp_date)->toIso8601String(),
+                    'status' => $rsvp->status,
+                    'payment_status' => $rsvp->payment->status ?? null,
+                    'notes' => $rsvp->notes,
+                ];
+            })->values();
+
+            return response()->json([
+                'status' => true,
+                'message' => 'Event RSVPs.',
+                'data' => [
+                    'event' => [
+                        'id' => $event->id,
+                        'title' => $event->title,
+                        'type' => $event->type ?? 'free',
+                    ],
+                    'stats' => [
+                        'total' => $event->rsvps->count(),
+                        'confirmed' => $event->rsvps->where('status', 'confirmed')->count(),
+                        'pending' => $event->rsvps->where('status', 'pending')->count(),
+                        'cancelled' => $event->rsvps->where('status', 'cancelled')->count(),
+                    ],
+                    'rsvps' => $rsvps,
+                ],
+            ], 200);
+        } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
+            return response()->json(['status' => false, 'message' => 'Event not found.'], 404);
+        } catch (\Exception $e) {
+            return response()->json(['status' => false, 'message' => 'Failed to load RSVPs.'], 201);
+        }
+    }
+
+    /**
+     * GET /events/{id}/payments
+     * Creator-facing payment list for a paid event (mirrors web LiveEventController@viewPayments).
+     * Returns payment rows plus revenue totals.
+     */
+    public function paymentsList(int $id)
+    {
+        if (!auth()->user()->can('Manage Event')) {
+            return response()->json(['status' => false, 'message' => 'Permission denied.'], 403);
+        }
+
+        try {
+            $event = Event::with(['payments.user'])->findOrFail($id);
+
+            $payments = $event->payments->map(function ($payment) {
+                return [
+                    'id' => $payment->id,
+                    'transaction_id' => $payment->transaction_id,
+                    'user_name' => $payment->user ? $payment->user->getFullNameAttribute() : null,
+                    'email' => $payment->user->email ?? null,
+                    'amount' => (float) $payment->amount,
+                    'status' => $payment->status,
+                    'payment_method' => $payment->payment_method,
+                    'created_at' => optional($payment->created_at)->toIso8601String(),
+                ];
+            })->values();
+
+            return response()->json([
+                'status' => true,
+                'message' => 'Event payments.',
+                'data' => [
+                    'event' => [
+                        'id' => $event->id,
+                        'title' => $event->title,
+                    ],
+                    'stats' => [
+                        'total_revenue' => (float) $event->completedPayments()->sum('amount'),
+                        'pending_revenue' => (float) $event->payments()->where('status', 'pending')->sum('amount'),
+                        'total_transactions' => $event->payments->count(),
+                    ],
+                    'payments' => $payments,
+                ],
+            ], 200);
+        } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
+            return response()->json(['status' => false, 'message' => 'Event not found.'], 404);
+        } catch (\Exception $e) {
+            return response()->json(['status' => false, 'message' => 'Failed to load payments.'], 201);
+        }
+    }
+
+    /**
      * Send in-app and email notifications for a new/updated live event (mirrors web LiveEventController).
      */
     protected function sendNotifications(Event $event, string $message): void

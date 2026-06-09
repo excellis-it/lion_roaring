@@ -111,16 +111,6 @@ class StrategyController extends Controller
             $file_extension = $file->getClientOriginalExtension();
             $file_path = $this->imageUpload($file, 'strategies');
 
-            // Check if a strategy with the same name and extension already exists for the user
-            $check = Strategy::where('file_name', $file_name)
-                ->where('file_extension', $file_extension)
-                ->first();
-
-            // Return validation error if strategy already exists
-            if ($check) {
-                return redirect()->back()->withErrors(['file' => 'The strategy name "' . $file_name . '" has already been taken.'])->withInput();
-            }
-
             // Save the new strategy details to the database
             $file_upload = new Strategy();
             $file_upload->user_id = auth()->id();
