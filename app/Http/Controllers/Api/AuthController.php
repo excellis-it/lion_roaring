@@ -195,6 +195,25 @@ class AuthController extends Controller
             if (auth()->attempt($request->only($fieldType, 'password'))) {
                 $user = User::where($fieldType, $request->user_name)->first();
                 if ($user->status == 1 && $user->is_accept == 1) {
+                    // Country restriction check (mirrors web loginCheck logic).
+                    // Only enforced when the app sends a country_code.
+                    if ($request->filled('country_code') && !$user->hasNewRole('SUPER ADMIN')) {
+                        $code    = strtoupper($request->input('country_code'));
+                        $country = \App\Models\Country::where('code', $code)->first();
+
+                        if (!$country) {
+                            return response()->json(['message' => 'Please select your country from the dropdown first.', 'status' => false], 200);
+                        }
+
+                        if ($user->user_type === 'Regional' && $user->user_type !== 'G_R' && $country->id != $user->country) {
+                            return response()->json(['message' => 'You are not from ' . $country->name . '! Please change the country from dropdown.', 'status' => false], 200);
+                        }
+
+                        if ($user->user_type === 'Global' && $user->user_type !== 'G_R' && $country->code !== 'GL') {
+                            return response()->json(['message' => 'You are a Global user! Please change the country to Global.', 'status' => false], 200);
+                        }
+                    }
+
                     $otp = rand(1000, 9999);
                     $otp_verify = new VerifyOTP();
                     $otp_verify->user_id = $user->id;
@@ -209,7 +228,10 @@ class AuthController extends Controller
                         return response()->json(['message' => 'Email server temporary unavailable. Please try later.', 'status' => false], 200);
                     }
                     // $token = $user->createToken('authToken')->accessToken;
-                    return response()->json(['user' => $user, 'status' => true, 'message' => 'Otp sent successfully. Please check your mail id.', 'otp' => $otp], 200);
+                    $user->load('userRole:id,name,type,is_ecclesia');
+                    $userPayload = $user->toArray();
+                    $userPayload['is_super_admin'] = $user->hasNewRole('SUPER ADMIN');
+                    return response()->json(['user' => $userPayload, 'status' => true, 'message' => 'Otp sent successfully. Please check your mail id.', 'otp' => $otp], 200);
                 } else {
                     auth()->logout();
                     return response()->json(['message' => 'Your account is not active!', 'status' => false], 201);
