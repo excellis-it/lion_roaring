@@ -6,6 +6,8 @@ use App\Http\Controllers\Api\Concerns\AppliesPmaContentScope;
 use App\Http\Controllers\Api\Concerns\AppliesPmaCountryFromRequest;
 use App\Http\Controllers\Controller;
 use App\Models\Bulletin;
+use App\Models\Country;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
@@ -203,24 +205,71 @@ class BulletinController extends Controller
             }
 
             $searchQuery = $request->get('search');
-            $ctx = $this->pmaScopeContext();
 
-            $bulletins = Bulletin::with('user')
+            $bulletins = $this->bulletinBoardQuery()
+                ->with('user')
                 ->when($searchQuery, function ($query) use ($searchQuery) {
                     $query->where(function ($q) use ($searchQuery) {
                         $q->where('title', 'like', "%{$searchQuery}%")
                             ->orWhere('description', 'like', "%{$searchQuery}%");
                     });
-                });
+                })
+                ->get();
 
-            $this->applyPmaCreatorContentScope($bulletins, $ctx);
-
-            $bulletins = $bulletins->orderBy('id', 'desc')->paginate(15);
-
-            return response()->json($bulletins, 200);
+            return response()->json(['data' => $bulletins], 200);
         } catch (\Exception $e) {
             return response()->json(['error' => 'Failed to load bulletins.'], 201);
         }
+    }
+
+    /**
+     * Mirrors User\BulletinBoardController scope so the app board matches the web board.
+     */
+    private function bulletinBoardQuery(): Builder
+    {
+        $user = auth()->user();
+        $user_type = $user->user_type;
+        $user_country = $user->country;
+        $currentCountry = Country::findByCurrentRequest();
+        $isOnGlobalServer = $currentCountry && $currentCountry->is_global;
+
+        if ($user->hasNewRole('SUPER ADMIN')) {
+            return Bulletin::orderBy('id', 'desc');
+        }
+
+        if ($user_type == 'Global' || ($user_type == 'G_R' && $isOnGlobalServer)) {
+            return Bulletin::orderBy('id', 'desc')
+                ->whereHas('country', function ($query) {
+                    $query->where('code', 'GL');
+                })
+                ->whereHas('user', function ($query) {
+                    $query->whereIn('user_type', ['Global', 'G_R'])->where('status', 1);
+                });
+        }
+
+        $bulletins = Bulletin::orderBy('id', 'desc')
+            ->where('country_id', $user_country)
+            ->whereHas('user', function ($query) {
+                $query->whereIn('user_type', ['Regional', 'G_R'])->where('status', 1);
+            });
+
+        if ($user->is_ecclesia_admin == 1) {
+            $manage_ecclesia_ids = is_array($user->manage_ecclesia)
+                ? $user->manage_ecclesia
+                : explode(',', $user->manage_ecclesia ?? '');
+            $bulletins->where(function ($q) use ($manage_ecclesia_ids, $user) {
+                $q->whereHas('user', function ($uq) use ($manage_ecclesia_ids) {
+                    $uq->where(function ($sub) use ($manage_ecclesia_ids) {
+                        $sub->whereIn('ecclesia_id', $manage_ecclesia_ids)->whereNotNull('ecclesia_id');
+                        foreach ($manage_ecclesia_ids as $id) {
+                            $sub->orWhereRaw('FIND_IN_SET(?, manage_ecclesia)', [trim($id)]);
+                        }
+                    });
+                })->orWhere('user_id', $user->id);
+            });
+        }
+
+        return $bulletins;
     }
 
 
