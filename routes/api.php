@@ -249,6 +249,8 @@ Route::prefix('v3')->middleware(['userActivity'])->group(function () {
     Route::post('register-country-list', [AuthController::class, 'countryList']);
     Route::post('register-states-list', [AuthController::class, 'getStates']);
 
+    Route::get('register-meta', [AuthController::class, 'registerMeta']);
+    Route::post('register-payment-intent', [AuthController::class, 'registerPaymentIntent']);
     Route::post('register', [AuthController::class, 'register']);
     Route::post('login', [AuthController::class, 'login']);
     Route::post('verify-otp', [AuthController::class, 'verifyOtp']);
@@ -259,6 +261,7 @@ Route::prefix('v3')->middleware(['userActivity'])->group(function () {
     Route::get('articles/latest', [ArticleController::class, 'latest']);
     Route::get('articles/{id}', [ArticleController::class, 'show'])->whereNumber('id');
     Route::get('register-agreement', [ArticleController::class, 'registerAgreement']);
+    Route::post('register-agreement/preview', [ArticleController::class, 'previewRegisterAgreementGuest']);
 
     // Organizations & Governance (public read)
     Route::get('organizations/latest', [OrganizationApiController::class, 'latestOrganization']);

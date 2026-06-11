@@ -8,11 +8,11 @@ use App\Models\User;
 use App\Models\Country;
 use App\Models\State;
 use App\Models\Ecclesia;
+use App\Services\RegistrationService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Mail;
-use App\Mail\AccountPendingApprovalMail;
 use App\Mail\OtpMail;
 use App\Models\VerifyOTP;
 
@@ -67,71 +67,32 @@ class AuthController extends Controller
      * }
      */
 
-    public function register(Request $request)
+    public function register(Request $request, RegistrationService $registrationService)
     {
-        $validator = Validator::make($request->all(), [
-            'user_name' => 'required|string|max:255|unique:users',
-            'email' => 'required|string|email|max:255|unique:users',
-            'ecclesia_id' => 'required',
-            'first_name' => 'required|string|max:255',
-            'last_name' => 'required|string|max:255',
-            'middle_name' => 'nullable|string|max:255',
-            // 'address' => 'required|string|max:255',
-            // 'phone' => 'required',
-            // 'city' => 'required|string|max:255',
-            // 'state' => 'required|max:255',
-            // 'address2' => 'nullable|string|max:255',
-            // 'country' => 'required|max:255',
-            // 'zip' => 'required',
-            'email_confirmation' => 'required|same:email',
-            'password' => ['required', 'string', 'regex:/^(?=.*[@$%&])[^\s]{8,}$/'],
-            'password_confirmation' => 'required|same:password',
-        ], [
-            'password.regex' => 'The password must be at least 8 characters long and include at least one special character from @$%&.',
-        ]);
+        $result = $registrationService->register($request);
 
-        if ($validator->fails()) {
-            return response()->json(['errors' => $validator->errors()], 422);
-        }
+        return response()->json($result['body'], $result['http_code']);
+    }
 
-        $uniqueNumber = rand(1000, 9999);
-        $lr_email = strtolower(trim($request->first_name)) . strtolower(trim($request->middle_name)) . strtolower(trim($request->last_name)) . $uniqueNumber . '@lionroaring.us';
-
-
-        $user = new User();
-        $user->user_name = $request->user_name;
-        $user->ecclesia_id = $request->ecclesia_id;
-        $user->email = $request->email;
-        $user->personal_email = $lr_email;
-        $user->first_name = $request->first_name;
-        $user->last_name = $request->last_name;
-        $user->middle_name = $request->middle_name;
-        $user->address = $request->address;
-        $user->phone = $request->phone;
-        $user->phone_country_code_name = $request->phone_country_code_name;
-        $user->city = $request->city;
-        $user->state = $request->state;
-        $user->address2 = $request->address2;
-        $user->country = $request->country;
-        $user->zip = $request->zip;
-        $user->password = bcrypt($request->password);
-        $user->email_verified_at = now();
-        $user->status = 0;
-        $user->save();
-
-
-        $user->assignRole('MEMBER_SOVEREIGN');
-        $maildata = [
-            'name' => $request->first_name . ' ' . $request->last_name,
-        ];
-
-        Mail::to($request->email)->send(new AccountPendingApprovalMail($maildata));
-
+    /**
+     * Registration meta (Lion Roaring ID prefix, etc.)
+     */
+    public function registerMeta(RegistrationService $registrationService)
+    {
         return response()->json([
             'status' => true,
-            'message' => 'Please wait for admin approval',
-            'user' => $user,
-        ], 200);
+            'generated_id_part' => $registrationService->generatedIdPart(),
+        ], $this->successStatus);
+    }
+
+    /**
+     * Create a Stripe PaymentIntent for registration checkout (guest).
+     */
+    public function registerPaymentIntent(Request $request, RegistrationService $registrationService)
+    {
+        $result = $registrationService->createRegistrationPaymentIntent($request);
+
+        return response()->json($result['body'], $result['http_code']);
     }
 
     /**
