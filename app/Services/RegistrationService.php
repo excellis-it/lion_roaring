@@ -17,6 +17,7 @@ use App\Models\UserSubscription;
 use App\Models\UserType;
 use App\Models\UserActivity;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Storage;
@@ -46,6 +47,43 @@ class RegistrationService
      */
     public function register(Request $request): array
     {
+        $agreementToken = (string) $request->input('agreement_token');
+        $idempotencyKey = $this->registrationIdempotencyKey($request);
+
+        $existing = $this->findCompletedRegistration($request, $idempotencyKey);
+        if ($existing) {
+            return $this->successResponse($existing, $existing->status == 1);
+        }
+
+        $lock = Cache::lock('registration:' . $idempotencyKey, 120);
+        if (!$lock->get()) {
+            return [
+                'status' => false,
+                'http_code' => 409,
+                'body' => [
+                    'status' => false,
+                    'message' => 'Registration is already being processed. Please wait.',
+                ],
+            ];
+        }
+
+        try {
+            return $this->performRegistration($request, $agreementToken, $idempotencyKey);
+        } finally {
+            $lock->release();
+        }
+    }
+
+    /**
+     * @return array{status: bool, http_code: int, body: array}
+     */
+    private function performRegistration(Request $request, string $agreementToken, string $idempotencyKey): array
+    {
+        $existing = $this->findCompletedRegistration($request, $idempotencyKey);
+        if ($existing) {
+            return $this->successResponse($existing, $existing->status == 1);
+        }
+
         $validator = Validator::make($request->all(), [
             'user_name' => 'required|string|max:255|unique:users',
             'generated_id_part' => 'required|string',
@@ -314,38 +352,61 @@ class RegistrationService
             'activity_description' => 'User registered with ' . $tier->name,
         ]);
 
-        try {
-            Mail::to($request->email)->send(new ActiveUserMail([
-                'name' => $request->first_name . ' ' . $request->last_name,
-                'email' => $request->email,
-                'type' => 'Activated',
-                'status' => $user->status,
-            ]));
-        } catch (\Throwable $e) {
-            Log::error('Registration welcome mail failed: ' . $e->getMessage());
-        }
+        $this->sendRegistrationEmails($request, $user, $tier, $agreementToken);
+        Cache::put($this->registrationCacheKey($idempotencyKey), $user->id, now()->addHours(2));
 
-        try {
-            $superAdminType = UserType::where('name', 'SUPER ADMIN')->first();
-            if ($superAdminType) {
-                $superAdmins = User::where('user_type_id', $superAdminType->id)->where('status', 1)->get();
-                $adminMailData = [
-                    'new_user_name' => $request->first_name . ' ' . $request->last_name,
-                    'new_user_email' => $request->email,
-                    'new_user_username' => $request->user_name,
-                    'membership_tier' => $tier->name,
-                    'new_user_status' => $user->status,
-                    'registered_at' => now()->format('M d, Y h:i A'),
-                ];
-                foreach ($superAdmins as $admin) {
-                    Mail::to($admin->email)->send(new NewUserRegistrationMail($adminMailData));
-                }
+        return $this->successResponse($user, $user->status == 1);
+    }
+
+    private function registrationIdempotencyKey(Request $request): string
+    {
+        $parts = [
+            (string) $request->input('agreement_token'),
+            strtolower(trim((string) $request->input('email'))),
+            (string) $request->input('payment_intent_id', ''),
+        ];
+
+        return hash('sha256', implode('|', $parts));
+    }
+
+    private function registrationCacheKey(string $idempotencyKey): string
+    {
+        return 'registration_complete:' . $idempotencyKey;
+    }
+
+    private function registrationEmailCacheKey(string $agreementToken): string
+    {
+        return 'registration_email_sent:' . $agreementToken;
+    }
+
+    private function findCompletedRegistration(Request $request, string $idempotencyKey): ?User
+    {
+        $cachedUserId = Cache::get($this->registrationCacheKey($idempotencyKey));
+        if ($cachedUserId) {
+            $user = User::find($cachedUserId);
+            if ($user) {
+                return $user;
             }
-        } catch (\Throwable $e) {
-            Log::error('Super admin registration notify failed: ' . $e->getMessage());
         }
 
-        $message = $user->status == 1
+        if ($request->filled('payment_intent_id')) {
+            $payment = SubscriptionPayment::where('transaction_id', $request->payment_intent_id)
+                ->where('payment_status', 'Success')
+                ->first();
+            if ($payment?->user) {
+                return $payment->user;
+            }
+        }
+
+        return null;
+    }
+
+    /**
+     * @return array{status: bool, http_code: int, body: array}
+     */
+    private function successResponse(User $user, bool $isActive): array
+    {
+        $message = $isActive
             ? 'Thank you for registering! You can now login.'
             : 'Please wait for admin approval';
 
@@ -358,6 +419,61 @@ class RegistrationService
                 'user' => $user->fresh(),
             ],
         ];
+    }
+
+    /**
+     * One welcome email to the registrant (web parity). Admin alerts go to super admins only,
+     * never to the same address as the new member (prevents duplicate inbox on test accounts).
+     */
+    private function sendRegistrationEmails(Request $request, User $user, MembershipTier $tier, string $agreementToken): void
+    {
+        $emailSentKey = $this->registrationEmailCacheKey($agreementToken);
+        if (Cache::has($emailSentKey)) {
+            return;
+        }
+
+        $registrantEmail = strtolower(trim((string) $request->email));
+
+        try {
+            Mail::to($request->email)->send(new ActiveUserMail([
+                'name' => $request->first_name . ' ' . $request->last_name,
+                'email' => $request->email,
+                'type' => 'Activated',
+                'status' => $user->status,
+            ]));
+            Cache::put($emailSentKey, true, now()->addHours(2));
+        } catch (\Throwable $e) {
+            Log::error('Registration welcome mail failed: ' . $e->getMessage());
+        }
+
+        try {
+            $superAdminType = UserType::where('name', 'SUPER ADMIN')->first();
+            if (!$superAdminType) {
+                return;
+            }
+
+            $superAdmins = User::where('user_type_id', $superAdminType->id)
+                ->where('status', 1)
+                ->get();
+
+            $adminMailData = [
+                'new_user_name' => $request->first_name . ' ' . $request->last_name,
+                'new_user_email' => $request->email,
+                'new_user_username' => $request->user_name,
+                'membership_tier' => $tier->name,
+                'new_user_status' => $user->status,
+                'registered_at' => now()->format('M d, Y h:i A'),
+            ];
+
+            foreach ($superAdmins as $admin) {
+                if (strtolower(trim((string) $admin->email)) === $registrantEmail) {
+                    continue;
+                }
+                Mail::to($admin->email)->send(new NewUserRegistrationMail($adminMailData));
+            }
+        } catch (\Throwable $e) {
+            Log::error('Super admin registration notify failed: ' . $e->getMessage());
+        }
     }
 
     /**
