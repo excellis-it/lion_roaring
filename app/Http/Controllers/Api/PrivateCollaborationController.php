@@ -150,8 +150,9 @@ class PrivateCollaborationController extends Controller
                         $request->description ?? '',
                         auth()->user()->time_zone ?? 'UTC'
                     );
-                    if (isset($zoomMeeting['join_url'])) {
+                    if (!empty($zoomMeeting['join_url'])) {
                         $data['meeting_link'] = $zoomMeeting['join_url'];
+                        $data['host_meeting_link'] = $zoomMeeting['start_url'] ?? null;
                         $data['is_zoom'] = 1;
                     }
                 } catch (\Exception $e) {
@@ -284,8 +285,9 @@ class PrivateCollaborationController extends Controller
                         $request->description ?? '',
                         auth()->user()->time_zone ?? 'UTC'
                     );
-                    if (isset($zoomMeeting['join_url'])) {
+                    if (!empty($zoomMeeting['join_url'])) {
                         $data['meeting_link'] = $zoomMeeting['join_url'];
+                        $data['host_meeting_link'] = $zoomMeeting['start_url'] ?? null;
                         $data['is_zoom'] = 1;
                     }
                 } catch (\Exception $e) {
@@ -669,7 +671,14 @@ class PrivateCollaborationController extends Controller
 
         $response = Http::withToken($token)->post('https://api.zoom.us/v2/users/me/meetings', $payload);
         if ($response->successful()) {
-            return $response->json();
+            $data = $response->json();
+
+            return [
+                'id' => (string) ($data['id'] ?? ''),
+                'join_url' => $data['join_url'] ?? null,
+                'start_url' => $data['start_url'] ?? null,
+                'password' => $data['password'] ?? null,
+            ];
         }
         throw new \Exception('Zoom API error: ' . $response->body());
     }

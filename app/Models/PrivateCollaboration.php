@@ -16,6 +16,7 @@ class PrivateCollaboration extends BaseModel
         'title',
         'description',
         'meeting_link',
+        'host_meeting_link',
         'start_time',
         'end_time',
         'user_id',

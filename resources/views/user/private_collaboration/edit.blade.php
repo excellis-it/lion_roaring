@@ -83,9 +83,19 @@
                                 </div>
                             </div>
 
+                            @if ($collaboration->host_meeting_link)
+                                <div class="col-md-6 mb-2">
+                                    <div class="box_label">
+                                        <label>Host Link</label>
+                                        <input type="url" class="form-control"
+                                            value="{{ $collaboration->host_meeting_link }}" readonly disabled>
+                                    </div>
+                                </div>
+                            @endif
+
                             <div class="col-md-6 mb-2">
                                 <div class="box_label">
-                                    <label>Meeting Link</label>
+                                    <label>{{ $collaboration->is_zoom ? 'Participant Join Link' : 'Meeting Link' }}</label>
                                     <input type="url" class="form-control" value="{{ $collaboration->meeting_link }}"
                                         name="meeting_link" id="meeting_link" placeholder="Enter meeting link">
                                     <span class="text-danger" id="meeting_link_error"></span>

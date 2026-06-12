@@ -46,27 +46,16 @@
                 <i class="fa-solid fa-eye"></i>
             </a>
 
-            {{-- Show meeting link for different scenarios --}}
-            @if ($collaboration->meeting_link)
-                @if ($isCreator)
-                    {{-- Creator can start Zoom meeting --}}
-                    <a href="{{ $collaboration->meeting_link }}" target="_blank" class="edit_icon me-2"
-                        title="Start Meeting">
-                        <i class="fa-solid fa-video"></i>
-                    </a>
-                @elseif(!$isCreator && $hasAccepted)
-                    {{-- Participants can join Zoom meeting --}}
-                    <a href="{{ $collaboration->meeting_link }}" target="_blank" class="edit_icon me-2"
-                        title="Join Meeting">
-                        <i class="fa-solid fa-video"></i>
-                    </a>
-                @elseif($hasAccepted)
-                    {{-- Third-party link for accepted users --}}
-                    <a href="{{ $collaboration->meeting_link }}" target="_blank" class="edit_icon me-2"
-                        title="Join Meeting">
-                        <i class="fa-solid fa-video"></i>
-                    </a>
-                @endif
+            @if ($collaboration->meeting_link || $collaboration->host_meeting_link)
+                @php
+                    $videoUrl = $isCreator
+                        ? ($collaboration->host_meeting_link ?: $collaboration->meeting_link)
+                        : $collaboration->meeting_link;
+                @endphp
+                <a href="{{ $videoUrl }}" target="_blank" rel="noopener noreferrer" class="edit_icon me-2"
+                    title="{{ $isCreator ? 'Start Meeting' : 'Join Meeting' }}">
+                    <i class="fa-solid fa-video"></i>
+                </a>
             @endif
         @endif
 

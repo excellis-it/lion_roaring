@@ -37,24 +37,27 @@
                                                 </p>
 
                                                 @if ($isCreator || $hasAccepted)
-                                                    <p class="card-text"><strong>Meeting Link:</strong>
-                                                        @if ($collaboration->meeting_link)
-                                                            <a href="{{ $collaboration->meeting_link }}" target="_blank">
+                                                    @if ($collaboration->meeting_link)
+                                                        @if ($isCreator && $collaboration->host_meeting_link)
+                                                            <p class="card-text"><strong>Host Link:</strong>
+                                                                <a href="{{ $collaboration->host_meeting_link }}" target="_blank"
+                                                                    rel="noopener noreferrer">
+                                                                    {{ $collaboration->host_meeting_link }}
+                                                                </a>
+                                                            </p>
+                                                        @endif
+                                                        <p class="card-text"><strong>{{ $isCreator && $collaboration->is_zoom ? 'Participant Join Link' : 'Meeting Link' }}:</strong>
+                                                            <a href="{{ $collaboration->meeting_link }}" target="_blank"
+                                                                rel="noopener noreferrer">
                                                                 {{ $collaboration->meeting_link }}
                                                             </a>
-                                                            <br>
-                                                            <br>
-                                                            @if ($collaboration->is_zoom && $isCreator)
-                                                                <span class="">Zoom - You are Host</span>
-                                                            @elseif($collaboration->is_zoom)
-                                                                <span class="">Zoom Meeting</span>
-                                                            @else
-                                                                <span class="">External Link</span>
+                                                            @if ($collaboration->is_zoom)
+                                                                <br><span class="text-muted">Zoom meeting</span>
                                                             @endif
-                                                        @else
-                                                            N/A
-                                                        @endif
-                                                    </p>
+                                                        </p>
+                                                    @else
+                                                        <p class="card-text"><strong>Meeting Link:</strong> N/A</p>
+                                                    @endif
                                                 @else
                                                     <p class="card-text">
                                                         <strong>Meeting Link:</strong>
