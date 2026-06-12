@@ -51,6 +51,7 @@
                     <p><strong>Title:</strong> <span id="modalTitle"></span></p>
                     <p><strong>Start:</strong> <span id="modalStart"></span></p>
                     <p><strong>End:</strong> <span id="modalEnd"></span></p>
+                    <p><strong>Timezone:</strong> <span id="modalTimezone"></span></p>
                     <p><strong>Description:</strong> <span id="modalDescription"></span></p>
                     <p><strong>Created By:</strong> <span id="modalCreatedBy"></span></p>
                     <p id="modalStatusContainer"><strong>Status:</strong> <span id="modalStatus"></span></p>
@@ -113,7 +114,8 @@
                                     is_creator: collaboration.is_creator,
                                     has_accepted: collaboration.has_accepted,
                                     is_zoom: collaboration.is_zoom,
-                                    created_by: collaboration.created_by
+                                    created_by: collaboration.created_by,
+                                    time_zone: collaboration.time_zone
                                 }));
                                 successCallback(collaborations);
                             },
@@ -131,6 +133,7 @@
                             'DD MMM YYYY h:mm A') : 'N/A');
                         $('#modalEnd').text(info.event.end ? moment(info.event.end).format(
                             'DD MMM YYYY h:mm A') : 'N/A');
+                        $('#modalTimezone').text(collaboration.time_zone || 'UTC');
                         $('#modalDescription').html(collaboration.description || 'N/A');
                         $('#modalCreatedBy').text(collaboration.created_by || 'N/A');
 

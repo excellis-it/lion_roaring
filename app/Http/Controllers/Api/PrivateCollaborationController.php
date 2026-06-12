@@ -131,6 +131,7 @@ class PrivateCollaborationController extends Controller
             $data = [
                 'country_id' => $request->country_id,
                 'user_id' => auth()->id(),
+                'time_zone' => auth()->user()->time_zone ?? config('app.timezone'),
                 'title' => $request->title,
                 'description' => $request->description,
                 'start_time' => $request->start_time,
@@ -272,6 +273,7 @@ class PrivateCollaborationController extends Controller
             }
 
             $data = $request->only(['title', 'description', 'start_time', 'end_time', 'meeting_link', 'country_id']);
+            $data['time_zone'] = auth()->user()->time_zone ?? config('app.timezone');
 
             if ($request->create_zoom ?? false) {
                 try {
@@ -642,16 +644,17 @@ class PrivateCollaborationController extends Controller
             throw new \Exception('Unable to obtain Zoom access token');
         }
 
-        $startCarbon = Carbon::parse($start_time);
-        $endCarbon = Carbon::parse($end_time);
-        $durationMinutes = $startCarbon->diffInMinutes($endCarbon);
+        $tz = $timezone ?? config('app.timezone');
+        $startCarbon = Carbon::parse($start_time, $tz);
+        $endCarbon = Carbon::parse($end_time, $tz);
+        $durationMinutes = max(15, $startCarbon->diffInMinutes($endCarbon));
 
         $payload = [
             'topic' => $title,
             'type' => 2,
-            'start_time' => $startCarbon->format('Y-m-d\TH:i:s\Z'),
+            'start_time' => $startCarbon->toIso8601String(),
             'duration' => $durationMinutes,
-            'timezone' => $timezone ?? 'UTC',
+            'timezone' => $tz,
             'agenda' => $agenda,
             'settings' => [
                 'host_video' => true,

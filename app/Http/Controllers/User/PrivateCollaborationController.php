@@ -92,7 +92,12 @@ class PrivateCollaborationController extends Controller
             $isOnGlobalServer = $currentCountry && $currentCountry->is_global;
 
             if ($user->hasNewRole('SUPER ADMIN')) {
-                $eligibleUsers = collect(); // empty collection, loaded via AJAX
+                $eligibleUsers = User::whereHas('roles.permissions', function ($query) {
+                    $query->where('name', 'Manage Private Collaboration');
+                })->where('status', 1)
+                    ->where('id', '!=', auth()->id())
+                    ->orderBy('first_name')->orderBy('last_name')->get();
+
             } elseif ($user_type == 'Global' || ($user_type == 'G_R' && $isOnGlobalServer)) {
                 $eligibleUsers = User::whereHas('roles.permissions', function ($query) {
                     $query->where('name', 'Manage Private Collaboration');
@@ -154,7 +159,10 @@ class PrivateCollaborationController extends Controller
             // Global country selected → show Global user_type users
             $users = User::whereHas('userRole', function ($query) {
                 $query->where('name', '!=', 'SUPER ADMIN');
-            })->whereIn('user_type', ['Global', 'G_R'])
+            })->whereHas('roles.permissions', function ($query) {
+                $query->where('name', 'Manage Private Collaboration');
+            })
+            ->whereIn('user_type', ['Global', 'G_R'])
                 ->where('status', 1)
                 ->where('id', '!=', auth()->id())
                 ->orderBy('first_name')->orderBy('last_name')->get();
@@ -162,6 +170,8 @@ class PrivateCollaborationController extends Controller
             // Other country selected → show Regional users from that country
             $usersQuery = User::whereHas('userRole', function ($query) {
                 $query->where('name', '!=', 'SUPER ADMIN');
+            })->whereHas('roles.permissions', function ($query) {
+                $query->where('name', 'Manage Private Collaboration');
             })->where('id', '!=', auth()->id())
                 ->whereIn('user_type', ['Regional', 'G_R'])
                 ->where('status', 1)
@@ -252,6 +262,7 @@ class PrivateCollaborationController extends Controller
 
             $data = $request->only(['title', 'description', 'meeting_link', 'start_time', 'end_time', 'country_id']);
             $data['user_id'] = auth()->id();
+            $data['time_zone'] = auth()->user()->time_zone ?? config('app.timezone');
             $data['create_zoom'] = $request->create_zoom ?? 0;
             $data['is_zoom'] = 0;
 
@@ -263,7 +274,7 @@ class PrivateCollaborationController extends Controller
                         $request->start_time,
                         $request->end_time,
                         $request->description ?? '',
-                        'UTC'
+                        $data['time_zone']
                     );
 
                     if (isset($zoomMeeting['join_url'])) {
@@ -423,6 +434,7 @@ class PrivateCollaborationController extends Controller
             ]);
 
             $data = $request->only(['title', 'description', 'meeting_link', 'start_time', 'end_time', 'country_id']);
+            $data['time_zone'] = auth()->user()->time_zone ?? config('app.timezone');
 
             $collaboration->update($data);
 
@@ -675,6 +687,7 @@ class PrivateCollaborationController extends Controller
                 'has_accepted' => $hasAccepted,
                 'is_zoom' => $collaboration->is_zoom,
                 'created_by' => $collaboration->user->full_name ?? 'N/A',
+                'time_zone' => $collaboration->time_zone ?? 'UTC',
             ];
         };
 
@@ -874,16 +887,17 @@ class PrivateCollaborationController extends Controller
             throw new \Exception('Unable to obtain Zoom access token');
         }
 
-        $startCarbon = Carbon::parse($start_time);
-        $endCarbon = Carbon::parse($end_time);
-        $durationMinutes = $startCarbon->diffInMinutes($endCarbon);
+        $tz = $timezone ?? config('app.timezone');
+        $startCarbon = Carbon::parse($start_time, $tz);
+        $endCarbon = Carbon::parse($end_time, $tz);
+        $durationMinutes = max(15, $startCarbon->diffInMinutes($endCarbon));
 
         $payload = [
             'topic' => $title,
             'type' => 2, // Scheduled meeting
-            'start_time' => $startCarbon->format('Y-m-d\TH:i:s\Z'),
+            'start_time' => $startCarbon->toIso8601String(),
             'duration' => $durationMinutes,
-            'timezone' => $timezone ?? 'UTC',
+            'timezone' => $tz,
             'agenda' => $agenda,
             'settings' => [
                 'host_video' => true,

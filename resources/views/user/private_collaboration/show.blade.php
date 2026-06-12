@@ -27,12 +27,14 @@
                                             <div class="col-md-6">
                                                 <h6 class="card-title">{{ $collaboration->title }}</h6>
                                                 <p class="card-text"><strong>Start Time:</strong>
-                                                    {{ $collaboration->start_time ? date('d M, Y h:i A', strtotime($collaboration->start_time)) : 'N/A' }}
+                                                    {{ $collaboration->start_time?->format('d M, Y h:i A') ?? 'N/A' }}
                                                 </p>
                                                 <p class="card-text"><strong>End Time:</strong>
-                                                    {{ $collaboration->end_time ? date('d M, Y h:i A', strtotime($collaboration->end_time)) : 'N/A' }}
+                                                    {{ $collaboration->end_time?->format('d M, Y h:i A') ?? 'N/A' }}
                                                 </p>
-
+                                                <p class="card-text"><strong>Timezone:</strong>
+                                                    {{ $collaboration->time_zone ?? 'UTC' }}
+                                                </p>
 
                                                 @if ($isCreator || $hasAccepted)
                                                     <p class="card-text"><strong>Meeting Link:</strong>

@@ -1,6 +1,7 @@
 <td>{{ $collaboration->title ? $collaboration->title : '-' }}</td>
-<td>{{ $collaboration->start_time ? date('d M Y h:i A', strtotime($collaboration->start_time)) : '-' }}</td>
-<td>{{ $collaboration->end_time ? date('d M Y h:i A', strtotime($collaboration->end_time)) : '-' }}</td>
+<td>{{ $collaboration->start_time?->format('d M Y h:i A') ?? '-' }}</td>
+<td>{{ $collaboration->end_time?->format('d M Y h:i A') ?? '-' }}</td>
+<td>{{ $collaboration->time_zone ?? 'UTC' }}</td>
 <td>
     @php
         $isCreator = $collaboration->user_id == auth()->id();
