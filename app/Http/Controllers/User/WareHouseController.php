@@ -68,6 +68,7 @@ class WareHouseController extends Controller
                 'location_lat' => 'required|string|max:255',
                 'location_lng' => 'required|string|max:255',
                 'address' => 'required|string|max:500',
+                'contact_us_mail' => 'nullable|email|max:255',
                 'country_id' => 'required|exists:countries,id',
                 'service_range' => 'required|numeric',
                 'is_active' => 'required',
@@ -93,9 +94,10 @@ class WareHouseController extends Controller
             'location_lat',
             'location_lng',
             'address',
+            'contact_us_mail',
             'country_id',
             'service_range',
-            'is_active'
+            'is_active',
         ]));
 
         // assign warehouse to users and change user role to WAREHOUSE_ADMIN
@@ -158,6 +160,7 @@ class WareHouseController extends Controller
             'location_lat' => 'required|string|max:255',
             'location_lng' => 'required|string|max:255',
             'address' => 'required|string|max:500',
+            'contact_us_mail' => 'nullable|email|max:255',
             'country_id' => 'required|exists:countries,id',
             'service_range' => 'required|numeric',
             'is_active' => 'required|in:0,1',
@@ -171,6 +174,7 @@ class WareHouseController extends Controller
                 'location_lat' => $request->location_lat,
                 'location_lng' => $request->location_lng,
                 'address' => $request->address,
+                'contact_us_mail' => $request->contact_us_mail,
                 'country_id' => $request->country_id,
                 'service_range' => $request->service_range,
                 'is_active' => $request->is_active,

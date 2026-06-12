@@ -768,18 +768,7 @@ class EstoreCmsController extends Controller
             }
 
             if ($template) {
-                // Build order list table HTML
                 $orderList = view('user.emails.order_list_table', ['order' => $order])->render();
-                $orderDetailsUrl = route('e-store.order-details', $order->id);
-                $orderDetailsUrlButton = '<a href="' . $orderDetailsUrl . '" style="
-                    display: inline-block;
-                    padding: 10px 20px;
-                    font-size: 16px;
-                    color: #ffffff;
-                    background-color: #643271;
-                    text-decoration: none;
-                    border-radius: 5px;
-                ">View Order Details</a>';
 
                 $emailExtras = ['attachments' => [], 'html' => ''];
                 $cancelledSlug = $isPickup ? 'pickup_cancelled' : 'cancelled';
@@ -788,20 +777,10 @@ class EstoreCmsController extends Controller
                     $emailExtras = ProductFile::emailExtrasForOrder($order);
                 }
 
-                $body = str_replace(
-                    ['{customer_name}', '{customer_email}', '{order_list}', '{order_id}', '{arriving_date}', '{total_order_value}', '{order_details_url_button}', '{order_note}'],
-                    [
-                        ($order->first_name ?? '') . ' ' . ($order->last_name ?? ''),
-                        $order->email ?? '',
-                        $orderList,
-                        $order->order_number ?? '',
-                        $order->expected_delivery_date ? Carbon::parse($order->expected_delivery_date)->format('M d, Y') : '',
-                        number_format($order->total_amount ?? 0, 2),
-                        $orderDetailsUrlButton . $emailExtras['html'],
-                        $order->notes ?? ''
-                    ],
-                    $template->body
-                );
+                $body = OrderEmailTemplate::replacePlaceholders($template->body, $order, [
+                    'order_list' => $orderList,
+                    'order_details_suffix' => $emailExtras['html'],
+                ]);
 
                 try {
                     // Send email
