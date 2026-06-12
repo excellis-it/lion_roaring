@@ -103,7 +103,9 @@ class PrivateCollaborationController extends Controller
                     ->where('id', '!=', auth()->id())
                     ->orderBy('first_name')->orderBy('last_name')->get();
             } else {
-                $eligibleUsersQuery = User::whereHas('userRole', function ($query) {
+                $eligibleUsersQuery = User::whereHas('roles.permissions', function ($query) {
+                    $query->where('name', 'Manage Private Collaboration');
+                })->whereHas('userRole', function ($query) {
                     $query->where('name', '!=', 'SUPER ADMIN');
                 })->where('id', '!=', auth()->id())
                     ->whereIn('user_type', ['Regional', 'G_R'])
