@@ -3426,19 +3426,18 @@ li.slick-active button {
 }
 
 .cst-select-scroll-hint{
-    position: absolute;
-    left: 0;
-    right: 0;
-    bottom: 0;
+    /* In-flow footer: sits below the option list instead of overlapping the last item */
+    position: relative;
     height: 44px;
-    display: none; /* toggled by JS */
+    display: none; /* toggled by JS to flex */
     align-items: center;
     justify-content: center;
     gap: 8px;
     font-size: 13px;
     color: #334155;
     pointer-events: none;
-    background: linear-gradient(to bottom, rgba(255,255,255,0), rgba(255,255,255,0.92) 35%, rgba(255,255,255,1));
+    background: #ffffff;
+    border-top: 1px solid #e5e7eb;
     border-bottom-left-radius: 5px;
     border-bottom-right-radius: 5px;
     padding: 6px 8px;

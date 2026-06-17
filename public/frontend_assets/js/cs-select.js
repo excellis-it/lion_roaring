@@ -103,8 +103,8 @@ document.addEventListener("DOMContentLoaded", function () {
         scrollArea.classList.add("cst-select-scroll-area");
         scrollArea.style.maxHeight = "var(--cst-select-max-height, 240px)";
         scrollArea.style.overflowY = "auto";
+        scrollArea.style.overflowX = "hidden"; // no horizontal scrollbar
         scrollArea.style.paddingTop = "38px"; // space for fixed search
-        scrollArea.style.paddingBottom = "44px"; // space for scroll hint so last item is never overlapped
         scrollArea.style.boxSizing = "border-box";
         list.appendChild(scrollArea);
 
