@@ -131,6 +131,7 @@ class PrivateCollaborationController extends Controller
             $data = [
                 'country_id' => $request->country_id,
                 'user_id' => auth()->id(),
+                'time_zone' => auth()->user()->time_zone ?? config('app.timezone'),
                 'title' => $request->title,
                 'description' => $request->description,
                 'start_time' => $request->start_time,
@@ -149,8 +150,9 @@ class PrivateCollaborationController extends Controller
                         $request->description ?? '',
                         auth()->user()->time_zone ?? 'UTC'
                     );
-                    if (isset($zoomMeeting['join_url'])) {
+                    if (!empty($zoomMeeting['join_url'])) {
                         $data['meeting_link'] = $zoomMeeting['join_url'];
+                        $data['host_meeting_link'] = $zoomMeeting['start_url'] ?? null;
                         $data['is_zoom'] = 1;
                     }
                 } catch (\Exception $e) {
@@ -272,6 +274,7 @@ class PrivateCollaborationController extends Controller
             }
 
             $data = $request->only(['title', 'description', 'start_time', 'end_time', 'meeting_link', 'country_id']);
+            $data['time_zone'] = auth()->user()->time_zone ?? config('app.timezone');
 
             if ($request->create_zoom ?? false) {
                 try {
@@ -282,8 +285,9 @@ class PrivateCollaborationController extends Controller
                         $request->description ?? '',
                         auth()->user()->time_zone ?? 'UTC'
                     );
-                    if (isset($zoomMeeting['join_url'])) {
+                    if (!empty($zoomMeeting['join_url'])) {
                         $data['meeting_link'] = $zoomMeeting['join_url'];
+                        $data['host_meeting_link'] = $zoomMeeting['start_url'] ?? null;
                         $data['is_zoom'] = 1;
                     }
                 } catch (\Exception $e) {
@@ -642,16 +646,17 @@ class PrivateCollaborationController extends Controller
             throw new \Exception('Unable to obtain Zoom access token');
         }
 
-        $startCarbon = Carbon::parse($start_time);
-        $endCarbon = Carbon::parse($end_time);
-        $durationMinutes = $startCarbon->diffInMinutes($endCarbon);
+        $tz = $timezone ?? config('app.timezone');
+        $startCarbon = Carbon::parse($start_time, $tz);
+        $endCarbon = Carbon::parse($end_time, $tz);
+        $durationMinutes = max(15, $startCarbon->diffInMinutes($endCarbon));
 
         $payload = [
             'topic' => $title,
             'type' => 2,
-            'start_time' => $startCarbon->format('Y-m-d\TH:i:s\Z'),
+            'start_time' => $startCarbon->toIso8601String(),
             'duration' => $durationMinutes,
-            'timezone' => $timezone ?? 'UTC',
+            'timezone' => $tz,
             'agenda' => $agenda,
             'settings' => [
                 'host_video' => true,
@@ -666,7 +671,14 @@ class PrivateCollaborationController extends Controller
 
         $response = Http::withToken($token)->post('https://api.zoom.us/v2/users/me/meetings', $payload);
         if ($response->successful()) {
-            return $response->json();
+            $data = $response->json();
+
+            return [
+                'id' => (string) ($data['id'] ?? ''),
+                'join_url' => $data['join_url'] ?? null,
+                'start_url' => $data['start_url'] ?? null,
+                'password' => $data['password'] ?? null,
+            ];
         }
         throw new \Exception('Zoom API error: ' . $response->body());
     }

@@ -51,6 +51,7 @@
                                                 <th>Title</th>
                                                 <th>Start Time</th>
                                                 <th>End Time</th>
+                                                <th>Timezone</th>
                                                 <th>Status</th>
                                                 <th>Created By</th>
                                                 <th>

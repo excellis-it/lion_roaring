@@ -144,6 +144,15 @@
 
                             <div class="col-md-12 mb-2">
                                 <div class="box_label">
+                                    <label>Timezone</label>
+                                    <input type="text" class="form-control"
+                                        value="{{ auth()->user()->time_zone ?? 'UTC' }}" readonly disabled>
+                                    <small class="text-muted">Start and end times use your profile timezone.</small>
+                                </div>
+                            </div>
+
+                            <div class="col-md-12 mb-2">
+                                <div class="box_label">
                                     <label>Description</label>
                                     <textarea class="form-control" name="description" id="description" rows="5" placeholder="Enter description"></textarea>
                                     <span class="text-danger" id="description_error"></span>

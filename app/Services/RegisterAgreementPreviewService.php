@@ -16,6 +16,8 @@ class RegisterAgreementPreviewService
 {
     public const CACHE_PREFIX = 'pending_login_agreement_';
 
+    public const CACHE_PREFIX_GUEST = 'pending_register_agreement_guest_';
+
     public const CACHE_TTL_MINUTES = 120;
 
     /**
@@ -77,6 +79,68 @@ class RegisterAgreementPreviewService
     public function forgetPendingForUser(int $userId): void
     {
         Cache::forget(self::CACHE_PREFIX . $userId);
+    }
+
+    /**
+     * @return array{token: string, guest_token: string, tmp_path: string, country_code: string, signer_name: string, signer_initials: ?string, agreement_title_snapshot: string, agreement_description_snapshot: string, checkbox_text_snapshot: ?string}
+     */
+    public function buildAndCacheForGuest(string $guestToken, string $signerName, ?string $countryCode = null, ?string $signerInitials = null): array
+    {
+        $signerName = trim($signerName);
+        $signerInitials = $signerInitials ?? $this->makeInitials($signerName);
+
+        $countryCode = strtoupper($countryCode ?: Helper::getVisitorCountryCode() ?: 'US');
+        $template = RegisterAgreement::where('country_code', $countryCode)->orderByDesc('id')->first();
+        if (!$template) {
+            $template = RegisterAgreement::where('country_code', 'US')->orderByDesc('id')->first();
+        }
+
+        $title = $template->agreement_title ?? 'Lion Roaring PMA (Private Members Association) Agreement';
+        $html = $template->agreement_description ?? 'This is the agreement for Lion Roaring PMA (Private Members Association)';
+        $checkboxText = $template->checkbox_text ?? null;
+
+        $html = $this->applyPlaceholders($html, $signerName, $signerInitials, $template);
+        $html = '<p></p>' . $html;
+
+        $token = (string) Str::uuid();
+        $tmpPath = "register-agreements/tmp/{$token}.pdf";
+
+        $pdf = PDF::loadView('pdf.register_agreement', [
+            'title' => $title,
+            'html' => $html,
+            'signerName' => $signerName,
+            'signerInitials' => $signerInitials,
+        ]);
+
+        Storage::disk('public')->put($tmpPath, $pdf->output());
+
+        $pending = [
+            'token' => $token,
+            'guest_token' => $guestToken,
+            'tmp_path' => $tmpPath,
+            'country_code' => $countryCode,
+            'signer_name' => $signerName,
+            'signer_initials' => $signerInitials,
+            'agreement_title_snapshot' => $title,
+            'agreement_description_snapshot' => $html,
+            'checkbox_text_snapshot' => $checkboxText,
+        ];
+
+        Cache::put(self::CACHE_PREFIX_GUEST . $guestToken, $pending, now()->addMinutes(self::CACHE_TTL_MINUTES));
+
+        return $pending;
+    }
+
+    public function getPendingForGuest(string $guestToken): ?array
+    {
+        $pending = Cache::get(self::CACHE_PREFIX_GUEST . $guestToken);
+
+        return is_array($pending) ? $pending : null;
+    }
+
+    public function forgetPendingForGuest(string $guestToken): void
+    {
+        Cache::forget(self::CACHE_PREFIX_GUEST . $guestToken);
     }
 
     public function absolutePdfUrl(string $storageRelativePath): string

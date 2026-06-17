@@ -83,9 +83,19 @@
                                 </div>
                             </div>
 
+                            @if ($collaboration->host_meeting_link)
+                                <div class="col-md-6 mb-2">
+                                    <div class="box_label">
+                                        <label>Host Link</label>
+                                        <input type="url" class="form-control"
+                                            value="{{ $collaboration->host_meeting_link }}" readonly disabled>
+                                    </div>
+                                </div>
+                            @endif
+
                             <div class="col-md-6 mb-2">
                                 <div class="box_label">
-                                    <label>Meeting Link</label>
+                                    <label>{{ $collaboration->is_zoom ? 'Participant Join Link' : 'Meeting Link' }}</label>
                                     <input type="url" class="form-control" value="{{ $collaboration->meeting_link }}"
                                         name="meeting_link" id="meeting_link" placeholder="Enter meeting link">
                                     <span class="text-danger" id="meeting_link_error"></span>
@@ -109,7 +119,7 @@
                                 <div class="box_label">
                                     <label>Start Time <span style="color:red">*</span></label>
                                     <input type="datetime-local" class="form-control"
-                                        value="{{ date('Y-m-d\TH:i', strtotime($collaboration->start_time)) }}"
+                                        value="{{ $collaboration->start_time?->format('Y-m-d\TH:i') }}"
                                         name="start_time" required>
                                     <span class="text-danger" id="start_time_error"></span>
                                 </div>
@@ -119,9 +129,19 @@
                                 <div class="box_label">
                                     <label>End Time <span style="color:red">*</span></label>
                                     <input type="datetime-local" class="form-control"
-                                        value="{{ date('Y-m-d\TH:i', strtotime($collaboration->end_time)) }}"
+                                        value="{{ $collaboration->end_time?->format('Y-m-d\TH:i') }}"
                                         name="end_time" required>
                                     <span class="text-danger" id="end_time_error"></span>
+                                </div>
+                            </div>
+
+                            <div class="col-md-12 mb-2">
+                                <div class="box_label">
+                                    <label>Timezone</label>
+                                    <input type="text" class="form-control"
+                                        value="{{ $collaboration->time_zone ?? auth()->user()->time_zone ?? 'UTC' }}"
+                                        readonly disabled>
+                                    <small class="text-muted">Start and end times use this timezone.</small>
                                 </div>
                             </div>
 

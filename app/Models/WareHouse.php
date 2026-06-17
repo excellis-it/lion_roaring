@@ -14,6 +14,7 @@ class WareHouse extends BaseModel
         'location_lat',
         'location_lng',
         'address',
+        'contact_us_mail',
         'country_id',
         'service_range',
         'is_active',

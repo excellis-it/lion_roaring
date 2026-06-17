@@ -1,6 +1,7 @@
 <td>{{ $collaboration->title ? $collaboration->title : '-' }}</td>
-<td>{{ $collaboration->start_time ? date('d M Y h:i A', strtotime($collaboration->start_time)) : '-' }}</td>
-<td>{{ $collaboration->end_time ? date('d M Y h:i A', strtotime($collaboration->end_time)) : '-' }}</td>
+<td>{{ $collaboration->start_time?->format('d M Y h:i A') ?? '-' }}</td>
+<td>{{ $collaboration->end_time?->format('d M Y h:i A') ?? '-' }}</td>
+<td>{{ $collaboration->time_zone ?? 'UTC' }}</td>
 <td>
     @php
         $isCreator = $collaboration->user_id == auth()->id();
@@ -45,27 +46,16 @@
                 <i class="fa-solid fa-eye"></i>
             </a>
 
-            {{-- Show meeting link for different scenarios --}}
-            @if ($collaboration->meeting_link)
-                @if ($isCreator)
-                    {{-- Creator can start Zoom meeting --}}
-                    <a href="{{ $collaboration->meeting_link }}" target="_blank" class="edit_icon me-2"
-                        title="Start Meeting">
-                        <i class="fa-solid fa-video"></i>
-                    </a>
-                @elseif(!$isCreator && $hasAccepted)
-                    {{-- Participants can join Zoom meeting --}}
-                    <a href="{{ $collaboration->meeting_link }}" target="_blank" class="edit_icon me-2"
-                        title="Join Meeting">
-                        <i class="fa-solid fa-video"></i>
-                    </a>
-                @elseif($hasAccepted)
-                    {{-- Third-party link for accepted users --}}
-                    <a href="{{ $collaboration->meeting_link }}" target="_blank" class="edit_icon me-2"
-                        title="Join Meeting">
-                        <i class="fa-solid fa-video"></i>
-                    </a>
-                @endif
+            @if ($collaboration->meeting_link || $collaboration->host_meeting_link)
+                @php
+                    $videoUrl = $isCreator
+                        ? ($collaboration->host_meeting_link ?: $collaboration->meeting_link)
+                        : $collaboration->meeting_link;
+                @endphp
+                <a href="{{ $videoUrl }}" target="_blank" rel="noopener noreferrer" class="edit_icon me-2"
+                    title="{{ $isCreator ? 'Start Meeting' : 'Join Meeting' }}">
+                    <i class="fa-solid fa-video"></i>
+                </a>
             @endif
         @endif
 

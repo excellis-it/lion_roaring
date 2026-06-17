@@ -22,16 +22,7 @@
 
                             <div id="placeholders" class="d-flex flex-wrap gap-2">
                                 @php
-                                    $placeholders = [
-                                        '{customer_name}',
-                                        '{customer_email}',
-                                        '{order_list}',
-                                        '{order_id}',
-                                        '{arriving_date}',
-                                        '{total_order_value}',
-                                        '{order_details_url_button}',
-                                        '{order_note}',
-                                    ];
+                                    $placeholders = \App\Models\OrderEmailTemplate::availablePlaceholders();
                                 @endphp
 
                                 @foreach ($placeholders as $ph)
@@ -127,7 +118,8 @@
                                         placeholder="Use placeholders like {customer_name}, {order_id}, {order_list}, {total_order_value},{order_details_url_button},{order_note} ">{{ old('body') }}</textarea>
                                     <small class="text-muted">HTML is allowed. Use placeholders: {customer_name},
                                         {customer_email}, {order_list}, {order_id}, {arriving_date},
-                                        {total_order_value},{order_details_url_button},{order_note}</small>
+                                        {total_order_value}, {order_details_url_button}, {order_note},
+                                        {warehouse_admin_mail}</small>
                                     @error('body')
                                         <span class="text-danger">{{ $message }}</span>
                                     @enderror

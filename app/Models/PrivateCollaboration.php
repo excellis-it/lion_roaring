@@ -16,9 +16,11 @@ class PrivateCollaboration extends BaseModel
         'title',
         'description',
         'meeting_link',
+        'host_meeting_link',
         'start_time',
         'end_time',
         'user_id',
+        'time_zone',
         'create_zoom',
         'is_zoom',
     ];
@@ -40,12 +42,12 @@ class PrivateCollaboration extends BaseModel
 
     public function getStartTimeAttribute($value): ?Carbon
     {
-        return $this->parseStoredDateTime($value);
+        return $this->parseStoredDateTime($value, $this->attributes['time_zone'] ?? $this->time_zone ?? null);
     }
 
     public function getEndTimeAttribute($value): ?Carbon
     {
-        return $this->parseStoredDateTime($value);
+        return $this->parseStoredDateTime($value, $this->attributes['time_zone'] ?? $this->time_zone ?? null);
     }
 
     public function country()

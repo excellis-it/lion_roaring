@@ -391,20 +391,10 @@ class DigitalCheckoutController extends Controller
                 $orderButtons = "<p><a href='" . $myOrdersUrl . "' style='display:inline-block;padding:10px 20px;background:#000;color:#fff;text-decoration:none;border-radius:5px;'>View Order History</a></p>"
                     . $emailExtras['html'];
 
-                $body = str_replace(
-                    ['{customer_name}', '{customer_email}', '{order_list}', '{order_id}', '{arriving_date}', '{total_order_value}', '{order_details_url_button}', '{order_note}'],
-                    [
-                        $order->first_name . ' ' . $order->last_name,
-                        $order->email ?? '',
-                        $orderList,
-                        $order->order_number ?? '',
-                        '',
-                        number_format($order->total_amount ?? 0, 2),
-                        $orderButtons,
-                        $order->notes ?? '',
-                    ],
-                    $template->body
-                );
+                $body = OrderEmailTemplate::replacePlaceholders($template->body, $order, [
+                    'order_list' => $orderList,
+                    'order_details_button_html' => $orderButtons,
+                ]);
 
                 Mail::to($order->email)->send(new OrderStatusUpdatedMail($order, $body, $emailExtras['attachments']));
             }

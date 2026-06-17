@@ -27,32 +27,37 @@
                                             <div class="col-md-6">
                                                 <h6 class="card-title">{{ $collaboration->title }}</h6>
                                                 <p class="card-text"><strong>Start Time:</strong>
-                                                    {{ $collaboration->start_time ? date('d M, Y h:i A', strtotime($collaboration->start_time)) : 'N/A' }}
+                                                    {{ $collaboration->start_time?->format('d M, Y h:i A') ?? 'N/A' }}
                                                 </p>
                                                 <p class="card-text"><strong>End Time:</strong>
-                                                    {{ $collaboration->end_time ? date('d M, Y h:i A', strtotime($collaboration->end_time)) : 'N/A' }}
+                                                    {{ $collaboration->end_time?->format('d M, Y h:i A') ?? 'N/A' }}
+                                                </p>
+                                                <p class="card-text"><strong>Timezone:</strong>
+                                                    {{ $collaboration->time_zone ?? 'UTC' }}
                                                 </p>
 
-
                                                 @if ($isCreator || $hasAccepted)
-                                                    <p class="card-text"><strong>Meeting Link:</strong>
-                                                        @if ($collaboration->meeting_link)
-                                                            <a href="{{ $collaboration->meeting_link }}" target="_blank">
+                                                    @if ($collaboration->meeting_link)
+                                                        @if ($isCreator && $collaboration->host_meeting_link)
+                                                            <p class="card-text"><strong>Host Link:</strong>
+                                                                <a href="{{ $collaboration->host_meeting_link }}" target="_blank"
+                                                                    rel="noopener noreferrer">
+                                                                    {{ $collaboration->host_meeting_link }}
+                                                                </a>
+                                                            </p>
+                                                        @endif
+                                                        <p class="card-text"><strong>{{ $isCreator && $collaboration->is_zoom ? 'Participant Join Link' : 'Meeting Link' }}:</strong>
+                                                            <a href="{{ $collaboration->meeting_link }}" target="_blank"
+                                                                rel="noopener noreferrer">
                                                                 {{ $collaboration->meeting_link }}
                                                             </a>
-                                                            <br>
-                                                            <br>
-                                                            @if ($collaboration->is_zoom && $isCreator)
-                                                                <span class="">Zoom - You are Host</span>
-                                                            @elseif($collaboration->is_zoom)
-                                                                <span class="">Zoom Meeting</span>
-                                                            @else
-                                                                <span class="">External Link</span>
+                                                            @if ($collaboration->is_zoom)
+                                                                <br><span class="text-muted">Zoom meeting</span>
                                                             @endif
-                                                        @else
-                                                            N/A
-                                                        @endif
-                                                    </p>
+                                                        </p>
+                                                    @else
+                                                        <p class="card-text"><strong>Meeting Link:</strong> N/A</p>
+                                                    @endif
                                                 @else
                                                     <p class="card-text">
                                                         <strong>Meeting Link:</strong>

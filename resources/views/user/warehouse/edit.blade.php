@@ -105,6 +105,21 @@
                                 </div>
                             </div>
 
+                            {{-- Contact Us Mail --}}
+                            <div class="col-md-6 mb-2">
+                                <div class="box_label">
+                                    <label for="contact_us_mail">Contact Us Mail</label>
+                                    <input type="email" name="contact_us_mail" id="contact_us_mail"
+                                        class="form-control @error('contact_us_mail') is-invalid @enderror"
+                                        placeholder="warehouse@example.com"
+                                        value="{{ old('contact_us_mail', $wareHouse->contact_us_mail) }}">
+                                    <small class="text-muted">Used in order emails as {warehouse_admin_mail}</small>
+                                    @error('contact_us_mail')
+                                        <span class="text-danger">{{ $message }}</span>
+                                    @enderror
+                                </div>
+                            </div>
+
                             {{-- Map --}}
                             <div class="col-md-12 mb-2">
                                 <div id="map"></div>

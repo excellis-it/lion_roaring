@@ -130,6 +130,40 @@ class ArticleController extends Controller
     }
 
     /**
+     * POST /register-agreement/preview (public — pre-registration gate)
+     *
+     * @bodyParam signer_name string required
+     * @bodyParam guest_token string optional Reuse token from a prior preview step
+     * @bodyParam country_code string optional
+     */
+    public function previewRegisterAgreementGuest(Request $request, RegisterAgreementPreviewService $previewService): JsonResponse
+    {
+        $validator = Validator::make($request->all(), [
+            'signer_name' => 'required|string|max:255',
+            'guest_token' => 'nullable|string|max:64',
+            'country_code' => 'nullable|string|max:10',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json(['status' => false, 'message' => $validator->errors()->first()], 422);
+        }
+
+        $guestToken = $request->input('guest_token') ?: (string) Str::uuid();
+        $pending = $previewService->buildAndCacheForGuest(
+            $guestToken,
+            (string) $request->input('signer_name'),
+            $request->input('country_code')
+        );
+
+        return response()->json([
+            'status' => true,
+            'guest_token' => $guestToken,
+            'token' => $pending['token'],
+            'pdf_url' => $previewService->absolutePdfUrl($pending['tmp_path']),
+        ]);
+    }
+
+    /**
      * POST /user/register-agreement/preview
      * Generates a personalized agreement PDF preview (mobile / API parity with web sign-agreement).
      *
