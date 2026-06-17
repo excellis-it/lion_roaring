@@ -13,7 +13,7 @@
             </td>
 
 
-            <td>
+            <td class="p-3 align-top">
                 @if (isset($partner->userRole) && $partner->userRole->is_ecclesia == 0)
                 {{ isset($partner->ecclesia) ? $partner->ecclesia->name . ' (' . $partner->ecclesia->countryName->name . ')' : 'NO NAME' }}
                 @endif

@@ -27,6 +27,7 @@
                         <tr>
                             <th>ID</th>
                             <th>Name</th>
+                            <th>Status</th>
                             <th>Actions</th>
                         </tr>
                     </thead>
@@ -35,6 +36,13 @@
                             <tr>
                                 <td>{{ $key + 1 }}</td>
                                 <td>{{ $size->size }}</td>
+                                <td>
+                                    @if ($size->status)
+                                        <span class="badge bg-success">Active</span>
+                                    @else
+                                        <span class="badge bg-secondary">Inactive</span>
+                                    @endif
+                                </td>
                                 <td class="d-flex">
                                     @if (auth()->user()->can('Edit Estore Sizes'))
                                         <a href="{{ route('sizes.edit', $size->id) }}" class="edit_icon me-2"><i

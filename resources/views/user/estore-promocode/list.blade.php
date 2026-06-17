@@ -63,7 +63,7 @@
                                 <td>{{ \Carbon\Carbon::parse($promoCode->start_date)->format('d-m-Y') }}</td>
                                 <td>{{ \Carbon\Carbon::parse($promoCode->end_date)->format('d-m-Y') }}</td>
                                 <td>{{ $promoCode->status == 1 ? 'Active' : 'Inactive' }}</td>
-                                <td class="d-flex">
+                                <td class="d-flex align-items-center">
                                     <a href="{{ route('store-promo-codes.edit', $promoCode->id) }}"
                                         class="edit_icon me-2"><i class="fa-solid fa-edit"></i></a>
                                     <a href="javascript:void(0)" id="delete"

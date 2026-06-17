@@ -35,6 +35,7 @@
 
         .search-input-group input {
             padding-right: 35px;
+            padding-left: 12px;
             border-radius: 6px;
             border: 1px solid #d1d9e3;
             height: 38px;

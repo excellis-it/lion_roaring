@@ -45,7 +45,13 @@ class MemberController extends Controller
             $query = $request->get('query');
             $query = str_replace(" ", "%", $query);
 
+            // BUG-017: apply the search (incl. email) AND the role filter to the SAME builder.
+            // Previously the searched builder was discarded and replaced by an unfiltered query,
+            // so searching by email (or any field) returned the full list / no match.
             $partners = User::with(['ecclesia', 'roles'])
+                ->whereHas('roles', function ($q) {
+                    $q->whereNotIn('name', ['SUPER ADMIN', 'ECCLESIA']);
+                })
                 ->where(function ($q) use ($query) {
                     $q->where('id', 'like', '%' . $query . '%')
                         ->orWhereRaw('CONCAT(COALESCE(first_name, ""), " ", COALESCE(middle_name, ""), " ", COALESCE(last_name, "")) like ?', ['%' . $query . '%'])
@@ -61,38 +67,21 @@ class MemberController extends Controller
                         });
                 });
 
+            // Ecclesia admins only see members of their own ecclesia
+            if (Auth::user()->hasNewRole('ECCLESIA')) {
+                $partners->where('ecclesia_id', auth()->id());
+            }
+
             // Sorting logic
             if ($sort_by == 'name') {
                 $partners->orderBy(DB::raw('CONCAT(COALESCE(first_name, ""), " ", COALESCE(middle_name, ""), " ", COALESCE(last_name, ""))'), $sort_type);
-            } else {
+            } elseif ($sort_by) {
                 $partners->orderBy($sort_by, $sort_type);
-            }
-
-            // Exclude users with the "SUPER ADMIN" role
-            // $partners->whereDoesntHave('roles', function ($q) {
-            //     $q->where('name', 'SUPER ADMIN')->orWhere('name', 'ECCLESIA');
-            // });
-
-            if (Auth::user()->hasNewRole('ECCLESIA')) {
-                // Exclude SUPER ADMIN and ECCLESIA roles
-                $partners = User::whereHas('roles', function ($q) {
-                    $q->whereNotIn('name', ['SUPER ADMIN', 'ECCLESIA']);
-                })->where('ecclesia_id', auth()->id())->orderBy('id', 'desc')->paginate(15);
             } else {
-                // Exclude SUPER ADMIN and ECCLESIA roles, and filter by ecclesia_id
-                $partners = User::whereHas('roles', function ($q) {
-                    $q->whereNotIn('name', ['SUPER ADMIN', 'ECCLESIA']);
-                })
-
-                    ->orderBy('id', 'desc')
-                    ->paginate(15);
+                $partners->orderBy('id', 'desc');
             }
 
-            if (Auth::user()->hasNewRole('SUPER ADMIN')) {
-                $partners = $partners->paginate(15);
-            } else {
-                $partners = $partners->paginate(15);
-            }
+            $partners = $partners->paginate(15);
 
             return response()->json(['data' => view('admin.members.table', compact('partners'))->render()]);
         }

@@ -128,8 +128,26 @@
                 var page = $('#hidden_page').val();
                 var topic_id = $('#topics').val();
                 var type = $('#type').val();
+                // BUG-008: remember the search so the internal "< Back" button restores it
+                sessionStorage.setItem('policyGuidenceSearch', query);
                 fetch_data(page, sort_type, column_name, query, topic_id, type);
             });
+
+            // BUG-008: restore the previous search filter when returning to this list
+            (function restorePolicySearch() {
+                var savedQuery = sessionStorage.getItem('policyGuidenceSearch');
+                if (savedQuery) {
+                    $('#search').val(savedQuery);
+                    fetch_data(
+                        $('#hidden_page').val(),
+                        $('#hidden_sort_type').val(),
+                        $('#hidden_column_name').val(),
+                        savedQuery,
+                        $('#topics').val(),
+                        $('#type').val()
+                    );
+                }
+            })();
 
             $(document).on('click', '.sorting', function() {
                 var column_name = $(this).data('column_name');
