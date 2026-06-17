@@ -1783,6 +1783,10 @@ li.slick-active button {
 .ftr-frm form .form-group textarea.form-control {
     border-radius: 0px;
     height: 100px;
+    line-height: 1.6;
+    padding: 12px 15px;
+    vertical-align: top;
+    resize: vertical;
 }
 
 .ftr-frm .form-group .form-control::-webkit-input-placeholder {

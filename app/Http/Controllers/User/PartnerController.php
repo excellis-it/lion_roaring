@@ -2,8 +2,10 @@
 
 namespace App\Http\Controllers\User;
 
+use App\Exports\PartnersExport;
 use App\Helpers\Helper;
 use App\Http\Controllers\Controller;
+use Maatwebsite\Excel\Facades\Excel;
 use App\Mail\ActiveUserMail;
 use App\Mail\InactiveUserMail;
 use App\Mail\RegistrationMail;
@@ -1238,38 +1240,11 @@ class PartnerController extends Controller
 
         $results = $partners->get();
 
-        $headers = [
-            "Content-type"        => "text/csv",
-            "Content-Disposition" => "attachment; filename=partners_report_" . date('Ymd_His') . ".csv",
-            "Pragma"              => "no-cache",
-            "Cache-Control"       => "must-revalidate, post-check=0, pre-check=0",
-            "Expires"             => "0"
-        ];
+        // BUG-015: generate a valid .xlsx via Maatwebsite/Excel instead of a hand-streamed CSV
+        // (the raw stream produced files Excel reported as corrupted).
+        $filename = 'partners_report_' . date('Ymd_His') . '.xlsx';
 
-        $callback = function () use ($results) {
-            $file = fopen('php://output', 'w');
-            fputcsv($file, ['ID', 'Email', 'First Name', 'Middle Name', 'Last Name', 'User Type', 'Country', 'Role', 'House Of Ecclesia', 'Registration Agreement', 'Phone', 'Status']);
-            foreach ($results as $partner) {
-                fputcsv($file, [
-                    $partner->lion_roaring_id ?? $partner->id,
-                    $partner->email,
-                    $partner->first_name,
-                    $partner->middle_name,
-                    $partner->last_name,
-                    $partner->user_type,
-                    $partner->countries->name ?? '-',
-                    $partner->userRole->name ?? '',
-                    $partner->ecclesia->name ?? 'NO NAME',
-                    $partner->userRegisterAgreement ? 'Yes' : 'No',
-                    $partner->phone,
-                    $partner->status == 1 ? 'Active' : 'Inactive'
-                ]);
-            }
-
-            fclose($file);
-        };
-
-        return response()->stream($callback, 200, $headers);
+        return Excel::download(new PartnersExport($results), $filename);
     }
 
     public function getAgreementDetails(Request $request)

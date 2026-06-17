@@ -3,6 +3,32 @@
     Dashboard - {{ env('APP_NAME') }} user profile
 @endsection
 @push('styles')
+    <style>
+        /* BUG-006: keep uploaded profile pictures from stretching — crop uniformly to the circle */
+        .profile_img span {
+            display: inline-block;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            border-radius: 50%;
+        }
+
+        .profile_img span img#blah {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            object-position: center;
+            border-radius: 50%;
+        }
+
+        /* BUG-003: disabled state for the Update button while the form is invalid */
+        .print_btn:disabled,
+        .print_btn[disabled] {
+            opacity: 0.5;
+            cursor: not-allowed;
+            pointer-events: none;
+        }
+    </style>
 @endpush
 @section('content')
     @php
@@ -296,7 +322,7 @@
                                         </div>
                                     </div>
                                     <div class="w-100 text-end d-flex align-items-center justify-content-end">
-                                        <button class="print_btn" type="submit">Update</button>
+                                        <button class="print_btn" type="submit" id="profileUpdateBtn">Update</button>
                                     </div>
 
                                 </div>
@@ -445,6 +471,28 @@
                 var country = $(this).val();
                 getStates(country);
             });
+
+            // BUG-003: keep the Update button disabled until all required fields are filled
+            const requiredProfileFields = [
+                '#first_name', '#last_name', 'input[name="lion_roaring_id_suffix"]',
+                '#mobile_code', '#zip', '#country', '#state', '#city', '#address'
+            ];
+
+            function validateProfileForm() {
+                let valid = true;
+                requiredProfileFields.forEach(function(sel) {
+                    const $el = $(sel);
+                    if ($el.length && $.trim($el.val()) === '') {
+                        valid = false;
+                    }
+                });
+                $('#profileUpdateBtn').prop('disabled', !valid);
+            }
+
+            $('form').on('input change', requiredProfileFields.join(','), validateProfileForm);
+            // re-validate when states load asynchronously
+            $(document).ajaxComplete(validateProfileForm);
+            validateProfileForm();
 
             function getStates(country, state = 0) {
                 // alert(country);

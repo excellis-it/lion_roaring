@@ -61,6 +61,11 @@
         .trans-section {
             margin: 100px;
         }
+
+        /* Ensure toast notifications float above the floating chat widget (z-index 9999) */
+        #toast-container {
+            z-index: 2147483647 !important;
+        }
     </style>
     <style>
         /* ===== Coupon Slider / Ticker Bar ===== */
@@ -279,6 +284,38 @@
     <script src="{{ asset('user_assets/js/app-style-switcher.js') }}"></script>
     <script src="{{ asset('user_assets/js/sidebarmenu.js') }}"></script>
     <script src="{{ asset('user_assets/js/custom.js') }}"></script>
+    <script>
+        // BUG-011: preserve the left sidebar scroll position across page navigations
+        (function() {
+            var KEY = 'userSidebarScroll';
+
+            function getScroller() {
+                return document.querySelector('.scroll-sidebar .simplebar-content-wrapper') ||
+                    document.querySelector('.scroll-sidebar');
+            }
+
+            function saveScroll() {
+                var el = getScroller();
+                if (el) sessionStorage.setItem(KEY, el.scrollTop);
+            }
+
+            function restoreScroll() {
+                var el = getScroller();
+                var val = sessionStorage.getItem(KEY);
+                if (el && val !== null) el.scrollTop = parseInt(val, 10);
+            }
+
+            // restore after SimpleBar has rendered the scroll wrapper
+            window.addEventListener('load', function() {
+                setTimeout(restoreScroll, 60);
+            });
+            // capture position when leaving via a sidebar link or any unload
+            document.addEventListener('click', function(e) {
+                if (e.target.closest('.scroll-sidebar a')) saveScroll();
+            }, true);
+            window.addEventListener('beforeunload', saveScroll);
+        })();
+    </script>
     <!--  current page js files -->
     <script src="{{ asset('user_assets/js/owl.carousel.min.js') }}"></script>
     <!-- <script src="js/apexcharts.min.js"></script> -->

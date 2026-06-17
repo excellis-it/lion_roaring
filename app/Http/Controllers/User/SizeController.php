@@ -15,7 +15,8 @@ class SizeController extends Controller
         if (!auth()->user()->can('Manage Estore Sizes')) {
             abort(403, 'You do not have permission to access this page.');
         }
-        $sizes = Size::where('status', 1)->paginate(10);
+        // BUG-010: show both active and inactive sizes in the admin panel; the storefront filters status separately.
+        $sizes = Size::latest()->paginate(10);
         return view('user.estore-sizes.list', compact('sizes'));
     }
 

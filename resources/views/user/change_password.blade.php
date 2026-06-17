@@ -26,7 +26,7 @@
                                         <div class="box_label">
                                             <label>Old Password*</label>
                                             <input type="password" class="form-control" id="old_password"
-                                            name="old_password" placeholder="Old Password" value="{{ old('old_password') }}">
+                                            name="old_password" placeholder="Old Password" value="{{ old('old_password') }}" required>
                                                 <span class="eye-btn-1" id="eye-button-1">
                                                     <i class="fa fa-eye-slash" aria-hidden="true" id="togglePassword"></i>
                                                 </span>
@@ -41,7 +41,7 @@
                                             <label>New Password*</label>
                                             <input type="password" class="form-control" id="new_password"
                                                 name="new_password" placeholder="New Password"
-                                                value="{{ old('new_password') }}">
+                                                value="{{ old('new_password') }}" required>
                                                 <span class="eye-btn-1" id="eye-button-2">
                                                     <i class="fa fa-eye-slash" aria-hidden="true" id="togglePassword"></i>
                                                 </span>
@@ -56,7 +56,7 @@
                                             <label>Confirm Password*</label>
                                             <input type="password" class="form-control" id="confirm_password"
                                                 name="confirm_password" placeholder="Confirm Password"
-                                                value="{{ old('confirm_password') }}">
+                                                value="{{ old('confirm_password') }}" required>
                                                 <span class="eye-btn-1" id="eye-button-3">
                                                     <i class="fa fa-eye-slash" aria-hidden="true" id="togglePassword"></i>
                                                 </span>
@@ -95,6 +95,45 @@
         $('#eye-button-3').click(function() {
             $('#confirm_password').attr('type', $('#confirm_password').is(':password') ? 'text' : 'password');
             $(this).find('i').toggleClass('fa-eye-slash fa-eye');
+        });
+
+        // BUG-005: enforce the mandatory new/confirm password rules on the client before submit
+        function showPwError($input, msg) {
+            $input.closest('.box_label').find('.js-pw-error').remove();
+            $('<div class="error js-pw-error" style="color:red;"></div>').text(msg).appendTo($input.closest('.box_label'));
+        }
+
+        $('form').on('submit', function(e) {
+            $('.js-pw-error').remove();
+            let valid = true;
+            const oldPw = $.trim($('#old_password').val());
+            const newPw = $.trim($('#new_password').val());
+            const confirmPw = $.trim($('#confirm_password').val());
+
+            if (oldPw === '') { showPwError($('#old_password'), 'The old password field is required.'); valid = false; }
+
+            if (newPw === '') {
+                showPwError($('#new_password'), 'The new password field is required.');
+                valid = false;
+            } else if (!/^(?=.*[@$%&])[^\s]{8,}$/.test(newPw)) {
+                showPwError($('#new_password'), 'The password must be at least 8 characters long and include at least one special character from @$%&.');
+                valid = false;
+            } else if (newPw === oldPw) {
+                showPwError($('#new_password'), 'The new password must be different from the old password.');
+                valid = false;
+            }
+
+            if (confirmPw === '') {
+                showPwError($('#confirm_password'), 'The confirm password field is required.');
+                valid = false;
+            } else if (confirmPw !== newPw) {
+                showPwError($('#confirm_password'), 'The confirm password does not match the new password.');
+                valid = false;
+            }
+
+            if (!valid) {
+                e.preventDefault();
+            }
         });
     });
 </script>
