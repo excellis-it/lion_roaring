@@ -9,10 +9,10 @@ Click to Login
 @endcomponent
 @else
 @component('mail::button', ['url' => config('app.member_url')])
-Clic to Login
+Click to Login
 @endcomponent
 @endif
- 
+
 Thanks,<br>
 {{ config('app.name') }}
 @endcomponent
