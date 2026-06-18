@@ -315,7 +315,7 @@ class TeamChatController extends Controller
                         try {
                             $hasAttachment = !empty($team_chat->attachment);
                             $message_type = $hasAttachment ? $this->detectMessageType($team_chat->attachment) : 'text';
-                            $messageText = $hasAttachment ? 'Sent an attachment' : $input_message;
+                            $messageText = $hasAttachment ? 'Sent an attachment' : Helper::chatPreviewText($input_message);
 
                             $this->fcmService->sendToDevice(
                                 $member->fcm_token,

@@ -563,7 +563,7 @@ class ChatController extends Controller
                         $this->fcmService->sendToDevice(
                             $receiver->fcm_token,
                             'Message from ' . auth()->user()->full_name,
-                            $hasAttachment ? 'Sent an attachment' : $themessage,
+                            $hasAttachment ? 'Sent an attachment' : Helper::chatPreviewText($themessage),
                             [
                                 'type' => 'chat',
                                 'chat_id' => (string) $chat->id,

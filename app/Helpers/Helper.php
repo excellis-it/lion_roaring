@@ -463,6 +463,19 @@ class Helper
         );
     }
 
+    // Plain-text preview for notifications / chat-list subtitles: strip all HTML
+    // tags and decode entities so a pasted <a href> shows its label, not markup.
+    public static function chatPreviewText($message)
+    {
+        if ($message === null || $message === '') {
+            return '';
+        }
+        $text = preg_replace('/<br\s*\/?>/i', ' ', $message);
+        $text = strip_tags($text);
+        $text = html_entity_decode($text, ENT_QUOTES | ENT_HTML5, 'UTF-8');
+        return trim(preg_replace('/\s+/', ' ', $text));
+    }
+
     public static function formatChatMessage($message)
     {
         if ($message === null || $message === '') {
