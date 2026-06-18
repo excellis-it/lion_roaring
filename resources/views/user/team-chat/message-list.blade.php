@@ -118,7 +118,7 @@
                                 @endif
 
                                 @if ($chat->message != null)
-                                    {!! nl2br($chat->message) !!}
+                                    {!! Helper::formatChatMessage($chat->message) !!}
                                 @endif
 
 

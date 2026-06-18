@@ -363,6 +363,117 @@ $(document).ready(function () {
         pastedFiles = []; // Also clear pasted files
     });
 
+    // Display-only formatter: messages are stored raw. Sanitize pasted HTML (keep
+    // safe <a> links, drop scripts/handlers/styles) and auto-link bare URLs, then
+    // convert newlines. Mirrors server-side Helper::formatChatMessage() so socket
+    // and reload render identically.
+    var CHAT_ALLOWED_TAGS = {
+        A: ["href", "title"],
+        B: [],
+        STRONG: [],
+        I: [],
+        EM: [],
+        U: [],
+        BR: [],
+        P: [],
+        UL: [],
+        OL: [],
+        LI: [],
+    };
+
+    function formatChatMessage(message) {
+        if (message == null) return "";
+        // Give scheme-less www. links a scheme so they linkify too.
+        var src = String(message).replace(
+            /(^|[\s>])(www\.[^\s<]+)/gi,
+            "$1https://$2"
+        );
+        var root = document.createElement("div");
+        root.innerHTML = src; // innerHTML never executes <script>; sanitized below
+        sanitizeChatNode(root);
+        linkifyChatTextNodes(root);
+        return root.innerHTML.replace(/\n/g, "<br>");
+    }
+
+    function sanitizeChatNode(node) {
+        var children = Array.prototype.slice.call(node.childNodes);
+        children.forEach(function (child) {
+            if (child.nodeType === 8) {
+                child.parentNode.removeChild(child); // strip comments
+                return;
+            }
+            if (child.nodeType !== 1) return; // keep text nodes
+            var tag = child.tagName;
+            if (tag === "SCRIPT" || tag === "STYLE") {
+                child.parentNode.removeChild(child);
+                return;
+            }
+            if (!CHAT_ALLOWED_TAGS.hasOwnProperty(tag)) {
+                // Disallowed tag: unwrap, keeping its (sanitized) contents as text.
+                sanitizeChatNode(child);
+                while (child.firstChild) {
+                    child.parentNode.insertBefore(child.firstChild, child);
+                }
+                child.parentNode.removeChild(child);
+                return;
+            }
+            var allowedAttrs = CHAT_ALLOWED_TAGS[tag];
+            Array.prototype.slice.call(child.attributes).forEach(function (attr) {
+                if (allowedAttrs.indexOf(attr.name.toLowerCase()) === -1) {
+                    child.removeAttribute(attr.name);
+                }
+            });
+            if (tag === "A") {
+                var href = (child.getAttribute("href") || "").trim();
+                if (!/^(https?:|mailto:|ftp:)/i.test(href)) {
+                    child.removeAttribute("href");
+                } else {
+                    child.setAttribute("target", "_blank");
+                    child.setAttribute("rel", "noreferrer noopener");
+                    child.setAttribute("class", "text-decoration-underline");
+                }
+            }
+            sanitizeChatNode(child);
+        });
+    }
+
+    function linkifyChatTextNodes(node) {
+        if (node.nodeType === 1 && node.tagName === "A") return; // skip inside links
+        Array.prototype.slice.call(node.childNodes).forEach(function (child) {
+            if (child.nodeType === 1) {
+                linkifyChatTextNodes(child);
+                return;
+            }
+            if (child.nodeType !== 3) return;
+            var text = child.nodeValue;
+            var urlRe = /(https?:\/\/[^\s<]+)/gi;
+            if (!urlRe.test(text)) return;
+            urlRe.lastIndex = 0;
+            var frag = document.createDocumentFragment();
+            var last = 0;
+            var m;
+            while ((m = urlRe.exec(text)) !== null) {
+                if (m.index > last) {
+                    frag.appendChild(
+                        document.createTextNode(text.slice(last, m.index))
+                    );
+                }
+                var a = document.createElement("a");
+                a.setAttribute("href", m[0]);
+                a.setAttribute("target", "_blank");
+                a.setAttribute("rel", "noreferrer noopener");
+                a.setAttribute("class", "text-decoration-underline");
+                a.textContent = m[0];
+                frag.appendChild(a);
+                last = m.index + m[0].length;
+            }
+            if (last < text.length) {
+                frag.appendChild(document.createTextNode(text.slice(last)));
+            }
+            child.parentNode.replaceChild(frag, child);
+        });
+    }
+
     function formatChatSendMessage(message) {
         const pattern =
             /\b((https?|ftp):\/\/[^\s<>"]+|www\.[^\s<>"]+|[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}[^\s<>"]*)/gi;
@@ -510,7 +621,7 @@ $(document).ready(function () {
                     <a href="${fileUrl}" target="_blank" class="file-download" data-download-url="${fileUrl}" data-file-name="${dataFileName}">
                         <img src="${fileUrl}" alt="attachment" style="max-width: 200px; max-height: 200px;">
                     </a><br>
-                    <span>${data.message.replace(/\n/g, "<br>")}</span>
+                    <span>${formatChatMessage(data.message)}</span>
                  </p>`;
             } else if (["mp4", "webm", "ogg"].includes(attachement_extention)) {
                 html += `<p class="messageContent">
@@ -521,21 +632,18 @@ $(document).ready(function () {
                             <source src="${fileUrl}" type="video/ogg">
                         </video>
                     </a><br>
-                    <span>${data.message.replace(/\n/g, "<br>")}</span>
+                    <span>${formatChatMessage(data.message)}</span>
                 </p>`;
             } else {
                 html += `<p class="messageContent">
                     <a href="${fileUrl}" target="_blank" class="file-download" data-download-url="${fileUrl}" data-file-name="${dataFileName}">
                         <img src="${fileIcon}" alt="">
                     </a><br>
-                    <span>${data.message.replace(/\n/g, "<br>")}</span>
+                    <span>${formatChatMessage(data.message)}</span>
                 </p>`;
             }
         } else {
-            html += `<p class="messageContent">${data.message.replace(
-                /\n/g,
-                "<br>"
-            )}</p>`;
+            html += `<p class="messageContent">${formatChatMessage(data.message)}</p>`;
         }
 
         html += `
@@ -1381,10 +1489,7 @@ $(document).ready(function () {
                 ) {
                     html += `<a href="${fileUrl}" target="_blank" class="file-download" data-download-url="${fileUrl}" data-file-name="${incomingFileName}">
                         <img src="${fileUrl}" alt="attachment" style="max-width: 200px; max-height: 200px;">
-                     </a><br><span class="">${data.chat.message.replace(
-                         /\n/g,
-                         "<br>"
-                     )}</span>`;
+                     </a><br><span class="">${formatChatMessage(data.chat.message)}</span>`;
                 } else if (
                     ["mp4", "webm", "ogg"].includes(attachement_extention)
                 ) {
@@ -1394,20 +1499,14 @@ $(document).ready(function () {
                             <source src="${fileUrl}" type="video/webm">
                             <source src="${fileUrl}" type="video/ogg">
                         </video>
-                     </a><<br><span class="">${data.chat.message.replace(
-                         /\n/g,
-                         "<br>"
-                     )}</span>`;
+                     </a><<br><span class="">${formatChatMessage(data.chat.message)}</span>`;
                 } else {
                     html += `<a href="${fileUrl}" target="_blank" class="file-download" data-download-url="${fileUrl}" data-file-name="${incomingFileName}">
                         <img src="${fileIcon}" alt="">
-                     </a><br><span class="">${data.chat.message.replace(
-                         /\n/g,
-                         "<br>"
-                     )}</span>`;
+                     </a><br><span class="">${formatChatMessage(data.chat.message)}</span>`;
                 }
             } else {
-                html += `${data.chat.message.replace(/\n/g, "<br>")}`;
+                html += `${formatChatMessage(data.chat.message)}`;
             }
 
             html += `</p>

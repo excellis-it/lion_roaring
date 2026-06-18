@@ -465,16 +465,35 @@ class Helper
 
     public static function formatChatMessage($message)
     {
-        // // Regular expression to match words containing a dot (.)
-        // $pattern = '/\b[a-zA-Z0-9._-]+\.[a-zA-Z]{2,}\b/';
+        if ($message === null || $message === '') {
+            return '';
+        }
 
-        // // Replace matched words with anchor tags
-        // $formattedMessage = preg_replace_callback($pattern, function ($matches) {
-        //     $url = $matches[0];
-        //     return '<a class="text-decoration-underline" href="https://' . htmlspecialchars($url) . '" target="_blank">' . htmlspecialchars($url) . '</a>';
-        // }, $message);
+        // Give scheme-less www. links a scheme so they get linkified too (HTMLPurifier
+        // only auto-links URLs that already have a scheme). Skip ones already in an href.
+        $message = preg_replace('/(^|[\s>])(www\.[^\s<]+)/i', '$1https://$2', $message);
 
-        return nl2br($message);
+        // Build the purifier once per request — it is expensive to construct.
+        static $purifier = null;
+        if ($purifier === null) {
+            $cachePath = storage_path('app/htmlpurifier');
+            if (!is_dir($cachePath)) {
+                @mkdir($cachePath, 0755, true);
+            }
+
+            $config = \HTMLPurifier_Config::createDefault();
+            // Allow only safe tags; pasted <a> links survive, scripts/handlers/styles are stripped.
+            $config->set('HTML.Allowed', 'a[href|title],b,strong,i,em,u,br,p,ul,ol,li');
+            $config->set('AutoFormat.Linkify', true);   // turn bare URLs into links
+            $config->set('HTML.TargetBlank', true);     // force target=_blank + rel=noreferrer
+            $config->set('Cache.SerializerPath', $cachePath);
+
+            $purifier = new \HTMLPurifier($config);
+        }
+
+        $clean = $purifier->purify($message);
+
+        return nl2br($clean);
     }
 
     public static function formatChatSendMessage($message)

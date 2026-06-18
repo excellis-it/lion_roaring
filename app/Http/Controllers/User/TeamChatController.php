@@ -247,7 +247,7 @@ class TeamChatController extends Controller
 
     public function send(Request $request)
     {
-        $input_message = Helper::formatChatSendMessage($request->message);
+        $input_message = $request->message;
 
         // Handle multiple files
         $files = $request->file('files') ?? ($request->file('file') ? [$request->file('file')] : []);

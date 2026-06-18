@@ -909,7 +909,7 @@ class TeamChatController extends Controller
     public function send(Request $request)
     {
         try {
-            $input_message = Helper::formatChatSendMessage($request->message);
+            $input_message = $request->message;
             $files = $request->file('files') ?? ($request->file('file') ? [$request->file('file')] : []);
             $team_chats = [];
 
