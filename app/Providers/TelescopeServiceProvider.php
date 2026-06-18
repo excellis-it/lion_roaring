@@ -22,18 +22,8 @@ class TelescopeServiceProvider extends TelescopeApplicationServiceProvider
 
         $this->hideSensitiveRequestDetails();
 
-        $isLocal = $this->app->environment('local');
-
         Telescope::filter(function (IncomingEntry $entry) {
-            if ($entry->type === 'request') {
-                return true; // log all requests
-            }
-
-            return $entry->isReportableException() ||
-                $entry->isFailedRequest() ||
-                $entry->isFailedJob() ||
-                $entry->isScheduledTask() ||
-                $entry->hasMonitoredTag();
+            return true; // log every entry type in all environments
         });
     }
 
