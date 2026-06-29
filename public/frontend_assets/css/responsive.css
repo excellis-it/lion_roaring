@@ -875,6 +875,9 @@
     .contact-right {
         padding: 0px 0px;
     }
+    .gift_seed_btn {
+        display: none;
+    }
     .gift_seed_btn a {
         padding: 12px 5px;
     }

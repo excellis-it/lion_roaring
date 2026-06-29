@@ -348,7 +348,6 @@
                             <label for="user_password" class="form-label">Password</label>
                             <input type="password" name="password" id="user_password"
                                 autocomplete="current-password" spellcheck="false" class="form-control"
-                                @if (isset($_COOKIE['password'])) value="{{ $_COOKIE['password'] }}" @endif
                                 size="20">
                             <span class="position-absolute top-50 end-0 translate-middle-y pe-3" id="eye-button-1"
                                 style="margin-top: 12px; cursor: pointer;">

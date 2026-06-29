@@ -10,7 +10,7 @@
     </section>
     <div class="container-fluid">
         <div class="bg_white_border">
-            <form>
+            <form onsubmit="return false;">
                 <div class="row">
                     <div class="col-lg-12">
                         <div class="row">
