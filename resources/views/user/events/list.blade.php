@@ -764,13 +764,13 @@
 
                 // Render detected links for Edit modal
                 renderLinks(extractLinks(eventData.decrypted_link), $('#modalDescriptionEditLinks'));
-                $('#event-edit').attr('action', '{{ route('events.update', '') }}/' + eventId);
+                $('#event-edit').attr('action', '{{ route('events.update', '__ID__') }}'.replace('__ID__', eventId));
 
                 // Handle event deletion
                 $('#deleteEventBtn').off('click').on('click', function() {
                     if (confirm('Are you sure you want to delete this event?')) {
                         $.ajax({
-                            url: '{{ route('events.destroy', '') }}/' + eventId,
+                            url: '{{ route('events.destroy', '__ID__') }}'.replace('__ID__', eventId),
                             method: 'DELETE',
                             success: function() {
                                 toastr.success('Event deleted successfully.');

@@ -573,48 +573,7 @@
                 <div class="modal-content">
                     <div class="modal-body login_bg_sec login_bg_sec_modal  border-top-0">
                         <div class="heading_hp heading_hp_modal">
-                            <h2 class="text-center" id="greeting">
-                                <?php
-                                function getTimezoneFromIp($ip)
-                                {
-                                    $url = "http://ip-api.com/json/{$ip}?fields=timezone";
-                                    $response = @file_get_contents($url); // Suppress warnings and handle errors manually
-                                    if ($response) {
-                                        $data = json_decode($response);
-                                        if ($data && isset($data->timezone)) {
-                                            return $data->timezone;
-                                        }
-                                    }
-                                    return null;
-                                }
-
-                                // Get user's timezone based on IP address
-                                $ip = $_SERVER['REMOTE_ADDR'];
-                                $timezone = getTimezoneFromIp($ip);
-
-                                if ($timezone) {
-                                    // Set the default timezone
-                                    date_default_timezone_set($timezone);
-                                } else {
-                                    // Fallback timezone
-                                    date_default_timezone_set('UTC');
-                                }
-
-                                // Get the current hour in 24-hour format
-                                $time = date('H');
-
-                                // Determine greeting based on time
-                                if ($time < '12') {
-                                    echo 'Perfect morning';
-                                } elseif ($time >= '12' && $time < '17') {
-                                    echo 'Perfect afternoon';
-                                } elseif ($time >= '17' && $time < '19') {
-                                    echo 'Perfect evening';
-                                } else {
-                                    echo 'Perfect evening';
-                                }
-                                ?>
-                            </h2>
+                            <h2 class="text-center" id="greeting">{{ Helper::getTimeBasedGreeting() }}</h2>
                             <h4 class="text-center">Sign on to enter Lion Roaring PMA Private Member area.</h4>
 
                             <form name="login-form" id="sign-in-form" action="{{ route('login.check') }}"

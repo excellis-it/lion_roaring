@@ -192,7 +192,7 @@
 
                         // Set view details link
                         $('#modalViewDetails').attr('href',
-                                '{{ route('private-collaborations.show', '') }}/' + info.event.id)
+                                '{{ route('private-collaborations.show', '__ID__') }}'.replace('__ID__', info.event.id))
                             .show();
 
                         $('#eventModal').modal('show');

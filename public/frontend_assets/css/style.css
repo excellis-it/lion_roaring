@@ -1781,15 +1781,19 @@ li.slick-active button {
 }
 
 .ftr-frm form .form-group textarea.form-control {
+    display: block;
+    box-sizing: border-box;
     border-radius: 0px;
+    min-height: 100px;
     height: 100px;
-    line-height: 1.6;
+    line-height: 1.5;
     padding: 12px 15px;
     vertical-align: top;
     resize: vertical;
+    overflow-y: auto;
 }
 
-.ftr-frm .form-group .form-control::-webkit-input-placeholder {
+.ftr-frm .form-group input.form-control::-webkit-input-placeholder {
     /* Edge */
     font-weight: 400;
     font-size: 12px;
@@ -1800,7 +1804,7 @@ li.slick-active button {
     color: rgb(0 0 0 / 50%);
 }
 
-.ftr-frm .form-group .form-control:-ms-input-placeholder {
+.ftr-frm .form-group input.form-control:-ms-input-placeholder {
     /* Internet Explorer */
     font-weight: 400;
     font-size: 12px;
@@ -1811,7 +1815,7 @@ li.slick-active button {
     color: rgb(0 0 0 / 50%);
 }
 
-.ftr-frm .form-group .form-control::placeholder {
+.ftr-frm .form-group input.form-control::placeholder {
     font-weight: 400;
     font-size: 12px;
     line-height: 10px;
@@ -1819,6 +1823,18 @@ li.slick-active button {
     text-transform: uppercase;
     font-family: var(--text-font);
     color: rgb(0 0 0 / 50%);
+}
+
+.ftr-frm .form-group textarea.form-control::-webkit-input-placeholder {
+    line-height: 1.5;
+}
+
+.ftr-frm .form-group textarea.form-control:-ms-input-placeholder {
+    line-height: 1.5;
+}
+
+.ftr-frm .form-group textarea.form-control::placeholder {
+    line-height: 1.5;
 }
 
 .quick_links {

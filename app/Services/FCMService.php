@@ -40,6 +40,7 @@ class FCMService
             $notification = Notification::create($title, $body);
 
             $badge_count = Helper::unreadMessagesCount($token);
+            $data = self::normalizeDataPayload($data);
 
 
             $androidConfig = AndroidConfig::fromArray([
@@ -77,7 +78,8 @@ class FCMService
                 ],
             ]);
 
-            $message = CloudMessage::withTarget('token', $token)
+            $message = CloudMessage::new()
+                ->toToken($token)
                 ->withNotification($notification)
                 ->withData($data)
                 ->withAndroidConfig($androidConfig)
@@ -109,6 +111,7 @@ class FCMService
     {
         try {
             $notification = Notification::create($title, $body);
+            $data = self::normalizeDataPayload($data);
 
             $message = CloudMessage::new()
                 ->withNotification($notification)
@@ -140,7 +143,10 @@ class FCMService
     public function sendDataMessage(string $token, array $data)
     {
         try {
-            $message = CloudMessage::withTarget('token', $token)
+            $data = self::normalizeDataPayload($data);
+
+            $message = CloudMessage::new()
+                ->toToken($token)
                 ->withData($data);
 
             $result = $this->messaging->send($message);
@@ -168,7 +174,8 @@ class FCMService
     public function validateToken(string $token): bool
     {
         try {
-            $message = CloudMessage::withTarget('token', $token)
+            $message = CloudMessage::new()
+                ->toToken($token)
                 ->withData(['test' => 'validation']);
 
             $this->messaging->validate($message);
@@ -180,5 +187,47 @@ class FCMService
             ]);
             return false;
         }
+    }
+
+    /**
+     * FCM data payloads require string values (Kreait v7+).
+     *
+     * @return array<string, string>
+     */
+    private static function normalizeDataPayload(array $data): array
+    {
+        $normalized = [];
+
+        foreach ($data as $key => $value) {
+            if (! is_string($key) || $key === '') {
+                continue;
+            }
+
+            if ($value === null) {
+                $normalized[$key] = '';
+                continue;
+            }
+
+            if (is_bool($value)) {
+                $normalized[$key] = $value ? '1' : '0';
+                continue;
+            }
+
+            if (is_scalar($value)) {
+                $normalized[$key] = (string) $value;
+                continue;
+            }
+
+            if ($value instanceof \DateTimeInterface) {
+                $normalized[$key] = $value->format(\DateTimeInterface::ATOM);
+                continue;
+            }
+
+            if (is_array($value) || is_object($value)) {
+                $normalized[$key] = json_encode($value, JSON_UNESCAPED_UNICODE) ?: '';
+            }
+        }
+
+        return $normalized;
     }
 }

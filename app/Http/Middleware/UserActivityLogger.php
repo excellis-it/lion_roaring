@@ -8,22 +8,22 @@ use App\Models\UserActivity;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
 use App\Helpers\Helper;
-use App\Services\MarketRateService;
-
+use Symfony\Component\HttpFoundation\Response;
 
 class UserActivityLogger
 {
-    public function handle(Request $request, Closure $next)
+    public function handle(Request $request, Closure $next): Response
     {
-        $response = $next($request);
+        return $next($request);
+    }
 
+    public function terminate(Request $request, Response $response): void
+    {
         try {
-            // Exclude some system routes
             if ($request->is('storage/*') || $request->is('favicon.ico') || $request->is('admin/*')) {
-                return $response;
+                return;
             }
 
-            // exclude some routes - FIXED: use wildcard pattern correctly
             if (
                 $request->is('user/unread-messages-count') ||
                 $request->is('user/notifications-count') ||
@@ -31,16 +31,12 @@ class UserActivityLogger
                 $request->is('user/get-user-activity/*') ||
                 $request->is('user/roles/*')
             ) {
-                return $response;
+                return;
             }
 
-            // Skip non-GET requests (e.g. POST forms)
-            if (!$request->isMethod('get')) {
-                return $response;
+            if (! $request->isMethod('GET')) {
+                return;
             }
-
-            // Refresh market rates at most every 12 hours
-            MarketRateService::refreshIfStale();
 
             $user = Auth::user();
             $ip = $request->ip();
@@ -51,9 +47,6 @@ class UserActivityLogger
 
             $userRoles = $user ? implode(',', $user->getRoleNames()->toArray()) : null;
 
-            // $permissionAccess = $user ? implode(',', $user->getAllPermissions()->pluck('name')->toArray()) : null;
-
-            // only requested perissions for this route
             $route = $request->route();
             $permissionAccess = null;
             if ($route) {
@@ -72,12 +65,6 @@ class UserActivityLogger
                 }
             }
 
-            // Detect basic device/mac info (MAC not available from browser, optional)
-            $deviceMac = null;
-            // $deviceType = $this->detectDevice($ua);
-            $deviceType = request()->header('User-Agent');
-
-            // activityType should extract path or route name with human readable format
             $path = trim($request->path(), '/');
             $activityType = $path ? strtoupper(str_replace('/', '_', $path)) : 'WEBSITE_VISIT';
 
@@ -90,8 +77,8 @@ class UserActivityLogger
                 'ip'                 => $ip ?? '-',
                 'country_code'       => $countryCode,
                 'country_name'       => $countryName,
-                'device_mac'         => $deviceMac,
-                'device_type'        => $deviceType,
+                'device_mac'         => null,
+                'device_type'        => $ua,
                 'browser'            => $this->getBrowserName($ua),
                 'url'                => substr($url, 0, 1000),
                 'permission_access'  => $permissionAccess,
@@ -102,15 +89,6 @@ class UserActivityLogger
         } catch (\Throwable $e) {
             Log::error('Auto user activity log failed: ' . $e->getMessage());
         }
-
-        return $response;
-    }
-
-    private function detectDevice($ua)
-    {
-        if (preg_match('/mobile/i', $ua)) return 'Mobile';
-        if (preg_match('/tablet/i', $ua)) return 'Tablet';
-        return 'Desktop';
     }
 
     private function getBrowserName($ua)

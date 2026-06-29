@@ -24,6 +24,8 @@ use App\Models\Team;
 use App\Models\TeamChat;
 use App\Models\TeamMember;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\Http;
 use PHPUnit\Framework\Constraint\Count;
 use App\Models\User;
 use App\Models\SiteSetting;
@@ -38,6 +40,8 @@ use Illuminate\Support\Facades\Log;
 
 class Helper
 {
+    private static $settingsCache = null;
+
     public static function renderCategoryTree($categories = null)
     {
         // Root categories if not passed
@@ -147,8 +151,11 @@ class Helper
 
     public static function getSettings()
     {
-        $settings = SiteSetting::orderBy('id', 'desc')->first();
-        return $settings;
+        if (self::$settingsCache === null) {
+            self::$settingsCache = SiteSetting::orderBy('id', 'desc')->first();
+        }
+
+        return self::$settingsCache;
     }
 
     public static function getCountries()
@@ -1448,5 +1455,50 @@ class Helper
         }
 
         return self::userInstanceAccessMessage($user) . ' You have been signed out.';
+    }
+
+    public static function getTimezoneFromIp(?string $ip = null): ?string
+    {
+        $ip = $ip ?? request()->ip();
+        if (empty($ip) || in_array($ip, ['127.0.0.1', '::1'], true)) {
+            return config('app.timezone');
+        }
+
+        if (filter_var($ip, FILTER_VALIDATE_IP, FILTER_FLAG_NO_PRIV_RANGE | FILTER_FLAG_NO_RES_RANGE) === false) {
+            return config('app.timezone');
+        }
+
+        return Cache::remember("timezone_for_ip:{$ip}", now()->addDay(), function () use ($ip) {
+            try {
+                $response = Http::timeout(2)->get("http://ip-api.com/json/{$ip}", [
+                    'fields' => 'timezone',
+                ]);
+
+                if (! $response->successful()) {
+                    return null;
+                }
+
+                $timezone = $response->json('timezone');
+
+                return is_string($timezone) && $timezone !== '' ? $timezone : null;
+            } catch (\Throwable $e) {
+                return null;
+            }
+        });
+    }
+
+    public static function getTimeBasedGreeting(?string $ip = null): string
+    {
+        $timezone = self::getTimezoneFromIp($ip) ?? config('app.timezone');
+        $hour = (int) now()->timezone($timezone)->format('H');
+
+        if ($hour < 12) {
+            return 'Perfect morning';
+        }
+        if ($hour < 17) {
+            return 'Perfect afternoon';
+        }
+
+        return 'Perfect evening';
     }
 }

@@ -289,16 +289,15 @@ Route::prefix('v3')->middleware(['userActivity'])->group(function () {
 
         Route::post('check-menu-permission', [ProfileController::class, 'checkUserMenuPermission']);
 
-        Route::get('/notifications', [ProfileController::class, 'notifications'])->name('notification.list');
-        Route::get('/notification-read/{type}/{id}', [ProfileController::class, 'notificationRead'])->name('notification.read');
-        // notification.clear
-        Route::get('/notification-clear', [ProfileController::class, 'notificationClear'])->name('notification.clear');
+        Route::get('/notifications', [ProfileController::class, 'notifications'])->name('api.notification.list');
+        Route::get('/notification-read/{type}/{id}', [ProfileController::class, 'notificationRead'])->name('api.notification.read');
+        Route::get('/notification-clear', [ProfileController::class, 'notificationClear'])->name('api.notification.clear');
 
         // Get total unread messages count mail,chat,team-chat
-        Route::get('unread-messages-count', [ProfileController::class, 'unreadMessagesCount'])->name('unread.messages.count');
+        Route::get('unread-messages-count', [ProfileController::class, 'unreadMessagesCount'])->name('api.unread.messages.count');
 
         // Get in-app notification count (matches web header bell count)
-        Route::get('notification-count', [ProfileController::class, 'inAppNotificationCount'])->name('notification.count');
+        Route::get('notification-count', [ProfileController::class, 'inAppNotificationCount'])->name('api.notification.count');
 
         // Update Fcm Token
         Route::post('update-fcm-token', [ProfileController::class, 'updateFcmToken']);
@@ -364,36 +363,35 @@ Route::prefix('v3')->middleware(['userActivity'])->group(function () {
         });
 
 
-        Route::prefix('chats')->name('chats.')->group(function () {
-            Route::post('/list', [ChatController::class, 'chats']);
-            Route::post('/load', [ChatController::class, 'load']);
-            Route::post('/send', [ChatController::class, 'send']);
-            Route::post('/clear', [ChatController::class, 'clear']);
-            Route::post('/seen', [ChatController::class, 'seen']);
-            Route::post('/remove', [ChatController::class, 'remove']);
-            Route::post('/notification', [ChatController::class, 'notification']);
-            // search api
-            Route::post('/search', [ChatController::class, 'search']);
+        Route::prefix('chats')->name('api.chats.')->group(function () {
+            Route::post('/list', [ChatController::class, 'chats'])->name('list');
+            Route::post('/load', [ChatController::class, 'load'])->name('load');
+            Route::post('/send', [ChatController::class, 'send'])->name('send');
+            Route::post('/clear', [ChatController::class, 'clear'])->name('clear');
+            Route::post('/seen', [ChatController::class, 'seen'])->name('seen');
+            Route::post('/remove', [ChatController::class, 'remove'])->name('remove');
+            Route::post('/notification', [ChatController::class, 'notification'])->name('notification');
+            Route::post('/search', [ChatController::class, 'search'])->name('search');
         });
 
         // Team Chat
-        Route::prefix('team-chats')->name('team-chats.')->group(function () {
-            Route::post('/list', [TeamChatController::class, 'list']);
-            Route::post('/create', [TeamChatController::class, 'create']);
-            Route::post('/load', [TeamChatController::class, 'load']);
-            Route::post('/send', [TeamChatController::class, 'send']);
-            Route::post('/group-info', [TeamChatController::class, 'groupInfo']);
-            Route::post('/update-group-image', [TeamChatController::class, 'updateGroupImage']);
-            Route::post('/name-des-update', [TeamChatController::class, 'nameDescriptionUpdate']);
-            Route::post('/remove-member', [TeamChatController::class, 'removeMember']);
-            Route::post('/add-member-team', [TeamChatController::class, 'addMemberTeam']);
-            Route::post('/exit-from-group', [TeamChatController::class, 'exitFromGroup']);
-            Route::post('/delete-group', [TeamChatController::class, 'deleteGroup']);
-            Route::post('/make-admin', [TeamChatController::class, 'makeAdmin']);
-            Route::post('/seen', [TeamChatController::class, 'seen']);
-            Route::post('/remove-chat', [TeamChatController::class, 'removeChat']);
-            Route::post('/clear-all-conversation', [TeamChatController::class, 'clearAllConversation']);
-            Route::post('/notification', [TeamChatController::class, 'notification']);
+        Route::prefix('team-chats')->name('api.team-chats.')->group(function () {
+            Route::post('/list', [TeamChatController::class, 'list'])->name('list');
+            Route::post('/create', [TeamChatController::class, 'create'])->name('create');
+            Route::post('/load', [TeamChatController::class, 'load'])->name('load');
+            Route::post('/send', [TeamChatController::class, 'send'])->name('send');
+            Route::post('/group-info', [TeamChatController::class, 'groupInfo'])->name('group-info');
+            Route::post('/update-group-image', [TeamChatController::class, 'updateGroupImage'])->name('update-group-image');
+            Route::post('/name-des-update', [TeamChatController::class, 'nameDescriptionUpdate'])->name('name-des-update');
+            Route::post('/remove-member', [TeamChatController::class, 'removeMember'])->name('remove-member');
+            Route::post('/add-member-team', [TeamChatController::class, 'addMemberTeam'])->name('add-member-team');
+            Route::post('/exit-from-group', [TeamChatController::class, 'exitFromGroup'])->name('exit-from-group');
+            Route::post('/delete-group', [TeamChatController::class, 'deleteGroup'])->name('delete-group');
+            Route::post('/make-admin', [TeamChatController::class, 'makeAdmin'])->name('make-admin');
+            Route::post('/seen', [TeamChatController::class, 'seen'])->name('seen');
+            Route::post('/remove-chat', [TeamChatController::class, 'removeChat'])->name('remove-chat');
+            Route::post('/clear-all-conversation', [TeamChatController::class, 'clearAllConversation'])->name('clear-all-conversation');
+            Route::post('/notification', [TeamChatController::class, 'notification'])->name('notification');
         });
 
 
@@ -426,14 +424,7 @@ Route::prefix('v3')->middleware(['userActivity'])->group(function () {
         });
 
 
-        Route::resources([
-            // 'roles' => RolePermissionsController::class,
-            // 'partners' => PartnerController::class,
-            'topics' => TopicController::class,
-            // 'categories' => CategoryController::class,
-            // 'products' => ProductController::class,
-            // 'ecclesias' => EcclesiaContorller::class,
-        ]);
+        Route::resource('topics', TopicController::class)->names('api.topics');
 
         Route::prefix('topics')->group(function () {
             Route::get('/delete/{id}', [TopicController::class, 'delete']);

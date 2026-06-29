@@ -56,10 +56,12 @@
                         <div class="row">
                             <div class="col-lg-9">
                                 <h4 class="subject_text_h4">Subject:
-                                    <a hidden class="text-decoration-underline"
-                                        href="{{ route('mail.view', base64_encode($mail_details->reply_of)) }}"
-                                        target="_blank"
-                                        rel="noopener noreferrer">{{ !empty($mail_details->reply_of) ? 'RE:' : '' }}</a>
+                                    @if (!empty($mail_details->reply_of))
+                                        <a hidden class="text-decoration-underline"
+                                            href="{{ route('mail.view', base64_encode($mail_details->reply_of)) }}"
+                                            target="_blank"
+                                            rel="noopener noreferrer">RE:</a>
+                                    @endif
                                     {{ $mail_details->subject }}
                                     {{-- <span class="inbox_box">inbox <span
                                             class="material-symbols-outlined">close</span></span> --}}

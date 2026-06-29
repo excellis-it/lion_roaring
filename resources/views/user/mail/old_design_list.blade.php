@@ -160,13 +160,13 @@
         $(document).ready(function() {
             $(document).on("click", '.view_details', function() {
                 var id = $(this).data('id');
+                var encodedId = btoa(String(id));
 
                 $.ajax({
                     type: 'GET',
-                    url: '{{ route('mail.view') }}',
+                    url: '{{ route('mail.view', '__ID__') }}'.replace('__ID__', encodedId),
                     data: {
                         "_token": "{{ csrf_token() }}",
-                        id: id,
                     },
                     success: function(response) {
                         $('#mail_details').html(response.view);

@@ -88,7 +88,7 @@
                                             <span class="text-danger" id="newsletter_email_error"></span>
                                         </div>
                                         <div class="form-group col-12">
-                                            <textarea cols="40" rows="10" class="form-control" id="newsletter_message" placeholder="Message"
+                                            <textarea cols="40" rows="4" class="form-control" id="newsletter_message" placeholder="Message"
                                                 name="newsletter_message"></textarea>
                                             <span class="text-danger" id="newsletter_message_error"></span>
                                         </div>

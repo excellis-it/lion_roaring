@@ -48,49 +48,7 @@
                         <div class="col-lg-5">
                             <div class="login_bg_sec border-top-0">
                                 <div class="heading_hp">
-                                    <h2 id="greeting">
-                                        <?php
-                                        // Function to get timezone from IP
-                                        function getTimezoneFromIp($ip)
-                                        {
-                                            $url = "http://ip-api.com/json/{$ip}?fields=timezone";
-                                            $response = @file_get_contents($url); // Suppress warnings and handle errors manually
-                                            if ($response) {
-                                                $data = json_decode($response);
-                                                if ($data && isset($data->timezone)) {
-                                                    return $data->timezone;
-                                                }
-                                            }
-                                            return null;
-                                        }
-                                        
-                                        // Get user's timezone based on IP address
-                                        $ip = $_SERVER['REMOTE_ADDR'];
-                                        $timezone = getTimezoneFromIp($ip);
-                                        
-                                        if ($timezone) {
-                                            // Set the default timezone
-                                            date_default_timezone_set($timezone);
-                                        } else {
-                                            // Fallback timezone
-                                            date_default_timezone_set('UTC');
-                                        }
-                                        
-                                        // Get the current hour in 24-hour format
-                                        $time = date('H');
-                                        
-                                        // Determine greeting based on time
-                                        if ($time < '12') {
-                                            echo 'Perfect morning';
-                                        } elseif ($time >= '12' && $time < '17') {
-                                            echo 'Perfect afternoon';
-                                        } elseif ($time >= '17' && $time < '19') {
-                                            echo 'Perfect evening';
-                                        } else {
-                                            echo 'Perfect evening';
-                                        }
-                                        ?>
-                                    </h2>
+                                    <h2 id="greeting">{{ Helper::getTimeBasedGreeting() }}</h2>
 
                                     <h4>Sign on to enter Lion Roaring PMA Private Member area.</h4>
                                     <div class="admin-form">
