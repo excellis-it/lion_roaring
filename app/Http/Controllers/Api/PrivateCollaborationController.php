@@ -4,6 +4,7 @@ namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\Api\Concerns\AppliesPmaContentScope;
 use App\Http\Controllers\Api\Concerns\AppliesPmaCountryFromRequest;
+use App\Http\Controllers\Concerns\PreparesPrivateCollaborationInput;
 use App\Http\Controllers\Controller;
 use App\Models\Country;
 use App\Models\PrivateCollaboration;
@@ -31,6 +32,7 @@ class PrivateCollaborationController extends Controller
 {
     use AppliesPmaCountryFromRequest;
     use AppliesPmaContentScope;
+    use PreparesPrivateCollaborationInput;
     /**
      * List All Private Collaborations
      *
@@ -67,7 +69,7 @@ class PrivateCollaborationController extends Controller
 
             $ctx = $this->pmaScopeContext();
 
-            $query = PrivateCollaboration::with(['user', 'invitations.user'])
+            $query = PrivateCollaboration::with(['user', 'country', 'invitations.user'])
                 ->when($searchQuery, function ($q) use ($searchQuery) {
                     $q->where(function ($sq) use ($searchQuery) {
                         $sq->where('title', 'like', "%{$searchQuery}%")
@@ -112,19 +114,19 @@ class PrivateCollaborationController extends Controller
         $countryId = $this->resolvePmaCountryId($request);
         $request->merge(['country_id' => $countryId]);
 
-        $validator = Validator::make($request->all(), array_merge([
-            'title' => 'required|string',
-            'description' => 'nullable|string',
-            'start_time' => 'required|date',
-            'end_time' => 'required|date|after:start_time',
-            'meeting_link' => 'nullable|url',
-            'create_zoom' => 'nullable|boolean',
-            'invitees' => 'required|array|min:1',
-            'invitees.*' => 'integer|exists:users,id',
-        ], $this->pmaCountryValidationRules()));
+        $this->normalizePrivateCollaborationInput($request);
+
+        $validator = Validator::make($request->all(), array_merge(
+            $this->privateCollaborationStoreRules($request),
+            $this->pmaCountryValidationRules()
+        ));
 
         if ($validator->fails()) {
-            return response()->json(['status' => false, 'errors' => $validator->errors()], 201);
+            return response()->json([
+                'status' => false,
+                'message' => $validator->errors()->first(),
+                'errors' => $validator->errors(),
+            ], 422);
         }
 
         try {
@@ -161,18 +163,8 @@ class PrivateCollaborationController extends Controller
             }
 
             $invitees = $request->input('invitees', []);
-            $eligibleCount = User::whereIn('id', $invitees)
-                ->whereHas('roles.permissions', function ($q) {
-                    $q->where('name', 'Manage Private Collaboration');
-                })
-                ->where('id', '!=', auth()->id())
-                ->count();
-
-            if (count($invitees) !== $eligibleCount) {
-                return response()->json([
-                    'status' => false,
-                    'message' => 'One or more selected invitees are not eligible for invitation.',
-                ], 422);
+            if ($ineligible = $this->assertEligibleInvitees($invitees)) {
+                return response()->json($ineligible, 422);
             }
 
             $collaboration = PrivateCollaboration::create($data);
@@ -208,9 +200,9 @@ class PrivateCollaborationController extends Controller
             $userCountry = auth()->user()->country ?? null;
 
             if ($userType === 'Global') {
-                $collaboration = PrivateCollaboration::with(['user', 'invitations.user'])->findOrFail($id);
+                $collaboration = PrivateCollaboration::with(['user', 'country', 'invitations.user'])->findOrFail($id);
             } else {
-                $collaboration = PrivateCollaboration::with(['user', 'invitations.user'])->where('country_id', $userCountry)->findOrFail($id);
+                $collaboration = PrivateCollaboration::with(['user', 'country', 'invitations.user'])->where('country_id', $userCountry)->findOrFail($id);
             }
 
             $isCreator = $collaboration->user_id == auth()->id();
@@ -397,7 +389,7 @@ class PrivateCollaborationController extends Controller
             }
 
             $ctx = $this->pmaScopeContext();
-            $query = PrivateCollaboration::with(['user', 'invitations.user']);
+            $query = PrivateCollaboration::with(['user', 'country', 'invitations.user']);
             $this->applyPmaPrivateCollaborationScope($query, $ctx);
 
             $collaborations = $query->orderBy('id', 'desc')->get()
@@ -413,6 +405,7 @@ class PrivateCollaborationController extends Controller
                         'end' => $collaboration->end_time,
                         'description' => $collaboration->description,
                         'meeting_link' => ($isCreator || $hasAccepted) ? $collaboration->meeting_link : null,
+                        'host_meeting_link' => ($isCreator || $hasAccepted) ? $collaboration->host_meeting_link : null,
                         'is_creator' => $isCreator,
                         'has_accepted' => $hasAccepted,
                         'is_zoom' => $collaboration->is_zoom,
@@ -526,6 +519,8 @@ class PrivateCollaborationController extends Controller
         if ($country->code == 'GL') {
             $users = User::whereHas('userRole', function ($query) {
                 $query->where('name', '!=', 'SUPER ADMIN');
+            })->whereHas('roles.permissions', function ($query) {
+                $query->where('name', 'Manage Private Collaboration');
             })->whereIn('user_type', ['Global', 'G_R'])
                 ->where('status', 1)
                 ->where('id', '!=', auth()->id())
@@ -533,6 +528,8 @@ class PrivateCollaborationController extends Controller
         } else {
             $usersQuery = User::whereHas('userRole', function ($query) {
                 $query->where('name', '!=', 'SUPER ADMIN');
+            })->whereHas('roles.permissions', function ($query) {
+                $query->where('name', 'Manage Private Collaboration');
             })->where('id', '!=', auth()->id())
                 ->whereIn('user_type', ['Regional', 'G_R'])
                 ->where('status', 1)

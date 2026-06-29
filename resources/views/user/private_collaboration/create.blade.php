@@ -200,6 +200,49 @@
             $('#link_source').on('change', syncZoomToggle);
             syncZoomToggle();
 
+            function serializeCollaborationForm(form) {
+                var params = new URLSearchParams();
+                form.serializeArray().forEach(function(item) {
+                    if (item.name !== 'invitees[]') {
+                        params.append(item.name, item.value);
+                    }
+                });
+
+                var invitees = $('#invitees').val() || [];
+                if (!Array.isArray(invitees)) {
+                    invitees = [invitees];
+                }
+                invitees.forEach(function(id) {
+                    if (id) {
+                        params.append('invitees[]', id);
+                    }
+                });
+
+                return params.toString();
+            }
+
+            function showCollaborationFormErrors(xhr) {
+                $('.text-danger').text('');
+                var response = xhr.responseJSON || {};
+                var errors = response.errors || {};
+                var messages = [];
+
+                $.each(errors, function(key, items) {
+                    var msg = items[0];
+                    messages.push(msg);
+                    var fieldKey = key.split('.')[0];
+                    $('#' + fieldKey + '_error').text(msg);
+                });
+
+                if (messages.length) {
+                    toastr.error(messages.join('<br>'));
+                } else if (response.message) {
+                    toastr.error(response.message);
+                } else {
+                    toastr.error('Unable to save collaboration. Please check the form and try again.');
+                }
+            }
+
             $('#createCollaboration').on('submit', function(e) {
                 e.preventDefault();
                 var form = $(this);
@@ -217,7 +260,7 @@
 
                 var url = form.attr('action');
                 var type = form.attr('method');
-                var data = form.serialize();
+                var data = serializeCollaborationForm(form);
                 $('#loading').addClass('loading');
                 $('#loading-content').addClass('loading-content');
                 $.ajax({
@@ -248,16 +291,10 @@
                             $('#loading-content').removeClass('loading-content');
                         }
                     },
-                    error: function(xhr, status, error) {
+                    error: function(xhr) {
                         $('#loading').removeClass('loading');
                         $('#loading-content').removeClass('loading-content');
-                        $('.text-danger').text('');
-                        if (xhr.responseJSON && xhr.responseJSON.message) {
-                            toastr.error(xhr.responseJSON.message);
-                        }
-                        $.each(xhr.responseJSON.errors || {}, function(key, item) {
-                            $('#' + key + '_error').text(item[0]);
-                        });
+                        showCollaborationFormErrors(xhr);
                     }
                 });
             });

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\User;
 
+use App\Http\Controllers\Concerns\PreparesPrivateCollaborationInput;
 use App\Http\Controllers\Controller;
 use App\Models\PrivateCollaboration;
 use App\Models\CollaborationInvitation;
@@ -19,6 +20,8 @@ use Carbon\Carbon;
 
 class PrivateCollaborationController extends Controller
 {
+    use PreparesPrivateCollaborationInput;
+
     /**
      * Display a listing of the resource.
      */
@@ -232,32 +235,18 @@ class PrivateCollaborationController extends Controller
 
             $request->merge(['country_id' => $country_id]);
 
-            $request->validate([
-                'title' => 'required|string|max:255',
-                'description' => 'nullable|string',
-                'meeting_link' => 'nullable|url',
-                'start_time' => 'required|date',
-                'end_time' => 'required|date|after:start_time',
-                'create_zoom' => 'nullable|boolean',
-                'country_id' => 'required|exists:countries,id',
-                'invitees' => 'required|array|min:1',
-                'invitees.*' => 'integer|exists:users,id',
-            ]);
-
-            // Ensure selected invitees are eligible (have "Manage Private Collaboration" permission)
-            $invitees = $request->input('invitees', []);
-            $eligibleCount = User::whereIn('id', $invitees)
-                ->whereHas('roles.permissions', function ($q) {
-                    $q->where('name', 'Manage Private Collaboration');
-                })
-                ->where('id', '!=', auth()->id())
-                ->count();
-
-            if (count($invitees) !== $eligibleCount) {
+            $validator = $this->validatePrivateCollaborationStore($request);
+            if ($validator->fails()) {
                 return response()->json([
                     'status' => false,
-                    'message' => 'One or more selected invitees are not eligible for invitation.'
+                    'message' => $validator->errors()->first(),
+                    'errors' => $validator->errors(),
                 ], 422);
+            }
+
+            $invitees = $request->input('invitees', []);
+            if ($ineligible = $this->assertEligibleInvitees($invitees)) {
+                return response()->json($ineligible, 422);
             }
 
             $data = $request->only(['title', 'description', 'meeting_link', 'start_time', 'end_time', 'country_id']);
