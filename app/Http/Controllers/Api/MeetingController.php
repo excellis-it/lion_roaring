@@ -311,6 +311,10 @@ class MeetingController extends Controller
 
             $meeting->update($data);
 
+            // notify users that the meeting details changed
+            $userName = auth()->user()->getFullNameAttribute();
+            NotificationService::notifyAllUsers('Meeting updated by ' . $userName, 'meeting');
+
             return response()->json([
                 'message' => 'Meeting updated successfully.',
                 'data' => $meeting

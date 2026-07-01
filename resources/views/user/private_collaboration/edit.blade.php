@@ -102,18 +102,16 @@
                                 </div>
                             </div>
 
-                            @if (auth()->user()->hasNewRole('SUPER ADMIN'))
-                                <div class="col-md-12 mb-2">
-                                    <div class="box_label">
-                                        <label>Invite Users <small>(Select multiple users)</small></label>
-                                        <select name="invitees[]" id="invitees" class="form-control select2-multi"
-                                            multiple="multiple">
-                                            <option></option>
-                                        </select>
-                                        <span class="text-danger" id="invitees_error"></span>
-                                    </div>
+                            <div class="col-md-12 mb-2">
+                                <div class="box_label">
+                                    <label>Invite Users <small>(Select multiple users)</small></label>
+                                    <select name="invitees[]" id="invitees" class="form-control select2-multi"
+                                        multiple="multiple">
+                                        <option></option>
+                                    </select>
+                                    <span class="text-danger" id="invitees_error"></span>
                                 </div>
-                            @endif
+                            </div>
 
                             <div class="col-md-6 mb-2">
                                 <div class="box_label">
@@ -223,7 +221,10 @@
                 });
             });
 
-            @if (auth()->user()->hasNewRole('SUPER ADMIN'))
+                // Invitees currently attached to this collaboration (shown even if no longer "eligible")
+                var invitedUsers = @json($invitedUsers ?? []);
+                var invitedUserIds = invitedUsers.map(function(u) { return u.id; });
+
                 // Initialize Select2 for invitees
                 function initInviteesSelect() {
                     var renderTemplate = function(data) {
@@ -264,14 +265,22 @@
                             if (response.status && response.users) {
                                 $invitees.empty().append('<option></option>');
 
-                                // Get currently invited user IDs
-                                var invitedUserIds = @json($collaboration->invitations->pluck('user_id')->toArray());
-
+                                var appendedIds = [];
                                 $.each(response.users, function(index, user) {
                                     var selected = invitedUserIds.includes(user.id) ?
                                         ' selected' : '';
                                     $invitees.append('<option value="' + user.id + '"' +
                                         selected + '>' + user.text + '</option>');
+                                    appendedIds.push(user.id);
+                                });
+
+                                // Always include currently-invited attendees, even if they are
+                                // not in the eligible list, so they display and can be removed.
+                                $.each(invitedUsers, function(index, user) {
+                                    if (appendedIds.indexOf(user.id) === -1) {
+                                        $invitees.append('<option value="' + user.id +
+                                            '" selected>' + user.text + '</option>');
+                                    }
                                 });
 
                                 if (typeof $.fn.select2 !== 'undefined') {
@@ -319,7 +328,6 @@
                         loadUsersForCountry(countryId);
                     }
                 });
-            @endif
         });
     </script>
 @endpush

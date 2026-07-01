@@ -16,6 +16,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
 use App\Mail\CollaborationInvitation as CollaborationInvitationMail;
+use App\Mail\CollaborationUpdated as CollaborationUpdatedMail;
 use App\Mail\CollaborationAccepted;
 use App\Services\NotificationService;
 use Illuminate\Support\Facades\Http;
@@ -288,6 +289,26 @@ class PrivateCollaborationController extends Controller
             }
 
             $collaboration->update($data);
+
+            // Sync invitees: add newly-selected users, remove de-selected ones, notify the rest of the update.
+            $submittedInvitees = array_filter(array_map('intval', (array) $request->input('invitees', [])));
+            $submittedInvitees = array_values(array_unique(array_diff($submittedInvitees, [auth()->id()])));
+
+            $existingInvitees = $collaboration->invitations()->pluck('user_id')->map(fn($v) => (int) $v)->toArray();
+
+            $toAdd = array_diff($submittedInvitees, $existingInvitees);
+            $toRemove = array_diff($existingInvitees, $submittedInvitees);
+
+            if (!empty($toRemove)) {
+                $collaboration->invitations()->whereIn('user_id', $toRemove)->delete();
+            }
+
+            if (!empty($toAdd)) {
+                $this->sendInvitationsToSelectedUsers($collaboration, array_values($toAdd));
+            }
+
+            $remainingInvitees = array_values(array_diff($submittedInvitees, $toAdd));
+            $this->notifyInviteesOfUpdate($collaboration, $remainingInvitees);
 
             return response()->json(['status' => true, 'message' => 'Private collaboration updated successfully.', 'data' => $collaboration], 200);
         } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
@@ -595,6 +616,33 @@ class PrivateCollaborationController extends Controller
                 );
             } catch (\Exception $e) {
                 Log::error('Failed to send in-app notification to user '.$user->id.': '.$e->getMessage());
+            }
+        }
+    }
+
+    protected function notifyInviteesOfUpdate($collaboration, array $userIds = []): void
+    {
+        if (empty($userIds)) {
+            return;
+        }
+
+        $users = User::whereIn('id', $userIds)->where('id', '!=', auth()->id())->get();
+
+        foreach ($users as $user) {
+            try {
+                Mail::to($user->email)->send(new CollaborationUpdatedMail($collaboration, $user));
+            } catch (\Exception $e) {
+                Log::error('Failed to send collaboration update email to user '.$user->id.': '.$e->getMessage());
+            }
+
+            try {
+                NotificationService::notifyUser(
+                    $user->id,
+                    'Collaboration updated: '.$collaboration->title,
+                    'collaboration'
+                );
+            } catch (\Exception $e) {
+                Log::error('Failed to send collaboration update notification to user '.$user->id.': '.$e->getMessage());
             }
         }
     }

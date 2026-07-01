@@ -12,6 +12,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
 use App\Mail\CollaborationInvitation as CollaborationInvitationMail;
+use App\Mail\CollaborationUpdated as CollaborationUpdatedMail;
 use App\Mail\CollaborationAccepted;
 use App\Models\Country;
 use App\Services\NotificationService;
@@ -377,7 +378,15 @@ class PrivateCollaborationController extends Controller
         }
 
         if ((auth()->user()->can('Edit Private Collaboration') && auth()->user()->id == $collaboration->user_id) || auth()->user()->hasNewRole('SUPER ADMIN')) {
-            return view('user.private_collaboration.edit', compact('collaboration', 'countries'));
+            // Currently-invited attendees (shown on the edit form even if no longer "eligible")
+            $invitedUsers = $collaboration->invitations()->with('user')->get()
+                ->filter(fn($inv) => $inv->user)
+                ->map(fn($inv) => [
+                    'id' => $inv->user->id,
+                    'text' => $inv->user->full_name . ' <' . $inv->user->email . '>',
+                ])->values();
+
+            return view('user.private_collaboration.edit', compact('collaboration', 'countries', 'invitedUsers'));
         } else {
             abort(403, 'You do not have permission to edit this collaboration.');
         }
@@ -427,6 +436,29 @@ class PrivateCollaborationController extends Controller
             $data['time_zone'] = auth()->user()->time_zone ?? config('app.timezone');
 
             $collaboration->update($data);
+
+            // Sync invitees: add newly-selected users, remove de-selected ones.
+            $submittedInvitees = array_filter(array_map('intval', (array) $request->input('invitees', [])));
+            $submittedInvitees = array_values(array_unique(array_diff($submittedInvitees, [auth()->id()])));
+
+            $existingInvitees = $collaboration->invitations()->pluck('user_id')->map(fn($v) => (int) $v)->toArray();
+
+            $toAdd = array_diff($submittedInvitees, $existingInvitees);
+            $toRemove = array_diff($existingInvitees, $submittedInvitees);
+
+            // Remove de-selected attendees
+            if (!empty($toRemove)) {
+                $collaboration->invitations()->whereIn('user_id', $toRemove)->delete();
+            }
+
+            // Add & invite newly-selected attendees (email + in-app invitation notice)
+            if (!empty($toAdd)) {
+                $this->sendInvitationsToSelectedUsers($collaboration, array_values($toAdd));
+            }
+
+            // Notify all remaining attendees that the collaboration was updated
+            $remainingInvitees = array_values(array_diff($submittedInvitees, $toAdd));
+            $this->notifyInviteesOfUpdate($collaboration, $remainingInvitees);
 
             return response()->json([
                 'status' => true,
@@ -754,6 +786,32 @@ class PrivateCollaborationController extends Controller
                 NotificationService::notifyUser($user->id, 'You have been invited to a collaboration: ' . $collaboration->title, 'collaboration');
             } catch (\Exception $e) {
                 Log::error('Failed to send in-app notification to user ' . $user->id . ': ' . $e->getMessage());
+            }
+        }
+    }
+
+    /**
+     * Notify existing attendees that the collaboration details were updated.
+     */
+    protected function notifyInviteesOfUpdate($collaboration, array $userIds = [])
+    {
+        if (empty($userIds)) {
+            return;
+        }
+
+        $users = User::whereIn('id', $userIds)->where('id', '!=', auth()->id())->get();
+
+        foreach ($users as $user) {
+            try {
+                Mail::to($user->email)->send(new CollaborationUpdatedMail($collaboration, $user));
+            } catch (\Exception $e) {
+                Log::error('Failed to send collaboration update email to user ' . $user->id . ': ' . $e->getMessage());
+            }
+
+            try {
+                NotificationService::notifyUser($user->id, 'Collaboration updated: ' . $collaboration->title, 'collaboration');
+            } catch (\Exception $e) {
+                Log::error('Failed to send collaboration update notification to user ' . $user->id . ': ' . $e->getMessage());
             }
         }
     }

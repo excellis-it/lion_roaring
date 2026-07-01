@@ -241,6 +241,10 @@ class MeetingSchedulingController extends Controller
 
             $meeting->save();
 
+            // notify users that the meeting details changed
+            $userName = Auth::user()->getFullNameAttribute();
+            NotificationService::notifyAllUsers('Meeting updated by ' . $userName, 'meeting');
+
             session()->flash('message', 'Meeting updated successfully.');
             return response()->json(['status' => true, 'message' => 'Meeting updated successfully.', 'id' => $id]);
         } else {
