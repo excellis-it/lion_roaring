@@ -8,6 +8,11 @@
         --chatbot-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
     }
 
+    /* BUG-004: keep success/error toast notifications above the floating chat widget */
+    #toast-container {
+        z-index: 2147483647 !important;
+    }
+
     /* Floating Button */
     .chatbot-float-btn {
         position: fixed;

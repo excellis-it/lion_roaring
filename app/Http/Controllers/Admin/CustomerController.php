@@ -74,7 +74,7 @@ class CustomerController extends Controller
         $data->save();
         $data->assignRole('MEMBER_NON_SOVEREIGN');
         $maildata = [
-            'name' => $request->full_name,
+            'name' => trim("{$request->first_name} {$request->middle_name} {$request->last_name}"),
             'email' => $request->email,
             'password' => $request->password,
             'type' => 'Customer',

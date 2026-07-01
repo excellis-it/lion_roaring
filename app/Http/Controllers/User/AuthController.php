@@ -130,12 +130,13 @@ class AuthController extends Controller
                 if ($request->has('remember')) {
                     $expire = time() + (86400 * 365 * 5); // 5 years
                     setcookie('email_user_name', $request->user_name, $expire, '/', '', false, true);
-                    setcookie('password', $request->password, $expire, '/', '', false, true);
                 } else {
-                    // Clear cookies if remember me is unchecked
+                    // Clear remembered username if remember me is unchecked
                     setcookie('email_user_name', '', time() - 3600, '/');
-                    setcookie('password', '', time() - 3600, '/');
                 }
+                // Never persist the plaintext password; purge any legacy password cookie.
+                setcookie('password', '', time() - 3600, '/');
+                unset($_COOKIE['password']);
                 Session::put('user_id', $user->id);
                 UserActivity::logActivity([
                     'user_id' => $user->id,

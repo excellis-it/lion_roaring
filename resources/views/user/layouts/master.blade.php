@@ -61,11 +61,6 @@
         .trans-section {
             margin: 100px;
         }
-
-        /* Ensure toast notifications float above the floating chat widget (z-index 9999) */
-        #toast-container {
-            z-index: 2147483647 !important;
-        }
     </style>
     <style>
         /* ===== Coupon Slider / Ticker Bar ===== */

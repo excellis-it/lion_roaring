@@ -1782,10 +1782,11 @@ li.slick-active button {
 
 .ftr-frm form .form-group textarea.form-control {
     border-radius: 0px;
-    height: 100px;
-    line-height: 1.6;
+    min-height: 100px;
+    line-height: 1.5;
     padding: 12px 15px;
     vertical-align: top;
+    align-content: flex-start;
     resize: vertical;
 }
 
@@ -1819,6 +1820,16 @@ li.slick-active button {
     text-transform: uppercase;
     font-family: var(--text-font);
     color: rgb(0 0 0 / 50%);
+}
+
+/* BUG-002: match the textarea placeholder line-height to the field's line-height
+   so the placeholder text and the typing caret start at the same top position */
+.ftr-frm form .form-group textarea.form-control::-webkit-input-placeholder {
+    line-height: 1.5;
+}
+
+.ftr-frm form .form-group textarea.form-control::placeholder {
+    line-height: 1.5;
 }
 
 .quick_links {
