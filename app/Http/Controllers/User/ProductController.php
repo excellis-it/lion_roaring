@@ -394,7 +394,7 @@ class ProductController extends Controller
         $product->sku = $generatedSKU;
         $product->quantity = $request->quantity ?? 0;
         $product->price = $useMarketPrice ? $computedMarketPrice : $request->price;
-        $product->sale_price = $useMarketPrice ? null : ($request->sale_price ?? null);
+        $product->sale_price = $useMarketPrice ? null : ($request->filled('sale_price') ? $request->sale_price : null);
         $product->slug = $request->slug;
         $product->feature_product = $request->feature_product;
         $product->is_new_product = $request->is_new_product;
@@ -819,14 +819,15 @@ class ProductController extends Controller
                 } elseif ($product->product_type === 'simple') {
                     // If market pricing was disabled and no manual price provided, retain existing price.
                     $product->price = $request->filled('price') ? $request->price : $product->price;
-                    // If sale_price isn't provided, keep existing sale_price (avoid wiping).
-                    $product->sale_price = $request->filled('sale_price')
-                        ? $request->sale_price
-                        : $product->sale_price;
+                    // The sale price field is always submitted by the edit form; a blank
+                    // value must clear the sale price (so it falls back to the base price).
+                    if ($request->has('sale_price')) {
+                        $product->sale_price = $request->filled('sale_price') ? $request->sale_price : null;
+                    }
                     $product->quantity = (int) $request->quantity;
                 } elseif ($product->product_type === 'digital') {
                     $product->price = $request->digital_price;
-                    $product->sale_price = $request->digital_sale_price ?? null;
+                    $product->sale_price = $request->filled('digital_sale_price') ? $request->digital_sale_price : null;
                     $product->quantity = 0;
                 }
             }
