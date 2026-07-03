@@ -189,49 +189,51 @@
                         </div>
                     </div>
                 </a>
-                <div class="dropdown-menu content-dd dropdown-menu-end dropdown-menu-animate-up"
+                <div class="dropdown-menu content-dd dropdown-menu-end dropdown-menu-animate-up profile-menu-dd"
                     aria-labelledby="drop1">
-                    <div class="profile-dropdown position-relatipve" data-simplebar="">
+                    <div class="profile-dropdown position-relatipve">
                         <div class="py-3 px-7 pb-0">
                             <h5 class="mb-0 fs-5 fw-semibold">
                                 {{ Str::ucfirst(strtolower(Auth::user()->getFirstUserRoleName())) }} Profile</h5>
                         </div>
-                        <div class="d-flex align-items-center py-9 mx-7 border-bottom">
-                            @if (Auth::user()->profile_picture)
-                                <img src="{{ Storage::url(Auth::user()->profile_picture) }}" class="rounded-circle"
-                                    width="100" height="100" alt="">
-                            @else
-                                <img src="{{ asset('user_assets/images/profile_dummy.png') }}" class="rounded-circle"
-                                    width="100" height="100" alt="">
-                            @endif
-                            <div class="ms-3">
-                                <h5 class="mb-1 fs-3">
-                                    {{ Auth::user()->full_name }}
-
-                                </h5>
-                                <span class="mb-1 d-block text-dark">{{ Auth::user()->getFirstUserRoleName() }}</span>
-                                <p class="mb-0 d-flex text-dark align-items-center gap-2">
-                                    <i class="ti ti-mail fs-4"></i> {{ Auth::user()->email }}
-                                </p>
-                                <div class="d-flex align-items-center flex-wrap gap-1 mt-1">
-                                    {{-- Location chip: domain-based --}}
-                                    @if ($isGlobalDomain)
-                                        <span class="badge-global small-badge">
-                                            <i class="fa-solid fa-globe me-1"></i>Global
-                                        </span>
-                                    @else
-                                        <span class="badge-regional small-badge">
-                                            @if ($domainCountry && $domainCountry->code)
-                                                <img src="{{ asset('frontend_assets/images/flags/' . strtolower($domainCountry->code) . '.png') }}" height="11px" alt="">
-                                            @endif
-                                            {{ $domainCountry->name ?? '' }}
-                                        </span>
-                                    @endif
-                                    {{-- User type chip --}}
-                                    <span class="badge-user-type small-badge">
-                                        <i class="fa-solid fa-user-tag me-1"></i>User Type : {{ $userType }}
-                                    </span>
+                        <div class="px-7 py-9 border-bottom profile-dropdown-user">
+                            <div class="d-flex align-items-start gap-3">
+                                @if (Auth::user()->profile_picture)
+                                    <img src="{{ Storage::url(Auth::user()->profile_picture) }}"
+                                        class="rounded-circle flex-shrink-0" width="72" height="72" alt="">
+                                @else
+                                    <img src="{{ asset('user_assets/images/profile_dummy.png') }}"
+                                        class="rounded-circle flex-shrink-0" width="72" height="72" alt="">
+                                @endif
+                                <div class="min-w-0 flex-grow-1">
+                                    <h5 class="mb-1 fs-5 lh-sm text-break">
+                                        {{ Auth::user()->full_name }}
+                                    </h5>
+                                    <span
+                                        class="d-block text-dark text-break">{{ Auth::user()->getFirstUserRoleName() }}</span>
                                 </div>
+                            </div>
+                            <p class="mb-0 mt-3 d-flex text-dark align-items-start gap-2 profile-dropdown-email">
+                                <i class="ti ti-mail fs-5 flex-shrink-0 mt-1"></i>
+                                <span class="text-break">{{ Auth::user()->email }}</span>
+                            </p>
+                            <div class="d-flex align-items-center flex-wrap gap-1 mt-2 profile-dropdown-badges">
+                                @if ($isGlobalDomain)
+                                    <span class="badge-global small-badge">
+                                        <i class="fa-solid fa-globe me-1"></i>Global
+                                    </span>
+                                @else
+                                    <span class="badge-regional small-badge">
+                                        @if ($domainCountry && $domainCountry->code)
+                                            <img src="{{ asset('frontend_assets/images/flags/' . strtolower($domainCountry->code) . '.png') }}"
+                                                height="11px" alt="">
+                                        @endif
+                                        {{ $domainCountry->name ?? '' }}
+                                    </span>
+                                @endif
+                                <span class="badge-user-type small-badge">
+                                    <i class="fa-solid fa-user-tag me-1"></i>User Type : {{ $userType }}
+                                </span>
                             </div>
                         </div>
                         <div class="message-body">
