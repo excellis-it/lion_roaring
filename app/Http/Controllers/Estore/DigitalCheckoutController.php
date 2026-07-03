@@ -277,7 +277,7 @@ class DigitalCheckoutController extends Controller
             // Payment Processing
             $paymentIntent = null;
             if ($totalAmount > 0) {
-                Stripe::setApiKey(env('STRIPE_SECRET'));
+                Stripe::setApiKey(config('services.stripe.secret'));
                 $paymentIntent = PaymentIntent::create([
                     'amount' => round($totalAmount * 100),
                     'currency' => 'usd',

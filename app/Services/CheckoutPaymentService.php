@@ -22,7 +22,7 @@ class CheckoutPaymentService
 {
     public function __construct()
     {
-        Stripe::setApiKey(config('services.stripe.secret') ?: env('STRIPE_SECRET'));
+        Stripe::setApiKey(config('services.stripe.secret') ?: config('services.stripe.secret'));
     }
 
     /**
@@ -65,7 +65,7 @@ class CheckoutPaymentService
                 'client_secret' => $intent->client_secret,
                 'ephemeral_key' => $ephemeralKey->secret,
                 'customer_id' => $customerId,
-                'publishable_key' => config('services.stripe.key') ?: env('STRIPE_KEY'),
+                'publishable_key' => config('services.stripe.key') ?: config('services.stripe.key'),
             ];
         } catch (Exception $e) {
             return ['success' => false, 'error' => $e->getMessage()];

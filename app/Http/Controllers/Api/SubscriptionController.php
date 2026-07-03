@@ -112,7 +112,7 @@ class SubscriptionController extends Controller
                 return response()->json(['message' => 'You already have an active subscription.', 'status' => false], 201);
             }
 
-            $stripe = new \Stripe\StripeClient(env('STRIPE_SECRET'));
+            $stripe = new \Stripe\StripeClient(config('services.stripe.secret'));
 
             $redirectUrl = route('api.stripe.checkout.success') . '?session_id={CHECKOUT_SESSION_ID}';
             $response =  $stripe->checkout->sessions->create([
@@ -162,7 +162,7 @@ class SubscriptionController extends Controller
         }
 
         try {
-            $stripe = new \Stripe\StripeClient(env('STRIPE_SECRET'));
+            $stripe = new \Stripe\StripeClient(config('services.stripe.secret'));
 
             $session = $stripe->checkout->sessions->retrieve($request->session_id);
             info($session);

@@ -969,6 +969,18 @@
                 }
                 toastr.warning("{{ session('warning') }}");
             @endif
+
+            @if ($errors->any())
+                toastr.options = {
+                    "closeButton": true,
+                    "progressBar": true,
+                    "positionClass": "toast-bottom-right",
+                    "timeOut": "6000",
+                }
+                @foreach ($errors->all() as $error)
+                    toastr.error(@json($error));
+                @endforeach
+            @endif
         </script>
         <script>
             $('#back-login').click(function() {
@@ -1460,7 +1472,7 @@
         <script src="https://js.stripe.com/v3/"></script>
         <script>
             $(document).ready(function() {
-                var stripe = Stripe('{{ env('STRIPE_KEY') }}');
+                var stripe = Stripe('{{ config('services.stripe.key') }}');
                 var elements = stripe.elements();
                 var style = {
                     base: {

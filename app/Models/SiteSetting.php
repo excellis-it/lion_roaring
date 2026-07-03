@@ -19,5 +19,7 @@ class SiteSetting extends BaseModel
         'DONATE_TEXT',
         'DONATE_BANK_TRANSFER_DETAILS',
         'SITE_UPDATE',
+        'STRIPE_KEY',
+        'STRIPE_SECRET',
     ];
 }

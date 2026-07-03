@@ -581,7 +581,7 @@ class MembershipController extends Controller
         }
 
         try {
-            $stripe = new StripeClient(env('STRIPE_SECRET'));
+            $stripe = new StripeClient(config('services.stripe.secret'));
             $isRenew = $request->boolean('renew');
             $successUrl = route('membership.checkout.success') . '?session_id={CHECKOUT_SESSION_ID}&tier_id=' . $tier->id;
             if ($isRenew) {
@@ -632,7 +632,7 @@ class MembershipController extends Controller
             return redirect()->route('user.membership.index')->with('error', 'Invalid session.');
         }
         try {
-            $stripe = new StripeClient(env('STRIPE_SECRET'));
+            $stripe = new StripeClient(config('services.stripe.secret'));
             $session = $stripe->checkout->sessions->retrieve($sessionId);
             $userId = $session->metadata->user_id ?? $session->client_reference_id ?? null;
             $tierId = $session->metadata->tier_id ?? $tierId;
@@ -760,7 +760,7 @@ class MembershipController extends Controller
 
         // Stripe checkout
         try {
-            $stripe     = new StripeClient(env('STRIPE_SECRET'));
+            $stripe     = new StripeClient(config('services.stripe.secret'));
             $successUrl = route('membership.checkout.success')
                 . '?session_id={CHECKOUT_SESSION_ID}&tier_id=' . $tier->id . '&renew=1';
 
@@ -856,7 +856,7 @@ class MembershipController extends Controller
                 return response()->json(['success' => false, 'message' => 'Payment card details are required.']);
             }
             try {
-                \Stripe\Stripe::setApiKey(env('STRIPE_SECRET'));
+                \Stripe\Stripe::setApiKey(config('services.stripe.secret'));
                 $charge = \Stripe\Charge::create([
                     'amount'      => (int) ($finalPrice * 100),
                     'currency'    => 'usd',

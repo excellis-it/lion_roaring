@@ -1238,7 +1238,7 @@ class ProductController extends Controller
         try {
             $paymentIntent = null;
             if ($totalAmount > 0) {
-                Stripe::setApiKey(env('STRIPE_SECRET'));
+                Stripe::setApiKey(config('services.stripe.secret'));
                 $paymentIntent = PaymentIntent::create([
                     'amount' => round($totalAmount * 100),
                     'currency' => 'usd',
@@ -2059,7 +2059,7 @@ class ProductController extends Controller
                 ->first();
 
             if ($payment) {
-                Stripe::setApiKey(env('STRIPE_SECRET'));
+                Stripe::setApiKey(config('services.stripe.secret'));
 
                 $refund = EstoreRefund::create([
                     'payment_intent' => $payment->stripe_payment_intent_id,

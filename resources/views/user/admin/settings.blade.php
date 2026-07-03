@@ -147,6 +147,31 @@
                             @enderror
                         </div>
                     </div>
+
+                    <hr class="my-4">
+                    <h5 class="mb-1">Stripe Payment Keys</h5>
+                    <p class="text-muted small mb-3">Live keys used to process app &amp; web payments. Get them from
+                        Stripe Dashboard → Developers → API keys.</p>
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="STRIPE_KEY" class="form-label">Publishable Key (pk_live_…)</label>
+                            <input type="text" class="form-control" id="STRIPE_KEY" name="STRIPE_KEY"
+                                value="{{ old('STRIPE_KEY', $settings->STRIPE_KEY) }}" placeholder="pk_live_...">
+                            @error('STRIPE_KEY')
+                                <div class="text-danger">{{ $message }}</div>
+                            @enderror
+                        </div>
+
+                        <div class="col-md-6 mb-3">
+                            <label for="STRIPE_SECRET" class="form-label">Secret Key (sk_live_…)</label>
+                            <input type="text" class="form-control" id="STRIPE_SECRET" name="STRIPE_SECRET"
+                                value="{{ old('STRIPE_SECRET', $settings->STRIPE_SECRET) }}" placeholder="sk_live_...">
+                            @error('STRIPE_SECRET')
+                                <div class="text-danger">{{ $message }}</div>
+                            @enderror
+                        </div>
+                    </div>
+
                     <button type="submit" class="btn btn-primary">Update Settings</button>
                 </form>
 

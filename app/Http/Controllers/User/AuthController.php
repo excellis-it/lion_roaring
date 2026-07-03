@@ -353,7 +353,7 @@ class AuthController extends Controller
         // Process Payment
         if (($tier->pricing_type ?? 'amount') === 'amount' && floatval($finalPrice) > 0) {
             try {
-                \Stripe\Stripe::setApiKey(env('STRIPE_SECRET'));
+                \Stripe\Stripe::setApiKey(config('services.stripe.secret'));
                 $charge = \Stripe\Charge::create([
                     'amount' => (int) ($finalPrice * 100),
                     'currency' => 'usd',
@@ -366,9 +366,11 @@ class AuthController extends Controller
                     $transaction_id = $charge->id;
                     $payment_amount = $finalPrice;
                 } else {
-                    return redirect()->back()->withErrors(['stripeToken' => 'Payment failed.'])->withInput();
+                    Log::error('Registration payment not succeeded', ['charge_status' => $charge->status, 'email' => $request->email, 'tier_id' => $request->tier_id]);
+                    return redirect()->back()->withErrors(['stripeToken' => 'Payment failed. Status: ' . $charge->status])->withInput();
                 }
             } catch (\Exception $e) {
+                Log::error('Registration Stripe payment error: ' . $e->getMessage(), ['email' => $request->email, 'tier_id' => $request->tier_id]);
                 return redirect()->back()->withErrors(['stripeToken' => 'Payment error: ' . $e->getMessage()])->withInput();
             }
         }

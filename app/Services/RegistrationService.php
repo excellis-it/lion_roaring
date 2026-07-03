@@ -482,7 +482,7 @@ class RegistrationService
     private function processPayment(Request $request, float $finalPrice, MembershipTier $tier, ?MembershipPromoCode $promoCode): array
     {
         try {
-            \Stripe\Stripe::setApiKey(env('STRIPE_SECRET'));
+            \Stripe\Stripe::setApiKey(config('services.stripe.secret'));
 
             if ($request->filled('payment_intent_id')) {
                 $intent = \Stripe\PaymentIntent::retrieve($request->payment_intent_id);
@@ -611,7 +611,7 @@ class RegistrationService
         }
 
         try {
-            \Stripe\Stripe::setApiKey(env('STRIPE_SECRET'));
+            \Stripe\Stripe::setApiKey(config('services.stripe.secret'));
             $intent = \Stripe\PaymentIntent::create([
                 'amount' => (int) round($finalPrice * 100),
                 'currency' => 'usd',
@@ -631,7 +631,7 @@ class RegistrationService
                     'free' => false,
                     'payment_intent_id' => $intent->id,
                     'client_secret' => $intent->client_secret,
-                    'publishable_key' => env('STRIPE_KEY'),
+                    'publishable_key' => config('services.stripe.key'),
                     'amount' => $finalPrice,
                 ],
             ];
