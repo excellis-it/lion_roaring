@@ -3,36 +3,7 @@
     Edit Private Collaboration - {{ env('APP_NAME') }}
 @endsection
 @push('styles')
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/css/select2.min.css" rel="stylesheet" />
-    <style>
-        .select2-container--default .select2-selection--multiple {
-            min-height: 45px;
-        }
-
-        .select2-container--default .select2-selection--multiple .select2-selection__choice {
-            background-color: #7851a9;
-            border: 1px solid #5f3b86;
-            color: #ffffff;
-            padding-left: 8px;
-            padding-right: 6px;
-            border-radius: 6px;
-            font-weight: 500;
-        }
-
-        .select2-container--default .select2-selection--multiple .select2-selection__choice__remove {
-            color: rgba(255, 255, 255, 0.9);
-            margin-right: 6px;
-            font-weight: 700;
-        }
-
-        .select2-container--default .select2-selection--multiple .select2-selection__choice__remove:hover {
-            color: #fff;
-        }
-
-        .select2-container--default .select2-selection--multiple .select2-selection__choice span {
-            color: #ffffff;
-        }
-    </style>
+    @include('user.private_collaboration.partials.invitee_select_styles')
 @endpush
 @section('content')
     <section id="loading">
@@ -221,113 +192,12 @@
                 });
             });
 
-                // Invitees currently attached to this collaboration (shown even if no longer "eligible")
-                var invitedUsers = @json($invitedUsers ?? []);
-                var invitedUserIds = invitedUsers.map(function(u) { return u.id; });
-
-                // Initialize Select2 for invitees
-                function initInviteesSelect() {
-                    var renderTemplate = function(data) {
-                        if (!data.id) return data.text;
-                        var m = data.text.match(/^(.*) <(.*)>$/);
-                        if (m) {
-                            var $container = $("<div class='invite-template'><div><strong>" + m[1] +
-                                "</strong></div><div style='font-size:90%;color:#6c757d;'>" + m[2] +
-                                "</div></div>");
-                            return $container;
-                        }
-                        return data.text;
-                    };
-
-                    $('#invitees').select2({
-                        placeholder: 'Select users to invite',
-                        allowClear: true,
-                        width: '100%',
-                        closeOnSelect: false,
-                        templateResult: renderTemplate,
-                        templateSelection: function(data) {
-                            return data.text;
-                        }
-                    });
-                }
-
-                function loadUsersForCountry(countryId) {
-                    if (!countryId) return;
-                    var $invitees = $('#invitees');
-
-                    $.ajax({
-                        url: '{{ route('private-collaborations.get-eligible-users') }}',
-                        type: 'GET',
-                        data: {
-                            country_id: countryId
-                        },
-                        success: function(response) {
-                            if (response.status && response.users) {
-                                $invitees.empty().append('<option></option>');
-
-                                var appendedIds = [];
-                                $.each(response.users, function(index, user) {
-                                    var selected = invitedUserIds.includes(user.id) ?
-                                        ' selected' : '';
-                                    $invitees.append('<option value="' + user.id + '"' +
-                                        selected + '>' + user.text + '</option>');
-                                    appendedIds.push(user.id);
-                                });
-
-                                // Always include currently-invited attendees, even if they are
-                                // not in the eligible list, so they display and can be removed.
-                                $.each(invitedUsers, function(index, user) {
-                                    if (appendedIds.indexOf(user.id) === -1) {
-                                        $invitees.append('<option value="' + user.id +
-                                            '" selected>' + user.text + '</option>');
-                                    }
-                                });
-
-                                if (typeof $.fn.select2 !== 'undefined') {
-                                    $invitees.trigger('change');
-                                }
-                            }
-                        },
-                        error: function(xhr) {
-                            console.error('Failed to load users:', xhr);
-                            toastr.error('Failed to load users for selected country.');
-                        }
-                    });
-                }
-
-                if (typeof $.fn.select2 === 'undefined') {
-                    $.getScript('https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/select2.min.js')
-                        .done(function() {
-                            initInviteesSelect();
-                            // Load users for the currently selected country
-                            var currentCountry = $('#countries').val();
-                            if (currentCountry) {
-                                loadUsersForCountry(currentCountry);
-                            }
-                        });
-                } else {
-                    initInviteesSelect();
-                    var currentCountry = $('#countries').val();
-                    if (currentCountry) {
-                        loadUsersForCountry(currentCountry);
-                    }
-                }
-
-                // When country changes, reload users
-                $('#countries').on('change', function() {
-                    var countryId = $(this).val();
-                    var $invitees = $('#invitees');
-
-                    // Clear current options
-                    $invitees.empty().append('<option></option>');
-                    if (typeof $.fn.select2 !== 'undefined') {
-                        $invitees.val(null).trigger('change');
-                    }
-
-                    if (countryId) {
-                        loadUsersForCountry(countryId);
-                    }
-                });
+            @include('user.private_collaboration.partials.invitee_select_scripts', [
+                'invitedUsers' => $invitedUsers,
+                'collaborationCountryId' => $collaboration->country_id,
+                'preloadFromDom' => false,
+                'enableCountryReload' => auth()->user()->hasNewRole('SUPER ADMIN'),
+            ])
         });
     </script>
 @endpush
