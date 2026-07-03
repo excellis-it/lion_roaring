@@ -517,6 +517,7 @@ Route::middleware(['userActivity'])->group(function () {
     Route::post('/login-check', [UserAuthController::class, 'loginCheck'])->name('login.check');  //login check
 
     // register
+    Route::get('/payment-gateway/status', [UserAuthController::class, 'paymentGatewayStatus'])->name('payment.gateway.status');
     Route::get('/register', [UserAuthController::class, 'register'])->name('register');
     Route::post('/register-agreement/preview', [RegisterAgreementPreviewController::class, 'generate'])->name('register.agreement.preview');
     Route::post('/register-check', [UserAuthController::class, 'registerCheck'])->name('register.check');  //register check

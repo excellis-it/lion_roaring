@@ -157,6 +157,35 @@ class AuthController extends Controller
         }
     }
 
+    public function paymentGatewayStatus()
+    {
+        // Lightweight liveness check on the active Stripe secret key (DB-managed).
+        // Only a SUCCESS is cached (briefly) so repeated clicks don't hammer Stripe.
+        // Failures are never cached: a transient blip must not lock users out, and
+        // recovery (e.g. admin pastes a valid key) takes effect immediately.
+        if (\Illuminate\Support\Facades\Cache::get('stripe_gateway_ok')) {
+            return response()->json(['ok' => true]);
+        }
+
+        $secret = config('services.stripe.secret');
+        if (empty($secret)) {
+            return response()->json(['ok' => false, 'reason' => 'not_configured']);
+        }
+
+        try {
+            \Stripe\Stripe::setApiKey($secret);
+            \Stripe\Balance::retrieve();
+            \Illuminate\Support\Facades\Cache::put('stripe_gateway_ok', true, 30);
+            return response()->json(['ok' => true]);
+        } catch (\Stripe\Exception\AuthenticationException $e) {
+            Log::error('Stripe gateway check failed (auth): ' . $e->getMessage());
+            return response()->json(['ok' => false, 'reason' => 'auth']);
+        } catch (\Throwable $e) {
+            Log::error('Stripe gateway check failed: ' . $e->getMessage());
+            return response()->json(['ok' => false, 'reason' => 'error']);
+        }
+    }
+
     public function register()
     {
         // abort(404);
