@@ -256,6 +256,7 @@ Route::prefix('v3')->middleware(['userActivity'])->group(function () {
     Route::post('verify-otp', [AuthController::class, 'verifyOtp']);
     Route::post('register-agreement', [AuthController::class, 'registerAgreement']);
     Route::post('forget-password', [ForgetPasswordController::class, 'forgetPassword']);
+    Route::post('forget-username', [ForgetPasswordController::class, 'forgetUsername']);
 
     // Articles & Register Agreement (public read)
     Route::get('articles/latest', [ArticleController::class, 'latest']);

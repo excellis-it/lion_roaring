@@ -331,4 +331,14 @@ class User extends Authenticatable
     {
         return $this->resolveUserTimezone($value);
     }
+
+    public function scopeMatchingPhone($query, string $phoneNumber)
+    {
+        $cleaned = preg_replace('/[\s\-\(\)]+/', '', $phoneNumber);
+
+        return $query->whereRaw(
+            "REPLACE(REPLACE(REPLACE(REPLACE(phone, ' ', ''), '-', ''), '(', ''), ')', '') = ?",
+            [$cleaned]
+        );
+    }
 }

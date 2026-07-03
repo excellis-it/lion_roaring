@@ -530,7 +530,7 @@ Route::middleware(['userActivity'])->group(function () {
     Route::get('forget-username/show', [UserForgetPasswordController::class, 'forgetUsernameShow'])->name('user.forget.username.show');
     Route::post('forget-username', [UserForgetPasswordController::class, 'forgetUsername'])->name('user.forget.username');
     // show confirmation email page
-    Route::get('/confirmation-email/{id}', [UserForgetPasswordController::class, 'confirmationEmail'])->name('forget-username-confirmation');
+    Route::get('/confirmation-email/{id?}', [UserForgetPasswordController::class, 'confirmationEmail'])->name('forget-username-confirmation');
     Route::get('reset-username/{id}/{token}', [UserForgetPasswordController::class, 'resetUsername'])->name('user.reset.username');
     // user.username-change
     Route::post('username-change', [UserForgetPasswordController::class, 'changeUsername'])->name('user.username-change');

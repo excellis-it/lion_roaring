@@ -45,17 +45,33 @@
                         <div class="login_bg_sec border-top-0">
                             <div class="heading_hp">
                                 <h4>
-                                    @php
-                                        $email = $user->email;
-                                        // show the email address swarna****@****llisit.net
-                                        $email =
-                                            substr($email, 0, 6) .
-                                            '****@****' .
-                                            substr($email, strpos($email, '@') + 1);
-                                        echo 'A confirmation email has been sent to ' .
-                                            $email .
-                                            '. Please check your email to get your username.';
-                                    @endphp
+                                    @if (!empty($sentEmails))
+                                        @if (count($sentEmails) === 1)
+                                            A confirmation email has been sent to {{ $sentEmails[0] }}.
+                                            Please check your email to get your username.
+                                        @else
+                                            Confirmation emails have been sent to the following email addresses.
+                                            Please check your email to get your username(s):
+                                            <ul class="mt-3 mb-0 text-start">
+                                                @foreach ($sentEmails as $maskedEmail)
+                                                    <li>{{ $maskedEmail }}</li>
+                                                @endforeach
+                                            </ul>
+                                        @endif
+                                    @elseif (!empty($user))
+                                        @php
+                                            $email = $user->email;
+                                            $email =
+                                                substr($email, 0, 6) .
+                                                '****@****' .
+                                                substr($email, strpos($email, '@') + 1);
+                                            echo 'A confirmation email has been sent to ' .
+                                                $email .
+                                                '. Please check your email to get your username.';
+                                        @endphp
+                                    @else
+                                        Please check your email to get your username.
+                                    @endif
                                 </h4>
 
                                 <div class="join-text join-text-1">

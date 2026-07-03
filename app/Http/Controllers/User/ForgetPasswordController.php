@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\User;
 
+use App\Http\Controllers\Concerns\SendsUsernameRecoveryEmails;
 use App\Http\Controllers\Controller;
 use App\Models\PasswordReset;
 use App\Models\User;
@@ -11,11 +12,11 @@ use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Facades\Mail;
 use App\Mail\SendCodeResetPassword;
 use App\Mail\SendUserCodeResetPassword;
-use App\Mail\SendUserNameMail;
 use Illuminate\Support\Str;
 
 class ForgetPasswordController extends Controller
 {
+    use SendsUsernameRecoveryEmails;
     public function forgetPasswordShow()
     {
         return view('user.auth.forgot-password');
@@ -101,37 +102,31 @@ class ForgetPasswordController extends Controller
             'phone_number' => 'required',
         ]);
 
-        $phone_number = $request->full_phone_number;
-        $phone_number_cleaned = preg_replace('/[\s\-\(\)]+/', '', $phone_number);
+        $phoneNumber = $request->full_phone_number ?: $request->phone_number;
+        $users = $this->findUsersByPhone($phoneNumber);
 
-        $check = User::whereRaw("REPLACE(REPLACE(REPLACE(REPLACE(phone, ' ', ''), '-', ''), '(', ''), ')', '') = ?", [$phone_number_cleaned])->first();
-
-
-        if ($check) {
-            PasswordReset::where('email', $check->email)->delete();
-            $token = Str::random(20) . 'pass' . $check->id;
-            PasswordReset::create([
-                'email' => $check->email,
-                'token' => $token,
-                'created_at' => Carbon::now()
-            ]);
-
-            $details = [
-                'id' => Crypt::encrypt($check->id),
-                'token' => $token
-            ];
-
-            Mail::to($check->email)->send(new SendUserNameMail($check, $details));
-            return redirect()->route('forget-username-confirmation', ['id' => Crypt::encrypt($check->id)]);
-        } else {
+        if ($users->isEmpty()) {
             return redirect()->back()->with('error', 'Phone number not found!');
         }
+
+        $maskedEmails = $this->sendUsernameRecoveryEmails($users);
+
+        return redirect()
+            ->route('forget-username-confirmation')
+            ->with('sent_emails', $maskedEmails);
     }
 
-    public function confirmationEmail($id)
+    public function confirmationEmail($id = null)
     {
-        $user = User::findOrFail(Crypt::decrypt($id));
-        return view('user.auth.confirmation-email')->with(compact('user'));
+        $user = null;
+        if ($id) {
+            $user = User::findOrFail(Crypt::decrypt($id));
+        }
+
+        return view('user.auth.confirmation-email', [
+            'user' => $user,
+            'sentEmails' => session('sent_emails', []),
+        ]);
     }
 
     // public function resetUsername($id, $token)
