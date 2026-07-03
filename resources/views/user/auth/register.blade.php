@@ -1287,13 +1287,18 @@
                     </div>
                     <div class="modal-body">
                         <div class="tier-grid"> 
-                            @php $lowestTierCost = $tiers->min('cost'); @endphp
+                            @php
+                                $tierPolicy = app(\App\Services\MembershipTierRegistrationPolicy::class);
+                                $lowestTierCost = $tierPolicy->lowestTierCost($tiers);
+                            @endphp
                             @foreach ($tiers as $index => $tier)
                                 @php
-                                    $isLockedTier =
-                                        $isGlobalDomain &&
-                                        (float) ($tier->cost ?? 0) <= (float) $lowestTierCost &&
-                                        (float) $lowestTierCost > 0;
+                                    $isLockedTier = $tierPolicy->isTierLockedForRegistration(
+                                        $tier,
+                                        $isGlobalDomain,
+                                        $lowestTierCost,
+                                        request()
+                                    );
                                 @endphp
                                 <div class="tier-card {{ $isLockedTier ? 'tier-disabled' : '' }}"
                                     id="featured_{{ $index }}">

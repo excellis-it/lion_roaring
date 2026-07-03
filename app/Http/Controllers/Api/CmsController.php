@@ -12,6 +12,7 @@ use App\Models\HomeCms;
 use App\Models\MemberPrivacyPolicy;
 use App\Models\MembershipTier;
 use App\Models\MembershipMeasurement;
+use App\Services\MembershipTierRegistrationPolicy;
 use App\Models\Newsletter;
 use App\Models\Organization;
 use App\Models\OrganizationCenter;
@@ -997,24 +998,29 @@ class CmsController extends Controller
         return response()->json(['status' => true, 'menu' => $menu], 200);
     }
 
-     public function publicMembershipTiers()
+     public function publicMembershipTiers(MembershipTierRegistrationPolicy $tierRegistrationPolicy)
      {
-         $tiers = MembershipTier::with('benefits')->get()->map(function ($tier) {
-             return [
-                 'id'                      => $tier->id,
-                 'name'                    => $tier->name,
-                 'description'             => $tier->description,
-                 'cost'                    => $tier->cost,
-                 'duration_months'         => $tier->duration_months,
-                 'pricing_type'            => $tier->pricing_type ?? 'amount',
-                 'life_force_energy_tokens'=> $tier->life_force_energy_tokens,
-                 'benefits'                => $tier->benefits->map(fn($b) => $b->benefit)->values(),
-             ];
-         });
+         $request = request();
+         $tiers = MembershipTier::with('benefits')->get();
+         $globalContext = $tierRegistrationPolicy->isGlobalRegistrationContext($request);
+         $lowestCost = $tierRegistrationPolicy->lowestTierCost($tiers);
+         $enforce = $tierRegistrationPolicy->shouldEnforceTierLock($request);
+
+         $serializedTiers = $tiers->map(
+             fn ($tier) => $tierRegistrationPolicy->serializeTierForRegistration(
+                 $tier,
+                 $globalContext,
+                 $lowestCost,
+                 $request
+             )
+         );
+
          $measurement = MembershipMeasurement::first();
+
          return response()->json([
-             'status'      => true,
-             'tiers'       => $tiers,
+             'status' => true,
+             'lock_cheapest_tiers' => $enforce && $globalContext && $lowestCost > 0,
+             'tiers' => $serializedTiers,
              'measurement' => $measurement ? ['label' => $measurement->label] : null,
          ], 200);
      }

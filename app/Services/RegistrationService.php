@@ -30,7 +30,8 @@ use Illuminate\Support\Str;
 class RegistrationService
 {
     public function __construct(
-        private readonly RegisterAgreementPreviewService $agreementPreview
+        private readonly RegisterAgreementPreviewService $agreementPreview,
+        private readonly MembershipTierRegistrationPolicy $tierRegistrationPolicy,
     ) {
     }
 
@@ -140,6 +141,13 @@ class RegistrationService
 
             $tier = MembershipTier::find($request->tier_id);
             if (!$tier) {
+                return;
+            }
+
+            $tierLockError = $this->tierRegistrationPolicy->validateTierSelectable((int) $request->tier_id, $request);
+            if ($tierLockError) {
+                $validator->errors()->add('tier_id', $tierLockError);
+
                 return;
             }
 
@@ -582,6 +590,16 @@ class RegistrationService
         }
 
         $tier = MembershipTier::findOrFail($request->tier_id);
+
+        $tierLockError = $this->tierRegistrationPolicy->validateTierSelectable((int) $request->tier_id, $request);
+        if ($tierLockError) {
+            return [
+                'status' => false,
+                'http_code' => 422,
+                'body' => ['status' => false, 'message' => $tierLockError],
+            ];
+        }
+
         if (($tier->pricing_type ?? 'amount') !== 'amount') {
             return [
                 'status' => false,

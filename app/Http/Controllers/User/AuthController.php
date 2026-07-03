@@ -21,6 +21,7 @@ use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\Crypt;
 use App\Mail\OtpMail;
 use App\Models\MembershipPromoCode;
+use App\Services\MembershipTierRegistrationPolicy;
 use App\Models\VerifyOTP;
 use Illuminate\Support\Facades\Hash;
 use App\Models\UserActivity;
@@ -305,6 +306,14 @@ class AuthController extends Controller
             $tier = MembershipTier::find($request->tier_id);
 
             if (!$tier) {
+                return;
+            }
+
+            $tierLockError = app(MembershipTierRegistrationPolicy::class)
+                ->validateTierSelectable((int) $request->tier_id, $request);
+            if ($tierLockError) {
+                $validator->errors()->add('tier_id', $tierLockError);
+
                 return;
             }
 
