@@ -434,8 +434,20 @@ class MembershipApiController extends Controller
             $promoCode = $result['code'];
         }
 
+        // A 100%-off promo (or a $0 tier) needs no Stripe charge. Skip PaymentSheet
+        // and let the client finalize via a free activation on /checkout/confirm.
         if ($amount <= 0) {
-            return response()->json(['status' => false, 'message' => 'Amount after discount must be greater than zero.'], 422);
+            return response()->json([
+                'status' => true,
+                'message' => 'No payment required.',
+                'data' => [
+                    'tier_id' => $tier->id,
+                    'amount' => 0,
+                    'currency' => 'USD',
+                    'promo_code' => $promoCode,
+                    'free' => true,
+                ],
+            ], $this->successStatus);
         }
 
         $intent = $payment->createIntent(
@@ -482,40 +494,67 @@ class MembershipApiController extends Controller
     public function confirmCheckout(Request $request, CheckoutPaymentService $payment): JsonResponse
     {
         $validator = Validator::make($request->all(), [
-            'payment_intent_id' => 'required|string',
+            'payment_intent_id' => 'required_without:free|nullable|string',
             'tier_id' => 'required|integer|exists:membership_tiers,id',
             'is_renew' => 'nullable|boolean',
+            'free' => 'nullable|boolean',
+            'promo_code' => 'nullable|string',
         ]);
 
         if ($validator->fails()) {
             return response()->json(['status' => false, 'message' => $validator->errors()->first()], 422);
         }
 
-        // Idempotency: same intent → same payment row.
-        $existing = SubscriptionPayment::where('transaction_id', $request->payment_intent_id)->first();
-        if ($existing) {
-            return response()->json([
-                'status' => true,
-                'message' => 'Payment already processed.',
-                'data' => $existing->load('userSubscription'),
-            ], $this->successStatus);
-        }
-
-        $verification = $payment->verifyIntent($request->payment_intent_id);
-        if (!($verification['success'] ?? false)) {
-            return response()->json([
-                'status' => false,
-                'message' => 'Payment not completed. Status: ' . ($verification['status'] ?? 'unknown'),
-            ], 402);
-        }
-
         $user = Auth::user();
         $tier = MembershipTier::find($request->tier_id);
         $isRenew = (bool) $request->input('is_renew', false);
-        $amountPaid = (float) ($verification['amount'] ?? $tier->cost);
-        $promoCode = $verification['metadata']['promo_code'] ?? null;
+        $isFree = (bool) $request->input('free', false);
 
-        $subscription = DB::transaction(function () use ($user, $tier, $isRenew, $amountPaid, $promoCode, $request) {
+        if ($isFree) {
+            // Free activation: no Stripe intent exists, so re-validate server-side
+            // that this tier really is $0 for this user before granting it.
+            $amount = (float) $tier->cost;
+            $promoCode = null;
+            if ($request->filled('promo_code')) {
+                $result = PromoCodeValidator::validateMembership($request->promo_code, $user->id, $tier->id);
+                if (!$result['valid']) {
+                    return response()->json(['status' => false, 'message' => $result['message']], 422);
+                }
+                $amount = (float) $result['final_price'];
+                $promoCode = $result['code'];
+            }
+            if ($amount > 0) {
+                return response()->json(['status' => false, 'message' => 'This membership requires payment.'], 422);
+            }
+            $transactionId = 'FREE-' . strtoupper(uniqid());
+            $amountPaid = 0.0;
+            $paymentMethod = 'Free';
+        } else {
+            // Idempotency: same intent → same payment row.
+            $existing = SubscriptionPayment::where('transaction_id', $request->payment_intent_id)->first();
+            if ($existing) {
+                return response()->json([
+                    'status' => true,
+                    'message' => 'Payment already processed.',
+                    'data' => $existing->load('userSubscription'),
+                ], $this->successStatus);
+            }
+
+            $verification = $payment->verifyIntent($request->payment_intent_id);
+            if (!($verification['success'] ?? false)) {
+                return response()->json([
+                    'status' => false,
+                    'message' => 'Payment not completed. Status: ' . ($verification['status'] ?? 'unknown'),
+                ], 402);
+            }
+
+            $transactionId = $request->payment_intent_id;
+            $amountPaid = (float) ($verification['amount'] ?? $tier->cost);
+            $promoCode = $verification['metadata']['promo_code'] ?? null;
+            $paymentMethod = 'Stripe';
+        }
+
+        $subscription = DB::transaction(function () use ($user, $tier, $isRenew, $amountPaid, $promoCode, $transactionId, $paymentMethod) {
             if ($isRenew && $user->userLastSubscription && $user->userLastSubscription->plan_id == $tier->id) {
                 $sub = $user->userLastSubscription;
                 $duration = $tier->duration_months ?? 12;
@@ -544,8 +583,8 @@ class MembershipApiController extends Controller
             SubscriptionPayment::create([
                 'user_id' => $user->id,
                 'user_subscription_id' => $sub->id,
-                'transaction_id' => $request->payment_intent_id,
-                'payment_method' => 'Stripe',
+                'transaction_id' => $transactionId,
+                'payment_method' => $paymentMethod,
                 'payment_amount' => $amountPaid,
                 'promo_code' => $promoCode,
                 'discount_amount' => max(0, (float) $tier->cost - $amountPaid),
