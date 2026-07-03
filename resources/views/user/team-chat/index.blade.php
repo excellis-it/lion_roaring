@@ -47,7 +47,7 @@
     </section>
     <div class="container-fluid">
         <div class="bg_white_border">
-            <div class="messaging_sec">
+            <div class="messaging_sec chat-layout">
                 <div class="d-flex align-items-center justify-content-between">
                     <div class="heading_hp ">
                         <h2>Messaging</h2>
@@ -112,7 +112,7 @@
                                             <strong>Add Member</strong>
                                         </h5>
                                         <div class="search-field float-right">
-                                            <input type="text" name="search" id="search" placeholder="search..."
+                                            <input type="text" name="search" id="search" placeholder="Search..."
                                                 class="form-control">
                                             <button class="submit_search" id="search-button"> <span class=""><i
                                                         class="fa fa-search"></i></span></button>

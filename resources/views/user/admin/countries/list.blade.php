@@ -33,7 +33,7 @@
                     <div class="row g-1 justify-content-end">
                         <div class="col-md-12 pr-0">
                             <div class="search-field">
-                                <input type="text" name="search" id="search" placeholder="search by name or code..."
+                                <input type="text" name="search" id="search" placeholder="Search by name or code..."
                                     required class="form-control">
                                 <button class="submit_search" id="search-button"> <span class=""><i
                                             class="fa fa-search"></i></span></button>

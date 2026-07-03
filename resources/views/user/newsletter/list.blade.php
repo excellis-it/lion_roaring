@@ -21,7 +21,7 @@
                             <div class="row justify-content-end mb-2">
                                 <div class="col-lg-4">
                                     <div class="search-field d-flex">
-                                        <input type="text" name="search" id="search" placeholder="search..."
+                                        <input type="text" name="search" id="search" placeholder="Search..."
                                             class="form-control rounded_search">
                                         <button class="submit_search" id="search-button"><i
                                                 class="fa fa-search"></i></button>

@@ -57,7 +57,7 @@
                             <label for="country_code"></label>
                             <div class="search-field">
 
-                                <input type="text" name="search" id="search" placeholder="search..." required=""
+                                <input type="text" name="search" id="search" placeholder="Search..." required=""
                                     class="form-control rounded_search">
                                 <button class="submit_search" id="search-button"> <span class=""><i
                                             class="fa fa-search"></i></span></button>

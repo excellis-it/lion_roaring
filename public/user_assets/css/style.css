@@ -1104,12 +1104,142 @@ p {
 }
 
 .main {
-    height: calc(80vh - 50px);
     width: calc(100% - 0px);
     overflow: hidden;
     border-radius: 10px;
     color: white;
     display: flex;
+}
+
+/* BUG-030: contain chat pages to the viewport so only the inner panels scroll.
+   Drop the template min-heights that force the page taller than the viewport,
+   then hide the residual window scroll — layout flow is left untouched. */
+body:has(.messaging_sec.chat-layout) {
+    overflow: hidden;
+}
+
+body:has(.messaging_sec.chat-layout) .body-wrapper {
+    min-height: 0;
+}
+
+body:has(.messaging_sec.chat-layout) .container-fluid > .bg_white_border {
+    min-height: 0;
+}
+
+/* BUG-030: chat layout — grid shell, scroll inside panels, compose pinned bottom */
+.messaging_sec.chat-layout {
+    display: grid;
+    grid-template-rows: auto auto auto minmax(0, 1fr);
+    grid-template-areas:
+        "chat-head"
+        "chat-subhead"
+        "chat-search"
+        "chat-body";
+    height: calc(100vh - 140px);
+    overflow: hidden;
+    position: relative;
+}
+
+body:has(.coupon_slider) .messaging_sec.chat-layout {
+    height: calc(100vh - 180px);
+}
+
+.messaging_sec.chat-layout > .d-flex {
+    grid-area: chat-head;
+}
+
+.messaging_sec.chat-layout > .SideNavhead {
+    grid-area: chat-subhead;
+}
+
+.messaging_sec.chat-layout > .user-search-box {
+    grid-area: chat-search;
+}
+
+.messaging_sec.chat-layout > .main {
+    grid-area: chat-body;
+    min-height: 0;
+    height: 100%;
+    overflow: hidden;
+}
+
+/* keep modals/helpers out of the grid rows */
+.messaging_sec.chat-layout > .modal,
+.messaging_sec.chat-layout > #change-group-details,
+.messaging_sec.chat-layout > #group-information {
+    position: absolute;
+    width: 0;
+    height: 0;
+    overflow: visible;
+    z-index: 1050;
+}
+
+.messaging_sec.chat-layout .main > div:first-child {
+    height: 100%;
+    min-height: 0;
+    display: flex;
+    flex-direction: column;
+}
+
+.messaging_sec.chat-layout .sideNav2 {
+    flex: 1 1 auto;
+    height: 100%;
+    min-height: 0;
+    overflow-y: auto;
+}
+
+.messaging_sec.chat-layout section.Chat {
+    height: 100%;
+    min-height: 0;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+
+.messaging_sec.chat-layout section.Chat > .modal {
+    position: absolute;
+    width: 0;
+    height: 0;
+    overflow: visible;
+    z-index: 1050;
+}
+
+.messaging_sec.chat-layout section.Chat > .MessageContainer {
+    flex: 1 1 0;
+    min-height: 0;
+    overflow-x: hidden;
+    overflow-y: auto;
+}
+
+.messaging_sec.chat-layout section.Chat > .row,
+.messaging_sec.chat-layout section.Chat > .groupChatHead {
+    flex-shrink: 0;
+}
+
+.messaging_sec.chat-layout section.Chat > [id^="group-member-form-"],
+.messaging_sec.chat-layout section.Chat > form#MessageForm {
+    flex-shrink: 0;
+    margin-top: auto;
+}
+
+.messaging_sec.chat-layout #MessageForm,
+.messaging_sec.chat-layout #TeamMessageForm {
+    flex-shrink: 0;
+    background: #fff;
+    border-top: 1px solid #eee;
+}
+
+.messaging_sec.chat-layout section.Chat > .icon_chat {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    min-height: 0;
+    overflow: hidden;
+    width: 50%;
+    margin: 0 auto;
 }
 
 .sideNav1 {
@@ -1409,7 +1539,14 @@ section {
 }
 
 .MessageContainer {
-    flex: 1;
+    display: flex;
+    flex: 1 1 auto;
+    min-height: 0;
+    width: 100%;
+    padding: 10px;
+    flex-direction: column;
+    overflow: hidden;
+    overflow-y: auto;
 }
 
 #MessageForm {
@@ -1442,16 +1579,6 @@ section {
 #MessageForm input:focus {
     outline: none;
     border: 1px solid #00f5d4;
-}
-
-.MessageContainer {
-    display: flex;
-    height: 100%;
-    width: 100%;
-    padding: 10px;
-    flex-direction: column;
-    overflow: hidden;
-    overflow-y: auto;
 }
 
 .MessageContainer span {
@@ -1863,8 +1990,17 @@ section {
     color: red;
 }
 
+/* BUG-032: center table header labels; prevent ID (#) wrapping */
+.color_head tr th {
+    text-align: center;
+    vertical-align: middle !important;
+    white-space: nowrap;
+    padding: 10px 12px !important;
+}
+
 .color_head th span {
     margin-left: 5px;
+    display: inline;
 }
 
 .eye-btn-1 {

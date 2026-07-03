@@ -38,7 +38,7 @@
                     <div class="row g-1 justify-content-end">
                         {{-- <div class="col-md-8 pr-0">
                                 <div class="search-field">
-                                     <input type="text" name="search" id="search" placeholder="search..."
+                                     <input type="text" name="search" id="search" placeholder="Search..."
                                                 required="" class="form-control rounded_search">
                                      <button class="submit_search" id="search-button"> <span class=""><i
                                                         class="fa fa-search"></i></span></button>

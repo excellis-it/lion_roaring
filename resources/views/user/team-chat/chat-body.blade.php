@@ -19,7 +19,7 @@
         <div class="group_text_right">
             <div class="d-flex align-items-center">
                 <div class="search-field w-100 mb-0">
-                    <input type="text" name="search" id="search-chat" placeholder="search..." required=""
+                    <input type="text" name="search" id="search-chat" placeholder="Search..." required=""
                         class="form-control rounded_search">
                     <button class="submit_search" id="search-button"> <span class=""><i
                                 class="fa fa-search"></i></span></button>
