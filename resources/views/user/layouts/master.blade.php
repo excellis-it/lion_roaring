@@ -35,6 +35,7 @@
     <link href="{{ asset('user_assets/css/responsive.css') }}" rel="stylesheet">
     <link rel="stylesheet" type="text/css"
         href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css">
+    @include('frontend.includes.toast-layering')
     <link rel="stylesheet" href="https://cdn.datatables.net/1.13.2/css/jquery.dataTables.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/limonte-sweetalert2/7.2.0/sweetalert2.min.css">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.4/css/select2.min.css" rel="stylesheet" />
@@ -244,7 +245,7 @@
 
 </head>
 
-<body>
+<body class="has-floating-chat">
     <div class="page-wrapper" id="main-wrapper" data-theme="blue_theme" data-layout="vertical" data-sidebartype="full"
         data-sidebar-position="fixed" data-header-position="fixed">
         @include('user.includes.sidebar')
@@ -264,12 +265,12 @@
         </div>
         <div class="dark-transparent sidebartoggler"></div>
         @include('frontend.includes.google_translate')
-        @if (env('CHATBOT') == 'AI')
-            @include('frontend.includes.ai_chatbot')
-        @else
-            @include('frontend.includes.chatbot')
-        @endif
     </div>
+    @if (env('CHATBOT') == 'AI')
+        @include('frontend.includes.ai_chatbot')
+    @else
+        @include('frontend.includes.chatbot')
+    @endif
     <script src="{{ asset('user_assets/js/jquery.min.js') }}"></script>
     <script src="{{ asset('user_assets/js/simplebar.min.js') }}"></script>
     <script src="{{ asset('user_assets/js/bootstrap.bundle.min.js') }}"></script>

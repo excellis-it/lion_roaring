@@ -28,6 +28,7 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
     <link rel="stylesheet" type="text/css"
         href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css">
+    @include('frontend.includes.toast-layering')
     <style>
         .skiptranslate {
             display: none !important;
@@ -259,7 +260,7 @@
     @stack('styles')
 </head>
 
-<body class="loading">
+<body class="loading has-floating-chat">
     <script>
         // Ensure loader is visible immediately
         document.body.classList.add('loading');

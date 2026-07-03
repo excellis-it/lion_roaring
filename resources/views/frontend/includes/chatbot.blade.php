@@ -8,18 +8,13 @@
         --chatbot-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
     }
 
-    /* BUG-004: keep success/error toast notifications above the floating chat widget */
-    #toast-container {
-        z-index: 2147483647 !important;
-    }
-
-    /* Floating Button */
+    /* Floating Button — keep below toastr (#toast-container) and modals */
     .chatbot-float-btn {
         position: fixed;
-        bottom: 30px;
-        right: 30px;
-        width: 60px;
-        height: 60px;
+        bottom: var(--lr-floating-chat-bottom, 30px);
+        right: var(--lr-floating-chat-right, 30px);
+        width: var(--lr-floating-chat-size, 60px);
+        height: var(--lr-floating-chat-size, 60px);
         background: linear-gradient(135deg, var(--chatbot-primary), #7b3a8a);
         border-radius: 50%;
         display: flex;
@@ -29,7 +24,7 @@
         font-size: 24px;
         cursor: pointer;
         box-shadow: var(--chatbot-shadow);
-        z-index: 9999;
+        z-index: 1040;
         transition: all 0.3s ease;
         border: none;
         outline: none;
@@ -55,14 +50,14 @@
     /* Chat Window */
     .chatbot-window {
         position: fixed;
-        bottom: 100px;
-        right: 30px;
+        bottom: calc(var(--lr-floating-chat-bottom, 30px) + var(--lr-floating-chat-size, 60px) + 10px);
+        right: var(--lr-floating-chat-right, 30px);
         width: 400px;
         height: 600px;
         background: white;
         border-radius: 20px;
         box-shadow: var(--chatbot-shadow);
-        z-index: 9998;
+        z-index: 1035;
         display: flex;
         flex-direction: column;
         overflow: hidden;

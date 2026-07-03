@@ -34,6 +34,7 @@
     <link href="{{ asset('frontend_assets/css/responsive.css') }}" rel="stylesheet">
     <link rel="stylesheet" type="text/css"
         href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css">
+    @include('frontend.includes.toast-layering')
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/flag-icon-css/3.5.0/css/flag-icon.min.css" rel="stylesheet"
         type="text/css" />
@@ -370,7 +371,7 @@
     use App\Helpers\Helper;
 @endphp
 
-<body class="loading">
+<body class="loading has-floating-chat">
 
     <script>
         // Ensure loader is visible immediately
