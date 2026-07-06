@@ -39,7 +39,41 @@
         top: 16px;
         right: 16px;
         z-index: 10;
+        opacity: 0.9;
+        margin: 0;
+        padding: 0.5rem;
+    }
+
+    .sp-secure-close.btn-close {
+        filter: brightness(0) invert(1);
+        background-size: 1em;
+    }
+
+    .sp-secure-close.btn-close:hover,
+    .sp-secure-close.btn-close:focus {
         opacity: 1;
+        box-shadow: none;
+    }
+
+    .sp-discount-row {
+        display: none;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 0.5rem;
+    }
+
+    .sp-discount-row.is-visible {
+        display: flex;
+    }
+
+    .sp-discount-divider {
+        display: none;
+        margin: 0.5rem 0;
+        opacity: 0.1;
+    }
+
+    .sp-discount-divider.is-visible {
+        display: block;
     }
 
     .sp-billing-options {

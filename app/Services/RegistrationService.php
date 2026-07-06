@@ -719,7 +719,7 @@ class RegistrationService
             $intent = \Stripe\PaymentIntent::create([
                 'amount' => (int) round($finalPrice * 100),
                 'currency' => 'usd',
-                'automatic_payment_methods' => ['enabled' => true],
+                'payment_method_types' => ['card'],
                 'metadata' => [
                     'context' => 'registration',
                     'tier_id' => (string) $tier->id,

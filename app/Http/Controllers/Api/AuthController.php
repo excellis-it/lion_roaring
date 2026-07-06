@@ -9,7 +9,11 @@ use App\Models\User;
 use App\Models\Country;
 use App\Models\State;
 use App\Models\Ecclesia;
+use App\Models\MembershipPromoCode;
+use App\Models\MembershipTier;
+use App\Services\MembershipPricing;
 use App\Services\RegistrationService;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
@@ -94,6 +98,60 @@ class AuthController extends Controller
         $result = $registrationService->createRegistrationPaymentIntent($request);
 
         return response()->json($result['body'], $result['http_code']);
+    }
+
+    public function registerStripeConfig(): JsonResponse
+    {
+        $key = config('services.stripe.key');
+        if (empty($key)) {
+            return response()->json(['status' => false, 'message' => 'Stripe is not configured.'], 503);
+        }
+
+        return response()->json([
+            'status' => true,
+            'data' => ['publishable_key' => $key],
+        ], $this->successStatus);
+    }
+
+    public function validateRegistrationPromo(Request $request): JsonResponse
+    {
+        $validator = Validator::make($request->all(), [
+            'code' => 'required|string',
+            'tier_id' => 'required|integer|exists:membership_tiers,id',
+            'billing_period' => 'nullable|in:monthly,yearly',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json(['status' => false, 'message' => $validator->errors()->first()], 422);
+        }
+
+        $promoCode = MembershipPromoCode::where('code', $request->code)->first();
+        if (!$promoCode || !$promoCode->isValid()) {
+            return response()->json(['status' => false, 'message' => 'Invalid or expired promo code.'], 422);
+        }
+
+        if (!$promoCode->canBeAppliedToTier((int) $request->tier_id)) {
+            return response()->json(['status' => false, 'message' => 'This promo code is not valid for this membership tier.'], 422);
+        }
+
+        $tier = MembershipTier::find($request->tier_id);
+        $billingPeriod = MembershipPricing::validatePeriod($request->input('billing_period'));
+        $basePrice = MembershipPricing::priceFor($tier, $billingPeriod);
+        $discount = $promoCode->calculateDiscount($basePrice);
+        $finalPrice = max(0, $basePrice - $discount);
+
+        return response()->json([
+            'status' => true,
+            'message' => 'Promo code applied successfully.',
+            'data' => [
+                'code' => $promoCode->code,
+                'discount_amount' => round($discount, 2),
+                'is_percentage' => (bool) $promoCode->is_percentage,
+                'original_price' => $basePrice,
+                'final_price' => $finalPrice,
+                'billing_period' => $billingPeriod,
+            ],
+        ], $this->successStatus);
     }
 
     /**

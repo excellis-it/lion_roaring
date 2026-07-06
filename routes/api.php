@@ -250,6 +250,8 @@ Route::prefix('v3')->middleware(['userActivity'])->group(function () {
     Route::post('register-states-list', [AuthController::class, 'getStates']);
 
     Route::get('register-meta', [AuthController::class, 'registerMeta']);
+    Route::get('register-stripe-config', [AuthController::class, 'registerStripeConfig']);
+    Route::post('register-promo-validate', [AuthController::class, 'validateRegistrationPromo']);
     Route::post('register-payment-intent', [AuthController::class, 'registerPaymentIntent']);
     Route::post('register', [AuthController::class, 'register']);
     Route::post('login', [AuthController::class, 'login']);
