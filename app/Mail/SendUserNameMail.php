@@ -3,22 +3,17 @@
 namespace App\Mail;
 
 use Illuminate\Bus\Queueable;
-use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Mail\Mailable;
-use Illuminate\Queue\SerializesModels;
 
 class SendUserNameMail extends Mailable
 {
-    use Queueable, SerializesModels;
+    use Queueable;
 
-    /**
-     * Create a new message instance.
-     *
-     * @return void
-     */
-     protected $check;
-     protected $details;
-    public function __construct($check, $details)
+    protected array $check;
+
+    protected array $details;
+
+    public function __construct(array $check, array $details)
     {
         $this->check = $check;
         $this->details = $details;

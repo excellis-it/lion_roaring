@@ -19,7 +19,10 @@ trait SendsUsernameRecoveryEmails
             return collect();
         }
 
-        return User::matchingPhone($phoneNumber)->get();
+        return User::matchingPhone($phoneNumber)
+            ->where('is_accept', 1)
+            ->orderBy('id')
+            ->get(['id', 'email', 'user_name', 'phone', 'is_accept']);
     }
 
     /**
@@ -43,8 +46,15 @@ trait SendsUsernameRecoveryEmails
                 'token' => $token,
             ];
 
-            Mail::to($user->email)->send(new SendUserNameMail($user, $details));
-            $maskedEmails[] = $this->maskEmailForDisplay($user->email);
+            $recipientEmail = $user->email;
+            $username = $user->user_name;
+
+            Mail::to($recipientEmail)->send(new SendUserNameMail([
+                'user_name' => $username,
+                'email' => $recipientEmail,
+            ], $details));
+
+            $maskedEmails[] = $this->maskEmailForDisplay($recipientEmail);
         }
 
         return $maskedEmails;
@@ -57,6 +67,17 @@ trait SendsUsernameRecoveryEmails
             return '****';
         }
 
-        return substr($email, 0, min(6, $at)) . '****@****' . substr($email, $at + 1);
+        $localPart = substr($email, 0, $at);
+        $domain = substr($email, $at + 1);
+
+        if (strlen($localPart) <= 6) {
+            $maskedLocal = substr($localPart, 0, 1) . '****';
+        } elseif (strlen($localPart) <= 8) {
+            $maskedLocal = substr($localPart, 0, 3) . '****' . substr($localPart, -1);
+        } else {
+            $maskedLocal = substr($localPart, 0, 4) . '****' . substr($localPart, -2);
+        }
+
+        return $maskedLocal . '@****' . $domain;
     }
 }
