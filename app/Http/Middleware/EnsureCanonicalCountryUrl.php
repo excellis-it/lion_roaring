@@ -18,16 +18,23 @@ class EnsureCanonicalCountryUrl
             return $next($request);
         }
 
+        if ($request->filled('cc')) {
+            $cleanUrl = Helper::consumeVisitorCountryQueryParam($request);
+            if ($cleanUrl !== null) {
+                return redirect()->to($cleanUrl, 302);
+            }
+        }
+
         if (trim($request->path(), '/') === '' && Helper::isGlobalInstance()) {
             $sessionRedirect = Helper::resolveSessionCountryRedirectOnGlobalRoot();
-            if ($sessionRedirect && !$this->isSameLocation($request, $sessionRedirect)) {
+            if ($sessionRedirect) {
                 return redirect()->away($sessionRedirect, 302);
             }
         }
 
         if (trim($request->path(), '/') === '' && Helper::isDefaultRegionalInstance()) {
             $sessionRedirect = Helper::resolveSessionCountryRedirectOnRegionalRoot();
-            if ($sessionRedirect && !$this->isSameLocation($request, $sessionRedirect)) {
+            if ($sessionRedirect) {
                 return redirect()->away($sessionRedirect, 302);
             }
         }
@@ -38,7 +45,7 @@ class EnsureCanonicalCountryUrl
         }
 
         $redirectUrl = Helper::resolveCanonicalRedirectForPathCountry($pathCode);
-        if ($redirectUrl && !$this->isSameLocation($request, $redirectUrl)) {
+        if ($redirectUrl) {
             return redirect()->away($redirectUrl, 302);
         }
 
@@ -54,10 +61,5 @@ class EnsureCanonicalCountryUrl
             'storage/*',
             'set-visitor-country',
         );
-    }
-
-    private function isSameLocation(Request $request, string $url): bool
-    {
-        return rtrim($request->fullUrl(), '/') === rtrim($url, '/');
     }
 }

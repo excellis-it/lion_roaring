@@ -455,7 +455,19 @@ Route::middleware(['userActivity'])->group(function () {
         $domainUrl = Country::getDomainByCode($ccUpper);
 
         if ($domainUrl) {
-            return redirect($domainUrl, 302);
+            if (Helper::redirectUrlSharesHostWithRequest($domainUrl)) {
+                $regionalFallback = rtrim(Helper::getDefaultRegionalUrl(), '/')
+                    . '/' . strtolower($cc);
+                $handoff = Helper::countryRedirectWithSessionHandoff($regionalFallback, $ccUpper);
+                if ($handoff) {
+                    return redirect($handoff, 302);
+                }
+            } elseif (!Helper::isRedirectEquivalentToCurrentRequest(rtrim($domainUrl, '/'))) {
+                return redirect(
+                    Helper::appendCountryCodeQueryParam($domainUrl, $ccUpper),
+                    302
+                );
+            }
         }
 
         $row = Country::with('languages')->whereRaw('LOWER(code) = ?', [strtolower($cc)])->first();

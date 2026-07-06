@@ -1082,6 +1082,116 @@ class Helper
         return strtoupper($segment);
     }
 
+    /**
+     * Compare redirect target to the current request (scheme-insensitive on same host/path).
+     */
+    public static function isRedirectEquivalentToCurrentRequest(string $url): bool
+    {
+        $url = trim($url);
+        if ($url === '') {
+            return false;
+        }
+
+        $currentPath = trim(request()->path(), '/');
+        $parsed = parse_url($url);
+        if (!isset($parsed['host'])) {
+            return rtrim(request()->fullUrl(), '/') === rtrim($url, '/');
+        }
+
+        if (strtolower($parsed['host']) !== strtolower(request()->getHost())) {
+            return false;
+        }
+
+        $targetPort = $parsed['port'] ?? null;
+        if ($targetPort !== null && (string) $targetPort !== (string) request()->getPort()) {
+            return false;
+        }
+
+        $targetPath = trim($parsed['path'] ?? '', '/');
+
+        return $targetPath === $currentPath;
+    }
+
+    public static function redirectUrlSharesHostWithRequest(string $url): bool
+    {
+        $parsed = parse_url($url);
+
+        return isset($parsed['host'])
+            && strtolower($parsed['host']) === strtolower(request()->getHost());
+    }
+
+    /**
+     * Return redirect URL only when it would change host or path (prevents loops).
+     */
+    public static function safeExternalRedirectUrl(?string $url): ?string
+    {
+        if (!$url || self::isRedirectEquivalentToCurrentRequest($url)) {
+            return null;
+        }
+
+        return $url;
+    }
+
+    /**
+     * Append ?cc= for cross-domain session handoff (org ↔ us cookies do not transfer).
+     */
+    public static function appendCountryCodeQueryParam(string $url, string $countryCode): string
+    {
+        $countryCode = strtolower(trim($countryCode));
+        if ($countryCode === '') {
+            return $url;
+        }
+
+        if (preg_match('/[?&]cc=/i', $url)) {
+            return $url;
+        }
+
+        $separator = str_contains($url, '?') ? '&' : '?';
+
+        return $url . $separator . 'cc=' . $countryCode;
+    }
+
+    /**
+     * Apply ?cc=GL|in|us from query string, persist session, return clean URL to redirect to.
+     */
+    public static function consumeVisitorCountryQueryParam(?\Illuminate\Http\Request $request = null): ?string
+    {
+        $request = $request ?? request();
+        $cc = strtoupper(trim((string) $request->query('cc', '')));
+        if ($cc === '') {
+            return null;
+        }
+
+        if ($cc === 'GL') {
+            self::setVisitorCountrySession('GL');
+        } else {
+            $country = \App\Models\Country::query()
+                ->where('code', $cc)
+                ->where('is_global', false)
+                ->where('status', true)
+                ->first();
+            if (!$country) {
+                return null;
+            }
+            self::setVisitorCountrySession($cc);
+        }
+
+        self::$resolvedEffectiveCountry = null;
+        self::$effectiveCountryResolved = false;
+
+        return $request->url();
+    }
+
+    /**
+     * Safe cross-host redirect with ?cc= so the target domain receives the country session.
+     */
+    public static function countryRedirectWithSessionHandoff(string $url, string $countryCode): ?string
+    {
+        return self::safeExternalRedirectUrl(
+            self::appendCountryCodeQueryParam($url, $countryCode)
+        );
+    }
+
     private static $resolvedEffectiveCountry = null;
     private static $effectiveCountryResolved = false;
 
@@ -1228,7 +1338,15 @@ class Helper
             return null;
         }
 
-        return self::getCountryRedirectUrl($sessionCode);
+        $url = self::getCountryRedirectUrl($sessionCode);
+        if (self::redirectUrlSharesHostWithRequest($url)) {
+            $regionalTarget = rtrim(self::getDefaultRegionalUrl(), '/')
+                . '/' . strtolower($sessionCode);
+
+            return self::countryRedirectWithSessionHandoff($regionalTarget, $sessionCode);
+        }
+
+        return self::countryRedirectWithSessionHandoff($url, $sessionCode);
     }
 
     /**
@@ -1250,7 +1368,7 @@ class Helper
         }
 
         if ($sessionCode === 'GL') {
-            return self::getMainUrl();
+            return self::countryRedirectWithSessionHandoff(self::getMainUrl(), 'GL');
         }
 
         $domainCountry = \App\Models\Country::findByCurrentRequest();
@@ -1268,7 +1386,10 @@ class Helper
             return null;
         }
 
-        return self::getCountryRedirectUrl($sessionCode);
+        return self::countryRedirectWithSessionHandoff(
+            self::getCountryRedirectUrl($sessionCode),
+            $sessionCode
+        );
     }
 
     /**
@@ -1284,8 +1405,6 @@ class Helper
         $segments = $path === '' ? [] : explode('/', $path);
         $suffixSegments = array_slice($segments, 1);
         $suffix = $suffixSegments ? '/' . implode('/', $suffixSegments) : '';
-        $query = request()->getQueryString();
-        $queryStr = $query ? '?' . $query : '';
 
         if ($dedicatedDomain) {
             $parsed = parse_url($dedicatedDomain);
@@ -1296,11 +1415,20 @@ class Helper
                 && ($expectedPort === null || (string) request()->getPort() === (string) $expectedPort);
 
             if (!$onCorrectHost) {
-                return $canonical . $suffix . $queryStr;
+                return self::countryRedirectWithSessionHandoff($canonical . $suffix, $countryCode);
             }
 
             if (!empty($segments) && strtoupper($segments[0]) === $countryCode) {
-                return rtrim($dedicatedDomain, '/') . $suffix . $queryStr;
+                if (self::isGlobalInstance()) {
+                    $regionalTarget = rtrim(self::getDefaultRegionalUrl(), '/')
+                        . '/' . strtolower($countryCode) . $suffix;
+
+                    return self::countryRedirectWithSessionHandoff($regionalTarget, $countryCode);
+                }
+
+                return self::safeExternalRedirectUrl(
+                    rtrim($dedicatedDomain, '/') . $suffix
+                );
             }
 
             return null;
@@ -1311,7 +1439,11 @@ class Helper
         $current = rtrim(request()->url(), '/');
 
         if ($current !== $expectedPrefix && !str_starts_with($current, $expectedPrefix . '/')) {
-            return $expectedPrefix . $suffix . $queryStr;
+            if (self::isGlobalInstance() && self::redirectUrlSharesHostWithRequest($expectedPrefix)) {
+                return null;
+            }
+
+            return self::countryRedirectWithSessionHandoff($expectedPrefix . $suffix, $countryCode);
         }
 
         return null;
