@@ -11,6 +11,7 @@ use App\Models\MembershipTier;
 use App\Models\SubscriptionPayment;
 use App\Models\UserSubscription;
 use App\Services\CheckoutPaymentService;
+use App\Services\MembershipPricing;
 use App\Services\NotificationService;
 use App\Services\PromoCodeValidator;
 use Illuminate\Http\JsonResponse;
@@ -135,6 +136,7 @@ class MembershipApiController extends Controller
         $validator = Validator::make($request->all(), [
             'code' => 'required|string',
             'tier_id' => 'required|integer|exists:membership_tiers,id',
+            'billing_period' => 'nullable|in:monthly,yearly',
         ]);
 
         if ($validator->fails()) {
@@ -144,7 +146,8 @@ class MembershipApiController extends Controller
         $result = PromoCodeValidator::validateMembership(
             $request->code,
             Auth::id(),
-            (int) $request->tier_id
+            (int) $request->tier_id,
+            $request->input('billing_period', 'yearly')
         );
 
         if (!$result['valid']) {
@@ -160,6 +163,7 @@ class MembershipApiController extends Controller
                 'is_percentage' => $result['is_percentage'],
                 'original_price' => $result['original_price'],
                 'final_price' => $result['final_price'],
+                'billing_period' => $result['billing_period'] ?? MembershipPricing::PERIOD_YEARLY,
             ],
         ], $this->successStatus);
     }
@@ -284,7 +288,7 @@ class MembershipApiController extends Controller
         $sub->life_force_energy_tokens = $tier->life_force_energy_tokens;
         $sub->agree_accepted_at = now();
         $sub->agree_description_snapshot = $tier->agree_description;
-        $duration = $tier->duration_months ?? 12;
+        $duration = 12;
         $sub->subscription_validity = $duration;
         $sub->subscription_start_date = now();
         $sub->subscription_expire_date = now()->addMonths($duration);
@@ -313,20 +317,50 @@ class MembershipApiController extends Controller
             return response()->json(['status' => false, 'message' => 'No subscription to renew.'], 404);
         }
 
-        $tier = MembershipTier::find($sub->plan_id);
+        $tierId = (int) $request->input('tier_id', $sub->plan_id);
+        $tier = MembershipTier::find($tierId);
         if (!$tier) {
             return response()->json(['status' => false, 'message' => 'Invalid membership tier.'], 404);
         }
 
-        $isToken = ($tier->pricing_type ?? 'amount') === 'token' || (float) $tier->cost <= 0;
+        $billingPeriod = MembershipPricing::validatePeriod($request->input('billing_period'));
+        $basePrice = MembershipPricing::priceFor($tier, $billingPeriod);
+        $isToken = ($tier->pricing_type ?? 'amount') === 'token';
 
         if ($isToken) {
-            $duration = $tier->duration_months ?? 12;
             $base = $sub->subscription_expire_date
                 ? now()->max(\Carbon\Carbon::parse($sub->subscription_expire_date))
                 : now();
-            $sub->subscription_expire_date = $base->addMonths($duration);
+            $sub->subscription_expire_date = $base->addMonths(12);
             $sub->subscription_method = 'token';
+            $sub->plan_id = $tier->id;
+            $sub->subscription_name = $tier->name;
+            $sub->save();
+            $this->syncTierPermissions($user, $tier);
+
+            return response()->json([
+                'status' => true,
+                'message' => 'Membership renewed.',
+                'data' => $sub,
+            ], $this->successStatus);
+        }
+
+        if ($basePrice <= 0) {
+            $duration = MembershipPricing::durationMonthsFor($billingPeriod);
+            if ($sub->plan_id == $tier->id) {
+                $base = $sub->subscription_expire_date
+                    ? now()->max(\Carbon\Carbon::parse($sub->subscription_expire_date))
+                    : now();
+                $sub->subscription_expire_date = $base->addMonths($duration);
+            } else {
+                $sub->plan_id = $tier->id;
+                $sub->subscription_name = $tier->name;
+                $sub->subscription_start_date = now();
+                $sub->subscription_expire_date = now()->addMonths($duration);
+            }
+            $sub->subscription_method = 'amount';
+            $sub->billing_period = $billingPeriod;
+            $sub->subscription_validity = $duration;
             $sub->save();
             $this->syncTierPermissions($user, $tier);
 
@@ -343,7 +377,8 @@ class MembershipApiController extends Controller
             'data' => [
                 'requires_payment' => true,
                 'tier_id' => $tier->id,
-                'amount' => (float) $tier->cost,
+                'amount' => $basePrice,
+                'billing_period' => $billingPeriod,
                 'currency' => 'USD',
             ],
         ], $this->successStatus);
@@ -395,6 +430,23 @@ class MembershipApiController extends Controller
     }
 
     /**
+     * GET /user/membership/checkout/stripe-config
+     * Returns the Stripe publishable key so inline CardField can render.
+     */
+    public function stripeConfig(): JsonResponse
+    {
+        $key = config('services.stripe.key');
+        if (empty($key)) {
+            return response()->json(['status' => false, 'message' => 'Stripe is not configured.'], 503);
+        }
+
+        return response()->json([
+            'status' => true,
+            'data' => ['publishable_key' => $key],
+        ], $this->successStatus);
+    }
+
+    /**
      * POST /user/membership/checkout/payment-intent
      * Creates a Stripe PaymentIntent for a paid membership tier.
      * The client then presents PaymentSheet and posts back to /checkout/confirm.
@@ -407,6 +459,7 @@ class MembershipApiController extends Controller
         $validator = Validator::make($request->all(), [
             'tier_id' => 'required|integer|exists:membership_tiers,id',
             'promo_code' => 'nullable|string',
+            'billing_period' => 'nullable|in:monthly,yearly',
         ]);
 
         if ($validator->fails()) {
@@ -423,10 +476,12 @@ class MembershipApiController extends Controller
             ], 422);
         }
 
-        $amount = (float) $tier->cost;
+        $billingPeriod = MembershipPricing::validatePeriod($request->input('billing_period'));
+        $basePrice = MembershipPricing::priceFor($tier, $billingPeriod);
+        $amount = $basePrice;
         $promoCode = null;
         if ($request->filled('promo_code')) {
-            $result = PromoCodeValidator::validateMembership($request->promo_code, $user->id, $tier->id);
+            $result = PromoCodeValidator::validateMembership($request->promo_code, $user->id, $tier->id, $billingPeriod);
             if (!$result['valid']) {
                 return response()->json(['status' => false, 'message' => $result['message']], 422);
             }
@@ -434,8 +489,39 @@ class MembershipApiController extends Controller
             $promoCode = $result['code'];
         }
 
-        // A 100%-off promo (or a $0 tier) needs no Stripe charge. Skip PaymentSheet
-        // and let the client finalize via a free activation on /checkout/confirm.
+        // 100%-off promo on a paid tier — collect card via SetupIntent (no charge).
+        if ($amount <= 0 && $basePrice > 0) {
+            $setup = $payment->createSetupIntent($user, [
+                'type' => 'membership',
+                'tier_id' => $tier->id,
+                'promo_code' => $promoCode,
+                'billing_period' => $billingPeriod,
+            ]);
+
+            if (!($setup['success'] ?? false)) {
+                return response()->json(['status' => false, 'message' => $setup['error'] ?? 'Could not verify card.'], 500);
+            }
+
+            return response()->json([
+                'status' => true,
+                'message' => 'Card verification required.',
+                'data' => [
+                    'tier_id' => $tier->id,
+                    'amount' => 0,
+                    'currency' => 'USD',
+                    'promo_code' => $promoCode,
+                    'billing_period' => $billingPeriod,
+                    'card_verification' => true,
+                    'setup_intent_id' => $setup['setup_intent_id'],
+                    'client_secret' => $setup['client_secret'],
+                    'ephemeral_key' => $setup['ephemeral_key'],
+                    'customer_id' => $setup['customer_id'],
+                    'publishable_key' => $setup['publishable_key'],
+                ],
+            ], $this->successStatus);
+        }
+
+        // Truly free tier — no card required.
         if ($amount <= 0) {
             return response()->json([
                 'status' => true,
@@ -445,6 +531,7 @@ class MembershipApiController extends Controller
                     'amount' => 0,
                     'currency' => 'USD',
                     'promo_code' => $promoCode,
+                    'billing_period' => $billingPeriod,
                     'free' => true,
                 ],
             ], $this->successStatus);
@@ -458,7 +545,9 @@ class MembershipApiController extends Controller
                 'type' => 'membership',
                 'tier_id' => $tier->id,
                 'promo_code' => $promoCode,
-            ]
+                'billing_period' => $billingPeriod,
+            ],
+            cardOnly: true
         );
 
         if (!$intent['success']) {
@@ -473,6 +562,7 @@ class MembershipApiController extends Controller
                 'amount' => $amount,
                 'currency' => 'USD',
                 'promo_code' => $promoCode,
+                'billing_period' => $billingPeriod,
                 'payment_intent_id' => $intent['payment_intent_id'],
                 'client_secret' => $intent['client_secret'],
                 'ephemeral_key' => $intent['ephemeral_key'],
@@ -494,11 +584,13 @@ class MembershipApiController extends Controller
     public function confirmCheckout(Request $request, CheckoutPaymentService $payment): JsonResponse
     {
         $validator = Validator::make($request->all(), [
-            'payment_intent_id' => 'required_without:free|nullable|string',
+            'payment_intent_id' => 'required_without_all:free,setup_intent_id|nullable|string',
+            'setup_intent_id' => 'required_without_all:free,payment_intent_id|nullable|string',
             'tier_id' => 'required|integer|exists:membership_tiers,id',
             'is_renew' => 'nullable|boolean',
             'free' => 'nullable|boolean',
             'promo_code' => 'nullable|string',
+            'billing_period' => 'nullable|in:monthly,yearly',
         ]);
 
         if ($validator->fails()) {
@@ -510,13 +602,18 @@ class MembershipApiController extends Controller
         $isRenew = (bool) $request->input('is_renew', false);
         $isFree = (bool) $request->input('free', false);
 
+        $billingPeriod = MembershipPricing::validatePeriod($request->input('billing_period'));
+        $basePrice = MembershipPricing::priceFor($tier, $billingPeriod);
+        $duration = MembershipPricing::durationMonthsFor($billingPeriod);
+
         if ($isFree) {
-            // Free activation: no Stripe intent exists, so re-validate server-side
-            // that this tier really is $0 for this user before granting it.
-            $amount = (float) $tier->cost;
+            if ($basePrice > 0) {
+                return response()->json(['status' => false, 'message' => 'Payment card details are required.'], 422);
+            }
+            $amount = $basePrice;
             $promoCode = null;
             if ($request->filled('promo_code')) {
-                $result = PromoCodeValidator::validateMembership($request->promo_code, $user->id, $tier->id);
+                $result = PromoCodeValidator::validateMembership($request->promo_code, $user->id, $tier->id, $billingPeriod);
                 if (!$result['valid']) {
                     return response()->json(['status' => false, 'message' => $result['message']], 422);
                 }
@@ -529,6 +626,33 @@ class MembershipApiController extends Controller
             $transactionId = 'FREE-' . strtoupper(uniqid());
             $amountPaid = 0.0;
             $paymentMethod = 'Free';
+        } elseif ($request->filled('setup_intent_id')) {
+            $existing = SubscriptionPayment::where('transaction_id', $request->setup_intent_id)->first();
+            if ($existing) {
+                return response()->json([
+                    'status' => true,
+                    'message' => 'Payment already processed.',
+                    'data' => $existing->load('userSubscription'),
+                ], $this->successStatus);
+            }
+
+            $verification = $payment->verifySetupIntent($request->setup_intent_id);
+            if (!($verification['success'] ?? false)) {
+                return response()->json([
+                    'status' => false,
+                    'message' => 'Card verification not completed. Status: ' . ($verification['status'] ?? 'unknown'),
+                ], 402);
+            }
+
+            $intentPeriod = $verification['metadata']['billing_period'] ?? null;
+            if ($intentPeriod && $intentPeriod !== $billingPeriod) {
+                return response()->json(['status' => false, 'message' => 'Billing period mismatch.'], 422);
+            }
+
+            $promoCode = $verification['metadata']['promo_code'] ?? $request->promo_code;
+            $transactionId = $request->setup_intent_id;
+            $amountPaid = 0.0;
+            $paymentMethod = 'Stripe';
         } else {
             // Idempotency: same intent → same payment row.
             $existing = SubscriptionPayment::where('transaction_id', $request->payment_intent_id)->first();
@@ -548,31 +672,43 @@ class MembershipApiController extends Controller
                 ], 402);
             }
 
+            $intentPeriod = $verification['metadata']['billing_period'] ?? null;
+            if ($intentPeriod && $intentPeriod !== $billingPeriod) {
+                return response()->json(['status' => false, 'message' => 'Billing period mismatch.'], 422);
+            }
+
             $transactionId = $request->payment_intent_id;
-            $amountPaid = (float) ($verification['amount'] ?? $tier->cost);
+            $amountPaid = (float) ($verification['amount'] ?? $basePrice);
             $promoCode = $verification['metadata']['promo_code'] ?? null;
             $paymentMethod = 'Stripe';
         }
 
-        $subscription = DB::transaction(function () use ($user, $tier, $isRenew, $amountPaid, $promoCode, $transactionId, $paymentMethod) {
+        $discountAmount = max(0, $basePrice - $amountPaid);
+
+        $subscription = DB::transaction(function () use ($user, $tier, $isRenew, $amountPaid, $promoCode, $transactionId, $paymentMethod, $billingPeriod, $basePrice, $duration, $discountAmount) {
             if ($isRenew && $user->userLastSubscription && $user->userLastSubscription->plan_id == $tier->id) {
                 $sub = $user->userLastSubscription;
-                $duration = $tier->duration_months ?? 12;
                 $base = $sub->subscription_expire_date
                     ? now()->max(\Carbon\Carbon::parse($sub->subscription_expire_date))
                     : now();
                 $sub->subscription_expire_date = $base->addMonths($duration);
                 $sub->subscription_method = 'amount';
+                $sub->billing_period = $billingPeriod;
+                $sub->subscription_validity = $duration;
+                $sub->final_price = $amountPaid;
+                $sub->promo_code = $promoCode;
+                $sub->discount_amount = $discountAmount;
                 $sub->save();
             } else {
-                $duration = $tier->duration_months ?? 12;
                 $sub = new UserSubscription();
                 $sub->user_id = $user->id;
                 $sub->plan_id = $tier->id;
                 $sub->subscription_method = 'amount';
                 $sub->subscription_name = $tier->name;
-                $sub->subscription_price = $tier->cost;
+                $sub->subscription_price = $basePrice;
+                $sub->billing_period = $billingPeriod;
                 $sub->promo_code = $promoCode;
+                $sub->discount_amount = $discountAmount;
                 $sub->final_price = $amountPaid;
                 $sub->subscription_validity = $duration;
                 $sub->subscription_start_date = now();
@@ -586,8 +722,9 @@ class MembershipApiController extends Controller
                 'transaction_id' => $transactionId,
                 'payment_method' => $paymentMethod,
                 'payment_amount' => $amountPaid,
+                'billing_period' => $billingPeriod,
                 'promo_code' => $promoCode,
-                'discount_amount' => max(0, (float) $tier->cost - $amountPaid),
+                'discount_amount' => $discountAmount,
                 'payment_status' => 'Success',
             ]);
 
@@ -598,7 +735,7 @@ class MembershipApiController extends Controller
                         'promo_code_id' => $promo->id,
                         'user_id' => $user->id,
                         'user_subscription_id' => $sub->id,
-                        'discount_applied' => max(0, (float) $tier->cost - $amountPaid),
+                        'discount_applied' => $discountAmount,
                         'used_at' => now(),
                     ]);
                     $promo->incrementUsage();

@@ -38,7 +38,7 @@ class PartnerController extends Controller
             $user = Auth::user();
             $user_ecclesia_id = $user->ecclesia_id;
             $is_user_ecclesia_admin = $user->is_ecclesia_admin;
-            $currentCode = strtoupper(Helper::getVisitorCountryCode());
+            $currentCode = strtoupper(Helper::resolveVisitorCountryCode());
 
             // Retrieve filters from session
             $filters = session('partner_filters', []);
@@ -1012,7 +1012,7 @@ class PartnerController extends Controller
             $sort_by = $request->get('sortby', 'id'); // Default sorting by 'id'
             $sort_type = $request->get('sorttype', 'asc'); // Default sorting type
             $query = $request->get('query');
-            $currentCode = strtoupper(Helper::getVisitorCountryCode());
+            $currentCode = strtoupper(Helper::resolveVisitorCountryCode($request));
 
             // Store filters in session
             session(['partner_filters' => [

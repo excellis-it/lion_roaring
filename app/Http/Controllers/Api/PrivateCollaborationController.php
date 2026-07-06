@@ -530,50 +530,60 @@ class PrivateCollaborationController extends Controller
             return response()->json(['status' => false, 'message' => 'Permission denied.'], 403);
         }
 
-        $request->validate([
-            'country_id' => 'required|exists:countries,id',
-        ]);
-
-        $country = Country::findOrFail($request->country_id);
         $authUser = auth()->user();
+        $isSuperAdmin = $authUser->hasNewRole('SUPER ADMIN');
 
-        if ($country->code == 'GL') {
-            $users = User::whereHas('userRole', function ($query) {
-                $query->where('name', '!=', 'SUPER ADMIN');
-            })->whereHas('roles.permissions', function ($query) {
+        if ($isSuperAdmin && ! $request->filled('country_id')) {
+            $users = User::whereHas('roles.permissions', function ($query) {
                 $query->where('name', 'Manage Private Collaboration');
-            })->whereIn('user_type', ['Global', 'G_R'])
-                ->where('status', 1)
+            })->where('status', 1)
                 ->where('id', '!=', auth()->id())
                 ->orderBy('first_name')->orderBy('last_name')->get();
         } else {
-            $usersQuery = User::whereHas('userRole', function ($query) {
-                $query->where('name', '!=', 'SUPER ADMIN');
-            })->whereHas('roles.permissions', function ($query) {
-                $query->where('name', 'Manage Private Collaboration');
-            })->where('id', '!=', auth()->id())
-                ->whereIn('user_type', ['Regional', 'G_R'])
-                ->where('status', 1)
-                ->where('country', $country->id);
+            $request->validate([
+                'country_id' => 'required|exists:countries,id',
+            ]);
 
-            if ($authUser && $authUser->is_ecclesia_admin == 1) {
-                $manageEcclesiaIds = is_array($authUser->manage_ecclesia)
-                    ? $authUser->manage_ecclesia
-                    : explode(',', (string) ($authUser->manage_ecclesia ?? ''));
-                $usersQuery->where(function ($q) use ($manageEcclesiaIds) {
-                    $q->where(function ($sub) use ($manageEcclesiaIds) {
-                        $sub->whereIn('ecclesia_id', $manageEcclesiaIds)->whereNotNull('ecclesia_id');
-                    });
-                    foreach ($manageEcclesiaIds as $id) {
-                        $id = trim($id);
-                        if ($id !== '') {
-                            $q->orWhereRaw('FIND_IN_SET(?, manage_ecclesia)', [$id]);
+            $country = Country::findOrFail($request->country_id);
+
+            if ($country->code == 'GL') {
+                $users = User::whereHas('userRole', function ($query) {
+                    $query->where('name', '!=', 'SUPER ADMIN');
+                })->whereHas('roles.permissions', function ($query) {
+                    $query->where('name', 'Manage Private Collaboration');
+                })->whereIn('user_type', ['Global', 'G_R'])
+                    ->where('status', 1)
+                    ->where('id', '!=', auth()->id())
+                    ->orderBy('first_name')->orderBy('last_name')->get();
+            } else {
+                $usersQuery = User::whereHas('userRole', function ($query) {
+                    $query->where('name', '!=', 'SUPER ADMIN');
+                })->whereHas('roles.permissions', function ($query) {
+                    $query->where('name', 'Manage Private Collaboration');
+                })->where('id', '!=', auth()->id())
+                    ->whereIn('user_type', ['Regional', 'G_R'])
+                    ->where('status', 1)
+                    ->where('country', $country->id);
+
+                if ($authUser && $authUser->is_ecclesia_admin == 1) {
+                    $manageEcclesiaIds = is_array($authUser->manage_ecclesia)
+                        ? $authUser->manage_ecclesia
+                        : explode(',', (string) ($authUser->manage_ecclesia ?? ''));
+                    $usersQuery->where(function ($q) use ($manageEcclesiaIds) {
+                        $q->where(function ($sub) use ($manageEcclesiaIds) {
+                            $sub->whereIn('ecclesia_id', $manageEcclesiaIds)->whereNotNull('ecclesia_id');
+                        });
+                        foreach ($manageEcclesiaIds as $id) {
+                            $id = trim($id);
+                            if ($id !== '') {
+                                $q->orWhereRaw('FIND_IN_SET(?, manage_ecclesia)', [$id]);
+                            }
                         }
-                    }
-                });
-            }
+                    });
+                }
 
-            $users = $usersQuery->orderBy('first_name')->orderBy('last_name')->get();
+                $users = $usersQuery->orderBy('first_name')->orderBy('last_name')->get();
+            }
         }
 
         $result = $users->map(function ($user) {

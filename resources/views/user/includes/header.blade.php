@@ -127,23 +127,22 @@
 
             {{-- ── Account Type Indicator ──────────────────────────── --}}
             @php
-                $domainCountry  = Helper::getCountryByDomain();
-                $isGlobalDomain = $domainCountry && $domainCountry->is_global;
+                $displayCountry = Helper::getDisplayCountry();
+                $isGlobalContext = $displayCountry && $displayCountry->is_global;
                 $userType       = Auth::user()->user_type;
             @endphp
 
             <li class="nav-item d-none d-lg-flex align-items-center px-2 gap-2">
-                {{-- Location pill: driven purely by domain --}}
-                @if ($isGlobalDomain)
+                @if ($isGlobalContext)
                     <span class="badge-global">
                         <i class="fa-solid fa-globe me-1"></i>Global
                     </span>
                 @else
                     <span class="badge-regional">
-                        @if ($domainCountry && $domainCountry->code)
-                            <img src="{{ asset('frontend_assets/images/flags/' . strtolower($domainCountry->code) . '.png') }}" height="12px" alt="">
+                        @if ($displayCountry && $displayCountry->code)
+                            <img src="{{ asset('frontend_assets/images/flags/' . strtolower($displayCountry->code) . '.png') }}" height="12px" alt="">
                         @endif
-                        {{ $domainCountry->name ?? '' }}
+                        {{ $displayCountry->name ?? '' }}
                     </span>
                 @endif
 
@@ -218,17 +217,17 @@
                                 <span class="text-break">{{ Auth::user()->email }}</span>
                             </p>
                             <div class="d-flex align-items-center flex-wrap gap-1 mt-2 profile-dropdown-badges">
-                                @if ($isGlobalDomain)
+                                @if ($isGlobalContext)
                                     <span class="badge-global small-badge">
                                         <i class="fa-solid fa-globe me-1"></i>Global
                                     </span>
                                 @else
                                     <span class="badge-regional small-badge">
-                                        @if ($domainCountry && $domainCountry->code)
-                                            <img src="{{ asset('frontend_assets/images/flags/' . strtolower($domainCountry->code) . '.png') }}"
+                                        @if ($displayCountry && $displayCountry->code)
+                                            <img src="{{ asset('frontend_assets/images/flags/' . strtolower($displayCountry->code) . '.png') }}"
                                                 height="11px" alt="">
                                         @endif
-                                        {{ $domainCountry->name ?? '' }}
+                                        {{ $displayCountry->name ?? '' }}
                                     </span>
                                 @endif
                                 <span class="badge-user-type small-badge">

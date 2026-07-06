@@ -331,6 +331,7 @@ Route::prefix('v3')->middleware(['userActivity'])->group(function () {
             Route::put('/renewal-reminder', [MembershipApiController::class, 'updateRenewalReminder']);
 
             Route::post('/checkout/payment-intent', [MembershipApiController::class, 'createPaymentIntent']);
+            Route::get('/checkout/stripe-config', [MembershipApiController::class, 'stripeConfig']);
             Route::post('/checkout/confirm', [MembershipApiController::class, 'confirmCheckout']);
         });
 

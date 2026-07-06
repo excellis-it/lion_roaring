@@ -382,27 +382,30 @@ Route::middleware(['userActivity'])->group(function () {
         $domainCountry = Helper::getCountryByDomain();
 
         if ($domainCountry && !$domainCountry->is_global) {
-            // This is a country-specific domain (e.g., lionroaring.us → US)
-            // Force that country's session and serve the homepage
-            $ip = request()->ip();
-            $codeSessionKey = 'visitor_country_code_' . $ip;
-            $nameSessionKey = 'visitor_country_name_' . $ip;
-            $languageSessionKey = 'visitor_country_languages';
+            $pathCode = Helper::extractCountryCodeFromPath(request()->path());
 
-            $row = Country::with('languages')->where('code', $domainCountry->code)->first();
-            if ($row) {
-                $languages = $row->languages;
-                $hasEnglish = $languages->contains(fn($lang) => strtolower($lang->code ?? '') === 'en');
-                if (!$hasEnglish) {
-                    $english = \App\Models\TranslateLanguage::whereRaw('LOWER(code) = ?', ['en'])->first();
-                    if ($english) $languages = $languages->push($english);
+            if (!$pathCode) {
+                $ip = request()->ip();
+                $codeSessionKey = 'visitor_country_code_' . $ip;
+                $nameSessionKey = 'visitor_country_name_' . $ip;
+                $languageSessionKey = 'visitor_country_languages';
+
+                $row = Country::with('languages')->where('code', $domainCountry->code)->first();
+                if ($row) {
+                    $languages = $row->languages;
+                    $hasEnglish = $languages->contains(fn($lang) => strtolower($lang->code ?? '') === 'en');
+                    if (!$hasEnglish) {
+                        $english = \App\Models\TranslateLanguage::whereRaw('LOWER(code) = ?', ['en'])->first();
+                        if ($english) $languages = $languages->push($english);
+                    }
+                    session([
+                        $codeSessionKey => strtoupper($row->code),
+                        $nameSessionKey => $row->name,
+                        $languageSessionKey => $languages,
+                    ]);
                 }
-                session([
-                    $codeSessionKey => strtoupper($row->code),
-                    $nameSessionKey => $row->name,
-                    $languageSessionKey => $languages,
-                ]);
             }
+
             return app(CmsController::class)->index();
         }
 
@@ -458,27 +461,7 @@ Route::middleware(['userActivity'])->group(function () {
         $row = Country::with('languages')->whereRaw('LOWER(code) = ?', [strtolower($cc)])->first();
 
         if ($row) {
-            $languages = $row->languages;
-
-            // Check if English language is available in the country's languages
-            $hasEnglish = $languages->contains(function ($lang) {
-                return strtolower($lang->code ?? '') === 'en';
-            });
-
-            // If English is not available, fetch and merge it
-            if (!$hasEnglish) {
-                $englishLanguage = \App\Models\TranslateLanguage::whereRaw('LOWER(code) = ?', ['en'])->first();
-                if ($englishLanguage) {
-                    $languages = $languages->push($englishLanguage);
-                }
-            }
-
-            $ip = request()->ip();
-            session([
-                'visitor_country_code_' . $ip => strtoupper($row->code),
-                'visitor_country_name_' . $ip => $row->name,
-                'visitor_country_languages' => $languages,
-            ]);
+            Helper::setVisitorCountrySession(strtoupper($row->code));
         }
         return app(CmsController::class)->index();
     })->where('cc', $__ccPattern)->name('home.country');

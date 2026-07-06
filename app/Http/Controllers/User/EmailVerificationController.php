@@ -113,7 +113,9 @@ class EmailVerificationController extends Controller
         }
 
         $this->updateCartUserId($userId);
+        Helper::clearBrowsingSession();
         Auth::login($user);
+        Helper::syncVisitorCountryForUser($user);
         Helper::recordLoginContext();
         Session::forget('user_id');
         return response()->json(['message' => 'Code verified successfully', 'status' => true, 'redirect' => route('user.profile')]);

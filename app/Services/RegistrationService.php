@@ -16,6 +16,7 @@ use App\Models\UserRegisterAgreement;
 use App\Models\UserSubscription;
 use App\Models\UserType;
 use App\Models\UserActivity;
+use App\Services\MembershipPricing;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Log;
@@ -114,6 +115,8 @@ class RegistrationService
             'agree_accepted' => 'nullable|boolean',
             'stripeToken' => 'nullable|string',
             'payment_intent_id' => 'nullable|string',
+            'setup_intent_id' => 'nullable|string',
+            'billing_period' => 'nullable|in:monthly,yearly',
         ], [
             'password.regex' => 'The password must be at least 8 characters long and include at least one special character from @$%&.',
             'signature.required' => 'Please provide your signature before submitting the form.',
@@ -161,17 +164,24 @@ class RegistrationService
                 return;
             }
 
-            $finalPrice = floatval($tier->cost);
+            $billingPeriod = MembershipPricing::validatePeriod($request->input('billing_period'));
+            $basePrice = MembershipPricing::priceFor($tier, $billingPeriod);
+            $finalPrice = $basePrice;
             if ($request->promo_code) {
                 $promo = MembershipPromoCode::where('code', $request->promo_code)->first();
                 if ($promo && $promo->canBeAppliedToTier($tier->id)) {
-                    $discount = $promo->calculateDiscount($tier->cost);
-                    $finalPrice = max(0, $tier->cost - $discount);
+                    $discount = $promo->calculateDiscount($basePrice);
+                    $finalPrice = max(0, $basePrice - $discount);
                 }
             }
 
             if ($finalPrice > 0 && !$request->filled('stripeToken') && !$request->filled('payment_intent_id')) {
                 $validator->errors()->add('payment', 'Payment is required for the selected tier.');
+            } elseif ($basePrice > 0 && $finalPrice <= 0
+                && !$request->filled('stripeToken')
+                && !$request->filled('setup_intent_id')
+                && !$request->filled('payment_intent_id')) {
+                $validator->errors()->add('payment', 'Payment card details are required.');
             }
         });
 
@@ -196,15 +206,17 @@ class RegistrationService
         }
 
         $tier = MembershipTier::findOrFail($request->tier_id);
+        $billingPeriod = MembershipPricing::validatePeriod($request->input('billing_period'));
         $promoCode = null;
         $discount = 0;
-        $finalPrice = floatval($tier->cost);
+        $basePrice = MembershipPricing::priceFor($tier, $billingPeriod);
+        $finalPrice = $basePrice;
 
         if ($request->filled('promo_code')) {
             $promoCode = MembershipPromoCode::where('code', $request->promo_code)->first();
             if ($promoCode && $promoCode->canBeAppliedToTier($tier->id)) {
-                $discount = $promoCode->calculateDiscount($tier->cost);
-                $finalPrice = max(0, $tier->cost - $discount);
+                $discount = $promoCode->calculateDiscount($basePrice);
+                $finalPrice = max(0, $basePrice - $discount);
             }
         }
 
@@ -315,7 +327,8 @@ class RegistrationService
             $userSubscription->agree_description_snapshot = $tier->agree_description;
         } else {
             $userSubscription->subscription_method = 'amount';
-            $userSubscription->subscription_price = $tier->cost;
+            $userSubscription->subscription_price = $basePrice;
+            $userSubscription->billing_period = $billingPeriod;
             $userSubscription->promo_code = $promoCode ? $promoCode->code : null;
             $userSubscription->discount_amount = $discount;
             $userSubscription->final_price = $paymentAmount;
@@ -324,7 +337,9 @@ class RegistrationService
             $userSubscription->agree_description_snapshot = null;
         }
 
-        $durationMonths = $tier->duration_months ?? 12;
+        $durationMonths = ($tier->pricing_type ?? 'amount') === 'token'
+            ? 12
+            : MembershipPricing::durationMonthsFor($billingPeriod);
         $userSubscription->subscription_validity = $durationMonths;
         $userSubscription->subscription_start_date = now();
         $userSubscription->subscription_expire_date = now()->addMonths($durationMonths);
@@ -337,6 +352,7 @@ class RegistrationService
             $payment->transaction_id = $transactionId;
             $payment->payment_method = $paymentAmount > 0 ? 'Stripe' : 'Promo';
             $payment->payment_amount = $paymentAmount;
+            $payment->billing_period = $billingPeriod;
             $payment->promo_code = $promoCode ? $promoCode->code : null;
             $payment->discount_amount = $discount;
             $payment->payment_status = 'Success';
@@ -509,23 +525,55 @@ class RegistrationService
                 ];
             }
 
-            if ($request->filled('stripeToken') && $request->stripeToken !== 'free_tier') {
-                $charge = \Stripe\Charge::create([
-                    'amount' => (int) ($finalPrice * 100),
-                    'currency' => 'usd',
-                    'source' => $request->stripeToken,
-                    'description' => 'Membership Registration - ' . $tier->name . ($promoCode ? ' (Promo: ' . $promoCode->code . ')' : ''),
-                ]);
-
-                if ($charge->status === 'succeeded') {
-                    return [
-                        'ok' => true,
-                        'transaction_id' => $charge->id,
-                        'amount' => $finalPrice,
-                    ];
+            if ($request->filled('setup_intent_id')) {
+                $verification = app(\App\Services\CheckoutPaymentService::class)
+                    ->verifySetupIntent($request->setup_intent_id);
+                if (!($verification['success'] ?? false)) {
+                    return ['ok' => false, 'message' => 'Card verification not completed.'];
                 }
 
-                return ['ok' => false, 'message' => 'Payment failed.'];
+                return [
+                    'ok' => true,
+                    'transaction_id' => $request->setup_intent_id,
+                    'amount' => 0,
+                ];
+            }
+
+            if ($request->filled('stripeToken') && $request->stripeToken !== 'free_tier') {
+                if ($finalPrice > 0) {
+                    $charge = \Stripe\Charge::create([
+                        'amount' => (int) ($finalPrice * 100),
+                        'currency' => 'usd',
+                        'source' => $request->stripeToken,
+                        'description' => 'Membership Registration - ' . $tier->name . ($promoCode ? ' (Promo: ' . $promoCode->code . ')' : ''),
+                    ]);
+
+                    if ($charge->status === 'succeeded') {
+                        return [
+                            'ok' => true,
+                            'transaction_id' => $charge->id,
+                            'amount' => $finalPrice,
+                        ];
+                    }
+
+                    return ['ok' => false, 'message' => 'Payment failed.'];
+                }
+
+                $cardCheck = app(\App\Services\CheckoutPaymentService::class)->verifyCardToken($request->stripeToken);
+                if (!($cardCheck['success'] ?? false)) {
+                    return ['ok' => false, 'message' => $cardCheck['error'] ?? 'Payment card details are required.'];
+                }
+
+                return [
+                    'ok' => true,
+                    'transaction_id' => $cardCheck['transaction_id'],
+                    'amount' => 0,
+                ];
+            }
+
+            $basePrice = MembershipPricing::priceFor($tier, MembershipPricing::validatePeriod($request->input('billing_period')));
+            if ($basePrice > 0) {
+                return ['ok' => false, 'message' => 'Payment card details are required.'];
             }
 
             if ($finalPrice <= 0) {
@@ -579,6 +627,7 @@ class RegistrationService
         $validator = Validator::make($request->all(), [
             'tier_id' => 'required|exists:membership_tiers,id',
             'promo_code' => 'nullable|string|max:50',
+            'billing_period' => 'nullable|in:monthly,yearly',
         ]);
 
         if ($validator->fails()) {
@@ -608,11 +657,48 @@ class RegistrationService
             ];
         }
 
-        $finalPrice = floatval($tier->cost);
+        $billingPeriod = MembershipPricing::validatePeriod($request->input('billing_period'));
+        $basePrice = MembershipPricing::priceFor($tier, $billingPeriod);
+        $finalPrice = $basePrice;
         if ($request->filled('promo_code')) {
             $promo = MembershipPromoCode::where('code', $request->promo_code)->first();
             if ($promo && $promo->canBeAppliedToTier($tier->id)) {
-                $finalPrice = max(0, $tier->cost - $promo->calculateDiscount($tier->cost));
+                $finalPrice = max(0, $basePrice - $promo->calculateDiscount($basePrice));
+            }
+        }
+
+        if ($finalPrice <= 0 && $basePrice > 0) {
+            try {
+                \Stripe\Stripe::setApiKey(config('services.stripe.secret'));
+                $setupIntent = \Stripe\SetupIntent::create([
+                    'payment_method_types' => ['card'],
+                    'metadata' => [
+                        'context' => 'registration',
+                        'tier_id' => (string) $tier->id,
+                        'tier_name' => $tier->name,
+                        'billing_period' => $billingPeriod,
+                        'promo_code' => $request->promo_code ?? '',
+                    ],
+                ]);
+
+                return [
+                    'status' => true,
+                    'http_code' => 200,
+                    'body' => [
+                        'status' => true,
+                        'card_verification' => true,
+                        'setup_intent_id' => $setupIntent->id,
+                        'client_secret' => $setupIntent->client_secret,
+                        'publishable_key' => config('services.stripe.key'),
+                        'message' => 'Card verification required.',
+                    ],
+                ];
+            } catch (\Throwable $e) {
+                return [
+                    'status' => false,
+                    'http_code' => 500,
+                    'body' => ['status' => false, 'message' => 'Could not verify card: ' . $e->getMessage()],
+                ];
             }
         }
 
@@ -638,6 +724,7 @@ class RegistrationService
                     'context' => 'registration',
                     'tier_id' => (string) $tier->id,
                     'tier_name' => $tier->name,
+                    'billing_period' => $billingPeriod,
                 ],
             ]);
 

@@ -30,7 +30,8 @@
                                     {{ $measurement->label ?? 'Life Force Energy' }}</p>
                             @else
                                 <p><strong>Plan Type:</strong> Amount</p>
-                                <p><strong>Amount:</strong> ${{ number_format((float) $tier->cost, 2) }}</p>
+                                <p><strong>Monthly:</strong> ${{ number_format((float) $tier->monthly_cost, 2) }} ·
+                                    <strong>Yearly:</strong> ${{ number_format((float) $tier->yearly_cost, 2) }}</p>
                             @endif
                             <ul class="mb-3">
                                 @foreach ($tier->benefits as $b)

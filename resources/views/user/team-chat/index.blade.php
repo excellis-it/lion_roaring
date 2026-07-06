@@ -76,7 +76,7 @@
 
                 <div class="modal fade" id="exampleModalToggle" aria-hidden="true" aria-labelledby="exampleModalToggleLabel"
                     tabindex="-1">
-                    <div class="modal-dialog  modal-dialog-centered">
+                    <div class="modal-dialog modal-dialog-centered modal-lg">
                         <div class="modal-content group_create">
                             <div class="modal-header">
                                 <h5 class="modal-title" id="exampleModalToggleLabel">Create Group</h5>

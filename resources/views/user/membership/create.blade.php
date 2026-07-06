@@ -213,10 +213,20 @@
                     </div>
                     <div class="col-md-6 mb-3" id="amount_cost_wrap">
                         <div class="box_label">
-                            <label>Amount (USD) *</label>
-                            <input name="cost" class="form-control" type="number" step="0.01" min="0"
-                                value="{{ old('cost') }}">
-                            @error('cost')
+                            <label>Monthly Cost (USD) *</label>
+                            <input name="monthly_cost" class="form-control" type="number" step="0.01" min="0"
+                                value="{{ old('monthly_cost') }}">
+                            @error('monthly_cost')
+                                <span class="text-danger">{{ $message }}</span>
+                            @enderror
+                        </div>
+                    </div>
+                    <div class="col-md-6 mb-3" id="yearly_cost_wrap">
+                        <div class="box_label">
+                            <label>Yearly Cost (USD) *</label>
+                            <input name="yearly_cost" class="form-control" type="number" step="0.01" min="0"
+                                value="{{ old('yearly_cost') }}">
+                            @error('yearly_cost')
                                 <span class="text-danger">{{ $message }}</span>
                             @enderror
                         </div>
@@ -240,17 +250,6 @@
                             @enderror
                         </div>
                     </div>
-                    <div class="col-md-6 mb-3">
-                        <div class="box_label">
-                            <label>Duration (Months) *</label>
-                            <input name="duration_months" class="form-control" type="number" min="1"
-                                value="{{ old('duration_months', 12) }}">
-                            @error('duration_months')
-                                <span class="text-danger">{{ $message }}</span>
-                            @enderror
-                        </div>
-                    </div>
-
                     <div class="col-md-12 mb-3">
                         <div class="permissions-card">
                             <div class="permissions-header">
@@ -424,11 +423,11 @@
         function syncMembershipPricingFields() {
             var type = ($('#pricing_type').val() || 'amount');
             if (type === 'token') {
-                $('#amount_cost_wrap').addClass('d-none');
+                $('#amount_cost_wrap, #yearly_cost_wrap').addClass('d-none');
                 $('#token_value_wrap').removeClass('d-none');
                 $('#agree_desc_wrap').removeClass('d-none');
             } else {
-                $('#amount_cost_wrap').removeClass('d-none');
+                $('#amount_cost_wrap, #yearly_cost_wrap').removeClass('d-none');
                 $('#token_value_wrap').addClass('d-none');
                 $('#agree_desc_wrap').addClass('d-none');
             }

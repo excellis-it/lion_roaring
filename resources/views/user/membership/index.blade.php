@@ -100,6 +100,8 @@
                                         <button type="button" class="btn btn-primary w-100 js-promo-checkout"
                                             data-tier-id="{{ $currentTier->id ?? '' }}"
                                             data-tier-name="{{ $currentTier->name ?? $user_subscription->subscription_name }}"
+                                            data-monthly-cost="{{ $currentTier->monthly_cost ?? 0 }}"
+                                            data-yearly-cost="{{ $currentTier->yearly_cost ?? 0 }}"
                                             data-tier-cost="{{ $currentTier->cost ?? $user_subscription->subscription_price }}"
                                             data-renew="1">
                                             Renew Now
@@ -131,8 +133,8 @@
                                     {{-- @if ($tier->cost == $maxCost)
                                         <div class="ribbon">Most Popular</div>
                                     @endif --}}
-                                    <div class="d-flex justify-content-between align-items-center mb-2">
-                                        <h5 class="mb-0">{{ $tier->name }}</h5>
+                                    <div class="mb-2">
+                                        <h5 class="mb-1">{{ $tier->name }}</h5>
                                         <div class="text-primary fw-bold">
                                             @if (($tier->pricing_type ?? 'amount') === 'token')
                                                 <span class="badge badge-price bg-light text-dark">
@@ -140,8 +142,10 @@
                                                     {{ $measurement->label ?? 'Life Force Energy' }}
                                                 </span>
                                             @else
-                                                <span
-                                                    class="badge badge-price bg-light text-dark">${{ number_format((float) $tier->cost, 2) }}</span>
+                                                <span class="badge badge-price bg-light text-dark">
+                                                    ${{ number_format((float) $tier->monthly_cost, 2) }}/mo or
+                                                    ${{ number_format((float) $tier->yearly_cost, 2) }}/yr
+                                                </span>
                                             @endif
                                         </div>
                                     </div>
@@ -154,83 +158,33 @@
                                     </ul>
                                     @if (!auth()->user()->hasNewRole('SUPER ADMIN'))
                                         <div class="mt-auto text-center">
-                                            @if ($user_subscription)
-                                                @if ($tier->id == $user_subscription->plan_id)
-                                                    @if ($canRenew || $isExpired)
-                                                        <button type="button"
-                                                            class="btn btn-upgrade btn-primary js-promo-checkout"
-                                                            data-tier-id="{{ $tier->id }}"
-                                                            data-tier-name="{{ $tier->name }}"
-                                                            data-tier-cost="{{ $tier->cost }}" data-renew="1">Renew
-                                                            Plan</button>
-                                                    @else
-                                                        <span class="btn btn-sm btn-outline-primary disabled">Current
-                                                            Plan</span>
-                                                    @endif
-                                                @elseif (($tier->pricing_type ?? 'amount') === 'token')
-                                                    <button type="button"
-                                                        class="btn btn-upgrade btn-primary js-token-subscribe"
-                                                        data-tier-id="{{ $tier->id }}"
-                                                        data-tier-name="{{ $tier->name }}"
-                                                        data-agree-description="{{ e($tier->agree_description) }}">
-                                                        Subscribe to {{ $tier->name }}
-                                                    </button>
-                                                @else
-                                                    @if (($currentMethod ?? 'amount') === 'amount' && floatval($tier->cost) > $currentPrice)
-                                                        @if (floatval($tier->cost) == 0)
-                                                            <form method="POST"
-                                                                action="{{ route('user.membership.upgrade', $tier->id) }}"
-                                                                class="d-inline">
-                                                                @csrf
-                                                                <button type="submit"
-                                                                    class="btn btn-upgrade btn-primary">Subscribe to
-                                                                    {{ $tier->name }}</button>
-                                                            </form>
-                                                        @else
-                                                            <button type="button"
-                                                            class="btn btn-upgrade btn-primary js-promo-checkout"
-                                                            data-tier-id="{{ $tier->id }}"
-                                                            data-tier-name="{{ $tier->name }}"
-                                                            data-tier-cost="{{ $tier->cost }}">Change plan to
-                                                            {{ $tier->name }}</button>
-                                                        @endif
-                                                    @elseif ($canRenew || $isExpired)
-                                                        <button type="button"
-                                                            class="btn btn-upgrade btn-primary js-promo-checkout"
-                                                            data-tier-id="{{ $tier->id }}"
-                                                            data-tier-name="{{ $tier->name }}"
-                                                            data-tier-cost="{{ $tier->cost }}" data-renew="1">Change
-                                                            plan to {{ $tier->name }}</button>
-                                                    @else
-                                                        <span class="btn btn-sm btn-outline-primary disabled"></span>
-                                                    @endif
-                                                @endif
+                                            @if (($tier->pricing_type ?? 'amount') === 'token')
+                                                <button type="button"
+                                                    class="btn btn-upgrade btn-primary js-token-subscribe"
+                                                    data-tier-id="{{ $tier->id }}"
+                                                    data-tier-name="{{ $tier->name }}"
+                                                    data-agree-description="{{ e($tier->agree_description) }}">
+                                                    Subscribe to {{ $tier->name }}
+                                                </button>
+                                            @elseif (floatval($tier->yearly_cost) == 0 && floatval($tier->monthly_cost) == 0)
+                                                <form method="POST"
+                                                    action="{{ route('user.membership.upgrade', $tier->id) }}"
+                                                    class="d-inline">
+                                                    @csrf
+                                                    <button type="submit"
+                                                        class="btn btn-upgrade btn-primary">Subscribe to
+                                                        {{ $tier->name }}</button>
+                                                </form>
                                             @else
-                                                @if (($tier->pricing_type ?? 'amount') === 'token')
-                                                    <button type="button" class="btn btn-primary js-token-subscribe"
-                                                        data-tier-id="{{ $tier->id }}"
-                                                        data-tier-name="{{ $tier->name }}"
-                                                        data-agree-description="{{ e($tier->agree_description) }}">
-                                                        Subscribe to {{ $tier->name }}
-                                                    </button>
-                                                @else
-                                                    @if (floatval($tier->cost) == 0)
-                                                        <form method="POST"
-                                                            action="{{ route('user.membership.upgrade', $tier->id) }}"
-                                                            class="d-inline">
-                                                            @csrf
-                                                            <button type="submit"
-                                                                class="btn btn-primary btn-upgrade">Subscribe to
-                                                                {{ $tier->name }}</button>
-                                                        </form>
-                                                    @else
-                                                        <button type="button" class="btn btn-primary js-promo-checkout"
-                                                            data-tier-id="{{ $tier->id }}"
-                                                            data-tier-name="{{ $tier->name }}"
-                                                            data-tier-cost="{{ $tier->cost }}">Subscribe to
-                                                            {{ $tier->name }}</button>
-                                                    @endif
-                                                @endif
+                                                <button type="button"
+                                                    class="btn btn-upgrade btn-primary js-promo-checkout"
+                                                    data-tier-id="{{ $tier->id }}"
+                                                    data-tier-name="{{ $tier->name }}"
+                                                    data-monthly-cost="{{ $tier->monthly_cost }}"
+                                                    data-yearly-cost="{{ $tier->yearly_cost }}"
+                                                    data-renew="{{ ($user_subscription && $tier->id == $user_subscription->plan_id) ? '1' : '0' }}">
+                                                    {{ $user_subscription && $tier->id == $user_subscription->plan_id ? 'Renew Plan' : 'Select ' . $tier->name }}
+                                                </button>
                                             @endif
                                         </div>
                                     @endif
@@ -291,28 +245,23 @@
         </div>
     </div>
 
-    <!-- Promo Code Modal (Premium Redesign Fixed) -->
+    <!-- Promo Code Modal — Secure Payment -->
     <div class="modal fade" id="promoCodeModal" tabindex="-1" role="dialog" aria-labelledby="promoCodeModalTitle"
         aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered" role="document">
-            <div class="modal-content shadow-lg border-0"
-                style="border-radius: 20px; overflow: hidden; background-color: #ffffff;">
-                <!-- Header with Premium Gradient -->
-                <div class="modal-header border-0 p-4 pb-0 position-relative d-block"
-                    style="background: linear-gradient(135deg, #6f42c1 0%, #4e2a84 100%); min-height: 120px;">
-                    <button type="button" class="btn-close btn-close-white position-absolute" data-bs-dismiss="modal"
-                        aria-label="Close" style="top: 20px; right: 20px; z-index: 10;"></button>
-                    <div class="position-relative" style="z-index: 1;">
-                        <h4 class="modal-title text-white fw-bold mb-0" id="promoCodeModalTitle">Checkout</h4>
-                        <p class="text-white-50 mb-0 small"><i class="fa fa-shield-alt me-1"></i> Secure Checkout</p>
-                    </div>
-                    <!-- Decorative Circle -->
-                    <div class="position-absolute"
-                        style="width: 140px; height: 140px; background: rgba(255,255,255,0.1); border-radius: 50%; top: -40px; right: -30px; z-index: 0;">
+            <div class="modal-content sp-secure-modal shadow-lg border-0">
+                <div class="modal-header sp-secure-header border-0 position-relative d-block">
+                    <button type="button" class="btn-close btn-close-white sp-secure-close" data-bs-dismiss="modal"
+                        aria-label="Close"></button>
+                    <div class="w-100">
+                        <h2 class="sp-secure-title" id="promoCodeModalTitle">Secure Payment</h2>
+                        <p class="sp-secure-subtitle mb-0" id="securePaymentSubtitle">
+                            <i class="fa fa-shield-alt me-1"></i> Member Plan
+                        </p>
                     </div>
                 </div>
 
-                <div class="modal-body p-4" style="margin-top: -40px; position: relative; z-index: 2;">
+                <div class="modal-body p-4 pt-3">
                     <!-- Summary Card -->
                     <div class="card border-0 shadow-sm mb-4"
                         style="border-radius: 15px; border: 1px solid rgba(0,0,0,0.05) !important;">
@@ -325,25 +274,46 @@
                                 </div>
                                 <div class="flex-grow-1">
                                     <h6 class="mb-0 fw-bold" id="selectedPlan">Plan Name</h6>
-                                    <span class="text-muted small">Subscription Plan</span>
+                                    <span class="text-muted small" id="planTypeLabel">Member Plan</span>
                                 </div>
                             </div>
 
+                            <!-- Billing period -->
+                            <p class="fw-bold small text-muted text-uppercase mb-2">Billing Period</p>
+                            <div class="sp-billing-options mb-3" id="billingPeriodToggle">
+                                <label class="sp-billing-option">
+                                    <input type="radio" name="billing_period" value="monthly" class="billing-period-radio">
+                                    <span class="sp-billing-card">
+                                        <span class="sp-radio-dot" aria-hidden="true"></span>
+                                        <span class="sp-billing-text">
+                                            <span class="sp-billing-label">Monthly</span>
+                                            <span class="sp-billing-price" id="monthlyPriceLabel">$0.00/mo</span>
+                                        </span>
+                                    </span>
+                                </label>
+                                <label class="sp-billing-option">
+                                    <input type="radio" name="billing_period" value="yearly" class="billing-period-radio" checked>
+                                    <span class="sp-billing-card">
+                                        <span class="sp-radio-dot" aria-hidden="true"></span>
+                                        <span class="sp-billing-text">
+                                            <span class="sp-billing-label">Yearly</span>
+                                            <span class="sp-billing-price" id="yearlyPriceLabel">$0.00/yr</span>
+                                        </span>
+                                    </span>
+                                </label>
+                            </div>
+
                             <div class="p-3 rounded-3" style="background: #fdfbff; border: 1px solid #eee;">
-                                <div class="d-flex justify-content-between align-items-center mb-2">
-                                    <span class="text-muted small">Original Price</span>
-                                    <span class="fw-bold" id="originalPrice">$0.00</span>
-                                </div>
                                 <div class="d-flex justify-content-between align-items-center mb-2 text-success"
-                                    id="discountRow" style="display: none !important;">
+                                    id="discountRow" style="display: none;">
                                     <span class="small"><i class="fa fa-tag me-1"></i> Discount</span>
                                     <span class="fw-bold" id="discountAmount">-$0.00</span>
                                 </div>
-                                <hr class="my-2 opacity-10">
+                                <hr class="my-2 opacity-10" id="discountDivider" style="display: none;">
                                 <div class="d-flex justify-content-between align-items-center">
-                                    <h6 class="mb-0 fw-bold">Total Due</h6>
+                                    <h6 class="mb-0 fw-bold">Amount To Pay</h6>
                                     <h5 class="mb-0 fw-bold text-primary" id="finalPrice"
-                                        style="color: #6f42c1 !important;">$0.00</h5>
+                                        style="color: #643271 !important;">$0.00</h5>
                                 </div>
                             </div>
                         </div>
@@ -357,8 +327,7 @@
                         <div class="input-group mb-2 border rounded-pill p-1 bg-white shadow-sm overflow-hidden">
                             <input type="text" class="form-control border-0 bg-transparent px-3" id="promoCodeInput"
                                 placeholder="Enter code here..." style="box-shadow: none;">
-                            <button class="btn px-4 fw-bold rounded-pill text-white" type="button" id="applyPromoBtn"
-                                style="background: #6f42c1; transition: all 0.3s;">
+                            <button class="btn px-4 fw-bold rounded-pill sp-apply-btn" type="button" id="applyPromoBtn">
                                 Apply
                             </button>
                         </div>
@@ -382,14 +351,13 @@
                         data-bs-dismiss="modal" style="background: #f8f9fa;">
                         Cancel
                     </button>
-                    <button type="button" class="btn btn-primary rounded-pill flex-grow-1 py-2 fw-bold shadow-sm"
-                        id="proceedToCheckout" style="background: #6f42c1; border: none;">
-                        Checkout <i class="fa fa-arrow-right ms-2 small"></i>
+                    <button type="button" class="btn btn-primary rounded-pill flex-grow-1 py-2 fw-bold shadow-sm sp-pay-btn"
+                        id="proceedToCheckout">
+                        Complete Payment <i class="fa fa-lock ms-2 small"></i>
                     </button>
                 </div>
                 <div class="text-center pb-3">
-                    <span class="text-muted" style="font-size: 11px;"><i class="fa fa-lock me-1"></i> Secure 256-bit SSL
-                        Encryption</span>
+                    <span class="text-muted" style="font-size: 11px;"><i class="fa fa-shield-alt me-1"></i> Payments are secure and encrypted.</span>
                 </div>
             </div>
         </div>
@@ -443,6 +411,7 @@
 @include('frontend.membership._card-styles')
 
 @push('styles')
+    @include('partials.secure-payment-styles')
     <style>
         .benefits-list {
             max-height: 120px;
@@ -639,13 +608,113 @@
         // ── Promo Code Modal Functionality ─────────────────────────
         var currentTierId = null;
         var currentTierName = '';
-        var currentTierCost = 0;
+        var currentMonthlyCost = 0;
+        var currentYearlyCost = 0;
+        var currentBillingPeriod = 'yearly';
         var appliedPromoCode = '';
         var finalAmount = 0;
         var isRenewMode = false;
 
+        function getBasePrice() {
+            return currentBillingPeriod === 'monthly' ? currentMonthlyCost : currentYearlyCost;
+        }
+
+        function clearPromoState() {
+            appliedPromoCode = '';
+            $('#promoCodeInput').val('').prop('readonly', false);
+            $('#promoMessage').text('').removeClass('text-success text-danger');
+            $('#discountRow').hide();
+            $('#discountDivider').hide();
+            $('#discountAmount').text('');
+            $('#applyPromoBtn').text('Apply').prop('disabled', false);
+        }
+
+        function refreshPriceDisplay() {
+            var base = getBasePrice();
+            if (!appliedPromoCode) {
+                finalAmount = base;
+                $('#finalPrice').text('$' + base.toFixed(2));
+                $('#discountRow').hide();
+                $('#discountDivider').hide();
+            }
+            updateCardSectionVisibility();
+        }
+
+        function applyPromoValidation(promoCode, options) {
+            options = options || {};
+            var silent = !!options.silent;
+            var $btn = $('#applyPromoBtn');
+
+            if (!promoCode) {
+                if (!silent) {
+                    $('#promoMessage').text('Please enter a promo code').removeClass('text-success').addClass('text-danger');
+                }
+                return;
+            }
+
+            if (!silent) {
+                $btn.prop('disabled', true).text('Validating...');
+                $('#promoMessage').text('Validating promo code...').removeClass('text-success text-danger');
+            }
+
+            $.ajax({
+                url: '{{ route('user.promo-codes.validate') }}',
+                method: 'POST',
+                data: {
+                    _token: '{{ csrf_token() }}',
+                    code: promoCode,
+                    tier_id: currentTierId,
+                    billing_period: currentBillingPeriod
+                },
+                success: function(response) {
+                    if (response.valid) {
+                        appliedPromoCode = promoCode;
+                        var discount = parseFloat(response.discount);
+                        finalAmount = parseFloat(response.final_price);
+
+                        $('#discountAmount').text('-$' + discount.toFixed(2));
+                        $('#finalPrice').text('$' + finalAmount.toFixed(2));
+                        $('#discountRow').show();
+                        $('#discountDivider').show();
+                        $('#promoCodeInput').val(promoCode).prop('readonly', true);
+                        $('#promoMessage').html(
+                            '<i class="fa fa-check-circle me-1"></i> Promo code applied successfully!'
+                        ).removeClass('text-danger').addClass('text-success');
+                        updateCardSectionVisibility();
+                    } else {
+                        clearPromoState();
+                        refreshPriceDisplay();
+                        $('#promoMessage').text(response.message || 'Invalid promo code').removeClass('text-success').addClass('text-danger');
+                    }
+                },
+                error: function(xhr) {
+                    clearPromoState();
+                    refreshPriceDisplay();
+                    var message = xhr.responseJSON && xhr.responseJSON.message ? xhr.responseJSON.message : 'Failed to validate promo code';
+                    $('#promoMessage').text(message).removeClass('text-success').addClass('text-danger');
+                },
+                complete: function() {
+                    if (!silent) {
+                        $btn.prop('disabled', false).text('Apply');
+                    }
+                }
+            });
+        }
+
+        $('input[name="billing_period"]').on('change', function() {
+            currentBillingPeriod = $(this).val();
+            var existingPromo = appliedPromoCode || ($('#promoCodeInput').prop('readonly') ? $('#promoCodeInput').val().trim() : '');
+            if (existingPromo) {
+                applyPromoValidation(existingPromo, { silent: true });
+            } else {
+                clearPromoState();
+                refreshPriceDisplay();
+            }
+        });
+
         function updateCardSectionVisibility() {
-            if (finalAmount > 0) {
+            var isPaidTier = currentMonthlyCost > 0 || currentYearlyCost > 0;
+            if (isPaidTier) {
                 $('#membershipCardSection').show();
             } else {
                 $('#membershipCardSection').hide();
@@ -655,31 +724,36 @@
         $(document).on('click', '.js-promo-checkout', function() {
             currentTierId = $(this).data('tier-id');
             currentTierName = $(this).data('tier-name');
-            currentTierCost = parseFloat($(this).data('tier-cost'));
+            currentMonthlyCost = parseFloat($(this).data('monthly-cost')) || 0;
+            currentYearlyCost = parseFloat($(this).data('yearly-cost')) || 0;
+            if (currentMonthlyCost <= 0 && currentYearlyCost <= 0) {
+                var legacyCost = parseFloat($(this).data('tier-cost')) || 0;
+                if (legacyCost > 0) {
+                    currentYearlyCost = legacyCost;
+                }
+            }
             isRenewMode = $(this).data('renew') == 1;
+            currentBillingPeriod = 'yearly';
             appliedPromoCode = '';
-            finalAmount = currentTierCost;
+            finalAmount = currentYearlyCost;
 
-            // Reset modal
-            var planLabel = isRenewMode ? currentTierName + ' Renewal' : currentTierName + ' Membership';
-            $('#selectedPlan').text(planLabel);
-            $('#originalPrice').text('$' + currentTierCost.toFixed(2));
-            $('#finalPrice').text('$' + currentTierCost.toFixed(2));
-            $('#discountRow').hide();
-            $('#discountAmount').text('');
-            $('#promoCodeInput').val('').prop('readonly', false);
-            $('#promoMessage').text('').removeClass('text-success text-danger');
-            $('#applyPromoBtn').text('Apply').prop('disabled', false).removeClass('btn-success text-white');
-            $('#promoCodeModalTitle').text((isRenewMode ? 'Renew' : 'Checkout') + ' - ' + currentTierName);
+            $('input[name="billing_period"][value="yearly"]').prop('checked', true);
+            $('#monthlyPriceLabel').text('$' + currentMonthlyCost.toFixed(2) + '/mo');
+            $('#yearlyPriceLabel').text('$' + currentYearlyCost.toFixed(2) + '/yr');
+            $('#selectedPlan').text(currentTierName);
+            $('#planTypeLabel').text(isRenewMode ? 'Renewal' : 'Member Plan');
+            $('#securePaymentSubtitle').html('<i class="fa fa-shield-alt me-1"></i> ' + (isRenewMode ? 'Renewal' : 'Member Plan'));
+            clearPromoState();
+            refreshPriceDisplay();
+            $('#promoCodeModalTitle').text('Secure Payment');
             $('#membership-card-errors').text('');
             $('#proceedToCheckout').prop('disabled', false);
             updateCardSectionVisibility();
 
             if (finalAmount <= 0) {
-                $('#proceedToCheckout').html('Complete Subscription <i class="fa fa-check-circle ms-2 small"></i>');
+                $('#proceedToCheckout').html('Complete Payment <i class="fa fa-lock ms-2 small"></i>');
             } else {
-                $('#proceedToCheckout').html((isRenewMode ? 'Renew' : 'Checkout') +
-                    ' <i class="fa fa-arrow-right ms-2 small"></i>');
+                $('#proceedToCheckout').html('Complete Payment <i class="fa fa-lock ms-2 small"></i>');
             }
 
             // Show modal
@@ -693,62 +767,7 @@
 
         // Apply promo code
         $('#applyPromoBtn').on('click', function() {
-            var promoCode = $('#promoCodeInput').val().trim();
-
-            if (!promoCode) {
-                $('#promoMessage').text('Please enter a promo code').removeClass('text-success').addClass(
-                    'text-danger');
-                return;
-            }
-
-            $(this).prop('disabled', true).text('Validating...');
-            $('#promoMessage').text('Validating promo code...').removeClass('text-success text-danger');
-
-            $.ajax({
-                url: '{{ route('user.promo-codes.validate') }}',
-                method: 'POST',
-                data: {
-                    _token: '{{ csrf_token() }}',
-                    code: promoCode,
-                    tier_id: currentTierId
-                },
-                success: function(response) {
-                    if (response.valid) {
-                        appliedPromoCode = promoCode;
-                        var discount = parseFloat(response.discount);
-                        finalAmount = parseFloat(response.final_price);
-
-                        $('#discountAmount').text('-$' + discount.toFixed(2));
-                        $('#finalPrice').text('$' + finalAmount.toFixed(2));
-                        $('#discountRow').show();
-                        $('#promoMessage').html(
-                            '<i class="fa fa-check-circle me-1"></i> Promo code applied successfully!'
-                        ).removeClass('text-danger').addClass('text-success');
-                        $('#promoCodeInput').prop('readonly', true);
-                        updateCardSectionVisibility();
-                        if (finalAmount <= 0) {
-                            $('#proceedToCheckout').html(
-                                'Complete Subscription <i class="fa fa-check-circle ms-2 small"></i>'
-                            );
-                        } else {
-                            $('#proceedToCheckout').html((isRenewMode ? 'Renew' : 'Checkout') +
-                                ' <i class="fa fa-arrow-right ms-2 small"></i>');
-                        }
-                    } else {
-                        $('#promoMessage').text(response.message || 'Invalid promo code').removeClass(
-                            'text-success').addClass('text-danger');
-                    }
-                },
-                error: function(xhr) {
-                    var message = xhr.responseJSON && xhr.responseJSON.message ? xhr.responseJSON
-                        .message : 'Failed to validate promo code';
-                    $('#promoMessage').text(message).removeClass('text-success').addClass(
-                        'text-danger');
-                },
-                complete: function() {
-                    $('#applyPromoBtn').prop('disabled', false).text('Apply');
-                }
-            });
+            applyPromoValidation($('#promoCodeInput').val().trim());
         });
 
         $('#promoCodeInput').on('keypress', function(e) {
@@ -774,6 +793,7 @@
                         tier_id: currentTierId,
                         promo_code: appliedPromoCode || '',
                         renew: isRenewMode ? 1 : 0,
+                        billing_period: currentBillingPeriod,
                         stripeToken: stripeToken || ''
                     },
                     success: function(response) {
@@ -799,10 +819,8 @@
                 });
             }
 
-            if (finalAmount <= 0) {
-                // Free (promo covers full price) — no card needed
-                submitPayment('free_tier');
-            } else {
+            var isPaidTier = currentMonthlyCost > 0 || currentYearlyCost > 0;
+            if (isPaidTier) {
                 membershipStripe.createToken(membershipCard).then(function(result) {
                     if (result.error) {
                         $('#membership-card-errors').text(result.error.message);
@@ -812,6 +830,8 @@
                         submitPayment(result.token.id);
                     }
                 });
+            } else {
+                submitPayment('free_tier');
             }
         });
 

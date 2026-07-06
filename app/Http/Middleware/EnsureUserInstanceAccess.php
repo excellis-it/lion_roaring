@@ -36,6 +36,7 @@ class EnsureUserInstanceAccess
         $message = Helper::userInstanceLogoutMessage($user);
 
         Auth::logout();
+        Helper::clearBrowsingSession();
         $request->session()->invalidate();
         $request->session()->regenerateToken();
 

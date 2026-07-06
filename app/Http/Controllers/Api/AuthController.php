@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Helpers\Helper;
 use App\Http\Controllers\Controller;
 use App\Models\RegisterAgreement;
 use App\Models\User;
@@ -156,22 +157,23 @@ class AuthController extends Controller
             if (auth()->attempt($request->only($fieldType, 'password'))) {
                 $user = User::where($fieldType, $request->user_name)->first();
                 if ($user->status == 1 && $user->is_accept == 1) {
-                    // Country restriction check (mirrors web loginCheck logic).
-                    // Only enforced when the app sends a country_code.
                     if ($request->filled('country_code') && !$user->hasNewRole('SUPER ADMIN')) {
-                        $code    = strtoupper($request->input('country_code'));
-                        $country = \App\Models\Country::where('code', $code)->first();
+                        $code = strtoupper((string) $request->input('country_code'));
+                        $country = Country::where('code', $code)->first();
 
                         if (!$country) {
+                            auth()->logout();
+
                             return response()->json(['message' => 'Please select your country from the dropdown first.', 'status' => false], 200);
                         }
 
-                        if ($user->user_type === 'Regional' && $user->user_type !== 'G_R' && $country->id != $user->country) {
-                            return response()->json(['message' => 'You are not from ' . $country->name . '! Please change the country from dropdown.', 'status' => false], 200);
-                        }
+                        if (!Helper::userCanAccessCountryContext($user, $code)) {
+                            auth()->logout();
 
-                        if ($user->user_type === 'Global' && $user->user_type !== 'G_R' && $country->code !== 'GL') {
-                            return response()->json(['message' => 'You are a Global user! Please change the country to Global.', 'status' => false], 200);
+                            return response()->json([
+                                'message' => Helper::userInstanceAccessMessage($user),
+                                'status' => false,
+                            ], 200);
                         }
                     }
 

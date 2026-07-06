@@ -15,6 +15,7 @@ class UserSubscription extends BaseModel
         'subscription_method',
         'subscription_name',
         'subscription_price',
+        'billing_period',
         'promo_code',
         'discount_amount',
         'final_price',

@@ -1171,7 +1171,74 @@ body:has(.coupon_slider) .messaging_sec.chat-layout {
     width: 0;
     height: 0;
     overflow: visible;
-    z-index: 1050;
+    pointer-events: none;
+}
+
+/* Raise chat shell above Bootstrap backdrop (nested modals sit inside page-wrapper) */
+.messaging_sec.chat-layout:has(> .modal.show),
+.messaging_sec.chat-layout:has(> .modal.showing),
+.messaging_sec.chat-layout:has(#change-group-details .modal.show),
+.messaging_sec.chat-layout:has(#change-group-details .modal.showing),
+.messaging_sec.chat-layout:has(#group-information .modal.show),
+.messaging_sec.chat-layout:has(#group-information .modal.showing),
+.messaging_sec.chat-layout:has(section.Chat > .modal.show),
+.messaging_sec.chat-layout:has(section.Chat > .modal.showing) {
+    z-index: 1055;
+    position: relative;
+}
+
+/* Avoid double-dimming: backdrop stacks above nested modals and washes them out */
+body:has(.messaging_sec.chat-layout .modal.show) .modal-backdrop,
+body:has(.messaging_sec.chat-layout .modal.showing) .modal-backdrop {
+    display: none !important;
+}
+
+/* restore Bootstrap modal viewport when open (width/height:0 collapses form fields) */
+.messaging_sec.chat-layout > .modal.show,
+.messaging_sec.chat-layout > .modal.showing,
+.messaging_sec.chat-layout > #change-group-details:has(.modal.show),
+.messaging_sec.chat-layout > #change-group-details:has(.modal.showing),
+.messaging_sec.chat-layout > #group-information:has(.modal.show),
+.messaging_sec.chat-layout > #group-information:has(.modal.showing) {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 1055;
+    pointer-events: auto;
+}
+
+.messaging_sec.chat-layout > #change-group-details .modal,
+.messaging_sec.chat-layout > #group-information .modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+}
+
+.messaging_sec.chat-layout > .modal.show,
+.messaging_sec.chat-layout > .modal.showing,
+.messaging_sec.chat-layout > #change-group-details .modal.show,
+.messaging_sec.chat-layout > #change-group-details .modal.showing,
+.messaging_sec.chat-layout > #group-information .modal.show,
+.messaging_sec.chat-layout > #group-information .modal.showing {
+    background-color: rgba(0, 0, 0, 0.5);
+    overflow-x: hidden;
+    overflow-y: auto;
+    pointer-events: auto;
+}
+
+.messaging_sec.chat-layout .group_create.modal-content {
+    background-color: #fff;
+    position: relative;
+    z-index: 1;
+}
+
+.messaging_sec.chat-layout .group_create .modal-body {
+    background-color: #fff;
 }
 
 .messaging_sec.chat-layout .main > div:first-child {
@@ -1202,7 +1269,21 @@ body:has(.coupon_slider) .messaging_sec.chat-layout {
     width: 0;
     height: 0;
     overflow: visible;
-    z-index: 1050;
+    pointer-events: none;
+}
+
+.messaging_sec.chat-layout section.Chat > .modal.show,
+.messaging_sec.chat-layout section.Chat > .modal.showing {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 1055;
+    pointer-events: auto;
+    background-color: rgba(0, 0, 0, 0.5);
+    overflow-x: hidden;
+    overflow-y: auto;
 }
 
 .messaging_sec.chat-layout section.Chat > .MessageContainer {

@@ -54,7 +54,7 @@ class MembershipTierRegistrationPolicy
             return 0.0;
         }
 
-        return (float) $tiers->min(fn (MembershipTier $tier) => (float) ($tier->cost ?? 0));
+        return (float) $tiers->min(fn (MembershipTier $tier) => MembershipPricing::priceFor($tier, MembershipPricing::PERIOD_YEARLY));
     }
 
     public function isTierLockedForRegistration(
@@ -79,7 +79,7 @@ class MembershipTierRegistrationPolicy
             return false;
         }
 
-        return (float) ($tier->cost ?? 0) <= $lowestCost;
+        return MembershipPricing::priceFor($tier, MembershipPricing::PERIOD_YEARLY) <= $lowestCost;
     }
 
     public function validateTierSelectable(int $tierId, ?Request $request = null): ?string
@@ -116,8 +116,10 @@ class MembershipTierRegistrationPolicy
             'id' => $tier->id,
             'name' => $tier->name,
             'description' => $tier->description,
-            'cost' => $tier->cost,
-            'duration_months' => $tier->duration_months,
+            'cost' => $tier->yearly_cost,
+            'monthly_cost' => $tier->monthly_cost,
+            'yearly_cost' => $tier->yearly_cost,
+            'duration_months' => 12,
             'pricing_type' => $tier->pricing_type ?? 'amount',
             'life_force_energy_tokens' => $tier->life_force_energy_tokens,
             'agree_description' => $tier->agree_description,

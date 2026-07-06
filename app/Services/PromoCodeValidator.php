@@ -103,7 +103,7 @@ class PromoCodeValidator
     /**
      * Validate a Membership promo code against a specific tier.
      */
-    public static function validateMembership(string $code, int $userId, int $tierId): array
+    public static function validateMembership(string $code, int $userId, int $tierId, string $billingPeriod = 'yearly'): array
     {
         $tier = MembershipTier::find($tierId);
         if (!$tier) {
@@ -115,7 +115,8 @@ class PromoCodeValidator
             return self::failed('Invalid or expired promo code.');
         }
 
-        $original = (float) $tier->cost;
+        $period = MembershipPricing::validatePeriod($billingPeriod);
+        $original = MembershipPricing::priceFor($tier, $period);
         $discount = (float) $promo->calculateDiscount($original);
 
         return [
@@ -127,6 +128,7 @@ class PromoCodeValidator
             'original_price' => $original,
             'final_price' => max(0, $original - $discount),
             'promo_code' => $promo,
+            'billing_period' => $period,
         ];
     }
 

@@ -54,6 +54,8 @@
             }
         </style>
 
+        @include('partials.secure-payment-styles')
+
         <style>
             /* Premium Modal Styles */
             .modal-content.premium-modal {
@@ -1307,7 +1309,8 @@
                                         @if (($tier->pricing_type ?? 'amount') === 'token')
                                             {{ $tier->life_force_energy_tokens ?? 0 }}<span> Life Force Energy</span>
                                         @else
-                                            ${{ number_format((float) $tier->cost, 0) }}<span>/yr</span>
+                                            ${{ number_format((float) $tier->monthly_cost, 2) }}<span>/mo</span>
+                                            or ${{ number_format((float) $tier->yearly_cost, 2) }}<span>/yr</span>
                                         @endif
                                     </div>
                                     <div class="tier-desc">
@@ -1319,7 +1322,9 @@
                                         @endforeach
                                     </ul>
                                     <button type="button" class="select-tier-btn" data-id="{{ $tier->id }}"
-                                        data-cost="{{ (float) ($tier->cost ?? 0) }}"
+                                        data-monthly-cost="{{ (float) ($tier->monthly_cost ?? 0) }}"
+                                        data-yearly-cost="{{ (float) ($tier->yearly_cost ?? 0) }}"
+                                        data-cost="{{ (float) ($tier->yearly_cost ?? 0) }}"
                                         data-pricing-type="{{ $tier->pricing_type ?? 'amount' }}"
                                         data-tier-name="{{ $tier->name }}"
                                         data-agree-description="{{ e($tier->agree_description) }}"
@@ -1328,7 +1333,7 @@
                                         @if (($tier->pricing_type ?? 'amount') === 'token')
                                             Subscribe (Tokens)
                                         @else
-                                            {{ (float) ($tier->cost ?? 0) > 0 ? 'Subscribe' : 'Get Started' }}
+                                            {{ (float) ($tier->yearly_cost ?? 0) > 0 || (float) ($tier->monthly_cost ?? 0) > 0 ? 'Subscribe' : 'Get Started' }}
                                         @endif
                                     </button>
                                     @if ($isLockedTier)
@@ -1380,11 +1385,16 @@
             <div class="modal-dialog modal-dialog-centered" role="document">
                 <div class="modal-content premium-modal" style="max-width: 500px; margin: 0 auto;">
                     <div class="modal-header">
-                        <h5 class="modal-title" id="paymentModalLabel">Secure Payment</h5>
                         <button type="button" class="close" data-dismiss="modal" aria-label="Close"
                             onclick="$('#paymentModal').modal('hide');">
                             <span aria-hidden="true">&times;</span>
                         </button>
+                        <div class="w-100 text-center">
+                            <h5 class="modal-title" id="paymentModalLabel">Secure Payment</h5>
+                            <p class="sp-secure-subtitle mb-0">
+                                <i class="fa fa-shield-alt me-1"></i> Member Plan
+                            </p>
+                        </div>
                     </div>
                     <div class="modal-body">
                         <!-- Promo Code Discount Display -->
@@ -1403,13 +1413,35 @@
                             </div>
                         </div>
 
+                        <!-- Billing period selector -->
+                        <div class="form-group mb-4" id="billing-period-group">
+                            <label style="font-weight: 600; color: #555; margin-bottom: 10px; display: block;">Billing Period</label>
+                            <div class="sp-billing-options" id="registerBillingPeriodToggle">
+                                <label class="sp-billing-option">
+                                    <input type="radio" name="register_billing_period" value="monthly" class="billing-period-radio">
+                                    <span class="sp-billing-card">
+                                        <span class="sp-radio-dot" aria-hidden="true"></span>
+                                        <span class="sp-billing-text">
+                                            <span class="sp-billing-label">Monthly</span>
+                                            <span class="sp-billing-price" id="reg-monthly-label">$0/mo</span>
+                                        </span>
+                                    </span>
+                                </label>
+                                <label class="sp-billing-option">
+                                    <input type="radio" name="register_billing_period" value="yearly" class="billing-period-radio" checked>
+                                    <span class="sp-billing-card">
+                                        <span class="sp-radio-dot" aria-hidden="true"></span>
+                                        <span class="sp-billing-text">
+                                            <span class="sp-billing-label">Yearly</span>
+                                            <span class="sp-billing-price" id="reg-yearly-label">$0/yr</span>
+                                        </span>
+                                    </span>
+                                </label>
+                            </div>
+                        </div>
+
                         <div class="payment-amount-box">
                             <div id="original-amount-section" style="display: none; margin-bottom: 10px;">
-                                <div
-                                    style="display: flex; justify-content: space-between; color: #999; text-decoration: line-through;">
-                                    <span>Original Amount:</span>
-                                    <span id="original-amount-display">$0.00</span>
-                                </div>
                                 <div
                                     style="display: flex; justify-content: space-between; color: #4caf50; font-weight: 600;">
                                     <span>Discount:</span>
@@ -1417,7 +1449,7 @@
                                 </div>
                                 <hr style="margin: 10px 0;">
                             </div>
-                            <h4>Total Amount</h4>
+                            <h4>Amount To Pay</h4>
                             <span class="amount" id="payment-amount-display">$0.00</span>
                         </div>
 
@@ -1433,8 +1465,8 @@
                                     <input type="text" name="promo_code" id="promo_code" class="form-control"
                                         placeholder="Enter promo code"
                                         style="flex: 1; padding: 12px; border: 1px solid #ddd; border-radius: 6px; font-size: 15px;">
-                                    <button type="button" id="validate-promo-btn" class="btn"
-                                        style="background: #643271; color: white; padding: 0 20px; border: none; border-radius: 6px; white-space: nowrap; font-weight: 500;"
+                                    <button type="button" id="validate-promo-btn" class="btn sp-apply-btn"
+                                        style="padding: 0 20px; border-radius: 6px; white-space: nowrap;"
                                         disabled>
                                         Apply
                                     </button>
@@ -1710,7 +1742,9 @@
                     }
 
                     if (cost > 0) {
-                        $('#payment-amount-display').text('$' + cost.toFixed(2));
+                        $('#reg-monthly-label').text('$' + currentMonthlyCost.toFixed(2) + '/mo');
+                        $('#reg-yearly-label').text('$' + currentYearlyCost.toFixed(2) + '/yr');
+                        updatePaymentDisplay();
                         $('#paymentModal').modal('show');
                         // Re-mount card to ensure it renders correctly if modal was hidden
                         // card.unmount(); card.mount('#card-element'); // Sometimes needed
@@ -1754,31 +1788,9 @@
                     btn.prop('disabled', true).text('Processing...');
 
                     var finalPrice = (promoCodeData) ? promoCodeData.final_price : originalAmount;
+                    var isPaidTier = currentMonthlyCost > 0 || currentYearlyCost > 0;
 
-                    if (finalPrice <= 0) {
-                        $('#stripeToken').remove();
-                        $('<input>').attr({
-                            type: 'hidden',
-                            id: 'stripeToken',
-                            name: 'stripeToken',
-                            value: 'free_tier'
-                        }).appendTo('#login-form');
-
-                        // Add promo code if validated
-                        $('#promo_code_input').remove();
-                        if (promoCodeData && promoCodeData.code) {
-                            $('<input>').attr({
-                                type: 'hidden',
-                                id: 'promo_code_input',
-                                name: 'promo_code',
-                                value: promoCodeData.code
-                            }).appendTo('#login-form');
-                        }
-
-                        $('#paymentModal').modal('hide');
-                        $('#login-form').data('final-submit', true);
-                        $('#login-form').submit();
-                    } else {
+                    if (isPaidTier) {
                         stripe.createToken(card).then(function(result) {
                             if (result.error) {
                                 $('#card-errors').text(result.error.message);
@@ -1806,11 +1818,30 @@
                                     }).appendTo('#login-form');
                                 }
 
+                                $('#billing_period_input').remove();
+                                $('<input>').attr({
+                                    type: 'hidden',
+                                    id: 'billing_period_input',
+                                    name: 'billing_period',
+                                    value: currentBillingPeriod
+                                }).appendTo('#login-form');
+
                                 $('#paymentModal').modal('hide');
                                 $('#login-form').data('final-submit', true);
                                 $('#login-form').submit();
                             }
                         });
+                    } else {
+                        $('#stripeToken').remove();
+                        $('<input>').attr({
+                            type: 'hidden',
+                            id: 'stripeToken',
+                            name: 'stripeToken',
+                            value: 'free_tier'
+                        }).appendTo('#login-form');
+                        $('#paymentModal').modal('hide');
+                        $('#login-form').data('final-submit', true);
+                        $('#login-form').submit();
                     }
                 });
 
@@ -1818,7 +1849,105 @@
                 var promoCodeData = null;
                 var selectedTierId = null;
                 var originalAmount = 0;
-                var promoWarningTimeout = null; // Track delayed warning message
+                var currentMonthlyCost = 0;
+                var currentYearlyCost = 0;
+                var currentBillingPeriod = 'yearly';
+                var promoWarningTimeout = null;
+
+                function getRegisterBasePrice() {
+                    return currentBillingPeriod === 'monthly' ? currentMonthlyCost : currentYearlyCost;
+                }
+
+                function syncRegisterBillingPeriod() {
+                    originalAmount = getRegisterBasePrice();
+                    $('#reg-monthly-label').text('$' + currentMonthlyCost.toFixed(2) + '/mo');
+                    $('#reg-yearly-label').text('$' + currentYearlyCost.toFixed(2) + '/yr');
+
+                    var existingCode = (promoCodeData && promoCodeData.code) ? promoCodeData.code : $('#promo_code').val().trim();
+                    if (existingCode && promoCodeData) {
+                        validateRegisterPromo(existingCode, { silent: true });
+                    } else {
+                        promoCodeData = null;
+                        $('#promo-code-feedback').html('');
+                        updatePaymentDisplay();
+                    }
+                }
+
+                function validateRegisterPromo(code, options) {
+                    options = options || {};
+                    var silent = !!options.silent;
+                    if (!code) return;
+
+                    var btn = $('#validate-promo-btn');
+                    if (!silent) {
+                        btn.prop('disabled', true).text('Applying...');
+                    }
+
+                    $.ajax({
+                        url: '{{ route('user.promo-codes.validate') }}',
+                        type: 'POST',
+                        data: {
+                            _token: '{{ csrf_token() }}',
+                            code: code,
+                            tier_id: selectedTierId,
+                            billing_period: currentBillingPeriod
+                        },
+                        success: function(response) {
+                            if (response.valid) {
+                                promoCodeData = {
+                                    code: code,
+                                    discount: response.discount,
+                                    final_price: response.final_price,
+                                    is_percentage: response.is_percentage,
+                                    discount_amount: response.discount_amount
+                                };
+
+                                var discountText = response.is_percentage ?
+                                    response.discount_amount + '%' :
+                                    '$' + parseFloat(response.discount_amount).toFixed(2);
+
+                                $('#promo-code-feedback').html(
+                                    '<div style="color: #4caf50; background: #e7f4e7; padding: 8px; border-radius: 4px; border-left: 3px solid #4caf50;">' +
+                                    '<i class="fa fa-check-circle"></i> <strong>Valid!</strong> You\'ll save ' +
+                                    discountText + ' on this member plan.' +
+                                    '</div>'
+                                );
+                                updatePaymentDisplay();
+                            } else {
+                                promoCodeData = null;
+                                $('#promo-code-feedback').html(
+                                    '<div style="color: #f44336; background: #ffebee; padding: 8px; border-radius: 4px; border-left: 3px solid #f44336;">' +
+                                    '<i class="fa fa-times-circle"></i> ' + (response.message || 'Invalid promo code') +
+                                    '</div>'
+                                );
+                                updatePaymentDisplay();
+                            }
+                        },
+                        error: function(xhr) {
+                            promoCodeData = null;
+                            var errorMsg = 'Unable to validate promo code. Please try again.';
+                            if (xhr.responseJSON && xhr.responseJSON.message) {
+                                errorMsg = xhr.responseJSON.message;
+                            }
+                            $('#promo-code-feedback').html(
+                                '<div style="color: #f44336; background: #ffebee; padding: 8px; border-radius: 4px; border-left: 3px solid #f44336;">' +
+                                '<i class="fa fa-times-circle"></i> ' + errorMsg +
+                                '</div>'
+                            );
+                            updatePaymentDisplay();
+                        },
+                        complete: function() {
+                            if (!silent) {
+                                btn.prop('disabled', false).text('Apply');
+                            }
+                        }
+                    });
+                }
+
+                $(document).on('change', 'input[name="register_billing_period"]', function() {
+                    currentBillingPeriod = $(this).val();
+                    syncRegisterBillingPeriod();
+                });
 
                 // Enable validate button when promo code is entered
                 $('#promo_code').on('input', function() {
@@ -1842,78 +1971,12 @@
                     var code = $('#promo_code').val().trim();
                     if (!code) return;
 
-                    // Clear any pending warning timeout
                     if (promoWarningTimeout) {
                         clearTimeout(promoWarningTimeout);
                         promoWarningTimeout = null;
                     }
 
-                    var btn = $(this);
-                    btn.prop('disabled', true).text('Applying...');
-
-                    $.ajax({
-                        url: '{{ route('user.promo-codes.validate') }}',
-                        type: 'POST',
-                        data: {
-                            _token: '{{ csrf_token() }}',
-                            code: code,
-                            tier_id: selectedTierId
-                        },
-                        success: function(response) {
-                            console.log('Promo validation response:', response);
-
-                            if (response.valid) {
-                                promoCodeData = {
-                                    code: code,
-                                    discount: response.discount,
-                                    final_price: response.final_price,
-                                    is_percentage: response.is_percentage,
-                                    discount_amount: response.discount_amount
-                                };
-
-                                var discountText = response.is_percentage ?
-                                    response.discount_amount + '%' :
-                                    '$' + parseFloat(response.discount_amount).toFixed(2);
-
-                                $('#promo-code-feedback').html(
-                                    '<div style="color: #4caf50; background: #e7f4e7; padding: 8px; border-radius: 4px; border-left: 3px solid #4caf50;">' +
-                                    '<i class="fa fa-check-circle"></i> <strong>Valid!</strong> You\'ll save ' +
-                                    discountText + ' on this membership.' +
-                                    '</div>'
-                                );
-
-                                // Update payment modal if already open
-                                updatePaymentDisplay();
-
-                                console.log('Success message should be visible now');
-                            } else {
-                                promoCodeData = null;
-                                $('#promo-code-feedback').html(
-                                    '<div style="color: #f44336; background: #ffebee; padding: 8px; border-radius: 4px; border-left: 3px solid #f44336;">' +
-                                    '<i class="fa fa-times-circle"></i> ' + (response.message ||
-                                        'Invalid promo code') +
-                                    '</div>'
-                                );
-                            }
-
-                            // Reset button state
-                            btn.prop('disabled', false).text('Apply');
-                            console.log('Button reset to: Apply');
-                        },
-                        error: function(xhr) {
-                            promoCodeData = null;
-                            var errorMsg = 'Unable to validate promo code. Please try again.';
-                            if (xhr.responseJSON && xhr.responseJSON.message) {
-                                errorMsg = xhr.responseJSON.message;
-                            }
-                            $('#promo-code-feedback').html(
-                                '<div style="color: #f44336; background: #ffebee; padding: 8px; border-radius: 4px; border-left: 3px solid #f44336;">' +
-                                '<i class="fa fa-times-circle"></i> ' + errorMsg +
-                                '</div>'
-                            );
-                            btn.prop('disabled', false).text('Apply');
-                        }
-                    });
+                    validateRegisterPromo(code);
                 });
 
                 // Remove promo code
@@ -1930,7 +1993,6 @@
                     if (originalAmount > 0) {
                         var finalPrice = originalAmount;
                         if (promoCodeData && promoCodeData.discount > 0) {
-                            $('#original-amount-display').text('$' + originalAmount.toFixed(2));
                             $('#discount-amount-display').text('-$' + promoCodeData.discount.toFixed(2));
                             $('#payment-amount-display').text('$' + promoCodeData.final_price.toFixed(2));
                             $('#applied-promo-code').text(promoCodeData.code);
@@ -1943,14 +2005,15 @@
                             $('#promo-discount-section').hide();
                         }
 
-                        if (finalPrice <= 0) {
-                            $('#card-payment-group').hide();
-                            $('#confirm-payment-btn').text('Complete Registration');
-                        } else {
+                        var isPaidTier = currentMonthlyCost > 0 || currentYearlyCost > 0;
+                        if (isPaidTier) {
                             $('#card-payment-group').show();
                             $('#confirm-payment-btn').html(
                                 'Complete Payment <i class="fas fa-lock" style="font-size: 0.8em; margin-left: 5px;"></i>'
                             );
+                        } else {
+                            $('#card-payment-group').hide();
+                            $('#confirm-payment-btn').text('Complete Registration');
                         }
                     }
                 }
@@ -1964,7 +2027,12 @@
                     var agree = $(this).data('agree-description') || '';
 
                     selectedTierId = tierId;
-                    originalAmount = cost;
+                    currentMonthlyCost = parseFloat($(this).data('monthly-cost')) || 0;
+                    currentYearlyCost = parseFloat($(this).data('yearly-cost')) || 0;
+                    currentBillingPeriod = 'yearly';
+                    $('input[name="register_billing_period"][value="yearly"]').prop('checked', true);
+                    originalAmount = currentYearlyCost;
+                    cost = originalAmount;
 
                     // Remove existing input if any
                     $('#tier_id').remove();

@@ -169,7 +169,7 @@ class PartnerController extends Controller
             $isSuperAdmin = ($user->userRole?->name ?? '') === 'SUPER ADMIN';
             $isEcclesiaUser = (int) ($user->userRole?->is_ecclesia ?? 0) === 1;
             $user_ecclesia_id = $user->ecclesia_id;
-            $currentCode = strtoupper(Helper::getVisitorCountryCode());
+            $currentCode = strtoupper(Helper::resolveVisitorCountryCode($request));
             $sortBy = $request->get('sortby', 'id');
             $sortType = strtolower((string) $request->get('sorttype', 'desc')) === 'asc' ? 'asc' : 'desc';
             $status = $request->get('status');
