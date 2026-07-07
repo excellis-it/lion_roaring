@@ -68,7 +68,7 @@ class SendSubscriptionReminder extends Command
 
         foreach ($subscriptions as $subscription) {
             $user = $subscription->user;
-            if (!$user || !$user->email || !$user->status) {
+            if (!$user || !$user->email || !$user->status || $user->isMembershipExcluded()) {
                 continue;
             }
 
@@ -118,7 +118,7 @@ class SendSubscriptionReminder extends Command
 
         foreach ($subscriptions as $subscription) {
             $user = $subscription->user;
-            if (!$user || !$user->email) {
+            if (!$user || !$user->email || $user->isMembershipExcluded()) {
                 continue;
             }
 

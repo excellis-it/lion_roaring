@@ -23,6 +23,10 @@ class ApiMemberAccess
             return $next($request);
         }
 
+        if ($user->isMembershipExcluded()) {
+            return $next($request);
+        }
+
         if ($user->userLastSubscription != null) {
             if ($user->userLastSubscription->subscription_expire_date >= date('Y-m-d')) {
                 return $next($request);

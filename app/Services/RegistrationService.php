@@ -8,7 +8,6 @@ use App\Mail\NewUserRegistrationMail;
 use App\Models\Country;
 use App\Models\MembershipPromoCode;
 use App\Models\MembershipTier;
-use App\Models\Role;
 use App\Models\SignupRule;
 use App\Models\SubscriptionPayment;
 use App\Models\User;
@@ -19,11 +18,13 @@ use App\Models\UserActivity;
 use App\Services\MembershipPricing;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
+use Spatie\Permission\Models\Role;
 
 /**
  * Shared registration logic for web and mobile API (web registerCheck parity).
@@ -85,6 +86,8 @@ class RegistrationService
         if ($existing) {
             return $this->successResponse($existing, $existing->status == 1);
         }
+
+        $this->prepareForRegistrationRetry($request);
 
         $validator = Validator::make($request->all(), [
             'user_name' => 'required|string|max:255|unique:users',
@@ -238,12 +241,6 @@ class RegistrationService
             $paymentAmount = $paid['amount'];
         }
 
-        $uniqueNumber = rand(1000, 9999);
-        $lrEmail = strtolower(trim($request->first_name))
-            . strtolower(trim((string) $request->middle_name))
-            . strtolower(trim($request->last_name))
-            . $uniqueNumber . '@lionroaring.us';
-
         $phone = $request->phone;
         if (!$phone && $request->filled('phone_number')) {
             $phone = $request->phone_number;
@@ -251,130 +248,150 @@ class RegistrationService
 
         $signupValidation = SignupRule::validateSignupData($request->all());
 
-        $user = new User();
-        $user->user_name = $request->user_name;
-        $user->lion_roaring_id = $fullLionRoaringId;
-        $user->roar_id = $request->roar_id;
-        $user->ecclesia_id = $request->ecclesia_id ?: null;
-        $user->email = $request->email;
-        $user->personal_email = str_replace(' ', '', $lrEmail);
-        $user->first_name = $request->first_name;
-        $user->last_name = $request->last_name;
-        $user->middle_name = $request->middle_name;
-        $user->address = $request->address;
-        $user->phone = $phone;
-        $user->phone_country_code_name = $request->phone_country_code_name;
-        $user->city = $request->city;
-        $user->state = $request->state;
-        $user->address2 = $request->address2;
-        $user->country = $request->country;
-        $user->zip = $request->zip;
-        $user->password = bcrypt($request->password);
-        $user->signature = $request->signature;
-        $user->email_verified_at = now();
-        $user->status = $signupValidation['user_should_be_active'] ? 1 : 0;
-        $user->is_accept = $signupValidation['user_should_be_active'] ? 1 : 0;
+        $user = DB::transaction(function () use (
+            $request,
+            $fullLionRoaringId,
+            $phone,
+            $signupValidation,
+            $tier,
+            $billingPeriod,
+            $promoCode,
+            $discount,
+            $basePrice,
+            $paymentStatus,
+            $transactionId,
+            $paymentAmount
+        ) {
+            $user = new User();
+            $user->user_name = $request->user_name;
+            $user->lion_roaring_id = $fullLionRoaringId;
+            $user->roar_id = $request->roar_id;
+            $user->ecclesia_id = $request->ecclesia_id ?: null;
+            $user->email = $request->email;
+            $user->personal_email = str_replace(' ', '', strtolower(trim($request->first_name))
+                . strtolower(trim((string) $request->middle_name))
+                . strtolower(trim($request->last_name))
+                . rand(1000, 9999) . '@lionroaring.us');
+            $user->first_name = $request->first_name;
+            $user->last_name = $request->last_name;
+            $user->middle_name = $request->middle_name;
+            $user->address = $request->address;
+            $user->phone = $phone;
+            $user->phone_country_code_name = $request->phone_country_code_name;
+            $user->city = $request->city;
+            $user->state = $request->state;
+            $user->address2 = $request->address2;
+            $user->country = $request->country;
+            $user->zip = $request->zip;
+            $user->password = bcrypt($request->password);
+            $user->signature = $request->signature;
+            $user->email_verified_at = now();
+            $user->status = $signupValidation['user_should_be_active'] ? 1 : 0;
+            $user->is_accept = $signupValidation['user_should_be_active'] ? 1 : 0;
 
-        $domainCountry = Helper::getCountryByDomain();
-        if ($domainCountry && $domainCountry->is_global) {
-            $user->user_type = 'Global';
-        } else {
-            $user->user_type = 'Regional';
-        }
+            $domainCountry = Helper::getCountryByDomain();
+            if ($domainCountry && $domainCountry->is_global) {
+                $user->user_type = 'Global';
+            } else {
+                $user->user_type = 'Regional';
+            }
 
-        $user->save();
+            $user->save();
+
+            $slug = Str::slug($user->user_name);
+            $originalSlug = $slug;
+            $counter = 1;
+            while (Role::where('name', $slug)->exists()) {
+                $slug = $originalSlug . '-' . $counter;
+                $counter++;
+            }
+
+            $memberType = UserType::where('name', 'MEMBER_SOVEREIGN')->first();
+            $newRole = Role::create([
+                'name' => $slug,
+                'type' => $memberType->type ?? 2,
+                'is_ecclesia' => $memberType->is_ecclesia ?? 0,
+                'guard_name' => 'web',
+            ]);
+
+            if (!empty($tier->permissions)) {
+                $permissions = explode(',', $tier->permissions);
+                $newRole->syncPermissions($permissions);
+            }
+
+            $user->assignRole($newRole->name);
+
+            if ($memberType) {
+                $user->user_type_id = $memberType->id;
+                $user->save();
+            }
+
+            $userSubscription = new UserSubscription();
+            $userSubscription->user_id = $user->id;
+            $userSubscription->plan_id = $tier->id;
+            $userSubscription->subscription_name = $tier->name;
+
+            if (($tier->pricing_type ?? 'amount') === 'token') {
+                $userSubscription->subscription_method = 'token';
+                $userSubscription->subscription_price = $tier->life_force_energy_tokens;
+                $userSubscription->life_force_energy_tokens = $tier->life_force_energy_tokens;
+                $userSubscription->agree_accepted_at = now();
+                $userSubscription->agree_description_snapshot = $tier->agree_description;
+            } else {
+                $userSubscription->subscription_method = 'amount';
+                $userSubscription->subscription_price = $basePrice;
+                $userSubscription->billing_period = $billingPeriod;
+                $userSubscription->promo_code = $promoCode ? $promoCode->code : null;
+                $userSubscription->discount_amount = $discount;
+                $userSubscription->final_price = $paymentAmount;
+                $userSubscription->life_force_energy_tokens = null;
+                $userSubscription->agree_accepted_at = null;
+                $userSubscription->agree_description_snapshot = null;
+            }
+
+            $durationMonths = ($tier->pricing_type ?? 'amount') === 'token'
+                ? 12
+                : MembershipPricing::durationMonthsFor($billingPeriod);
+            $userSubscription->subscription_validity = $durationMonths;
+            $userSubscription->subscription_start_date = now();
+            $userSubscription->subscription_expire_date = now()->addMonths($durationMonths);
+            $userSubscription->save();
+
+            if ($paymentStatus === 'Success') {
+                $payment = new SubscriptionPayment();
+                $payment->user_id = $user->id;
+                $payment->user_subscription_id = $userSubscription->id;
+                $payment->transaction_id = $transactionId;
+                $payment->payment_method = $paymentAmount > 0 ? 'Stripe' : 'Promo';
+                $payment->payment_amount = $paymentAmount;
+                $payment->billing_period = $billingPeriod;
+                $payment->promo_code = $promoCode ? $promoCode->code : null;
+                $payment->discount_amount = $discount;
+                $payment->payment_status = 'Success';
+                $payment->save();
+
+                if ($promoCode) {
+                    \App\Models\MembershipPromoUsage::create([
+                        'promo_code_id' => $promoCode->id,
+                        'user_id' => $user->id,
+                        'subscription_id' => $userSubscription->id,
+                        'discount_applied' => $discount,
+                        'used_at' => now(),
+                    ]);
+                    $promoCode->incrementUsage();
+                }
+            }
+
+            UserActivity::logActivity([
+                'user_id' => $user->id,
+                'activity_type' => 'REGISTER',
+                'activity_description' => 'User registered with ' . $tier->name,
+            ]);
+
+            return $user;
+        });
 
         $this->finalizeRegisterAgreement($user, (string) $request->agreement_token);
-
-        $slug = Str::slug($user->user_name);
-        $originalSlug = $slug;
-        $counter = 1;
-        while (Role::where('name', $slug)->exists()) {
-            $slug = $originalSlug . '-' . $counter;
-            $counter++;
-        }
-
-        $memberType = UserType::where('name', 'MEMBER_SOVEREIGN')->first();
-        $newRole = Role::create([
-            'name' => $slug,
-            'type' => $memberType->type ?? 2,
-            'is_ecclesia' => $memberType->is_ecclesia ?? 0,
-            'guard_name' => 'web',
-        ]);
-
-        if (!empty($tier->permissions)) {
-            $permissions = explode(',', $tier->permissions);
-            $newRole->syncPermissions($permissions);
-        }
-
-        $user->assignRole($newRole->name);
-
-        if ($memberType) {
-            $user->user_type_id = $memberType->id;
-            $user->save();
-        }
-
-        $userSubscription = new UserSubscription();
-        $userSubscription->user_id = $user->id;
-        $userSubscription->plan_id = $tier->id;
-        $userSubscription->subscription_name = $tier->name;
-
-        if (($tier->pricing_type ?? 'amount') === 'token') {
-            $userSubscription->subscription_method = 'token';
-            $userSubscription->subscription_price = $tier->life_force_energy_tokens;
-            $userSubscription->life_force_energy_tokens = $tier->life_force_energy_tokens;
-            $userSubscription->agree_accepted_at = now();
-            $userSubscription->agree_description_snapshot = $tier->agree_description;
-        } else {
-            $userSubscription->subscription_method = 'amount';
-            $userSubscription->subscription_price = $basePrice;
-            $userSubscription->billing_period = $billingPeriod;
-            $userSubscription->promo_code = $promoCode ? $promoCode->code : null;
-            $userSubscription->discount_amount = $discount;
-            $userSubscription->final_price = $paymentAmount;
-            $userSubscription->life_force_energy_tokens = null;
-            $userSubscription->agree_accepted_at = null;
-            $userSubscription->agree_description_snapshot = null;
-        }
-
-        $durationMonths = ($tier->pricing_type ?? 'amount') === 'token'
-            ? 12
-            : MembershipPricing::durationMonthsFor($billingPeriod);
-        $userSubscription->subscription_validity = $durationMonths;
-        $userSubscription->subscription_start_date = now();
-        $userSubscription->subscription_expire_date = now()->addMonths($durationMonths);
-        $userSubscription->save();
-
-        if ($paymentStatus === 'Success') {
-            $payment = new SubscriptionPayment();
-            $payment->user_id = $user->id;
-            $payment->user_subscription_id = $userSubscription->id;
-            $payment->transaction_id = $transactionId;
-            $payment->payment_method = $paymentAmount > 0 ? 'Stripe' : 'Promo';
-            $payment->payment_amount = $paymentAmount;
-            $payment->billing_period = $billingPeriod;
-            $payment->promo_code = $promoCode ? $promoCode->code : null;
-            $payment->discount_amount = $discount;
-            $payment->payment_status = 'Success';
-            $payment->save();
-
-            if ($promoCode) {
-                \App\Models\MembershipPromoUsage::create([
-                    'promo_code_id' => $promoCode->id,
-                    'user_id' => $user->id,
-                    'subscription_id' => $userSubscription->id,
-                    'discount_applied' => $discount,
-                    'used_at' => now(),
-                ]);
-                $promoCode->incrementUsage();
-            }
-        }
-
-        UserActivity::logActivity([
-            'user_id' => $user->id,
-            'activity_type' => 'REGISTER',
-            'activity_description' => 'User registered with ' . $tier->name,
-        ]);
 
         $this->sendRegistrationEmails($request, $user, $tier, $agreementToken);
         Cache::put($this->registrationCacheKey($idempotencyKey), $user->id, now()->addHours(2));
@@ -584,6 +601,82 @@ class RegistrationService
         } catch (\Throwable $e) {
             return ['ok' => false, 'message' => 'Payment error: ' . $e->getMessage()];
         }
+    }
+
+    /**
+     * Remove incomplete registrations left by failed attempts and restore agreement
+     * token state so the same checkout can be retried after a server error.
+     */
+    private function prepareForRegistrationRetry(Request $request): void
+    {
+        $email = trim((string) $request->email);
+        $username = trim((string) $request->user_name);
+        $guestToken = (string) $request->input('agreement_token');
+
+        if ($email === '' && $username === '') {
+            return;
+        }
+
+        $orphans = User::withTrashed()
+            ->whereDoesntHave('userSubscription')
+            ->where('created_at', '>=', now()->subDay())
+            ->where(function ($query) use ($email, $username) {
+                if ($email !== '') {
+                    $query->where('email', $email);
+                }
+                if ($username !== '') {
+                    $query->orWhere('user_name', $username);
+                }
+            })
+            ->get();
+
+        foreach ($orphans as $orphan) {
+            $agreement = UserRegisterAgreement::where('user_id', $orphan->id)->first();
+            if ($agreement && $guestToken !== '' && !$this->agreementPreview->getPendingForGuest($guestToken)) {
+                $this->restoreGuestAgreementPending($guestToken, $agreement);
+            }
+
+            $this->deleteOrphanUser($orphan);
+        }
+    }
+
+    private function restoreGuestAgreementPending(string $guestToken, UserRegisterAgreement $agreement): void
+    {
+        if (!$agreement->pdf_path || !Storage::disk('public')->exists($agreement->pdf_path)) {
+            return;
+        }
+
+        $tmpPath = 'register-agreements/tmp/retry-' . Str::uuid() . '.pdf';
+        Storage::disk('public')->copy($agreement->pdf_path, $tmpPath);
+
+        Cache::put(
+            RegisterAgreementPreviewService::CACHE_PREFIX_GUEST . $guestToken,
+            [
+                'token' => (string) Str::uuid(),
+                'guest_token' => $guestToken,
+                'tmp_path' => $tmpPath,
+                'country_code' => $agreement->country_code ?? 'US',
+                'signer_name' => $agreement->signer_name ?? '',
+                'signer_initials' => $agreement->signer_initials ?? null,
+                'agreement_title_snapshot' => $agreement->agreement_title_snapshot ?? null,
+                'agreement_description_snapshot' => $agreement->agreement_description_snapshot ?? null,
+                'checkbox_text_snapshot' => $agreement->checkbox_text_snapshot ?? null,
+            ],
+            now()->addMinutes(RegisterAgreementPreviewService::CACHE_TTL_MINUTES)
+        );
+    }
+
+    private function deleteOrphanUser(User $orphan): void
+    {
+        UserRegisterAgreement::where('user_id', $orphan->id)->each(function (UserRegisterAgreement $agreement) {
+            if ($agreement->pdf_path && Storage::disk('public')->exists($agreement->pdf_path)) {
+                Storage::disk('public')->delete($agreement->pdf_path);
+            }
+            $agreement->delete();
+        });
+
+        $orphan->roles()->detach();
+        $orphan->forceDelete();
     }
 
     private function finalizeRegisterAgreement(User $user, string $guestToken): void

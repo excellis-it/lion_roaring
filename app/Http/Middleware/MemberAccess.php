@@ -26,6 +26,10 @@ class MemberAccess
             return $next($request);
         }
 
+        if ($user->isMembershipExcluded()) {
+            return $next($request);
+        }
+
         if ($request->is('user/membership', 'user/membership/*', 'user/logout')) {
             return $next($request);
         }

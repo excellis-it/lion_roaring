@@ -553,9 +553,9 @@ class PartnerController extends Controller
             'user_type' => 'required',
         ];
 
-        if ($request->role === 'MEMBER_SOVEREIGN') {
+        if ($request->role === 'MEMBER_SOVEREIGN' && !$request->boolean('membership_excluded')) {
             $rules['membership_tier_id'] = 'required|exists:membership_tiers,id';
-        } else {
+        } elseif ($request->role !== 'MEMBER_SOVEREIGN') {
             $rules['permissions'] = 'required|array';
         }
 
@@ -616,7 +616,7 @@ class PartnerController extends Controller
         ]);
 
         // Sync permissions
-        if ($the_role->name == 'MEMBER_SOVEREIGN' && $request->has('membership_tier_id')) {
+        if ($the_role->name == 'MEMBER_SOVEREIGN' && $request->has('membership_tier_id') && !$request->boolean('membership_excluded')) {
             $tier = MembershipTier::find($request->membership_tier_id);
             if ($tier && !empty($tier->permissions)) {
                 $permissions = array_filter(array_map('trim', explode(',', $tier->permissions)));
@@ -664,6 +664,7 @@ class PartnerController extends Controller
         $data->phone_country_code_name = $request->phone_country_code_name;
         $data->status = 1;
         $data->is_accept = 1;
+        $data->membership_excluded = $request->boolean('membership_excluded');
 
 
         $data->manage_ecclesia = $request->has('manage_ecclesia') ? implode(',', $request->manage_ecclesia) : null;
@@ -674,7 +675,7 @@ class PartnerController extends Controller
         $data->assignRole($newRole->name);
 
         // If MEMBER_SOVEREIGN, create subscription
-        if ($the_role->name == 'MEMBER_SOVEREIGN' && $request->has('membership_tier_id')) {
+        if ($the_role->name == 'MEMBER_SOVEREIGN' && $request->has('membership_tier_id') && !$request->boolean('membership_excluded')) {
             $tier = MembershipTier::find($request->membership_tier_id);
             if ($tier) {
                 $durationMonths = $tier->duration_months ?? 12;
@@ -822,9 +823,9 @@ class PartnerController extends Controller
                 'confirm_password' => 'nullable|min:8|same:password',
             ];
 
-            if ($request->role === 'MEMBER_SOVEREIGN') {
+            if ($request->role === 'MEMBER_SOVEREIGN' && !$request->boolean('membership_excluded')) {
                 $rules['membership_tier_id'] = 'required|exists:membership_tiers,id';
-            } else {
+            } elseif ($request->role !== 'MEMBER_SOVEREIGN') {
                 $rules['permissions'] = 'required|array';
             }
 
@@ -898,6 +899,7 @@ class PartnerController extends Controller
             }
 
             $data->manage_ecclesia = $request->has('manage_ecclesia') ? implode(',', $request->manage_ecclesia) : null;
+            $data->membership_excluded = $request->boolean('membership_excluded');
 
             $data->save();
 
@@ -937,7 +939,7 @@ class PartnerController extends Controller
             }
 
             // Sync permissions to the custom role
-            if ($the_role->name == 'MEMBER_SOVEREIGN' && $request->has('membership_tier_id')) {
+            if ($the_role->name == 'MEMBER_SOVEREIGN' && $request->has('membership_tier_id') && !$request->boolean('membership_excluded')) {
                 $tier = MembershipTier::find($request->membership_tier_id);
                 if ($tier && !empty($tier->permissions)) {
                     $permissions = array_filter(array_map('trim', explode(',', $tier->permissions)));
@@ -961,7 +963,7 @@ class PartnerController extends Controller
             $data->forgetCachedPermissions();
 
             // Handle Membership Subscription Update
-            if ($the_role->name == 'MEMBER_SOVEREIGN' && $request->has('membership_tier_id')) {
+            if ($the_role->name == 'MEMBER_SOVEREIGN' && $request->has('membership_tier_id') && !$request->boolean('membership_excluded')) {
                 $tier = MembershipTier::find($request->membership_tier_id);
                 if ($tier) {
                     $sub = UserSubscription::where('user_id', $data->id)->orderBy('id', 'desc')->first();
