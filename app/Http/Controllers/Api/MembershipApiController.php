@@ -12,6 +12,7 @@ use App\Models\SubscriptionPayment;
 use App\Models\UserSubscription;
 use App\Services\CheckoutPaymentService;
 use App\Services\MembershipPricing;
+use App\Services\MembershipPrivilegeService;
 use App\Services\NotificationService;
 use App\Services\PromoCodeValidator;
 use Illuminate\Http\JsonResponse;
@@ -19,7 +20,6 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
-use Spatie\Permission\PermissionRegistrar;
 
 /**
  * @group Membership
@@ -279,6 +279,8 @@ class MembershipApiController extends Controller
             return response()->json(['status' => false, 'message' => 'Tier is not token-priced.'], 422);
         }
 
+        $previousPlanId = $user->userLastSubscription?->plan_id;
+
         $sub = new UserSubscription();
         $sub->user_id = $user->id;
         $sub->plan_id = $tier->id;
@@ -294,7 +296,7 @@ class MembershipApiController extends Controller
         $sub->subscription_expire_date = now()->addMonths($duration);
         $sub->save();
 
-        $this->syncTierPermissions($user, $tier);
+        app(MembershipPrivilegeService::class)->applyAfterTierChange($user, $tier, $previousPlanId);
 
         return response()->json([
             'status' => true,
@@ -317,6 +319,8 @@ class MembershipApiController extends Controller
             return response()->json(['status' => false, 'message' => 'No subscription to renew.'], 404);
         }
 
+        $previousPlanId = $sub->plan_id;
+
         $tierId = (int) $request->input('tier_id', $sub->plan_id);
         $tier = MembershipTier::find($tierId);
         if (!$tier) {
@@ -336,7 +340,7 @@ class MembershipApiController extends Controller
             $sub->plan_id = $tier->id;
             $sub->subscription_name = $tier->name;
             $sub->save();
-            $this->syncTierPermissions($user, $tier);
+            app(MembershipPrivilegeService::class)->applyAfterTierChange($user, $tier, $previousPlanId);
 
             return response()->json([
                 'status' => true,
@@ -362,7 +366,7 @@ class MembershipApiController extends Controller
             $sub->billing_period = $billingPeriod;
             $sub->subscription_validity = $duration;
             $sub->save();
-            $this->syncTierPermissions($user, $tier);
+            app(MembershipPrivilegeService::class)->applyAfterTierChange($user, $tier, $previousPlanId);
 
             return response()->json([
                 'status' => true,
@@ -601,6 +605,7 @@ class MembershipApiController extends Controller
         $tier = MembershipTier::find($request->tier_id);
         $isRenew = (bool) $request->input('is_renew', false);
         $isFree = (bool) $request->input('free', false);
+        $previousPlanId = $user->userLastSubscription?->plan_id;
 
         $billingPeriod = MembershipPricing::validatePeriod($request->input('billing_period'));
         $basePrice = MembershipPricing::priceFor($tier, $billingPeriod);
@@ -685,7 +690,7 @@ class MembershipApiController extends Controller
 
         $discountAmount = max(0, $basePrice - $amountPaid);
 
-        $subscription = DB::transaction(function () use ($user, $tier, $isRenew, $amountPaid, $promoCode, $transactionId, $paymentMethod, $billingPeriod, $basePrice, $duration, $discountAmount) {
+        $subscription = DB::transaction(function () use ($user, $tier, $isRenew, $amountPaid, $promoCode, $transactionId, $paymentMethod, $billingPeriod, $basePrice, $duration, $discountAmount, $previousPlanId) {
             if ($isRenew && $user->userLastSubscription && $user->userLastSubscription->plan_id == $tier->id) {
                 $sub = $user->userLastSubscription;
                 $base = $sub->subscription_expire_date
@@ -742,51 +747,17 @@ class MembershipApiController extends Controller
                 }
             }
 
+            // Apply privileges inside the same transaction so a crash after payment
+            // cannot leave the member without the correct role/permissions.
+            app(MembershipPrivilegeService::class)->applyAfterTierChange($user, $tier, $previousPlanId);
+
             return $sub;
         });
-
-        $this->syncTierPermissions($user, $tier);
 
         return response()->json([
             'status' => true,
             'message' => 'Subscription activated.',
             'data' => $subscription->fresh()->load('payments'),
         ], $this->successStatus);
-    }
-
-    /**
-     * Sync Spatie permissions on tier change.
-     * Mirrors User\MembershipController::syncTierPermissions. Extract to a shared service in Phase A3.
-     */
-    private function syncTierPermissions($user, MembershipTier $tier): void
-    {
-        if (!empty($tier->permissions)) {
-            $permissions = array_filter(array_map('trim', explode(',', $tier->permissions)));
-            $baseRoleNames = \App\Models\UserType::pluck('name')->toArray();
-            $userRole = null;
-            foreach ($user->roles as $role) {
-                if (!in_array($role->name, $baseRoleNames)) {
-                    $userRole = $role;
-                    break;
-                }
-            }
-            if ($userRole) {
-                $userRole->syncPermissions($permissions);
-            } else {
-                $user->syncPermissions($permissions);
-            }
-            $directPerms = $user->getDirectPermissions()->pluck('name')->toArray();
-            if (!empty($directPerms) && $userRole) {
-                $user->revokePermissionTo($directPerms);
-            }
-        } else {
-            $directPerms = $user->getDirectPermissions()->pluck('name')->toArray();
-            if (!empty($directPerms)) {
-                $user->revokePermissionTo($directPerms);
-            }
-        }
-
-        app()->make(PermissionRegistrar::class)->forgetCachedPermissions();
-        $user->forgetCachedPermissions();
     }
 }

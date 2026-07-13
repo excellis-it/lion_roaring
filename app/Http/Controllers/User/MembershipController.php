@@ -4,6 +4,7 @@ namespace App\Http\Controllers\User;
 
 use App\Http\Controllers\Controller;
 use App\Services\CheckoutPaymentService;
+use App\Services\MembershipPrivilegeService;
 use App\Services\MembershipPricing;
 use Illuminate\Http\Request;
 use App\Models\MembershipTier;
@@ -16,7 +17,6 @@ use App\Models\SubscriptionPayment;
 use Illuminate\Support\Facades\Auth;
 use App\Models\User;
 use Stripe\StripeClient;
-use Spatie\Permission\Models\Permission;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\Rule;
 
@@ -478,6 +478,8 @@ class MembershipController extends Controller
             }
         }
 
+        $previousPlanId = $user->userLastSubscription?->plan_id;
+
         if (($tier->pricing_type ?? 'amount') === 'token') {
             $user_subscription = new UserSubscription();
             $user_subscription->user_id = $user->id;
@@ -495,7 +497,7 @@ class MembershipController extends Controller
             $user_subscription->subscription_expire_date = now()->addMonths($durationMonths);
             $user_subscription->save();
 
-            $this->syncTierPermissions($user, $tier);
+            app(MembershipPrivilegeService::class)->applyAfterTierChange($user, $tier, $previousPlanId);
 
             // Record promo code usage
             if ($promoCode) {
@@ -543,7 +545,7 @@ class MembershipController extends Controller
         $payment->payment_status = 'Success';
         $payment->save();
 
-        $this->syncTierPermissions($user, $tier);
+        app(MembershipPrivilegeService::class)->applyAfterTierChange($user, $tier, $previousPlanId);
 
         // Record promo code usage
         if ($promoCode) {
@@ -667,6 +669,7 @@ class MembershipController extends Controller
             $billingPeriod = MembershipPricing::validatePeriod($session->metadata->billing_period ?? 'yearly');
             $basePrice = MembershipPricing::priceFor($tier, $billingPeriod);
             $durationMonths = MembershipPricing::durationMonthsFor($billingPeriod);
+            $previousPlanId = $user->userLastSubscription?->plan_id;
 
             if ($isRenew && $user->userLastSubscription && $user->userLastSubscription->plan_id == $tier->id) {
                 // extend existing subscription
@@ -698,7 +701,7 @@ class MembershipController extends Controller
                 $user_subscription->save();
             }
 
-            $this->syncTierPermissions($user, $tier);
+            app(MembershipPrivilegeService::class)->applyAfterTierChange($user, $tier, $previousPlanId);
 
             $payment = new SubscriptionPayment();
             $payment->user_id = $user->id;
@@ -736,6 +739,8 @@ class MembershipController extends Controller
         if (!$sub) {
             return redirect()->route('user.membership.index')->with('error', 'No subscription to renew');
         }
+
+        $previousPlanId = $sub->plan_id;
 
         $planId = $request->input('plan_id', $sub->plan_id);
         $tier = MembershipTier::find($planId);
@@ -782,7 +787,7 @@ class MembershipController extends Controller
             $sub->billing_period = $billingPeriod;
             $sub->subscription_validity = ($tier->pricing_type ?? 'amount') === 'token' ? 12 : $durationMonths;
             $sub->save();
-            $this->syncTierPermissions($user, $tier);
+            app(MembershipPrivilegeService::class)->applyAfterTierChange($user, $tier, $previousPlanId);
             return redirect()->route('user.membership.index')->with('success', 'Renewed successfully.');
         }
 
@@ -872,6 +877,7 @@ class MembershipController extends Controller
         $billingPeriod = MembershipPricing::validatePeriod($request->input('billing_period'));
         $basePrice = MembershipPricing::priceFor($tier, $billingPeriod);
         $durationMonths = MembershipPricing::durationMonthsFor($billingPeriod);
+        $previousPlanId = $user->userLastSubscription?->plan_id;
         $promoCode  = null;
         $discount   = 0;
         $finalPrice = $basePrice;
@@ -953,7 +959,7 @@ class MembershipController extends Controller
             $userSubscription->save();
         }
 
-        $this->syncTierPermissions($user, $tier);
+        app(MembershipPrivilegeService::class)->applyAfterTierChange($user, $tier, $previousPlanId);
 
         if ($transactionId) {
             $payment = new SubscriptionPayment();
@@ -1036,6 +1042,8 @@ class MembershipController extends Controller
             return redirect()->route('user.membership.index')->with('error', 'Invalid plan type.');
         }
 
+        $previousPlanId = $user->userLastSubscription?->plan_id;
+
         $user_subscription = new UserSubscription();
         $user_subscription->user_id = $user->id;
         $user_subscription->plan_id = $tier->id;
@@ -1051,49 +1059,8 @@ class MembershipController extends Controller
         $user_subscription->subscription_expire_date = now()->addMonths($durationMonths);
         $user_subscription->save();
 
-        $this->syncTierPermissions($user, $tier);
+        app(MembershipPrivilegeService::class)->applyAfterTierChange($user, $tier, $previousPlanId);
 
         return redirect()->route('user.membership.index')->with('success', 'Membership subscribed successfully.');
-    }
-
-    private function syncTierPermissions($user, $tier)
-    {
-        if (!empty($tier->permissions)) {
-            $permissions = array_filter(array_map('trim', explode(',', $tier->permissions)));
-
-            // Get user's custom role (the one that is NOT a base UserType role)
-            $baseRoleNames = \App\Models\UserType::pluck('name')->toArray();
-            $userRole = null;
-            foreach ($user->roles as $role) {
-                if (!in_array($role->name, $baseRoleNames)) {
-                    $userRole = $role;
-                    break;
-                }
-            }
-
-            if ($userRole) {
-                // Sync permissions to the ROLE (same approach as PartnerController)
-                $userRole->syncPermissions($permissions);
-            } else {
-                // Fallback: if no custom role exists, sync directly to user
-                $user->syncPermissions($permissions);
-            }
-
-            // Also remove any stale direct user permissions to avoid conflicts
-            $directPerms = $user->getDirectPermissions()->pluck('name')->toArray();
-            if (!empty($directPerms) && $userRole) {
-                $user->revokePermissionTo($directPerms);
-            }
-        } else {
-            // No permissions on tier: clear all direct permissions
-            $directPerms = $user->getDirectPermissions()->pluck('name')->toArray();
-            if (!empty($directPerms)) {
-                $user->revokePermissionTo($directPerms);
-            }
-        }
-
-        // Clear Spatie permission cache
-        app()->make(\Spatie\Permission\PermissionRegistrar::class)->forgetCachedPermissions();
-        $user->forgetCachedPermissions();
     }
 }
