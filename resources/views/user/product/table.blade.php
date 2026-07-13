@@ -42,6 +42,7 @@
                 @endif
             </td>
             <td> {{ $product->created_at->format('d M Y') }}</td>
+            <td>{{ $product->user->full_name ?? '—' }}</td>
             <td>
 
 

@@ -59,7 +59,7 @@ class ProductController extends Controller
         // }
         // return User::with('roles')->where('id', auth()->id())->first();
         if (auth()->user()->can('Manage Estore Products') || auth()->user()->isWarehouseAdmin()) {
-            $products = Product::where('is_deleted', false)->orderBy('id', 'desc')->paginate(10);
+            $products = Product::with('user')->where('is_deleted', false)->orderBy('id', 'desc')->paginate(10);
             $categories = Category::orderBy('name')->get();
             return view('user.product.list', compact('products', 'categories'));
         } else {
@@ -77,7 +77,7 @@ class ProductController extends Controller
             $categoryId = $request->get('category_id');
             $query = str_replace(" ", "%", $query);
 
-            $products = Product::query();
+            $products = Product::with('user');
 
             // Apply role-based filtering first
             // if (auth()->user()->isWarehouseAdmin()) {

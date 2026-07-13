@@ -48,6 +48,11 @@ class Product extends BaseModel
         return $this->belongsTo(Category::class);
     }
 
+    public function user()
+    {
+        return $this->belongsTo(User::class);
+    }
+
     public function sizes()
     {
         return $this->hasMany(ProductSize::class, 'product_id');
