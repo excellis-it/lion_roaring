@@ -11,14 +11,13 @@ use App\Models\State;
 use App\Models\Ecclesia;
 use App\Models\MembershipPromoCode;
 use App\Models\MembershipTier;
+use App\Services\LoginOtpService;
 use App\Services\MembershipPricing;
 use App\Services\RegistrationService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
-use Illuminate\Support\Facades\Mail;
-use App\Mail\OtpMail;
 use App\Models\VerifyOTP;
 
 /**
@@ -197,7 +196,7 @@ class AuthController extends Controller
      * }
      */
 
-    public function login(Request $request)
+    public function login(Request $request, LoginOtpService $loginOtpService)
     {
         $validator = validator($request->all(), [
             'user_name' => 'required',
@@ -235,17 +234,9 @@ class AuthController extends Controller
                         }
                     }
 
-                    $otp = rand(1000, 9999);
-                    $otp_verify = new VerifyOTP();
-                    $otp_verify->user_id = $user->id;
-                    $otp_verify->email = $user->email;
-                    $otp_verify->otp = $otp;
-                    $otp_verify->save();
-
-                    //  Mail::to($user->email)->send(new OtpMail($otp));
                     try {
-                        Mail::to($user->email)->send(new OtpMail($otp));
-                    } catch (\Exception $e) {
+                        $otp = $loginOtpService->issue($user);
+                    } catch (\Throwable $exception) {
                         return response()->json(['message' => 'Email server temporary unavailable. Please try later.', 'status' => false], 200);
                     }
                     // $token = $user->createToken('authToken')->accessToken;

@@ -19,11 +19,10 @@ use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\Crypt;
-use App\Mail\OtpMail;
 use App\Models\MembershipPromoCode;
+use App\Services\LoginOtpService;
 use App\Services\MembershipPricing;
 use App\Services\MembershipTierRegistrationPolicy;
-use App\Models\VerifyOTP;
 use Illuminate\Support\Facades\Hash;
 use App\Models\UserActivity;
 use App\Models\MembershipTier;
@@ -50,7 +49,7 @@ class AuthController extends Controller
         return view('user.auth.login')->with(compact('agreement'));
     }
 
-    public function loginCheck(Request $request)
+    public function loginCheck(Request $request, LoginOtpService $loginOtpService)
     {
         $pass_demo_login = false;
         $demo_login_password = 'Demo@1234';
@@ -105,14 +104,15 @@ class AuthController extends Controller
                     ]);
                 }
 
+                try {
+                    $loginOtpService->issue($user);
+                } catch (\Throwable $exception) {
+                    return response()->json([
+                        'message' => 'Email server temporary unavailable. Please try later.',
+                        'status' => false,
+                    ]);
+                }
 
-                $otp = rand(1000, 9999);
-                // $otp = 1234;
-                $otp_verify = new VerifyOTP();
-                $otp_verify->user_id = $user->id;
-                $otp_verify->email = $user->email;
-                $otp_verify->otp = $otp;
-                $otp_verify->save();
                 if ($request->has('remember')) {
                     $expire = time() + (86400 * 365 * 5); // 5 years
                     setcookie('email_user_name', $request->user_name, $expire, '/', '', false, true);
@@ -129,11 +129,6 @@ class AuthController extends Controller
                     'activity_type' => 'LOGIN',
                     'activity_description' => 'User logged in',
                 ]);
-                try {
-                    Mail::to($user->email)->send(new OtpMail($otp));
-                } catch (\Exception $e) {
-                    return response()->json(['message' => 'Email server temporary unavailable. Please try later.', 'status' => false]);
-                }
                 return response()->json(['message' => 'Code sent to your email', 'status' => true, 'otp_required' => true]);
             } else {
                 return response()->json(['message' => 'Your account is not active!', 'status' => false]);
