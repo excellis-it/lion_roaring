@@ -105,8 +105,19 @@ class AuthController extends Controller
                 }
 
                 try {
+                    \Illuminate\Support\Facades\Log::info('[LOGIN_OTP] OTP_WEB_LOGIN_ABOUT_TO_ISSUE', [
+                        'user_id' => $user->id,
+                        'email' => $user->email,
+                    ]);
                     $loginOtpService->issue($user);
                 } catch (\Throwable $exception) {
+                    \Illuminate\Support\Facades\Log::error('[LOGIN_OTP] OTP_WEB_LOGIN_FAILED', [
+                        'user_id' => $user->id,
+                        'email' => $user->email,
+                        'exception' => get_class($exception),
+                        'message' => $exception->getMessage(),
+                    ]);
+
                     return response()->json([
                         'message' => 'Email server temporary unavailable. Please try later.',
                         'status' => false,

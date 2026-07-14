@@ -101,7 +101,8 @@ class LoginOtpServiceTest extends TestCase
             (new LoginOtpService())->issue($this->user());
             $this->fail('Expected mail delivery to fail.');
         } catch (RuntimeException $exception) {
-            $this->assertSame('mail failed', $exception->getMessage());
+            $this->assertStringContainsString('mail failed', $exception->getMessage());
+            $this->assertStringContainsString('Failed to send login OTP email', $exception->getMessage());
         }
 
         $this->assertSame(0, VerifyOTP::withTrashed()->count());
