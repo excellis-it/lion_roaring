@@ -956,20 +956,13 @@ class Helper
             return true;
         }
 
-        // Fallback to env-based check for backward compatibility
+        // Fallback to env-based check for backward compatibility (host + optional path)
         $usaUrl = env('LION_ROARING_USA');
         if (!$usaUrl) {
             return false;
         }
 
-        $parsed = parse_url($usaUrl);
-        $usaHost = $parsed['host'] ?? null;
-        $usaPort = $parsed['port'] ?? null;
-
-        $requestHost = request()->getHost();
-        $requestPort = request()->getPort();
-
-        return $usaHost && $requestHost === $usaHost && (string) $requestPort === (string) $usaPort;
+        return \App\Models\Country::requestMatchesDomainUrl($usaUrl);
     }
 
     /**
@@ -1084,6 +1077,7 @@ class Helper
 
     /**
      * Compare redirect target to the current request (scheme-insensitive on same host/path).
+     * Uses full request URI path so subdirectory installs (…/lion-roaring-us) compare correctly.
      */
     public static function isRedirectEquivalentToCurrentRequest(string $url): bool
     {
@@ -1092,7 +1086,9 @@ class Helper
             return false;
         }
 
-        $currentPath = trim(request()->path(), '/');
+        $currentPath = \App\Models\Country::normalizeUrlPath(
+            parse_url(request()->getRequestUri(), PHP_URL_PATH)
+        );
         $parsed = parse_url($url);
         if (!isset($parsed['host'])) {
             return rtrim(request()->fullUrl(), '/') === rtrim($url, '/');
@@ -1107,7 +1103,7 @@ class Helper
             return false;
         }
 
-        $targetPath = trim($parsed['path'] ?? '', '/');
+        $targetPath = \App\Models\Country::normalizeUrlPath($parsed['path'] ?? '');
 
         return $targetPath === $currentPath;
     }
@@ -1118,6 +1114,14 @@ class Helper
 
         return isset($parsed['host'])
             && strtolower($parsed['host']) === strtolower(request()->getHost());
+    }
+
+    /**
+     * True when the request is already on the given country domain URL (host + path prefix).
+     */
+    public static function isRequestOnCountryDomainUrl(string $domainUrl): bool
+    {
+        return \App\Models\Country::requestMatchesDomainUrl($domainUrl);
     }
 
     /**
@@ -1340,6 +1344,18 @@ class Helper
 
         $url = self::getCountryRedirectUrl($sessionCode);
         if (self::redirectUrlSharesHostWithRequest($url)) {
+            // Same-host installs (path-based demo folders): go to the country domain path,
+            // do not append /{code} which causes redirect loops.
+            $dedicated = \App\Models\Country::getDomainByCode($sessionCode);
+            if ($dedicated) {
+                $dedicatedPath = \App\Models\Country::normalizeUrlPath(
+                    parse_url($dedicated, PHP_URL_PATH)
+                );
+                if ($dedicatedPath !== '') {
+                    return self::countryRedirectWithSessionHandoff($dedicated, $sessionCode);
+                }
+            }
+
             $regionalTarget = rtrim(self::getDefaultRegionalUrl(), '/')
                 . '/' . strtolower($sessionCode);
 
@@ -1407,25 +1423,16 @@ class Helper
         $suffix = $suffixSegments ? '/' . implode('/', $suffixSegments) : '';
 
         if ($dedicatedDomain) {
-            $parsed = parse_url($dedicatedDomain);
-            $expectedHost = $parsed['host'] ?? '';
-            $expectedPort = $parsed['port'] ?? null;
+            $onCorrectDomain = self::isRequestOnCountryDomainUrl($dedicatedDomain);
 
-            $onCorrectHost = request()->getHost() === $expectedHost
-                && ($expectedPort === null || (string) request()->getPort() === (string) $expectedPort);
-
-            if (!$onCorrectHost) {
+            if (!$onCorrectDomain) {
                 return self::countryRedirectWithSessionHandoff($canonical . $suffix, $countryCode);
             }
 
+            // Already on this country's dedicated domain (host and/or path).
+            // If Laravel app path still has /{code} (e.g. /us), strip it back to the domain root.
             if (!empty($segments) && strtoupper($segments[0]) === $countryCode) {
-                if (self::isGlobalInstance()) {
-                    $regionalTarget = rtrim(self::getDefaultRegionalUrl(), '/')
-                        . '/' . strtolower($countryCode) . $suffix;
-
-                    return self::countryRedirectWithSessionHandoff($regionalTarget, $countryCode);
-                }
-
+                // Never bounce path-based same-host demos through a fake /{code} regional URL.
                 return self::safeExternalRedirectUrl(
                     rtrim($dedicatedDomain, '/') . $suffix
                 );
@@ -1440,6 +1447,11 @@ class Helper
 
         if ($current !== $expectedPrefix && !str_starts_with($current, $expectedPrefix . '/')) {
             if (self::isGlobalInstance() && self::redirectUrlSharesHostWithRequest($expectedPrefix)) {
+                // Same host path-based global install: do not invent a /{code} loop target.
+                if (self::isRequestOnCountryDomainUrl(self::getMainUrl() ?: '')) {
+                    return null;
+                }
+
                 return null;
             }
 
