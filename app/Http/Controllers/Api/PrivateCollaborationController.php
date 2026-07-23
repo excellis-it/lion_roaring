@@ -16,6 +16,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
 use App\Mail\CollaborationInvitation as CollaborationInvitationMail;
+use App\Mail\CollaborationUpdated as CollaborationUpdatedMail;
 use App\Mail\CollaborationAccepted;
 use App\Services\NotificationService;
 use Illuminate\Support\Facades\Http;
@@ -289,6 +290,26 @@ class PrivateCollaborationController extends Controller
 
             $collaboration->update($data);
 
+            // Sync invitees: add newly-selected users, remove de-selected ones, notify the rest of the update.
+            $submittedInvitees = array_filter(array_map('intval', (array) $request->input('invitees', [])));
+            $submittedInvitees = array_values(array_unique(array_diff($submittedInvitees, [auth()->id()])));
+
+            $existingInvitees = $collaboration->invitations()->pluck('user_id')->map(fn($v) => (int) $v)->toArray();
+
+            $toAdd = array_diff($submittedInvitees, $existingInvitees);
+            $toRemove = array_diff($existingInvitees, $submittedInvitees);
+
+            if (!empty($toRemove)) {
+                $collaboration->invitations()->whereIn('user_id', $toRemove)->delete();
+            }
+
+            if (!empty($toAdd)) {
+                $this->sendInvitationsToSelectedUsers($collaboration, array_values($toAdd));
+            }
+
+            $remainingInvitees = array_values(array_diff($submittedInvitees, $toAdd));
+            $this->notifyInviteesOfUpdate($collaboration, $remainingInvitees);
+
             return response()->json(['status' => true, 'message' => 'Private collaboration updated successfully.', 'data' => $collaboration], 200);
         } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
             return response()->json(['status' => false, 'message' => 'Collaboration not found.'], 404);
@@ -509,50 +530,60 @@ class PrivateCollaborationController extends Controller
             return response()->json(['status' => false, 'message' => 'Permission denied.'], 403);
         }
 
-        $request->validate([
-            'country_id' => 'required|exists:countries,id',
-        ]);
-
-        $country = Country::findOrFail($request->country_id);
         $authUser = auth()->user();
+        $isSuperAdmin = $authUser->hasNewRole('SUPER ADMIN');
 
-        if ($country->code == 'GL') {
-            $users = User::whereHas('userRole', function ($query) {
-                $query->where('name', '!=', 'SUPER ADMIN');
-            })->whereHas('roles.permissions', function ($query) {
+        if ($isSuperAdmin && ! $request->filled('country_id')) {
+            $users = User::whereHas('roles.permissions', function ($query) {
                 $query->where('name', 'Manage Private Collaboration');
-            })->whereIn('user_type', ['Global', 'G_R'])
-                ->where('status', 1)
+            })->where('status', 1)
                 ->where('id', '!=', auth()->id())
                 ->orderBy('first_name')->orderBy('last_name')->get();
         } else {
-            $usersQuery = User::whereHas('userRole', function ($query) {
-                $query->where('name', '!=', 'SUPER ADMIN');
-            })->whereHas('roles.permissions', function ($query) {
-                $query->where('name', 'Manage Private Collaboration');
-            })->where('id', '!=', auth()->id())
-                ->whereIn('user_type', ['Regional', 'G_R'])
-                ->where('status', 1)
-                ->where('country', $country->id);
+            $request->validate([
+                'country_id' => 'required|exists:countries,id',
+            ]);
 
-            if ($authUser && $authUser->is_ecclesia_admin == 1) {
-                $manageEcclesiaIds = is_array($authUser->manage_ecclesia)
-                    ? $authUser->manage_ecclesia
-                    : explode(',', (string) ($authUser->manage_ecclesia ?? ''));
-                $usersQuery->where(function ($q) use ($manageEcclesiaIds) {
-                    $q->where(function ($sub) use ($manageEcclesiaIds) {
-                        $sub->whereIn('ecclesia_id', $manageEcclesiaIds)->whereNotNull('ecclesia_id');
-                    });
-                    foreach ($manageEcclesiaIds as $id) {
-                        $id = trim($id);
-                        if ($id !== '') {
-                            $q->orWhereRaw('FIND_IN_SET(?, manage_ecclesia)', [$id]);
+            $country = Country::findOrFail($request->country_id);
+
+            if ($country->code == 'GL') {
+                $users = User::whereHas('userRole', function ($query) {
+                    $query->where('name', '!=', 'SUPER ADMIN');
+                })->whereHas('roles.permissions', function ($query) {
+                    $query->where('name', 'Manage Private Collaboration');
+                })->whereIn('user_type', ['Global', 'G_R'])
+                    ->where('status', 1)
+                    ->where('id', '!=', auth()->id())
+                    ->orderBy('first_name')->orderBy('last_name')->get();
+            } else {
+                $usersQuery = User::whereHas('userRole', function ($query) {
+                    $query->where('name', '!=', 'SUPER ADMIN');
+                })->whereHas('roles.permissions', function ($query) {
+                    $query->where('name', 'Manage Private Collaboration');
+                })->where('id', '!=', auth()->id())
+                    ->whereIn('user_type', ['Regional', 'G_R'])
+                    ->where('status', 1)
+                    ->where('country', $country->id);
+
+                if ($authUser && $authUser->is_ecclesia_admin == 1) {
+                    $manageEcclesiaIds = is_array($authUser->manage_ecclesia)
+                        ? $authUser->manage_ecclesia
+                        : explode(',', (string) ($authUser->manage_ecclesia ?? ''));
+                    $usersQuery->where(function ($q) use ($manageEcclesiaIds) {
+                        $q->where(function ($sub) use ($manageEcclesiaIds) {
+                            $sub->whereIn('ecclesia_id', $manageEcclesiaIds)->whereNotNull('ecclesia_id');
+                        });
+                        foreach ($manageEcclesiaIds as $id) {
+                            $id = trim($id);
+                            if ($id !== '') {
+                                $q->orWhereRaw('FIND_IN_SET(?, manage_ecclesia)', [$id]);
+                            }
                         }
-                    }
-                });
-            }
+                    });
+                }
 
-            $users = $usersQuery->orderBy('first_name')->orderBy('last_name')->get();
+                $users = $usersQuery->orderBy('first_name')->orderBy('last_name')->get();
+            }
         }
 
         $result = $users->map(function ($user) {
@@ -595,6 +626,33 @@ class PrivateCollaborationController extends Controller
                 );
             } catch (\Exception $e) {
                 Log::error('Failed to send in-app notification to user '.$user->id.': '.$e->getMessage());
+            }
+        }
+    }
+
+    protected function notifyInviteesOfUpdate($collaboration, array $userIds = []): void
+    {
+        if (empty($userIds)) {
+            return;
+        }
+
+        $users = User::whereIn('id', $userIds)->where('id', '!=', auth()->id())->get();
+
+        foreach ($users as $user) {
+            try {
+                Mail::to($user->email)->send(new CollaborationUpdatedMail($collaboration, $user));
+            } catch (\Exception $e) {
+                Log::error('Failed to send collaboration update email to user '.$user->id.': '.$e->getMessage());
+            }
+
+            try {
+                NotificationService::notifyUser(
+                    $user->id,
+                    'Collaboration updated: '.$collaboration->title,
+                    'collaboration'
+                );
+            } catch (\Exception $e) {
+                Log::error('Failed to send collaboration update notification to user '.$user->id.': '.$e->getMessage());
             }
         }
     }

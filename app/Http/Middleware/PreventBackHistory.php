@@ -16,7 +16,7 @@ class PreventBackHistory
      */
     public function handle($request, Closure $next)
     {
-        \Log::info('Cache control middleware triggered');
+       // \Log::info('Cache control middleware triggered');
 
         $response = $next($request);
 

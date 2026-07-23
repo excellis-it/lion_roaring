@@ -30,14 +30,6 @@
     .after_about_hm .abt_text_white {
         padding: 0px 0;
     }
-    .login_prf a span {
-        left: -3%;
-        top: 1px;
-    }
-    .login_prf a {
-        padding: 10px 10px;
-        font-size: 15px;
-    }
     .heading_hp h2 {
         font-size: 34px;
     }
@@ -193,9 +185,6 @@
 }
 
 @media (max-width: 1280px) {
-    .login_prf a {
-        font-size: 14px;
-    }
     .slide__img img.overlay-image {
         bottom: 0px;
     }
@@ -722,6 +711,74 @@
     }
 }
 
+@media (max-width: 767px) {
+    .main_menu_hdr {
+        --hdr-ctrl-padding-x: 8px;
+    }
+
+    .main_menu_hdr .container-fluid {
+        padding-left: 12px;
+        padding-right: 12px;
+    }
+
+    .right_top {
+        flex-wrap: nowrap;
+        gap: 6px;
+        justify-content: flex-end;
+        align-items: center;
+        width: 100%;
+    }
+
+    .header-flag-box {
+        flex: 0 0 auto;
+    }
+
+    .main_menu_hdr .header-flag-box .cst-select-display {
+        min-width: 0 !important;
+        width: auto !important;
+        padding-left: 8px !important;
+        padding-right: 8px !important;
+    }
+
+    .header-flag-box .cst-select-content span {
+        display: none !important;
+    }
+
+    .menu-wrepper {
+        flex: 0 1 auto;
+        min-width: 0;
+    }
+
+    .main_menu_hdr .right_tran .language-switcher-wrapper .cst-select-display,
+    .main_menu_hdr .right_tran .cst-select-display {
+        min-width: 0 !important;
+        width: auto !important;
+        max-width: 100px;
+    }
+
+    .right_tran .cst-select-content span {
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+
+    .right-site-btns {
+        flex: 0 0 auto;
+    }
+
+    .login_prf {
+        padding: 0;
+    }
+
+    .login-label--desktop {
+        display: none;
+    }
+
+    .login-label--mobile {
+        display: inline;
+    }
+}
+
 @media (max-width: 576px) {
     .right_top {
         /*flex-direction: column-reverse;*/
@@ -737,7 +794,7 @@
         /*right: -44px;*/
     }
     .login_prf {
-        padding: 4px 2px;
+        padding: 0;
     }
     .login-sec {
         padding: 50px 0;
@@ -852,7 +909,6 @@
     }
     .header-flag-box .input-group div:nth-child(2) {
         min-width: 70px !important;
-        padding: 8px 10px;
     }
     .footer_sec {
         padding: 50px 0 0px;
@@ -934,7 +990,6 @@
 }
 @media (max-width: 480px) {
     .header-flag-box .input-group div:nth-child(2) {
-        padding: 4px 10px !important;
         justify-content: center !important;
         gap: 0px !important;
     }
@@ -945,25 +1000,6 @@
         padding: 6px 0px;
         font-size: 11px;
     }
-    .login_prf a {
-        padding: 7px 9px;
-        font-size: 12px;
-    }
-    .login_prf a span {
-        left: -3%;
-        top: 0px;
-        width: 20px;
-        height: 20px;
-    }
-    .login_prf a span i {
-        font-size: 12px;
-    }
-    /* .header-flag-box .input-group div:nth-child(2){
-    padding: 6px 6px 6px 10px;
-} */
-    /* .login_prf a span{
-    display: none;
-} */
 
     .logo {
         padding: 0px 0px;
@@ -1027,6 +1063,10 @@
     }
     .main_menu_hdr {
         padding: 5px 0px;
+        --hdr-ctrl-height: 34px;
+        --hdr-ctrl-font-size: 12px;
+        --hdr-ctrl-icon-size: 18px;
+        --hdr-ctrl-padding-x: 8px;
     }
     .key_feature_sec {
         padding: 40px 0;
@@ -1039,19 +1079,6 @@
     }
     .testimonial_sec {
         padding: 40px 0;
-    }
-    .login_prf a {
-        font-size: 12px;
-        padding: 7px 5px;
-    }
-    .login_prf a span {
-        left: 0%;
-        top: 0px;
-        width: 20px;
-        height: 20px;
-    }
-    .login_prf a span i {
-        font-size: 12px;
     }
     .promo-box-container {
         max-width: 350px;
@@ -1070,18 +1097,6 @@
 }
 
 @media (max-width: 360px) {
-    .login_prf a span {
-        /*display: none;*/
-        width: 18px;
-        height: 18px;
-    }
-    .login_prf a {
-        padding: 8px 4px;
-        font-size: 10px;
-    }
-    .login_prf a span i {
-        font-size: 10px;
-    }
     .goog-te-gadget .goog-te-combo {
         padding: 4px 0px;
     }
@@ -1102,9 +1117,6 @@
         top: 7px;
     }
     .header-flag-box .input-group div:nth-child(2) {
-        padding: 4px 10px !important;
-    }
-    .header-flag-box .input-group div:nth-child(2) {
         min-width: 50px !important;
     }
     .promo-box-container {
@@ -1112,8 +1124,15 @@
     }
 }
 @media (max-width: 320px) {
-    .login_prf a {
-        padding: 5px 4px;
-        font-size: 10px;
+    .main_menu_hdr {
+        --hdr-ctrl-height: 32px;
+        --hdr-ctrl-font-size: 11px;
+        --hdr-ctrl-icon-size: 16px;
+        --hdr-ctrl-padding-x: 6px;
+    }
+
+    .main_menu_hdr .right_tran .language-switcher-wrapper .cst-select-display,
+    .main_menu_hdr .right_tran .cst-select-display {
+        max-width: 82px;
     }
 }

@@ -77,6 +77,29 @@
             border-radius: 4px;
         }
 
+        .product-image-upload-field .image-upload-with-preview {
+            display: flex;
+            align-items: flex-start;
+            gap: 0.5rem;
+        }
+
+        .product-image-upload-field .image-upload-input {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .product-image-upload-field .image-upload-thumb {
+            flex-shrink: 0;
+            margin-top: 2px;
+        }
+
+        .product-form-section-divider {
+            border: 0;
+            border-bottom: 2px solid #eee;
+            margin: 1.25rem 0 1.5rem;
+            opacity: 1;
+        }
+
         .gallery-previews {
             display: flex;
             flex-wrap: wrap;
@@ -244,9 +267,9 @@
                                         </div>
                                     </div>
                                 </div>
-                                <div class="row align-items-center mb-5">
+                                <div class="row align-items-end mb-5">
 
-                                    <div class="col-md-6 mb-2">
+                                    <div class="col-md-4 mb-2">
                                         <div class="box_label">
                                             <label for="name"> Product Name*</label>
                                             <input type="text" name="name" id="name" class="form-control"
@@ -257,7 +280,7 @@
                                         </div>
                                     </div>
                                     {{-- category_id --}}
-                                    <div class="col-md-6 mb-2">
+                                    <div class="col-md-4 mb-2">
                                         <div class="box_label">
                                             <label for="category_id"> Category*</label>
                                             <select name="category_id" id="category_id" class="form-control">
@@ -299,9 +322,8 @@
                                         </div>
                                     </div>
 
-
                                     {{-- slug --}}
-                                    <div class="col-xxl-4 col-md-6 mb-2">
+                                    <div class="col-md-4 mb-2">
                                         <div class="box_label">
                                             <label for="slug"> Product Slug*</label>
                                             <input type="text" name="slug" id="slug" class="form-control"
@@ -311,80 +333,74 @@
                                             @endif
                                         </div>
                                     </div>
+
+                                    <div class="w-100"></div>
+
                                     {{-- image --}}
-                                    <div class="col-xxl-3 col-md-5 mb-2">
+                                    <div class="col-md-6 mb-2 product-image-upload-field">
                                         <div class="box_label">
                                             <label for="image"> Product Featured Image*</label>
-                                            <input type="file" name="image" id="image" class="form-control"
-                                                value="{{ old('image') }}" accept="image/*">
-                                            <span class="text-sm ms-2 text-muted" style="font-size:12px;">(width: 300px,
-                                                height: 400px, max
-                                                2MB)</span>
-
-                                            @if ($errors->has('image'))
-                                                <span class="error">{{ $errors->first('image') }}</span>
-                                            @endif
-                                        </div>
-                                        {{-- <label for="" class="ms-3 "><a class="text-link text-primary"
-                                                href="{{ Storage::url($product->image?->image ?? '') }}"
-                                                target="_blank">View</a></label> --}}
-                                    </div>
-
-                                    {{-- image preview --}}
-                                    <div class="col-md-1 mb-2">
-                                        <div class="box_label">
-                                            <a href="{{ Storage::url($product->image?->image ?? '') }}" target="_blank"
-                                                id="image_preview_anchor">
-                                                <img style="height: 50px; width: 50px; object-fit: cover;"
-                                                    id="image_preview"
-                                                    src="{{ Storage::url($product->image?->image ?? '') }}"
-                                                    alt="Product Image" class="img-fluid">
-                                            </a>
+                                            <div class="image-upload-with-preview">
+                                                <div class="image-upload-input">
+                                                    <input type="file" name="image" id="image" class="form-control"
+                                                        value="{{ old('image') }}" accept="image/*">
+                                                    <span class="text-sm text-muted d-block"
+                                                        style="font-size:12px;">(width: 300px, height: 400px, max
+                                                        2MB)</span>
+                                                    @if ($errors->has('image'))
+                                                        <span class="error">{{ $errors->first('image') }}</span>
+                                                    @endif
+                                                </div>
+                                                <a href="{{ Storage::url($product->image?->image ?? '') }}"
+                                                    target="_blank" id="image_preview_anchor"
+                                                    class="image-upload-thumb">
+                                                    <img style="height: 50px; width: 50px; object-fit: cover;"
+                                                        id="image_preview"
+                                                        src="{{ Storage::url($product->image?->image ?? '') }}"
+                                                        alt="Product Image" class="img-fluid">
+                                                </a>
+                                            </div>
                                         </div>
                                     </div>
 
                                     {{-- background_image --}}
-                                    <div class="col-xxl-3 col-md-5 mb-2">
+                                    <div class="col-md-6 mb-2 product-image-upload-field">
                                         <div class="box_label">
                                             <label for="background_image"> Product Banner Image</label>
-                                            <input type="file" name="background_image" id="background_image"
-                                                class="form-control" value="{{ old('background_image') }}"
-                                                accept="image/*">
-                                            <span class="text-sm ms-2 text-muted" style="font-size:12px;">(width: 1920px,
-                                                height: 520px, max
-                                                2MB)</span>
-                                            @if ($errors->has('background_image'))
-                                                <span class="error">{{ $errors->first('background_image') }}</span>
-                                            @endif
-                                        </div>
-                                        {{-- <label for="" class="ms-3 "><a class="text-link text-primary"
-                                                href="{{ Storage::url($product->background_image ?? '') }}"
-                                                target="_blank">View</a></label> --}}
-                                    </div>
-
-
-                                    {{-- background image preview --}}
-                                    <div class="col-md-1 mb-2">
-                                        <div class="box_label" id="background_preview_wrapper">
-                                            @if ($product->background_image)
-                                                <a href="{{ Storage::url($product->background_image ?? '') }}"
-                                                    target="_blank" id="background_image_preview_anchor">
-                                                    <img style="height: 50px; width: 50px; object-fit: cover;"
-                                                        id="background_image_preview"
-                                                        src="{{ Storage::url($product->background_image ?? '') }}"
-                                                        alt="Product Background Image" class="img-fluid">
-                                                </a>
-                                            @else
-                                                {{-- // dummy placehoder image box --}}
-                                                <div
-                                                    style="height: 50px; width: 50px; background: #f0f0f0; border: 1px dashed #ccc;">
+                                            <div class="image-upload-with-preview">
+                                                <div class="image-upload-input">
+                                                    <input type="file" name="background_image" id="background_image"
+                                                        class="form-control" value="{{ old('background_image') }}"
+                                                        accept="image/*">
+                                                    <span class="text-sm text-muted d-block"
+                                                        style="font-size:12px;">(width: 1920px, height: 520px, max
+                                                        2MB)</span>
+                                                    @if ($errors->has('background_image'))
+                                                        <span class="error">{{ $errors->first('background_image') }}</span>
+                                                    @endif
                                                 </div>
-                                            @endif
+                                                <div class="image-upload-thumb" id="background_preview_wrapper">
+                                                    @if ($product->background_image)
+                                                        <a href="{{ Storage::url($product->background_image ?? '') }}"
+                                                            target="_blank" id="background_image_preview_anchor">
+                                                            <img style="height: 50px; width: 50px; object-fit: cover;"
+                                                                id="background_image_preview"
+                                                                src="{{ Storage::url($product->background_image ?? '') }}"
+                                                                alt="Product Background Image" class="img-fluid">
+                                                        </a>
+                                                    @else
+                                                        <div
+                                                            style="height: 50px; width: 50px; background: #f0f0f0; border: 1px dashed #ccc;">
+                                                        </div>
+                                                    @endif
+                                                </div>
+                                            </div>
                                         </div>
                                     </div>
 
-
-
+                                    <div class="col-12">
+                                        <hr class="product-form-section-divider">
+                                    </div>
 
                                     {{-- short_description --}}
                                     <div class="col-md-12 mb-2">

@@ -3,41 +3,11 @@
     Create Private Collaboration - {{ env('APP_NAME') }}
 @endsection
 @push('styles')
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/css/select2.min.css" rel="stylesheet" />
+    @include('user.private_collaboration.partials.invitee_select_styles')
     <style>
         .ck-placeholder {
             color: #a1a1a1;
             height: 250px !important;
-        }
-
-        .select2-container--default .select2-selection--multiple {
-            min-height: 45px;
-        }
-
-        /* Selected tag styling for invitees (purple theme) */
-        .select2-container--default .select2-selection--multiple .select2-selection__choice {
-            background-color: #7851a9;
-            border: 1px solid #5f3b86;
-            color: #ffffff;
-            padding-left: 8px;
-            padding-right: 6px;
-            border-radius: 6px;
-            font-weight: 500;
-        }
-
-        .select2-container--default .select2-selection--multiple .select2-selection__choice__remove {
-            color: rgba(255, 255, 255, 0.9);
-            margin-right: 6px;
-            font-weight: 700;
-        }
-
-        .select2-container--default .select2-selection--multiple .select2-selection__choice__remove:hover {
-            color: #fff;
-        }
-
-        /* Make the selected item text more readable */
-        .select2-container--default .select2-selection--multiple .select2-selection__choice span {
-            color: #ffffff;
         }
     </style>
 @endpush
@@ -299,93 +269,10 @@
                 });
             });
 
-            // Initialize Select2 for invitees with better UX
-            function initInviteesSelect() {
-                var renderTemplate = function(data) {
-                    if (!data.id) return data.text;
-                    // data.text is like "First Middle Last <email@domain.com>"
-                    var m = data.text.match(/^(.*) <(.*)>$/);
-                    if (m) {
-                        var $container = $("<div class='invite-template'><div><strong>" + m[1] +
-                            "</strong></div><div style='font-size:90%;color:#6c757d;'>" + m[2] +
-                            "</div></div>");
-                        return $container;
-                    }
-                    return data.text;
-                };
-
-                $('#invitees').select2({
-                    placeholder: 'Select users to invite',
-                    allowClear: true,
-                    width: '100%',
-                    closeOnSelect: false,
-                    templateResult: renderTemplate,
-                    templateSelection: function(data) {
-                        return data.text;
-                    }
-                });
-            }
-
-            if ($('#invitees').length) {
-                // load select2 script dynamically if not present
-                if (typeof $.fn.select2 === 'undefined') {
-                    $.getScript('https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/select2.min.js')
-                        .done(function() {
-                            initInviteesSelect();
-                            @if (auth()->user()->hasNewRole('SUPER ADMIN'))
-                                setupCountryUserLoading();
-                            @endif
-                        });
-                } else {
-                    initInviteesSelect();
-                    @if (auth()->user()->hasNewRole('SUPER ADMIN'))
-                        setupCountryUserLoading();
-                    @endif
-                }
-            }
-
-            // Dynamic user loading based on country selection (SUPER ADMIN only)
-            function setupCountryUserLoading() {
-                $('#countries').on('change', function() {
-                    var countryId = $(this).val();
-                    var $invitees = $('#invitees');
-
-                    // Clear current options
-                    $invitees.empty().append('<option></option>');
-                    if (typeof $.fn.select2 !== 'undefined') {
-                        $invitees.val(null).trigger('change');
-                    }
-
-                    if (!countryId) {
-                        return;
-                    }
-
-                    // Fetch eligible users for selected country
-                    $.ajax({
-                        url: '{{ route('private-collaborations.get-eligible-users') }}',
-                        type: 'GET',
-                        data: {
-                            country_id: countryId
-                        },
-                        success: function(response) {
-                            if (response.status && response.users) {
-                                $invitees.empty().append('<option></option>');
-                                $.each(response.users, function(index, user) {
-                                    $invitees.append('<option value="' + user.id +
-                                        '">' + user.text + '</option>');
-                                });
-                                if (typeof $.fn.select2 !== 'undefined') {
-                                    $invitees.trigger('change');
-                                }
-                            }
-                        },
-                        error: function(xhr) {
-                            console.error('Failed to load users:', xhr);
-                            toastr.error('Failed to load users for selected country.');
-                        }
-                    });
-                });
-            }
+            @include('user.private_collaboration.partials.invitee_select_scripts', [
+                'preloadFromDom' => true,
+                'enableCountryReload' => auth()->user()->hasNewRole('SUPER ADMIN'),
+            ])
         });
     </script>
 @endpush

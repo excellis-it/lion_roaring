@@ -7,6 +7,7 @@ use App\Models\MembershipTier;
 use App\Models\SubscriptionPayment;
 use App\Models\User;
 use App\Models\UserSubscription;
+use App\Services\MembershipPrivilegeService;
 use Illuminate\Http\Request;
 use Stripe\Webhook;
 
@@ -61,11 +62,17 @@ class StripeWebhookController extends Controller
                 return response()->json(['status' => 'already_processed']);
             }
 
+            $billingPeriod = \App\Services\MembershipPricing::validatePeriod($metadata->billing_period ?? 'yearly');
+            $basePrice = \App\Services\MembershipPricing::priceFor($tier, $billingPeriod);
+            $durationMonths = \App\Services\MembershipPricing::durationMonthsFor($billingPeriod);
+            $previousPlanId = $user->userLastSubscription?->plan_id;
+
             // Create or renew user subscription
             if ($isRenew && $user->userLastSubscription && $user->userLastSubscription->plan_id == $tier->id) {
                 $sub = $user->userLastSubscription;
-                $durationMonths = $tier->duration_months ?? 12;
                 $sub->subscription_expire_date = now()->max($sub->subscription_expire_date)->addMonths($durationMonths);
+                $sub->billing_period = $billingPeriod;
+                $sub->subscription_validity = $durationMonths;
                 $sub->save();
                 $user_subscription = $sub;
             } else {
@@ -73,13 +80,16 @@ class StripeWebhookController extends Controller
                 $user_subscription->user_id = $user->id;
                 $user_subscription->plan_id = $tier->id;
                 $user_subscription->subscription_name = $tier->name;
-                $user_subscription->subscription_price = $tier->cost;
-                $durationMonths = $tier->duration_months ?? 12;
+                $user_subscription->subscription_method = 'amount';
+                $user_subscription->subscription_price = $basePrice;
+                $user_subscription->billing_period = $billingPeriod;
                 $user_subscription->subscription_validity = $durationMonths;
                 $user_subscription->subscription_start_date = now();
                 $user_subscription->subscription_expire_date = now()->addMonths($durationMonths);
                 $user_subscription->save();
             }
+
+            app(MembershipPrivilegeService::class)->applyAfterTierChange($user, $tier, $previousPlanId);
 
             // Record payment
             $payment = new SubscriptionPayment();
@@ -87,7 +97,8 @@ class StripeWebhookController extends Controller
             $payment->user_subscription_id = $user_subscription->id;
             $payment->transaction_id = $session->id;
             $payment->payment_method = 'Stripe';
-            $payment->payment_amount = isset($session->amount_total) ? ($session->amount_total / 100) : $tier->cost;
+            $payment->payment_amount = isset($session->amount_total) ? ($session->amount_total / 100) : $basePrice;
+            $payment->billing_period = $billingPeriod;
             $payment->payment_status = 'Success';
             $payment->save();
 

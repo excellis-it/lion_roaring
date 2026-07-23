@@ -12,6 +12,7 @@
             'botId' => $ragBotId,
             'authToken' => $ragAuthToken,
             'hostLanguagesUrl' => route('chatbot.languages'),
+            'hostLanguageChangeUrl' => route('chatbot.language'),
             'hostSearchUrl' => route('chatbot.search-keywords'),
             'hostProductUrl' => route('e-store.product-details', ['slug' => ':slug']),
             'hostFaqUrl' => route('chatbot.faq-questions'),

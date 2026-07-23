@@ -35,6 +35,8 @@ class SettingsController extends Controller
             'SITE_CONTACT_PHONE' => 'required|string',
             'DONATE_TEXT' => 'nullable|string',  // Validate donate text
             'DONATE_BANK_TRANSFER_DETAILS' => 'nullable|string',  // Validate bank transfer details
+            'STRIPE_KEY' => 'nullable|string|max:255',  // Stripe publishable key
+            'STRIPE_SECRET' => 'nullable|string|max:255',  // Stripe secret key
         ]);
 
         $settings = SiteSetting::first();
@@ -103,6 +105,8 @@ class SettingsController extends Controller
         $settings->SITE_CONTACT_PHONE = $request->SITE_CONTACT_PHONE;
         $settings->DONATE_TEXT = $request->DONATE_TEXT;  // Update donate text
         $settings->DONATE_BANK_TRANSFER_DETAILS = $request->DONATE_BANK_TRANSFER_DETAILS;  // Update bank transfer details
+        $settings->STRIPE_KEY = $request->STRIPE_KEY;  // Stripe publishable key
+        $settings->STRIPE_SECRET = $request->STRIPE_SECRET;  // Stripe secret key
 
         $settings->save();
 

@@ -85,7 +85,7 @@
                                     </div>
                                     <div class="col-lg-4">
                                         <div class="search-field float-right">
-                                            <input type="text" name="search" id="search" placeholder="search..."
+                                            <input type="text" name="search" id="search" placeholder="Search..."
                                                 required class="form-control" value="{{ $query }}">
                                             <button class="submit_search" id="search-button" type="button"> <span
                                                     class=""><i class="fa fa-search"></i></span></button>

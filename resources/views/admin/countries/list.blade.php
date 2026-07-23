@@ -30,7 +30,7 @@
                             <div class="col-md-12 pr-0">
                                 <div class="search-field prod-search">
                                     <input type="text" name="search" id="search"
-                                        placeholder="search by name or code..." required class="form-control">
+                                        placeholder="Search by name or code..." required class="form-control">
                                     <a href="javascript:void(0)" class="prod-search-icon"><i
                                             class="ph ph-magnifying-glass"></i></a>
                                 </div>

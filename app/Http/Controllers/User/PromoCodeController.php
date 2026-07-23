@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\User;
 
 use App\Http\Controllers\Controller;
+use App\Services\MembershipPricing;
 use Illuminate\Http\Request;
 use App\Models\MembershipPromoCode;
 use App\Models\MembershipTier;
@@ -171,6 +172,7 @@ class PromoCodeController extends Controller
         $request->validate([
             'code' => 'required|string',
             'tier_id' => 'required|exists:membership_tiers,id',
+            'billing_period' => 'nullable|in:monthly,yearly',
         ]);
 
         $promoCode = MembershipPromoCode::where('code', $request->code)->first();
@@ -201,8 +203,10 @@ class PromoCodeController extends Controller
         }
 
         $tier = MembershipTier::find($request->tier_id);
-        $discount = $promoCode->calculateDiscount($tier->cost);
-        $finalPrice = max(0, $tier->cost - $discount);
+        $billingPeriod = MembershipPricing::validatePeriod($request->input('billing_period'));
+        $basePrice = MembershipPricing::priceFor($tier, $billingPeriod);
+        $discount = $promoCode->calculateDiscount($basePrice);
+        $finalPrice = max(0, $basePrice - $discount);
 
         return response()->json([
             'valid' => true,
@@ -211,6 +215,7 @@ class PromoCodeController extends Controller
             'final_price' => $finalPrice,
             'is_percentage' => $promoCode->is_percentage,
             'discount_amount' => $promoCode->discount_amount,
+            'billing_period' => $billingPeriod,
         ]);
     }
 }

@@ -572,6 +572,21 @@
                                     </div>
                                 </div>
 
+                                <div class="row mt-4">
+                                    <div class="col-md-12">
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="checkbox" name="membership_excluded"
+                                                value="1" id="membership_excluded"
+                                                {{ old('membership_excluded') ? 'checked' : '' }}>
+                                            <label class="form-check-label" for="membership_excluded">
+                                                Exclude from membership requirements
+                                            </label>
+                                        </div>
+                                        <small class="text-muted">User keeps their role and permissions but will not be
+                                            blocked by or shown membership screens.</small>
+                                    </div>
+                                </div>
+
                                 <!-- Membership Tier Selection (Only for MEMBER_SOVEREIGN) -->
                                 <div class="row mt-4 d-none" id="membership-tier-section">
                                     <div class="col-md-12">
@@ -1222,7 +1237,12 @@
 
             function togglePermissionsAndMembership() {
                 var selectedRole = $('input[name="role"]:checked').val();
-                if (selectedRole === 'MEMBER_SOVEREIGN') {
+                var membershipExcluded = $('#membership_excluded').is(':checked');
+
+                if (membershipExcluded) {
+                    $('#membership-tier-section').addClass('d-none');
+                    $('input[name="membership_tier_id"]').prop('checked', false);
+                } else if (selectedRole === 'MEMBER_SOVEREIGN') {
                     $('#permissions-section').addClass('d-none');
                     $('#membership-tier-section').removeClass('d-none');
                     // Auto-select tier based on user_type: Global/G_R = Tier 2, Regional = Tier 1
@@ -1240,7 +1260,15 @@
                     $('#permissions-section').removeClass('d-none');
                     $('#membership-tier-section').addClass('d-none');
                 }
+
+                if (!membershipExcluded && selectedRole === 'MEMBER_SOVEREIGN') {
+                    $('#permissions-section').addClass('d-none');
+                }
             }
+
+            $(document).on('change', '#membership_excluded', function() {
+                togglePermissionsAndMembership();
+            });
 
             $(document).on('change', 'input[name="role"]', function() {
                 getEcclesias(); // Trigger ecclesia fetching on role change

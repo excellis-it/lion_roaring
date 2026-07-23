@@ -93,7 +93,7 @@
                                                 value="{{ $tier->id }}" id="tier{{ $tier->id }}"
                                                 {{ in_array($tier->id, old('tier_ids', [])) ? 'checked' : '' }}>
                                             <label class="form-check-label" for="tier{{ $tier->id }}">
-                                                {{ $tier->name }} (${{ $tier->cost }})
+                                                {{ $tier->name }}
                                             </label>
                                         </div>
                                     </div>

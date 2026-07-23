@@ -74,37 +74,109 @@ class Country extends BaseModel
     }
 
     /**
+     * Reset cached domain list (useful in tests).
+     */
+    public static function clearDomainCache(): void
+    {
+        self::$countriesWithDomains = null;
+    }
+
+    /**
+     * Normalize a URL path to a trimmed slash form, e.g. "/lion-roaring-us".
+     */
+    public static function normalizeUrlPath(?string $path): string
+    {
+        $path = trim((string) $path);
+        if ($path === '' || $path === '/') {
+            return '';
+        }
+
+        return '/' . trim($path, '/');
+    }
+
+    /**
+     * Current request path including subdirectory mounts (e.g. /lion-roaring-us/us).
+     */
+    public static function currentRequestPath(): string
+    {
+        $uriPath = parse_url(request()->getRequestUri(), PHP_URL_PATH);
+
+        return self::normalizeUrlPath($uriPath);
+    }
+
+    /**
+     * Whether the current request matches a stored country domain URL.
+     * Supports host-only domains and same-host path-based domains
+     * (e.g. https://excellis.co.in/lion-roaring-us).
+     */
+    public static function requestMatchesDomainUrl(string $domainUrl, ?string $requestPath = null): bool
+    {
+        $parsed = parse_url($domainUrl);
+        $domainHost = $parsed['host'] ?? null;
+        if (!$domainHost || strtolower($domainHost) !== strtolower(request()->getHost())) {
+            return false;
+        }
+
+        $domainPort = $parsed['port'] ?? null;
+        $requestPort = request()->getPort();
+        if ($domainPort !== null) {
+            if ((string) $domainPort !== (string) $requestPort) {
+                return false;
+            }
+        } elseif (!in_array((int) $requestPort, [80, 443], true)) {
+            // Non-default ports without an explicit domain port do not match.
+            return false;
+        }
+
+        $domainPath = self::normalizeUrlPath($parsed['path'] ?? '');
+        $requestPath = self::normalizeUrlPath($requestPath ?? self::currentRequestPath());
+
+        if ($domainPath === '') {
+            return true;
+        }
+
+        return $requestPath === $domainPath
+            || str_starts_with($requestPath . '/', $domainPath . '/');
+    }
+
+    /**
+     * Specificity score for domain matches (longer path wins over host-only).
+     */
+    public static function domainMatchScore(string $domainUrl): int
+    {
+        $parsed = parse_url($domainUrl);
+        $path = self::normalizeUrlPath($parsed['path'] ?? '');
+
+        return $path === '' ? 0 : strlen($path);
+    }
+
+    /**
      * Find a country by matching the current request URL against stored domains.
-     * Uses the cached collection — no extra DB query.
+     * Uses host + optional path; prefers the longest/most specific path match
+     * so same-host demo installs (…/lion-roaring-org vs …/lion-roaring-us) work.
      */
     public static function findByCurrentRequest(): ?self
     {
-        $requestHost = request()->getHost();
-        $requestPort = request()->getPort();
-
         $countries = self::getCountriesWithDomains();
+        $requestPath = self::currentRequestPath();
+
+        $best = null;
+        $bestScore = -1;
 
         foreach ($countries as $country) {
-            $parsed = parse_url($country->domain);
-            $domainHost = $parsed['host'] ?? null;
-            $domainPort = $parsed['port'] ?? null;
+            $domain = trim((string) $country->domain);
+            if ($domain === '' || !self::requestMatchesDomainUrl($domain, $requestPath)) {
+                continue;
+            }
 
-            if ($domainHost === $requestHost) {
-                // If domain has port specified, match port too
-                if ($domainPort !== null) {
-                    if ((string) $domainPort === (string) $requestPort) {
-                        return $country;
-                    }
-                } else {
-                    // No port in domain — match if request uses default port
-                    if (in_array($requestPort, [80, 443])) {
-                        return $country;
-                    }
-                }
+            $score = self::domainMatchScore($domain);
+            if ($score > $bestScore) {
+                $best = $country;
+                $bestScore = $score;
             }
         }
 
-        return null;
+        return $best;
     }
 
     /**

@@ -259,6 +259,7 @@ class PartnerMemberApiService
             'manage_ecclesia' => $manageEcclesia,
             'current_permissions' => $currentPermissions,
             'membership_tier_id' => $partner->userLastSubscription?->plan_id,
+            'membership_excluded' => $partner->isMembershipExcluded(),
         ];
     }
 
@@ -292,6 +293,7 @@ class PartnerMemberApiService
             'ecclesia_id' => $partner->ecclesia_id,
             'user_type' => $partner->user_type,
             'user_type_id' => $partner->user_type_id,
+            'membership_excluded' => $partner->isMembershipExcluded(),
             'lion_roaring_id' => $partner->lion_roaring_id,
             'roar_id' => $partner->roar_id,
             'is_ecclesia_admin' => (int) ($partner->is_ecclesia_admin ?? 0),
@@ -345,9 +347,9 @@ class PartnerMemberApiService
             'user_type' => 'required',
         ];
 
-        if ($request->role === 'MEMBER_SOVEREIGN') {
+        if ($request->role === 'MEMBER_SOVEREIGN' && !$request->boolean('membership_excluded')) {
             $rules['membership_tier_id'] = 'required|exists:membership_tiers,id';
-        } else {
+        } elseif ($request->role !== 'MEMBER_SOVEREIGN') {
             $rules['permissions'] = 'nullable|array';
         }
 
@@ -438,13 +440,14 @@ class PartnerMemberApiService
         $data->phone_country_code_name = $request->phone_country_code_name;
         $data->status = 1;
         $data->is_accept = 1;
+        $data->membership_excluded = $request->boolean('membership_excluded');
         $data->manage_ecclesia = $request->has('manage_ecclesia')
             ? implode(',', (array) $request->manage_ecclesia)
             : null;
         $data->save();
         $data->assignRole($newRole->name);
 
-        if ($theRole->name === 'MEMBER_SOVEREIGN' && $request->filled('membership_tier_id')) {
+        if ($theRole->name === 'MEMBER_SOVEREIGN' && $request->filled('membership_tier_id') && !$request->boolean('membership_excluded')) {
             $this->syncMembershipTier($data, (int) $request->membership_tier_id);
         }
 
@@ -485,9 +488,9 @@ class PartnerMemberApiService
             'confirm_password' => 'nullable|min:8|same:password',
         ];
 
-        if ($request->role === 'MEMBER_SOVEREIGN') {
+        if ($request->role === 'MEMBER_SOVEREIGN' && !$request->boolean('membership_excluded')) {
             $rules['membership_tier_id'] = 'required|exists:membership_tiers,id';
-        } else {
+        } elseif ($request->role !== 'MEMBER_SOVEREIGN') {
             $rules['permissions'] = 'nullable|array';
         }
 
@@ -567,10 +570,11 @@ class PartnerMemberApiService
         $data->manage_ecclesia = $request->has('manage_ecclesia')
             ? implode(',', (array) $request->manage_ecclesia)
             : null;
+        $data->membership_excluded = $request->boolean('membership_excluded');
         $data->save();
 
         $userRole = $this->resolveOrCreateCustomRole($data, $theRole);
-        if ($theRole->name === 'MEMBER_SOVEREIGN' && $request->filled('membership_tier_id')) {
+        if ($theRole->name === 'MEMBER_SOVEREIGN' && $request->filled('membership_tier_id') && !$request->boolean('membership_excluded')) {
             $tier = MembershipTier::find($request->membership_tier_id);
             if ($tier && !empty($tier->permissions)) {
                 $permissions = array_filter(array_map('trim', explode(',', $tier->permissions)));
@@ -587,7 +591,7 @@ class PartnerMemberApiService
         app()->make(\Spatie\Permission\PermissionRegistrar::class)->forgetCachedPermissions();
         $data->forgetCachedPermissions();
 
-        if ($theRole->name === 'MEMBER_SOVEREIGN' && $request->filled('membership_tier_id')) {
+        if ($theRole->name === 'MEMBER_SOVEREIGN' && $request->filled('membership_tier_id') && !$request->boolean('membership_excluded')) {
             $this->syncMembershipTier($data, (int) $request->membership_tier_id, true);
         }
 
@@ -599,7 +603,7 @@ class PartnerMemberApiService
      */
     private function resolvePermissionsForRequest(Request $request, UserType $theRole): array
     {
-        if ($theRole->name === 'MEMBER_SOVEREIGN' && $request->filled('membership_tier_id')) {
+        if ($theRole->name === 'MEMBER_SOVEREIGN' && !$request->boolean('membership_excluded') && $request->filled('membership_tier_id')) {
             $tier = MembershipTier::find($request->membership_tier_id);
             if ($tier && !empty($tier->permissions)) {
                 return array_values(array_filter(array_map('trim', explode(',', $tier->permissions))));

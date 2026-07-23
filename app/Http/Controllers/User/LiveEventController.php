@@ -311,6 +311,32 @@ class LiveEventController extends Controller
 
         $event->update();
 
+        // Notify registered attendees (RSVP users) that the event details changed
+        $rsvps = EventRsvp::with(['user'])
+            ->where('event_id', $event->id)
+            ->whereIn('status', ['confirmed', 'pending'])
+            ->get();
+
+        $notificationMessage = 'Live event updated: ' . $event->title . '. Please check the latest schedule and access details.';
+
+        foreach ($rsvps as $rsvp) {
+            if (!$rsvp->user) {
+                continue;
+            }
+
+            try {
+                NotificationService::saveNotification($rsvp->user->id, $notificationMessage, 'live_event');
+            } catch (\Exception $e) {
+                Log::error('Failed to send in-app event update notification to user ' . $rsvp->user->id . ': ' . $e->getMessage());
+            }
+
+            try {
+                Mail::to($rsvp->user->email)->queue(new EventRsvpConfirmation($rsvp));
+            } catch (\Exception $e) {
+                Log::error('Failed to queue event update email to ' . $rsvp->user->email . ': ' . $e->getMessage());
+            }
+        }
+
         return response()->json([
             'message' => 'Event updated successfully.',
             'event' => $event,

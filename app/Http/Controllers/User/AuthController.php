@@ -19,9 +19,10 @@ use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\Crypt;
-use App\Mail\OtpMail;
 use App\Models\MembershipPromoCode;
-use App\Models\VerifyOTP;
+use App\Services\LoginOtpService;
+use App\Services\MembershipPricing;
+use App\Services\MembershipTierRegistrationPolicy;
 use Illuminate\Support\Facades\Hash;
 use App\Models\UserActivity;
 use App\Models\MembershipTier;
@@ -48,7 +49,7 @@ class AuthController extends Controller
         return view('user.auth.login')->with(compact('agreement'));
     }
 
-    public function loginCheck(Request $request)
+    public function loginCheck(Request $request, LoginOtpService $loginOtpService)
     {
         $pass_demo_login = false;
         $demo_login_password = 'Demo@1234';
@@ -69,39 +70,23 @@ class AuthController extends Controller
         $user = User::where($fieldType, $request->user_name)->first();
         $is_demo_login = $pass_demo_login && hash_equals($demo_login_password, (string) $request->password);
 
-        $currentCode = strtoupper(Helper::getVisitorCountryCode());
-        $country = Country::where('code', $currentCode)->first();
-
         if ($user && (Hash::check($request->password, $user->password) || $is_demo_login)) {
             if ($user->status == 1 && $user->is_accept == 1) {
 
-                // dd($country->id, $user->country);
                 if (!$user->hasNewRole('SUPER ADMIN')) {
-                    $domainCountry = Country::findByCurrentRequest();
-
-                    if ($domainCountry) {
-                        if (!Helper::userCanAccessCurrentInstance($user)) {
-                            return response()->json([
-                                'message' => Helper::userInstanceAccessMessage($user),
-                                'status' => false,
-                                'redirect_url' => Helper::resolveUserInstanceRedirectUrl($user),
-                            ]);
-                        }
-                    } else {
-                        if (!$country) {
-                            return response()->json(['message' => 'Please select your country from the dropdown first.', 'status' => false]);
-                        }
-
-                        if (($user->user_type != 'G_R') && ($user->user_type == 'Regional') && ($country->id != $user->country)) {
-                            return response()->json(['message' => 'You are not from ' . $country->name . '! Please change the country from dropdown.', 'status' => false]);
-                        } elseif (($user->user_type != 'G_R') && ($user->user_type == 'Global') && ($country->code != 'GL')) {
-                            return response()->json(['message' => 'You are a Global user! Please change the country to Global.', 'status' => false]);
-                        }
+                    if (!Helper::userCanAccessCurrentInstance($user)) {
+                        return response()->json([
+                            'message' => Helper::userInstanceAccessMessage($user),
+                            'status' => false,
+                            'redirect_url' => Helper::resolveUserInstanceRedirectUrl($user),
+                        ]);
                     }
                 }
 
                 if ($is_demo_login) {
+                    Helper::clearBrowsingSession();
                     Auth::login($user);
+                    Helper::syncVisitorCountryForUser($user);
                     Helper::recordLoginContext();
                     Session::put('user_id', $user->id);
 
@@ -119,14 +104,26 @@ class AuthController extends Controller
                     ]);
                 }
 
+                try {
+                    \Illuminate\Support\Facades\Log::info('[LOGIN_OTP] OTP_WEB_LOGIN_ABOUT_TO_ISSUE', [
+                        'user_id' => $user->id,
+                        'email' => $user->email,
+                    ]);
+                    $loginOtpService->issue($user);
+                } catch (\Throwable $exception) {
+                    \Illuminate\Support\Facades\Log::error('[LOGIN_OTP] OTP_WEB_LOGIN_FAILED', [
+                        'user_id' => $user->id,
+                        'email' => $user->email,
+                        'exception' => get_class($exception),
+                        'message' => $exception->getMessage(),
+                    ]);
 
-                $otp = rand(1000, 9999);
-                // $otp = 1234;
-                $otp_verify = new VerifyOTP();
-                $otp_verify->user_id = $user->id;
-                $otp_verify->email = $user->email;
-                $otp_verify->otp = $otp;
-                $otp_verify->save();
+                    return response()->json([
+                        'message' => 'Email server temporary unavailable. Please try later.',
+                        'status' => false,
+                    ]);
+                }
+
                 if ($request->has('remember')) {
                     $expire = time() + (86400 * 365 * 5); // 5 years
                     setcookie('email_user_name', $request->user_name, $expire, '/', '', false, true);
@@ -143,17 +140,41 @@ class AuthController extends Controller
                     'activity_type' => 'LOGIN',
                     'activity_description' => 'User logged in',
                 ]);
-                try {
-                    Mail::to($user->email)->send(new OtpMail($otp));
-                } catch (\Exception $e) {
-                    return response()->json(['message' => 'Email server temporary unavailable. Please try later.', 'status' => false]);
-                }
                 return response()->json(['message' => 'Code sent to your email', 'status' => true, 'otp_required' => true]);
             } else {
                 return response()->json(['message' => 'Your account is not active!', 'status' => false]);
             }
         } else {
             return response()->json(['message' => 'User name & password was invalid!', 'status' => false]);
+        }
+    }
+
+    public function paymentGatewayStatus()
+    {
+        // Lightweight liveness check on the active Stripe secret key (DB-managed).
+        // Only a SUCCESS is cached (briefly) so repeated clicks don't hammer Stripe.
+        // Failures are never cached: a transient blip must not lock users out, and
+        // recovery (e.g. admin pastes a valid key) takes effect immediately.
+        if (\Illuminate\Support\Facades\Cache::get('stripe_gateway_ok')) {
+            return response()->json(['ok' => true]);
+        }
+
+        $secret = config('services.stripe.secret');
+        if (empty($secret)) {
+            return response()->json(['ok' => false, 'reason' => 'not_configured']);
+        }
+
+        try {
+            \Stripe\Stripe::setApiKey($secret);
+            \Stripe\Balance::retrieve();
+            \Illuminate\Support\Facades\Cache::put('stripe_gateway_ok', true, 30);
+            return response()->json(['ok' => true]);
+        } catch (\Stripe\Exception\AuthenticationException $e) {
+            Log::error('Stripe gateway check failed (auth): ' . $e->getMessage());
+            return response()->json(['ok' => false, 'reason' => 'auth']);
+        } catch (\Throwable $e) {
+            Log::error('Stripe gateway check failed: ' . $e->getMessage());
+            return response()->json(['ok' => false, 'reason' => 'error']);
         }
     }
 
@@ -279,6 +300,14 @@ class AuthController extends Controller
                 return;
             }
 
+            $tierLockError = app(MembershipTierRegistrationPolicy::class)
+                ->validateTierSelectable((int) $request->tier_id, $request);
+            if ($tierLockError) {
+                $validator->errors()->add('tier_id', $tierLockError);
+
+                return;
+            }
+
             $pricingType = $tier->pricing_type ?? 'amount';
 
             if ($pricingType === 'token') {
@@ -289,17 +318,21 @@ class AuthController extends Controller
             }
 
             // Amount based tiers
-            $finalPrice = floatval($tier->cost);
+            $billingPeriod = MembershipPricing::validatePeriod($request->input('billing_period'));
+            $basePrice = MembershipPricing::priceFor($tier, $billingPeriod);
+            $finalPrice = $basePrice;
             if ($request->promo_code) {
                 $promo = MembershipPromoCode::where('code', $request->promo_code)->first();
                 if ($promo && $promo->canBeAppliedToTier($tier->id)) {
-                    $discount = $promo->calculateDiscount($tier->cost);
-                    $finalPrice = max(0, $tier->cost - $discount);
+                    $discount = $promo->calculateDiscount($basePrice);
+                    $finalPrice = max(0, $basePrice - $discount);
                 }
             }
 
             if ($finalPrice > 0 && (!$request->stripeToken || $request->stripeToken == 'free_tier')) {
                 $validator->errors()->add('stripeToken', 'Payment token is missing. Please try again.');
+            } elseif ($basePrice > 0 && $finalPrice <= 0 && (!$request->stripeToken || $request->stripeToken == 'free_tier')) {
+                $validator->errors()->add('stripeToken', 'Payment card details are required.');
             }
         });
 
@@ -336,16 +369,17 @@ class AuthController extends Controller
         $payment_amount = 0;
         $promoCode = null;
         $discount = 0;
-        $finalPrice = $tier->cost;
+        $billingPeriod = MembershipPricing::validatePeriod($request->input('billing_period'));
+        $basePrice = MembershipPricing::priceFor($tier, $billingPeriod);
+        $finalPrice = $basePrice;
 
         // Handle promo code if provided during registration
         if ($request->has('promo_code') && !empty($request->promo_code)) {
             $promoCode = MembershipPromoCode::where('code', $request->promo_code)->first();
             if ($promoCode && $promoCode->isValid()) {
-                // For registration, we don't have user_id yet, but we can check tier scope
                 if ($promoCode->canBeAppliedToTier($tier->id)) {
-                    $discount = $promoCode->calculateDiscount($tier->cost);
-                    $finalPrice = max(0, $tier->cost - $discount);
+                    $discount = $promoCode->calculateDiscount($basePrice);
+                    $finalPrice = max(0, $basePrice - $discount);
                 }
             }
         }
@@ -353,7 +387,7 @@ class AuthController extends Controller
         // Process Payment
         if (($tier->pricing_type ?? 'amount') === 'amount' && floatval($finalPrice) > 0) {
             try {
-                \Stripe\Stripe::setApiKey(env('STRIPE_SECRET'));
+                \Stripe\Stripe::setApiKey(config('services.stripe.secret'));
                 $charge = \Stripe\Charge::create([
                     'amount' => (int) ($finalPrice * 100),
                     'currency' => 'usd',
@@ -366,9 +400,11 @@ class AuthController extends Controller
                     $transaction_id = $charge->id;
                     $payment_amount = $finalPrice;
                 } else {
-                    return redirect()->back()->withErrors(['stripeToken' => 'Payment failed.'])->withInput();
+                    Log::error('Registration payment not succeeded', ['charge_status' => $charge->status, 'email' => $request->email, 'tier_id' => $request->tier_id]);
+                    return redirect()->back()->withErrors(['stripeToken' => 'Payment failed. Status: ' . $charge->status])->withInput();
                 }
             } catch (\Exception $e) {
+                Log::error('Registration Stripe payment error: ' . $e->getMessage(), ['email' => $request->email, 'tier_id' => $request->tier_id]);
                 return redirect()->back()->withErrors(['stripeToken' => 'Payment error: ' . $e->getMessage()])->withInput();
             }
         }
@@ -504,7 +540,8 @@ class AuthController extends Controller
             $user_subscription->agree_description_snapshot = $tier->agree_description;
         } else {
             $user_subscription->subscription_method = 'amount';
-            $user_subscription->subscription_price = $tier->cost;
+            $user_subscription->subscription_price = $basePrice;
+            $user_subscription->billing_period = $billingPeriod;
             $user_subscription->promo_code = $promoCode ? $promoCode->code : null;
             $user_subscription->discount_amount = $discount;
             $user_subscription->final_price = $payment_amount;
@@ -513,7 +550,9 @@ class AuthController extends Controller
             $user_subscription->agree_description_snapshot = null;
         }
 
-        $durationMonths = $tier->duration_months ?? 12;
+        $durationMonths = ($tier->pricing_type ?? 'amount') === 'token'
+            ? 12
+            : MembershipPricing::durationMonthsFor($billingPeriod);
         $user_subscription->subscription_validity = $durationMonths;
         $user_subscription->subscription_start_date = now();
         $user_subscription->subscription_expire_date = now()->addMonths($durationMonths);
@@ -526,6 +565,7 @@ class AuthController extends Controller
             $payment->transaction_id = $transaction_id;
             $payment->payment_method = $payment_amount > 0 ? 'Stripe' : 'Promo';
             $payment->payment_amount = $payment_amount;
+            $payment->billing_period = $billingPeriod;
             $payment->promo_code = $promoCode ? $promoCode->code : null;
             $payment->discount_amount = $discount;
             $payment->payment_status = 'Success';
@@ -611,6 +651,8 @@ class AuthController extends Controller
             'activity_description' => 'User logged out',
         ]);
         auth()->logout();
+        Helper::clearBrowsingSession();
+
         return redirect()->route('home')->with('message', 'Logout success');
     }
 

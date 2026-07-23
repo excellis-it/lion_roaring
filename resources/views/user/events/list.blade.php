@@ -45,7 +45,7 @@
                                 </div>
                                 {{-- <div class="col-lg-4">
                                         <div class="search-field float-right">
-                                            <input type="text" name="search" id="search" placeholder="search..."
+                                            <input type="text" name="search" id="search" placeholder="Search..."
                                                 required class="form-control">
                                             <button class="submit_search" id="search-button"> <span class=""><i
                                                         class="fa fa-search"></i></span></button>
@@ -385,6 +385,12 @@
                         left: 'prev,next today',
                         center: 'title',
                         right: 'dayGridMonth,timeGridWeek,timeGridDay'
+                    },
+                    buttonText: {
+                        today: 'Today',
+                        month: 'Month',
+                        week: 'Week',
+                        day: 'Day'
                     },
                     eventColor: '#7851a9',
 

@@ -2,18 +2,22 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Helpers\Helper;
 use App\Http\Controllers\Controller;
 use App\Models\RegisterAgreement;
 use App\Models\User;
 use App\Models\Country;
 use App\Models\State;
 use App\Models\Ecclesia;
+use App\Models\MembershipPromoCode;
+use App\Models\MembershipTier;
+use App\Services\LoginOtpService;
+use App\Services\MembershipPricing;
 use App\Services\RegistrationService;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
-use Illuminate\Support\Facades\Mail;
-use App\Mail\OtpMail;
 use App\Models\VerifyOTP;
 
 /**
@@ -95,6 +99,60 @@ class AuthController extends Controller
         return response()->json($result['body'], $result['http_code']);
     }
 
+    public function registerStripeConfig(): JsonResponse
+    {
+        $key = config('services.stripe.key');
+        if (empty($key)) {
+            return response()->json(['status' => false, 'message' => 'Stripe is not configured.'], 503);
+        }
+
+        return response()->json([
+            'status' => true,
+            'data' => ['publishable_key' => $key],
+        ], $this->successStatus);
+    }
+
+    public function validateRegistrationPromo(Request $request): JsonResponse
+    {
+        $validator = Validator::make($request->all(), [
+            'code' => 'required|string',
+            'tier_id' => 'required|integer|exists:membership_tiers,id',
+            'billing_period' => 'nullable|in:monthly,yearly',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json(['status' => false, 'message' => $validator->errors()->first()], 422);
+        }
+
+        $promoCode = MembershipPromoCode::where('code', $request->code)->first();
+        if (!$promoCode || !$promoCode->isValid()) {
+            return response()->json(['status' => false, 'message' => 'Invalid or expired promo code.'], 422);
+        }
+
+        if (!$promoCode->canBeAppliedToTier((int) $request->tier_id)) {
+            return response()->json(['status' => false, 'message' => 'This promo code is not valid for this membership tier.'], 422);
+        }
+
+        $tier = MembershipTier::find($request->tier_id);
+        $billingPeriod = MembershipPricing::validatePeriod($request->input('billing_period'));
+        $basePrice = MembershipPricing::priceFor($tier, $billingPeriod);
+        $discount = $promoCode->calculateDiscount($basePrice);
+        $finalPrice = max(0, $basePrice - $discount);
+
+        return response()->json([
+            'status' => true,
+            'message' => 'Promo code applied successfully.',
+            'data' => [
+                'code' => $promoCode->code,
+                'discount_amount' => round($discount, 2),
+                'is_percentage' => (bool) $promoCode->is_percentage,
+                'original_price' => $basePrice,
+                'final_price' => $finalPrice,
+                'billing_period' => $billingPeriod,
+            ],
+        ], $this->successStatus);
+    }
+
     /**
      * Register Agreement Details
      *
@@ -138,7 +196,7 @@ class AuthController extends Controller
      * }
      */
 
-    public function login(Request $request)
+    public function login(Request $request, LoginOtpService $loginOtpService)
     {
         $validator = validator($request->all(), [
             'user_name' => 'required',
@@ -156,36 +214,40 @@ class AuthController extends Controller
             if (auth()->attempt($request->only($fieldType, 'password'))) {
                 $user = User::where($fieldType, $request->user_name)->first();
                 if ($user->status == 1 && $user->is_accept == 1) {
-                    // Country restriction check (mirrors web loginCheck logic).
-                    // Only enforced when the app sends a country_code.
                     if ($request->filled('country_code') && !$user->hasNewRole('SUPER ADMIN')) {
-                        $code    = strtoupper($request->input('country_code'));
-                        $country = \App\Models\Country::where('code', $code)->first();
+                        $code = strtoupper((string) $request->input('country_code'));
+                        $country = Country::where('code', $code)->first();
 
                         if (!$country) {
+                            auth()->logout();
+
                             return response()->json(['message' => 'Please select your country from the dropdown first.', 'status' => false], 200);
                         }
 
-                        if ($user->user_type === 'Regional' && $user->user_type !== 'G_R' && $country->id != $user->country) {
-                            return response()->json(['message' => 'You are not from ' . $country->name . '! Please change the country from dropdown.', 'status' => false], 200);
-                        }
+                        if (!Helper::userCanAccessCountryContext($user, $code)) {
+                            auth()->logout();
 
-                        if ($user->user_type === 'Global' && $user->user_type !== 'G_R' && $country->code !== 'GL') {
-                            return response()->json(['message' => 'You are a Global user! Please change the country to Global.', 'status' => false], 200);
+                            return response()->json([
+                                'message' => Helper::userInstanceAccessMessage($user),
+                                'status' => false,
+                            ], 200);
                         }
                     }
 
-                    $otp = rand(1000, 9999);
-                    $otp_verify = new VerifyOTP();
-                    $otp_verify->user_id = $user->id;
-                    $otp_verify->email = $user->email;
-                    $otp_verify->otp = $otp;
-                    $otp_verify->save();
-
-                    //  Mail::to($user->email)->send(new OtpMail($otp));
                     try {
-                        Mail::to($user->email)->send(new OtpMail($otp));
-                    } catch (\Exception $e) {
+                        \Illuminate\Support\Facades\Log::info('[LOGIN_OTP] OTP_API_LOGIN_ABOUT_TO_ISSUE', [
+                            'user_id' => $user->id,
+                            'email' => $user->email,
+                        ]);
+                        $otp = $loginOtpService->issue($user);
+                    } catch (\Throwable $exception) {
+                        \Illuminate\Support\Facades\Log::error('[LOGIN_OTP] OTP_API_LOGIN_FAILED', [
+                            'user_id' => $user->id,
+                            'email' => $user->email,
+                            'exception' => get_class($exception),
+                            'message' => $exception->getMessage(),
+                        ]);
+
                         return response()->json(['message' => 'Email server temporary unavailable. Please try later.', 'status' => false], 200);
                     }
                     // $token = $user->createToken('authToken')->accessToken;

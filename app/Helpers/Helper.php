@@ -963,20 +963,13 @@ class Helper
             return true;
         }
 
-        // Fallback to env-based check for backward compatibility
+        // Fallback to env-based check for backward compatibility (host + optional path)
         $usaUrl = env('LION_ROARING_USA');
         if (!$usaUrl) {
             return false;
         }
 
-        $parsed = parse_url($usaUrl);
-        $usaHost = $parsed['host'] ?? null;
-        $usaPort = $parsed['port'] ?? null;
-
-        $requestHost = request()->getHost();
-        $requestPort = request()->getPort();
-
-        return $usaHost && $requestHost === $usaHost && (string) $requestPort === (string) $usaPort;
+        return \App\Models\Country::requestMatchesDomainUrl($usaUrl);
     }
 
     /**
@@ -1021,21 +1014,458 @@ class Helper
     }
 
     /**
-     * Get the redirect URL for a given country code (from cached collection, no extra DB query).
-     * If the country has a domain in DB, return that. Otherwise, return main_url/{code}.
+     * Default regional host (lionroaring.us / :8001). Path-based countries live here.
+     */
+    public static function getDefaultRegionalUrl(): string
+    {
+        $domain = \App\Models\Country::getDomainByCode('US');
+        if ($domain) {
+            return rtrim($domain, '/');
+        }
+
+        return rtrim((string) env('LION_ROARING_USA', ''), '/');
+    }
+
+    public static function isDefaultRegionalInstance(): bool
+    {
+        return self::isUsaInstance();
+    }
+
+    /**
+     * Get the redirect URL for a given country code.
+     * GL → org (global). Dedicated domain → that domain. Otherwise → us/{code}.
      */
     public static function getCountryRedirectUrl(string $countryCode): string
     {
         $countryCode = strtoupper($countryCode);
+
+        if ($countryCode === 'GL') {
+            return self::getMainUrl();
+        }
 
         $domain = \App\Models\Country::getDomainByCode($countryCode);
         if ($domain) {
             return $domain;
         }
 
-        // No specific domain — redirect to main_url/{code}
-        $mainUrl = self::getMainUrl();
-        return rtrim($mainUrl, '/') . '/' . strtolower($countryCode);
+        return self::getDefaultRegionalUrl() . '/' . strtolower($countryCode);
+    }
+
+    /** @var array<string>|null */
+    private static $regionalCountryCodes = null;
+
+    /**
+     * First URL path segment when it is an active regional country code (e.g. "in").
+     */
+    public static function extractCountryCodeFromPath(?string $path = null): ?string
+    {
+        $path = trim($path ?? request()->path(), '/');
+        if ($path === '') {
+            return null;
+        }
+
+        $segment = strtolower(explode('/', $path)[0]);
+
+        if (self::$regionalCountryCodes === null) {
+            self::$regionalCountryCodes = \App\Models\Country::query()
+                ->where('is_global', false)
+                ->where('status', true)
+                ->pluck('code')
+                ->map(fn ($code) => strtolower((string) $code))
+                ->all();
+        }
+
+        if (!in_array($segment, self::$regionalCountryCodes, true)) {
+            return null;
+        }
+
+        return strtoupper($segment);
+    }
+
+    /**
+     * Compare redirect target to the current request (scheme-insensitive on same host/path).
+     * Uses full request URI path so subdirectory installs (…/lion-roaring-us) compare correctly.
+     */
+    public static function isRedirectEquivalentToCurrentRequest(string $url): bool
+    {
+        $url = trim($url);
+        if ($url === '') {
+            return false;
+        }
+
+        $currentPath = \App\Models\Country::normalizeUrlPath(
+            parse_url(request()->getRequestUri(), PHP_URL_PATH)
+        );
+        $parsed = parse_url($url);
+        if (!isset($parsed['host'])) {
+            return rtrim(request()->fullUrl(), '/') === rtrim($url, '/');
+        }
+
+        if (strtolower($parsed['host']) !== strtolower(request()->getHost())) {
+            return false;
+        }
+
+        $targetPort = $parsed['port'] ?? null;
+        if ($targetPort !== null && (string) $targetPort !== (string) request()->getPort()) {
+            return false;
+        }
+
+        $targetPath = \App\Models\Country::normalizeUrlPath($parsed['path'] ?? '');
+
+        return $targetPath === $currentPath;
+    }
+
+    public static function redirectUrlSharesHostWithRequest(string $url): bool
+    {
+        $parsed = parse_url($url);
+
+        return isset($parsed['host'])
+            && strtolower($parsed['host']) === strtolower(request()->getHost());
+    }
+
+    /**
+     * True when the request is already on the given country domain URL (host + path prefix).
+     */
+    public static function isRequestOnCountryDomainUrl(string $domainUrl): bool
+    {
+        return \App\Models\Country::requestMatchesDomainUrl($domainUrl);
+    }
+
+    /**
+     * Return redirect URL only when it would change host or path (prevents loops).
+     */
+    public static function safeExternalRedirectUrl(?string $url): ?string
+    {
+        if (!$url || self::isRedirectEquivalentToCurrentRequest($url)) {
+            return null;
+        }
+
+        return $url;
+    }
+
+    /**
+     * Append ?cc= for cross-domain session handoff (org ↔ us cookies do not transfer).
+     */
+    public static function appendCountryCodeQueryParam(string $url, string $countryCode): string
+    {
+        $countryCode = strtolower(trim($countryCode));
+        if ($countryCode === '') {
+            return $url;
+        }
+
+        if (preg_match('/[?&]cc=/i', $url)) {
+            return $url;
+        }
+
+        $separator = str_contains($url, '?') ? '&' : '?';
+
+        return $url . $separator . 'cc=' . $countryCode;
+    }
+
+    /**
+     * Apply ?cc=GL|in|us from query string, persist session, return clean URL to redirect to.
+     */
+    public static function consumeVisitorCountryQueryParam(?\Illuminate\Http\Request $request = null): ?string
+    {
+        $request = $request ?? request();
+        $cc = strtoupper(trim((string) $request->query('cc', '')));
+        if ($cc === '') {
+            return null;
+        }
+
+        if ($cc === 'GL') {
+            self::setVisitorCountrySession('GL');
+        } else {
+            $country = \App\Models\Country::query()
+                ->where('code', $cc)
+                ->where('is_global', false)
+                ->where('status', true)
+                ->first();
+            if (!$country) {
+                return null;
+            }
+            self::setVisitorCountrySession($cc);
+        }
+
+        self::$resolvedEffectiveCountry = null;
+        self::$effectiveCountryResolved = false;
+
+        return $request->url();
+    }
+
+    /**
+     * Safe cross-host redirect with ?cc= so the target domain receives the country session.
+     */
+    public static function countryRedirectWithSessionHandoff(string $url, string $countryCode): ?string
+    {
+        return self::safeExternalRedirectUrl(
+            self::appendCountryCodeQueryParam($url, $countryCode)
+        );
+    }
+
+    private static $resolvedEffectiveCountry = null;
+    private static $effectiveCountryResolved = false;
+
+    /**
+     * Effective country for routing and access checks.
+     * - org (global) root → GL only; org never hosts regional paths.
+     * - us (default regional) root → US; us/{code} → that country.
+     * - Dedicated domain root → that country.
+     */
+    public static function resolveEffectiveCountryFromRequest(): ?\App\Models\Country
+    {
+        if (self::$effectiveCountryResolved) {
+            return self::$resolvedEffectiveCountry;
+        }
+        self::$effectiveCountryResolved = true;
+
+        $domainCountry = \App\Models\Country::findByCurrentRequest();
+        $path = trim(request()->path(), '/');
+        $pathCode = self::extractCountryCodeFromPath($path);
+
+        if ($domainCountry && $domainCountry->is_global) {
+            if ($pathCode) {
+                self::$resolvedEffectiveCountry = $domainCountry;
+
+                return self::$resolvedEffectiveCountry;
+            }
+
+            if ($path === '') {
+                self::$resolvedEffectiveCountry = $domainCountry;
+
+                return self::$resolvedEffectiveCountry;
+            }
+
+            // Ancillary paths on org (login-check, user/*, etc.) are global context.
+            self::$resolvedEffectiveCountry = $domainCountry;
+
+            return self::$resolvedEffectiveCountry;
+        }
+
+        if ($domainCountry && !$domainCountry->is_global) {
+            if ($pathCode && strtoupper($pathCode) !== strtoupper($domainCountry->code)) {
+                $country = \App\Models\Country::query()
+                    ->whereRaw('LOWER(code) = ?', [strtolower($pathCode)])
+                    ->where('is_global', false)
+                    ->first();
+
+                if ($country) {
+                    self::$resolvedEffectiveCountry = $country;
+
+                    return self::$resolvedEffectiveCountry;
+                }
+            }
+
+            if (!$pathCode && $path !== '') {
+                $ip = request()->ip();
+                $sessionCode = strtoupper((string) session('visitor_country_code_' . $ip, ''));
+                if ($sessionCode && $sessionCode !== 'GL' && strtoupper($sessionCode) !== strtoupper($domainCountry->code)) {
+                    $sessionCountry = \App\Models\Country::query()
+                        ->where('code', $sessionCode)
+                        ->where('is_global', false)
+                        ->first();
+
+                    if ($sessionCountry) {
+                        self::$resolvedEffectiveCountry = $sessionCountry;
+
+                        return self::$resolvedEffectiveCountry;
+                    }
+                }
+            }
+
+            self::$resolvedEffectiveCountry = $domainCountry;
+
+            return self::$resolvedEffectiveCountry;
+        }
+
+        self::$resolvedEffectiveCountry = $domainCountry
+            ?? \App\Models\Country::query()->where('is_global', true)->first();
+
+        return self::$resolvedEffectiveCountry;
+    }
+
+    public static function isEffectiveGlobalContext(): bool
+    {
+        $effective = self::resolveEffectiveCountryFromRequest();
+
+        return $effective && $effective->is_global;
+    }
+
+    /**
+     * Country shown in UI badges (header, profile). Logged-in users use their type/country;
+     * guests use the effective request country.
+     */
+    public static function getDisplayCountry(): ?\App\Models\Country
+    {
+        if (auth()->check()) {
+            $user = auth()->user();
+
+            if ($user->user_type === 'Global') {
+                return \App\Models\Country::query()->where('is_global', true)->first();
+            }
+
+            if ($user->user_type === 'Regional' && $user->country) {
+                return \App\Models\Country::find($user->country);
+            }
+
+            if ($user->user_type === 'G_R') {
+                $effective = self::resolveEffectiveCountryFromRequest();
+                if ($effective && !$effective->is_global) {
+                    return $effective;
+                }
+
+                return \App\Models\Country::query()->where('is_global', true)->first();
+            }
+        }
+
+        return self::resolveEffectiveCountryFromRequest();
+    }
+
+    /**
+     * On org root (/), redirect regional session to us/{code} (or dedicated domain).
+     */
+    public static function resolveSessionCountryRedirectOnGlobalRoot(): ?string
+    {
+        if (!self::isGlobalInstance()) {
+            return null;
+        }
+
+        if (trim(request()->path(), '/') !== '') {
+            return null;
+        }
+
+        $sessionCode = strtoupper(self::getVisitorCountryCode() ?: '');
+        if (!$sessionCode || $sessionCode === 'GL') {
+            return null;
+        }
+
+        $country = \App\Models\Country::query()
+            ->where('code', $sessionCode)
+            ->where('is_global', false)
+            ->where('status', true)
+            ->first();
+
+        if (!$country) {
+            return null;
+        }
+
+        $url = self::getCountryRedirectUrl($sessionCode);
+        if (self::redirectUrlSharesHostWithRequest($url)) {
+            // Same-host installs (path-based demo folders): go to the country domain path,
+            // do not append /{code} which causes redirect loops.
+            $dedicated = \App\Models\Country::getDomainByCode($sessionCode);
+            if ($dedicated) {
+                $dedicatedPath = \App\Models\Country::normalizeUrlPath(
+                    parse_url($dedicated, PHP_URL_PATH)
+                );
+                if ($dedicatedPath !== '') {
+                    return self::countryRedirectWithSessionHandoff($dedicated, $sessionCode);
+                }
+            }
+
+            $regionalTarget = rtrim(self::getDefaultRegionalUrl(), '/')
+                . '/' . strtolower($sessionCode);
+
+            return self::countryRedirectWithSessionHandoff($regionalTarget, $sessionCode);
+        }
+
+        return self::countryRedirectWithSessionHandoff($url, $sessionCode);
+    }
+
+    /**
+     * On default regional root (us/), redirect to path country or org when GL selected.
+     */
+    public static function resolveSessionCountryRedirectOnRegionalRoot(): ?string
+    {
+        if (!self::isDefaultRegionalInstance()) {
+            return null;
+        }
+
+        if (trim(request()->path(), '/') !== '') {
+            return null;
+        }
+
+        $sessionCode = strtoupper(self::getVisitorCountryCode() ?: '');
+        if (!$sessionCode) {
+            return null;
+        }
+
+        if ($sessionCode === 'GL') {
+            return self::countryRedirectWithSessionHandoff(self::getMainUrl(), 'GL');
+        }
+
+        $domainCountry = \App\Models\Country::findByCurrentRequest();
+        if ($domainCountry && strtoupper($domainCountry->code) === $sessionCode) {
+            return null;
+        }
+
+        $country = \App\Models\Country::query()
+            ->where('code', $sessionCode)
+            ->where('is_global', false)
+            ->where('status', true)
+            ->first();
+
+        if (!$country) {
+            return null;
+        }
+
+        return self::countryRedirectWithSessionHandoff(
+            self::getCountryRedirectUrl($sessionCode),
+            $sessionCode
+        );
+    }
+
+    /**
+     * When the URL path starts with a country code, return a redirect to the canonical URL if needed.
+     */
+    public static function resolveCanonicalRedirectForPathCountry(string $countryCode): ?string
+    {
+        $countryCode = strtoupper($countryCode);
+        $canonical = rtrim(self::getCountryRedirectUrl($countryCode), '/');
+        $dedicatedDomain = \App\Models\Country::getDomainByCode($countryCode);
+
+        $path = trim(request()->path(), '/');
+        $segments = $path === '' ? [] : explode('/', $path);
+        $suffixSegments = array_slice($segments, 1);
+        $suffix = $suffixSegments ? '/' . implode('/', $suffixSegments) : '';
+
+        if ($dedicatedDomain) {
+            $onCorrectDomain = self::isRequestOnCountryDomainUrl($dedicatedDomain);
+
+            if (!$onCorrectDomain) {
+                return self::countryRedirectWithSessionHandoff($canonical . $suffix, $countryCode);
+            }
+
+            // Already on this country's dedicated domain (host and/or path).
+            // If Laravel app path still has /{code} (e.g. /us), strip it back to the domain root.
+            if (!empty($segments) && strtoupper($segments[0]) === $countryCode) {
+                // Never bounce path-based same-host demos through a fake /{code} regional URL.
+                return self::safeExternalRedirectUrl(
+                    rtrim($dedicatedDomain, '/') . $suffix
+                );
+            }
+
+            return null;
+        }
+
+        $regionalBase = self::getDefaultRegionalUrl();
+        $expectedPrefix = $regionalBase . '/' . strtolower($countryCode);
+        $current = rtrim(request()->url(), '/');
+
+        if ($current !== $expectedPrefix && !str_starts_with($current, $expectedPrefix . '/')) {
+            if (self::isGlobalInstance() && self::redirectUrlSharesHostWithRequest($expectedPrefix)) {
+                // Same host path-based global install: do not invent a /{code} loop target.
+                if (self::isRequestOnCountryDomainUrl(self::getMainUrl() ?: '')) {
+                    return null;
+                }
+
+                return null;
+            }
+
+            return self::countryRedirectWithSessionHandoff($expectedPrefix . $suffix, $countryCode);
+        }
+
+        return null;
     }
 
     /**
@@ -1048,39 +1478,134 @@ class Helper
         return session()->has($codeSessionKey);
     }
 
+    /**
+     * Persist visitor country selection in session (code, name, languages).
+     */
+    public static function setVisitorCountrySession(string $countryCode): void
+    {
+        $countryCode = strtoupper(trim($countryCode));
+        $ip = request()->ip();
+        $codeSessionKey = 'visitor_country_code_' . $ip;
+        $nameSessionKey = 'visitor_country_name_' . $ip;
+        $languageSessionKey = 'visitor_country_languages';
+
+        if ($countryCode === 'GL') {
+            $allLanguages = \App\Models\TranslateLanguage::orderBy('name', 'asc')->get();
+            $row = \App\Models\Country::query()->where('is_global', true)->first();
+            session([
+                $codeSessionKey => 'GL',
+                $nameSessionKey => $row ? $row->name : 'Global (Main)',
+                $languageSessionKey => $allLanguages,
+            ]);
+
+            return;
+        }
+
+        $countryData = \App\Models\Country::with('languages')->where('code', $countryCode)->first();
+        $languages = $countryData ? $countryData->languages : collect();
+
+        $hasEnglish = $languages instanceof \Illuminate\Support\Collection
+            ? $languages->contains(fn ($lang) => strtolower($lang->code ?? '') === 'en')
+            : false;
+        if (!$hasEnglish) {
+            $english = \App\Models\TranslateLanguage::whereRaw('LOWER(code) = ?', ['en'])->first();
+            if ($english) {
+                $languages = $languages instanceof \Illuminate\Support\Collection
+                    ? $languages->push($english)
+                    : collect([$english]);
+            }
+        }
+
+        session([
+            $codeSessionKey => $countryCode,
+            $nameSessionKey => $countryData->name ?? $countryCode,
+            $languageSessionKey => $languages,
+        ]);
+    }
+
+    /**
+     * Clear visitor country, partner filters, and login-context session data.
+     */
+    public static function clearBrowsingSession(): void
+    {
+        $ip = request()->ip();
+
+        session()->forget([
+            'partner_filters',
+            'auth_login_host',
+            'auth_login_port',
+            'auth_login_country_id',
+            'visitor_country_code_' . $ip,
+            'visitor_country_name_' . $ip,
+            'visitor_country_flag_code_' . $ip,
+            'visitor_country_languages',
+            'user_id',
+        ]);
+
+        self::$resolvedEffectiveCountry = null;
+        self::$effectiveCountryResolved = false;
+    }
+
+    /**
+     * After login, align visitor country session with the authenticated user.
+     */
+    public static function syncVisitorCountryForUser($user = null): void
+    {
+        $user = $user ?? auth()->user();
+        if (!$user) {
+            return;
+        }
+
+        if ($user->user_type === 'Global') {
+            self::setVisitorCountrySession('GL');
+
+            return;
+        }
+
+        if ($user->user_type === 'G_R') {
+            if (self::isGlobalInstance()) {
+                self::setVisitorCountrySession('GL');
+            } elseif ($user->country) {
+                $country = \App\Models\Country::find($user->country);
+                if ($country) {
+                    self::setVisitorCountrySession($country->code);
+                }
+            }
+
+            return;
+        }
+
+        if ($user->country) {
+            $country = \App\Models\Country::find($user->country);
+            if ($country) {
+                self::setVisitorCountrySession($country->code);
+            }
+        }
+    }
+
     // get visitor country code by ip using ipinfo.io
     public static function getVisitorCountryCode()
     {
         $ip = request()->ip();
         $codeSessionKey = 'visitor_country_code_' . $ip;
         $nameSessionKey = 'visitor_country_name_' . $ip;
-        $languageSessionKey = 'visitor_country_languages';
 
-        // If this is the USA-specific instance (port 8001), force US country
-        if (self::isUsaInstance()) {
-            if (!session()->has($codeSessionKey) || session($codeSessionKey) !== 'US') {
-                $countryData = \App\Models\Country::with('languages')->where('code', 'US')->first();
-                $languages = $countryData ? $countryData->languages : [];
-
-                // Ensure English is included
-                $hasEnglish = $languages instanceof \Illuminate\Support\Collection
-                    ? $languages->contains(fn($lang) => strtolower($lang->code ?? '') === 'en')
-                    : false;
-                if (!$hasEnglish) {
-                    $english = \App\Models\TranslateLanguage::whereRaw('LOWER(code) = ?', ['en'])->first();
-                    if ($english) {
-                        $languages = $languages instanceof \Illuminate\Support\Collection
-                            ? $languages->push($english)
-                            : collect([$english]);
-                    }
+        if (self::isDefaultRegionalInstance()) {
+            $pathCode = self::extractCountryCodeFromPath();
+            if ($pathCode) {
+                if (!session()->has($codeSessionKey) || strtoupper((string) session($codeSessionKey)) !== $pathCode) {
+                    self::setVisitorCountrySession($pathCode);
                 }
 
-                session([
-                    $codeSessionKey => 'US',
-                    $nameSessionKey => $countryData->name ?? 'United States',
-                    $languageSessionKey => $languages,
-                ]);
+                return $pathCode;
             }
+
+            if (session()->has($codeSessionKey) && session()->has($nameSessionKey)) {
+                return session($codeSessionKey);
+            }
+
+            self::setVisitorCountrySession('US');
+
             return 'US';
         }
 
@@ -1090,7 +1615,32 @@ class Helper
         }
 
         // On MAIN_URL with no country selected: return empty string (no auto-detection)
-        // The user should manually select a country from the dropdown/popup
+        return '';
+    }
+
+    /**
+     * Country code for scoped queries (members list, CMS, etc.).
+     * Request country_code param → session → effective request country.
+     */
+    public static function resolveVisitorCountryCode(?\Illuminate\Http\Request $request = null): string
+    {
+        $request = $request ?? request();
+
+        $param = strtoupper(trim((string) $request->input('country_code', '')));
+        if ($param !== '') {
+            return $param;
+        }
+
+        $sessionCode = strtoupper(trim((string) self::getVisitorCountryCode()));
+        if ($sessionCode !== '') {
+            return $sessionCode;
+        }
+
+        $effective = self::resolveEffectiveCountryFromRequest();
+        if ($effective) {
+            return $effective->is_global ? 'GL' : strtoupper((string) $effective->code);
+        }
+
         return '';
     }
 
@@ -1304,6 +1854,50 @@ class Helper
     }
 
     /**
+     * Whether the user may access content for a visitor country code (mobile app / API).
+     */
+    public static function userCanAccessCountryContext($user, string $countryCode): bool
+    {
+        if (!$user || $user->hasNewRole('SUPER ADMIN')) {
+            return true;
+        }
+
+        $code = strtoupper(trim($countryCode));
+        if ($code === '') {
+            return true;
+        }
+
+        $effectiveCountry = \App\Models\Country::where('code', $code)->first();
+        if (!$effectiveCountry) {
+            return false;
+        }
+
+        $isGlobalContext = (bool) $effectiveCountry->is_global;
+        $userCountry = $user->country ? \App\Models\Country::find($user->country) : null;
+
+        switch ($user->user_type) {
+            case 'Global':
+                return $isGlobalContext;
+
+            case 'Regional':
+                return !$isGlobalContext
+                    && $userCountry
+                    && (int) $effectiveCountry->id === (int) $userCountry->id;
+
+            case 'G_R':
+                if ($isGlobalContext) {
+                    return true;
+                }
+
+                return $userCountry
+                    && (int) $effectiveCountry->id === (int) $userCountry->id;
+
+            default:
+                return true;
+        }
+    }
+
+    /**
      * Whether the user's type is allowed on the current domain instance.
      */
     public static function userCanAccessCurrentInstance($user = null): bool
@@ -1317,30 +1911,33 @@ class Helper
             return true;
         }
 
-        $domainCountry = \App\Models\Country::findByCurrentRequest();
-        if (!$domainCountry) {
+        $effectiveCountry = self::resolveEffectiveCountryFromRequest();
+        if (!$effectiveCountry) {
             return true;
         }
 
-        $isGlobalDomain = (bool) $domainCountry->is_global;
+        $isGlobalContext = (bool) $effectiveCountry->is_global;
         $userCountry = $user->country ? \App\Models\Country::find($user->country) : null;
 
         switch ($user->user_type) {
             case 'Global':
-                return $isGlobalDomain;
+                return self::isGlobalInstance() && $isGlobalContext;
 
             case 'Regional':
-                return $userCountry
-                    && !$isGlobalDomain
-                    && (int) $domainCountry->id === (int) $userCountry->id;
-
-            case 'G_R':
-                if ($isGlobalDomain) {
-                    return true;
+                if (self::isGlobalInstance()) {
+                    return false;
                 }
 
                 return $userCountry
-                    && (int) $domainCountry->id === (int) $userCountry->id;
+                    && (int) $effectiveCountry->id === (int) $userCountry->id;
+
+            case 'G_R':
+                if (self::isGlobalInstance()) {
+                    return $isGlobalContext;
+                }
+
+                return $userCountry
+                    && (int) $effectiveCountry->id === (int) $userCountry->id;
 
             default:
                 return true;
@@ -1409,12 +2006,12 @@ class Helper
      */
     public static function recordLoginContext(): void
     {
-        $domainCountry = \App\Models\Country::findByCurrentRequest();
+        $effectiveCountry = self::resolveEffectiveCountryFromRequest();
 
         session([
             'auth_login_host' => request()->getHost(),
             'auth_login_port' => request()->getPort(),
-            'auth_login_country_id' => $domainCountry ? (int) $domainCountry->id : null,
+            'auth_login_country_id' => $effectiveCountry ? (int) $effectiveCountry->id : null,
         ]);
     }
 
@@ -1431,7 +2028,15 @@ class Helper
             return false;
         }
 
-        return (string) session('auth_login_port') === (string) request()->getPort();
+        if ((string) session('auth_login_port') !== (string) request()->getPort()) {
+            return false;
+        }
+
+        $loginCountryId = session('auth_login_country_id');
+        $effective = self::resolveEffectiveCountryFromRequest();
+        $effectiveId = $effective ? (int) $effective->id : null;
+
+        return (int) $loginCountryId === (int) $effectiveId;
     }
 
     /**

@@ -15,6 +15,7 @@ class SubscriptionPayment extends BaseModel
         'transaction_id',
         'payment_method',
         'payment_amount',
+        'billing_period',
         'promo_code',
         'discount_amount',
         'payment_status',

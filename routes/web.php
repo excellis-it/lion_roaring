@@ -382,27 +382,30 @@ Route::middleware(['userActivity'])->group(function () {
         $domainCountry = Helper::getCountryByDomain();
 
         if ($domainCountry && !$domainCountry->is_global) {
-            // This is a country-specific domain (e.g., lionroaring.us → US)
-            // Force that country's session and serve the homepage
-            $ip = request()->ip();
-            $codeSessionKey = 'visitor_country_code_' . $ip;
-            $nameSessionKey = 'visitor_country_name_' . $ip;
-            $languageSessionKey = 'visitor_country_languages';
+            $pathCode = Helper::extractCountryCodeFromPath(request()->path());
 
-            $row = Country::with('languages')->where('code', $domainCountry->code)->first();
-            if ($row) {
-                $languages = $row->languages;
-                $hasEnglish = $languages->contains(fn($lang) => strtolower($lang->code ?? '') === 'en');
-                if (!$hasEnglish) {
-                    $english = \App\Models\TranslateLanguage::whereRaw('LOWER(code) = ?', ['en'])->first();
-                    if ($english) $languages = $languages->push($english);
+            if (!$pathCode) {
+                $ip = request()->ip();
+                $codeSessionKey = 'visitor_country_code_' . $ip;
+                $nameSessionKey = 'visitor_country_name_' . $ip;
+                $languageSessionKey = 'visitor_country_languages';
+
+                $row = Country::with('languages')->where('code', $domainCountry->code)->first();
+                if ($row) {
+                    $languages = $row->languages;
+                    $hasEnglish = $languages->contains(fn($lang) => strtolower($lang->code ?? '') === 'en');
+                    if (!$hasEnglish) {
+                        $english = \App\Models\TranslateLanguage::whereRaw('LOWER(code) = ?', ['en'])->first();
+                        if ($english) $languages = $languages->push($english);
+                    }
+                    session([
+                        $codeSessionKey => strtoupper($row->code),
+                        $nameSessionKey => $row->name,
+                        $languageSessionKey => $languages,
+                    ]);
                 }
-                session([
-                    $codeSessionKey => strtoupper($row->code),
-                    $nameSessionKey => $row->name,
-                    $languageSessionKey => $languages,
-                ]);
             }
+
             return app(CmsController::class)->index();
         }
 
@@ -452,33 +455,25 @@ Route::middleware(['userActivity'])->group(function () {
         $domainUrl = Country::getDomainByCode($ccUpper);
 
         if ($domainUrl) {
-            return redirect($domainUrl, 302);
+            if (Helper::redirectUrlSharesHostWithRequest($domainUrl)) {
+                $regionalFallback = rtrim(Helper::getDefaultRegionalUrl(), '/')
+                    . '/' . strtolower($cc);
+                $handoff = Helper::countryRedirectWithSessionHandoff($regionalFallback, $ccUpper);
+                if ($handoff) {
+                    return redirect($handoff, 302);
+                }
+            } elseif (!Helper::isRedirectEquivalentToCurrentRequest(rtrim($domainUrl, '/'))) {
+                return redirect(
+                    Helper::appendCountryCodeQueryParam($domainUrl, $ccUpper),
+                    302
+                );
+            }
         }
 
         $row = Country::with('languages')->whereRaw('LOWER(code) = ?', [strtolower($cc)])->first();
 
         if ($row) {
-            $languages = $row->languages;
-
-            // Check if English language is available in the country's languages
-            $hasEnglish = $languages->contains(function ($lang) {
-                return strtolower($lang->code ?? '') === 'en';
-            });
-
-            // If English is not available, fetch and merge it
-            if (!$hasEnglish) {
-                $englishLanguage = \App\Models\TranslateLanguage::whereRaw('LOWER(code) = ?', ['en'])->first();
-                if ($englishLanguage) {
-                    $languages = $languages->push($englishLanguage);
-                }
-            }
-
-            $ip = request()->ip();
-            session([
-                'visitor_country_code_' . $ip => strtoupper($row->code),
-                'visitor_country_name_' . $ip => $row->name,
-                'visitor_country_languages' => $languages,
-            ]);
+            Helper::setVisitorCountrySession(strtoupper($row->code));
         }
         return app(CmsController::class)->index();
     })->where('cc', $__ccPattern)->name('home.country');
@@ -517,6 +512,7 @@ Route::middleware(['userActivity'])->group(function () {
     Route::post('/login-check', [UserAuthController::class, 'loginCheck'])->name('login.check');  //login check
 
     // register
+    Route::get('/payment-gateway/status', [UserAuthController::class, 'paymentGatewayStatus'])->name('payment.gateway.status');
     Route::get('/register', [UserAuthController::class, 'register'])->name('register');
     Route::post('/register-agreement/preview', [RegisterAgreementPreviewController::class, 'generate'])->name('register.agreement.preview');
     Route::post('/register-check', [UserAuthController::class, 'registerCheck'])->name('register.check');  //register check
@@ -529,7 +525,7 @@ Route::middleware(['userActivity'])->group(function () {
     Route::get('forget-username/show', [UserForgetPasswordController::class, 'forgetUsernameShow'])->name('user.forget.username.show');
     Route::post('forget-username', [UserForgetPasswordController::class, 'forgetUsername'])->name('user.forget.username');
     // show confirmation email page
-    Route::get('/confirmation-email/{id}', [UserForgetPasswordController::class, 'confirmationEmail'])->name('forget-username-confirmation');
+    Route::get('/confirmation-email/{id?}', [UserForgetPasswordController::class, 'confirmationEmail'])->name('forget-username-confirmation');
     Route::get('reset-username/{id}/{token}', [UserForgetPasswordController::class, 'resetUsername'])->name('user.reset.username');
     // user.username-change
     Route::post('username-change', [UserForgetPasswordController::class, 'changeUsername'])->name('user.username-change');
@@ -1036,6 +1032,7 @@ Route::prefix('user')->middleware(['user', 'preventBackHistory', 'userActivity',
         Route::get('/', [BulletinBoardController::class, 'list'])->name('bulletin-board.index');
         // load bulletin board
         Route::post('/load', [BulletinBoardController::class, 'load'])->name('bulletin-board.load');
+        Route::post('/translate-content', [BulletinBoardController::class, 'translateContent'])->name('bulletin-board.translate-content');
     });
 
     Route::prefix('roles')->group(function () {

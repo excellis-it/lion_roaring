@@ -34,6 +34,7 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
     <link rel="stylesheet" type="text/css"
         href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css">
+    @include('frontend.includes.toast-layering')
 
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
         integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
@@ -344,7 +345,7 @@
     @stack('styles')
 </head>
 
-<body class="loading ecom-protect-images">
+<body class="loading ecom-protect-images has-floating-chat">
     <script>
         // Ensure loader is visible immediately
         document.body.classList.add('loading');

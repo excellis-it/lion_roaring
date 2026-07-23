@@ -111,6 +111,7 @@ class ProfileController extends Controller
             'has_signature' => !empty($user->signature),
             'is_member_sovereign' => $user->isMemberSovereign(),
             'is_super_admin' => $user->hasNewRole('SUPER ADMIN'),
+            'membership_excluded' => $user->isMembershipExcluded(),
             'membership_app_applicable' => $user->membershipAppApplicable(),
             'membership_panel_applicable' => $user->membershipPanelApplicable(),
         ];

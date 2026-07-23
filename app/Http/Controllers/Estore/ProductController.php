@@ -91,6 +91,7 @@ class ProductController extends Controller
 
         $wareHouseHaveProductVariables = WarehouseProduct::where('product_id', $getProduct->id)
             ->where('warehouse_id', $nearbyWareHouseId)
+            ->where('quantity', '>', 0)
             ->first();
         // $wareHouseHaveProductVariables = WarehouseProductVariation::where('product_id', $getProduct->id)
         //     ->where('warehouse_id', $nearbyWareHouseId)
@@ -100,10 +101,10 @@ class ProductController extends Controller
 
         // return $wareHouseHaveProductVariables;
 
-        // if (! $wareHouseHaveProductVariables) {
-        //     // Handle the case where the product is not found in the warehouse
-        //     return view('ecom.product-not-available', compact('cartCount'));
-        // }
+        // Physical products not stocked in the nearest warehouse are not available here.
+        if (!$wareHouseHaveProductVariables && $getProduct->product_type !== 'digital') {
+            return view('ecom.product-not-available', compact('cartCount'));
+        }
 
         // select prodcut is first product in warehouse have with the product id
         if ($wareHouseHaveProductVariables) {
@@ -186,14 +187,13 @@ class ProductController extends Controller
         })->pluck('id')->toArray();
 
 
-        // if ($wareHouseProducts ) {
-        //    $products = Product::whereIn('id', $wareHouseProducts)->where('status', 1);
-        // } else {
-        $products = Product::where('is_deleted', false)->where('status', 1)->with('otherCharges');
-        //  }
-
-
-        // $products = Product::whereIn('id', $wareHouseProducts)->where('status', 1);
+        // Only products stocked in the nearest warehouse are sellable here (digital products carry no stock).
+        $products = Product::where(function ($q) use ($wareHouseProducts) {
+            $q->whereIn('id', $wareHouseProducts)->orWhere('product_type', 'digital');
+        })
+            ->where('is_deleted', false)
+            ->where('status', 1)
+            ->with('otherCharges');
         if ($category_id) {
             // $products = $products->where('category_id', $category_id);
             $category = Category::find($category_id);
@@ -263,11 +263,13 @@ class ProductController extends Controller
                     ->where('quantity', '>', 0);
             })->pluck('id')->toArray();
 
-            //  if ($wareHouseProducts) {
-            //     $products = Product::whereIn('id', $wareHouseProducts)->where('status', 1)->with('image');
-            //  } else {
-            $products = Product::where('is_deleted', false)->where('status', 1)->with('image', 'otherCharges');
-            //  }
+            // Only products stocked in the nearest warehouse are sellable here (digital products carry no stock).
+            $products = Product::where(function ($q) use ($wareHouseProducts) {
+                $q->whereIn('id', $wareHouseProducts)->orWhere('product_type', 'digital');
+            })
+                ->where('is_deleted', false)
+                ->where('status', 1)
+                ->with('image', 'otherCharges');
 
             if (!empty($category_id)) {
                 // Expand selected categories to include all descendants
@@ -1238,7 +1240,7 @@ class ProductController extends Controller
         try {
             $paymentIntent = null;
             if ($totalAmount > 0) {
-                Stripe::setApiKey(env('STRIPE_SECRET'));
+                Stripe::setApiKey(config('services.stripe.secret'));
                 $paymentIntent = PaymentIntent::create([
                     'amount' => round($totalAmount * 100),
                     'currency' => 'usd',
@@ -2059,7 +2061,7 @@ class ProductController extends Controller
                 ->first();
 
             if ($payment) {
-                Stripe::setApiKey(env('STRIPE_SECRET'));
+                Stripe::setApiKey(config('services.stripe.secret'));
 
                 $refund = EstoreRefund::create([
                     'payment_intent' => $payment->stripe_payment_intent_id,

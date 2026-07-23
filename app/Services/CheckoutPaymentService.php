@@ -22,7 +22,7 @@ class CheckoutPaymentService
 {
     public function __construct()
     {
-        Stripe::setApiKey(config('services.stripe.secret') ?: env('STRIPE_SECRET'));
+        Stripe::setApiKey(config('services.stripe.secret') ?: config('services.stripe.secret'));
     }
 
     /**
@@ -35,7 +35,7 @@ class CheckoutPaymentService
      *                          and the relevant foreign key (tier_id, order_id, event_id, etc).
      * @return array{success:bool,payment_intent_id?:string,client_secret?:string,ephemeral_key?:string,customer_id?:string,publishable_key?:string,error?:string}
      */
-    public function createIntent(float $amount, string $currency, User $user, array $metadata = []): array
+    public function createIntent(float $amount, string $currency, User $user, array $metadata = [], bool $cardOnly = false): array
     {
         try {
             if ($amount <= 0) {
@@ -49,15 +49,22 @@ class CheckoutPaymentService
                 ['stripe_version' => '2023-10-16']
             );
 
-            $intent = StripePaymentIntent::create([
+            $intentParams = [
                 'amount' => (int) round($amount * 100),
                 'currency' => strtolower($currency),
                 'customer' => $customerId,
-                'automatic_payment_methods' => ['enabled' => true],
                 'metadata' => array_merge([
                     'user_id' => $user->id,
                 ], $metadata),
-            ]);
+            ];
+
+            if ($cardOnly) {
+                $intentParams['payment_method_types'] = ['card'];
+            } else {
+                $intentParams['automatic_payment_methods'] = ['enabled' => true];
+            }
+
+            $intent = StripePaymentIntent::create($intentParams);
 
             return [
                 'success' => true,
@@ -65,7 +72,7 @@ class CheckoutPaymentService
                 'client_secret' => $intent->client_secret,
                 'ephemeral_key' => $ephemeralKey->secret,
                 'customer_id' => $customerId,
-                'publishable_key' => config('services.stripe.key') ?: env('STRIPE_KEY'),
+                'publishable_key' => config('services.stripe.key') ?: config('services.stripe.key'),
             ];
         } catch (Exception $e) {
             return ['success' => false, 'error' => $e->getMessage()];
@@ -88,6 +95,81 @@ class CheckoutPaymentService
                 'currency' => $intent->currency,
                 'metadata' => $intent->metadata ? $intent->metadata->toArray() : [],
                 'intent' => $intent,
+            ];
+        } catch (Exception $e) {
+            return ['success' => false, 'error' => $e->getMessage()];
+        }
+    }
+
+    /**
+     * Collect card details without charging (100%-off promo on a paid tier).
+     */
+    public function createSetupIntent(User $user, array $metadata = []): array
+    {
+        try {
+            $customerId = $this->getOrCreateCustomerId($user);
+
+            $ephemeralKey = StripeEphemeralKey::create(
+                ['customer' => $customerId],
+                ['stripe_version' => '2023-10-16']
+            );
+
+            $setupIntent = \Stripe\SetupIntent::create([
+                'customer' => $customerId,
+                'payment_method_types' => ['card'],
+                'metadata' => array_merge([
+                    'user_id' => $user->id,
+                ], $metadata),
+            ]);
+
+            return [
+                'success' => true,
+                'setup_intent_id' => $setupIntent->id,
+                'client_secret' => $setupIntent->client_secret,
+                'ephemeral_key' => $ephemeralKey->secret,
+                'customer_id' => $customerId,
+                'publishable_key' => config('services.stripe.key') ?: config('services.stripe.key'),
+                'card_verification' => true,
+            ];
+        } catch (Exception $e) {
+            return ['success' => false, 'error' => $e->getMessage()];
+        }
+    }
+
+    public function verifySetupIntent(string $setupIntentId): array
+    {
+        try {
+            $intent = \Stripe\SetupIntent::retrieve($setupIntentId);
+
+            return [
+                'success' => $intent->status === 'succeeded',
+                'status' => $intent->status,
+                'metadata' => $intent->metadata ? $intent->metadata->toArray() : [],
+                'intent' => $intent,
+            ];
+        } catch (Exception $e) {
+            return ['success' => false, 'error' => $e->getMessage()];
+        }
+    }
+
+    /**
+     * Validate a legacy Stripe token (web card element) without charging.
+     */
+    public function verifyCardToken(string $stripeToken): array
+    {
+        try {
+            if ($stripeToken === '' || $stripeToken === 'free_tier') {
+                return ['success' => false, 'error' => 'Payment card details are required.'];
+            }
+
+            $token = \Stripe\Token::retrieve($stripeToken);
+            if (empty($token->card)) {
+                return ['success' => false, 'error' => 'Invalid card details.'];
+            }
+
+            return [
+                'success' => true,
+                'transaction_id' => 'CARD-' . strtoupper(uniqid()),
             ];
         } catch (Exception $e) {
             return ['success' => false, 'error' => $e->getMessage()];

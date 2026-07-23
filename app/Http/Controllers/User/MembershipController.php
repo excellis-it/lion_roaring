@@ -3,6 +3,9 @@
 namespace App\Http\Controllers\User;
 
 use App\Http\Controllers\Controller;
+use App\Services\CheckoutPaymentService;
+use App\Services\MembershipPrivilegeService;
+use App\Services\MembershipPricing;
 use Illuminate\Http\Request;
 use App\Models\MembershipTier;
 use App\Models\MembershipMeasurement;
@@ -14,7 +17,6 @@ use App\Models\SubscriptionPayment;
 use Illuminate\Support\Facades\Auth;
 use App\Models\User;
 use Stripe\StripeClient;
-use Spatie\Permission\Models\Permission;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\Rule;
 
@@ -74,10 +76,10 @@ class MembershipController extends Controller
             'name' => 'required|string|max:255',
             'slug' => 'required|string|max:255|unique:membership_tiers,slug',
             'pricing_type' => 'required|in:amount,token',
-            'cost' => 'nullable|required_if:pricing_type,amount|numeric|min:0',
+            'monthly_cost' => 'nullable|required_if:pricing_type,amount|numeric|min:0',
+            'yearly_cost' => 'nullable|required_if:pricing_type,amount|numeric|min:0',
             'life_force_energy_tokens' => 'nullable|required_if:pricing_type,token|numeric|min:0',
             'agree_description' => 'nullable|required_if:pricing_type,token|string',
-            'duration_months' => 'required|integer|min:1',
             'benefits' => 'array',
             'benefits.*' => 'nullable|string|max:250',
         ], [
@@ -88,8 +90,8 @@ class MembershipController extends Controller
             'name',
             'slug',
             'description',
-            'cost',
-            'duration_months',
+            'monthly_cost',
+            'yearly_cost',
             'pricing_type',
             'life_force_energy_tokens',
             'agree_description',
@@ -132,10 +134,10 @@ class MembershipController extends Controller
             'name' => 'required|string|max:255',
             'slug' => 'required|string|max:255|unique:membership_tiers,slug,' . $membership->id,
             'pricing_type' => 'required|in:amount,token',
-            'cost' => 'nullable|required_if:pricing_type,amount|numeric|min:0',
+            'monthly_cost' => 'nullable|required_if:pricing_type,amount|numeric|min:0',
+            'yearly_cost' => 'nullable|required_if:pricing_type,amount|numeric|min:0',
             'life_force_energy_tokens' => 'nullable|required_if:pricing_type,token|numeric|min:0',
             'agree_description' => 'nullable|required_if:pricing_type,token|string',
-            'duration_months' => 'required|integer|min:1',
             'benefits' => 'array',
             'benefits.*' => 'nullable|string|max:250',
         ], [
@@ -146,8 +148,8 @@ class MembershipController extends Controller
             'name',
             'slug',
             'description',
-            'cost',
-            'duration_months',
+            'monthly_cost',
+            'yearly_cost',
             'pricing_type',
             'life_force_energy_tokens',
             'agree_description',
@@ -458,6 +460,11 @@ class MembershipController extends Controller
     public function upgrade(Request $request, MembershipTier $tier)
     {
         $user = Auth::user();
+        $billingPeriod = MembershipPricing::validatePeriod($request->input('billing_period'));
+        $basePrice = MembershipPricing::priceFor($tier, $billingPeriod);
+        $durationMonths = ($tier->pricing_type ?? 'amount') === 'token'
+            ? 12
+            : MembershipPricing::durationMonthsFor($billingPeriod);
 
         // Handle promo code if provided
         $promoCode = null;
@@ -465,11 +472,13 @@ class MembershipController extends Controller
         if ($request->has('promo_code') && !empty($request->promo_code)) {
             $promoCode = MembershipPromoCode::where('code', $request->promo_code)->first();
             if ($promoCode && $promoCode->canBeUsedByUser($user->id) && $promoCode->canBeAppliedToTier($tier->id)) {
-                $discount = $promoCode->calculateDiscount($tier->cost);
+                $discount = $promoCode->calculateDiscount($basePrice);
             } else {
                 return redirect()->route('user.membership.index')->with('error', 'Invalid or expired promo code.');
             }
         }
+
+        $previousPlanId = $user->userLastSubscription?->plan_id;
 
         if (($tier->pricing_type ?? 'amount') === 'token') {
             $user_subscription = new UserSubscription();
@@ -483,13 +492,12 @@ class MembershipController extends Controller
             $user_subscription->agree_description_snapshot = $tier->agree_description;
             $user_subscription->promo_code = $promoCode ? $promoCode->code : null;
             $user_subscription->discount_amount = $discount;
-            $durationMonths = $tier->duration_months ?? 12;
             $user_subscription->subscription_validity = $durationMonths;
             $user_subscription->subscription_start_date = now();
             $user_subscription->subscription_expire_date = now()->addMonths($durationMonths);
             $user_subscription->save();
 
-            $this->syncTierPermissions($user, $tier);
+            app(MembershipPrivilegeService::class)->applyAfterTierChange($user, $tier, $previousPlanId);
 
             // Record promo code usage
             if ($promoCode) {
@@ -507,18 +515,18 @@ class MembershipController extends Controller
         }
 
         // create a new subscription — for now, make a simple record (no payment gateway integrated)
-        $finalPrice = max(0, $tier->cost - $discount);
+        $finalPrice = max(0, $basePrice - $discount);
 
         $user_subscription = new UserSubscription();
         $user_subscription->user_id = $user->id;
         $user_subscription->plan_id = $tier->id;
         $user_subscription->subscription_method = 'amount';
         $user_subscription->subscription_name = $tier->name;
-        $user_subscription->subscription_price = $tier->cost;
+        $user_subscription->subscription_price = $basePrice;
+        $user_subscription->billing_period = $billingPeriod;
         $user_subscription->promo_code = $promoCode ? $promoCode->code : null;
         $user_subscription->discount_amount = $discount;
         $user_subscription->final_price = $finalPrice;
-        $durationMonths = $tier->duration_months ?? 12;
         $user_subscription->subscription_validity = $durationMonths;
         $user_subscription->subscription_start_date = now();
         $user_subscription->subscription_expire_date = now()->addMonths($durationMonths);
@@ -531,12 +539,13 @@ class MembershipController extends Controller
         $payment->transaction_id = 'manual-' . rand(1000, 9999);
         $payment->payment_method = 'Manual';
         $payment->payment_amount = $finalPrice;
+        $payment->billing_period = $billingPeriod;
         $payment->promo_code = $promoCode ? $promoCode->code : null;
         $payment->discount_amount = $discount;
         $payment->payment_status = 'Success';
         $payment->save();
 
-        $this->syncTierPermissions($user, $tier);
+        app(MembershipPrivilegeService::class)->applyAfterTierChange($user, $tier, $previousPlanId);
 
         // Record promo code usage
         if ($promoCode) {
@@ -560,28 +569,27 @@ class MembershipController extends Controller
         if (($tier->pricing_type ?? 'amount') === 'token') {
             return redirect()->route('user.membership.index')->with('error', 'This plan uses Life Force Energy tokens and does not require payment.');
         }
-        if (!$request->boolean('renew') && $userSub && ($userSub->subscription_method ?? 'amount') === 'amount' && floatval($tier->cost) <= floatval($userSub->subscription_price)) {
-            return redirect()->route('user.membership.index')->with('error', 'You can only upgrade to a higher tier.');
-        }
+        $billingPeriod = MembershipPricing::validatePeriod($request->input('billing_period'));
+        $basePrice = MembershipPricing::priceFor($tier, $billingPeriod);
 
         // Handle promo code if provided
         $promoCode = null;
         $discount = 0;
-        $finalPrice = $tier->cost;
+        $finalPrice = $basePrice;
 
         if ($request->has('promo_code') && !empty($request->promo_code)) {
             $promoCode = MembershipPromoCode::where('code', $request->promo_code)->first();
 
             if ($promoCode && $promoCode->canBeUsedByUser($user->id) && $promoCode->canBeAppliedToTier($tier->id)) {
-                $discount = $promoCode->calculateDiscount($tier->cost);
-                $finalPrice = max(0, $tier->cost - $discount);
+                $discount = $promoCode->calculateDiscount($basePrice);
+                $finalPrice = max(0, $basePrice - $discount);
             } else {
                 return redirect()->route('user.membership.index')->with('error', 'Invalid or expired promo code.');
             }
         }
 
         try {
-            $stripe = new StripeClient(env('STRIPE_SECRET'));
+            $stripe = new StripeClient(config('services.stripe.secret'));
             $isRenew = $request->boolean('renew');
             $successUrl = route('membership.checkout.success') . '?session_id={CHECKOUT_SESSION_ID}&tier_id=' . $tier->id;
             if ($isRenew) {
@@ -592,7 +600,7 @@ class MembershipController extends Controller
                 $successUrl .= '&promo_code=' . urlencode($promoCode->code);
             }
 
-            $metadata = ['user_id' => $user->id, 'tier_id' => $tier->id];
+            $metadata = ['user_id' => $user->id, 'tier_id' => $tier->id, 'billing_period' => $billingPeriod];
             if ($isRenew) {
                 $metadata['renew'] = '1';
             }
@@ -632,7 +640,7 @@ class MembershipController extends Controller
             return redirect()->route('user.membership.index')->with('error', 'Invalid session.');
         }
         try {
-            $stripe = new StripeClient(env('STRIPE_SECRET'));
+            $stripe = new StripeClient(config('services.stripe.secret'));
             $session = $stripe->checkout->sessions->retrieve($sessionId);
             $userId = $session->metadata->user_id ?? $session->client_reference_id ?? null;
             $tierId = $session->metadata->tier_id ?? $tierId;
@@ -658,12 +666,18 @@ class MembershipController extends Controller
                 return redirect()->route('user.membership.index')->with('success', 'Payment processed already.');
             }
 
+            $billingPeriod = MembershipPricing::validatePeriod($session->metadata->billing_period ?? 'yearly');
+            $basePrice = MembershipPricing::priceFor($tier, $billingPeriod);
+            $durationMonths = MembershipPricing::durationMonthsFor($billingPeriod);
+            $previousPlanId = $user->userLastSubscription?->plan_id;
+
             if ($isRenew && $user->userLastSubscription && $user->userLastSubscription->plan_id == $tier->id) {
                 // extend existing subscription
                 $sub = $user->userLastSubscription;
-                $durationMonths = $tier->duration_months ?? 12;
                 $sub->subscription_expire_date = now()->max($sub->subscription_expire_date)->addMonths($durationMonths);
                 $sub->subscription_method = 'amount';
+                $sub->billing_period = $billingPeriod;
+                $sub->subscription_validity = $durationMonths;
                 $sub->save();
                 $user_subscription = $sub;
             } else {
@@ -673,28 +687,29 @@ class MembershipController extends Controller
                 $user_subscription->plan_id = $tier->id;
                 $user_subscription->subscription_method = 'amount';
                 $user_subscription->subscription_name = $tier->name;
-                $user_subscription->subscription_price = $tier->cost;
+                $user_subscription->subscription_price = $basePrice;
+                $user_subscription->billing_period = $billingPeriod;
                 $user_subscription->promo_code = $promoCode ? $promoCode->code : null;
                 $user_subscription->discount_amount = $discount;
-                $user_subscription->final_price = isset($session->amount_total) ? ($session->amount_total / 100) : $tier->cost;
+                $user_subscription->final_price = isset($session->amount_total) ? ($session->amount_total / 100) : $basePrice;
                 $user_subscription->life_force_energy_tokens = null;
                 $user_subscription->agree_accepted_at = null;
                 $user_subscription->agree_description_snapshot = null;
-                $durationMonths = $tier->duration_months ?? 12;
                 $user_subscription->subscription_validity = $durationMonths;
                 $user_subscription->subscription_start_date = now();
                 $user_subscription->subscription_expire_date = now()->addMonths($durationMonths);
                 $user_subscription->save();
             }
 
-            $this->syncTierPermissions($user, $tier);
+            app(MembershipPrivilegeService::class)->applyAfterTierChange($user, $tier, $previousPlanId);
 
             $payment = new SubscriptionPayment();
             $payment->user_id = $user->id;
             $payment->user_subscription_id = $user_subscription->id;
             $payment->transaction_id = $session->id;
             $payment->payment_method = 'Stripe';
-            $payment->payment_amount = isset($session->amount_total) ? ($session->amount_total / 100) : $tier->cost;
+            $payment->payment_amount = isset($session->amount_total) ? ($session->amount_total / 100) : $basePrice;
+            $payment->billing_period = $billingPeriod;
             $payment->promo_code = $promoCode ? $promoCode->code : null;
             $payment->discount_amount = $discount;
             $payment->payment_status = 'Success';
@@ -725,46 +740,69 @@ class MembershipController extends Controller
             return redirect()->route('user.membership.index')->with('error', 'No subscription to renew');
         }
 
+        $previousPlanId = $sub->plan_id;
+
         $planId = $request->input('plan_id', $sub->plan_id);
         $tier = MembershipTier::find($planId);
         if (!$tier) {
             return redirect()->route('user.membership.index')->with('error', 'Invalid tier');
         }
 
+        $billingPeriod = MembershipPricing::validatePeriod($request->input('billing_period'));
+        $basePrice = MembershipPricing::priceFor($tier, $billingPeriod);
+        $durationMonths = MembershipPricing::durationMonthsFor($billingPeriod);
+
         // Resolve promo code
         $promoCode      = null;
         $discount       = 0;
-        $finalPrice     = (float) $tier->cost;
+        $finalPrice     = $basePrice;
 
         if ($request->filled('promo_code')) {
             $promoCode = MembershipPromoCode::where('code', $request->promo_code)->first();
             if ($promoCode && $promoCode->isValid()
                 && $promoCode->canBeUsedByUser($user->id)
                 && $promoCode->canBeAppliedToTier($tier->id)) {
-                $discount   = $promoCode->calculateDiscount($tier->cost);
-                $finalPrice = max(0, $tier->cost - $discount);
+                $discount   = $promoCode->calculateDiscount($basePrice);
+                $finalPrice = max(0, $basePrice - $discount);
             } else {
                 $promoCode = null;
             }
         }
 
-        // Token / free path
-        if (($tier->pricing_type ?? 'amount') === 'token' || $finalPrice <= 0) {
-            $durationMonths = $tier->duration_months ?? 12;
-            $sub->subscription_expire_date = now()->max($sub->subscription_expire_date)->addMonths($durationMonths);
-            $sub->subscription_method = 'token';
+        // Token / genuinely free tier — no card required
+        if (($tier->pricing_type ?? 'amount') === 'token' || $basePrice <= 0) {
+            if ($sub->plan_id == $tier->id) {
+                $sub->subscription_expire_date = now()->max($sub->subscription_expire_date)->addMonths(
+                    ($tier->pricing_type ?? 'amount') === 'token' ? 12 : $durationMonths
+                );
+            } else {
+                $sub->plan_id = $tier->id;
+                $sub->subscription_name = $tier->name;
+                $sub->subscription_start_date = now();
+                $sub->subscription_expire_date = now()->addMonths(
+                    ($tier->pricing_type ?? 'amount') === 'token' ? 12 : $durationMonths
+                );
+            }
+            $sub->subscription_method = ($tier->pricing_type ?? 'amount') === 'token' ? 'token' : 'amount';
+            $sub->billing_period = $billingPeriod;
+            $sub->subscription_validity = ($tier->pricing_type ?? 'amount') === 'token' ? 12 : $durationMonths;
             $sub->save();
-            $this->syncTierPermissions($user, $tier);
+            app(MembershipPrivilegeService::class)->applyAfterTierChange($user, $tier, $previousPlanId);
             return redirect()->route('user.membership.index')->with('success', 'Renewed successfully.');
+        }
+
+        if ($finalPrice <= 0) {
+            return redirect()->route('user.membership.index')
+                ->with('error', 'Please complete payment using Secure Payment to verify your card.');
         }
 
         // Stripe checkout
         try {
-            $stripe     = new StripeClient(env('STRIPE_SECRET'));
+            $stripe     = new StripeClient(config('services.stripe.secret'));
             $successUrl = route('membership.checkout.success')
                 . '?session_id={CHECKOUT_SESSION_ID}&tier_id=' . $tier->id . '&renew=1';
 
-            $metadata = ['user_id' => $user->id, 'tier_id' => $tier->id, 'renew' => '1'];
+            $metadata = ['user_id' => $user->id, 'tier_id' => $tier->id, 'renew' => '1', 'billing_period' => $billingPeriod];
             if ($promoCode) {
                 $successUrl .= '&promo_code=' . urlencode($promoCode->code);
                 $metadata['promo_code'] = $promoCode->code;
@@ -799,6 +837,7 @@ class MembershipController extends Controller
         $user      = Auth::user();
         $code      = $request->input('promo_code');
         $tierId    = $request->input('tier_id');
+        $billingPeriod = MembershipPricing::validatePeriod($request->input('billing_period'));
 
         $promoCode = MembershipPromoCode::where('code', $code)->first();
 
@@ -813,15 +852,16 @@ class MembershipController extends Controller
         }
 
         $tier     = $tierId ? MembershipTier::find($tierId) : null;
-        $discount = $tier ? $promoCode->calculateDiscount($tier->cost) : 0;
-        $final    = $tier ? max(0, $tier->cost - $discount) : null;
+        $basePrice = $tier ? MembershipPricing::priceFor($tier, $billingPeriod) : 0;
+        $discount = $tier ? $promoCode->calculateDiscount($basePrice) : 0;
+        $final    = $tier ? max(0, $basePrice - $discount) : null;
 
         $msg = 'Promo code applied!';
         if ($tier) {
             $msg .= ' Discount: $' . number_format($discount, 2) . '. Final: $' . number_format($final, 2) . '.';
         }
 
-        return response()->json(['success' => true, 'message' => $msg, 'discount' => $discount]);
+        return response()->json(['success' => true, 'message' => $msg, 'discount' => $discount, 'final_price' => $final]);
     }
 
     public function processInlinePayment(Request $request)
@@ -834,15 +874,19 @@ class MembershipController extends Controller
         }
 
         $isRenew    = (bool) $request->input('renew', false);
+        $billingPeriod = MembershipPricing::validatePeriod($request->input('billing_period'));
+        $basePrice = MembershipPricing::priceFor($tier, $billingPeriod);
+        $durationMonths = MembershipPricing::durationMonthsFor($billingPeriod);
+        $previousPlanId = $user->userLastSubscription?->plan_id;
         $promoCode  = null;
         $discount   = 0;
-        $finalPrice = (float) $tier->cost;
+        $finalPrice = $basePrice;
 
         if ($request->filled('promo_code')) {
             $promo = MembershipPromoCode::where('code', $request->promo_code)->first();
             if ($promo && $promo->isValid() && $promo->canBeUsedByUser($user->id) && $promo->canBeAppliedToTier($tier->id)) {
-                $discount   = $promo->calculateDiscount($tier->cost);
-                $finalPrice = max(0, $tier->cost - $discount);
+                $discount   = $promo->calculateDiscount($basePrice);
+                $finalPrice = max(0, $basePrice - $discount);
                 $promoCode  = $promo;
             }
         }
@@ -856,7 +900,7 @@ class MembershipController extends Controller
                 return response()->json(['success' => false, 'message' => 'Payment card details are required.']);
             }
             try {
-                \Stripe\Stripe::setApiKey(env('STRIPE_SECRET'));
+                \Stripe\Stripe::setApiKey(config('services.stripe.secret'));
                 $charge = \Stripe\Charge::create([
                     'amount'      => (int) ($finalPrice * 100),
                     'currency'    => 'usd',
@@ -872,14 +916,30 @@ class MembershipController extends Controller
             } catch (\Exception $e) {
                 return response()->json(['success' => false, 'message' => 'Payment error: ' . $e->getMessage()]);
             }
+        } elseif (($tier->pricing_type ?? 'amount') === 'amount' && $finalPrice <= 0 && $basePrice > 0) {
+            $stripeToken = $request->input('stripeToken');
+            $cardCheck = app(CheckoutPaymentService::class)->verifyCardToken((string) $stripeToken);
+            if (!($cardCheck['success'] ?? false)) {
+                return response()->json(['success' => false, 'message' => $cardCheck['error'] ?? 'Payment card details are required.']);
+            }
+            $transactionId = $cardCheck['transaction_id'];
+            $paymentStatus = 'Success';
+        }
+
+        if (($tier->pricing_type ?? 'amount') === 'amount' && $basePrice > 0 && !$transactionId) {
+            return response()->json(['success' => false, 'message' => 'Payment card details are required.']);
         }
 
         // Create or extend subscription
         if ($isRenew && $user->userLastSubscription && $user->userLastSubscription->plan_id == $tier->id) {
             $sub = $user->userLastSubscription;
-            $durationMonths = $tier->duration_months ?? 12;
             $sub->subscription_expire_date = now()->max($sub->subscription_expire_date)->addMonths($durationMonths);
             $sub->subscription_method = 'amount';
+            $sub->billing_period = $billingPeriod;
+            $sub->subscription_validity = $durationMonths;
+            $sub->final_price = $finalPrice;
+            $sub->promo_code = $promoCode ? $promoCode->code : null;
+            $sub->discount_amount = $discount;
             $sub->save();
             $userSubscription = $sub;
         } else {
@@ -888,18 +948,18 @@ class MembershipController extends Controller
             $userSubscription->plan_id        = $tier->id;
             $userSubscription->subscription_method = 'amount';
             $userSubscription->subscription_name   = $tier->name;
-            $userSubscription->subscription_price  = $tier->cost;
+            $userSubscription->subscription_price  = $basePrice;
+            $userSubscription->billing_period      = $billingPeriod;
             $userSubscription->promo_code          = $promoCode ? $promoCode->code : null;
             $userSubscription->discount_amount     = $discount;
             $userSubscription->final_price         = $finalPrice;
-            $durationMonths = $tier->duration_months ?? 12;
             $userSubscription->subscription_validity    = $durationMonths;
             $userSubscription->subscription_start_date  = now();
             $userSubscription->subscription_expire_date = now()->addMonths($durationMonths);
             $userSubscription->save();
         }
 
-        $this->syncTierPermissions($user, $tier);
+        app(MembershipPrivilegeService::class)->applyAfterTierChange($user, $tier, $previousPlanId);
 
         if ($transactionId) {
             $payment = new SubscriptionPayment();
@@ -908,6 +968,7 @@ class MembershipController extends Controller
             $payment->transaction_id       = $transactionId;
             $payment->payment_method       = 'Stripe';
             $payment->payment_amount       = $finalPrice;
+            $payment->billing_period       = $billingPeriod;
             $payment->promo_code           = $promoCode ? $promoCode->code : null;
             $payment->discount_amount      = $discount;
             $payment->payment_status       = $paymentStatus;
@@ -981,6 +1042,8 @@ class MembershipController extends Controller
             return redirect()->route('user.membership.index')->with('error', 'Invalid plan type.');
         }
 
+        $previousPlanId = $user->userLastSubscription?->plan_id;
+
         $user_subscription = new UserSubscription();
         $user_subscription->user_id = $user->id;
         $user_subscription->plan_id = $tier->id;
@@ -990,55 +1053,14 @@ class MembershipController extends Controller
         $user_subscription->life_force_energy_tokens = $tier->life_force_energy_tokens;
         $user_subscription->agree_accepted_at = now();
         $user_subscription->agree_description_snapshot = $tier->agree_description;
-        $durationMonths = $tier->duration_months ?? 12;
+        $durationMonths = 12;
         $user_subscription->subscription_validity = $durationMonths;
         $user_subscription->subscription_start_date = now();
         $user_subscription->subscription_expire_date = now()->addMonths($durationMonths);
         $user_subscription->save();
 
-        $this->syncTierPermissions($user, $tier);
+        app(MembershipPrivilegeService::class)->applyAfterTierChange($user, $tier, $previousPlanId);
 
         return redirect()->route('user.membership.index')->with('success', 'Membership subscribed successfully.');
-    }
-
-    private function syncTierPermissions($user, $tier)
-    {
-        if (!empty($tier->permissions)) {
-            $permissions = array_filter(array_map('trim', explode(',', $tier->permissions)));
-
-            // Get user's custom role (the one that is NOT a base UserType role)
-            $baseRoleNames = \App\Models\UserType::pluck('name')->toArray();
-            $userRole = null;
-            foreach ($user->roles as $role) {
-                if (!in_array($role->name, $baseRoleNames)) {
-                    $userRole = $role;
-                    break;
-                }
-            }
-
-            if ($userRole) {
-                // Sync permissions to the ROLE (same approach as PartnerController)
-                $userRole->syncPermissions($permissions);
-            } else {
-                // Fallback: if no custom role exists, sync directly to user
-                $user->syncPermissions($permissions);
-            }
-
-            // Also remove any stale direct user permissions to avoid conflicts
-            $directPerms = $user->getDirectPermissions()->pluck('name')->toArray();
-            if (!empty($directPerms) && $userRole) {
-                $user->revokePermissionTo($directPerms);
-            }
-        } else {
-            // No permissions on tier: clear all direct permissions
-            $directPerms = $user->getDirectPermissions()->pluck('name')->toArray();
-            if (!empty($directPerms)) {
-                $user->revokePermissionTo($directPerms);
-            }
-        }
-
-        // Clear Spatie permission cache
-        app()->make(\Spatie\Permission\PermissionRegistrar::class)->forgetCachedPermissions();
-        $user->forgetCachedPermissions();
     }
 }

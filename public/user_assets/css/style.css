@@ -117,6 +117,38 @@
     font-size: 10px;
 }
 
+/* BUG-029: header profile popup — fit content without clipping or horizontal scroll */
+@media (min-width: 768px) {
+    .navbar-nav .dropdown-menu.profile-menu-dd {
+        width: 380px;
+        max-width: calc(100vw - 24px);
+        overflow-x: hidden;
+    }
+}
+
+.profile-dropdown {
+    overflow-x: hidden;
+}
+
+.profile-dropdown-user,
+.profile-dropdown-email,
+.profile-dropdown-badges {
+    min-width: 0;
+}
+
+.profile-dropdown-email span {
+    word-break: break-word;
+    overflow-wrap: anywhere;
+}
+
+.profile-dropdown .badge-user-type,
+.profile-dropdown .badge-global,
+.profile-dropdown .badge-regional {
+    white-space: normal;
+    word-break: break-word;
+    line-height: 1.3;
+}
+
 /* Compact variant */
 .badge-global.small-badge,
 .badge-regional.small-badge,
@@ -1072,12 +1104,223 @@ p {
 }
 
 .main {
-    height: calc(80vh - 50px);
     width: calc(100% - 0px);
     overflow: hidden;
     border-radius: 10px;
     color: white;
     display: flex;
+}
+
+/* BUG-030: contain chat pages to the viewport so only the inner panels scroll.
+   Drop the template min-heights that force the page taller than the viewport,
+   then hide the residual window scroll — layout flow is left untouched. */
+body:has(.messaging_sec.chat-layout) {
+    overflow: hidden;
+}
+
+body:has(.messaging_sec.chat-layout) .body-wrapper {
+    min-height: 0;
+}
+
+body:has(.messaging_sec.chat-layout) .container-fluid > .bg_white_border {
+    min-height: 0;
+}
+
+/* BUG-030: chat layout — grid shell, scroll inside panels, compose pinned bottom */
+.messaging_sec.chat-layout {
+    display: grid;
+    grid-template-rows: auto auto auto minmax(0, 1fr);
+    grid-template-areas:
+        "chat-head"
+        "chat-subhead"
+        "chat-search"
+        "chat-body";
+    height: calc(100vh - 140px);
+    overflow: hidden;
+    position: relative;
+}
+
+body:has(.coupon_slider) .messaging_sec.chat-layout {
+    height: calc(100vh - 180px);
+}
+
+.messaging_sec.chat-layout > .d-flex {
+    grid-area: chat-head;
+}
+
+.messaging_sec.chat-layout > .SideNavhead {
+    grid-area: chat-subhead;
+}
+
+.messaging_sec.chat-layout > .user-search-box {
+    grid-area: chat-search;
+}
+
+.messaging_sec.chat-layout > .main {
+    grid-area: chat-body;
+    min-height: 0;
+    height: 100%;
+    overflow: hidden;
+}
+
+/* keep modals/helpers out of the grid rows */
+.messaging_sec.chat-layout > .modal,
+.messaging_sec.chat-layout > #change-group-details,
+.messaging_sec.chat-layout > #group-information {
+    position: absolute;
+    width: 0;
+    height: 0;
+    overflow: visible;
+    pointer-events: none;
+}
+
+/* Raise chat shell above Bootstrap backdrop (nested modals sit inside page-wrapper) */
+.messaging_sec.chat-layout:has(> .modal.show),
+.messaging_sec.chat-layout:has(> .modal.showing),
+.messaging_sec.chat-layout:has(#change-group-details .modal.show),
+.messaging_sec.chat-layout:has(#change-group-details .modal.showing),
+.messaging_sec.chat-layout:has(#group-information .modal.show),
+.messaging_sec.chat-layout:has(#group-information .modal.showing),
+.messaging_sec.chat-layout:has(section.Chat > .modal.show),
+.messaging_sec.chat-layout:has(section.Chat > .modal.showing) {
+    z-index: 1055;
+    position: relative;
+}
+
+/* Avoid double-dimming: backdrop stacks above nested modals and washes them out */
+body:has(.messaging_sec.chat-layout .modal.show) .modal-backdrop,
+body:has(.messaging_sec.chat-layout .modal.showing) .modal-backdrop {
+    display: none !important;
+}
+
+/* restore Bootstrap modal viewport when open (width/height:0 collapses form fields) */
+.messaging_sec.chat-layout > .modal.show,
+.messaging_sec.chat-layout > .modal.showing,
+.messaging_sec.chat-layout > #change-group-details:has(.modal.show),
+.messaging_sec.chat-layout > #change-group-details:has(.modal.showing),
+.messaging_sec.chat-layout > #group-information:has(.modal.show),
+.messaging_sec.chat-layout > #group-information:has(.modal.showing) {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 1055;
+    pointer-events: auto;
+}
+
+.messaging_sec.chat-layout > #change-group-details .modal,
+.messaging_sec.chat-layout > #group-information .modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+}
+
+.messaging_sec.chat-layout > .modal.show,
+.messaging_sec.chat-layout > .modal.showing,
+.messaging_sec.chat-layout > #change-group-details .modal.show,
+.messaging_sec.chat-layout > #change-group-details .modal.showing,
+.messaging_sec.chat-layout > #group-information .modal.show,
+.messaging_sec.chat-layout > #group-information .modal.showing {
+    background-color: rgba(0, 0, 0, 0.5);
+    overflow-x: hidden;
+    overflow-y: auto;
+    pointer-events: auto;
+}
+
+.messaging_sec.chat-layout .group_create.modal-content {
+    background-color: #fff;
+    position: relative;
+    z-index: 1;
+}
+
+.messaging_sec.chat-layout .group_create .modal-body {
+    background-color: #fff;
+}
+
+.messaging_sec.chat-layout .main > div:first-child {
+    height: 100%;
+    min-height: 0;
+    display: flex;
+    flex-direction: column;
+}
+
+.messaging_sec.chat-layout .sideNav2 {
+    flex: 1 1 auto;
+    height: 100%;
+    min-height: 0;
+    overflow-y: auto;
+}
+
+.messaging_sec.chat-layout section.Chat {
+    height: 100%;
+    min-height: 0;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+
+.messaging_sec.chat-layout section.Chat > .modal {
+    position: absolute;
+    width: 0;
+    height: 0;
+    overflow: visible;
+    pointer-events: none;
+}
+
+.messaging_sec.chat-layout section.Chat > .modal.show,
+.messaging_sec.chat-layout section.Chat > .modal.showing {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 1055;
+    pointer-events: auto;
+    background-color: rgba(0, 0, 0, 0.5);
+    overflow-x: hidden;
+    overflow-y: auto;
+}
+
+.messaging_sec.chat-layout section.Chat > .MessageContainer {
+    flex: 1 1 0;
+    min-height: 0;
+    overflow-x: hidden;
+    overflow-y: auto;
+}
+
+.messaging_sec.chat-layout section.Chat > .row,
+.messaging_sec.chat-layout section.Chat > .groupChatHead {
+    flex-shrink: 0;
+}
+
+.messaging_sec.chat-layout section.Chat > [id^="group-member-form-"],
+.messaging_sec.chat-layout section.Chat > form#MessageForm {
+    flex-shrink: 0;
+    margin-top: auto;
+}
+
+.messaging_sec.chat-layout #MessageForm,
+.messaging_sec.chat-layout #TeamMessageForm {
+    flex-shrink: 0;
+    background: #fff;
+    border-top: 1px solid #eee;
+}
+
+.messaging_sec.chat-layout section.Chat > .icon_chat {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    min-height: 0;
+    overflow: hidden;
+    width: 50%;
+    margin: 0 auto;
 }
 
 .sideNav1 {
@@ -1377,7 +1620,14 @@ section {
 }
 
 .MessageContainer {
-    flex: 1;
+    display: flex;
+    flex: 1 1 auto;
+    min-height: 0;
+    width: 100%;
+    padding: 10px;
+    flex-direction: column;
+    overflow: hidden;
+    overflow-y: auto;
 }
 
 #MessageForm {
@@ -1410,16 +1660,6 @@ section {
 #MessageForm input:focus {
     outline: none;
     border: 1px solid #00f5d4;
-}
-
-.MessageContainer {
-    display: flex;
-    height: 100%;
-    width: 100%;
-    padding: 10px;
-    flex-direction: column;
-    overflow: hidden;
-    overflow-y: auto;
 }
 
 .MessageContainer span {
@@ -1831,8 +2071,17 @@ section {
     color: red;
 }
 
+/* BUG-032: center table header labels; prevent ID (#) wrapping */
+.color_head tr th {
+    text-align: center;
+    vertical-align: middle !important;
+    white-space: nowrap;
+    padding: 10px 12px !important;
+}
+
 .color_head th span {
     margin-left: 5px;
+    display: inline;
 }
 
 .eye-btn-1 {

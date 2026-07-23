@@ -250,12 +250,15 @@ Route::prefix('v3')->middleware(['userActivity'])->group(function () {
     Route::post('register-states-list', [AuthController::class, 'getStates']);
 
     Route::get('register-meta', [AuthController::class, 'registerMeta']);
+    Route::get('register-stripe-config', [AuthController::class, 'registerStripeConfig']);
+    Route::post('register-promo-validate', [AuthController::class, 'validateRegistrationPromo']);
     Route::post('register-payment-intent', [AuthController::class, 'registerPaymentIntent']);
     Route::post('register', [AuthController::class, 'register']);
     Route::post('login', [AuthController::class, 'login']);
     Route::post('verify-otp', [AuthController::class, 'verifyOtp']);
     Route::post('register-agreement', [AuthController::class, 'registerAgreement']);
     Route::post('forget-password', [ForgetPasswordController::class, 'forgetPassword']);
+    Route::post('forget-username', [ForgetPasswordController::class, 'forgetUsername']);
 
     // Articles & Register Agreement (public read)
     Route::get('articles/latest', [ArticleController::class, 'latest']);
@@ -329,6 +332,7 @@ Route::prefix('v3')->middleware(['userActivity'])->group(function () {
             Route::put('/renewal-reminder', [MembershipApiController::class, 'updateRenewalReminder']);
 
             Route::post('/checkout/payment-intent', [MembershipApiController::class, 'createPaymentIntent']);
+            Route::get('/checkout/stripe-config', [MembershipApiController::class, 'stripeConfig']);
             Route::post('/checkout/confirm', [MembershipApiController::class, 'confirmCheckout']);
         });
 

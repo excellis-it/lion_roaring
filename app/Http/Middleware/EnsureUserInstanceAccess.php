@@ -36,6 +36,7 @@ class EnsureUserInstanceAccess
         $message = Helper::userInstanceLogoutMessage($user);
 
         Auth::logout();
+        Helper::clearBrowsingSession();
         $request->session()->invalidate();
         $request->session()->regenerateToken();
 
@@ -49,6 +50,7 @@ class EnsureUserInstanceAccess
         }
 
         if ($redirectUrl && !$this->isCurrentRequestUrl($request, $redirectUrl)) {
+            $redirectUrl = $this->appendCountryHandoffToRedirectUrl($redirectUrl, $user);
             $separator = str_contains($redirectUrl, '?') ? '&' : '?';
 
             return redirect()->away($redirectUrl . $separator . 'instance_error=' . urlencode($message));
@@ -91,5 +93,29 @@ class EnsureUserInstanceAccess
         }
 
         return in_array($request->getPort(), [80, 443], true);
+    }
+
+    private function appendCountryHandoffToRedirectUrl(string $url, User $user): string
+    {
+        $mainHost = parse_url(Helper::getMainUrl(), PHP_URL_HOST);
+        $targetHost = parse_url($url, PHP_URL_HOST);
+        $targetPath = trim((string) parse_url($url, PHP_URL_PATH), '/');
+        $isGlobalRoot = $mainHost
+            && $targetHost
+            && strtolower($targetHost) === strtolower($mainHost)
+            && $targetPath === '';
+
+        if ($isGlobalRoot && in_array($user->user_type, ['Global', 'G_R'], true)) {
+            return Helper::appendCountryCodeQueryParam($url, 'GL');
+        }
+
+        if ($user->country) {
+            $country = \App\Models\Country::find($user->country);
+            if ($country) {
+                return Helper::appendCountryCodeQueryParam($url, $country->code);
+            }
+        }
+
+        return $url;
     }
 }

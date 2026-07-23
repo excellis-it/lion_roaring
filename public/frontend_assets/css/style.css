@@ -52,6 +52,78 @@ p {
     left: 0;
     top: 0;
     padding: 10px 0px;
+    --hdr-ctrl-height: 36px;
+    --hdr-ctrl-padding-x: 10px;
+    --hdr-ctrl-font-size: 13px;
+    --hdr-ctrl-radius: 20px;
+    --hdr-ctrl-icon-size: 20px;
+}
+
+/* Unified header control sizing: country, language, sign-in */
+.main_menu_hdr .header-flag-box .cst-select-display,
+.main_menu_hdr .right_tran .cst-select-display,
+.main_menu_hdr .login_prf a {
+    height: var(--hdr-ctrl-height) !important;
+    min-height: var(--hdr-ctrl-height) !important;
+    max-height: var(--hdr-ctrl-height) !important;
+    padding: 0 var(--hdr-ctrl-padding-x) !important;
+    font-size: var(--hdr-ctrl-font-size) !important;
+    line-height: 1 !important;
+    border-radius: var(--hdr-ctrl-radius) !important;
+    box-sizing: border-box !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    gap: 6px;
+    overflow: hidden;
+    flex-shrink: 0;
+}
+
+.main_menu_hdr .header-flag-box .cst-select-wrapper,
+.main_menu_hdr .right_tran .cst-select-wrapper {
+    display: inline-flex;
+    align-items: center;
+    flex-shrink: 0;
+}
+
+.main_menu_hdr .header-flag-box .cst-select-content,
+.main_menu_hdr .right_tran .cst-select-content {
+    display: inline-flex !important;
+    align-items: center !important;
+    gap: 6px;
+    min-width: 0;
+}
+
+.main_menu_hdr .header-flag-box .cst-select-content img,
+.main_menu_hdr .right_tran .cst-select-content img {
+    height: 16px !important;
+    max-width: 20px !important;
+    width: auto !important;
+    flex-shrink: 0;
+}
+
+.main_menu_hdr .cst-select-arrow {
+    font-size: 10px !important;
+    line-height: 1 !important;
+    flex-shrink: 0;
+}
+
+.main_menu_hdr .login_prf a {
+    color: #fff;
+    background: var(--sec-color);
+    font-weight: 500;
+    white-space: nowrap;
+    padding-left: 6px !important;
+    padding-right: var(--hdr-ctrl-padding-x) !important;
+}
+
+.main_menu_hdr .login_prf a span.login-icon {
+    width: var(--hdr-ctrl-icon-size);
+    height: var(--hdr-ctrl-icon-size);
+    flex-shrink: 0;
+}
+
+.main_menu_hdr .login_prf a span.login-icon i {
+    font-size: 11px;
 }
 
 .left_top {
@@ -120,31 +192,40 @@ p {
 .login_prf a {
     color: #fff;
     background: var(--sec-color);
-    padding: 9px 9px;
-    border-radius: 30px;
-    font-size: 15px;
+    padding: 6px 12px 6px 6px;
+    border-radius: 20px;
+    font-size: 14px;
     font-weight: 500;
+    display: inline-flex;
+    align-items: center;
+    white-space: nowrap;
+    line-height: 1.2;
+    gap: 6px;
+    box-sizing: border-box;
+    min-height: 36px;
 }
 
-.login_prf a span {
-    /*margin-right: 5px;*/
+.login-label--mobile {
+    display: none;
+}
+
+.login_prf a span.login-icon {
     background-color: var(--main-color);
     border-radius: 40px;
-    width: 30px;
-    height: 30px;
+    width: 22px;
+    height: 22px;
     display: inline-flex;
-    left: -3%;
-    top: 1px;
-    position: relative;
+    position: static;
+    flex-shrink: 0;
     align-items: center;
     justify-content: center;
 }
 
-.login_prf a span i {
-    font-size: 16px;
+.login_prf a span.login-icon i {
+    font-size: 12px;
 }
 
-.login_prf a:hover span {
+.login_prf a:hover span.login-icon {
     background-color: var(--sec-color);
 }
 
@@ -1785,10 +1866,10 @@ li.slick-active button {
     box-sizing: border-box;
     border-radius: 0px;
     min-height: 100px;
-    height: 100px;
     line-height: 1.5;
     padding: 12px 15px;
     vertical-align: top;
+    align-content: flex-start;
     resize: vertical;
     overflow-y: auto;
 }
@@ -1825,15 +1906,13 @@ li.slick-active button {
     color: rgb(0 0 0 / 50%);
 }
 
-.ftr-frm .form-group textarea.form-control::-webkit-input-placeholder {
+/* BUG-002: match the textarea placeholder line-height to the field's line-height
+   so the placeholder text and the typing caret start at the same top position */
+.ftr-frm form .form-group textarea.form-control::-webkit-input-placeholder {
     line-height: 1.5;
 }
 
-.ftr-frm .form-group textarea.form-control:-ms-input-placeholder {
-    line-height: 1.5;
-}
-
-.ftr-frm .form-group textarea.form-control::placeholder {
+.ftr-frm form .form-group textarea.form-control::placeholder {
     line-height: 1.5;
 }
 
@@ -2519,7 +2598,10 @@ li.slick-active button {
     border-radius: 20px !important;
     background: #fff;
     font-size: 14px;
-    padding: 6px 12px;
+    padding: 6px 12px !important;
+    min-height: 36px;
+    box-sizing: border-box;
+    align-items: center;
 }
 
 .gt_float_switcher .gt_options {
@@ -2874,6 +2956,9 @@ li.slick-active button {
 .modal_checkbox .form-group label {
     position: relative;
     cursor: pointer;
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
 }
 
 .modal_checkbox .form-group label:before {
@@ -2884,22 +2969,25 @@ li.slick-active button {
     box-shadow:
         0 1px 2px rgba(0, 0, 0, 0.05),
         inset 0px -15px 10px -12px rgba(0, 0, 0, 0.05);
-    padding: 10px;
-    display: inline-block;
-    position: relative;
-    vertical-align: middle;
+    width: 20px;
+    height: 20px;
+    min-width: 20px;
+    padding: 0;
+    box-sizing: border-box;
+    display: block;
+    flex-shrink: 0;
+    margin-top: 2px;
     cursor: pointer;
-    margin-right: 5px;
 }
 
 .modal_checkbox .form-group input:checked + label:after {
     content: "";
     display: block;
     position: absolute;
-    top: 4px;
-    left: 22px;
-    width: 6px;
-    height: 14px;
+    top: 5px;
+    left: 7px;
+    width: 5px;
+    height: 10px;
     border: solid var(--main-color);
     border-width: 0 2px 2px 0;
     transform: rotate(45deg);
@@ -3486,9 +3574,6 @@ li.slick-active button {
     .cst-select-wrapper{
         --cst-select-max-height: 60vh;
     }
-    .cst-select-display{
-        min-width: 150px !important;
-    }
 }
 
 .search {
@@ -3713,11 +3798,16 @@ li.slick-active button {
 }
 
 .book .page img {
+    width: 100%;
     max-width: 300px;
     margin-bottom: 20px;
     height: 240px;
-    object-fit: cover;
+    object-fit: contain;
+    padding: 0;
     border-radius: 15px;
+    background: linear-gradient(to right, #dac1ae 0%, #d0ad95 50%, #c59d7f 100%);
+    border: 1px solid rgb(0 0 0 / 6%);
+    box-shadow: 0 2px 10px rgb(0 0 0 / 6%);
 }
 
 .book .page:before {
@@ -4001,6 +4091,10 @@ li.slick-active button {
     background-color: #fff !important;
     border-radius: 40px !important;
     min-width: 200px !important;
+}
+
+.main_menu_hdr .right-site-btns {
+    align-items: center;
 }
 
 /* =======================mobile menu css========================= */

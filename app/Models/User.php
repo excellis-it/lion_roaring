@@ -59,6 +59,7 @@ class User extends Authenticatable
         'location_state',
         'profile_picture',
         'signature',
+        'membership_excluded',
     ];
     protected $appends = ['ecclesia_access', 'full_name']; // Add this line
 
@@ -79,6 +80,7 @@ class User extends Authenticatable
      */
     protected $casts = [
         'email_verified_at' => 'datetime',
+        'membership_excluded' => 'boolean',
     ];
 
     public function getFullNameAttribute()
@@ -284,12 +286,17 @@ class User extends Authenticatable
         return $this->hasNewRole('MEMBER_SOVEREIGN');
     }
 
+    public function isMembershipExcluded(): bool
+    {
+        return (bool) $this->membership_excluded;
+    }
+
     /**
      * Web user panel: member-plan UI, checks, and redirects (always on for MEMBER_SOVEREIGN).
      */
     public function membershipPanelApplicable(): bool
     {
-        return !$this->hasNewRole('SUPER ADMIN');
+        return !$this->isMembershipExcluded() && !$this->hasNewRole('SUPER ADMIN');
     }
 
     /**
@@ -297,7 +304,9 @@ class User extends Authenticatable
      */
     public function membershipAppApplicable(): bool
     {
-        return (bool) config('lion_roaring.in_app_membership') && !$this->hasNewRole('SUPER ADMIN');
+        return (bool) config('lion_roaring.in_app_membership')
+            && !$this->isMembershipExcluded()
+            && !$this->hasNewRole('SUPER ADMIN');
     }
     // default delivery address
     public function defaultDeliveryAddress()
@@ -330,5 +339,15 @@ class User extends Authenticatable
     public function getTimeZoneAttribute($value)
     {
         return $this->resolveUserTimezone($value);
+    }
+
+    public function scopeMatchingPhone($query, string $phoneNumber)
+    {
+        $cleaned = preg_replace('/[\s\-\(\)]+/', '', $phoneNumber);
+
+        return $query->whereRaw(
+            "REPLACE(REPLACE(REPLACE(REPLACE(phone, ' ', ''), '-', ''), '(', ''), ')', '') = ?",
+            [$cleaned]
+        );
     }
 }

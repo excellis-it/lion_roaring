@@ -34,6 +34,7 @@
     <link href="{{ asset('frontend_assets/css/responsive.css') }}" rel="stylesheet">
     <link rel="stylesheet" type="text/css"
         href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css">
+    @include('frontend.includes.toast-layering')
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/flag-icon-css/3.5.0/css/flag-icon.min.css" rel="stylesheet"
         type="text/css" />
@@ -370,7 +371,7 @@
     use App\Helpers\Helper;
 @endphp
 
-<body class="loading">
+<body class="loading has-floating-chat">
 
     <script>
         // Ensure loader is visible immediately
@@ -614,8 +615,7 @@
 
                             </form>
                             <p class="text-center join_member join_member_modal">
-                                <a href="javascrip:void(0);" data-bs-toggle="modal"
-                                    data-bs-target="#registerModalFirst">Join
+                                <a href="javascript:void(0);" id="joinPmaBtn">Join
                                     Lion
                                     Roaring PMA</a> |
                                 <a href="{{ route('user.forget.password.show') }}">Forgot
@@ -768,6 +768,35 @@
 
             </div>
         </div>
+        <div class="modal fade" id="gatewayDownModal" tabindex="-1" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content" style="border:0;border-radius:18px;overflow:hidden;box-shadow:0 20px 60px rgba(0,0,0,.25);">
+                    <div class="modal-body text-center" style="padding:38px 30px 34px;">
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"
+                            style="position:absolute;top:16px;right:16px;"></button>
+                        <div style="width:84px;height:84px;margin:4px auto 18px;border-radius:50%;
+                            background:linear-gradient(135deg,#fff2f2,#ffe2e2);display:flex;align-items:center;justify-content:center;">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 24 24"
+                                fill="none" stroke="#d92d20" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <rect x="1" y="4" width="22" height="16" rx="2"></rect>
+                                <line x1="1" y1="10" x2="23" y2="10"></line>
+                                <line x1="4" y1="21" x2="20" y2="3" stroke="#d92d20"></line>
+                            </svg>
+                        </div>
+                        <h4 style="font-weight:700;color:#101828;margin-bottom:8px;">Payment Gateway Unavailable</h4>
+                        <p style="color:#667085;font-size:15px;line-height:1.6;margin-bottom:24px;">
+                            Our payment system is temporarily down, so new registrations can’t be processed right now.
+                            Please try again in a little while. We appreciate your patience.
+                        </p>
+                        <button type="button" class="btn" data-bs-dismiss="modal"
+                            style="background:#5b2a86;color:#fff;font-weight:600;padding:11px 30px;border-radius:10px;">
+                            Got it
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
         <div class="modal fade" id="registerModalFirst" data-bs-backdrop="static" data-bs-keyboard="false"
             tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
             <div class="modal-dialog modal-lg">
@@ -1184,6 +1213,34 @@
         }
 
         $(document).ready(function() {
+            // Check Stripe gateway health before starting registration
+            $('#joinPmaBtn').on('click', function(e) {
+                e.preventDefault();
+                var $btn = $(this);
+                var original = $btn.text();
+                $btn.css('pointer-events', 'none').text('Please wait...');
+
+                $.ajax({
+                    url: "{{ route('payment.gateway.status') }}",
+                    type: 'GET',
+                    dataType: 'json',
+                    timeout: 12000,
+                    success: function(res) {
+                        if (res && res.ok) {
+                            $('#registerModalFirst').modal('show');
+                        } else {
+                            $('#gatewayDownModal').modal('show');
+                        }
+                    },
+                    error: function() {
+                        $('#gatewayDownModal').modal('show');
+                    },
+                    complete: function() {
+                        $btn.css('pointer-events', '').text(original);
+                    }
+                });
+            });
+
             // Load PDF when modal is shown
             $('#registerModalFirst').on('shown.bs.modal', function() {
                 const pdfUrl = "{{ Helper::getPDFAttribute() }}";

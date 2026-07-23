@@ -124,17 +124,18 @@
                                         ->first();
                                 @endphp
                                 @if ($user)
-                                    <a href="{{ route('user.profile') }}"><span><i class="fa-solid fa-user"></i></span>
+                                    <a href="{{ route('user.profile') }}"><span class="login-icon"><i class="fa-solid fa-user"></i></span>
                                         Profile</a>
                                 @else
                                     <a href="javascript:void(0);" data-bs-toggle="modal" data-bs-target="#loginModal"
-                                        href="{{ route('login') }}"><span><i class="fa-solid fa-user"></i></span>
+                                        href="{{ route('login') }}"><span class="login-icon"><i class="fa-solid fa-user"></i></span>
                                         Login</a>
                                 @endif
                             @else
                                 <a href="javascript:void(0);" data-bs-toggle="modal" data-bs-target="#loginModal"
-                                    href="{{ route('login') }}"><span><i class="fa-solid fa-user"></i></span>
-                                    Sign-In/New Member</a>
+                                    href="{{ route('login') }}"><span class="login-icon"><i class="fa-solid fa-user"></i></span>
+                                    <span class="login-label login-label--desktop">Sign-In/New Member</span>
+                                    <span class="login-label login-label--mobile">Sign In</span></a>
                             @endif
                         </div>
 

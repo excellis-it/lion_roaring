@@ -73,7 +73,10 @@ class EstoreProductController extends Controller
                     ->where('quantity', '>', 0);
             })->pluck('id')->toArray();
 
-            $products = Product::where('is_deleted', false)->where('status', 1);
+            // Only products stocked in the nearest warehouse are sellable here (digital products carry no stock).
+            $products = Product::where(function ($q) use ($wareHouseProducts) {
+                $q->whereIn('id', $wareHouseProducts)->orWhere('product_type', 'digital');
+            })->where('is_deleted', false)->where('status', 1);
 
             if (!empty($category_id)) {
                 // if category id is a number or array

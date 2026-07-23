@@ -75,49 +75,71 @@
     window.clearGoogleTranslateCookies = clearGoogleTranslateCookies;
 
     /**
+     * content_lang marks an explicit language choice for UGC (bulletins).
+     * Absent on first load so posts stay in the author's original language.
+     */
+    function setContentLangCookie(lang) {
+        var domain = window.location.hostname;
+        if (!lang || lang === '__original__') {
+            document.cookie = "content_lang=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+            document.cookie = "content_lang=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/; domain=" + domain + ";";
+            if (domain.includes('.')) {
+                document.cookie = "content_lang=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/; domain=." + domain + ";";
+            }
+            return;
+        }
+        document.cookie = "content_lang=" + lang + "; path=/";
+        document.cookie = "content_lang=" + lang + "; path=/; domain=" + domain;
+        if (domain.includes('.')) {
+            document.cookie = "content_lang=" + lang + "; path=/; domain=." + domain;
+        }
+    }
+    window.setContentLangCookie = setContentLangCookie;
+
+    /**
      * changeGoogleTranslateLanguage(lang)
-     * - For English: clears cookies and reloads to restore original content
-     * - For other languages: sets cookies and updates the Google Translate widget
+     * - For Original: clear translation cookies and reload (UGC stays original)
+     * - For English: clear googtrans, set content_lang=en, reload (UGC → English)
+     * - For other languages: set cookies and updates the Google Translate widget
      */
     window.changeGoogleTranslateLanguage = function(lang) {
         const langMap = { 'cn': 'zh-CN', 'us': 'en', 'uk': 'en' };
         if (langMap[lang]) lang = langMap[lang];
 
-        // English = restore original content (clear cookies + reload)
-        if (lang === 'en') {
+        if (lang === '__original__') {
             clearGoogleTranslateCookies();
+            setContentLangCookie(null);
+            if (document.getElementById('show-bulletin') && typeof window.reloadBulletinBoardOriginal === 'function') {
+                window.reloadBulletinBoardOriginal();
+                return;
+            }
             window.location.reload();
             return;
         }
 
-        // Other languages: set cookies and update widget
+        setContentLangCookie(lang);
+
+        // English UI = clear googtrans; content_lang still drives bulletin translation
+        if (lang === 'en') {
+            var hadGoogtrans = /(?:^|;\s*)googtrans=/.test(document.cookie);
+            clearGoogleTranslateCookies();
+            // Fast path: already on English UI — only refresh bulletin texts (no full reload)
+            if (!hadGoogtrans && document.getElementById('show-bulletin') && typeof window.applyBulletinBoardTranslations === 'function') {
+                window.applyBulletinBoardTranslations();
+                return;
+            }
+            window.location.reload();
+            return;
+        }
+
+        // Other languages: set googtrans then reload so server UGC translation + GT widget both apply
         const domain = window.location.hostname;
         document.cookie = "googtrans=/auto/" + lang + "; path=/";
         document.cookie = "googtrans=/auto/" + lang + "; path=/; domain=" + domain;
         if (domain.includes('.')) {
             document.cookie = "googtrans=/auto/" + lang + "; path=/; domain=." + domain;
         }
-
-        // Wait for the Google Translate widget and update it
-        let attempts = 0;
-        const checkAndSet = setInterval(function() {
-            const select = document.querySelector('.goog-te-combo');
-            if (select) {
-                clearInterval(checkAndSet);
-                if (window.forceSelectValue) {
-                    window.forceSelectValue(select, lang);
-                } else {
-                    select.value = lang;
-                    select.dispatchEvent(new Event('change'));
-                }
-            } else {
-                attempts++;
-                if (attempts >= 50) {
-                    clearInterval(checkAndSet);
-                    window.location.reload();
-                }
-            }
-        }, 100);
+        window.location.reload();
     }
 
     /**
@@ -155,7 +177,16 @@
     function forceSelectValue(selectEl, value) {
         if (!selectEl) return;
 
-        // English = clear cookies + reload to get original content back
+        if (value === '__original__') {
+            clearGoogleTranslateCookies();
+            setContentLangCookie(null);
+            window.location.reload();
+            return;
+        }
+
+        setContentLangCookie(value);
+
+        // English UI = clear googtrans; content_lang still drives bulletin translation
         if (value === 'en') {
             clearGoogleTranslateCookies();
             window.location.reload();
@@ -209,6 +240,7 @@
                 var selectedValue = selectEl.value;
                 if (selectedValue === 'en' || selectedValue === '' || selectedValue === 'en|en') {
                     e.stopPropagation();
+                    setContentLangCookie('en');
                     clearGoogleTranslateCookies();
                     setTimeout(function() { window.location.reload(); }, 100);
                 }
@@ -218,21 +250,25 @@
     }
 
     /**
-     * Active language from googtrans cookie or translated page state.
+     * Active language from googtrans / content_lang, or Original when unset.
      */
     function getActiveTranslateLang() {
         const match = document.cookie.match(/(?:^|;\s*)googtrans=\/auto\/([^;]+)/);
         if (match && match[1]) {
             return match[1];
         }
+        const contentMatch = document.cookie.match(/(?:^|;\s*)content_lang=([^;]+)/);
+        if (contentMatch && contentMatch[1]) {
+            return decodeURIComponent(contentMatch[1]);
+        }
         const html = document.documentElement;
         if (
             html.classList.contains('translated-ltr') ||
             html.classList.contains('translated-rtl')
         ) {
-            return html.getAttribute('lang') || 'en';
+            return html.getAttribute('lang') || '__original__';
         }
-        return 'en';
+        return '__original__';
     }
 
     /**
@@ -261,11 +297,6 @@
         customSelect.addEventListener('change', function () {
             const lang = customSelect.value;
             if (!lang) {
-                return;
-            }
-            if (lang === 'en') {
-                clearGoogleTranslateCookies();
-                window.location.reload();
                 return;
             }
             if (window.changeGoogleTranslateLanguage) {

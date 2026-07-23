@@ -144,7 +144,7 @@
                     @endif
                     <div class="search-field mb-0" style="min-width: 300px;">
                         <input type="text" name="search" id="search"
-                            placeholder="search by name, username or email..." required class="form-control">
+                            placeholder="Search by name, username or email..." required class="form-control">
                         <button class="submit_search" id="search-button">
                             <i class="fa fa-search"></i>
                         </button>

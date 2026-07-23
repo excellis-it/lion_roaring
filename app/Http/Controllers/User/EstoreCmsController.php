@@ -1374,7 +1374,7 @@ class EstoreCmsController extends Controller
     {
         try {
             // Set Stripe secret key
-            Stripe::setApiKey(env('STRIPE_SECRET'));
+            Stripe::setApiKey(config('services.stripe.secret'));
             $estoreRefund =  EstoreRefund::where('order_id', $order->id)->first();
             $payment = EstorePayment::where('order_id', $order->id)->first();
             // Refund by payment intent

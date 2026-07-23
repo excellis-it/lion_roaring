@@ -19,7 +19,7 @@
                         <div class="member_add">
 
                             <div class="search-field float-right">
-                                <input type="text" name="search" id="member-search" placeholder="search..."
+                                <input type="text" name="search" id="member-search" placeholder="Search..."
                                     class="form-control">
                                 <button class="submit_search" id="search-button"> <span class=""><i
                                             class="fa fa-search"></i></span></button>

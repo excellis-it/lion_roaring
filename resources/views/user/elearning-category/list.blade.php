@@ -28,7 +28,7 @@
                                 <div class="row justify-content-end">
                                     <div class="col-lg-4">
                                         <div class="search-field">
-                                            <input type="text" name="search" id="search" placeholder="search..."
+                                            <input type="text" name="search" id="search" placeholder="Search..."
                                                 required="" class="form-control rounded_search">
                                             <button class="submit_search" id="search-button"> <span class=""><i
                                                         class="fa fa-search"></i></span></button>

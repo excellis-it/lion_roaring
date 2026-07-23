@@ -50,7 +50,7 @@ class DonationController extends Controller
         }
 
         try {
-            Stripe\Stripe::setApiKey(env('STRIPE_SECRET'));
+            Stripe\Stripe::setApiKey(config('services.stripe.secret'));
             $charge = Stripe\Charge::create([
                 'amount' => $request->amount * 100,
                 'currency' => 'usd',

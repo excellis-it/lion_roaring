@@ -14,11 +14,18 @@ class MembershipTier extends BaseModel
         'slug',
         'description',
         'cost',
+        'monthly_cost',
+        'yearly_cost',
         'duration_months',
         'pricing_type',
         'life_force_energy_tokens',
         'agree_description',
         'permissions',
+    ];
+
+    protected $casts = [
+        'monthly_cost' => 'decimal:2',
+        'yearly_cost' => 'decimal:2',
     ];
 
     public function benefits()

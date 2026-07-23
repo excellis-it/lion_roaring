@@ -68,7 +68,10 @@ class VisitorController extends Controller
                 $languageSessionKey => $allLanguages,
             ]);
 
-            $redirectUrl = \App\Helpers\Helper::getMainUrl();
+            $redirectUrl = \App\Helpers\Helper::appendCountryCodeQueryParam(
+                \App\Helpers\Helper::getMainUrl(),
+                'GL'
+            );
             return response()->json([
                 'status' => 'ok',
                 'redirect_url' => $redirectUrl,
@@ -99,7 +102,10 @@ class VisitorController extends Controller
         ]);
 
         // Determine the redirect URL dynamically from DB domains
-        $redirectUrl = \App\Helpers\Helper::getCountryRedirectUrl($country);
+        $redirectUrl = \App\Helpers\Helper::appendCountryCodeQueryParam(
+            \App\Helpers\Helper::getCountryRedirectUrl($country),
+            $country
+        );
 
         return response()->json([
             'status' => 'ok',
