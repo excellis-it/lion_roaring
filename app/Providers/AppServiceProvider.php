@@ -6,6 +6,7 @@ use Illuminate\Cache\RateLimiting\Limit;
 use Illuminate\Http\Request;
 use Illuminate\Pagination\Paginator;
 use Illuminate\Support\Facades\RateLimiter;
+use Illuminate\Support\Facades\URL;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Facades\Schema;
 use App\Models\SiteSetting;
@@ -26,6 +27,13 @@ class AppServiceProvider extends ServiceProvider
     public function boot(): void
     {
         Paginator::useBootstrap();
+
+        // Force HTTPS URLs when APP_URL is https (demo/production behind reverse proxy).
+        $appUrl = (string) config('app.url', '');
+        if (str_starts_with($appUrl, 'https://')) {
+            URL::forceScheme('https');
+            URL::forceRootUrl(rtrim($appUrl, '/'));
+        }
 
         RateLimiter::for('api', function (Request $request) {
             return Limit::perMinute(1200)->by(optional($request->user())->id ?: $request->ip());

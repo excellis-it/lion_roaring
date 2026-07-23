@@ -13,6 +13,9 @@ return Application::configure(basePath: dirname(__DIR__))
         apiPrefix: 'api',
     )
     ->withMiddleware(function (Middleware $middleware) {
+        // Trust host/docker proxy so HTTPS (X-Forwarded-Proto) is detected correctly.
+        $middleware->trustProxies(at: '*');
+
         $middleware->web(append: [
             \App\Http\Middleware\EnsureUserIsActive::class,
             \App\Http\Middleware\EnsureCanonicalCountryUrl::class,
