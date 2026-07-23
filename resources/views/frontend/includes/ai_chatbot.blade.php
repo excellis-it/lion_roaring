@@ -29,17 +29,51 @@
                 : '',
         ];
     @endphp
+    <!-- Normal chatbot fallback (hidden until the AI widget fails to load) -->
+    <div id="chatbot-fallback" style="display: none;">
+        @include('frontend.includes.chatbot')
+    </div>
+
     <!-- RAG Chatbot Widget -->
-    <script src="{{ $ragWidgetUrl }}"></script>
     <script id="rag-widget-config" type="application/json">@json($ragWidgetConfig)</script>
     <script>
         (function () {
-            if (!window.RAGWidget) {
-                return;
+            var FALLBACK_TIMEOUT = 8000;
+            var settled = false;
+
+            function showFallback() {
+                if (settled) return;
+                settled = true;
+                var el = document.getElementById('chatbot-fallback');
+                if (el) el.style.display = '';
             }
-            var configEl = document.getElementById('rag-widget-config');
-            var config = JSON.parse(configEl.textContent);
-            window.RAGWidget.init(config);
+
+            function initWidget() {
+                if (settled) return;
+                if (!window.RAGWidget) {
+                    showFallback();
+                    return;
+                }
+                settled = true;
+                var configEl = document.getElementById('rag-widget-config');
+                var config = JSON.parse(configEl.textContent);
+                window.RAGWidget.init(config);
+            }
+
+            var s = document.createElement('script');
+            s.src = @json($ragWidgetUrl);
+            s.async = true;
+            s.onload = initWidget;
+            s.onerror = showFallback;
+            document.head.appendChild(s);
+
+            // If the widget never loads or never responds, fall back to the normal chatbot.
+            setTimeout(function () {
+                if (settled) return;
+                window.RAGWidget ? initWidget() : showFallback();
+            }, FALLBACK_TIMEOUT);
         })();
     </script>
+@else
+    @include('frontend.includes.chatbot')
 @endif
