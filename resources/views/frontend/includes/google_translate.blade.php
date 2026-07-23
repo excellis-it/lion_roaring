@@ -107,12 +107,10 @@
         if (langMap[lang]) lang = langMap[lang];
 
         if (lang === '__original__') {
+            // Must full-reload: Google Translate rewrites the whole DOM (menus, headers).
+            // AJAX bulletin reload alone leaves the UI stuck in the previous language.
             clearGoogleTranslateCookies();
             setContentLangCookie(null);
-            if (document.getElementById('show-bulletin') && typeof window.reloadBulletinBoardOriginal === 'function') {
-                window.reloadBulletinBoardOriginal();
-                return;
-            }
             window.location.reload();
             return;
         }
@@ -122,9 +120,11 @@
         // English UI = clear googtrans; content_lang still drives bulletin translation
         if (lang === 'en') {
             var hadGoogtrans = /(?:^|;\s*)googtrans=/.test(document.cookie);
+            var pageIsTranslated = document.documentElement.classList.contains('translated-ltr') ||
+                document.documentElement.classList.contains('translated-rtl');
             clearGoogleTranslateCookies();
-            // Fast path: already on English UI — only refresh bulletin texts (no full reload)
-            if (!hadGoogtrans && document.getElementById('show-bulletin') && typeof window.applyBulletinBoardTranslations === 'function') {
+            // Fast path only when UI was never machine-translated
+            if (!hadGoogtrans && !pageIsTranslated && document.getElementById('show-bulletin') && typeof window.applyBulletinBoardTranslations === 'function') {
                 window.applyBulletinBoardTranslations();
                 return;
             }
