@@ -13,8 +13,8 @@ class MembershipTierRegistrationPolicyTest extends TestCase
     {
         $policy = new MembershipTierRegistrationPolicy();
 
-        $gold = new MembershipTier(['name' => 'Gold', 'cost' => '30']);
-        $platinum = new MembershipTier(['name' => 'Platinum', 'cost' => '60']);
+        $gold = new MembershipTier(['name' => 'Gold', 'yearly_cost' => '30']);
+        $platinum = new MembershipTier(['name' => 'Platinum', 'yearly_cost' => '60']);
 
         $lowest = $policy->lowestTierCost(collect([$gold, $platinum]));
         $this->assertSame(30.0, $lowest);
@@ -46,8 +46,8 @@ class MembershipTierRegistrationPolicyTest extends TestCase
     {
         $policy = new MembershipTierRegistrationPolicy();
 
-        $standard = new MembershipTier(['name' => 'Standard', 'cost' => '0']);
-        $gold = new MembershipTier(['name' => 'Gold', 'cost' => '30']);
+        $standard = new MembershipTier(['name' => 'Standard', 'yearly_cost' => '0']);
+        $gold = new MembershipTier(['name' => 'Gold', 'yearly_cost' => '30']);
         $lowest = $policy->lowestTierCost(collect([$standard, $gold]));
 
         $request = Request::create('/api/v3/register', 'POST', server: [
