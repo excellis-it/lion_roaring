@@ -5,6 +5,7 @@ namespace App\Services;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Http\Client\Response as HttpResponse;
 
 class ContentTranslationService
 {
@@ -130,8 +131,18 @@ class ContentTranslationService
 
                 $response = $responses[(string) $key] ?? null;
                 try {
-                    if (!$response || !$response->successful()) {
-                        throw new \RuntimeException('Translate HTTP failed');
+                    // Http::pool returns a Response on success, or a Throwable
+                    // (e.g. ConnectException) when the request never completed.
+                    if ($response instanceof \Throwable) {
+                        throw new \RuntimeException(
+                            'Translate connection failed: ' . $response->getMessage(),
+                            0,
+                            $response
+                        );
+                    }
+                    if (!$response instanceof HttpResponse || !$response->successful()) {
+                        $status = $response instanceof HttpResponse ? $response->status() : 'none';
+                        throw new \RuntimeException('Translate HTTP failed (' . $status . ')');
                     }
                     $translated = self::parseTranslatePayload($response->json(), $text);
                     $cacheKey = 'content_tr:' . $target . ':' . sha1($text);

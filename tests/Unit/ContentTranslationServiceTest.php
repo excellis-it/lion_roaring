@@ -107,4 +107,21 @@ class ContentTranslationServiceTest extends TestCase
         $this->assertSame('Two', $out['b']);
         Http::assertSentCount(2);
     }
+
+    public function test_translate_many_falls_back_when_pool_returns_exception(): void
+    {
+        Cache::flush();
+        Http::fake(function () {
+            throw new \GuzzleHttp\Exception\ConnectException(
+                'cURL error 28: Connection timed out',
+                new \GuzzleHttp\Psr7\Request('GET', 'https://translate.googleapis.com/translate_a/single')
+            );
+        });
+
+        $out = ContentTranslationService::translateMany([
+            'a' => 'Hola',
+        ], 'en');
+
+        $this->assertSame('Hola', $out['a']);
+    }
 }

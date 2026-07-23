@@ -94,25 +94,30 @@ class ChatbotController extends Controller
     {
         $request->validate([
             'session_id' => 'required',
-            'language' => 'required|string|max:10',
+            'language' => 'required|string|max:20',
         ]);
+
+        $language = $request->language === '__original__' ? 'en' : $request->language;
 
         $conversation = ChatbotConversation::where('session_id', $request->session_id)->first();
 
         if ($conversation) {
-            $conversation->update(['language' => $request->language]);
+            $conversation->update(['language' => $language]);
 
             // Track analytics
             ChatbotAnalytics::create([
                 'conversation_id' => $conversation->id,
                 'event_type' => 'language_changed',
                 'section' => 'settings',
-                'event_data' => ['language' => $request->language],
+                'event_data' => [
+                    'language' => $language,
+                    'requested' => $request->language,
+                ],
             ]);
 
             return response()->json([
                 'success' => true,
-                'language' => $request->language,
+                'language' => $language,
             ]);
         }
 
@@ -191,6 +196,12 @@ class ChatbotController extends Controller
         if (!$hasEnglish) {
             array_unshift($languages, ['code' => 'en', 'name' => 'English']);
         }
+
+        // Original first: show author/source content (no machine translation)
+        array_unshift($languages, [
+            'code' => '__original__',
+            'name' => 'Original',
+        ]);
 
         return response()->json([
             'success' => true,

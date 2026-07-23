@@ -705,8 +705,10 @@
                 const res = await fetch('{{ route('chatbot.languages') }}');
                 const data = await res.json();
                 if (data.success) {
-                    const originalBtn =
-                        `<button class="widget-reply-btn" onclick="chatbotWidget.setLang('__original__')">Original</button>`;
+                    const hasOriginal = (data.languages || []).some(l => l.code === '__original__');
+                    const originalBtn = hasOriginal
+                        ? ''
+                        : `<button class="widget-reply-btn" onclick="chatbotWidget.setLang('__original__')">Original</button>`;
                     const html = originalBtn + data.languages.map(l =>
                         `<button class="widget-reply-btn" onclick="chatbotWidget.setLang('${l.code}')">${l.name}</button>`
                     ).join('');

@@ -579,6 +579,7 @@
         <div class="language-modal-content">
             <div class="language-modal-header">Select Language</div>
             <div class="language-grid">
+                <div class="language-option" data-lang="__original__">Original</div>
                 <div class="language-option" data-lang="en">🇬🇧 English</div>
                 <div class="language-option" data-lang="hi">🇮🇳 Hindi</div>
                 <div class="language-option" data-lang="ta">தமிழ் Tamil</div>
@@ -777,16 +778,18 @@
 
             async selectLanguage(lang) {
                 try {
+                    const isOriginal = lang === '__original__';
                     const response = await axios.post('/chatbot/language', {
                         session_id: this.sessionId,
                         language: lang
                     });
 
                     if (response.data.success) {
-                        this.currentLanguage = lang;
+                        this.currentLanguage = isOriginal ? 'en' : lang;
                         this.closeLanguageModal();
 
                         const langNames = {
+                            __original__: 'Original',
                             en: 'English',
                             hi: 'Hindi',
                             ta: 'Tamil',
@@ -798,7 +801,16 @@
                             ur: 'Urdu'
                         };
 
-                        this.addBotMessage(`Language changed to ${langNames[lang]} ✅`);
+                        this.addBotMessage(
+                            isOriginal
+                                ? 'Showing original content. ✅'
+                                : `Language changed to ${langNames[lang] || lang} ✅`
+                        );
+
+                        if (window.changeGoogleTranslateLanguage) {
+                            window.changeGoogleTranslateLanguage(isOriginal ? '__original__' : lang);
+                        }
+
                         this.showBackButton();
                     }
                 } catch (error) {
