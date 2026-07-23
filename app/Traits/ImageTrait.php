@@ -103,16 +103,18 @@ trait ImageTrait
                 $disk->put("$path/$compressedFilename", (string) $imgStream);
                 $compressedPath = "$path/$compressedFilename";
 
-                // Optional: produce a WebP; if errors, ignore silently
-                try {
-                    $webpQuality = 60;
-                    $webpEncoder = new \Intervention\Image\Encoders\WebpEncoder($webpQuality);
-                    $webpStream = $img->encode($webpEncoder);
-                    $webpFilename = 'compressed_' . pathinfo($filename, PATHINFO_FILENAME) . '.webp';
-                    $disk->put("$path/$webpFilename", (string) $webpStream);
-                    $compressedPath = "$path/$webpFilename";
-                } catch (\Exception $e) {
-                    // ignore webp errors
+                // Optional: produce a WebP when GD/Imagick supports it; ignore failures.
+                if (function_exists('imagewebp')) {
+                    try {
+                        $webpQuality = 60;
+                        $webpEncoder = new \Intervention\Image\Encoders\WebpEncoder($webpQuality);
+                        $webpStream = $img->encode($webpEncoder);
+                        $webpFilename = 'compressed_' . pathinfo($filename, PATHINFO_FILENAME) . '.webp';
+                        $disk->put("$path/$webpFilename", (string) $webpStream);
+                        $compressedPath = "$path/$webpFilename";
+                    } catch (\Throwable $e) {
+                        // ignore webp errors — keep jpg/png compressed path
+                    }
                 }
             } catch (\Exception $e) {
                 // If Intervention fails (corrupt or unsupported), return original path
