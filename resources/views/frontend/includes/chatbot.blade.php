@@ -622,6 +622,7 @@
                 }
             },
             setLang: async function(lang) {
+                const isOriginal = lang === '__original__';
                 const res = await fetch('{{ route('chatbot.language') }}', {
                     method: 'POST',
                     headers: {
@@ -630,22 +631,26 @@
                     },
                     body: JSON.stringify({
                         session_id: sessionId,
-                        language: lang
+                        language: isOriginal ? 'en' : lang
                     })
                 });
                 const data = await res.json();
                 if (data.success) {
-                    currentLanguage = lang;
-                    localStorage.setItem('chatbot_language', lang);
-                    addBotMsg(`Language updated! ✅`);
+                    currentLanguage = isOriginal ? 'en' : lang;
+                    if (isOriginal) {
+                        localStorage.removeItem('chatbot_language');
+                    } else {
+                        localStorage.setItem('chatbot_language', lang);
+                    }
+                    addBotMsg(isOriginal ? `Showing original content. ✅` : `Language updated! ✅`);
 
-                    // Use the same approach as the header language switcher (no page reload)
+                    // Use the same approach as the header language switcher
                     if (window.changeGoogleTranslateLanguage) {
-                        window.changeGoogleTranslateLanguage(lang);
+                        window.changeGoogleTranslateLanguage(isOriginal ? '__original__' : lang);
                     } else if (window.forceSelectValue) {
                         const translateSelect = document.querySelector('.goog-te-combo');
                         if (translateSelect) {
-                            window.forceSelectValue(translateSelect, lang);
+                            window.forceSelectValue(translateSelect, isOriginal ? '__original__' : lang);
                         }
                     }
 
@@ -700,7 +705,9 @@
                 const res = await fetch('{{ route('chatbot.languages') }}');
                 const data = await res.json();
                 if (data.success) {
-                    const html = data.languages.map(l =>
+                    const originalBtn =
+                        `<button class="widget-reply-btn" onclick="chatbotWidget.setLang('__original__')">Original</button>`;
+                    const html = originalBtn + data.languages.map(l =>
                         `<button class="widget-reply-btn" onclick="chatbotWidget.setLang('${l.code}')">${l.name}</button>`
                     ).join('');
                     addQuickReplies(html);

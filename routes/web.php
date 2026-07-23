@@ -1032,6 +1032,7 @@ Route::prefix('user')->middleware(['user', 'preventBackHistory', 'userActivity',
         Route::get('/', [BulletinBoardController::class, 'list'])->name('bulletin-board.index');
         // load bulletin board
         Route::post('/load', [BulletinBoardController::class, 'load'])->name('bulletin-board.load');
+        Route::post('/translate-content', [BulletinBoardController::class, 'translateContent'])->name('bulletin-board.translate-content');
     });
 
     Route::prefix('roles')->group(function () {

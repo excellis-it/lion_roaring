@@ -1,7 +1,7 @@
 @if (count($bulletins) > 0)
     @foreach ($bulletins as $key => $bulletin)
         @if ($key % 2 == 0)
-            <div class="bulletion_board_left">
+            <div class="bulletion_board_left bulletin-item" data-bulletin-id="{{ $bulletin->id }}">
                 <div class="d-flex">
                     <div class="bulletin_img_name">
                         <div class="main_avtar">
@@ -14,12 +14,12 @@
                     </div>
                     <div class="bulletin_text">
                         <div class="bulle_left">
-                            <div class="name_bull">
+                            <div class="name_bull notranslate" translate="no">
                                 {{ isset($bulletin->user->full_name) && !empty($bulletin->user->full_name) ? $bulletin->user->full_name : 'Unknown' }}
                             </div>
-                            <h4 class="">
+                            <h4 class="bulletin-title notranslate" translate="no">
                                 {{ isset($bulletin->title) && !empty($bulletin->title) ? $bulletin->title : '' }} </h4>
-                            <p class="">
+                            <p class="bulletin-description notranslate" translate="no">
                                 {!! isset($bulletin->description) && !empty($bulletin->description)
                                     ? preg_replace_callback(
                                         '/(https?:\/\/[^\s]+)/',
@@ -43,16 +43,16 @@
                 </div>
             </div>
         @else
-            <div class="bulletion_board_left bulletion_board_right">
+            <div class="bulletion_board_left bulletion_board_right bulletin-item" data-bulletin-id="{{ $bulletin->id }}">
                 <div class="d-flex">
                     <div class="bulletin_text">
                         <div class="bulle_left">
-                            <div class="name_bull">
+                            <div class="name_bull notranslate" translate="no">
                                 {{ isset($bulletin->user->full_name) && !empty($bulletin->user->full_name) ? $bulletin->user->full_name : 'Unknown' }}
                             </div>
-                            <h4 class="">
+                            <h4 class="bulletin-title notranslate" translate="no">
                                 {{ isset($bulletin->title) && !empty($bulletin->title) ? $bulletin->title : '' }} </h4>
-                            <p class="">
+                            <p class="bulletin-description notranslate" translate="no">
                                 {!! isset($bulletin->description) && !empty($bulletin->description)
                                     ? preg_replace_callback(
                                         '/(https?:\/\/[^\s]+)/',
