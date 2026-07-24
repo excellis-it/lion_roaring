@@ -1,0 +1,14 @@
+---
+description: Keep PMA Super Admin Documentation in sync when user-panel features change
+alwaysApply: true
+---
+
+# PMA Documentation Sync
+
+When starting any task in this repo:
+
+1. Briefly state whether the work affects PMA user-panel documentation under `docs/pma/` (which section slug), or that no documentation update is needed.
+2. If you change features, rules, conditions, permissions, or pages for any sidebar area from Messaging through Chatbot (including Admin Portal CMS), update the matching `docs/pma/*.md` file in the same change and bump frontmatter `updated`.
+3. If you add a new PMA sidebar menu, add a row to `config/pma_documentation.php`, create a stub markdown file, and ensure the Documentation UI picks it up.
+4. Only document behavior that exists in code/product — do not invent rules.
+5. Documentation UI is Super Admin–only; do not expose it to other roles.

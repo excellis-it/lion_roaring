@@ -1,0 +1,347 @@
+/* PMA Project Documentation — Super Admin docs UI */
+
+.pma-docs {
+    --pma-docs-ink: #142428;
+    --pma-docs-muted: #5a6b6e;
+    --pma-docs-teal: #036666;
+    --pma-docs-teal-bright: #1a7a6e;
+    --pma-docs-mint: #00f5d4;
+    --pma-docs-surface: rgba(255, 255, 255, 0.82);
+    --pma-docs-border: rgba(3, 102, 102, 0.16);
+    --pma-docs-shadow: 0 18px 40px rgba(20, 36, 40, 0.08);
+    --pma-docs-radius: 18px;
+    padding: 1.5rem 1.25rem 3rem;
+    min-height: 70vh;
+    background:
+        radial-gradient(1200px 420px at 8% -10%, rgba(0, 245, 212, 0.18), transparent 55%),
+        radial-gradient(900px 380px at 100% 0%, rgba(3, 102, 102, 0.12), transparent 50%),
+        linear-gradient(180deg, #f4faf9 0%, #eef5f4 48%, #f7f9f8 100%);
+    color: var(--pma-docs-ink);
+}
+
+.pma-docs-hero {
+    max-width: 820px;
+    margin-bottom: 2rem;
+}
+
+.pma-docs-eyebrow {
+    display: inline-block;
+    margin: 0 0 0.65rem;
+    padding: 0.28rem 0.7rem;
+    border-radius: 999px;
+    font-size: 0.72rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--pma-docs-teal);
+    background: rgba(0, 245, 212, 0.22);
+    border: 1px solid rgba(3, 102, 102, 0.18);
+}
+
+.pma-docs-hero h1 {
+    margin: 0 0 0.65rem;
+    font-family: "Playfair Display", Georgia, serif;
+    font-size: clamp(1.85rem, 3vw, 2.55rem);
+    font-weight: 700;
+    line-height: 1.15;
+    color: var(--pma-docs-ink);
+}
+
+.pma-docs-lead {
+    margin: 0 0 1.25rem;
+    max-width: 40rem;
+    font-size: 1.05rem;
+    line-height: 1.55;
+    color: var(--pma-docs-muted);
+}
+
+.pma-docs-search {
+    display: block;
+    max-width: 420px;
+}
+
+.pma-docs-search input[type="search"] {
+    width: 100%;
+    border: 1px solid var(--pma-docs-border);
+    border-radius: 14px;
+    padding: 0.85rem 1rem;
+    background: var(--pma-docs-surface);
+    box-shadow: var(--pma-docs-shadow);
+    font-size: 0.95rem;
+    color: var(--pma-docs-ink);
+    outline: none;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.pma-docs-search input[type="search"]:focus {
+    border-color: var(--pma-docs-teal-bright);
+    box-shadow: 0 0 0 4px rgba(0, 245, 212, 0.25);
+}
+
+.pma-docs-overview {
+    margin-bottom: 1.75rem;
+    padding: 1.25rem 1.4rem;
+    border-radius: var(--pma-docs-radius);
+    background: var(--pma-docs-surface);
+    border: 1px solid var(--pma-docs-border);
+    box-shadow: var(--pma-docs-shadow);
+}
+
+.pma-docs-overview h1,
+.pma-docs-overview h2 {
+    font-family: "Playfair Display", Georgia, serif;
+    color: var(--pma-docs-teal);
+}
+
+.pma-docs-overview h1 {
+    font-size: 1.35rem;
+    margin-top: 0;
+}
+
+.pma-docs-overview p,
+.pma-docs-overview li {
+    color: var(--pma-docs-muted);
+    line-height: 1.55;
+}
+
+.pma-docs-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+    gap: 1rem;
+}
+
+.pma-docs-card {
+    display: flex;
+    flex-direction: column;
+    gap: 0.55rem;
+    padding: 1.15rem 1.2rem 1.25rem;
+    border-radius: var(--pma-docs-radius);
+    background: var(--pma-docs-surface);
+    border: 1px solid var(--pma-docs-border);
+    box-shadow: var(--pma-docs-shadow);
+    text-decoration: none !important;
+    color: inherit !important;
+    transition: transform 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.pma-docs-card:hover {
+    transform: translateY(-3px);
+    border-color: rgba(26, 122, 110, 0.45);
+    box-shadow: 0 22px 44px rgba(20, 36, 40, 0.12);
+}
+
+.pma-docs-card-top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.5rem;
+}
+
+.pma-docs-card-icon {
+    width: 2.4rem;
+    height: 2.4rem;
+    border-radius: 12px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(145deg, rgba(0, 245, 212, 0.35), rgba(3, 102, 102, 0.18));
+    color: var(--pma-docs-teal);
+    font-size: 1rem;
+}
+
+.pma-docs-card h2 {
+    margin: 0;
+    font-size: 1.05rem;
+    font-weight: 700;
+    color: var(--pma-docs-ink);
+}
+
+.pma-docs-card p {
+    margin: 0;
+    font-size: 0.9rem;
+    line-height: 1.45;
+    color: var(--pma-docs-muted);
+}
+
+.pma-docs-badge {
+    display: inline-flex;
+    align-items: center;
+    padding: 0.2rem 0.55rem;
+    border-radius: 999px;
+    font-size: 0.68rem;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    white-space: nowrap;
+}
+
+.pma-docs-badge--ready {
+    color: #0b5c3a;
+    background: rgba(0, 171, 30, 0.14);
+    border: 1px solid rgba(0, 171, 30, 0.28);
+}
+
+.pma-docs-badge--soon {
+    color: #7a5a12;
+    background: rgba(214, 168, 48, 0.16);
+    border: 1px solid rgba(214, 168, 48, 0.3);
+}
+
+.pma-docs-layout {
+    display: grid;
+    grid-template-columns: 260px minmax(0, 1fr);
+    gap: 1.25rem;
+    align-items: start;
+}
+
+.pma-docs-aside {
+    position: sticky;
+    top: 1rem;
+}
+
+.pma-docs-nav {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+    max-height: calc(100vh - 2rem);
+    overflow: auto;
+    padding: 0.85rem;
+    border-radius: var(--pma-docs-radius);
+    background: var(--pma-docs-surface);
+    border: 1px solid var(--pma-docs-border);
+    box-shadow: var(--pma-docs-shadow);
+}
+
+.pma-docs-nav-link {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.5rem;
+    padding: 0.55rem 0.7rem;
+    border-radius: 10px;
+    text-decoration: none !important;
+    color: var(--pma-docs-ink) !important;
+    font-size: 0.88rem;
+    font-weight: 560;
+    transition: background 0.15s ease, color 0.15s ease;
+}
+
+.pma-docs-nav-link:hover {
+    background: rgba(0, 245, 212, 0.16);
+}
+
+.pma-docs-nav-link.is-active {
+    background: linear-gradient(135deg, rgba(3, 102, 102, 0.92), rgba(26, 122, 110, 0.92));
+    color: #fff !important;
+}
+
+.pma-docs-nav-link.is-active .pma-docs-badge {
+    background: rgba(255, 255, 255, 0.18);
+    color: #fff;
+    border-color: rgba(255, 255, 255, 0.28);
+}
+
+.pma-docs-main {
+    padding: 1.4rem 1.5rem 1.75rem;
+    border-radius: var(--pma-docs-radius);
+    background: var(--pma-docs-surface);
+    border: 1px solid var(--pma-docs-border);
+    box-shadow: var(--pma-docs-shadow);
+}
+
+.pma-docs-section-header h1 {
+    margin: 0 0 0.35rem;
+    font-family: "Playfair Display", Georgia, serif;
+    font-size: clamp(1.6rem, 2.4vw, 2.1rem);
+    color: var(--pma-docs-ink);
+}
+
+.pma-docs-updated {
+    margin: 0 0 1rem;
+    font-size: 0.85rem;
+    color: var(--pma-docs-muted);
+}
+
+.pma-docs-placeholder {
+    margin-bottom: 1.25rem;
+    padding: 0.9rem 1rem;
+    border-radius: 12px;
+    background: rgba(214, 168, 48, 0.12);
+    border: 1px solid rgba(214, 168, 48, 0.28);
+    color: #6a4d0d;
+    font-size: 0.92rem;
+    line-height: 1.45;
+}
+
+.pma-doc-content > h1 {
+    display: none;
+}
+
+.pma-doc-content h2,
+.pma-doc-content h3 {
+    color: var(--pma-docs-teal);
+}
+
+.pma-doc-content p,
+.pma-doc-content li {
+    color: var(--pma-docs-muted);
+    line-height: 1.55;
+}
+
+.pma-docs-accordion-item {
+    border: 1px solid var(--pma-docs-border);
+    border-radius: 14px;
+    margin-bottom: 0.75rem;
+    overflow: hidden;
+    background: rgba(255, 255, 255, 0.65);
+}
+
+.pma-docs-accordion-trigger {
+    width: 100%;
+    text-align: left;
+    border: 0;
+    background: transparent;
+    padding: 0.95rem 1.1rem;
+    font-size: 1rem;
+    font-weight: 700;
+    color: var(--pma-docs-ink);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.75rem;
+}
+
+.pma-docs-accordion-trigger::after {
+    content: "+";
+    font-size: 1.2rem;
+    color: var(--pma-docs-teal);
+    line-height: 1;
+}
+
+.pma-docs-accordion-trigger[aria-expanded="true"]::after {
+    content: "–";
+}
+
+.pma-docs-accordion-panel {
+    padding: 0 1.1rem 1rem;
+    border-top: 1px solid var(--pma-docs-border);
+}
+
+.pma-docs-accordion-panel > :first-child {
+    margin-top: 0.85rem;
+}
+
+@media (max-width: 991px) {
+    .pma-docs-layout {
+        grid-template-columns: 1fr;
+    }
+
+    .pma-docs-aside {
+        position: static;
+    }
+
+    .pma-docs-nav {
+        max-height: 220px;
+    }
+}

@@ -1291,6 +1291,20 @@
                      </li>
                  @endif
 
+                 {{-- Project Documentation - SUPER ADMIN Only --}}
+                 @if (Auth::check() && Auth::user()->hasNewRole('SUPER ADMIN'))
+                     <li class="sidebar-item">
+                         <a class="sidebar-link {{ Request::is('user/documentation*') ? 'active' : '' }}"
+                             href="{{ route('user.documentation.index') }}" aria-expanded="false">
+                             <span>
+                                 <img src="{{ asset('user_assets/images/ICON/Help.svg') }}"
+                                     alt="">
+                             </span>
+                             <span class="hide-menu">Documentation</span>
+                         </a>
+                     </li>
+                 @endif
+
                  <br>
                  <br>
                  <br>

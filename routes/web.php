@@ -147,6 +147,7 @@ use App\Http\Controllers\User\RegisterAgreementPreviewController;
 use App\Http\Controllers\Frontend\MembershipController as FrontEndMembershipController;
 use App\Http\Controllers\User\Admin\AdminController as AdminAdminController;
 use App\Http\Controllers\User\PromoCodeController;
+use App\Http\Controllers\User\DocumentationController;
 use App\Http\Controllers\User\RecycleBinController;
 
 /*
@@ -618,6 +619,14 @@ Route::prefix('user')->middleware(['user', 'preventBackHistory', 'userActivity',
         Route::post('/{table}/bulk-force-delete', [RecycleBinController::class, 'bulkForceDelete'])->name('user.recycle-bin.bulk-force-delete');
         Route::post('/{table}/restore-all', [RecycleBinController::class, 'restoreAll'])->name('user.recycle-bin.restore-all');
         Route::delete('/{table}/empty-bin', [RecycleBinController::class, 'emptyBin'])->name('user.recycle-bin.empty-bin');
+    });
+
+    // Project Documentation (SUPER ADMIN Only)
+    Route::prefix('documentation')->middleware('super_admin')->name('user.documentation.')->group(function () {
+        Route::get('/', [DocumentationController::class, 'index'])->name('index');
+        Route::get('/{section}', [DocumentationController::class, 'show'])
+            ->where('section', '[a-z0-9\-]+')
+            ->name('show');
     });
 
 
