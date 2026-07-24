@@ -1,7 +1,7 @@
 ---
 title: Newsletters
 updated: 2026-07-24
-status: coming_soon
+status: ready
 sidebar_key: newsletters
 ---
 
@@ -9,10 +9,19 @@ sidebar_key: newsletters
 
 ## Overview
 
-Documentation for this area is coming soon. Until then, treat this page as a placeholder for features, permissions, rules, and conditions under **Newsletters**.
+Admin Portal newsletter subscriber management (public site / portal signups). Separate e-learning newsletter tools exist under E-Learning CMS.
+
+**Controller:** `User\Admin\NewsletterController`  
+**Routes:** `user.admin.newsletters.*`
 
 ## Features
 
-### Placeholder
+### Subscriber list
 
-- Full page-by-page rules will be added when this area is next changed or intentionally documented.
+- List/fetch/delete newsletter rows.
+- Public POST `newsletter` on frontend; e-store/e-learning also have newsletter endpoints.
+
+## Permissions and conditions
+
+- Gates: `Manage Newsletters`, `Delete Newsletters`.
+- Country: Global all; else own `country_id`.

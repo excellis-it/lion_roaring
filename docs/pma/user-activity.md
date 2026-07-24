@@ -1,7 +1,7 @@
 ---
 title: User Activity
 updated: 2026-07-24
-status: coming_soon
+status: ready
 sidebar_key: user_activity
 ---
 
@@ -9,10 +9,23 @@ sidebar_key: user_activity
 
 ## Overview
 
-Documentation for this area is coming soon. Until then, treat this page as a placeholder for features, permissions, rules, and conditions under **User Activity**.
+Activity dashboard and detailed activity list for visits/logins and related aggregates.
+
+**Controller:** `User\UserActivityController`  
+**Routes:** `user-activity` resource, `user-activity-get-list`, AJAX by country/user/type, active members/countries
 
 ## Features
 
-### Placeholder
+### Activity Dashboard
 
-- Full page-by-page rules will be added when this area is next changed or intentionally documented.
+- Charts/stats for engagement over date ranges.
+
+### Activity List
+
+- Tabular activity feed with filters.
+
+## Permissions and conditions
+
+- Gates: `Manage User Activity` (+ View/Create/Edit/Delete in seed).
+- Super Admin: global stats (no extra country filter in dashboard).
+- Driven by `userActivity` middleware collecting activity on panel requests.

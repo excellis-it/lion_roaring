@@ -1,7 +1,7 @@
 ---
 title: Donations
 updated: 2026-07-24
-status: coming_soon
+status: ready
 sidebar_key: donations
 ---
 
@@ -9,10 +9,19 @@ sidebar_key: donations
 
 ## Overview
 
-Documentation for this area is coming soon. Until then, treat this page as a placeholder for features, permissions, rules, and conditions under **Donations**.
+PMA Admin Portal list of donations submitted from the public website Stripe donation form.
+
+**Controller:** `User\Admin\DonationController`  
+**Routes:** `user.admin.donations.*`
 
 ## Features
 
-### Placeholder
+### Donation list
 
-- Full page-by-page rules will be added when this area is next changed or intentionally documented.
+- View/fetch donation records; delete where permitted.
+- Public charge created by `Frontend\DonationController` (USD Stripe Charge).
+
+## Permissions and conditions
+
+- Gate: `Manage Donations`.
+- Country: Global users see all; others filtered to `country_id = user.country`.

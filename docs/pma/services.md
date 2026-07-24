@@ -1,7 +1,7 @@
 ---
 title: Services
 updated: 2026-07-24
-status: coming_soon
+status: ready
 sidebar_key: services
 ---
 
@@ -9,10 +9,18 @@ sidebar_key: services
 
 ## Overview
 
-Documentation for this area is coming soon. Until then, treat this page as a placeholder for features, permissions, rules, and conditions under **Services**.
+Per-organization services CMS. Sidebar builds one link per organization from `Helper::getOrganzations()`.
+
+**Controller:** `User\Admin\ServiceContoller`  
+**Routes:** `user.admin.services.index` (+ slug)
 
 ## Features
 
-### Placeholder
+### Service management
 
-- Full page-by-page rules will be added when this area is next changed or intentionally documented.
+- Manage services shown on public `/service/{slug}`.
+
+## Permissions and conditions
+
+- Gate: `Manage Services`.
+- Organization list drives dynamic sidebar children.

@@ -1,7 +1,7 @@
 ---
 title: Site Settings
 updated: 2026-07-24
-status: coming_soon
+status: ready
 sidebar_key: site_settings
 ---
 
@@ -9,10 +9,22 @@ sidebar_key: site_settings
 
 ## Overview
 
-Documentation for this area is coming soon. Until then, treat this page as a placeholder for features, permissions, rules, and conditions under **Site Settings**.
+Global site settings and dynamic sidebar menu display names.
+
+**Controllers:** `User\Admin\SettingsController`, `User\Admin\MenuController`  
+**Routes:** `user.admin.settings.edit|update|toggle-status`, `user.admin.menu.index|update`
 
 ## Features
 
-### Placeholder
+### Settings
 
-- Full page-by-page rules will be added when this area is next changed or intentionally documented.
+- Edit site settings keys used across frontend and panel (logos, contact email, etc.).
+
+### Menu Names
+
+- Updates `menu_items.name` by key via `Helper::getMenuName()`.
+
+## Permissions and conditions
+
+- Gates: `Manage Site Settings`, `Manage Menu Settings`.
+- MenuController relies on sidebar gating (no extra Gate inside controller).

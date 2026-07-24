@@ -1,7 +1,7 @@
 ---
 title: Organization Center
 updated: 2026-07-24
-status: coming_soon
+status: ready
 sidebar_key: organization_center
 ---
 
@@ -9,10 +9,17 @@ sidebar_key: organization_center
 
 ## Overview
 
-Documentation for this area is coming soon. Until then, treat this page as a placeholder for features, permissions, rules, and conditions under **Organization Center**.
+Organization Center CMS (public `features/{slug}` pages under an organization).
+
+**Controller:** `User\Admin\OrganizationCenterController`
 
 ## Features
 
-### Placeholder
+### Centers CRUD
 
-- Full page-by-page rules will be added when this area is next changed or intentionally documented.
+- Create/list/edit/delete organization centers linked in the public hierarchy.
+
+## Permissions and conditions
+
+- Gates: Manage/Create/Edit/Delete Organization Center.
+- Access still requires `/user` membership + agreement unless Super Admin / excluded.

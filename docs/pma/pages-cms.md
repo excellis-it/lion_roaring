@@ -1,7 +1,7 @@
 ---
 title: Pages (CMS)
 updated: 2026-07-24
-status: coming_soon
+status: ready
 sidebar_key: pages
 ---
 
@@ -9,10 +9,28 @@ sidebar_key: pages
 
 ## Overview
 
-Documentation for this area is coming soon. Until then, treat this page as a placeholder for features, permissions, rules, and conditions under **Pages (CMS)**.
+Grouped Admin Portal page editors that power most of the **Website Frontend** content.
+
+**Controllers:** under `User\Admin\` — HomeCms, Details, Organization, AboutUs, Faq, Gallery, EcclesiaAssociation, PrincipleAndBusiness, ArticleOfAssociation, Footer, RegisterAgreement, PmaDisclaimer (PMA Terms), PrivacyPolicy, TermsAndCondition, etc.  
+**Routes:** `user.admin.*` under `/user/admin/pages/...` and related paths
 
 ## Features
 
-### Placeholder
+### Editable pages
 
-- Full page-by-page rules will be added when this area is next changed or intentionally documented.
+- Home, Details, Organization CMS, About Us, FAQs, Gallery.
+- Ecclesia Association, Principle and Business Model, Articles of Association.
+- Footer, Register Page Agreements, PMA Terms, Privacy Policy, Terms and Conditions.
+- Contact Us Messages / Contact CMS may exist in code but are commented out of the sidebar.
+
+## Permissions and conditions
+
+Parent sidebar visible if any Manage-* page permission is present, including:
+
+- `Manage Home Page`, `Manage Details Page`, `Manage Organizations Page`, `Manage About Us Page`
+- `Manage Faq` (+ Create/Edit/Delete), `Manage Gallery` (+ CRUD)
+- `Manage Ecclesia Association Page`, `Manage Principle and Business Page`, `Manage Article of Association Page`
+- `Manage Footer`, `Manage Register Page Agreement Page`, `Manage PMA Terms Page`
+- `Manage Privacy Policy Page`, `Manage Terms and Conditions Page`
+
+Most content uses Global `content_country_code` (default US) vs Regional own country code.

@@ -1,7 +1,7 @@
 ---
 title: Role Permission
 updated: 2026-07-24
-status: coming_soon
+status: ready
 sidebar_key: role_permission
 ---
 
@@ -9,10 +9,29 @@ sidebar_key: role_permission
 
 ## Overview
 
-Documentation for this area is coming soon. Until then, treat this page as a placeholder for features, permissions, rules, and conditions under **Role Permission**.
+Manage panel roles (`user_types`) and their permission maps (`user_type_permissions`), separate from Spatie's seeded permission names used in `Gate::check`.
+
+**Controller:** `User\RolePermissionsController`  
+**Routes:** `roles` resource, `roles.delete`, `roles.affected-users`
 
 ## Features
 
-### Placeholder
+### Role CRUD
 
-- Full page-by-page rules will be added when this area is next changed or intentionally documented.
+- Create/edit roles and attach permissions.
+- Sidebar gate label: `Manage Role Permission` (may be legacy/DB-only; controller primarily uses **user_type.type** hierarchy).
+
+### Affected users
+
+- Preview users impacted by role changes before destructive actions.
+
+## Permissions and conditions
+
+| Auth user type | Can manage |
+|----------------|------------|
+| type `1` (Super Admin) | UserTypes type 2 and 3 |
+| type `2` or `3` | type `2` only |
+
+- Cannot delete a role named `SUPER ADMIN`.
+- Cannot delete a role that still has assigned users.
+- Setting `is_admin = 1` bulk-sets those users' `user_type` to `G_R`.

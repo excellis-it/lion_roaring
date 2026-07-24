@@ -1,7 +1,7 @@
 ---
 title: Membership (Self-Service)
 updated: 2026-07-24
-status: coming_soon
+status: ready
 sidebar_key: membership
 ---
 
@@ -9,10 +9,21 @@ sidebar_key: membership
 
 ## Overview
 
-Documentation for this area is coming soon. Until then, treat this page as a placeholder for features, permissions, rules, and conditions under **Membership (Self-Service)**.
+Member-facing membership panel: view plan, upgrade, checkout, renew, cancel, apply promo, token subscribe.
+
+**Controller:** `User\MembershipController` (self-service methods)  
+**Routes:** `user.membership.index|upgrade|checkout|renew|cancel|apply-promo|inline-payment|token-subscribe|…`
 
 ## Features
 
-### Placeholder
+### Member panel
 
-- Full page-by-page rules will be added when this area is next changed or intentionally documented.
+- Shown when `membershipPanelApplicable()` — user is **not** `membership_excluded` and **not** Super Admin.
+- Checkout success/cancel flows; Stripe inline payment; promo apply.
+
+## Permissions and conditions
+
+- No Spatie gate on the sidebar item — visibility via `membershipPanelApplicable()`.
+- `MemberAccess` redirects users without a valid subscription here (except SA / excluded).
+- Agreement must already be signed (`agreement.signed` middleware).
+- Super Admin does not see this menu (bypasses membership requirement entirely).

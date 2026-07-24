@@ -1,7 +1,7 @@
 ---
 title: Policy & Guidance
 updated: 2026-07-24
-status: coming_soon
+status: ready
 sidebar_key: policy_guidance
 ---
 
@@ -9,10 +9,19 @@ sidebar_key: policy_guidance
 
 ## Overview
 
-Documentation for this area is coming soon. Until then, treat this page as a placeholder for features, permissions, rules, and conditions under **Policy & Guidance**.
+Same document-library pattern as Strategy for policy and guidance files.
+
+**Controller:** `User\PolicyGuidenceController`  
+**Routes:** `policy-guidence.*`
 
 ## Features
 
-### Placeholder
+### Document library
 
-- Full page-by-page rules will be added when this area is next changed or intentionally documented.
+- Upload, list, view, download, delete policy documents.
+- Country-scoped like Strategy.
+
+## Permissions and conditions
+
+- Gates: `Manage Policy`, `Upload|Download|View|Delete Policy`.
+- Super Admin unscoped; Regional/Global scoping for others.

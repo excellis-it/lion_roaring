@@ -1,7 +1,7 @@
 ---
 title: Strategy
 updated: 2026-07-24
-status: coming_soon
+status: ready
 sidebar_key: strategy
 ---
 
@@ -9,10 +9,21 @@ sidebar_key: strategy
 
 ## Overview
 
-Documentation for this area is coming soon. Until then, treat this page as a placeholder for features, permissions, rules, and conditions under **Strategy**.
+Upload, view, download, and delete Strategy documents in the PMA panel.
+
+**Controller:** `User\StrategyController`  
+**Routes:** `strategy.index|upload|store|delete|download|fetch-data|view`
 
 ## Features
 
-### Placeholder
+### Document library
 
-- Full page-by-page rules will be added when this area is next changed or intentionally documented.
+- Index/list with country scoping.
+- Upload with optional `country_id` for Super Admin.
+- View/download/delete with permission checks.
+
+## Permissions and conditions
+
+- Gates: `Manage Strategy`, `Upload|Download|View|Delete Strategy`.
+- Global/Regional country + author status scoping; ecclesia admin filters on regional lists.
+- Super Admin: unscoped list; chooses country on upload.

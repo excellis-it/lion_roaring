@@ -1,7 +1,7 @@
 ---
 title: Our Organizations
 updated: 2026-07-24
-status: coming_soon
+status: ready
 sidebar_key: our_organizations
 ---
 
@@ -9,10 +9,17 @@ sidebar_key: our_organizations
 
 ## Overview
 
-Documentation for this area is coming soon. Until then, treat this page as a placeholder for features, permissions, rules, and conditions under **Our Organizations**.
+Top-level organization CMS for the public org hierarchy.
+
+**Controller:** `User\Admin\OurOrganizationController`
 
 ## Features
 
-### Placeholder
+### Organization entries
 
-- Full page-by-page rules will be added when this area is next changed or intentionally documented.
+- CRUD for Our Organizations (feeds public `/our-organization/{slug}`).
+
+## Permissions and conditions
+
+- Gates: Manage/Create/Edit/Delete Our Organization.
+- `country_code` Global vs regional.

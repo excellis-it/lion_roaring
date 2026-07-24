@@ -1,7 +1,7 @@
 ---
 title: Testimonials
 updated: 2026-07-24
-status: coming_soon
+status: ready
 sidebar_key: testimonials
 ---
 
@@ -9,10 +9,18 @@ sidebar_key: testimonials
 
 ## Overview
 
-Documentation for this area is coming soon. Until then, treat this page as a placeholder for features, permissions, rules, and conditions under **Testimonials**.
+CMS for testimonials shown on the public website.
+
+**Controller:** `User\Admin\TestimonialController`  
+**Routes:** `user.admin.testimonials.*`
 
 ## Features
 
-### Placeholder
+### Testimonial CRUD
 
-- Full page-by-page rules will be added when this area is next changed or intentionally documented.
+- List, create, edit, delete testimonials.
+- Content country code: Global defaults to US; Regional locked to own country code.
+
+## Permissions and conditions
+
+- Gates: `Manage Testimonials`, Create/Edit/Delete Testimonials.

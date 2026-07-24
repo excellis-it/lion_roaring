@@ -1,7 +1,7 @@
 ---
 title: Our Governance
 updated: 2026-07-24
-status: coming_soon
+status: ready
 sidebar_key: our_governance
 ---
 
@@ -9,10 +9,19 @@ sidebar_key: our_governance
 
 ## Overview
 
-Documentation for this area is coming soon. Until then, treat this page as a placeholder for features, permissions, rules, and conditions under **Our Governance**.
+CMS entries for public Our Governance pages (`/our-governance/{slug}`).
+
+**Controller:** `User\Admin\OurGovernanceController`  
+**Routes:** `user.admin.our-governances.*` + reorder
 
 ## Features
 
-### Placeholder
+### Governance entries
 
-- Full page-by-page rules will be added when this area is next changed or intentionally documented.
+- CRUD + reorder within country.
+- `order_no` resequenced on delete/country change.
+
+## Permissions and conditions
+
+- Gates: Manage/Create/Edit/Delete Our Governance.
+- Country code: Global vs regional pattern.

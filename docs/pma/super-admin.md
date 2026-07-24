@@ -1,7 +1,7 @@
 ---
 title: Super Admin
 updated: 2026-07-24
-status: coming_soon
+status: ready
 sidebar_key: admin
 ---
 
@@ -9,10 +9,19 @@ sidebar_key: admin
 
 ## Overview
 
-Documentation for this area is coming soon. Until then, treat this page as a placeholder for features, permissions, rules, and conditions under **Super Admin**.
+Manage Super Admin user accounts (list under `/user/detail`).
+
+**Controller:** `User\Admin\AdminController`  
+**Routes:** `user.admin.index|add|store|edit|delete|admin.update`
 
 ## Features
 
-### Placeholder
+### Admin list
 
-- Full page-by-page rules will be added when this area is next changed or intentionally documented.
+- Lists users with user type name SUPER ADMIN (excludes self).
+- Create forces `user_type = Global`, `status = true`, Super Admin `user_type_id`.
+
+## Permissions and conditions
+
+- Gates: `Manage Admin List`, Create/Edit/Delete Admin List.
+- Distinct from Spatie role "Super Admin" permission dump — identity is `user_types` via `hasNewRole('SUPER ADMIN')`.

@@ -1,7 +1,7 @@
 ---
 title: Signup Rules
 updated: 2026-07-24
-status: coming_soon
+status: ready
 sidebar_key: signup_rules
 ---
 
@@ -9,10 +9,20 @@ sidebar_key: signup_rules
 
 ## Overview
 
-Documentation for this area is coming soon. Until then, treat this page as a placeholder for features, permissions, rules, and conditions under **Signup Rules**.
+Configurable validation rules applied during registration/signup flows.
+
+**Controller:** `User\SignupRuleController`  
+**Routes:** `user.signup-rules.*`, `toggle-status`, `check-status`
 
 ## Features
 
-### Placeholder
+### Rule management
 
-- Full page-by-page rules will be added when this area is next changed or intentionally documented.
+- Fields: `field_name`, `rule_type`, `rule_value` (regex validated), `is_active`, `is_critical`, `priority`.
+- Ordered by priority descending.
+- Toggle active status; check-status helper endpoint.
+
+## Permissions and conditions
+
+- Gates: `Manage|Create|Edit|Delete Signup Rules` (`Gate::check` + `abort_unless`).
+- Critical rules block signup when violated; inactive rules are ignored.

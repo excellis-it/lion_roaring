@@ -1,7 +1,7 @@
 ---
 title: Countries
 updated: 2026-07-24
-status: coming_soon
+status: ready
 sidebar_key: countries
 ---
 
@@ -9,10 +9,19 @@ sidebar_key: countries
 
 ## Overview
 
-Documentation for this area is coming soon. Until then, treat this page as a placeholder for features, permissions, rules, and conditions under **Countries**.
+Manage country records used for multi-domain / multi-instance CMS and scoping.
+
+**Controller:** `User\Admin\CountryController`  
+**Routes:** `user.admin.admin-countries.*`, toggle-status, fetch-data, delete
 
 ## Features
 
-### Placeholder
+### Country CRUD
 
-- Full page-by-page rules will be added when this area is next changed or intentionally documented.
+- Create/edit countries, domains, languages sync, status toggle.
+
+## Permissions and conditions
+
+- Gate: `Manage Countries`.
+- Cannot delete or toggle status of an `is_global` country.
+- Drives public visitor country resolution and PMA content scoping.
