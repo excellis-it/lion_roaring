@@ -28,11 +28,12 @@ class AppServiceProvider extends ServiceProvider
     {
         Paginator::useBootstrap();
 
-        // Force HTTPS URLs when APP_URL is https (demo/production behind reverse proxy).
+        // Force HTTPS scheme behind reverse proxies (demo / AWS).
+        // Do NOT forceRootUrl — production and demo serve global + regional from one
+        // codebase (different host or path); URL root must follow the current request.
         $appUrl = (string) config('app.url', '');
         if (str_starts_with($appUrl, 'https://')) {
             URL::forceScheme('https');
-            URL::forceRootUrl(rtrim($appUrl, '/'));
         }
 
         RateLimiter::for('api', function (Request $request) {
