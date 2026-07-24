@@ -1,34 +1,31 @@
 ---
-title: PMA Project Documentation
+title: Project Documentation
 updated: 2026-07-24
 status: ready
 sidebar_key: documentation
 ---
 
-# PMA Project Documentation
+# Project Documentation
 
-Internal Super Admin reference for Lion Roaring surfaces: the **public website**, **E-Store**, **E-Learning**, and the **PMA user panel** (sidebar from Messaging through Chatbot).
+Start with the five product surfaces below, then open **Detailed topics** for menu-by-menu rules.
 
 ## How to use
 
-1. Browse section cards below (or the left nav on a section page).
-2. Read **Overview**, then expand feature blocks for permissions, rules, and conditions.
-3. When product behavior changes, update the matching file under `docs/pma/` and bump `updated`.
+1. Open a **hub** card (Website Frontend, User PMA, E-Learning, E-Store, Mobile App).
+2. Read Overview, domain rules, and feature blocks.
+3. Use **Detailed topics** for sidebar menus and shared domain rules.
+4. When behavior changes, update the matching `docs/pma/*.md` file and bump `updated`.
 
-## Coverage map
+## Surfaces
 
-| Area | Doc section | Surface |
-|------|-------------|---------|
-| Public marketing site | Website Frontend | `/` |
-| Shop (customers) + PMA admin | E-Store | `/e-store` + `/user` store menus |
-| Learning catalog + PMA admin | E-Learning | `/e-learning` + `/user` elearning menus |
-| PMA sidebar Messaging → Chatbot | Matching section titles | `/user/*` |
-| Super Admin restore / docs | Restore, Documentation UI | Super Admin only |
+| Hub | Path / app | Audience |
+|-----|------------|----------|
+| Website Frontend | `/` | Public visitors |
+| User PMA | `/user/*` | Authenticated members & admins |
+| E-Learning | `/e-learning` + PMA admin | Logged-in users |
+| E-Store | `/e-store` + PMA admin | Members (membership required) |
+| Mobile App | Flutter + `/api/v3` | App users |
 
-## Panel-wide rules (all `/user`)
+## Must-read shared rules
 
-- Middleware: `user` (logged in + `status == 1`), `member.access`, `agreement.signed`, plus activity / back-history guards.
-- **Super Admin** and `membership_excluded` users bypass membership expiry checks.
-- **Super Admin** bypasses the signed-agreement gate.
-- Spatie permissions via `Gate::check` / `can()`; Super Admin Spatie role is seeded with all permissions.
-- Country content is often scoped: Global / `G_R` on the global server vs regional `country` / `content_country_code` (US fallback on public CMS).
+Open **Global & Regional Domains** for `MAIN_URL` / regional hosts, Global vs Regional vs `G_R` user types, instance middleware, visitor country, and CMS `content_country_code`.

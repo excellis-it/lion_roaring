@@ -9,52 +9,59 @@ sidebar_key: website_frontend
 
 ## Overview
 
-Public marketing and information site at the domain root (`/`). No login required for browsing. Content is country-aware via visitor country helpers (fallback **US**). Managed from the PMA **Admin Portal** (Pages, Donations, Organizations, etc.).
+Public marketing site at `/` (and `/{cc}` on the default regional host). No login required for browsing. Content is **country-aware** via visitor country helpers with **US fallback**. Edited from PMA Admin Portal (Pages, Donations, Organizations, …).
 
 **Layout:** `resources/views/frontend/layouts/master.blade.php`  
 **Controllers:** `Frontend\CmsController`, `Frontend\DonationController`, `Frontend\MembershipController`  
-**Middleware (public group):** `userActivity` only
+**Public middleware group:** `userActivity` (plus global country/instance middleware)
+
+Deep domain rules: see **Global & Regional Domains**.
 
 ## Features
 
 ### Home and country routing
 
-- Routes: `home` (`/`), `home.country` (`/{cc}`).
-- Domain / path country resolution via `Country` records, `Helper::isUsaInstance()`, session visitor country keys.
-- Global middleware also applies canonical country URL and instance access checks.
+- `home` (`/`), `home.country` (`/{cc}`).
+- Domain/path resolution via `Country`, `Helper::isUsaInstance()`, `Helper::isGlobalInstance()`.
+- Global root never treats regional path codes as content context; regional sessions on global root are redirected.
 
-### Marketing / content pages
+### Marketing pages
 
-- Gallery (`gallery`), FAQ (`faq`), Contact Us (`contact-us`), About Us (`about-us`), Details (`details`).
-- Principle and Business, Ecclesia Covenant (`ecclesia-associations`), Organization listing.
+- Gallery, FAQ, Contact, About, Details, Principle and Business, Ecclesia Covenant.
 - Org hierarchy: Our Organization → Organization Centers (`features/{slug}`) → Services (`service/{slug}`).
-- Our Governance (`our-governance/{slug}`).
-- Terms and Conditions, Privacy Policy.
-- Membership marketing page (`membership`) — tiers display; purchase/manage under `/user/membership`.
+- Our Governance, Terms, Privacy Policy.
+- Membership marketing page (`/membership`) — purchase/manage under `/user/membership`.
 
 ### Forms and donations
 
-- Newsletter POST (`newsletter`) emails site contact.
-- Contact form (`contact-us.form`) requires **reCAPTCHA** (`RECAPTCHA_*` env).
-- Donations POST (`donation`) via Stripe Charge (USD); guests allowed; thank-you page (`thankyou`).
+- Newsletter POST → site contact email.
+- Contact form requires **reCAPTCHA**.
+- Donations: Stripe Charge (USD), guests allowed → thank-you page.
 
-### Chatbot on public site
+### Chatbot
 
-- When `CHATBOT=AI`, RAG widget loads (env: `RAG_WIDGET_URL`, `RAG_API_BASE`, `RAG_BOT_ID`, `RAG_AUTH_TOKEN`).
-- Otherwise in-app chatbot partials are used.
-- Widget/API routes under `/chatbot/*`.
-
-### Auth adjacent to frontend
-
-- Login, register, OTP, event pages live in the same public route group but are not marketing CMS pages.
+- `CHATBOT=AI` → RAG widget (`RAG_*` env); else in-app chatbot.
+- Routes under `/chatbot/*`.
 
 ## Permissions and conditions
 
-- Public pages: **no** Spatie permission; open to visitors.
-- CMS edits: PMA Admin Portal gates (see Pages CMS, Donations, Testimonials, Organizations sections).
-- Content filtered by `Helper::getVisitorCmsContent()` / visitor `country_code`, fallback `US`.
-- Account must be active (`status == 1`) only when hitting authenticated areas.
+### Global domain rules (public)
 
-## Related PMA menus
+- Visitor on Global: session country if set; else empty → CMS falls back to **US**.
+- No IP auto-detect on main/global.
 
-Donations, Newsletters, Testimonials, Our Governance, Our Organizations, Organization Center, Services, Pages (CMS), Countries, Site Settings, Chatbot Assistant.
+### Regional domain rules (public)
+
+- Root → that country (e.g. US).
+- `/{code}` → that regional country when canonical.
+- Path code wins over session when present.
+- Default regional host may serve multi-country path codes.
+
+### CMS visibility
+
+- `Helper::getVisitorCmsContent()` loads rows for visitor `country_code`; empty result → US.
+- Editors use PMA Pages CMS with `content_country_code` (Global editors pick country; Regional locked to own).
+
+### Related PMA menus
+
+Pages (CMS), Donations, Newsletters, Testimonials, Our Governance, Our Organizations, Organization Center, Services, Countries, Site Settings, Chatbot.

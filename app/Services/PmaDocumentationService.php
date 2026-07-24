@@ -3,14 +3,35 @@
 namespace App\Services;
 
 use Illuminate\Support\Facades\File;
-use League\CommonMark\CommonMarkConverter;
+use League\CommonMark\GithubFlavoredMarkdownConverter;
 use RuntimeException;
 
 class PmaDocumentationService
 {
+    public function hubs(): array
+    {
+        return config('pma_documentation.hubs', []);
+    }
+
     public function sections(): array
     {
         return config('pma_documentation.sections', []);
+    }
+
+    public function allEntries(): array
+    {
+        return array_merge($this->hubs(), $this->sections());
+    }
+
+    public function findHub(string $slug): ?array
+    {
+        foreach ($this->hubs() as $hub) {
+            if (($hub['slug'] ?? null) === $slug) {
+                return $hub;
+            }
+        }
+
+        return null;
     }
 
     public function findSection(string $slug): ?array
@@ -22,6 +43,19 @@ class PmaDocumentationService
         }
 
         return null;
+    }
+
+    public function findEntry(string $slug): ?array
+    {
+        return $this->findHub($slug) ?? $this->findSection($slug);
+    }
+
+    public function sectionsForHub(string $hubSlug): array
+    {
+        return array_values(array_filter(
+            $this->sections(),
+            fn (array $section) => ($section['hub'] ?? null) === $hubSlug
+        ));
     }
 
     /**
@@ -72,7 +106,7 @@ class PmaDocumentationService
 
     public function renderMarkdown(string $markdown): string
     {
-        $converter = new CommonMarkConverter([
+        $converter = new GithubFlavoredMarkdownConverter([
             'html_input' => 'strip',
             'allow_unsafe_links' => false,
         ]);

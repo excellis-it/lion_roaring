@@ -9,54 +9,59 @@ sidebar_key: e_store
 
 ## Overview
 
-Covers both the **customer storefront** (`/e-store`) and the **PMA E-Store admin** menus (dashboard, catalog, warehouses, orders, settings, CMS).
+**Customer storefront** `/e-store` and **PMA E-Store admin** (catalog, warehouses, orders, settings, CMS). Warehouse Store submenu appears when the user has assigned warehouses.
 
 **Public layout:** `resources/views/ecom/layouts/master.blade.php`  
-**Public controllers:** `Estore\HomeController`, `Estore\ProductController`, `Estore\DigitalCheckoutController`, `Estore\UserAddressController`  
-**PMA controllers:** `User\ProductController`, `CategoryController`, `SizeController`, `ColorController`, `WareHouseController`, `EstoreCmsController`, `EstorePromoCodeController`, `EstoreSettingController`, store orders controllers, etc.
+**Public controllers:** `Estore\HomeController`, `ProductController`, `DigitalCheckoutController`, `UserAddressController`  
+**PMA:** products, categories, sizes, colors, warehouses, promo codes, settings, orders, Estore CMS
 
 ## Features
 
-### Public storefront (`/e-store`)
+### Public storefront
 
-- Home, category pages, all products, product details, live search/filter.
-- Cart (add/update/remove/clear), wishlist, multi-address book.
-- Physical checkout + **digital** checkout (separate PaymentIntent flows).
-- Promo codes (session + `PromoCodeService`).
-- My orders, order details, tracking, cancel (within window), invoice/download for digital.
-- Profile / change password; contact + CMS pages (`/e-store/page/{slug}`).
-- Store registration assigns role `ESTORE_USER`.
-- Guest signed URL download for digital files (`e-store.guest-download-file`) outside the auth group.
+- Catalog, search/filter, product details, cart, wishlist, addresses.
+- Physical + digital checkout (Stripe PaymentIntent).
+- Promo codes, my orders, tracking, cancel window, digital download (signed guest URL exists).
+- Registration assigns `ESTORE_USER`.
 
-### PMA admin
+### Public access rules
 
-- E-store Dashboard / CMS pages (home, footer, contact).
-- Product Categories, Sizes, Colors, Products, Warehouses, Warehouse Admins.
-- Promo Codes, Store Settings, Order Status, Order Email Templates.
-- Orders list: status updates, refunds, invoices, export, reports, reviews moderation.
-- Warehouse Store submenu appears when the user has assigned warehouses (`warehouses->count() > 0`).
-
-## Permissions and conditions
-
-### Public access
-
-- Middleware: `user` + `member.access` + `agreement.signed` → **login, active account, (usually) active membership, signed agreement**.
-- Guests cannot browse the storefront (redirect home).
+- Middleware: `user` + `member.access` + `agreement.signed`.
+- Guests redirected home (login required).
 - Super Admin / `membership_excluded` bypass membership expiry.
+- Store CMS blocks use visitor country (US fallback) on the current domain.
 
 ### Commerce rules
 
-- Nearest warehouse drives physical catalog/stock; digital products bypass warehouse stock.
-- Physical product missing from nearest warehouse → not available.
-- Cart qty capped by `warehouse_product.quantity`.
-- Checkout: Stripe PaymentIntent; pickup vs delivery; initial status from `EstoreSetting.cancel_within_hours` (`pending` vs `processing`; pickup → `pickup_processing`).
-- Cancel only if paid + pending/processing (incl. pickup variants) + within `cancel_within_hours`.
-- Refunds window: `refund_max_days` (default 10).
-- Reviews start **pending** until admin approval.
-- Throttles on cart/checkout/promo/cancel routes.
-- Metal/market rate helpers may affect pricing; Google Maps key used for address UI.
+- Nearest warehouse drives physical stock; digital bypasses warehouse stock.
+- Missing warehouse stock → product not available.
+- Cart qty ≤ `warehouse_product.quantity`.
+- Order status from `EstoreSetting.cancel_within_hours` (`pending` / `processing` / pickup variants).
+- Cancel only paid + pending/processing + within cancel hours.
+- Refunds: `refund_max_days` (default 10).
+- Reviews **pending** until admin approval.
+- Throttles on cart/checkout/promo/cancel.
 
-### PMA Spatie permissions
+### PMA admin permissions
 
-Parent menu if any of: `Manage Estore CMS`, `Manage Estore Users`, `Manage Estore Category`, `Manage Estore Sizes`, `Manage Estore Colors`, `Manage Estore Products`, `Manage Estore Settings`, `Manage Estore Warehouse`, `Manage Estore Orders`, `Manage Order Status`, `Manage Email Template`.  
-Products may also allow warehouse admins via `isWarehouseAdmin()`.
+Parent if any of: `Manage Estore CMS|Users|Category|Sizes|Colors|Products|Settings|Warehouse|Orders`, `Manage Order Status`, `Manage Email Template`.  
+Warehouse admins: `isWarehouseAdmin()` for scoped product tools.
+
+### Global vs Regional
+
+| Actor | Behavior |
+|-------|----------|
+| Global CMS editor | `content_country_code` for Estore CMS pages |
+| Regional | Own country CMS only |
+| All shoppers | Bound to current domain instance; wrong `user_type` host → logout |
+| Warehouse | Physical availability by nearest warehouse for that shopper context |
+
+### Mobile
+
+- Full ecom feature module (cart, checkout, orders) on `/api/v3`.
+- Host switch by selected country — see **Mobile App**.
+
+## Permissions and conditions
+
+- Membership is mandatory for storefront (unlike public e-learning browse).
+- See **Warehouse Store** detail topic for warehouse-only sidebar.

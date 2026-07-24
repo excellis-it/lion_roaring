@@ -9,19 +9,21 @@ sidebar_key: countries
 
 ## Overview
 
-Manage country records used for multi-domain / multi-instance CMS and scoping.
+Admin CRUD for country records that drive multi-domain routing and CMS scoping. Full behavior is documented in **Global & Regional Domains**.
 
 **Controller:** `User\Admin\CountryController`  
-**Routes:** `user.admin.admin-countries.*`, toggle-status, fetch-data, delete
+**Routes:** `user.admin.admin-countries.*`
 
 ## Features
 
 ### Country CRUD
 
-- Create/edit countries, domains, languages sync, status toggle.
+- Create/edit name, code, domain, languages, flag, status.
+- Lists used across frontend redirects and PMA scoping.
 
 ## Permissions and conditions
 
 - Gate: `Manage Countries`.
-- Cannot delete or toggle status of an `is_global` country.
-- Drives public visitor country resolution and PMA content scoping.
+- Cannot **delete** or **toggle status** of `is_global` country.
+- Global code is **`GL`**; public dropdowns exclude global row (`Helper::getCountries()`).
+- Changing `domain` affects which host is treated as that country’s instance — coordinate with `MAIN_URL` / `LION_ROARING_USA` fallbacks.

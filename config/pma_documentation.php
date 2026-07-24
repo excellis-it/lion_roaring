@@ -3,15 +3,66 @@
 return [
     'base_path' => base_path('docs/pma'),
 
-    'sections' => [
+    /*
+    | Top-level hubs shown first on the Documentation index.
+    */
+    'hubs' => [
         [
             'slug' => 'website-frontend',
             'title' => 'Website Frontend',
-            'summary' => 'Public site: home, orgs, donations, FAQ, contact, country CMS.',
+            'summary' => 'Public marketing site, country CMS, donations, and visitor domain rules.',
             'icon' => 'fa-solid fa-globe',
             'file' => 'website-frontend.md',
             'status' => 'ready',
-            'sidebar_key' => 'website_frontend',
+        ],
+        [
+            'slug' => 'user-pma',
+            'title' => 'User PMA',
+            'summary' => 'Authenticated panel: messaging through chatbot, membership, and Admin Portal CMS.',
+            'icon' => 'fa-solid fa-shield-halved',
+            'file' => 'user-pma.md',
+            'status' => 'ready',
+        ],
+        [
+            'slug' => 'e-learning',
+            'title' => 'E-Learning',
+            'summary' => 'Public catalog, PMA admin, and how mobile differs (cart/checkout).',
+            'icon' => 'fa-solid fa-graduation-cap',
+            'file' => 'e-learning.md',
+            'status' => 'ready',
+        ],
+        [
+            'slug' => 'e-store',
+            'title' => 'E-Store',
+            'summary' => 'Customer shop, warehouses, orders, promos, and PMA store admin.',
+            'icon' => 'fa-solid fa-cart-shopping',
+            'file' => 'e-store.md',
+            'status' => 'ready',
+        ],
+        [
+            'slug' => 'mobile-app',
+            'title' => 'Mobile App',
+            'summary' => 'Flutter app: country host switch, PMA features, e-store, e-learning APIs.',
+            'icon' => 'fa-solid fa-mobile-screen-button',
+            'file' => 'mobile-app.md',
+            'status' => 'ready',
+        ],
+    ],
+
+    /*
+    | Detailed topics listed under hubs on the index and in section nav.
+    | hub = parent hub slug.
+    */
+    'sections' => [
+        [
+            'slug' => 'global-regional-domains',
+            'title' => 'Global & Regional Domains',
+            'summary' => 'MAIN_URL, country domains, user types, middleware, CMS country rules.',
+            'icon' => 'fa-solid fa-earth-americas',
+            'file' => 'global-regional-domains.md',
+            'status' => 'ready',
+            'hub' => 'website-frontend',
+            'sidebar_key' => 'domains',
         ],
         [
             'slug' => 'messaging',
@@ -20,6 +71,7 @@ return [
             'icon' => 'fa-solid fa-envelope',
             'file' => 'messaging.md',
             'status' => 'ready',
+            'hub' => 'user-pma',
             'sidebar_key' => 'messaging',
         ],
         [
@@ -29,6 +81,7 @@ return [
             'icon' => 'fa-solid fa-book',
             'file' => 'education.md',
             'status' => 'ready',
+            'hub' => 'user-pma',
             'sidebar_key' => 'education',
         ],
         [
@@ -38,16 +91,8 @@ return [
             'icon' => 'fa-solid fa-clipboard-list',
             'file' => 'bulletins.md',
             'status' => 'ready',
+            'hub' => 'user-pma',
             'sidebar_key' => 'bulletins',
-        ],
-        [
-            'slug' => 'e-store',
-            'title' => 'E-Store',
-            'summary' => 'Public /e-store shop + PMA catalog, warehouses, orders, CMS.',
-            'icon' => 'fa-solid fa-cart-shopping',
-            'file' => 'e-store.md',
-            'status' => 'ready',
-            'sidebar_key' => 'e_store',
         ],
         [
             'slug' => 'warehouse-store',
@@ -56,16 +101,8 @@ return [
             'icon' => 'fa-solid fa-box',
             'file' => 'warehouse-store.md',
             'status' => 'ready',
+            'hub' => 'e-store',
             'sidebar_key' => 'warehouse_store',
-        ],
-        [
-            'slug' => 'e-learning',
-            'title' => 'E-Learning',
-            'summary' => 'Public /e-learning catalog + PMA categories, products, CMS.',
-            'icon' => 'fa-solid fa-lightbulb',
-            'file' => 'e-learning.md',
-            'status' => 'ready',
-            'sidebar_key' => 'e_learning',
         ],
         [
             'slug' => 'role-permission',
@@ -74,6 +111,7 @@ return [
             'icon' => 'fa-solid fa-lock',
             'file' => 'role-permission.md',
             'status' => 'ready',
+            'hub' => 'user-pma',
             'sidebar_key' => 'role_permission',
         ],
         [
@@ -83,6 +121,7 @@ return [
             'icon' => 'fa-solid fa-id-badge',
             'file' => 'membership-management.md',
             'status' => 'ready',
+            'hub' => 'user-pma',
             'sidebar_key' => 'membership_management',
         ],
         [
@@ -92,6 +131,7 @@ return [
             'icon' => 'fa-solid fa-users',
             'file' => 'all-members.md',
             'status' => 'ready',
+            'hub' => 'user-pma',
             'sidebar_key' => 'all_members',
         ],
         [
@@ -101,6 +141,7 @@ return [
             'icon' => 'fa-solid fa-chart-line',
             'file' => 'user-activity.md',
             'status' => 'ready',
+            'hub' => 'user-pma',
             'sidebar_key' => 'user_activity',
         ],
         [
@@ -110,6 +151,7 @@ return [
             'icon' => 'fa-solid fa-square-check',
             'file' => 'signup-rules.md',
             'status' => 'ready',
+            'hub' => 'user-pma',
             'sidebar_key' => 'signup_rules',
         ],
         [
@@ -119,6 +161,7 @@ return [
             'icon' => 'fa-solid fa-flag',
             'file' => 'strategy.md',
             'status' => 'ready',
+            'hub' => 'user-pma',
             'sidebar_key' => 'strategy',
         ],
         [
@@ -128,6 +171,7 @@ return [
             'icon' => 'fa-solid fa-folder-open',
             'file' => 'policy-guidance.md',
             'status' => 'ready',
+            'hub' => 'user-pma',
             'sidebar_key' => 'policy_guidance',
         ],
         [
@@ -137,6 +181,7 @@ return [
             'icon' => 'fa-solid fa-credit-card',
             'file' => 'membership-self-service.md',
             'status' => 'ready',
+            'hub' => 'user-pma',
             'sidebar_key' => 'membership',
         ],
         [
@@ -146,6 +191,7 @@ return [
             'icon' => 'fa-solid fa-trash-can',
             'file' => 'restore.md',
             'status' => 'ready',
+            'hub' => 'user-pma',
             'sidebar_key' => 'recycle_bin',
         ],
         [
@@ -155,6 +201,7 @@ return [
             'icon' => 'fa-solid fa-heart',
             'file' => 'donations.md',
             'status' => 'ready',
+            'hub' => 'user-pma',
             'sidebar_key' => 'donations',
         ],
         [
@@ -164,6 +211,7 @@ return [
             'icon' => 'fa-solid fa-envelope',
             'file' => 'newsletters.md',
             'status' => 'ready',
+            'hub' => 'user-pma',
             'sidebar_key' => 'newsletters',
         ],
         [
@@ -173,6 +221,7 @@ return [
             'icon' => 'fa-solid fa-quote-left',
             'file' => 'testimonials.md',
             'status' => 'ready',
+            'hub' => 'user-pma',
             'sidebar_key' => 'testimonials',
         ],
         [
@@ -182,6 +231,7 @@ return [
             'icon' => 'fa-solid fa-briefcase',
             'file' => 'our-governance.md',
             'status' => 'ready',
+            'hub' => 'user-pma',
             'sidebar_key' => 'our_governance',
         ],
         [
@@ -191,6 +241,7 @@ return [
             'icon' => 'fa-solid fa-globe',
             'file' => 'our-organizations.md',
             'status' => 'ready',
+            'hub' => 'user-pma',
             'sidebar_key' => 'our_organizations',
         ],
         [
@@ -200,6 +251,7 @@ return [
             'icon' => 'fa-solid fa-building',
             'file' => 'organization-center.md',
             'status' => 'ready',
+            'hub' => 'user-pma',
             'sidebar_key' => 'organization_center',
         ],
         [
@@ -209,6 +261,7 @@ return [
             'icon' => 'fa-solid fa-gears',
             'file' => 'services.md',
             'status' => 'ready',
+            'hub' => 'user-pma',
             'sidebar_key' => 'services',
         ],
         [
@@ -218,6 +271,7 @@ return [
             'icon' => 'fa-solid fa-file-lines',
             'file' => 'pages-cms.md',
             'status' => 'ready',
+            'hub' => 'user-pma',
             'sidebar_key' => 'pages',
         ],
         [
@@ -227,6 +281,7 @@ return [
             'icon' => 'fa-solid fa-map',
             'file' => 'countries.md',
             'status' => 'ready',
+            'hub' => 'user-pma',
             'sidebar_key' => 'countries',
         ],
         [
@@ -236,15 +291,17 @@ return [
             'icon' => 'fa-solid fa-sliders',
             'file' => 'site-settings.md',
             'status' => 'ready',
+            'hub' => 'user-pma',
             'sidebar_key' => 'site_settings',
         ],
         [
             'slug' => 'super-admin',
             'title' => 'Super Admin',
             'summary' => 'Super admin user list / management.',
-            'icon' => 'fa-solid fa-shield-halved',
+            'icon' => 'fa-solid fa-user-shield',
             'file' => 'super-admin.md',
             'status' => 'ready',
+            'hub' => 'user-pma',
             'sidebar_key' => 'admin',
         ],
         [
@@ -254,6 +311,7 @@ return [
             'icon' => 'fa-solid fa-comments',
             'file' => 'chatbot-assistant.md',
             'status' => 'ready',
+            'hub' => 'user-pma',
             'sidebar_key' => 'chatbot',
         ],
     ],

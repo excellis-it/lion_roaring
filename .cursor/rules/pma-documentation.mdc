@@ -7,8 +7,8 @@ alwaysApply: true
 
 When starting any task in this repo:
 
-1. Briefly state whether the work affects PMA user-panel documentation under `docs/pma/` (which section slug), or that no documentation update is needed.
-2. If you change features, rules, conditions, permissions, or pages for any sidebar area from Messaging through Chatbot (including Admin Portal CMS), update the matching `docs/pma/*.md` file in the same change and bump frontmatter `updated`.
-3. If you add a new PMA sidebar menu, add a row to `config/pma_documentation.php`, create a stub markdown file, and ensure the Documentation UI picks it up.
+1. Briefly state whether the work affects PMA documentation under `docs/pma/` (which hub/section slug), or that no documentation update is needed.
+2. If you change features, rules, conditions, permissions, or pages for Website Frontend, User PMA, E-Learning, E-Store, Mobile App, or any detailed topic (including global/regional domain behavior), update the matching `docs/pma/*.md` file in the same change and bump frontmatter `updated`.
+3. If you add a new top-level product surface, add a hub in `config/pma_documentation.php` `hubs` plus a markdown file. If you add a PMA sidebar menu, add a `sections` row with the correct `hub` key and a stub markdown file.
 4. Only document behavior that exists in code/product — do not invent rules.
 5. Documentation UI is Super Admin–only; do not expose it to other roles.
