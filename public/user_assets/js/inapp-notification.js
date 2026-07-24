@@ -1,3 +1,41 @@
+window.formatNotificationBadgeCount = function (count) {
+    count = parseInt(count, 10) || 0;
+    if (count <= 0) {
+        return "0";
+    }
+    return count > 99 ? "99+" : String(count);
+};
+
+window.setNotificationBadgeCount = function (userId, count) {
+    count = parseInt(count, 10) || 0;
+    var $el = $("#show-notification-count-" + userId);
+    if (!$el.length) {
+        return;
+    }
+    $el.attr("data-count", count).text(
+        window.formatNotificationBadgeCount(count)
+    );
+    var $wrap = $el.hasClass("round-note") ? $el : $el.closest(".round-note");
+    if (count > 0) {
+        $wrap.css("display", "flex");
+    } else {
+        $wrap.hide();
+    }
+};
+
+window.incrementNotificationBadgeCount = function (userId, by) {
+    by = by == null ? 1 : by;
+    var $el = $("#show-notification-count-" + userId);
+    if (!$el.length) {
+        return;
+    }
+    var current = parseInt($el.attr("data-count"), 10);
+    if (isNaN(current)) {
+        current = parseInt($el.text(), 10) || 0;
+    }
+    window.setNotificationBadgeCount(userId, current + by);
+};
+
 $(document).ready(function () {
     var notification_page = 1;
     var loading = false; // Prevents multiple simultaneous AJAX requests
@@ -102,7 +140,12 @@ $(document).ready(function () {
             success: function (data) {
                 if (data.status === true) {
                     $notification.html("");
-                    $notificationCount.html("0");
+                    if (typeof window.setNotificationBadgeCount === "function") {
+                        window.setNotificationBadgeCount(authUserId, 0);
+                    } else {
+                        $notificationCount.attr("data-count", 0).html("0");
+                        $notificationCount.closest(".round-note").hide();
+                    }
                     $notificationDropdownContent.html("");
                     $notificationDropdown.removeClass("show");
                     notification_page = 1;

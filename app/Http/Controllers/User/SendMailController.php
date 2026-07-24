@@ -424,7 +424,7 @@ class SendMailController extends Controller
     // }
 
 
-    public function view($id)
+    public function view($id, string $mailFolder = 'inbox')
     {
         $id = base64_decode($id);
 
@@ -486,7 +486,22 @@ class SendMailController extends Controller
             });
 
         // Return the view with the relevant data
-        return view('user.mail.mail-details')->with(compact('mail_details', 'ownUserMailInfo', 'reply_mails', 'allMailIds', 'replyMailids'));
+        return view('user.mail.mail-details')->with(compact('mail_details', 'ownUserMailInfo', 'reply_mails', 'allMailIds', 'replyMailids', 'mailFolder'));
+    }
+
+    public function sentMailView($id)
+    {
+        return $this->view($id, 'sent');
+    }
+
+    public function starMailView($id)
+    {
+        return $this->view($id, 'star');
+    }
+
+    public function trashMailView($id)
+    {
+        return $this->view($id, 'trash');
     }
 
 

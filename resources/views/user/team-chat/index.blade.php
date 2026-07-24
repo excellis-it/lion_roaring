@@ -50,7 +50,7 @@
             <div class="messaging_sec chat-layout">
                 <div class="d-flex align-items-center justify-content-between">
                     <div class="heading_hp ">
-                        <h2>Messaging</h2>
+                        <h2>Group Chat</h2>
 
                     </div>
                     <div>
@@ -63,7 +63,7 @@
                     </div>
                 </div>
                 <div class="SideNavhead">
-                    <h2>Recent Chat</h2>
+                    <h2>Recent Group Chats</h2>
                     </div>
                     <div class="user-search-box">
                         <div class="search-field w-100 mt-2">

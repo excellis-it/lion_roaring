@@ -155,10 +155,11 @@
             <li class="nav-item dropdown">
                 <a class="nav-link nav-icon-hover" href="javascript:void(0)" id="drop2">
                     <i class="ti ti-bell-ringing"></i>
-                    {{-- <span class="round-note"><p>5</p>5</span> --}}
-                    <div class="notification round-note">
-                        <p id="show-notification-count-{{ auth()->user()->id }}">{{ Helper::notificationCount() }}</p>
-                    </div>
+                    @php $headerNotifCount = (int) Helper::notificationCount(); @endphp
+                    <span id="show-notification-count-{{ auth()->user()->id }}"
+                        class="round-note header-notif-badge"
+                        data-count="{{ $headerNotifCount }}"
+                        @if ($headerNotifCount <= 0) style="display:none" @endif>{{ Helper::formatBadgeCount($headerNotifCount) }}</span>
                 </a>
                 <div class="dropdown-menu content-dd dropdown-menu-end dropdown-menu-animate-up notification-dropdown"
                     aria-labelledby="drop2" data-bs-popper="static">

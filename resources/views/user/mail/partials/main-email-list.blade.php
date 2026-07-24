@@ -25,6 +25,14 @@ $mainMailUser = \App\Models\MailUser::where('send_mail_id', $mainMailId)
                 ->first();
             $isStar = $mainMailUser ? $mainMailUser->is_starred : false;
 
+            // BUG-047: open the folder-specific view so Back returns to that folder
+            $mailViewId = base64_encode(!empty($mail->reply_of) ? $mail->reply_of : $mail->id);
+            $mailViewRoute = match ($mails->type ?? 'inbox') {
+                'sent' => route('mail.sent.view', $mailViewId),
+                'star' => route('mail.star.view', $mailViewId),
+                'trash' => route('mail.trash.view', $mailViewId),
+                default => route('mail.view', $mailViewId),
+            };
         @endphp
         <div class="emailRow {{ $isRead ? '' : 'mail_read' }}">
 
@@ -46,7 +54,7 @@ $mainMailUser = \App\Models\MailUser::where('send_mail_id', $mainMailId)
             </div>
 
             <div class="col-3">
-                <h3 class="emailRow__title view-mail" data-route="{{ route('mail.view', base64_encode($mail->id)) }}">
+                <h3 class="emailRow__title view-mail" data-route="{{ $mailViewRoute }}">
                     @if ($mails->type == 'sent')
                         {{ $mail->userToNames ?? '' }}
                     @else
@@ -58,7 +66,7 @@ $mainMailUser = \App\Models\MailUser::where('send_mail_id', $mainMailId)
 
             <div class="col-6">
                 <div class="emailRow__message view-mail"
-                    data-route="{{ route('mail.view', base64_encode($mail->id)) }}">
+                    data-route="{{ $mailViewRoute }}">
                     <h4>
                         {{ !empty($mail->reply_of) ? 'RE:' : '' }} {{ $mail->subject }}
 
@@ -76,7 +84,7 @@ $mainMailUser = \App\Models\MailUser::where('send_mail_id', $mainMailId)
 
 
             <div class="col-2">
-                <p class="emailRow__time view-mail" data-route="{{ route('mail.view', base64_encode($mail->id)) }}">
+                <p class="emailRow__time view-mail" data-route="{{ $mailViewRoute }}">
                     {{ $mail->created_at->diffForHumans() }}
                 </p>
             </div>

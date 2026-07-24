@@ -1866,10 +1866,12 @@ li.slick-active button {
     box-sizing: border-box;
     border-radius: 0px;
     min-height: 100px;
-    line-height: 1.5;
-    padding: 12px 15px;
+    /* BUG-043: caret + placeholder share one line box at the top of the field */
+    font-size: 15px;
+    font-weight: 400;
+    line-height: 1.25;
+    padding: 14px 15px;
     vertical-align: top;
-    align-content: flex-start;
     resize: vertical;
     overflow-y: auto;
 }
@@ -1881,7 +1883,7 @@ li.slick-active button {
     line-height: 10px;
     letter-spacing: 2px;
     text-transform: uppercase;
-    font-family: var(--text-font);
+    font-family: var(--main-font);
     color: rgb(0 0 0 / 50%);
 }
 
@@ -1892,7 +1894,7 @@ li.slick-active button {
     line-height: 10px;
     letter-spacing: 2px;
     text-transform: uppercase;
-    font-family: var(--text-font);
+    font-family: var(--main-font);
     color: rgb(0 0 0 / 50%);
 }
 
@@ -1902,18 +1904,43 @@ li.slick-active button {
     line-height: 10px;
     letter-spacing: 2px;
     text-transform: uppercase;
-    font-family: var(--text-font);
+    font-family: var(--main-font);
     color: rgb(0 0 0 / 50%);
 }
 
-/* BUG-002: match the textarea placeholder line-height to the field's line-height
-   so the placeholder text and the typing caret start at the same top position */
+/* BUG-043: placeholder must inherit the textarea's typography so it
+   shares the caret's vertical metrics (only color may differ) */
 .ftr-frm form .form-group textarea.form-control::-webkit-input-placeholder {
-    line-height: 1.5;
+    font-size: inherit;
+    font-weight: inherit;
+    font-family: inherit;
+    line-height: inherit;
+    letter-spacing: normal;
+    text-transform: none;
+    color: rgb(0 0 0 / 50%);
+    opacity: 1;
+}
+
+.ftr-frm form .form-group textarea.form-control::-moz-placeholder {
+    font-size: inherit;
+    font-weight: inherit;
+    font-family: inherit;
+    line-height: inherit;
+    letter-spacing: normal;
+    text-transform: none;
+    color: rgb(0 0 0 / 50%);
+    opacity: 1;
 }
 
 .ftr-frm form .form-group textarea.form-control::placeholder {
-    line-height: 1.5;
+    font-size: inherit;
+    font-weight: inherit;
+    font-family: inherit;
+    line-height: inherit;
+    letter-spacing: normal;
+    text-transform: none;
+    color: rgb(0 0 0 / 50%);
+    opacity: 1;
 }
 
 .quick_links {

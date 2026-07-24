@@ -1253,10 +1253,18 @@ $(document).ready(function () {
 
         if (data.only_added_members.includes(sender_id)) {
             //  get count notification
-            var count = $("#show-notification-count-" + sender_id).text();
-            count = parseInt(count);
-            count += 1;
-            $("#show-notification-count-" + sender_id).text(count);
+            if (typeof window.incrementNotificationBadgeCount === "function") {
+                window.incrementNotificationBadgeCount(sender_id, 1);
+            } else {
+                var count = parseInt(
+                    $("#show-notification-count-" + sender_id).attr("data-count"),
+                    10
+                ) || 0;
+                count += 1;
+                var $badge = $("#show-notification-count-" + sender_id);
+                $badge.attr("data-count", count).text(count > 99 ? "99+" : count);
+                ($badge.hasClass("round-note") ? $badge : $badge.closest(".round-note")).css("display", "flex");
+            }
         }
 
         if (data.already_member_arr.includes(sender_id)) {
@@ -1332,10 +1340,18 @@ $(document).ready(function () {
             data.chat_member_id.includes(sender_id)
         ) {
             // get count notification
-            var count = $("#show-notification-count-" + sender_id).text();
-            count = parseInt(count);
-            count += 1;
-            $("#show-notification-count-" + sender_id).text(count);
+            if (typeof window.incrementNotificationBadgeCount === "function") {
+                window.incrementNotificationBadgeCount(sender_id, 1);
+            } else {
+                var count = parseInt(
+                    $("#show-notification-count-" + sender_id).attr("data-count"),
+                    10
+                ) || 0;
+                count += 1;
+                var $badge = $("#show-notification-count-" + sender_id);
+                $badge.attr("data-count", count).text(count > 99 ? "99+" : count);
+                ($badge.hasClass("round-note") ? $badge : $badge.closest(".round-note")).css("display", "flex");
+            }
             groupList(sender_id);
         }
     });
@@ -1344,10 +1360,18 @@ $(document).ready(function () {
         getSidebarNotiCounts();
         if (data.user_id == sender_id) {
             var notification = data.notification;
-            var count = $("#show-notification-count-" + sender_id).text();
-            count = parseInt(count);
-            count += 1;
-            $("#show-notification-count-" + sender_id).text(count);
+            if (typeof window.incrementNotificationBadgeCount === "function") {
+                window.incrementNotificationBadgeCount(sender_id, 1);
+            } else {
+                var count = parseInt(
+                    $("#show-notification-count-" + sender_id).attr("data-count"),
+                    10
+                ) || 0;
+                count += 1;
+                var $badge = $("#show-notification-count-" + sender_id);
+                $badge.attr("data-count", count).text(count > 99 ? "99+" : count);
+                ($badge.hasClass("round-note") ? $badge : $badge.closest(".round-note")).css("display", "flex");
+            }
             var route = window.Laravel.routes.notificationRead
                 .replace("__TYPE__", "Team")
                 .replace("__ID__", data.notification.id);
@@ -1584,9 +1608,28 @@ $(document).ready(function () {
                         },
                         success: function (res) {
                             if (res.status == true) {
-                                $("#show-notification-count-" + sender_id).html(
-                                    res.notification_count
-                                );
+                                if (
+                                    typeof window.setNotificationBadgeCount ===
+                                    "function"
+                                ) {
+                                    window.setNotificationBadgeCount(
+                                        sender_id,
+                                        res.notification_count
+                                    );
+                                } else {
+                                    var n =
+                                        parseInt(res.notification_count, 10) ||
+                                        0;
+                                    $("#show-notification-count-" + sender_id)
+                                        .attr("data-count", n)
+                                        .html(n > 99 ? "99+" : n);
+                                    if (n > 0) {
+                                        $(
+                                            "#show-notification-count-" +
+                                                sender_id
+                                        ).css("display", "flex");
+                                    }
+                                }
                                 var route =
                                     window.Laravel.routes.notificationRead
                                         .replace("__TYPE__", "Team")
@@ -1625,9 +1668,26 @@ $(document).ready(function () {
                     success: function (res) {
                         getSidebarNotiCounts();
                         if (res.status == true) {
-                            $("#show-notification-count-" + sender_id).html(
-                                res.notification_count
-                            );
+                            if (
+                                typeof window.setNotificationBadgeCount ===
+                                "function"
+                            ) {
+                                window.setNotificationBadgeCount(
+                                    sender_id,
+                                    res.notification_count
+                                );
+                            } else {
+                                var n =
+                                    parseInt(res.notification_count, 10) || 0;
+                                $("#show-notification-count-" + sender_id)
+                                    .attr("data-count", n)
+                                    .html(n > 99 ? "99+" : n);
+                                if (n > 0) {
+                                    $(
+                                        "#show-notification-count-" + sender_id
+                                    ).css("display", "flex");
+                                }
+                            }
                             var route = window.Laravel.routes.notificationRead
                                 .replace("__TYPE__", "Team")
                                 .replace("__ID__", res.notification.id);

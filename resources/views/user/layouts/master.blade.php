@@ -598,10 +598,15 @@
                 getSidebarNotiCounts();
                 if (data.user_id == sender_id) {
                     // get count notification
-                    var count = $('#show-notification-count-' + sender_id).text();
-                    count = parseInt(count);
-                    count += 1;
-                    $('#show-notification-count-' + sender_id).text(count);
+                    if (typeof window.incrementNotificationBadgeCount === 'function') {
+                        window.incrementNotificationBadgeCount(sender_id, 1);
+                    } else {
+                        var count = parseInt($('#show-notification-count-' + sender_id).attr('data-count'), 10) || 0;
+                        count += 1;
+                        $('#show-notification-count-' + sender_id).attr('data-count', count).text(count > 99 ? '99+' : count);
+                        var $badge = $('#show-notification-count-' + sender_id);
+                        ($badge.hasClass('round-note') ? $badge : $badge.closest('.round-note')).css('display', 'flex');
+                    }
                     var route =
                         `{{ route('notification.read', ['type' => 'Team', 'id' => '__ID__']) }}`
                         .replace('__ID__', data.notification.id);
@@ -860,12 +865,15 @@
                 // Check if sender_id exists in send_to_ids array
                 if (send_to_ids.includes(sender_id)) {
                     // Get the current count of notifications for the sender
-                    var countElement = $('#show-notification-count-' + sender_id);
-                    var count = parseInt(countElement.text()) ||
-                        0;
-
-                    count += 1;
-                    countElement.text(count);
+                    if (typeof window.incrementNotificationBadgeCount === 'function') {
+                        window.incrementNotificationBadgeCount(sender_id, 1);
+                    } else {
+                        var countElement = $('#show-notification-count-' + sender_id);
+                        var count = parseInt(countElement.attr('data-count'), 10) || 0;
+                        count += 1;
+                        countElement.attr('data-count', count).text(count > 99 ? '99+' : count);
+                        (countElement.hasClass('round-note') ? countElement : countElement.closest('.round-note')).css('display', 'flex');
+                    }
                     fetchLatestEmails();
 
                     var viewMatch = window.location.pathname.match(/\/user\/mail\/view\/([^\/]+)/);

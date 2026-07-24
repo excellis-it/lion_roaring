@@ -397,6 +397,18 @@ class Helper
         }
     }
 
+    /**
+     * Format a badge count for compact UI display (caps at 99+).
+     */
+    public static function formatBadgeCount(int $count): string
+    {
+        if ($count <= 0) {
+            return '0';
+        }
+
+        return $count > 99 ? '99+' : (string) $count;
+    }
+
     public static function getTeamCountUnseenMessage($user_id, $team_id)
     {
         $team_chat = ChatMember::where('user_id', $user_id)

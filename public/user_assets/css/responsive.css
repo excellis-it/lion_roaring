@@ -486,7 +486,7 @@
     height: 50px;
 }
 .round-note{
-    margin-top: 12px;
+    margin-top: 0 !important;
 }
 .btn.btn-primary{
     font-size: 14px;
@@ -572,7 +572,24 @@ input{
         height: 40px;
     }
     .icon_chat{
-        width: 90%;
+        width: 100%;
+        max-width: 90%;
+        padding: 1rem;
+    }
+
+    .messaging_sec.chat-layout section.Chat > .icon_chat {
+        max-width: 90%;
+        gap: 0.75rem;
+    }
+
+    .icon_chat span,
+    .messaging_sec.chat-layout section.Chat > .icon_chat > span {
+        width: min(100%, 14rem);
+    }
+
+    .icon_chat span img,
+    .messaging_sec.chat-layout section.Chat > .icon_chat > span img {
+        max-height: min(9rem, 24vh);
     }
     #TeamMessageForm button {
         padding: 4px 10px;
@@ -612,7 +629,7 @@ input{
         margin-bottom: 2px;
     }
     .round-note p{
-        font-size: 10px;
+        font-size: 9px;
     }
     .eye-btn-1{
         top: 12px;
@@ -718,5 +735,48 @@ input{
     }
     .chatbox{
             width: 290px !important;
+    }
+}
+
+/* BUG-048: keep header notif badge centered (loads after style.css) */
+.app-header .nav-link.nav-icon-hover > .header-notif-badge,
+.app-header span.round-note.header-notif-badge {
+    position: absolute !important;
+    top: 12px !important;
+    right: 8px !important;
+    left: auto !important;
+    bottom: auto !important;
+    margin: 0 !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    box-sizing: border-box !important;
+    width: auto !important;
+    min-width: 18px !important;
+    height: 18px !important;
+    padding: 0 5px !important;
+    border-radius: 9px !important;
+    background: #f6bc41 !important;
+    color: #fff !important;
+    font-size: 10px !important;
+    font-weight: 700 !important;
+    line-height: 1 !important;
+    letter-spacing: 0 !important;
+    text-align: center !important;
+    white-space: nowrap !important;
+    overflow: visible !important;
+    z-index: 5 !important;
+}
+
+@media (max-width: 576px) {
+    .app-header .nav-link.nav-icon-hover > .header-notif-badge,
+    .app-header span.round-note.header-notif-badge {
+        top: 6px !important;
+        right: 2px !important;
+        height: 16px !important;
+        min-width: 16px !important;
+        padding: 0 4px !important;
+        border-radius: 8px !important;
+        font-size: 9px !important;
     }
 }

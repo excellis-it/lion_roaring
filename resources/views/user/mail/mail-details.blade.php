@@ -23,7 +23,29 @@
                     <!-- Settings Starts -->
                     <div class="emailList__settings">
                         <div class="emailList__settingsLeft gap-2">
-                            <a href="{{ route('mail.index') }}"> <span class="material-symbols-outlined">
+                            @php
+                                // Prefer controller-provided folder; fall back to route/path detection
+                                $resolvedMailFolder = $mailFolder
+                                    ?? match (true) {
+                                        str_contains(request()->path(), 'sent-mail-view') => 'sent',
+                                        str_contains(request()->path(), 'star-mail-view') => 'star',
+                                        str_contains(request()->path(), 'trash-mail-view') => 'trash',
+                                        default => match (request()->route()?->getName()) {
+                                            'mail.sent.view' => 'sent',
+                                            'mail.star.view' => 'star',
+                                            'mail.trash.view' => 'trash',
+                                            default => 'inbox',
+                                        },
+                                    };
+
+                                $mailBackRoute = match ($resolvedMailFolder) {
+                                    'sent' => route('mail.sentList'),
+                                    'star' => route('mail.starList'),
+                                    'trash' => route('mail.trashList'),
+                                    default => route('mail.index'),
+                                };
+                            @endphp
+                            <a href="{{ $mailBackRoute }}" title="Back"> <span class="material-symbols-outlined">
                                     arrow_back</span></a>
                             <a href=""> <span class="material-symbols-outlined"> refresh </span></a>
                             @if (Request::is('user/mail/trash-mail-view/*'))

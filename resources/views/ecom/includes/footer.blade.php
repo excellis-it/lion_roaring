@@ -50,7 +50,7 @@
                             </p>
                             <form action="{{ route('e-store.newsletter') }}" method="post" id="submit-newsletter-home">
                                 @csrf
-                                <input type="email" required placeholder="Enter your email address"
+                                <input type="email" required placeholder="Enter Your Email Address"
                                     name="newsletter_email" id="newsletter_email_home" />
                                 <button type="submit" class="bt">Subscribe</button>
                             </form>

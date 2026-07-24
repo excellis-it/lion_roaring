@@ -1242,10 +1242,12 @@ body:has(.messaging_sec.chat-layout .modal.showing) .modal-backdrop {
 }
 
 .messaging_sec.chat-layout .main > div:first-child {
+    flex: 0 0 auto;
     height: 100%;
     min-height: 0;
     display: flex;
     flex-direction: column;
+    z-index: 2;
 }
 
 .messaging_sec.chat-layout .sideNav2 {
@@ -1253,15 +1255,21 @@ body:has(.messaging_sec.chat-layout .modal.showing) .modal-backdrop {
     height: 100%;
     min-height: 0;
     overflow-y: auto;
+    /* BUG-039: opaque list panel so empty-state art cannot bleed through */
+    background-color: #fff;
 }
 
 .messaging_sec.chat-layout section.Chat {
+    flex: 1 1 auto;
+    width: auto; /* override global section { width: 100% } that overflows the flex row */
     height: 100%;
     min-height: 0;
     min-width: 0;
     display: flex;
     flex-direction: column;
     overflow: hidden;
+    background-color: #fff;
+    z-index: 1;
 }
 
 .messaging_sec.chat-layout section.Chat > .modal {
@@ -1311,16 +1319,62 @@ body:has(.messaging_sec.chat-layout .modal.showing) .modal-backdrop {
     border-top: 1px solid #eee;
 }
 
+/* BUG-039: empty-state illustration stays above copy (no overlap) across zoom */
 .messaging_sec.chat-layout section.Chat > .icon_chat {
-    flex: 1;
+    flex: 1 1 auto;
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
+    gap: 1rem;
     min-height: 0;
-    overflow: hidden;
-    width: 50%;
+    min-width: 0;
+    width: 100%;
+    max-width: 36rem;
     margin: 0 auto;
+    padding: 1.5rem;
+    box-sizing: border-box;
+    overflow-x: hidden;
+    overflow-y: auto;
+    text-align: center;
+    position: relative;
+    /* soft background treatment of the illustration area */
+    background-color: #fff;
+}
+
+.messaging_sec.chat-layout section.Chat > .icon_chat > span {
+    /* never flex-shrink — that collapsed the box while the img still painted over h4/p */
+    flex: 0 0 auto;
+    display: block;
+    width: min(100%, 18rem);
+    max-width: 100%;
+    margin: 0;
+    line-height: 0;
+    position: relative;
+    z-index: 0;
+}
+
+.messaging_sec.chat-layout section.Chat > .icon_chat > span img {
+    display: block;
+    width: 100%;
+    max-width: 100%;
+    height: auto;
+    max-height: min(12rem, 28vh);
+    object-fit: contain;
+}
+
+.messaging_sec.chat-layout section.Chat > .icon_chat h4,
+.messaging_sec.chat-layout section.Chat > .icon_chat p {
+    position: relative;
+    z-index: 1;
+    flex: 0 0 auto;
+    max-width: 100%;
+    margin: 0;
+    background-color: #fff;
+}
+
+.messaging_sec.chat-layout section.Chat > .icon_chat p {
+    margin-top: 0;
 }
 
 .sideNav1 {
@@ -1777,27 +1831,41 @@ section {
 }
 
 .icon_chat {
-    width: 50%;
+    width: 100%;
+    max-width: 36rem;
     margin: 0 auto;
+    padding: 1.5rem;
+    box-sizing: border-box;
     text-align: center;
 }
 
 .icon_chat span {
-    width: 100%;
-    margin-bottom: 20px;
-    display: inline-block;
+    display: block;
+    width: min(100%, 18rem);
+    max-width: 100%;
+    margin: 0 auto 1rem;
+    line-height: 0;
 }
 
 .icon_chat span img {
+    display: block;
     width: 100%;
+    max-width: 100%;
+    height: auto;
+    max-height: min(12rem, 28vh);
+    object-fit: contain;
 }
 
 .icon_chat h4 {
     color: #000;
+    position: relative;
+    z-index: 1;
 }
 
 .icon_chat p {
     color: #000;
+    position: relative;
+    z-index: 1;
 }
 
 /* ---- partner ---------*/
@@ -3169,3 +3237,45 @@ section {
 /* .material-symbols-outlined{
     font-size: 10px !important;
 } */
+
+/* BUG-048: header notification badge — centered "99+" on bell */
+.app-header .navbar-nav .nav-item.dropdown,
+.app-header .navbar-nav .nav-item > .nav-link.nav-icon-hover {
+    position: relative;
+    overflow: visible !important;
+}
+
+.app-header .nav-link.nav-icon-hover > .header-notif-badge,
+.app-header span.round-note.header-notif-badge {
+    position: absolute !important;
+    top: 12px !important;
+    right: 8px !important;
+    left: auto !important;
+    bottom: auto !important;
+    margin: 0 !important;
+    transform: none !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    box-sizing: border-box !important;
+    width: auto !important;
+    min-width: 18px !important;
+    max-width: none !important;
+    height: 18px !important;
+    padding: 0 5px !important;
+    border-radius: 9px !important;
+    background: #f6bc41 !important;
+    color: #fff !important;
+    /* Reset nav-link inheritance (font-size:20px / line-height:70px) */
+    font-size: 10px !important;
+    font-weight: 700 !important;
+    font-style: normal !important;
+    line-height: 1 !important;
+    letter-spacing: 0 !important;
+    text-align: center !important;
+    text-indent: 0 !important;
+    white-space: nowrap !important;
+    overflow: visible !important;
+    z-index: 5 !important;
+    pointer-events: none;
+}

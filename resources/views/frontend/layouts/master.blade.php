@@ -426,7 +426,7 @@
                                         @csrf
                                         <div class="row">
                                             <div class="col-12 mb-3">
-                                                <label for="amount">Enter amount(US$)</label>
+                                                <label for="amount">Enter Amount (US$)</label>
                                                 <input class="form-control" id="amount" name="amount"
                                                     inputmode="decimal" value="">
                                             </div>
