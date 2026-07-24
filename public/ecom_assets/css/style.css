@@ -3101,6 +3101,8 @@ content: none !important;
 }
 .search-suggestions .ss-name{font-weight:600;line-height:1.15;}
 .search-suggestions .ss-price{font-size:12px;color:#643271;}
+.search-suggestions .ss-price .ss-sale{font-weight:600;color:#643271;}
+.search-suggestions .ss-price .ss-original{font-size:11px;margin-left:4px;}
 .search-suggestions .ss-empty{font-size:12px;}
 @media (max-width:767.98px){
     .search-suggestions{max-height:300px;}

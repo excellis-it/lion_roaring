@@ -1489,14 +1489,24 @@
                                 box.innerHTML =
                                     '<div class="ss-empty p-2 text-muted">No matches</div>';
                             } else {
-                                box.innerHTML = data.map(p => `
+                                box.innerHTML = data.map(p => {
+                                    let priceHtml;
+                                    if (p.is_free) {
+                                        priceHtml = '<div class="ss-price"><span class="badge bg-success">FREE</span></div>';
+                                    } else if (p.sale_price) {
+                                        priceHtml = `<div class="ss-price"><span class="ss-sale">$${p.sale_price}</span> <span class="ss-original text-muted text-decoration-line-through">$${p.price}</span></div>`;
+                                    } else {
+                                        priceHtml = `<div class="ss-price">$${p.price}</div>`;
+                                    }
+                                    return `
 <a class="ss-item d-flex align-items-center" href="${p.url}" role="option">
     <img src="${p.image}" alt="${p.name}">
     <div class="flex-grow-1">
         <div class="ss-name">${p.name}</div>
-        <div class="ss-price">$${p.price}</div>
+        ${priceHtml}
     </div>
-</a>`).join('');
+</a>`;
+                                }).join('');
                             }
                             box.classList.remove('d-none');
                             box.setAttribute('aria-expanded', 'true');

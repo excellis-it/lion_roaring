@@ -20,6 +20,7 @@ sidebar_key: e_store
 ### Public storefront
 
 - Catalog, search/filter, product details, cart, wishlist, addresses.
+- Live search suggestions show the active sale price when set (original price struck through), matching product cards and product details.
 - Physical + digital checkout (Stripe PaymentIntent).
 - Promo codes, my orders, tracking, cancel window, digital download (signed guest URL exists).
 - Registration assigns `ESTORE_USER`.

@@ -3661,3 +3661,42 @@ span[id^="show-notification-count-"].header-notif-badge[data-count="0"] {
         font-size: 9px !important;
     }
 }
+
+/*
+ * Select2 multi-select chips (BUG-055)
+ * style.min.css sets white chip text + blue backgrounds, but Select2 CDN CSS
+ * loads later and resets chip background to #e4e4e4 without resetting color.
+ * The remove control also keeps a blue background, showing as a left "bar".
+ * Force readable contrast, clear remove control, and comfortable spacing.
+ */
+.select2-container--default .select2-selection--multiple .select2-selection__choice,
+.select2-container--classic .select2-selection--multiple .select2-selection__choice {
+    background-color: #7851a9 !important;
+    border: 1px solid #5f3b86 !important;
+    color: #ffffff !important;
+    padding: 4px 10px !important;
+    margin: 4px 6px 4px 0 !important;
+    border-radius: 6px !important;
+    line-height: 1.4 !important;
+    font-weight: 500;
+}
+
+.select2-container--default .select2-selection--multiple .select2-selection__choice__remove,
+.select2-container--classic .select2-selection--multiple .select2-selection__choice__remove {
+    color: rgba(255, 255, 255, 0.9) !important;
+    background: transparent !important;
+    background-color: transparent !important;
+    border: none !important;
+    margin-right: 6px !important;
+    font-weight: 700;
+}
+
+.select2-container--default .select2-selection--multiple .select2-selection__choice__remove:hover,
+.select2-container--classic .select2-selection--multiple .select2-selection__choice__remove:hover {
+    color: #ffffff !important;
+}
+
+.select2-container--default .select2-selection--multiple .select2-selection__choice span,
+.select2-container--classic .select2-selection--multiple .select2-selection__choice span {
+    color: #ffffff !important;
+}

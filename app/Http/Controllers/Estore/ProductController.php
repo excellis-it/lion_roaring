@@ -2175,12 +2175,16 @@ class ProductController extends Controller
 
         $results = $products->map(function ($p) {
             $image = $p->main_image ? Storage::url($p->main_image) : asset('ecom_assets/images/placeholder.png');
+            $hasSale = !empty($p->sale_price) && (float) $p->sale_price > 0;
+
             return [
-                'id'    => $p->id,
-                'name'  => $p->name,
-                'price' => number_format($p->price, 2),
-                'image' => $image,
-                'url'   => route('e-store.product-details', $p->slug),
+                'id'         => $p->id,
+                'name'       => $p->name,
+                'price'      => number_format((float) $p->price, 2, '.', ''),
+                'sale_price' => $hasSale ? number_format((float) $p->sale_price, 2, '.', '') : null,
+                'is_free'    => (bool) ($p->is_free ?? false),
+                'image'      => $image,
+                'url'        => route('e-store.product-details', $p->slug),
             ];
         });
 

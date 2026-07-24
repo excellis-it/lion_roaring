@@ -366,8 +366,10 @@ class EstoreProductController extends Controller
                 return response()->json(['data' => [], 'status' => true], 200);
             }
             $items = Product::where('is_deleted', false)->where('status', 1)->where('name', 'LIKE', "%{$q}%")
-                ->limit(10)->get(['id', 'name', 'slug', 'price'])->map(function ($p) {
+                ->limit(10)->get(['id', 'name', 'slug', 'price', 'sale_price', 'is_free'])->map(function ($p) {
                     $p->image = $p->image ? Storage::url($p->image) : null;
+                    $hasSale = !empty($p->sale_price) && (float) $p->sale_price > 0;
+                    $p->sale_price = $hasSale ? (float) $p->sale_price : null;
                     return $p;
                 });
             return response()->json(['data' => $items, 'status' => true], 200);

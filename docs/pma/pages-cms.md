@@ -23,6 +23,12 @@ Grouped Admin Portal page editors that power most of the **Website Frontend** co
 - Footer, Register Page Agreements, PMA Terms, Privacy Policy, Terms and Conditions.
 - Contact Us Messages / Contact CMS may exist in code but are commented out of the sidebar.
 
+### Footer CMS fields
+
+Footer admin exposes fields that drive the website footer: logo, flag, title, address fields, phone, email, newsletter title, and copyright text.
+
+Play Store link/icon, App Store link/icon, and Social Link rows are **not** shown in the Footer admin form — those settings are unused on the website frontend (BUG-058).
+
 ## Permissions and conditions
 
 Parent sidebar visible if any Manage-* page permission is present, including:

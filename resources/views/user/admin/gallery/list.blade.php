@@ -81,7 +81,8 @@
 
                                     <td><a href="{{ Storage::url($item->image) }}" target="_blank"><img
                                                 src="{{ Storage::url($item->image) }}" alt="gallery"
-                                                style="width: 30%; height: 100px;"></a></td>
+                                                class="gallery-list-thumb"
+                                                style="width: 100px; height: 100px; object-fit: contain; background: #f5f5f5; border-radius: 4px;"></a></td>
                                     <td>{{ $item->country?->name ?? '' }}</td>
                                     <td>
                                         <div class="edit-1 d-flex align-items-center justify-content-center">
