@@ -9,7 +9,7 @@ sidebar_key: chatbot
 
 ## Overview
 
-PMA tools for the site chatbot. Behavior depends on `CHATBOT` env (`AI` vs normal).
+PMA tools for the site chatbot. Behavior depends on `CHATBOT` env (`AI` vs `NORMAL`).
 
 **Controller:** `User\Admin\ChatbotController`  
 **Routes:** `user.admin.chatbot.*`  
@@ -23,8 +23,16 @@ PMA tools for the site chatbot. Behavior depends on `CHATBOT` env (`AI` vs norma
 - Else: Dashboard, Keywords CRUD/bulk, Conversation history inside PMA.
 - Seed also includes `View Chatbot Analytics`.
 
+### Mobile app sidebar (Chatbot)
+
+- Label: **Chatbot** (chat icon). Driven by `CHATBOT` + `MOBILE_CHATBOT_URL` (config `lion_roaring.*`).
+- Exposed on `/api/v3/cms/site-settings` as `chatbot_mode` and `mobile_chatbot_url` (no DB migration).
+- `CHATBOT=AI` and non-empty URL → Flutter opens that URL in a JS WebView (AppBar + back).
+- `CHATBOT=NORMAL` (or empty URL) → existing in-app chat assistant screen.
+
 ## Permissions and conditions
 
 - Gates: `Manage Chatbot`, `Manage Chatbot Keywords`, `View Chatbot History`.
 - RAG env vars when AI mode: `RAG_WIDGET_URL`, `RAG_API_BASE`, `RAG_BOT_ID`, `RAG_AUTH_TOKEN`.
+- Mobile WebView URL: `MOBILE_CHATBOT_URL`.
 - Frontend/ecom/elearning layouts include chatbot partials with AI widget fallback timeout behavior.

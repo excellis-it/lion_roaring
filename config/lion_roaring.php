@@ -18,6 +18,26 @@ return [
 
     /*
     |--------------------------------------------------------------------------
+    | Chatbot mode (web + Flutter)
+    |--------------------------------------------------------------------------
+    |
+    | AI → external RAG / mobile WebView URL. NORMAL → built-in chat assistant.
+    |
+    */
+    'chatbot' => strtoupper(trim(preg_replace('/\s*#.*$/', '', (string) env('CHATBOT', 'NORMAL')) ?: 'NORMAL')),
+
+    /*
+    |--------------------------------------------------------------------------
+    | Mobile chatbot WebView URL (Flutter, when chatbot=AI)
+    |--------------------------------------------------------------------------
+    */
+    'mobile_chatbot_url' => (string) env(
+        'MOBILE_CHATBOT_URL',
+        'https://chatbot.lionroaring.us/chat?botId=6a47b3eef6cdf474ed1a9145&token=0c098bd4e7495141105cc679566e13b3c46579a80be443e72e3e1b3696b21d7e'
+    ),
+
+    /*
+    |--------------------------------------------------------------------------
     | Registration tier lock (global domain — cheapest paid tier)
     |--------------------------------------------------------------------------
     |

@@ -46,6 +46,13 @@ Flutter app at `lion-roaring-app`. Talks to Laravel **`/api/v3`**. Country selec
 - Post-login agreement navigation when required.
 - Drawer items gated by permission APIs.
 
+### Chatbot sidebar
+
+- Label **Chatbot** with chat icon.
+- Reads `chatbot_mode` + `mobile_chatbot_url` from `/api/v3/cms/site-settings` (env `CHATBOT`, `MOBILE_CHATBOT_URL` — no admin DB field).
+- `CHATBOT=AI` + non-empty URL → JS WebView with AppBar/back.
+- Otherwise → existing in-app chat assistant.
+
 ### Realtime
 
 - Socket host configured for US (`lionroaring.us:3000` in constants).

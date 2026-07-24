@@ -972,7 +972,7 @@ class CmsController extends Controller
             'strategy' => 'Strategy',
             'policy_guidance' => 'Policy & Guidance',
             'membership' => 'Membership',
-            'chatbot' => 'ChatBot',
+            'chatbot' => 'Chatbot',
             'chats' => 'Chats',
             'team' => 'Team',
             'mail' => 'Mail',
@@ -1059,7 +1059,11 @@ class CmsController extends Controller
          try {
              $settings = SiteSetting::first();
              if ($settings) {
-                 return response()->json(['message' => 'Site Settings', 'status' => true, 'settings' => $settings], $this->successStatus);
+                 $payload = $settings->toArray();
+                 $payload['chatbot_mode'] = config('lion_roaring.chatbot', 'NORMAL');
+                 $payload['mobile_chatbot_url'] = config('lion_roaring.mobile_chatbot_url', '');
+
+                 return response()->json(['message' => 'Site Settings', 'status' => true, 'settings' => $payload], $this->successStatus);
              } else {
                  return response()->json(['message' => 'No Site Settings found', 'status' => false], 201);
              }

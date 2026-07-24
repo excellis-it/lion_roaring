@@ -41,6 +41,7 @@ Deep domain rules: see **Global & Regional Domains**.
 ### Chatbot
 
 - `CHATBOT=AI` → RAG widget (`RAG_*` env); else in-app chatbot.
+- Mobile: same `CHATBOT` + `MOBILE_CHATBOT_URL` via `/api/v3/cms/site-settings` (`chatbot_mode`, `mobile_chatbot_url`).
 - Routes under `/chatbot/*`.
 
 ## Permissions and conditions
