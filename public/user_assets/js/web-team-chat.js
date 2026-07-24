@@ -17,6 +17,31 @@ $(document).ready(function () {
     var csrfToken = window.Laravel.csrfToken;
     var authTimeZone = window.Laravel.authTimeZone;
 
+    // BUG-053: resolve group avatar URL; fall back to default when missing/broken
+    function resolveGroupImageUrl(pathOrUrl) {
+        if (!pathOrUrl) {
+            return groupDefaultImage;
+        }
+        var value = String(pathOrUrl).trim();
+        if (!value) {
+            return groupDefaultImage;
+        }
+        if (/^https?:\/\//i.test(value) || value.indexOf("//") === 0) {
+            return value;
+        }
+        if (value.indexOf("storage/") === 0 || value.indexOf("/storage/") === 0) {
+            return value.charAt(0) === "/" ? value : "/" + value;
+        }
+        return storageUrl + value.replace(/^\//, "");
+    }
+
+    function groupAvatarImgHtml(pathOrUrl) {
+        var src = resolveGroupImageUrl(pathOrUrl);
+        return (
+            `<img src="${src}" alt="" onerror="this.onerror=null;this.src='${groupDefaultImage}';">`
+        );
+    }
+
     $("#create-team").submit(function (e) {
         e.preventDefault();
         var form = $(this);
@@ -253,7 +278,7 @@ $(document).ready(function () {
                     // groupList(sender_id);
                     let attachment = res.chat.attachment;
                     let fileUrl = storageUrl + attachment;
-                    let attachement_extention = attachment.split(".").pop();
+                    let attachement_extention = attachment.split(".").pop().toLowerCase();
                     let created_at = res.chat.created_at;
                     let time_format_12 = moment
                         .tz(created_at, authTimeZone)
@@ -267,11 +292,11 @@ $(document).ready(function () {
                             attachement_extention
                         )
                     ) {
-                        html += `<div class="message-wrap"><p class="messageContent"><a href="${fileUrl}" target="_blank" class="file-download" data-download-url="${fileUrl}" data-file-name="${chatAttachmentName}"><img src="${fileUrl}" alt="attachment" style="max-width: 200px; max-height: 200px;"></a></p>`;
+                        html += `<div class="message-wrap"><p class="messageContent"><a href="${fileUrl}" class="chat-image-preview" data-image-url="${fileUrl}" data-file-name="${chatAttachmentName}"><img src="${fileUrl}" class="chat-image-attachment" alt="attachment" style="max-width: 280px; max-height: 360px; width: auto; height: auto;"></a></p>`;
                     } else if (
-                        ["mp4", "webm", "ogg"].includes(attachement_extention)
+                        TEAM_CHAT_VIDEO_EXTENSIONS.includes(attachement_extention)
                     ) {
-                        html += ` <div class="message-wrap"><p class="messageContent"><a href="${fileUrl}" target="_blank" class="file-download" data-download-url="${fileUrl}" data-file-name="${chatAttachmentName}"><video width="200" height="200" controls><source src="${fileUrl}" type="video/mp4"><source src="${fileUrl}" type="video/webm"><source src="${fileUrl}" type="video/ogg"></video></a></p>`;
+                        html += ` <div class="message-wrap"><p class="messageContent">${buildTeamChatVideoHtml(fileUrl, attachement_extention, chatAttachmentName)}</p>`;
                     } else {
                         html += `<div class="message-wrap"><p class="messageContent"><a href="${fileUrl}" target="_blank" class="file-download" data-download-url="${fileUrl}" data-file-name="${chatAttachmentName}"><img src="${fileIcon}" alt=""></a></p>`;
                     }
@@ -601,6 +626,30 @@ $(document).ready(function () {
         });
     });
 
+    // BUG-049: playable video bubble (do not wrap in a.file-download)
+    var TEAM_CHAT_VIDEO_EXTENSIONS = ["mp4", "webm", "ogg", "mov", "m4v"];
+    var TEAM_CHAT_VIDEO_MIME = {
+        mp4: "video/mp4",
+        m4v: "video/mp4",
+        webm: "video/webm",
+        ogg: "video/ogg",
+        mov: "video/quicktime",
+    };
+
+    function buildTeamChatVideoHtml(fileUrl, extension, fileName) {
+        var ext = (extension || "").toLowerCase();
+        var mime = TEAM_CHAT_VIDEO_MIME[ext] || "video/mp4";
+        var name = fileName || fileUrl.split("/").pop() || "video";
+        return (
+            `<button type="button" class="chat-video-preview" data-video-url="${fileUrl}" data-file-name="${name}" data-mime="${mime}" aria-label="Play video">` +
+            `<video class="chat-video-attachment" muted playsinline preload="metadata" style="max-width: 280px; max-height: 360px; width: auto; height: auto;">` +
+            `<source src="${fileUrl}" type="${mime}">` +
+            `</video>` +
+            `<span class="chat-video-play-icon" aria-hidden="true"><i class="fa-solid fa-play"></i></span>` +
+            `</button>`
+        );
+    }
+
     // Helper function to generate team message HTML
     function generateTeamMessageHtml(data, time) {
         let html = `<div class="message me" id="team-chat-message-${data.id}">
@@ -611,27 +660,21 @@ $(document).ready(function () {
 
         if (attachment && attachment !== "") {
             fileUrl = storageUrl + attachment;
-            let attachement_extention = attachment.split(".").pop();
+            let attachement_extention = attachment.split(".").pop().toLowerCase();
             const dataFileName = data.attachment_name
                 ? data.attachment_name
                 : attachment;
 
-            if (["jpg", "jpeg", "png", "gif"].includes(attachement_extention)) {
+            if (["jpg", "jpeg", "png", "gif", "svg", "webp"].includes(attachement_extention)) {
                 html += `<p class="messageContent">
-                    <a href="${fileUrl}" target="_blank" class="file-download" data-download-url="${fileUrl}" data-file-name="${dataFileName}">
-                        <img src="${fileUrl}" alt="attachment" style="max-width: 200px; max-height: 200px;">
+                    <a href="${fileUrl}" class="chat-image-preview" data-image-url="${fileUrl}" data-file-name="${dataFileName}">
+                        <img src="${fileUrl}" class="chat-image-attachment" alt="attachment" style="max-width: 280px; max-height: 360px; width: auto; height: auto;">
                     </a><br>
                     <span>${formatChatMessage(data.message)}</span>
                  </p>`;
-            } else if (["mp4", "webm", "ogg"].includes(attachement_extention)) {
+            } else if (TEAM_CHAT_VIDEO_EXTENSIONS.includes(String(attachement_extention).toLowerCase())) {
                 html += `<p class="messageContent">
-                    <a href="${fileUrl}" target="_blank" class="file-download" data-download-url="${fileUrl}" data-file-name="${dataFileName}">
-                        <video width="200" height="200" controls>
-                            <source src="${fileUrl}" type="video/mp4">
-                            <source src="${fileUrl}" type="video/webm">
-                            <source src="${fileUrl}" type="video/ogg">
-                        </video>
-                    </a><br>
+                    ${buildTeamChatVideoHtml(fileUrl, attachement_extention, dataFileName)}<br>
                     <span>${formatChatMessage(data.message)}</span>
                 </p>`;
             } else {
@@ -774,10 +817,8 @@ $(document).ready(function () {
                 getSidebarNotiCounts();
                 if (resp.status == true) {
                     var group_image = resp.group_image;
-                    var group_image_url = storageUrl + group_image;
-                    $(".team-image-" + team_id).html(
-                        `<img src="${storageUrl}${group_image}" alt="">`
-                    );
+                    var group_image_url = resolveGroupImageUrl(group_image);
+                    $(".team-image-" + team_id).html(groupAvatarImgHtml(group_image));
 
                     $("#loading").removeClass("loading");
                     $("#loading-content").removeClass("loading-content");
@@ -1263,7 +1304,10 @@ $(document).ready(function () {
                 count += 1;
                 var $badge = $("#show-notification-count-" + sender_id);
                 $badge.attr("data-count", count).text(count > 99 ? "99+" : count);
-                ($badge.hasClass("round-note") ? $badge : $badge.closest(".round-note")).css("display", "flex");
+                ($badge.hasClass("header-notif-badge") || $badge.hasClass("round-note")
+                    ? $badge
+                    : $badge.closest(".header-notif-badge, .round-note")
+                ).css("display", "").removeClass("is-empty");
             }
         }
 
@@ -1350,7 +1394,10 @@ $(document).ready(function () {
                 count += 1;
                 var $badge = $("#show-notification-count-" + sender_id);
                 $badge.attr("data-count", count).text(count > 99 ? "99+" : count);
-                ($badge.hasClass("round-note") ? $badge : $badge.closest(".round-note")).css("display", "flex");
+                ($badge.hasClass("header-notif-badge") || $badge.hasClass("round-note")
+                    ? $badge
+                    : $badge.closest(".header-notif-badge, .round-note")
+                ).css("display", "").removeClass("is-empty");
             }
             groupList(sender_id);
         }
@@ -1370,7 +1417,10 @@ $(document).ready(function () {
                 count += 1;
                 var $badge = $("#show-notification-count-" + sender_id);
                 $badge.attr("data-count", count).text(count > 99 ? "99+" : count);
-                ($badge.hasClass("round-note") ? $badge : $badge.closest(".round-note")).css("display", "flex");
+                ($badge.hasClass("header-notif-badge") || $badge.hasClass("round-note")
+                    ? $badge
+                    : $badge.closest(".header-notif-badge, .round-note")
+                ).css("display", "").removeClass("is-empty");
             }
             var route = window.Laravel.routes.notificationRead
                 .replace("__TYPE__", "Team")
@@ -1396,9 +1446,7 @@ $(document).ready(function () {
 
     socket.on("updateGroupImage", function (data) {
         getSidebarNotiCounts();
-        $(".team-image-" + data.team_id).html(
-            `<img src="${data.group_image}" alt="">`
-        );
+        $(".team-image-" + data.team_id).html(groupAvatarImgHtml(data.group_image));
     });
 
     // Updated UI update functions
@@ -1504,26 +1552,20 @@ $(document).ready(function () {
                 : "file";
             if (attachment && attachment != "") {
                 fileUrl = storageUrl + attachment;
-                let attachement_extention = attachment.split(".").pop();
+                let attachement_extention = attachment.split(".").pop().toLowerCase();
 
                 if (
-                    ["jpg", "jpeg", "png", "gif"].includes(
+                    ["jpg", "jpeg", "png", "gif", "svg", "webp"].includes(
                         attachement_extention
                     )
                 ) {
-                    html += `<a href="${fileUrl}" target="_blank" class="file-download" data-download-url="${fileUrl}" data-file-name="${incomingFileName}">
-                        <img src="${fileUrl}" alt="attachment" style="max-width: 200px; max-height: 200px;">
+                    html += `<a href="${fileUrl}" class="chat-image-preview" data-image-url="${fileUrl}" data-file-name="${incomingFileName}">
+                        <img src="${fileUrl}" class="chat-image-attachment" alt="attachment" style="max-width: 280px; max-height: 360px; width: auto; height: auto;">
                      </a><br><span class="">${formatChatMessage(data.chat.message)}</span>`;
                 } else if (
-                    ["mp4", "webm", "ogg"].includes(attachement_extention)
+                    TEAM_CHAT_VIDEO_EXTENSIONS.includes(attachement_extention)
                 ) {
-                    html += `<a href="${fileUrl}" target="_blank" class="file-download" data-download-url="${fileUrl}" data-file-name="${incomingFileName}">
-                        <video width="200" height="200" controls>
-                            <source src="${fileUrl}" type="video/mp4">
-                            <source src="${fileUrl}" type="video/webm">
-                            <source src="${fileUrl}" type="video/ogg">
-                        </video>
-                     </a><<br><span class="">${formatChatMessage(data.chat.message)}</span>`;
+                    html += `${buildTeamChatVideoHtml(fileUrl, attachement_extention, incomingFileName)}<br><span class="">${formatChatMessage(data.chat.message)}</span>`;
                 } else {
                     html += `<a href="${fileUrl}" target="_blank" class="file-download" data-download-url="${fileUrl}" data-file-name="${incomingFileName}">
                         <img src="${fileIcon}" alt="">
@@ -1627,7 +1669,7 @@ $(document).ready(function () {
                                         $(
                                             "#show-notification-count-" +
                                                 sender_id
-                                        ).css("display", "flex");
+                                        ).css("display", "").removeClass("is-empty");
                                     }
                                 }
                                 var route =
@@ -1685,7 +1727,7 @@ $(document).ready(function () {
                                 if (n > 0) {
                                     $(
                                         "#show-notification-count-" + sender_id
-                                    ).css("display", "flex");
+                                    ).css("display", "").removeClass("is-empty");
                                 }
                             }
                             var route = window.Laravel.routes.notificationRead

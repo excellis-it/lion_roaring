@@ -31,8 +31,8 @@
     <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
     <link href="{{ asset('user_assets/css/menu.css') }}" rel="stylesheet">
     <link id="themeColors" rel="stylesheet" href="{{ asset('user_assets/css/style.min.css') }}">
-    <link href="{{ asset('user_assets/css/style.css') }}" rel="stylesheet">
-    <link href="{{ asset('user_assets/css/responsive.css') }}" rel="stylesheet">
+    <link href="{{ asset('user_assets/css/style.css') }}?v={{ @filemtime(public_path('user_assets/css/style.css')) }}" rel="stylesheet">
+    <link href="{{ asset('user_assets/css/responsive.css') }}?v={{ @filemtime(public_path('user_assets/css/responsive.css')) }}" rel="stylesheet">
     <link rel="stylesheet" type="text/css"
         href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css">
     @include('frontend.includes.toast-layering')
@@ -279,7 +279,7 @@
     <script src="{{ asset('user_assets/js/app.init.js') }}"></script>
     <script src="{{ asset('user_assets/js/app-style-switcher.js') }}"></script>
     <script src="{{ asset('user_assets/js/sidebarmenu.js') }}"></script>
-    <script src="{{ asset('user_assets/js/custom.js') }}"></script>
+    <script src="{{ asset('user_assets/js/custom.js') }}?v={{ @filemtime(public_path('user_assets/js/custom.js')) }}"></script>
     <script>
         // BUG-011: preserve the left sidebar scroll position across page navigations
         (function() {
@@ -332,7 +332,7 @@
 
     <script src="https://cdn.socket.io/4.0.1/socket.io.min.js"></script>
 
-    <script src="{{ asset('user_assets/js/inapp-notification.js') }}"></script>
+    <script src="{{ asset('user_assets/js/inapp-notification.js') }}?v={{ @filemtime(public_path('user_assets/js/inapp-notification.js')) }}"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/dropzone/4.3.0/dropzone.js"></script>
     <script>
         $(function() {
@@ -554,8 +554,8 @@
     </script>
 
     <script src="{{ asset('user_assets/js/file-upload-modal.js') }}"></script>
-    <script src="{{ asset('user_assets/js/web-chat.js') }}"></script>
-    <script src="{{ asset('user_assets/js/web-team-chat.js') }}"></script>
+    <script src="{{ asset('user_assets/js/web-chat.js') }}?v={{ @filemtime(public_path('user_assets/js/web-chat.js')) }}"></script>
+    <script src="{{ asset('user_assets/js/web-team-chat.js') }}?v={{ @filemtime(public_path('user_assets/js/web-team-chat.js')) }}"></script>
 
 
     <script>
@@ -605,7 +605,7 @@
                         count += 1;
                         $('#show-notification-count-' + sender_id).attr('data-count', count).text(count > 99 ? '99+' : count);
                         var $badge = $('#show-notification-count-' + sender_id);
-                        ($badge.hasClass('round-note') ? $badge : $badge.closest('.round-note')).css('display', 'flex');
+                        ($badge.hasClass('round-note') ? $badge : $badge.closest('.round-note')).css('display', '').removeClass('is-empty');
                     }
                     var route =
                         `{{ route('notification.read', ['type' => 'Team', 'id' => '__ID__']) }}`
@@ -872,7 +872,7 @@
                         var count = parseInt(countElement.attr('data-count'), 10) || 0;
                         count += 1;
                         countElement.attr('data-count', count).text(count > 99 ? '99+' : count);
-                        (countElement.hasClass('round-note') ? countElement : countElement.closest('.round-note')).css('display', 'flex');
+                        (countElement.hasClass('round-note') ? countElement : countElement.closest('.round-note')).css('display', '').removeClass('is-empty');
                     }
                     fetchLatestEmails();
 
@@ -1686,22 +1686,76 @@
     <!-- Download Progress Modal -->
     <div class="modal fade" id="downloadProgressModal" tabindex="-1" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered">
-            <div class="modal-content">
+            <div class="modal-content download-progress-modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title">Downloading</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
-                    <p id="downloadFileName" class="mb-2"></p>
-                    <div class="progress" style="height: 22px;">
-                        <div class="progress-bar" role="progressbar" style="width: 0%" aria-valuenow="0"
-                            aria-valuemin="0" aria-valuemax="100">0%</div>
+                    <p id="downloadFileName" class="mb-2 text-break fw-semibold"></p>
+                    <div class="d-flex align-items-center justify-content-between mb-2">
+                        <span class="text-muted small">Progress</span>
+                        <span id="downloadProgressPercent" class="fw-bold">0%</span>
+                    </div>
+                    <div class="progress download-progress-track" style="height: 22px;">
+                        <div id="downloadProgressBar" class="progress-bar progress-bar-striped progress-bar-animated"
+                            role="progressbar" style="width: 0%" aria-valuenow="0" aria-valuemin="0"
+                            aria-valuemax="100">0%</div>
                     </div>
                 </div>
-                {{-- <div class="modal-footer">
-                        <button type="button" class="btn btn-outline-secondary"
-                            id="downloadCancelBtn">Cancel</button>
-                    </div> --}}
+            </div>
+        </div>
+    </div>
+
+    {{-- BUG-054: chat image lightbox (view without forcing download) --}}
+    <div class="modal fade chat-image-lightbox" id="chatImagePreviewModal" tabindex="-1" aria-hidden="true"
+        aria-labelledby="chatImagePreviewModalLabel">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content chat-image-preview-modal">
+                <div class="chat-lightbox-toolbar">
+                    <span class="chat-lightbox-title" id="chatImagePreviewModalLabel">Photo</span>
+                    <div class="chat-lightbox-actions">
+                        <a href="#" id="chatImagePreviewDownload" class="chat-lightbox-btn file-download"
+                            data-download-url="" data-file-name="image" title="Download">
+                            <i class="fa-solid fa-download"></i>
+                            <span>Download</span>
+                        </a>
+                        <button type="button" class="chat-lightbox-btn chat-lightbox-close" data-bs-dismiss="modal"
+                            aria-label="Close">
+                            <i class="fa-solid fa-xmark"></i>
+                        </button>
+                    </div>
+                </div>
+                <div class="modal-body chat-lightbox-body">
+                    <img id="chatImagePreviewImg" src="" alt="Preview" class="chat-image-preview-full">
+                </div>
+            </div>
+        </div>
+    </div>
+
+    {{-- Chat video player lightbox --}}
+    <div class="modal fade chat-video-lightbox" id="chatVideoPreviewModal" tabindex="-1" aria-hidden="true"
+        aria-labelledby="chatVideoPreviewModalLabel">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content chat-video-preview-modal">
+                <div class="chat-lightbox-toolbar">
+                    <span class="chat-lightbox-title" id="chatVideoPreviewModalLabel">Video</span>
+                    <div class="chat-lightbox-actions">
+                        <a href="#" id="chatVideoPreviewDownload" class="chat-lightbox-btn file-download"
+                            data-download-url="" data-file-name="video" title="Download">
+                            <i class="fa-solid fa-download"></i>
+                            <span>Download</span>
+                        </a>
+                        <button type="button" class="chat-lightbox-btn chat-lightbox-close" data-bs-dismiss="modal"
+                            aria-label="Close">
+                            <i class="fa-solid fa-xmark"></i>
+                        </button>
+                    </div>
+                </div>
+                <div class="modal-body chat-lightbox-body">
+                    <video id="chatVideoPreviewPlayer" class="chat-video-preview-full" controls playsinline
+                        preload="metadata"></video>
+                </div>
             </div>
         </div>
     </div>

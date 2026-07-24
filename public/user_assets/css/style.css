@@ -1687,7 +1687,9 @@ section {
 #MessageForm {
     padding: 10px;
     display: flex;
+    align-items: center;
     width: 100%;
+    gap: 6px;
 }
 
 #MessageForm input {
@@ -1714,6 +1716,46 @@ section {
 #MessageForm input:focus {
     outline: none;
     border: 1px solid #00f5d4;
+}
+
+/* BUG-051: vertically center attachment (paperclip) with input + send */
+#MessageForm .file-upload,
+#TeamMessageForm .file-upload {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    align-self: center;
+    flex-shrink: 0;
+    padding: 0 4px;
+    margin: 0;
+}
+
+#MessageForm .file-upload > span,
+#TeamMessageForm .file-upload > span {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    line-height: 0;
+    margin: 0;
+}
+
+#MessageForm .file-upload svg,
+#TeamMessageForm .file-upload svg {
+    display: block;
+}
+
+#MessageForm .emojionearea,
+#TeamMessageForm .emojionearea {
+    flex: 1;
+    min-width: 0;
+    margin-bottom: 0 !important;
+}
+
+#MessageForm > div:last-child,
+#TeamMessageForm > div:last-child {
+    display: flex;
+    align-items: center;
+    flex-shrink: 0;
 }
 
 .MessageContainer span {
@@ -1751,6 +1793,308 @@ section {
 
 .messageContent {
     font-size: 0.9rem;
+}
+
+/* BUG-049: chat video thumbnail in bubble — click opens player modal */
+.messageContent .chat-video-preview {
+    position: relative;
+    display: inline-block;
+    width: fit-content;
+    max-width: min(100%, 280px);
+    line-height: 0;
+    cursor: pointer;
+    border: 0;
+    padding: 0;
+    background: transparent;
+    border-radius: 8px;
+    overflow: hidden;
+    vertical-align: top;
+}
+
+.messageContent video.chat-video-attachment,
+.messageContent .chat-video-preview video.chat-video-attachment,
+.messageContent video {
+    display: block;
+    width: auto;
+    height: auto;
+    max-width: min(100%, 280px);
+    max-height: 360px;
+    min-height: 0;
+    background: #111;
+    border-radius: 8px;
+    object-fit: scale-down;
+}
+
+.messageContent .chat-video-preview video.chat-video-attachment {
+    pointer-events: none; /* click goes to wrapper → modal */
+}
+
+.messageContent .chat-video-play-icon {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(0, 0, 0, 0.28);
+    color: #fff;
+    font-size: 1.35rem;
+    pointer-events: none;
+    transition: background 0.15s ease;
+}
+
+.messageContent .chat-video-preview:hover .chat-video-play-icon {
+    background: rgba(0, 0, 0, 0.4);
+}
+
+.messageContent .chat-video-play-icon i {
+    width: 48px;
+    height: 48px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.92);
+    color: #5a189a;
+    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.35);
+}
+
+/* BUG-050 / BUG-054: chat image — natural aspect ratio (never stretch/squeeze) */
+.messageContent img.chat-image-attachment,
+.messageContent a.chat-image-preview img,
+.messageContent a.file-download img.chat-image-attachment {
+    display: block !important;
+    width: auto !important;
+    height: auto !important;
+    max-width: min(100%, 280px) !important;
+    max-height: 360px !important;
+    object-fit: contain !important;
+    object-position: center center !important;
+    flex: 0 0 auto !important;
+    flex-shrink: 0 !important;
+    align-self: flex-start !important;
+    border-radius: 8px;
+    cursor: zoom-in;
+    background: transparent;
+}
+
+.messageContent a.chat-image-preview {
+    display: inline-block !important;
+    width: fit-content !important;
+    max-width: min(100%, 280px);
+    height: auto !important;
+    line-height: 0;
+    overflow: visible;
+    vertical-align: top;
+}
+
+/* Shrink-wrap media bubbles so empty padding doesn't look like a crop frame */
+.message-wrap > .messageContent:has(> a.chat-image-preview),
+.message-wrap > .messageContent:has(> .chat-video-preview),
+.message-wrap > .messageContent:has(> video.chat-video-attachment),
+.message-wrap > .messageContent:has(> .chat-image-attachment) {
+    width: fit-content;
+    max-width: 100%;
+    padding: 8px !important;
+}
+
+.me .message-wrap > .messageContent:has(> a.chat-image-preview),
+.me .message-wrap > .messageContent:has(> .chat-video-preview),
+.me .message-wrap > .messageContent:has(> video.chat-video-attachment) {
+    padding-right: 28px !important; /* keep room for absolute ⋮ menu */
+}
+
+/* BUG-054: image/video lightbox
+ * Tall images: scale by height so the FULL image shows; dark gaps left/right are OK.
+ * Never stretch/squash to fill width.
+ */
+.chat-image-lightbox .modal-dialog,
+.chat-video-lightbox .modal-dialog {
+    width: min(92vw, 720px) !important;
+    max-width: min(92vw, 720px) !important;
+    margin: 1rem auto;
+}
+
+.chat-image-lightbox .modal-content.chat-image-preview-modal,
+.chat-video-lightbox .modal-content.chat-video-preview-modal {
+    background: #121218;
+    border: 0;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.45);
+    display: flex !important;
+    flex-direction: column !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    margin: 0 auto;
+}
+
+.chat-lightbox-toolbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 12px 16px;
+    background: #1a1a22;
+    flex: 0 0 auto;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.chat-lightbox-title {
+    color: rgba(255, 255, 255, 0.85);
+    font-size: 0.95rem;
+    font-weight: 600;
+    margin: 0;
+    max-width: 50%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.chat-lightbox-actions {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-shrink: 0;
+}
+
+.chat-lightbox-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    min-height: 36px;
+    padding: 0 12px;
+    border: 0;
+    border-radius: 8px;
+    background: rgba(255, 255, 255, 0.12);
+    color: #fff !important;
+    text-decoration: none !important;
+    font-size: 0.875rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background 0.15s ease;
+}
+
+.chat-lightbox-btn:hover {
+    background: rgba(255, 255, 255, 0.22);
+    color: #fff !important;
+}
+
+.chat-lightbox-close {
+    width: 36px;
+    padding: 0;
+    font-size: 1.1rem;
+}
+
+/* Dark stage: image centered; tall images get left/right dark gaps */
+.chat-image-lightbox .modal-body.chat-lightbox-body,
+.chat-video-lightbox .modal-body.chat-lightbox-body {
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    flex: 0 0 auto !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    min-height: 0 !important;
+    padding: 20px 24px !important;
+    background: #0b0b0f !important;
+    box-sizing: border-box !important;
+}
+
+#chatImagePreviewImg.chat-image-preview-full,
+#chatVideoPreviewPlayer.chat-video-preview-full,
+.chat-image-preview-full,
+.chat-video-preview-full {
+    display: block !important;
+    width: auto !important;
+    height: auto !important;
+    max-width: 100% !important;
+    /* Height-first: full tall image fits in viewport */
+    max-height: 78vh !important;
+    object-fit: contain !important;
+    flex: 0 0 auto !important;
+    align-self: center !important;
+    border-radius: 4px;
+    background: transparent;
+}
+
+/* Download progress must sit above image/video lightbox */
+#downloadProgressModal.download-progress-on-top,
+#downloadProgressModal {
+    z-index: 2100 !important;
+}
+.modal-backdrop.download-progress-backdrop {
+    z-index: 2090 !important;
+}
+
+/* Theme sets --bs-progress-bg:#fff (invisible on white modal body) — force a visible track */
+#downloadProgressModal .download-progress-track,
+#downloadProgressModal .progress {
+    --bs-progress-bg: #e9ecef !important;
+    --bs-progress-bar-bg: #643271 !important;
+    --bs-progress-height: 22px !important;
+    height: 22px !important;
+    min-height: 22px !important;
+    background-color: #e9ecef !important;
+    border: 1px solid #ced4da !important;
+    border-radius: 6px !important;
+    overflow: hidden !important;
+    display: flex !important;
+}
+#downloadProgressModal .progress-bar,
+#downloadProgressModal #downloadProgressBar {
+    background-color: #643271 !important;
+    color: #fff !important;
+    font-size: 12px !important;
+    font-weight: 600 !important;
+    line-height: 22px !important;
+    min-width: 0;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+}
+#downloadProgressModal #downloadProgressPercent {
+    color: #643271;
+    font-size: 0.95rem;
+}
+
+/* Keep outgoing bubbles fully visible (dropdown must not widen / clip media) */
+.message {
+    box-sizing: border-box;
+    max-width: min(75%, 100%);
+    overflow: visible;
+}
+
+.message-wrap {
+    display: flex;
+    align-items: flex-start;
+    max-width: 100%;
+    min-width: 0;
+    position: relative;
+    overflow: visible;
+}
+
+.message-wrap > .messageContent {
+    max-width: 100%;
+    min-width: 0;
+    box-sizing: border-box;
+    overflow: visible;
+}
+
+.message-wrap > .dropdown {
+    position: absolute;
+    top: 6px;
+    right: 4px;
+    z-index: 2;
+}
+
+.messaging_sec.chat-layout section.Chat > .MessageContainer,
+.MessageContainer {
+    padding-left: 12px;
+    padding-right: 16px;
+    overflow-x: hidden;
+    overflow-y: auto;
 }
 
 .messageDetails .messageTime {
@@ -2610,7 +2954,9 @@ section {
 #TeamMessageForm {
     padding: 10px;
     display: flex;
+    align-items: center;
     width: 100%;
+    gap: 6px;
 }
 
 #TeamMessageForm input {
@@ -3238,35 +3584,47 @@ section {
     font-size: 10px !important;
 } */
 
-/* BUG-048: header notification badge — centered "99+" on bell */
-.app-header .navbar-nav .nav-item.dropdown,
-.app-header .navbar-nav .nav-item > .nav-link.nav-icon-hover {
-    position: relative;
+/* BUG-048 / BUG-052: notification count badge on bell (top-right overlap) */
+.app-header .navbar-nav .nav-item.dropdown {
+    position: relative !important;
     overflow: visible !important;
 }
 
-.app-header .nav-link.nav-icon-hover > .header-notif-badge,
-.app-header span.round-note.header-notif-badge {
-    position: absolute !important;
-    top: 12px !important;
-    right: 8px !important;
-    left: auto !important;
-    bottom: auto !important;
-    margin: 0 !important;
-    transform: none !important;
-    display: flex !important;
+.app-header a#drop2.nav-link,
+.app-header a.header-notif-link {
+    position: relative !important;
+    display: inline-flex !important;
     align-items: center !important;
     justify-content: center !important;
+    width: 40px !important;
+    height: 40px !important;
+    min-width: 40px !important;
+    padding: 0 !important;
+    margin: 0 4px !important;
+    overflow: visible !important;
+    line-height: 1 !important;
+}
+
+.app-header a#drop2 .header-notif-badge,
+.app-header a.header-notif-link .header-notif-badge,
+.app-header span.header-notif-badge,
+span[id^="show-notification-count-"].header-notif-badge {
+    position: absolute !important;
+    top: -2px !important;
+    right: -6px !important;
+    left: auto !important;
+    bottom: auto !important;
+    transform: none !important;
+    margin: 0 !important;
     box-sizing: border-box !important;
     width: auto !important;
     min-width: 18px !important;
-    max-width: none !important;
+    max-width: 36px !important;
     height: 18px !important;
     padding: 0 5px !important;
     border-radius: 9px !important;
     background: #f6bc41 !important;
     color: #fff !important;
-    /* Reset nav-link inheritance (font-size:20px / line-height:70px) */
     font-size: 10px !important;
     font-weight: 700 !important;
     font-style: normal !important;
@@ -3275,7 +3633,31 @@ section {
     text-align: center !important;
     text-indent: 0 !important;
     white-space: nowrap !important;
-    overflow: visible !important;
-    z-index: 5 !important;
+    overflow: hidden !important;
+    z-index: 6 !important;
     pointer-events: none;
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+}
+
+/* Hide when empty — beats display:inline-flex !important above */
+.app-header .header-notif-badge[data-count="0"],
+.app-header .header-notif-badge.is-empty,
+span[id^="show-notification-count-"].header-notif-badge[data-count="0"] {
+    display: none !important;
+}
+
+@media (max-width: 576px) {
+    .app-header a#drop2 .header-notif-badge,
+    .app-header a.header-notif-link .header-notif-badge,
+    .app-header span.header-notif-badge {
+        top: -1px !important;
+        right: -4px !important;
+        height: 16px !important;
+        min-width: 16px !important;
+        padding: 0 4px !important;
+        border-radius: 8px !important;
+        font-size: 9px !important;
+    }
 }

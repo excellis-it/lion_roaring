@@ -16,6 +16,7 @@ use App\Models\UserSubscription;
 use App\Models\SubscriptionPayment;
 use Illuminate\Support\Facades\Auth;
 use App\Models\User;
+use Spatie\Permission\Models\Permission;
 use Stripe\StripeClient;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\Rule;

@@ -15,11 +15,20 @@ window.setNotificationBadgeCount = function (userId, count) {
     $el.attr("data-count", count).text(
         window.formatNotificationBadgeCount(count)
     );
-    var $wrap = $el.hasClass("round-note") ? $el : $el.closest(".round-note");
+    // BUG-052: clear inline display so CSS (absolute + data-count) controls visibility/position
+    var $wrap = $el.hasClass("header-notif-badge")
+        ? $el
+        : $el.hasClass("round-note")
+          ? $el
+          : $el.closest(".header-notif-badge, .round-note");
+    if (!$wrap.length) {
+        $wrap = $el;
+    }
+    $wrap.css("display", "");
     if (count > 0) {
-        $wrap.css("display", "flex");
+        $wrap.removeClass("is-empty");
     } else {
-        $wrap.hide();
+        $wrap.addClass("is-empty");
     }
 };
 
@@ -143,8 +152,7 @@ $(document).ready(function () {
                     if (typeof window.setNotificationBadgeCount === "function") {
                         window.setNotificationBadgeCount(authUserId, 0);
                     } else {
-                        $notificationCount.attr("data-count", 0).html("0");
-                        $notificationCount.closest(".round-note").hide();
+                        $notificationCount.attr("data-count", 0).html("0").addClass("is-empty").hide();
                     }
                     $notificationDropdownContent.html("");
                     $notificationDropdown.removeClass("show");

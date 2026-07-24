@@ -975,7 +975,7 @@ class TeamChatController extends Controller
                                         'sender_id' => (string) auth()->id(),
                                         'sender_name' => auth()->user()->full_name,
                                         'message' => $team_chat->message,
-                                        'attachment' => $hasAttachment ? Storage::url($team_chat->attachment) : '',
+                                        'attachment' => $hasAttachment ? \App\Helpers\Helper::chatMediaUrl($team_chat->attachment) ?: Storage::url($team_chat->attachment) : '',
                                         'attachment_name' => $hasAttachment ? ($team_chat->attachment_name ?? basename($team_chat->attachment)) : null,
                                         'msg_type' => $message_type,
                                         'notification_id' => (string) $notification->id,

@@ -738,21 +738,36 @@ input{
     }
 }
 
-/* BUG-048: keep header notif badge centered (loads after style.css) */
-.app-header .nav-link.nav-icon-hover > .header-notif-badge,
-.app-header span.round-note.header-notif-badge {
+/* BUG-048 / BUG-052: header notif badge (loads after style.css / style.min.css) */
+.app-header a#drop2.nav-link,
+.app-header a.header-notif-link {
+    position: relative !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    width: 40px !important;
+    height: 40px !important;
+    overflow: visible !important;
+}
+
+.app-header a#drop2 .header-notif-badge,
+.app-header a.header-notif-link .header-notif-badge,
+.app-header span.header-notif-badge,
+span[id^="show-notification-count-"].header-notif-badge {
     position: absolute !important;
-    top: 12px !important;
-    right: 8px !important;
+    top: -2px !important;
+    right: -6px !important;
     left: auto !important;
     bottom: auto !important;
+    transform: none !important;
     margin: 0 !important;
-    display: flex !important;
+    display: inline-flex !important;
     align-items: center !important;
     justify-content: center !important;
     box-sizing: border-box !important;
     width: auto !important;
     min-width: 18px !important;
+    max-width: 36px !important;
     height: 18px !important;
     padding: 0 5px !important;
     border-radius: 9px !important;
@@ -764,15 +779,23 @@ input{
     letter-spacing: 0 !important;
     text-align: center !important;
     white-space: nowrap !important;
-    overflow: visible !important;
-    z-index: 5 !important;
+    overflow: hidden !important;
+    z-index: 6 !important;
+    pointer-events: none;
+}
+
+.app-header .header-notif-badge[data-count="0"],
+.app-header .header-notif-badge.is-empty,
+span[id^="show-notification-count-"].header-notif-badge[data-count="0"] {
+    display: none !important;
 }
 
 @media (max-width: 576px) {
-    .app-header .nav-link.nav-icon-hover > .header-notif-badge,
-    .app-header span.round-note.header-notif-badge {
-        top: 6px !important;
-        right: 2px !important;
+    .app-header a#drop2 .header-notif-badge,
+    .app-header a.header-notif-link .header-notif-badge,
+    .app-header span.header-notif-badge {
+        top: -1px !important;
+        right: -4px !important;
         height: 16px !important;
         min-width: 16px !important;
         padding: 0 4px !important;

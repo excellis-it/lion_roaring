@@ -58,6 +58,13 @@ $(document).ready(function () {
                     cleanupDuplicateDateSeparators(
                         $("#chat-container-" + receiver_id),
                     );
+                    if (typeof window.fitChatBubbleImages === "function") {
+                        window.fitChatBubbleImages(
+                            document.getElementById(
+                                "chat-container-" + receiver_id,
+                            ) || document,
+                        );
+                    }
 
                     // unseen_chat count remove
                     removeUnseenCount(receiver_id);
@@ -370,6 +377,7 @@ $(document).ready(function () {
         let profileImage = user.profile_picture
             ? window.Laravel.storageUrl + user.profile_picture
             : window.Laravel.assetUrls.profileDummy;
+        let profileFallback = window.Laravel.assetUrls.profileDummy;
 
         let messageContent = "";
         if (isFile) {
@@ -387,7 +395,7 @@ $(document).ready(function () {
                 user.id
             }" data-id="${user.id}">
                 <div class="avatar">
-                    <img src="${profileImage}" alt="">
+                    <img src="${profileImage}" alt="" onerror="this.onerror=null;this.src='${profileFallback}'">
                 </div>
                 <p class="GroupName">${user.first_name || ""} ${
                     user.middle_name || ""
@@ -638,6 +646,14 @@ $(document).ready(function () {
                         $("#chat-container-" + receiver_id).append(html);
                     });
 
+                    if (typeof window.fitChatBubbleImages === "function") {
+                        window.fitChatBubbleImages(
+                            document.getElementById(
+                                "chat-container-" + receiver_id,
+                            ),
+                        );
+                    }
+
                     scrollChatToBottom(receiver_id);
 
                     // Update chat list immediately without API call (using first chat)
@@ -674,9 +690,11 @@ $(document).ready(function () {
 
                     // Emit chat messages to the server
                     chats.forEach(function (chat) {
-                        let fileUrl = chat.attachment
-                            ? window.Laravel.storageUrl + chat.attachment
-                            : "";
+                        let fileUrl = chat.attachment_url
+                            ? chat.attachment_url
+                            : chat.attachment
+                              ? window.Laravel.storageUrl + chat.attachment
+                              : "";
                         const respFileName = chat.attachment_name
                             ? chat.attachment_name
                             : chat.attachment;
@@ -709,14 +727,45 @@ $(document).ready(function () {
         });
     });
 
+    // BUG-049: playable video bubble (do not wrap in a.file-download — that hijacks play)
+    var CHAT_VIDEO_EXTENSIONS = ["mp4", "webm", "ogg", "mov", "m4v"];
+    var CHAT_VIDEO_MIME = {
+        mp4: "video/mp4",
+        m4v: "video/mp4",
+        webm: "video/webm",
+        ogg: "video/ogg",
+        mov: "video/quicktime",
+    };
+
+    function buildChatVideoHtml(fileUrl, extension, fileName) {
+        var mime = CHAT_VIDEO_MIME[extension] || "video/mp4";
+        var name = fileName || fileUrl.split("/").pop() || "video";
+        return (
+            `<button type="button" class="chat-video-preview" data-video-url="${fileUrl}" data-file-name="${name}" data-mime="${mime}" aria-label="Play video">` +
+            `<video class="chat-video-attachment" muted playsinline preload="metadata" style="max-width: 280px; max-height: 360px; width: auto; height: auto;">` +
+            `<source src="${fileUrl}" type="${mime}">` +
+            `</video>` +
+            `<span class="chat-video-play-icon" aria-hidden="true"><i class="fa-solid fa-play"></i></span>` +
+            `</button>`
+        );
+    }
+
     function generateMessageHtml(chat, messageType, messageText) {
         let fileUrl = "";
         let html = `<div class="message ${messageType}" id="chat-message-${chat.id}">
                         <div class="message-wrap">`;
 
-        if (chat.attachment) {
-            fileUrl = window.Laravel.storageUrl + chat.attachment;
-            let extension = chat.attachment.split(".").pop().toLowerCase();
+        if (chat.attachment || chat.attachment_url) {
+            fileUrl =
+                chat.attachment_url ||
+                (String(chat.attachment).indexOf("http") === 0
+                    ? chat.attachment
+                    : window.Laravel.storageUrl + chat.attachment);
+            let extension = (
+                (fileUrl.split("?")[0] || "").split(".").pop() ||
+                (chat.attachment || "").split(".").pop() ||
+                ""
+            ).toLowerCase();
 
             const dataFileName = chat.attachment_name
                 ? chat.attachment_name
@@ -724,15 +773,11 @@ $(document).ready(function () {
             if (
                 ["jpg", "jpeg", "png", "gif", "svg", "webp"].includes(extension)
             ) {
-                html += `<p class="messageContent"><a href="${fileUrl}" target="_blank" class="file-download" data-download-url="${fileUrl}" data-file-name="${dataFileName}">
-                    <img src="${fileUrl}" alt="attachment" style="max-width: 200px; max-height: 200px;">
+                html += `<p class="messageContent"><a href="${fileUrl}" class="chat-image-preview" data-image-url="${fileUrl}" data-file-name="${dataFileName}">
+                    <img class="chat-image-attachment" src="${fileUrl}" alt="attachment" style="max-width: 280px; max-height: 360px; width: auto; height: auto;">
                 </a><br><span>${formatChatMessage(messageText)}</span></p>`;
-            } else if (["mp4", "webm", "ogg"].includes(extension)) {
-                html += `<p class="messageContent"><a href="${fileUrl}" target="_blank" class="file-download" data-download-url="${fileUrl}" data-file-name="${dataFileName}">
-                    <video width="200" height="200" controls>
-                        <source src="${fileUrl}" type="video/${extension}">
-                    </video>
-                </a><br><span>${formatChatMessage(messageText)}</span></p>`;
+            } else if (CHAT_VIDEO_EXTENSIONS.includes(extension)) {
+                html += `<p class="messageContent">${buildChatVideoHtml(fileUrl, extension, dataFileName)}<br><span>${formatChatMessage(messageText)}</span></p>`;
             } else {
                 html += `<p class="messageContent"><a href="${fileUrl}" target="_blank" class="file-download" data-download-url="${fileUrl}" data-file-name="${dataFileName}">
                     <img src="${window.Laravel.assetUrls.fileIcon}" alt="">
@@ -1023,25 +1068,16 @@ $(document).ready(function () {
                 ) {
                     html += `<a href="${
                         data.file_url
-                    }" target="_blank" class="file-download" data-download-url="${
+                    }" class="chat-image-preview" data-image-url="${
                         data.file_url
                     }" data-file-name="${incomingFileName}">
-                        <img src="${
+                        <img class="chat-image-attachment" src="${
                             data.file_url
-                        }" alt="attachment" style="max-width: 200px; max-height: 200px;">
+                        }" alt="attachment" style="max-width: 280px; max-height: 360px; width: auto; height: auto;">
                     </a><br><span>${formatChatMessage(data.message)}</span>`;
-                } else if (["mp4", "webm", "ogg"].includes(extension)) {
-                    html += `<a href="${
-                        data.file_url
-                    }" target="_blank" class="file-download" data-download-url="${
-                        data.file_url
-                    }" data-file-name="${incomingFileName}">
-                        <video width="200" height="200" controls>
-                            <source src="${
-                                data.file_url
-                            }" type="video/${extension}">
-                        </video>
-                    </a><br><span>${formatChatMessage(data.message)}</span>`;
+                } else if (CHAT_VIDEO_EXTENSIONS.includes(extension)) {
+                    // BUG-049: bare <video> so recipient can preview/play (match Blade history)
+                    html += `${buildChatVideoHtml(data.file_url, extension, incomingFileName)}<br><span>${formatChatMessage(data.message)}</span>`;
                 } else {
                     html += `<a href="${
                         data.file_url
@@ -1093,6 +1129,13 @@ $(document).ready(function () {
             if ($(".chat-module").length > 0) {
                 if ($("#chat-container-" + data.sender_id).length > 0) {
                     $("#chat-container-" + data.sender_id).append(html);
+                    if (typeof window.fitChatBubbleImages === "function") {
+                        window.fitChatBubbleImages(
+                            document.getElementById(
+                                "chat-container-" + data.sender_id,
+                            ),
+                        );
+                    }
                     scrollChatToBottom(data.sender_id);
                     removeUnseenCount(data.sender_id);
 

@@ -5,11 +5,13 @@
     @foreach ($users as $user)
         <li class="group user-list" id="chat_list_user_{{ $user['id'] }}" data-id="{{ $user['id'] }}">
             <div class="avatar">
-                @if ($user['profile_picture'])
-                    <img src="{{ Storage::url($user['profile_picture']) }}" alt="">
-                @else
-                    <img src="{{ asset('user_assets/images/profile_dummy.png') }}" alt="">
-                @endif
+                @php
+                    $avatarFallback = asset('user_assets/images/profile_dummy.png');
+                    $avatarUrl = Helper::publicStorageUrl($user['profile_picture'] ?? null)
+                        ?: $avatarFallback;
+                @endphp
+                <img src="{{ $avatarUrl }}" alt=""
+                    onerror="this.onerror=null;this.src='{{ $avatarFallback }}';">
             </div>
             <p class="GroupName">{{ $user['first_name'] }} {{ $user['middle_name'] ?? '' }}
                 {{ $user['last_name'] ?? '' }}</p>

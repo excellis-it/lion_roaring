@@ -94,7 +94,8 @@
                         <div class="mb-3">
                             <div class="image-upload">
                                 <div class="image-wrap team-image-{{ $team['id'] }}"><img id="blah"
-                                        src="{{ $team->group_image ? Storage::url($team->group_image) : asset('user_assets/images/group.jpg') }}" />
+                                        src="{{ \App\Helpers\Helper::publicStorageUrl($team->group_image) ?: asset('user_assets/images/group.jpg') }}"
+                                        onerror="this.onerror=null;this.src='{{ asset('user_assets/images/group.jpg') }}';" />
                                 </div>
                                 @if (Helper::checkAdminTeam(auth()->user()->id, $team->id) == true)
                                     <input class="btn-inputfile team-profile-picture" id="new" type="file"

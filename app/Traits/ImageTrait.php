@@ -67,13 +67,12 @@ trait ImageTrait
                     return $originalPath;
                 }
 
-                // --- Resize if too large (but keep aspect ratio and prevent upsize) ---
+                // --- Resize if too large (keep aspect ratio; never upsize) ---
+                // Intervention v3: use scaleDown — NOT resize(w,h) which forces exact box
+                // and ignores the old v2 constraint callback (that produced 2000×2000 squares).
                 $maxWidth = 2000;
                 $maxHeight = 2000;
-                $img->resize($maxWidth, $maxHeight, function ($constraint) {
-                    $constraint->aspectRatio();
-                    $constraint->upsize();
-                });
+                $img->scaleDown(width: $maxWidth, height: $maxHeight);
 
                 // Decide output extension / encoding
                 if ($ext === 'png') {

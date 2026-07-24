@@ -85,11 +85,13 @@
         <div class="col-xxl-5">
             <div class="ChatHead">
                 <div class="main_avtar">
-                    @if ($reciver->profile_picture)
-                        <img src="{{ Storage::url($reciver->profile_picture) }}" alt="">
-                    @else
-                        <img src="{{ asset('user_assets/images/profile_dummy.png') }}" alt="">
-                    @endif
+                    @php
+                        $chatAvatarFallback = asset('user_assets/images/profile_dummy.png');
+                        $chatAvatarUrl = \App\Helpers\Helper::publicStorageUrl($reciver->profile_picture)
+                            ?: $chatAvatarFallback;
+                    @endphp
+                    <img src="{{ $chatAvatarUrl }}" alt=""
+                        onerror="this.onerror=null;this.src='{{ $chatAvatarFallback }}';">
                 </div>
                 <p class="GroupName">{{ $reciver->full_name }}</p>
             </div>

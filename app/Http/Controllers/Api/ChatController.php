@@ -571,7 +571,7 @@ class ChatController extends Controller
                                 'receiver_id' => (string) $request->reciver_id,
                                 'sender_name' => auth()->user()->full_name,
                                 'message' => $chat->message,
-                                'attachment' => $hasAttachment ? Storage::url($chat->attachment) : '',
+                                'attachment' => $hasAttachment ? \App\Helpers\Helper::chatMediaUrl($chat->attachment) ?: Storage::url($chat->attachment) : '',
                                 'attachment_name' => $hasAttachment ? ($chat->attachment_name ?? basename($chat->attachment)) : null,
                                 'msg_type' => $message_type,
                                 'timestamp' => $chat->created_at_formatted,

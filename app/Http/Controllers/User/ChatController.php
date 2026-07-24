@@ -321,7 +321,7 @@ class ChatController extends Controller
                                 'sender_id' => (string) auth()->id(),
                                 'sender_name' => auth()->user()->full_name,
                                 'message' => $chat->message,
-                                'attachment' => $hasAttachment ? Storage::url($chat->attachment) : '',
+                                'attachment' => $hasAttachment ? \App\Helpers\Helper::chatMediaUrl($chat->attachment) ?: Storage::url($chat->attachment) : '',
                                 'attachment_name' => $hasAttachment ? ($chat->attachment_name ?? basename($chat->attachment)) : null,
                                 'msg_type' => $hasAttachment ? $this->detectMessageType($chat->attachment) : 'text',
                                 'timestamp' => $chat->created_at_formatted
@@ -459,6 +459,15 @@ class ChatController extends Controller
 
             // Return first chat as main response (for backward compatibility)
             $chat = $allChats[0];
+
+            foreach ($allChats as $chatItem) {
+                if (! empty($chatItem->attachment)) {
+                    $chatItem->setAttribute(
+                        'attachment_url',
+                        Helper::chatMediaUrl($chatItem->attachment) ?: Storage::url($chatItem->attachment)
+                    );
+                }
+            }
 
             return response()->json([
                 'msg' => 'Message sent successfully',

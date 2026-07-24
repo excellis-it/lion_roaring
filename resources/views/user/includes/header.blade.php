@@ -153,11 +153,13 @@
             </li>
 
             <li class="nav-item dropdown">
-                <a class="nav-link nav-icon-hover" href="javascript:void(0)" id="drop2">
+                <a class="nav-link nav-icon-hover header-notif-link" href="javascript:void(0)" id="drop2"
+                    aria-label="Notifications">
                     <i class="ti ti-bell-ringing"></i>
                     @php $headerNotifCount = (int) Helper::notificationCount(); @endphp
+                    {{-- Do not use .round-note here — legacy CSS (margin-top:23px) pushes the count under the bell --}}
                     <span id="show-notification-count-{{ auth()->user()->id }}"
-                        class="round-note header-notif-badge"
+                        class="header-notif-badge{{ $headerNotifCount <= 0 ? ' is-empty' : '' }}"
                         data-count="{{ $headerNotifCount }}"
                         @if ($headerNotifCount <= 0) style="display:none" @endif>{{ Helper::formatBadgeCount($headerNotifCount) }}</span>
                 </a>
@@ -179,13 +181,14 @@
                     aria-expanded="false">
                     <div class="d-flex align-items-center">
                         <div class="user-profile-img">
-                            @if (Auth::user()->profile_picture)
-                                <img src="{{ Storage::url(Auth::user()->profile_picture) }}" class="rounded-circle"
-                                    width="35" height="35" alt="">
-                            @else
-                                <img src="{{ asset('user_assets/images/profile_dummy.png') }}" class="rounded-circle"
-                                    width="35" height="35" alt="">
-                            @endif
+                            @php
+                                $headerAvatarFallback = asset('user_assets/images/profile_dummy.png');
+                                $headerAvatarUrl = Helper::publicStorageUrl(Auth::user()->profile_picture)
+                                    ?: $headerAvatarFallback;
+                            @endphp
+                            <img src="{{ $headerAvatarUrl }}" class="rounded-circle" width="35" height="35"
+                                alt=""
+                                onerror="this.onerror=null;this.src='{{ $headerAvatarFallback }}';">
                         </div>
                     </div>
                 </a>
@@ -198,13 +201,14 @@
                         </div>
                         <div class="px-7 py-9 border-bottom profile-dropdown-user">
                             <div class="d-flex align-items-start gap-3">
-                                @if (Auth::user()->profile_picture)
-                                    <img src="{{ Storage::url(Auth::user()->profile_picture) }}"
-                                        class="rounded-circle flex-shrink-0" width="72" height="72" alt="">
-                                @else
-                                    <img src="{{ asset('user_assets/images/profile_dummy.png') }}"
-                                        class="rounded-circle flex-shrink-0" width="72" height="72" alt="">
-                                @endif
+                                @php
+                                    $ddAvatarFallback = asset('user_assets/images/profile_dummy.png');
+                                    $ddAvatarUrl = Helper::publicStorageUrl(Auth::user()->profile_picture)
+                                        ?: $ddAvatarFallback;
+                                @endphp
+                                <img src="{{ $ddAvatarUrl }}" class="rounded-circle flex-shrink-0" width="72"
+                                    height="72" alt=""
+                                    onerror="this.onerror=null;this.src='{{ $ddAvatarFallback }}';">
                                 <div class="min-w-0 flex-grow-1">
                                     <h5 class="mb-1 fs-5 lh-sm text-break">
                                         {{ Auth::user()->full_name }}

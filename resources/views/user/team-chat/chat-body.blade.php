@@ -8,8 +8,9 @@
             <i class="fa fa-arrow-left me-1"></i> Back
         </button>
         <div class="main_avtar team-image-{{ $team['id'] }}"><img
-                src="{{ $team['group_image'] ? Storage::url($team['group_image']) : asset('user_assets/images/group.png') }}"
-                alt=""></div>
+                src="{{ \App\Helpers\Helper::publicStorageUrl($team['group_image'] ?? null) ?: asset('user_assets/images/group.jpg') }}"
+                alt=""
+                onerror="this.onerror=null;this.src='{{ asset('user_assets/images/group.jpg') }}';"></div>
 
         <div class="group_text">
             <p class="GroupName group-name-{{ $team['id'] }}">{{ $team['name'] ?? '' }}</p>

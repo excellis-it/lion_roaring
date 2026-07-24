@@ -798,6 +798,46 @@ class Helper
     }
 
     /**
+     * Public URL for chat/team media. Prefers the original file when a GlobalImage
+     * mapping exists — older compressions used Intervention v3 resize(2000,2000)
+     * which squashed portraits into squares.
+     */
+    public static function chatMediaUrl(?string $path): ?string
+    {
+        if ($path === null || trim($path) === '') {
+            return null;
+        }
+
+        $path = trim($path);
+        $relative = $path;
+
+        if (str_starts_with($path, 'http://') || str_starts_with($path, 'https://')) {
+            $storageBase = rtrim(Storage::disk('public')->url(''), '/').'/';
+            $appStorage = rtrim(config('app.url'), '/').'/storage/';
+            if (str_starts_with($path, $storageBase)) {
+                $relative = substr($path, strlen($storageBase));
+            } elseif (str_starts_with($path, $appStorage)) {
+                $relative = substr($path, strlen($appStorage));
+            } else {
+                return $path;
+            }
+        }
+
+        $relative = ltrim($relative, '/');
+        if (str_starts_with($relative, 'storage/')) {
+            $relative = substr($relative, strlen('storage/'));
+        }
+
+        $disk = Storage::disk('public');
+        $original = self::getOriginalImage($relative);
+        if ($original && $disk->exists($original)) {
+            return self::publicStorageUrl($original);
+        }
+
+        return self::publicStorageUrl($relative) ?? (str_starts_with($path, 'http') ? $path : Storage::url($relative));
+    }
+
+    /**
      * Resolve a storage-relative path to an absolute public URL.
      * Falls back to the original (uncompressed) file when the compressed asset is missing.
      */

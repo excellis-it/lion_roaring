@@ -6,8 +6,13 @@
         <li class="group group-data  {{ isset($team_id) && $team['id'] == $team_id ? 'active' : '' }}"
             data-id="{{ $team['id'] }}">
             <div class="avatar team-image-{{ $team['id'] }} position-relative">
-                <img src="{{ $team['group_image'] ? Storage::url($team['group_image']) : asset('user_assets/images/group.jpg') }}"
-                    alt="">
+                @php
+                    $groupImgUrl = \App\Helpers\Helper::publicStorageUrl($team['group_image'] ?? null)
+                        ?: asset('user_assets/images/group.jpg');
+                    $groupImgFallback = asset('user_assets/images/group.jpg');
+                @endphp
+                <img src="{{ $groupImgUrl }}" alt=""
+                    onerror="this.onerror=null;this.src='{{ $groupImgFallback }}';">
 
                 <div class="count-unseen" id="count-team-unseen-{{ $team['id'] }}">
                     @if (Helper::getTeamCountUnseenMessage(Auth::user()->id, $team['id']) > 0)
