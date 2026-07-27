@@ -160,6 +160,7 @@
                             <th>Name</th>
                             <th>Email</th>
                             <th>Phone</th>
+                            <th>User Type</th>
                             <th>Created Date</th>
                             <th class="text-center">Action</th>
                         </tr>

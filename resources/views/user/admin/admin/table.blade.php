@@ -4,6 +4,7 @@
         <td>{{ $admin->full_name }}</td>
         <td>{{ $admin->email }}</td>
         <td>{{ $admin->phone }}</td>
+        <td>{{ $admin->user_type ?: '-' }}</td>
         <td>{{ date('d M Y', strtotime($admin->created_at)) }}</td>
         <td align="center">
             <div class="edit-1 d-flex align-items-center justify-content-center">
