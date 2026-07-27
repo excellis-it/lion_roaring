@@ -158,6 +158,11 @@ class Helper
         return self::$settingsCache;
     }
 
+    public static function forgetSettingsCache(): void
+    {
+        self::$settingsCache = null;
+    }
+
     public static function getCountries()
     {
         $countries = Country::with('languages')

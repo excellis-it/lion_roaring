@@ -1,0 +1,31 @@
+---
+description: Generate Web or Mobile Change Log content when the user asks for a version changelog
+alwaysApply: true
+---
+
+# Change Log Content Generation
+
+When the user asks for a **web** or **mobile** change log / release notes / version update text:
+
+1. Determine platform: `web` or `mobile`.
+2. Read current versions from Site Settings (`WEB_APP_VERSION`, `MOBILE_APP_VERSION`) via DB/code if available; otherwise ask the user for the new version.
+3. Propose a **new version number** (semver bump: patch/minor/major based on change size) unless the user already specified one.
+4. Return ready-to-paste Change Log content in this exact structure:
+
+```
+Platform: Web Version | Mobile App Version
+Version: vX.Y.Z
+Type: feature | improvement | bugfix | security
+Title: Short release title
+Description:
+- Bullet 1
+- Bullet 2
+- Bullet 3
+```
+
+5. Base the Description only on real work from the conversation / git changes — do not invent features.
+6. If the user asks you to **apply** it, then:
+   - Update Site Settings version (`WEB_APP_VERSION` or `MOBILE_APP_VERSION`) via Change Logs management (not Site Settings UI).
+   - Create a `change_logs` row (or tell them to paste into PMA Change Logs → Add Entry) with matching platform/version/title/type/description. Prefer HTML lists (`<ul><li>…</li></ul>`) for the description field.
+   - Update `docs/pma/change-logs.md` only if product behavior changed beyond the note itself.
+7. Keep tone clear and user-facing (PMA members read these notes).

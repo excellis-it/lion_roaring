@@ -149,6 +149,9 @@ use App\Http\Controllers\User\Admin\AdminController as AdminAdminController;
 use App\Http\Controllers\User\PromoCodeController;
 use App\Http\Controllers\User\DocumentationController;
 use App\Http\Controllers\User\RecycleBinController;
+use App\Http\Controllers\User\SupportReportController;
+use App\Http\Controllers\User\SupportReportManageController;
+use App\Http\Controllers\User\ChangeLogController;
 
 /*
 |--------------------------------------------------------------------------
@@ -1262,6 +1265,30 @@ Route::prefix('user')->middleware(['user', 'preventBackHistory', 'userActivity',
             Route::get('/', [UserAdminMenuController::class, 'index'])->name('user.admin.menu.index');
             Route::post('/update', [UserAdminMenuController::class, 'update'])->name('user.admin.menu.update');
         });
+    });
+
+    Route::prefix('support-reports')->name('support-reports.')->group(function () {
+        Route::get('/', [SupportReportController::class, 'index'])->name('index');
+        Route::get('/create', [SupportReportController::class, 'create'])->name('create');
+        Route::post('/', [SupportReportController::class, 'store'])->name('store');
+
+        Route::prefix('manage')->name('manage.')->group(function () {
+            Route::get('/', [SupportReportManageController::class, 'index'])->name('index');
+            Route::get('/{supportReport}', [SupportReportManageController::class, 'show'])->name('show');
+            Route::put('/{supportReport}', [SupportReportManageController::class, 'update'])->name('update');
+        });
+
+        Route::get('/{supportReport}', [SupportReportController::class, 'show'])->name('show');
+    });
+
+    Route::prefix('change-logs')->name('change-logs.')->group(function () {
+        Route::get('/', [ChangeLogController::class, 'index'])->name('index');
+        Route::put('/versions', [ChangeLogController::class, 'updateVersions'])->name('versions.update');
+        Route::get('/create', [ChangeLogController::class, 'create'])->name('create');
+        Route::post('/', [ChangeLogController::class, 'store'])->name('store');
+        Route::get('/{changeLog}/edit', [ChangeLogController::class, 'edit'])->name('edit');
+        Route::put('/{changeLog}', [ChangeLogController::class, 'update'])->name('update');
+        Route::delete('/{changeLog}', [ChangeLogController::class, 'destroy'])->name('destroy');
     });
 });
 

@@ -417,6 +417,8 @@ class PartnerController extends Controller
                     'Delete Strategy',
                 ],
                 Helper::getMenuName('policy', 'Policy') => ['Manage Policy', 'Upload Policy', 'Download Policy', 'View Policy', 'Delete Policy'],
+                Helper::getMenuName('support_reports', 'Support Reports') => ['Manage Support Reports'],
+                Helper::getMenuName('change_logs', 'Change Logs') => ['Manage Change Logs'],
                 Helper::getMenuName('donations', 'Donations') => ['Manage Donations'],
                 Helper::getMenuName('newsletters', 'Newsletters') => ['Manage Newsletters', 'Delete Newsletters'],
                 Helper::getMenuName('admin_list', 'Admin List') => ['Create Admin List', 'Delete Admin List', 'Manage Admin List', 'Edit Admin List'],

@@ -277,6 +277,25 @@
                             <a href="{{ route('logout') }}"
                                 class="btn btn-primary">{{ Helper::getMenuName('logout', 'Log Out') }}</a>
                         </div>
+                        @php
+                            $webVersion = Helper::getSettings()->WEB_APP_VERSION ?? null;
+                        @endphp
+                        @if (!empty($webVersion))
+                            <div class="px-7 pb-4">
+                                <div class="profile-dropdown-version rounded-3 px-3 py-2 d-flex align-items-center justify-content-between gap-2"
+                                    style="background: #f7f3fb; border: 1px solid #ebe3f4;">
+                                    <div class="min-w-0">
+                                        <div class="small text-muted lh-1 mb-1">Web Version</div>
+                                        <div class="fw-semibold text-dark">{{ $webVersion }}</div>
+                                    </div>
+                                    <a href="{{ route('change-logs.index', ['platform' => 'web']) }}"
+                                        class="small text-nowrap text-decoration-none fw-semibold"
+                                        style="color: #6f42c1;">
+                                        Change Logs
+                                    </a>
+                                </div>
+                            </div>
+                        @endif
                     </div>
                 </div>
             </li>

@@ -739,9 +739,9 @@
                              <span class="hide-menu">{{ Helper::getMenuName('strategy', 'Strategy') }}</span>
                          </a>
                      </li>
-                 @endif
+                @endif
 
-                 @if (Gate::check('Manage Policy'))
+                @if (Gate::check('Manage Policy'))
                      <li class="sidebar-item">
                          <a class="sidebar-link" href="{{ route('policy-guidence.index') }}" aria-expanded="false">
                              <span>
@@ -1290,6 +1290,28 @@
                          </div>
                      </li>
                  @endif
+
+                 {{-- Support Reports — available to all users --}}
+                 <li class="sidebar-item">
+                     <a class="sidebar-link {{ Request::is('user/support-reports*') ? 'active' : '' }}"
+                         href="{{ route('support-reports.index') }}" aria-expanded="false">
+                         <span>
+                             <img src="{{ asset('user_assets/images/ICON/completed-task.png') }}" alt="">
+                         </span>
+                         <span class="hide-menu">{{ Helper::getMenuName('support_reports', 'Support Reports') }}</span>
+                     </a>
+                 </li>
+
+                 {{-- Change Logs — available to all users --}}
+                 <li class="sidebar-item">
+                     <a class="sidebar-link {{ Request::is('user/change-logs*') ? 'active' : '' }}"
+                         href="{{ route('change-logs.index') }}" aria-expanded="false">
+                         <span>
+                             <img src="{{ asset('user_assets/images/history.png') }}" alt="">
+                         </span>
+                         <span class="hide-menu">{{ Helper::getMenuName('change_logs', 'Change Logs') }}</span>
+                     </a>
+                 </li>
 
                  {{-- Project Documentation - SUPER ADMIN Only --}}
                  @if (Auth::check() && Auth::user()->hasNewRole('SUPER ADMIN'))

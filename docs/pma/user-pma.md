@@ -1,6 +1,6 @@
 ---
 title: User PMA
-updated: 2026-07-24
+updated: 2026-07-27
 status: ready
 sidebar_key: user_pma
 ---
@@ -39,6 +39,8 @@ Open **Detailed topics** on the index for each sidebar menu. Shared instance rul
 7. **Membership self-service** — if `membershipPanelApplicable()`
 8. **Restore** — Super Admin recycle bin
 9. **Admin Portal** — Donations, Newsletters, Testimonials, Orgs, Pages CMS, Countries, Settings, Super Admin list, Chatbot
+10. **Support Reports** — All users: submit/view own reports. `Manage Support Reports` permission **or Super Admin**: view all reports, update status, add admin notes. Email notifications sent on submit and status update.
+11. **Change Logs** — All users: read published release notes. `Manage Change Logs` permission **or Super Admin**: create, edit, delete entries.
 
 ### Documentation UI
 

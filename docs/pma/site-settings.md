@@ -1,6 +1,6 @@
 ---
 title: Site Settings
-updated: 2026-07-24
+updated: 2026-07-27
 status: ready
 sidebar_key: site_settings
 ---
@@ -19,6 +19,7 @@ Global site settings and dynamic sidebar menu display names.
 ### Settings
 
 - Edit site settings keys used across frontend and panel (logos, contact email, etc.).
+- Web / Mobile app version numbers (`WEB_APP_VERSION`, `MOBILE_APP_VERSION`) are stored on Site Settings but edited from **Change Logs** (managers with `Manage Change Logs`), not from this page.
 
 ### Menu Names
 

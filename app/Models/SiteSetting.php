@@ -14,6 +14,7 @@ class SiteSetting extends BaseModel
         'SITE_TAGLINE',
         'SITE_LOGO',
         'PANEL_WATERMARK_LOGO',
+        'PMA_PANEL_LOGO',
         'SITE_CONTACT_EMAIL',
         'SITE_CONTACT_PHONE',
         'DONATE_TEXT',
@@ -21,5 +22,7 @@ class SiteSetting extends BaseModel
         'SITE_UPDATE',
         'STRIPE_KEY',
         'STRIPE_SECRET',
+        'WEB_APP_VERSION',
+        'MOBILE_APP_VERSION',
     ];
 }

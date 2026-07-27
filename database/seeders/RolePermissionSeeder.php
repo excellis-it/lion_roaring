@@ -98,6 +98,12 @@ class RolePermissionSeeder extends Seeder
             // Help
             ["name" => "Manage Help"],
 
+            // Support Reports
+            ["name" => "Manage Support Reports"],
+
+            // Change Logs
+            ["name" => "Manage Change Logs"],
+
             // Admin panel permissions
             ["name" => "Manage My Profile"],
             ["name" => "Manage My Password"],
