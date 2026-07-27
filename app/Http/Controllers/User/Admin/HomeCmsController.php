@@ -130,6 +130,7 @@ class HomeCmsController extends Controller
 
         $attrs = $home->getAttributes();
         unset($attrs['id']);
+        $attrs = Helper::applyUsCmsMediaDefaults(HomeCms::class, $country, $attrs, ['banner_image', 'banner_video']);
         HomeCms::updateOrCreate(['country_code' => $country], array_merge($attrs, ['country_code' => $country]));
 
         return redirect()->back()->with('message', 'Home Page Content Updated Successfully');

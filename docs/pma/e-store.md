@@ -57,7 +57,7 @@ Warehouse admins: `isWarehouseAdmin()` for scoped product tools.
 | All shoppers | Bound to current domain instance; wrong `user_type` host → logout |
 | Warehouse | Physical availability by nearest warehouse for that shopper context |
 
-**US content prefill:** Opening an Estore CMS editor (Home, Footer, Contact, or a slug page) for a country with no saved row shows that page's **US** content as defaults, with a banner noting the content is a US prefill. Saving creates a new row for the selected country — the source US row is never modified. If a country already has its own row, that row is shown as-is (no prefill/banner).
+**US content prefill:** Opening an Estore CMS editor (Home, Footer, Contact, or a slug page) for a country with no saved row shows that page's **US** content as defaults, with a banner noting the content is a US prefill. Saving creates a new row for the selected country — the source US row is never modified. On that first save, image paths (including home slider JSON images) are copied from US when no new file is uploaded. If a country already has its own row, that row is shown as-is (no prefill/banner).
 
 ### Mobile
 

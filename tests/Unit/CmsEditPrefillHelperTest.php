@@ -123,4 +123,104 @@ class CmsEditPrefillHelperTest extends TestCase
             $this->assertSame($missingCode, $row->country_code);
         }
     }
+
+    public function test_apply_us_cms_media_defaults_copies_paths_when_country_row_missing(): void
+    {
+        $us = HomeCms::query()->where('country_code', 'US')->orderByDesc('id')->first();
+        if (!$us || empty($us->banner_image)) {
+            $this->markTestSkipped('No US HomeCms row with banner_image');
+        }
+
+        $missingCode = 'ZZ';
+        HomeCms::query()->where('country_code', $missingCode)->delete();
+
+        $attrs = [
+            'banner_title' => 'Copied title',
+            'country_code' => $missingCode,
+        ];
+        $merged = Helper::applyUsCmsMediaDefaults(
+            HomeCms::class,
+            $missingCode,
+            $attrs,
+            ['banner_image', 'banner_video']
+        );
+
+        $this->assertSame($us->banner_image, $merged['banner_image']);
+        if (!empty($us->banner_video)) {
+            $this->assertSame($us->banner_video, $merged['banner_video']);
+        }
+        $this->assertSame('Copied title', $merged['banner_title']);
+    }
+
+    public function test_apply_us_cms_media_defaults_keeps_uploaded_paths(): void
+    {
+        $us = HomeCms::query()->where('country_code', 'US')->orderByDesc('id')->first();
+        if (!$us || empty($us->banner_image)) {
+            $this->markTestSkipped('No US HomeCms row with banner_image');
+        }
+
+        $missingCode = 'ZZ';
+        HomeCms::query()->where('country_code', $missingCode)->delete();
+
+        $merged = Helper::applyUsCmsMediaDefaults(
+            HomeCms::class,
+            $missingCode,
+            ['banner_image' => 'home/custom.jpg'],
+            ['banner_image', 'banner_video']
+        );
+
+        $this->assertSame('home/custom.jpg', $merged['banner_image']);
+    }
+
+    public function test_apply_us_cms_media_defaults_skips_when_country_already_has_media(): void
+    {
+        $us = HomeCms::query()->where('country_code', 'US')->orderByDesc('id')->first();
+        if (!$us || empty($us->banner_image)) {
+            $this->markTestSkipped('No US HomeCms row with banner_image');
+        }
+
+        $existing = HomeCms::query()
+            ->where('country_code', '!=', 'US')
+            ->whereNotNull('banner_image')
+            ->where('banner_image', '!=', '')
+            ->orderByDesc('id')
+            ->first();
+        if (!$existing) {
+            $this->markTestSkipped('No non-US HomeCms row with banner_image');
+        }
+
+        $merged = Helper::applyUsCmsMediaDefaults(
+            HomeCms::class,
+            $existing->country_code,
+            ['banner_title' => 'Only text'],
+            ['banner_image', 'banner_video']
+        );
+
+        $this->assertArrayNotHasKey('banner_image', $merged);
+    }
+
+    public function test_apply_us_cms_media_defaults_fills_empty_media_on_existing_country_row(): void
+    {
+        $us = HomeCms::query()->where('country_code', 'US')->orderByDesc('id')->first();
+        if (!$us || empty($us->banner_image)) {
+            $this->markTestSkipped('No US HomeCms row with banner_image');
+        }
+
+        $missingCode = 'ZZ';
+        HomeCms::query()->where('country_code', $missingCode)->delete();
+        HomeCms::query()->create([
+            'country_code' => $missingCode,
+            'banner_title' => 'Broken save',
+            'banner_image' => null,
+        ]);
+
+        $merged = Helper::applyUsCmsMediaDefaults(
+            HomeCms::class,
+            $missingCode,
+            ['banner_title' => 'Broken save'],
+            ['banner_image', 'banner_video']
+        );
+
+        $this->assertSame($us->banner_image, $merged['banner_image']);
+    }
 }

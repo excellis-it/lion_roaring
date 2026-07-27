@@ -59,6 +59,7 @@ class ArticleOfAssociationController extends Controller
         if ($request->has('checkbox_text')) {
             $data['checkbox_text'] = $request->checkbox_text;
         }
+        $data = Helper::applyUsCmsMediaDefaults(Article::class, $country, $data, ['pdf']);
         $article = Article::updateOrCreate(['country_code' => $country], $data);
 
         return redirect()->back()->with('message', 'Article of association updated successfully');

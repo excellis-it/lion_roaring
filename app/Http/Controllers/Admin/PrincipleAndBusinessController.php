@@ -96,8 +96,10 @@ class PrincipleAndBusinessController extends Controller
             ]);
             $business->banner_image = $this->imageUpload($request->file('banner_image'), 'principle-and-business');
         }
+        $isNewCountryRow = !PrincipalAndBusiness::query()->where('country_code', $country)->exists();
         $attrs = $business->getAttributes();
         unset($attrs['id']);
+        $attrs = Helper::applyUsCmsMediaDefaults(PrincipalAndBusiness::class, $country, $attrs, ['banner_image']);
         $business = PrincipalAndBusiness::updateOrCreate(['country_code' => $country], array_merge($attrs, ['country_code' => $country]));
 
         if ($request->hasFile('image')) {
@@ -109,6 +111,16 @@ class PrincipleAndBusinessController extends Controller
                 $principle_image->principle_id = $business->id;
                 $principle_image->image = $this->imageUpload($image, 'principle-and-business');
                 $principle_image->save();
+            }
+        } elseif ($isNewCountryRow) {
+            $usBusiness = PrincipalAndBusiness::query()->where('country_code', 'US')->orderByDesc('id')->first();
+            if ($usBusiness) {
+                foreach ($usBusiness->images as $usImage) {
+                    $principle_image = new PrincipleBusinessImage();
+                    $principle_image->principle_id = $business->id;
+                    $principle_image->image = $usImage->image;
+                    $principle_image->save();
+                }
             }
         }
 

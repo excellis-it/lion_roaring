@@ -80,6 +80,7 @@ class AboutUsController extends Controller
 
         $attrs = $about_us->getAttributes();
         unset($attrs['id']);
+        $attrs = Helper::applyUsCmsMediaDefaults(AboutUs::class, $country, $attrs, ['banner_image']);
         $about_us = AboutUs::updateOrCreate(['country_code' => $country], array_merge($attrs, ['country_code' => $country]));
 
         return redirect()->back()->with('message', 'About us updated successfully');

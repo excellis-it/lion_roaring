@@ -1420,6 +1420,96 @@ class Helper
     }
 
     /**
+     * When saving CMS for a non-US country, copy empty media path fields from the
+     * US row so save-without-reupload keeps US images/videos/files.
+     * Applies on first create, and when an existing country row still has empty
+     * media (e.g. saved earlier without copying paths). Does not delete US files.
+     *
+     * @param  array<string, mixed>  $attrs
+     * @param  array<int, string>  $mediaFields
+     * @return array<string, mixed>
+     */
+    public static function applyUsCmsMediaDefaults(
+        string $modelClass,
+        string $countryCode,
+        array $attrs,
+        array $mediaFields
+    ): array {
+        $countryCode = strtoupper(trim($countryCode)) ?: 'US';
+        if ($countryCode === 'US' || $mediaFields === []) {
+            return $attrs;
+        }
+
+        $us = $modelClass::query()->where('country_code', 'US')->orderByDesc('id')->first();
+        if (!$us) {
+            return $attrs;
+        }
+
+        $existing = $modelClass::query()->where('country_code', $countryCode)->orderByDesc('id')->first();
+
+        foreach ($mediaFields as $field) {
+            $current = $attrs[$field] ?? null;
+            if ($current !== null && $current !== '') {
+                continue;
+            }
+            if ($existing) {
+                $existingVal = $existing->getAttribute($field);
+                if ($existingVal !== null && $existingVal !== '') {
+                    continue;
+                }
+            }
+            $usValue = $us->getAttribute($field);
+            if ($usValue !== null && $usValue !== '') {
+                $attrs[$field] = $usValue;
+            }
+        }
+
+        return $attrs;
+    }
+
+    /**
+     * Seed media (and other path/JSON media fields) from US onto a not-yet-saved
+     * model before request processing — used by firstOrNew save paths (E-Store).
+     *
+     * @param  array<int, string>  $fields
+     */
+    public static function seedNewCmsRowFromUs(
+        \Illuminate\Database\Eloquent\Model $model,
+        string $countryCode,
+        array $fields
+    ): void {
+        if ($model->exists || $fields === []) {
+            return;
+        }
+
+        $countryCode = strtoupper(trim($countryCode)) ?: 'US';
+        if ($countryCode === 'US') {
+            return;
+        }
+
+        $modelClass = $model::class;
+        if ($modelClass::query()->where('country_code', $countryCode)->exists()) {
+            return;
+        }
+
+        $us = $modelClass::query()->where('country_code', 'US')->orderByDesc('id')->first();
+        if (!$us) {
+            return;
+        }
+
+        foreach ($fields as $field) {
+            $current = $model->getAttribute($field);
+            if ($current !== null && $current !== '' && $current !== []) {
+                continue;
+            }
+            $usValue = $us->getAttribute($field);
+            if ($usValue !== null && $usValue !== '' && $usValue !== []) {
+                $model->setAttribute($field, $usValue);
+            }
+        }
+    }
+
+    /**
      * Load CMS list rows for edit. Empty non-US countries get US rows as drafts (no ids).
      *
      * @return array{rows: \Illuminate\Support\Collection, isUsPrefill: bool, countryCode: string}

@@ -99,6 +99,7 @@ class FooterController extends Controller
 
         $attrs = $footer->getAttributes();
         unset($attrs['id']);
+        $attrs = Helper::applyUsCmsMediaDefaults(Footer::class, $country, $attrs, ['footer_logo', 'footer_flag']);
         $footer = Footer::updateOrCreate(['country_code' => $country], array_merge($attrs, ['country_code' => $country]));
 
         return redirect()->back()->with('message', 'Footer updated successfully');

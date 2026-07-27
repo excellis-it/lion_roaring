@@ -102,8 +102,10 @@ class OrganizationController extends Controller
         }
 
 
+        $isNewCountryRow = !Organization::query()->where('country_code', $country)->exists();
         $attrs = $organization->getAttributes();
         unset($attrs['id']);
+        $attrs = Helper::applyUsCmsMediaDefaults(Organization::class, $country, $attrs, ['banner_image']);
         $organization = Organization::updateOrCreate(['country_code' => $country], array_merge($attrs, ['country_code' => $country]));
 
         if ($request->image) {
@@ -112,6 +114,17 @@ class OrganizationController extends Controller
                 $organization_image->organization_id = $organization->id;
                 $organization_image->image = $this->imageUpload($image, 'organization');
                 $organization_image->save();
+            }
+        } elseif ($isNewCountryRow) {
+            $usOrg = Organization::query()->where('country_code', 'US')->orderByDesc('id')->first();
+            if ($usOrg) {
+                foreach ($usOrg->images as $usImage) {
+                    $organization_image = new OrganizationImage();
+                    $organization_image->organization_id = $organization->id;
+                    $organization_image->image = $usImage->image;
+                    $organization_image->sort_order = $usImage->sort_order ?? 0;
+                    $organization_image->save();
+                }
             }
         }
 

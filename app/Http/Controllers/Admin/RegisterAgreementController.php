@@ -82,6 +82,7 @@ class RegisterAgreementController extends Controller
 
         $attrs = $agreement->getAttributes();
         unset($attrs['id']);
+        $attrs = Helper::applyUsCmsMediaDefaults(RegisterAgreement::class, $country, $attrs, ['seal_image']);
         $agreement = RegisterAgreement::updateOrCreate(['country_code' => $country], array_merge($attrs, ['country_code' => $country]));
 
         return redirect()->back()->with('message', 'Register agreement updated successfully');

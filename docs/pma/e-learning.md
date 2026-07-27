@@ -47,7 +47,7 @@ sidebar_key: e_learning
 | Global user, or Super Admin on the global domain | Sees the Content Country picker (`Helper::canSelectCmsContentCountry()`) on E-Learning CMS editors (Home, Footer, and slug pages) |
 | Regional | Locked to own country code (hidden `content_country_code` field, no picker) |
 
-**US content prefill:** Opening an E-Learning CMS editor for a country with no saved row shows that page's **US** content as defaults, with a banner noting the content is a US prefill. Saving creates a new row for the selected country — the source US row is never modified. If a country already has its own row, that row is shown as-is (no prefill/banner).
+**US content prefill:** Opening an E-Learning CMS editor for a country with no saved row shows that page's **US** content as defaults, with a banner noting the content is a US prefill. Saving creates a new row for the selected country — the source US row is never modified. On that first save, image paths are copied from US when no new file is uploaded. If a country already has its own row, that row is shown as-is (no prefill/banner).
 
 ### Mobile
 

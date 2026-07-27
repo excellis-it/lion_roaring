@@ -187,6 +187,7 @@ class ElearningCmsController extends Controller
             // $cms->save();
             $attrs = $cms->getAttributes();
             unset($attrs['id']);
+            $attrs = Helper::applyUsCmsMediaDefaults(ElearningEcomHomeCms::class, $country, $attrs, ['banner_image']);
             $cms = ElearningEcomHomeCms::updateOrCreate(['country_code' => $country], array_merge($attrs, ['country_code' => $country]));
             return redirect()->back()->with('message', $message);
         } else {
@@ -245,6 +246,7 @@ class ElearningCmsController extends Controller
             // $cms->save();
             $attrs = $cms->getAttributes();
             unset($attrs['id']);
+            $attrs = Helper::applyUsCmsMediaDefaults(ElearningEcomFooterCms::class, $country, $attrs, ['footer_logo']);
             $cms = ElearningEcomFooterCms::updateOrCreate(['country_code' => $country], array_merge($attrs, ['country_code' => $country]));
             return redirect()->back()->with('message', $message);
         } else {

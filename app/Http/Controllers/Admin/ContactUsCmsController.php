@@ -84,6 +84,7 @@ class ContactUsCmsController extends Controller
         }
         $attrs = $contact_us->getAttributes();
         unset($attrs['id']);
+        $attrs = Helper::applyUsCmsMediaDefaults(ContactUsCms::class, $country, $attrs, ['banner_image']);
         $contact_us = ContactUsCms::updateOrCreate(['country_code' => $country], array_merge($attrs, ['country_code' => $country]));
 
         return redirect()->route('contact-us-cms.index')->with('message', 'Contact Us created successfully.');

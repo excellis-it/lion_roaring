@@ -83,6 +83,7 @@ class EcclesiaAssociationController extends Controller
         }
         $attrs = $ecclesia_association->getAttributes();
         unset($attrs['id']);
+        $attrs = Helper::applyUsCmsMediaDefaults(EcclesiaAssociation::class, $country, $attrs, ['banner_image']);
         $ecclesia_association = EcclesiaAssociation::updateOrCreate(['country_code' => $country], array_merge($attrs, ['country_code' => $country]));
 
         return redirect()->back()->with('message', 'Ecclesia Association updated successfully');

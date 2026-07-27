@@ -208,6 +208,19 @@ class EstoreCmsController extends Controller
             if (!$cms) {
                 $cms = EcomHomeCms::firstOrNew(['country_code' => $country]);
             }
+            Helper::seedNewCmsRowFromUs($cms, $country, [
+                'header_logo',
+                'slider_data',
+                'slider_data_second',
+                'shop_now_image',
+                'about_section_image',
+                'banner_image',
+                'banner_image_small',
+                'product_category_image',
+                'featured_product_image',
+                'new_product_image',
+                'new_arrival_image',
+            ]);
             $message = $cms->exists ? 'Home CMS updated successfully' : 'Home CMS added successfully';
             /// Header Logo
 
@@ -400,6 +413,7 @@ class EstoreCmsController extends Controller
 
             $attrs = $cms->getAttributes();
             unset($attrs['id']);
+            $attrs = Helper::applyUsCmsMediaDefaults(EcomFooterCms::class, $country, $attrs, ['footer_logo']);
             $cms = EcomFooterCms::updateOrCreate(['country_code' => $country], array_merge($attrs, ['country_code' => $country]));
 
 
@@ -1532,6 +1546,7 @@ class EstoreCmsController extends Controller
         // $cms->save();
         $attrs = $cms->getAttributes();
         unset($attrs['id']);
+        $attrs = Helper::applyUsCmsMediaDefaults(EcomContactCms::class, $country, $attrs, ['banner_image']);
         $cms = EcomContactCms::updateOrCreate(['country_code' => $country], array_merge($attrs, ['country_code' => $country]));
         return redirect()->back()->with('message', $message);
     }
