@@ -12,15 +12,22 @@
     }
 
     $activeLang = null;
-    if (!empty($_COOKIE['googtrans']) && preg_match('/\/auto\/([^;]+)/', $_COOKIE['googtrans'], $matches)) {
-        $activeLang = $matches[1];
-    } elseif (!empty($_COOKIE['content_lang'])) {
+    if (!empty($_COOKIE['googtrans'])) {
+        $gt = urldecode((string) $_COOKIE['googtrans']);
+        if ($gt !== '/en/en' && preg_match('#^/auto/([^;]+)$#', $gt, $matches) && $matches[1] !== 'en') {
+            $activeLang = $matches[1];
+        } elseif ($gt !== '/en/en' && preg_match('#^/([^/]+)/([^;]+)$#', $gt, $matches) && $matches[1] !== $matches[2]) {
+            $activeLang = $matches[2];
+        }
+    }
+    if ($activeLang === null && !empty($_COOKIE['content_lang'])) {
         $activeLang = $_COOKIE['content_lang'];
     }
 @endphp
 
 <select id="languageSwitcher"
-    class="languageSwitcher form-select form-select-sm cst-select cst-select-bottom"
+    class="languageSwitcher form-select form-select-sm cst-select cst-select-bottom notranslate"
+    translate="no"
     aria-label="{{ __('Select language') }}">
     <option value="__original__" {{ $activeLang === null ? 'selected' : '' }}>Original</option>
     @foreach ($languageOptions as $lang)

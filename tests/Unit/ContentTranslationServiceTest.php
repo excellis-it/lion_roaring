@@ -23,6 +23,13 @@ class ContentTranslationServiceTest extends TestCase
         $this->assertSame('es', ContentTranslationService::resolveTargetLanguage('/auto/es'));
     }
 
+    public function test_neutral_googtrans_en_en_falls_through_to_content_lang_or_null(): void
+    {
+        $this->assertNull(ContentTranslationService::resolveTargetLanguage('/en/en'));
+        $this->assertSame('en', ContentTranslationService::resolveTargetLanguage('/en/en', 'en'));
+        $this->assertSame('de', ContentTranslationService::resolveTargetLanguage('/en/en', 'de'));
+    }
+
     public function test_resolve_target_language_from_content_lang_cookie(): void
     {
         $this->assertSame('en', ContentTranslationService::resolveTargetLanguage(null, 'en'));

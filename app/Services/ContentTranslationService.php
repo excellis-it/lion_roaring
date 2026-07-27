@@ -21,8 +21,13 @@ class ContentTranslationService
      */
     public static function resolveTargetLanguage(?string $googtransCookie, ?string $contentLangCookie = null): ?string
     {
-        if ($googtransCookie && preg_match('#/auto/([^;/]+)#', $googtransCookie, $m)) {
-            return self::normalizeLangCode($m[1]);
+        $gt = is_string($googtransCookie) ? trim(urldecode($googtransCookie)) : '';
+        // /en/en means Google Translate is neutralized (no UI translation)
+        if ($gt !== '' && $gt !== '/en/en' && preg_match('#/auto/([^;/]+)#', $gt, $m)) {
+            $fromAuto = self::normalizeLangCode($m[1]);
+            if ($fromAuto !== '') {
+                return $fromAuto;
+            }
         }
 
         if ($contentLangCookie !== null && trim($contentLangCookie) !== '') {

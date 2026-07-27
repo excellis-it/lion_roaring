@@ -7,6 +7,8 @@
     // - Country-specific languages when a country is selected
     // - US languages when on LION_ROARING_USA
     window.sessionLanguages = @json(\App\Helpers\Helper::getVisitorCountryLanguages());
+    // App URL path prefix (empty on production hosts; e.g. /lion-roaring-org on path-based demos)
+    window.appBasePath = @json(rtrim((string) (parse_url(url('/'), PHP_URL_PATH) ?: ''), '/') ?: '');
 </script>
 
 <!-- Google Translate initialization + robust allowed-language logic -->
@@ -63,38 +65,149 @@
     }
 
     /**
+     * Cookie paths for path-based demos (/lion-roaring-org) and host-based production (/).
+     * Google Translate often writes googtrans with the subdirectory path; clearing only
+     * path=/ leaves that cookie and language switching appears stuck.
+     */
+    function getTranslateCookiePaths() {
+        const paths = new Set(['/']);
+        const base = String(window.appBasePath || '').replace(/\/$/, '');
+        if (base) {
+            paths.add(base);
+            paths.add(base + '/');
+        }
+        const pathname = window.location.pathname || '/';
+        const parts = pathname.split('/').filter(Boolean);
+        let acc = '';
+        for (let i = 0; i < parts.length; i++) {
+            acc += '/' + parts[i];
+            paths.add(acc);
+            paths.add(acc + '/');
+        }
+        return Array.from(paths);
+    }
+
+    function cookieDomainVariants() {
+        const domain = window.location.hostname;
+        const domains = [null, domain];
+        if (domain.indexOf('.') !== -1) {
+            domains.push('.' + domain);
+        }
+        return domains;
+    }
+
+    function cookieAttrVariants() {
+        // HTTPS googtrans from Google Translate is Secure; expire/set without Secure leaves it stuck.
+        if (window.location.protocol === 'https:') {
+            return [
+                '',
+                '; Secure',
+                '; SameSite=Lax',
+                '; SameSite=Lax; Secure',
+                '; SameSite=None; Secure',
+                '; SameSite=Strict',
+                '; SameSite=Strict; Secure'
+            ];
+        }
+        return ['', '; SameSite=Lax', '; SameSite=Strict'];
+    }
+
+    function expireNamedCookie(name, path, domain) {
+        cookieAttrVariants().forEach(function (extra) {
+            let cookie = name + '=; expires=Thu, 01 Jan 1970 00:00:00 GMT; Max-Age=0; path=' + path + extra;
+            if (domain) {
+                cookie += '; domain=' + domain;
+            }
+            document.cookie = cookie;
+        });
+    }
+
+    function writeNamedCookie(name, value, path, domain) {
+        let cookie = name + '=' + value + '; path=' + path + '; Max-Age=31536000';
+        if (domain) {
+            cookie += '; domain=' + domain;
+        }
+        if (window.location.protocol === 'https:') {
+            cookie += '; Secure; SameSite=Lax';
+        }
+        document.cookie = cookie;
+    }
+
+    /**
      * clearGoogleTranslateCookies()
-     * Clears all googtrans cookies across all domain/path variants
+     * Clears googtrans across domain + path + Secure/SameSite variants.
      */
     function clearGoogleTranslateCookies() {
-        var domain = window.location.hostname;
-        document.cookie = "googtrans=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
-        document.cookie = "googtrans=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/; domain=" + domain + ";";
-        document.cookie = "googtrans=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/; domain=." + domain + ";";
+        const paths = getTranslateCookiePaths();
+        const domains = cookieDomainVariants();
+        paths.forEach(function (path) {
+            domains.forEach(function (domain) {
+                expireNamedCookie('googtrans', path, domain);
+            });
+        });
     }
     window.clearGoogleTranslateCookies = clearGoogleTranslateCookies;
+
+    /**
+     * Overwrite leftovers with /en/en (source=target) so GT stops translating.
+     * Deleting alone often fails when Google set a Secure path-scoped cookie.
+     */
+    function neutralizeGoogtransCookie() {
+        const paths = getTranslateCookiePaths();
+        const domains = cookieDomainVariants();
+        paths.forEach(function (path) {
+            domains.forEach(function (domain) {
+                writeNamedCookie('googtrans', '/en/en', path, domain);
+            });
+        });
+    }
 
     /**
      * content_lang marks an explicit language choice for UGC (bulletins).
      * Absent on first load so posts stay in the author's original language.
      */
     function setContentLangCookie(lang) {
-        var domain = window.location.hostname;
+        const paths = getTranslateCookiePaths();
+        const domains = cookieDomainVariants();
         if (!lang || lang === '__original__') {
-            document.cookie = "content_lang=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
-            document.cookie = "content_lang=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/; domain=" + domain + ";";
-            if (domain.includes('.')) {
-                document.cookie = "content_lang=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/; domain=." + domain + ";";
-            }
+            paths.forEach(function (path) {
+                domains.forEach(function (domain) {
+                    expireNamedCookie('content_lang', path, domain);
+                });
+            });
             return;
         }
-        document.cookie = "content_lang=" + lang + "; path=/";
-        document.cookie = "content_lang=" + lang + "; path=/; domain=" + domain;
-        if (domain.includes('.')) {
-            document.cookie = "content_lang=" + lang + "; path=/; domain=." + domain;
-        }
+        paths.forEach(function (path) {
+            domains.forEach(function (domain) {
+                writeNamedCookie('content_lang', lang, path, domain);
+            });
+        });
     }
     window.setContentLangCookie = setContentLangCookie;
+
+    function setGoogtransCookie(lang) {
+        const value = '/auto/' + lang;
+        const paths = getTranslateCookiePaths();
+        const domains = cookieDomainVariants();
+        // Clear first so Secure leftovers cannot win over a new language
+        clearGoogleTranslateCookies();
+        paths.forEach(function (path) {
+            domains.forEach(function (domain) {
+                writeNamedCookie('googtrans', value, path, domain);
+            });
+        });
+    }
+
+    function resetGoogleTranslateUi(nextContentLang) {
+        clearGoogleTranslateCookies();
+        neutralizeGoogtransCookie();
+        if (nextContentLang) {
+            setContentLangCookie(nextContentLang);
+        } else {
+            setContentLangCookie(null);
+        }
+        window.location.reload();
+    }
 
     /**
      * changeGoogleTranslateLanguage(lang)
@@ -108,37 +221,34 @@
 
         if (lang === '__original__') {
             // Must full-reload: Google Translate rewrites the whole DOM (menus, headers).
-            // AJAX bulletin reload alone leaves the UI stuck in the previous language.
-            clearGoogleTranslateCookies();
-            setContentLangCookie(null);
-            window.location.reload();
+            resetGoogleTranslateUi(null);
             return;
         }
 
-        setContentLangCookie(lang);
-
-        // English UI = clear googtrans; content_lang still drives bulletin translation
+        // English UI = neutralize googtrans; content_lang drives bulletin translation
         if (lang === 'en') {
             var hadGoogtrans = /(?:^|;\s*)googtrans=/.test(document.cookie);
             var pageIsTranslated = document.documentElement.classList.contains('translated-ltr') ||
                 document.documentElement.classList.contains('translated-rtl');
-            clearGoogleTranslateCookies();
+            var googtransIsNeutral = /(?:^|;\s*)googtrans=\/en\/en(?:;|$)/.test(document.cookie);
             // Fast path only when UI was never machine-translated
             if (!hadGoogtrans && !pageIsTranslated && document.getElementById('show-bulletin') && typeof window.applyBulletinBoardTranslations === 'function') {
+                setContentLangCookie('en');
                 window.applyBulletinBoardTranslations();
                 return;
             }
-            window.location.reload();
+            if (googtransIsNeutral && !pageIsTranslated && document.getElementById('show-bulletin') && typeof window.applyBulletinBoardTranslations === 'function') {
+                setContentLangCookie('en');
+                window.applyBulletinBoardTranslations();
+                return;
+            }
+            resetGoogleTranslateUi('en');
             return;
         }
 
+        setContentLangCookie(lang);
         // Other languages: set googtrans then reload so server UGC translation + GT widget both apply
-        const domain = window.location.hostname;
-        document.cookie = "googtrans=/auto/" + lang + "; path=/";
-        document.cookie = "googtrans=/auto/" + lang + "; path=/; domain=" + domain;
-        if (domain.includes('.')) {
-            document.cookie = "googtrans=/auto/" + lang + "; path=/; domain=." + domain;
-        }
+        setGoogtransCookie(lang);
         window.location.reload();
     }
 
@@ -178,18 +288,15 @@
         if (!selectEl) return;
 
         if (value === '__original__') {
-            clearGoogleTranslateCookies();
-            setContentLangCookie(null);
-            window.location.reload();
+            resetGoogleTranslateUi(null);
             return;
         }
 
         setContentLangCookie(value);
 
-        // English UI = clear googtrans; content_lang still drives bulletin translation
+        // English UI = neutralize googtrans; content_lang still drives bulletin translation
         if (value === 'en') {
-            clearGoogleTranslateCookies();
-            window.location.reload();
+            resetGoogleTranslateUi('en');
             return;
         }
 
@@ -240,9 +347,7 @@
                 var selectedValue = selectEl.value;
                 if (selectedValue === 'en' || selectedValue === '' || selectedValue === 'en|en') {
                     e.stopPropagation();
-                    setContentLangCookie('en');
-                    clearGoogleTranslateCookies();
-                    setTimeout(function() { window.location.reload(); }, 100);
+                    resetGoogleTranslateUi('en');
                 }
             }, true);
             initLanguageSwitcher(selectEl);
@@ -253,9 +358,22 @@
      * Active language from googtrans / content_lang, or Original when unset.
      */
     function getActiveTranslateLang() {
-        const match = document.cookie.match(/(?:^|;\s*)googtrans=\/auto\/([^;]+)/);
+        const match = document.cookie.match(/(?:^|;\s*)googtrans=([^;]+)/);
         if (match && match[1]) {
-            return match[1];
+            const raw = decodeURIComponent(match[1]);
+            // /en/en = GT neutralized (English source=target); treat as no machine language
+            if (raw === '/en/en' || raw === 'en|en') {
+                // fall through to content_lang / Original
+            } else {
+                const auto = raw.match(/^\/auto\/(.+)$/);
+                if (auto && auto[1] && auto[1] !== 'en') {
+                    return auto[1];
+                }
+                const pair = raw.match(/^\/([^/]+)\/(.+)$/);
+                if (pair && pair[2] && pair[1] !== pair[2]) {
+                    return pair[2];
+                }
+            }
         }
         const contentMatch = document.cookie.match(/(?:^|;\s*)content_lang=([^;]+)/);
         if (contentMatch && contentMatch[1]) {

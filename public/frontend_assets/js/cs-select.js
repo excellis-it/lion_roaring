@@ -5,6 +5,9 @@ document.addEventListener("DOMContentLoaded", function () {
         wrapper.classList.add("cst-select-wrapper");
         if (selectEl.classList.contains("languageSwitcher")) {
             wrapper.classList.add("language-switcher-wrapper");
+            // Keep switcher usable after Google Translate mutates the page DOM
+            wrapper.classList.add("notranslate");
+            wrapper.setAttribute("translate", "no");
         }
         wrapper.style.position = "relative";
         wrapper.style.display = "inline-block";
