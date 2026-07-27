@@ -1,6 +1,6 @@
 ---
 title: Pages (CMS)
-updated: 2026-07-24
+updated: 2026-07-27
 status: ready
 sidebar_key: pages
 ---
@@ -22,6 +22,12 @@ Grouped Admin Portal page editors that power most of the **Website Frontend** co
 - Ecclesia Association, Principle and Business Model, Articles of Association.
 - Footer, Register Page Agreements, PMA Terms, Privacy Policy, Terms and Conditions.
 - Contact Us Messages / Contact CMS may exist in code but are commented out of the sidebar.
+
+### Home CMS
+
+- Content is edited per **Content Country** (Global admins) or the regional admin’s own country.
+- **Banner Image** includes a **Show banner image for this country** checkbox (`show_banner_image`). The website hero overlay image is shown only when this flag is on for the visitor’s country content. Existing rows default to on for all countries except Global (`GL`), matching the previous hardcoded rule.
+- **Section 1 Video** and **Book Section** fields are no longer shown in the Home CMS form (those blocks are unused on the website frontend). Existing database values are left unchanged.
 
 ### Footer CMS fields
 

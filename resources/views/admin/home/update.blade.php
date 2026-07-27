@@ -47,6 +47,22 @@
                                             <div class="error" style="color:red;">
                                                 {{ $errors->first('banner_image') }}</div>
                                         @endif
+                                        @php
+                                            $contentCountry = request()->get('content_country_code', 'US');
+                                            $showBannerDefault = old(
+                                                'show_banner_image',
+                                                optional($home)->show_banner_image ?? ($contentCountry !== 'GL' ? '1' : '0'),
+                                            );
+                                        @endphp
+                                        <div class="form-check mt-2">
+                                            <input type="hidden" name="show_banner_image" value="0">
+                                            <input class="form-check-input" type="checkbox" name="show_banner_image"
+                                                id="show_banner_image" value="1"
+                                                {{ $showBannerDefault ? 'checked' : '' }}>
+                                            <label class="form-check-label" for="show_banner_image">
+                                                Show banner image for this country
+                                            </label>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -151,39 +167,8 @@
                                     </div>
                                 </div>
                             </div>
-                            {{-- section_1_video --}}
-                            <div class="col-md-4">
-                                <div class="form-group-div">
-                                    <div class="form-group">
-                                        <label for="floatingInputValue">Section 1 Video</label>
-                                        <input type="file" class="form-control" id="floatingInputValue"
-                                            name="section_1_video" value="{{ old('section_1_video') }}"
-                                            placeholder="Section 1 Video">
-                                        @if ($errors->has('section_1_video'))
-                                            <div class="error" style="color:red;">
-                                                {{ $errors->first('section_1_video') }}</div>
-                                        @endif
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-md-2">
-                                <div class="form-group-div">
-                                    <div class="form-group">
-                                        @if (isset($home->section_1_video))
-                                            <video controls style="width: 200px; height:100px;">
-                                                <source src="{{ Storage::url($home->section_1_video) }}"
-                                                    type="video/mp4">
-                                                Your browser does not support the video tag.
-                                            </video>
-                                        @else
-                                        @endif
-                                    </div>
-                                </div>
-                            </div>
-
-
                             {{-- section_1_description --}}
-                            <div class="col-md-6">
+                            <div class="col-md-12">
                                 <div class="form-group-div">
                                     <div class="form-group">
                                         <label for="floatingInputValue">Section 1 Description*</label>
@@ -192,135 +177,6 @@
                                         @if ($errors->has('section_1_description'))
                                             <div class="error" style="color:red;">
                                                 {{ $errors->first('section_1_description') }}</div>
-                                        @endif
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="sales-report-card-wrap mt-5">
-                        <div class="form-head">
-                            <h4>Book Section</h4>
-                        </div>
-
-                        <div class="row">
-                            {{-- section_2_left_title --}}
-                            <div class="col-md-6">
-                                <div class="form-group-div">
-                                    <div class="form-group">
-                                        <label for="floatingInputValue">Section 2 Left Title*</label>
-                                        <input type="text" class="form-control" id="floatingInputValue"
-                                            name="section_2_left_title"
-                                            value="{{ isset($home->section_2_left_title) ? $home->section_2_left_title : old('section_2_left_title') }}"
-                                            placeholder="Section 2 Left Title">
-                                        @if ($errors->has('section_2_left_title'))
-                                            <div class="error" style="color:red;">
-                                                {{ $errors->first('section_2_left_title') }}</div>
-                                        @endif
-                                    </div>
-                                </div>
-                            </div>
-                            {{-- section_2_left_image --}}
-                            <div class="col-md-4">
-                                <div class="form-group-div">
-                                    <div class="form-group">
-                                        <label for="floatingInputValue">Section 2 Left Image</label>
-                                        <input type="file" class="form-control" id="section_2_left"
-                                            name="section_2_left_image" value="{{ old('section_2_left_image') }}"
-                                            placeholder="Section 2 Left Image">
-                                        @if ($errors->has('section_2_left_image'))
-                                            <div class="error" style="color:red;">
-                                                {{ $errors->first('section_2_left_image') }}</div>
-                                        @endif
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-md-2">
-                                <div class="form-group-div">
-                                    <div class="form-group">
-                                        @if (isset($home->section_2_left_image))
-                                            <img src="{{ Storage::url($home->section_2_left_image) }}"
-                                                id="section_2_left_preview" alt="Footer Logo"
-                                                style="width: 180px; height: 100px;">
-                                        @else
-                                            <img src="" id="section_2_left_preview" alt="Footer Logo"
-                                                style="width: 180px; height: 100px; display:none;">
-                                        @endif
-                                    </div>
-                                </div>
-                            </div>
-
-                            {{-- section_2_left_description --}}
-                            <div class="col-md-12">
-                                <div class="form-group-div">
-                                    <div class="form-group">
-                                        <label for="floatingInputValue">Section 2 Left Description*</label>
-                                        <textarea name="section_2_left_description" cols="30" rows="10" placeholder="Section 2 Left Description"
-                                            id="section2_left_des" class="form-control">{{ isset($home->section_2_left_description) ? $home->section_2_left_description : old('section_2_left_description') }}</textarea>
-                                        @if ($errors->has('section_2_left_description'))
-                                            <div class="error" style="color:red;">
-                                                {{ $errors->first('section_2_left_description') }}</div>
-                                        @endif
-                                    </div>
-                                </div>
-                            </div>
-                            {{-- section_2_right_title --}}
-                            <div class="col-md-6">
-                                <div class="form-group-div">
-                                    <div class="form-group">
-                                        <label for="floatingInputValue">Section 2 Right Title*</label>
-                                        <input type="text" class="form-control" id="floatingInputValue"
-                                            name="section_2_right_title"
-                                            value="{{ isset($home->section_2_right_title) ? $home->section_2_right_title : old('section_2_right_title') }}"
-                                            placeholder="Section 2 Right Title">
-                                        @if ($errors->has('section_2_right_title'))
-                                            <div class="error" style="color:red;">
-                                                {{ $errors->first('section_2_right_title') }}</div>
-                                        @endif
-                                    </div>
-                                </div>
-                            </div>
-                            {{-- section_2_right_image --}}
-                            <div class="col-md-4">
-                                <div class="form-group-div">
-                                    <div class="form-group">
-                                        <label for="floatingInputValue">Section 2 Right Image</label>
-                                        <input type="file" class="form-control" id="section_2_right_image"
-                                            name="section_2_right_image" value="{{ old('section_2_right_image') }}"
-                                            placeholder="Section 2 Right Image">
-                                        @if ($errors->has('section_2_right_image'))
-                                            <div class="error" style="color:red;">
-                                                {{ $errors->first('section_2_right_image') }}</div>
-                                        @endif
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div class="col-md-2">
-                                <div class="form-group-div">
-                                    <div class="form-group">
-                                        @if (isset($home->section_2_right_image))
-                                            <img src="{{ Storage::url($home->section_2_right_image) }}"
-                                                id="section_2_right_image_preview" alt="Footer Logo"
-                                                style="width: 180px; height: 100px;">
-                                        @else
-                                            <img src="" id="section_2_right_image_preview" alt="Footer Logo"
-                                                style="width: 180px; height: 100px; display:none;">
-                                        @endif
-                                    </div>
-                                </div>
-                            </div>
-
-                            {{-- section_2_right_description --}}
-                            <div class="col-md-12">
-                                <div class="form-group-div">
-                                    <div class="form-group">
-                                        <label for="floatingInputValue">Section 2 Right Description*</label>
-                                        <textarea name="section_2_right_description" cols="30" rows="10" placeholder="Section 2 Right Description"
-                                            id="section2_right_des" class="form-control">{{ isset($home->section_2_right_description) ? $home->section_2_right_description : old('section_2_right_description') }}</textarea>
-                                        @if ($errors->has('section_2_right_description'))
-                                            <div class="error" style="color:red;">
-                                                {{ $errors->first('section_2_right_description') }}</div>
                                         @endif
                                     </div>
                                 </div>
@@ -512,18 +368,6 @@
                 height: 400
             });
 
-            $('#section2_left_des').summernote({
-                placeholder: 'Section 2 Left Description*',
-                tabsize: 2,
-                height: 400
-            });
-
-            $('#section2_right_des').summernote({
-                placeholder: 'Section 2 Right Description*',
-                tabsize: 2,
-                height: 400
-            });
-
             $('#section3_des').summernote({
                 placeholder: 'Section 3 Description*',
                 tabsize: 2,
@@ -546,42 +390,6 @@
                 reader.onload = (e) => {
                     $('#banner_image_preview').show();
                     $('#banner_image_preview').attr('src', e.target.result);
-                }
-                reader.readAsDataURL(this.files[0]);
-            });
-        });
-    </script>
-    <script>
-        $(document).ready(function() {
-            $('#section_2_left').change(function() {
-                let reader = new FileReader();
-                reader.onload = (e) => {
-                    $('#section_2_left_preview').show();
-                    $('#section_2_left_preview').attr('src', e.target.result);
-                }
-                reader.readAsDataURL(this.files[0]);
-            });
-        });
-    </script>
-    <script>
-        $(document).ready(function() {
-            $('#section_2_left').change(function() {
-                let reader = new FileReader();
-                reader.onload = (e) => {
-                    $('#section_2_left_preview').show();
-                    $('#section_2_left_preview').attr('src', e.target.result);
-                }
-                reader.readAsDataURL(this.files[0]);
-            });
-        });
-    </script>
-    <script>
-        $(document).ready(function() {
-            $('#section_2_right_image').change(function() {
-                let reader = new FileReader();
-                reader.onload = (e) => {
-                    $('#section_2_right_image_preview').show();
-                    $('#section_2_right_image_preview').attr('src', e.target.result);
                 }
                 reader.readAsDataURL(this.files[0]);
             });

@@ -93,16 +93,10 @@ class HomeCmsController extends Controller
             'banner_title' => 'required',
             'banner_image' => 'nullable|mimes:jpeg,jpg,png,gif,webp',
             'banner_video' => 'nullable|mimes:mp4,ogx,oga,ogv,ogg,webm',
+            'show_banner_image' => 'nullable|boolean',
             'section_1_title' => 'required',
             'section_1_sub_title' => 'required',
-            'section_1_video' => 'nullable|mimes:mp4,ogx,oga,ogv,ogg,webm',
             'section_1_description' => 'required',
-            'section_2_left_title' => 'required',
-            'section_2_left_image' => 'nullable|mimes:jpeg,jpg,png,gif,webp',
-            'section_2_left_description' => 'required',
-            'section_2_right_title' => 'required',
-            'section_2_right_image' => 'nullable|mimes:jpeg,jpg,png,gif,webp',
-            'section_2_right_description' => 'required',
             'section_3_title' => 'required',
             'section_3_description' => 'required',
             'section_4_title' => 'required',
@@ -123,13 +117,10 @@ class HomeCmsController extends Controller
         }
 
         $home->banner_title = $request->banner_title;
+        $home->show_banner_image = $request->boolean('show_banner_image');
         $home->section_1_title = $request->section_1_title;
         $home->section_1_sub_title = $request->section_1_sub_title;
         $home->section_1_description = $request->section_1_description;
-        $home->section_2_left_title = $request->section_2_left_title;
-        $home->section_2_left_description = $request->section_2_left_description;
-        $home->section_2_right_title = $request->section_2_right_title;
-        $home->section_2_right_description = $request->section_2_right_description;
         $home->section_3_title = $request->section_3_title;
         $home->section_3_description = $request->section_3_description;
         $home->section_4_title = $request->section_4_title;
@@ -146,15 +137,6 @@ class HomeCmsController extends Controller
         }
         if ($request->hasFile('banner_video')) {
             $home->banner_video = $this->imageUpload($request->file('banner_video'), 'home');
-        }
-        if ($request->hasFile('section_1_video')) {
-            $home->section_1_video = $this->imageUpload($request->file('section_1_video'), 'home');
-        }
-        if ($request->hasFile('section_2_left_image')) {
-            $home->section_2_left_image = $this->imageUpload($request->file('section_2_left_image'), 'home');
-        }
-        if ($request->hasFile('section_2_right_image')) {
-            $home->section_2_right_image = $this->imageUpload($request->file('section_2_right_image'), 'home');
         }
 
 

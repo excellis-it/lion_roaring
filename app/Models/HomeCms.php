@@ -10,4 +10,8 @@ class HomeCms extends BaseModel
     use HasFactory;
 
     protected $guarded = [];
+
+    protected $casts = [
+        'show_banner_image' => 'boolean',
+    ];
 }
