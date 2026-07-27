@@ -25,6 +25,7 @@
         <div class="inner_page">
 
             <div class="card table_sec stuff-list-table">
+                @include('user.admin.partials.cms-us-prefill-banner')
                 <div class="row justify-content-end">
                     <div class="col-md-6">
                         <div class="row g-1 justify-content-end">
@@ -37,16 +38,15 @@
                                 </div>
                             </div> --}}
                             <div class="col-md-4">
-                                {{--
                                 <select name="content_country_code" id="content_country_code" class="form-control">
                                     @foreach (\App\Models\Country::all() as $country)
                                         <option value="{{ $country->code }}"
-                                            {{ request()->get('content_country_code', 'US') == $country->code ? 'selected' : '' }}>
+                                            {{ ($cmsEditCountryCode ?? request()->get('content_country_code', 'US')) == $country->code ? 'selected' : '' }}>
                                             {{ $country->name }}
                                         </option>
                                     @endforeach
                                 </select>
-                                <label for="country_code">Content Country</label> --}}
+                                <label for="country_code">Content Country</label>
                             </div>
                         </div>
                     </div>
@@ -77,19 +77,23 @@
                                                     style="width: 100px; height: 100px; object-fit: contain; background: #f5f5f5; border-radius: 4px;"></a></td>
                                         <td>{{ $item->country?->name ?? '' }}</td>
                                         <td>
-                                            <div class="edit-1 d-flex align-items-center justify-content-center">
-                                                @if (auth()->user()->can('Edit Gallery'))
-                                                    <a title="Edit " href="{{ route('gallery.edit', $item->id) }}">
-                                                        <span class="edit-icon"><i class="ph ph-pencil-simple"></i></span>
-                                                    </a>
-                                                @endif
-                                                @if (auth()->user()->can('Delete Gallery'))
-                                                    <a title="Delete " data-route="{{ route('gallery.delete', $item->id) }}"
-                                                        href="javascript:void(0);" id="delete">
-                                                        <span class="trash-icon"><i class="ph ph-trash"></i></span>
-                                                    </a>
-                                                @endif
-                                            </div>
+                                            @if (is_null($item->id))
+                                                <span class="badge bg-info text-dark">US draft</span>
+                                            @else
+                                                <div class="edit-1 d-flex align-items-center justify-content-center">
+                                                    @if (auth()->user()->can('Edit Gallery'))
+                                                        <a title="Edit " href="{{ route('gallery.edit', $item->id) }}">
+                                                            <span class="edit-icon"><i class="ph ph-pencil-simple"></i></span>
+                                                        </a>
+                                                    @endif
+                                                    @if (auth()->user()->can('Delete Gallery'))
+                                                        <a title="Delete " data-route="{{ route('gallery.delete', $item->id) }}"
+                                                            href="javascript:void(0);" id="delete">
+                                                            <span class="trash-icon"><i class="ph ph-trash"></i></span>
+                                                        </a>
+                                                    @endif
+                                                </div>
+                                            @endif
                                         </td>
                                     </tr>
                                 @endforeach

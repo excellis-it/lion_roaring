@@ -40,6 +40,17 @@ use App\Models\EstoreSetting;
 class EstoreCmsController extends Controller
 {
     use ImageTrait;
+
+    /**
+     * Resolve the country_code an Estore CMS editor should load/save for.
+     */
+    private function resolveCountryCode(Request $request): string
+    {
+        $regionalCode = optional(\App\Models\Country::find(auth()->user()->country))->code;
+
+        return Helper::resolveCmsEditCountryCode($request, $regionalCode);
+    }
+
     public function memberPrivacyPolicy()
     {
         $policy = MemberPrivacyPolicy::orderBy('id', 'desc')->first();
@@ -94,13 +105,25 @@ class EstoreCmsController extends Controller
 
         if (auth()->user()->can('Manage Estore CMS')) {
             if ($page == 'home') {
-                $cms = EcomHomeCms::where('country_code', $request->get('content_country_code', 'US'))->orderBy('id', 'desc')->first();
-                return view('user.store-cms.home_cms')->with('cms', $cms);
-            } elseif ($page == 'footer') {
-                $cms = EcomFooterCms::where('country_code', $request->get('content_country_code', 'US'))->orderBy('id', 'desc')->first();
+                $countryCode = $this->resolveCountryCode($request);
+                $loaded = Helper::loadCmsRowForEdit(EcomHomeCms::class, $countryCode);
 
-                // return $cms;
-                return view('user.store-cms.footer_cms')->with('cms', $cms);
+                return view('user.store-cms.home_cms', [
+                    'cms' => $loaded['row'],
+                    'isUsPrefill' => $loaded['isUsPrefill'],
+                    'cmsEditCountryCode' => $loaded['countryCode'],
+                    'prefillCountryName' => Helper::cmsPrefillCountryName($loaded['countryCode']),
+                ]);
+            } elseif ($page == 'footer') {
+                $countryCode = $this->resolveCountryCode($request);
+                $loaded = Helper::loadCmsRowForEdit(EcomFooterCms::class, $countryCode);
+
+                return view('user.store-cms.footer_cms', [
+                    'cms' => $loaded['row'],
+                    'isUsPrefill' => $loaded['isUsPrefill'],
+                    'cmsEditCountryCode' => $loaded['countryCode'],
+                    'prefillCountryName' => Helper::cmsPrefillCountryName($loaded['countryCode']),
+                ]);
             } else {
                 // $cms = EcomCmsPage::where('slug', $page)->first();
                 $cms_default = EcomCmsPage::where('slug', $page)->orderBy('id', 'asc')->first();
@@ -111,23 +134,39 @@ class EstoreCmsController extends Controller
                 $page_title = $cms_default->page_title;
                 $slug = $cms_default->slug;
 
-                $country = $request->get('content_country_code', 'US');
+                $country = $this->resolveCountryCode($request);
                 $cms = EcomCmsPage::where('slug', $page)->where('country_code', $country)->orderBy('id', 'desc')->first();
+                $isUsPrefill = false;
 
                 if (!$cms) {
-                    // create a temporary model instance for the view populated with defaults
-                    $cms = new EcomCmsPage();
-                    $cms->page_name = $page_name;
-                    $cms->page_title = $page_title;
-                    $cms->slug = $slug;
-                    $cms->country_code = $country;
-                    $cms->page_content = $cms_default->page_content ?? '';
-                } else {
-                    $cms->page_name = $page_name;
-                    $cms->page_title = $page_title;
-                    $cms->slug = $slug;
+                    $usCms = $country !== 'US'
+                        ? EcomCmsPage::where('slug', $page)->where('country_code', 'US')->orderBy('id', 'desc')->first()
+                        : null;
+
+                    if ($usCms) {
+                        // create a display clone with no primary key so saving creates the selected country's row
+                        $cms = $usCms->replicate();
+                        $cms->exists = false;
+                        $cms->id = null;
+                        $cms->country_code = $country;
+                        $isUsPrefill = true;
+                    } else {
+                        // create a temporary model instance for the view populated with defaults
+                        $cms = new EcomCmsPage();
+                        $cms->country_code = $country;
+                        $cms->page_content = $cms_default->page_content ?? '';
+                    }
                 }
-                return view('user.store-cms.cms')->with('cms', $cms);
+                $cms->page_name = $page_name;
+                $cms->page_title = $page_title;
+                $cms->slug = $slug;
+
+                return view('user.store-cms.cms', [
+                    'cms' => $cms,
+                    'isUsPrefill' => $isUsPrefill,
+                    'cmsEditCountryCode' => $country,
+                    'prefillCountryName' => Helper::cmsPrefillCountryName($country),
+                ]);
             }
         } else {
             abort(403, 'You do not have permission to access this page.');
@@ -160,11 +199,13 @@ class EstoreCmsController extends Controller
             //     'slider_images.*' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
             // ]);
 
-            $country = $request->input('content_country_code', 'US');
+            $country = $this->resolveCountryCode($request);
 
-            if ($request->id) {
-                $cms = EcomHomeCms::find($request->id) ?? EcomHomeCms::firstOrNew(['country_code' => $country]);
-            } else {
+            $cms = null;
+            if ($request->filled('id')) {
+                $cms = EcomHomeCms::where('id', $request->id)->where('country_code', $country)->first();
+            }
+            if (!$cms) {
                 $cms = EcomHomeCms::firstOrNew(['country_code' => $country]);
             }
             $message = $cms->exists ? 'Home CMS updated successfully' : 'Home CMS added successfully';
@@ -329,9 +370,12 @@ class EstoreCmsController extends Controller
                 'footer_youtube_link' => 'nullable|string',
             ]);
 
-            if ($request->id) {
-                $cms = EcomFooterCms::find($request->id);
-                $message = 'Footer CMS updated successfully';
+            $country = $this->resolveCountryCode($request);
+
+            if ($request->filled('id')) {
+                $cms = EcomFooterCms::where('id', $request->id)->where('country_code', $country)->first();
+                $message = $cms ? 'Footer CMS updated successfully' : 'Footer CMS added successfully';
+                $cms = $cms ?: new EcomFooterCms();
             } else {
                 $cms = new EcomFooterCms();
                 $message = 'Footer CMS added successfully';
@@ -354,8 +398,9 @@ class EstoreCmsController extends Controller
 
             // $cms->save();
 
-            $country = $request->content_country_code ?? 'US';
-            $cms = EcomFooterCms::updateOrCreate(['country_code' => $country], array_merge($cms->getAttributes(), ['country_code' => $country]));
+            $attrs = $cms->getAttributes();
+            unset($attrs['id']);
+            $cms = EcomFooterCms::updateOrCreate(['country_code' => $country], array_merge($attrs, ['country_code' => $country]));
 
 
             return redirect()->back()->with('message', $message);
@@ -364,10 +409,12 @@ class EstoreCmsController extends Controller
         }
     }
 
-    public function create()
+    public function create(Request $request)
     {
         if (auth()->user()->can('Create Estore CMS')) {
-            return view('user.store-cms.create');
+            return view('user.store-cms.create', [
+                'cmsEditCountryCode' => $this->resolveCountryCode($request),
+            ]);
         } else {
             abort(403, 'You do not have permission to access this page.');
         }
@@ -395,7 +442,7 @@ class EstoreCmsController extends Controller
                 $cms->page_banner_image = $this->imageUpload($request->file('page_banner_image'), 'ecom_cms', true);
             }
 
-            $cms->country_code = $request->content_country_code ?? 'US';
+            $cms->country_code = $this->resolveCountryCode($request);
 
             $cms->save();
             return redirect()->route('user.store-cms.list')->with('message', 'CMS page added successfully');
@@ -421,13 +468,15 @@ class EstoreCmsController extends Controller
 
 
 
-            if ($request->id) {
-                $cms = EcomCmsPage::find($request->id);
-                // return 'found';
-                $message = 'CMS updated successfully';
-            } else {
+            $country = $this->resolveCountryCode($request);
+
+            $cms = null;
+            if ($request->filled('id')) {
+                $cms = EcomCmsPage::where('id', $request->id)->where('country_code', $country)->first();
+            }
+            $message = $cms ? 'CMS updated successfully' : 'CMS added successfully';
+            if (!$cms) {
                 $cms = new EcomCmsPage();
-                $message = 'CMS added successfully';
             }
 
             $cms->page_name = $request->page_name;
@@ -437,8 +486,6 @@ class EstoreCmsController extends Controller
             if ($request->hasFile('page_banner_image')) {
                 $cms->page_banner_image = $this->imageUpload($request->file('page_banner_image'), 'ecom_cms');
             }
-
-            $country = $request->content_country_code ?? 'US';
 
             $cms->country_code = $country;
             $cms->save();
@@ -1420,8 +1467,15 @@ class EstoreCmsController extends Controller
     public function contactCms(Request $request)
     {
         if (auth()->user()->can('Manage Estore CMS')) {
-            $cms = EcomContactCms::where('country_code', $request->get('content_country_code', 'US'))->orderBy('id', 'desc')->first();
-            return view('user.store-cms.contact_cms', compact('cms'));
+            $countryCode = $this->resolveCountryCode($request);
+            $loaded = Helper::loadCmsRowForEdit(EcomContactCms::class, $countryCode);
+
+            return view('user.store-cms.contact_cms', [
+                'cms' => $loaded['row'],
+                'isUsPrefill' => $loaded['isUsPrefill'],
+                'cmsEditCountryCode' => $loaded['countryCode'],
+                'prefillCountryName' => Helper::cmsPrefillCountryName($loaded['countryCode']),
+            ]);
         }
         abort(403, 'You do not have permission to access this page.');
     }
@@ -1449,9 +1503,12 @@ class EstoreCmsController extends Controller
             'map_iframe_src' => 'nullable|string',
         ]);
 
-        if ($request->id) {
-            $cms = EcomContactCms::find($request->id);
-            $message = 'Contact CMS updated successfully';
+        $country = $this->resolveCountryCode($request);
+
+        if ($request->filled('id')) {
+            $cms = EcomContactCms::where('id', $request->id)->where('country_code', $country)->first();
+            $message = $cms ? 'Contact CMS updated successfully' : 'Contact CMS added successfully';
+            $cms = $cms ?: new EcomContactCms();
         } else {
             $cms = new EcomContactCms();
             $message = 'Contact CMS added successfully';
@@ -1473,8 +1530,9 @@ class EstoreCmsController extends Controller
         }
 
         // $cms->save();
-        $country = $request->content_country_code ?? 'US';
-        $cms = EcomContactCms::updateOrCreate(['country_code' => $country], array_merge($cms->getAttributes(), ['country_code' => $country]));
+        $attrs = $cms->getAttributes();
+        unset($attrs['id']);
+        $cms = EcomContactCms::updateOrCreate(['country_code' => $country], array_merge($attrs, ['country_code' => $country]));
         return redirect()->back()->with('message', $message);
     }
 }

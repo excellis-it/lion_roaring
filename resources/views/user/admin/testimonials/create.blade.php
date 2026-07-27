@@ -25,7 +25,7 @@
                     </div>
 
                     <div class="row">
-                         @if (auth()->user()->user_type == 'Global')
+                         @if (\App\Helpers\Helper::canSelectCmsContentCountry())
                         <div class="col-md-6 mb-3">
                             <div class="form-group-div">
                                 <div class="form-group">
@@ -33,7 +33,7 @@
                                     <select name="content_country_code" id="content_country_code" class="form-control">
                                         @foreach (\App\Models\Country::all() as $country)
                                             <option value="{{ $country->code }}"
-                                                {{ old('content_country_code', 'US') == $country->code ? 'selected' : '' }}>
+                                                {{ old('content_country_code', $cmsEditCountryCode ?? 'US') == $country->code ? 'selected' : '' }}>
                                                 {{ $country->name }}
                                             </option>
                                         @endforeach

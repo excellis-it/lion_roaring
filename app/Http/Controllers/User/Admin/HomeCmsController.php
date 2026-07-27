@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\User\Admin;
 
+use App\Helpers\Helper;
 use App\Http\Controllers\Controller;
 use App\Models\Country;
 use App\Models\HomeCms;
@@ -37,13 +38,16 @@ class HomeCmsController extends Controller
     public function index(Request $request)
     {
         if (auth()->user()->can('Manage Home Page')) {
-            // $home = HomeCms::orderBy('id', 'desc')->first();
-            if ($this->user_type == 'Global') {
-                $home = HomeCms::where('country_code', $request->get('content_country_code', 'US'))->orderBy('id', 'desc')->first();
-            } else {
-                $home = HomeCms::where('country_code', $this->country->code)->orderBy('id', 'desc')->first();
-            }
-            return view('user.admin.home.update')->with('home', $home);
+            $regionalCode = $this->country->code ?? null;
+            $countryCode = Helper::resolveCmsEditCountryCode($request, $regionalCode);
+            $loaded = Helper::loadCmsRowForEdit(HomeCms::class, $countryCode);
+
+            return view('user.admin.home.update', [
+                'home' => $loaded['row'],
+                'isUsPrefill' => $loaded['isUsPrefill'],
+                'cmsEditCountryCode' => $loaded['countryCode'],
+                'prefillCountryName' => Helper::cmsPrefillCountryName($loaded['countryCode']),
+            ]);
         } else {
             return redirect()->route('user.profile')->with('error', 'You do not have the permission to access this page.');
         }
@@ -67,28 +71,6 @@ class HomeCmsController extends Controller
      */
     public function store(Request $request)
     {
-        // $table->string('banner_title')->nullable();
-        //     $table->string('banner_image')->nullable();
-        //     $table->string('banner_video')->nullable();
-        //     $table->string('section_1_title')->nullable();
-        //     $table->string('section_1_sub_title')->nullable();
-        //     $table->string('section_1_video')->nullable();
-        //     $table->longText('section_1_description')->nullable();
-        //     $table->string('section_2_left_title')->nullable();
-        //     $table->string('section_2_left_image')->nullable();
-        //     $table->longText('section_2_left_description')->nullable();
-        //     $table->string('section_2_right_title')->nullable();
-        //     $table->string('section_2_right_image')->nullable();
-        //     $table->longText('section_2_right_description')->nullable();
-        //     $table->string('section_3_title')->nullable();
-        //     $table->longText('section_3_description')->nullable();
-        //     $table->string('section_4_title')->nullable();
-        //     $table->longText('section_4_description')->nullable();
-        //     $table->string('section_5_title')->nullable();
-        //     $table->string('meta_title')->nullable();
-        //     $table->longText('meta_description')->nullable();
-        //     $table->string('meta_keywords')->nullable();
-
         $request->validate([
             'banner_title' => 'required',
             'banner_image' => 'nullable|mimes:jpeg,jpg,png,gif,webp',
@@ -110,9 +92,16 @@ class HomeCmsController extends Controller
             'meta_keywords' => 'nullable',
         ]);
 
-        if ($request->id != '') {
-            $home = HomeCms::find($request->id);
-        } else {
+        $country = Helper::resolveCmsEditCountryCode($request, $this->country->code ?? null);
+
+        $home = null;
+        if ($request->filled('id')) {
+            $home = HomeCms::query()
+                ->where('id', $request->id)
+                ->where('country_code', $country)
+                ->first();
+        }
+        if (!$home) {
             $home = new HomeCms();
         }
 
@@ -139,15 +128,9 @@ class HomeCmsController extends Controller
             $home->banner_video = $this->imageUpload($request->file('banner_video'), 'home');
         }
 
-
-        if ($this->user_type == 'Global') {
-            $country = $request->content_country_code ?? 'US';
-        } else {
-            $country = $this->country->code;
-        }
-        $home = HomeCms::updateOrCreate(['country_code' => $country], array_merge($home->getAttributes(), ['country_code' => $country]));
-
-
+        $attrs = $home->getAttributes();
+        unset($attrs['id']);
+        HomeCms::updateOrCreate(['country_code' => $country], array_merge($attrs, ['country_code' => $country]));
 
         return redirect()->back()->with('message', 'Home Page Content Updated Successfully');
     }

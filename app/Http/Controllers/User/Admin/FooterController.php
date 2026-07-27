@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\User\Admin;
 
+use App\Helpers\Helper;
 use App\Http\Controllers\Controller;
 use App\Models\Country;
 use App\Models\Footer;
@@ -32,13 +33,17 @@ class FooterController extends Controller
     public function index(Request $request)
     {
         if (auth()->user()->can('Manage Footer')) {
-            if ($this->user_type == 'Global') {
-                $footer = Footer::where('country_code', $request->get('content_country_code', 'US'))->orderBy('id', 'desc')->first();
-            } else {
-                $footer = Footer::where('country_code', $this->country->code)->orderBy('id', 'desc')->first();
-            }
+            $regionalCode = $this->country->code ?? null;
+            $countryCode = Helper::resolveCmsEditCountryCode($request, $regionalCode);
+            $loaded = Helper::loadCmsRowForEdit(Footer::class, $countryCode);
+
             // BUG-058: social links UI removed (not rendered on website footer)
-            return view('user.admin.footer.update')->with(compact('footer'));
+            return view('user.admin.footer.update', [
+                'footer' => $loaded['row'],
+                'isUsPrefill' => $loaded['isUsPrefill'],
+                'cmsEditCountryCode' => $loaded['countryCode'],
+                'prefillCountryName' => Helper::cmsPrefillCountryName($loaded['countryCode']),
+            ]);
         } else {
             abort(403, 'You do not have permission to access this page.');
         }
@@ -57,9 +62,16 @@ class FooterController extends Controller
             'footer_newsletter_title' => 'required',
         ]);
 
-        if ($request->id != '') {
-            $footer = Footer::find($request->id);
-        } else {
+        $country = Helper::resolveCmsEditCountryCode($request, $this->country->code ?? null);
+
+        $footer = null;
+        if ($request->filled('id')) {
+            $footer = Footer::query()
+                ->where('id', $request->id)
+                ->where('country_code', $country)
+                ->first();
+        }
+        if (!$footer) {
             $footer = new Footer();
         }
 
@@ -85,12 +97,9 @@ class FooterController extends Controller
             $footer->footer_flag = $this->imageUpload($request->file('footer_flag'), 'footer');
         }
 
-        if ($this->user_type == 'Global') {
-            $country = $request->content_country_code ?? 'US';
-        } else {
-            $country = $this->country->code;
-        }
-        $footer = Footer::updateOrCreate(['country_code' => $country], array_merge($footer->getAttributes(), ['country_code' => $country]));
+        $attrs = $footer->getAttributes();
+        unset($attrs['id']);
+        $footer = Footer::updateOrCreate(['country_code' => $country], array_merge($attrs, ['country_code' => $country]));
 
         return redirect()->back()->with('message', 'Footer updated successfully');
     }

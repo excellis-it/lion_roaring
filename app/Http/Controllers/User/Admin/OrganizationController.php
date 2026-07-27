@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\User\Admin;
 
+use App\Helpers\Helper;
 use App\Http\Controllers\Controller;
 use App\Models\Country;
 use App\Models\Organization;
@@ -40,12 +41,16 @@ class OrganizationController extends Controller
     public function index(Request $request)
     {
         if (auth()->user()->can('Manage Organizations Page')) {
-            if ($this->user_type == 'Global') {
-                $organization = Organization::where('country_code', $request->get('content_country_code', 'US'))->orderBy('id', 'desc')->first();
-            } else {
-                $organization = Organization::where('country_code', $this->country->code)->orderBy('id', 'desc')->first();
-            }
-            return view('user.admin.organization.update')->with(compact('organization'));
+            $regionalCode = $this->country->code ?? null;
+            $countryCode = Helper::resolveCmsEditCountryCode($request, $regionalCode);
+            $loaded = Helper::loadCmsRowForEdit(Organization::class, $countryCode);
+
+            return view('user.admin.organization.update', [
+                'organization' => $loaded['row'],
+                'isUsPrefill' => $loaded['isUsPrefill'],
+                'cmsEditCountryCode' => $loaded['countryCode'],
+                'prefillCountryName' => Helper::cmsPrefillCountryName($loaded['countryCode']),
+            ]);
         } else {
             return redirect()->route('user.profile')->with('error', 'You do not have permission to access this page.');
         }
@@ -116,9 +121,16 @@ class OrganizationController extends Controller
 
         $validator->validate();
 
-        if ($request->id != '') {
-            $organization = Organization::find($request->id);
-        } else {
+        $country = Helper::resolveCmsEditCountryCode($request, $this->country->code ?? null);
+
+        $organization = null;
+        if ($request->filled('id')) {
+            $organization = Organization::query()
+                ->where('id', $request->id)
+                ->where('country_code', $country)
+                ->first();
+        }
+        if (!$organization) {
             $organization = new Organization();
         }
 
@@ -142,14 +154,9 @@ class OrganizationController extends Controller
         }
 
 
-        // $organization->save();
-
-        if ($this->user_type == 'Global') {
-            $country = $request->content_country_code ?? 'US';
-        } else {
-            $country = $this->country->code;
-        }
-        $organization = Organization::updateOrCreate(['country_code' => $country], array_merge($organization->getAttributes(), ['country_code' => $country]));
+        $attrs = $organization->getAttributes();
+        unset($attrs['id']);
+        $organization = Organization::updateOrCreate(['country_code' => $country], array_merge($attrs, ['country_code' => $country]));
 
         if ($request->image) {
             $maxOrder = OrganizationImage::where('organization_id', $organization->id)->max('sort_order') ?? -1;

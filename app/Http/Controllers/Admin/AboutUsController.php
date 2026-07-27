@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Helpers\Helper;
 use App\Http\Controllers\Controller;
 use App\Models\AboutUs;
 use App\Traits\ImageTrait;
@@ -18,8 +19,15 @@ class AboutUsController extends Controller
     public function index(Request $request)
     {
         if (auth()->user()->can('Manage About Us Page')) {
-            $about_us = AboutUs::where('country_code', $request->get('content_country_code', 'US'))->orderBy('id', 'desc')->first();
-            return view('admin.about-us.update')->with(compact('about_us'));
+            $countryCode = $request->get('content_country_code', 'US');
+            $loaded = Helper::loadCmsRowForEdit(AboutUs::class, $countryCode);
+
+            return view('admin.about-us.update', [
+                'about_us' => $loaded['row'],
+                'isUsPrefill' => $loaded['isUsPrefill'],
+                'cmsEditCountryCode' => $loaded['countryCode'],
+                'prefillCountryName' => Helper::cmsPrefillCountryName($loaded['countryCode']),
+            ]);
         } else {
             return redirect()->route('admin.dashboard')->with('error', 'Unauthorized Access');
         }
@@ -48,9 +56,16 @@ class AboutUsController extends Controller
             'description' => 'required',
         ]);
 
-        if ($request->id != '') {
-            $about_us = AboutUs::find($request->id);
-        } else {
+        $country = $request->content_country_code ?? 'US';
+
+        $about_us = null;
+        if ($request->filled('id')) {
+            $about_us = AboutUs::query()
+                ->where('id', $request->id)
+                ->where('country_code', $country)
+                ->first();
+        }
+        if (!$about_us) {
             $about_us = new AboutUs();
         }
 
@@ -62,9 +77,10 @@ class AboutUsController extends Controller
         if ($request->hasFile('banner_image')) {
             $about_us->banner_image = $this->imageUpload($request->file('banner_image'), 'about-us');
         }
-       // $about_us->save();
-        $country = $request->content_country_code ?? 'US';
-        $about_us = AboutUs::updateOrCreate(['country_code' => $country], array_merge($about_us->getAttributes(), ['country_code' => $country]));
+
+        $attrs = $about_us->getAttributes();
+        unset($attrs['id']);
+        $about_us = AboutUs::updateOrCreate(['country_code' => $country], array_merge($attrs, ['country_code' => $country]));
 
         return redirect()->back()->with('message', 'About us updated successfully');
     }

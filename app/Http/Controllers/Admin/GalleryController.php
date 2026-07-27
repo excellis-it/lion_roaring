@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Helpers\Helper;
 use App\Http\Controllers\Controller;
 use App\Models\Gallery;
 use App\Traits\ImageTrait;
@@ -15,12 +16,19 @@ class GalleryController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
         if (auth()->user()->can('Manage Gallery')) {
-             $gallery = Gallery::orderByDesc('id')->paginate(15);
-           // $gallery = Gallery::where('country_code', request()->get('content_country_code', 'US'))->orderBy('id', 'desc')->paginate(10);
-            return view('admin.gallery.list', compact('gallery'));
+            $code = $request->get('content_country_code', 'US');
+            $loaded = Helper::loadCmsRowsForEdit(Gallery::class, $code, 'id', 'desc');
+            $gallery = Helper::paginateCollection($loaded['rows'], 15);
+
+            return view('admin.gallery.list', [
+                'gallery' => $gallery,
+                'isUsPrefill' => $loaded['isUsPrefill'],
+                'cmsEditCountryCode' => $loaded['countryCode'],
+                'prefillCountryName' => Helper::cmsPrefillCountryName($loaded['countryCode']),
+            ]);
         } else {
             abort(403, 'You do not have permission to access this page.');
         }

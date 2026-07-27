@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\User\Admin;
 
+use App\Helpers\Helper;
 use App\Http\Controllers\Controller;
 use App\Models\Country;
 use App\Models\EcclesiaAssociation;
@@ -36,12 +37,16 @@ class EcclesiaAssociationController extends Controller
     public function index(Request $request)
     {
         if (auth()->user()->can('Manage Ecclesia Association Page')) {
-            if ($this->user_type == 'Global') {
-                $ecclesia_association = EcclesiaAssociation::where('country_code', $request->get('content_country_code', 'US'))->orderBy('id', 'desc')->first();
-            } else {
-                $ecclesia_association = EcclesiaAssociation::where('country_code', $this->country->code)->orderBy('id', 'desc')->first();
-            }
-            return view('user.admin.ecclesia-associations.update')->with(compact('ecclesia_association'));
+            $regionalCode = $this->country->code ?? null;
+            $countryCode = Helper::resolveCmsEditCountryCode($request, $regionalCode);
+            $loaded = Helper::loadCmsRowForEdit(EcclesiaAssociation::class, $countryCode);
+
+            return view('user.admin.ecclesia-associations.update', [
+                'ecclesia_association' => $loaded['row'],
+                'isUsPrefill' => $loaded['isUsPrefill'],
+                'cmsEditCountryCode' => $loaded['countryCode'],
+                'prefillCountryName' => Helper::cmsPrefillCountryName($loaded['countryCode']),
+            ]);
         } else {
             return redirect()->route('user.profile')->with('error', 'Unauthorized Access');
         }
@@ -73,9 +78,16 @@ class EcclesiaAssociationController extends Controller
             'description1.required' => 'The partner page content is required.'
         ]);
 
-        if ($request->id != '') {
-            $ecclesia_association = EcclesiaAssociation::find($request->id);
-        } else {
+        $country = Helper::resolveCmsEditCountryCode($request, $this->country->code ?? null);
+
+        $ecclesia_association = null;
+        if ($request->filled('id')) {
+            $ecclesia_association = EcclesiaAssociation::query()
+                ->where('id', $request->id)
+                ->where('country_code', $country)
+                ->first();
+        }
+        if (!$ecclesia_association) {
             $ecclesia_association = new EcclesiaAssociation();
         }
 
@@ -88,13 +100,9 @@ class EcclesiaAssociationController extends Controller
         if ($request->hasFile('banner_image')) {
             $ecclesia_association->banner_image = $this->imageUpload($request->file('banner_image'), 'ecclesia-association');
         }
-        // $ecclesia_association->save();
-        if ($this->user_type == 'Global') {
-            $country = $request->content_country_code ?? 'US';
-        } else {
-            $country = $this->country->code;
-        }
-        $ecclesia_association = EcclesiaAssociation::updateOrCreate(['country_code' => $country], array_merge($ecclesia_association->getAttributes(), ['country_code' => $country]));
+        $attrs = $ecclesia_association->getAttributes();
+        unset($attrs['id']);
+        $ecclesia_association = EcclesiaAssociation::updateOrCreate(['country_code' => $country], array_merge($attrs, ['country_code' => $country]));
 
         return redirect()->back()->with('message', 'Ecclesia Association updated successfully');
     }

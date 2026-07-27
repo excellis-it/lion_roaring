@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\User\Admin;
 
+use App\Helpers\Helper;
 use App\Http\Controllers\Controller;
 use App\Models\Country;
 use App\Models\Detail;
@@ -38,12 +39,15 @@ class DetailsController extends Controller
     public function index(Request $request)
     {
         if (auth()->user()->can('Manage Details Page')) {
-            if ($this->user_type == 'Global') {
-                $details = Detail::where('country_code', $request->get('content_country_code', 'US'))->orderBy('id', 'asc')->get();
-            } else {
-                $details = Detail::where('country_code', $this->country->code)->orderBy('id', 'asc')->get();
-            }
-            return view('user.admin.details.update')->with('details', $details);
+            $countryCode = Helper::resolveCmsEditCountryCode($request, $this->country->code ?? null);
+            $loaded = Helper::loadCmsRowsForEdit(Detail::class, $countryCode, 'id', 'asc');
+
+            return view('user.admin.details.update', [
+                'details' => $loaded['rows'],
+                'isUsPrefill' => $loaded['isUsPrefill'],
+                'cmsEditCountryCode' => $loaded['countryCode'],
+                'prefillCountryName' => Helper::cmsPrefillCountryName($loaded['countryCode']),
+            ]);
         } else {
             abort(403, 'You do not have permission to access this page.');
         }
@@ -67,12 +71,7 @@ class DetailsController extends Controller
      */
     public function store(Request $request)
     {
-
-      if ($this->user_type == 'Global') {
-            $country = $request->content_country_code ?? 'US';
-        } else {
-            $country = $this->country->code;
-        }
+        $country = Helper::resolveCmsEditCountryCode($request, $this->country->code ?? null);
 
         // Determine submitted IDs (if any) and remove only records for this country that aren't submitted
         $submittedIds = $request->image_id ?? [];

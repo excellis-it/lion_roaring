@@ -24,7 +24,7 @@
                     <div class="form-head">
                         {{-- <h4>Menu Section</h4> --}}
                     </div>
-                    @if (auth()->user()->user_type == 'Global')
+                    @if (\App\Helpers\Helper::canSelectCmsContentCountry())
                         <div class="row">
                             <div class="col-md-6 mb-3">
                                 <div class="form-group-div">

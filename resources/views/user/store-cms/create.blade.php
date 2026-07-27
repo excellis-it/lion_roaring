@@ -52,28 +52,32 @@
                             </div>
                         </div>
 
-                        <div class="row mb-4">
-                            <div class="col-md-6">
-                                <div class="form-group-div">
-                                    <div class="form-group">
-                                        <label for="content_country_code">Content Country*</label>
-                                        <select name="content_country_code" id="content_country_code" class="form-control">
-                                            @foreach (\App\Models\Country::all() as $country)
-                                                <option value="{{ $country->code }}"
-                                                    {{ old('content_country_code', 'US') == $country->code ? 'selected' : '' }}>
-                                                    {{ $country->name }}
-                                                </option>
-                                            @endforeach
-                                        </select>
-                                        @if ($errors->has('content_country_code'))
-                                            <div class="error" style="color:red;">
-                                                {{ $errors->first('content_country_code') }}
-                                            </div>
-                                        @endif
+                        @if (\App\Helpers\Helper::canSelectCmsContentCountry())
+                            <div class="row mb-4">
+                                <div class="col-md-6">
+                                    <div class="form-group-div">
+                                        <div class="form-group">
+                                            <label for="content_country_code">Content Country*</label>
+                                            <select name="content_country_code" id="content_country_code" class="form-control">
+                                                @foreach (\App\Models\Country::all() as $country)
+                                                    <option value="{{ $country->code }}"
+                                                        {{ old('content_country_code', $cmsEditCountryCode ?? 'US') == $country->code ? 'selected' : '' }}>
+                                                        {{ $country->name }}
+                                                    </option>
+                                                @endforeach
+                                            </select>
+                                            @if ($errors->has('content_country_code'))
+                                                <div class="error" style="color:red;">
+                                                    {{ $errors->first('content_country_code') }}
+                                                </div>
+                                            @endif
+                                        </div>
                                     </div>
                                 </div>
                             </div>
-                        </div>
+                        @else
+                            <input type="hidden" name="content_country_code" value="{{ $cmsEditCountryCode ?? 'US' }}">
+                        @endif
 
                         <div class="row">
                             <div class="col-md-6 mb-2">

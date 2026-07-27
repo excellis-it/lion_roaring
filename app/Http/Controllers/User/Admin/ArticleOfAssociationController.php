@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\User\Admin;
 
+use App\Helpers\Helper;
 use App\Http\Controllers\Controller;
 use App\Models\Article;
 use App\Models\Country;
@@ -29,12 +30,16 @@ class ArticleOfAssociationController extends Controller
     public function index(Request $request)
     {
         if (auth()->user()->can('Manage Article of Association Page')) {
-            if ($this->user_type == 'Global') {
-                $article = Article::where('country_code', $request->get('content_country_code', 'US'))->orderBy('id', 'desc')->first();
-            } else {
-                $article = Article::where('country_code', $this->country->code)->orderBy('id', 'desc')->first();
-            }
-            return view('user.admin.article_of_association.update', compact('article'));
+            $regionalCode = $this->country->code ?? null;
+            $countryCode = Helper::resolveCmsEditCountryCode($request, $regionalCode);
+            $loaded = Helper::loadCmsRowForEdit(Article::class, $countryCode);
+
+            return view('user.admin.article_of_association.update', [
+                'article' => $loaded['row'],
+                'isUsPrefill' => $loaded['isUsPrefill'],
+                'cmsEditCountryCode' => $loaded['countryCode'],
+                'prefillCountryName' => Helper::cmsPrefillCountryName($loaded['countryCode']),
+            ]);
         } else {
             return redirect()->route('user.profile')->with('error', 'Unauthorized Access');
         }
@@ -62,11 +67,7 @@ class ArticleOfAssociationController extends Controller
             'pdf' => 'nullable|mimes:pdf',
             'checkbox_text' => 'nullable|string|max:255'
         ]);
-        if ($this->user_type == 'Global') {
-            $country = $request->content_country_code ?? 'US';
-        } else {
-            $country = $this->country->code;
-        }
+        $country = Helper::resolveCmsEditCountryCode($request, $this->country->code ?? null);
         $data = ['country_code' => $country];
         if ($request->hasFile('pdf')) {
             $data['pdf'] = $this->imageUpload($request->file('pdf'), 'article_of_association');

@@ -1,6 +1,6 @@
 ---
 title: E-Store
-updated: 2026-07-24
+updated: 2026-07-27
 status: ready
 sidebar_key: e_store
 ---
@@ -52,10 +52,12 @@ Warehouse admins: `isWarehouseAdmin()` for scoped product tools.
 
 | Actor | Behavior |
 |-------|----------|
-| Global CMS editor | `content_country_code` for Estore CMS pages |
-| Regional | Own country CMS only |
+| Global user, or Super Admin on the global domain | Sees the Content Country picker (`Helper::canSelectCmsContentCountry()`) on Estore CMS editors (Home, Footer, Contact, and slug pages) |
+| Regional user | No Content Country picker; editor is locked to their own country (hidden `content_country_code` field) |
 | All shoppers | Bound to current domain instance; wrong `user_type` host → logout |
 | Warehouse | Physical availability by nearest warehouse for that shopper context |
+
+**US content prefill:** Opening an Estore CMS editor (Home, Footer, Contact, or a slug page) for a country with no saved row shows that page's **US** content as defaults, with a banner noting the content is a US prefill. Saving creates a new row for the selected country — the source US row is never modified. If a country already has its own row, that row is shown as-is (no prefill/banner).
 
 ### Mobile
 

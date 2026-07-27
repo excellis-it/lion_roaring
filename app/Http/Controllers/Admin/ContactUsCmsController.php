@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Helpers\Helper;
 use App\Http\Controllers\Controller;
 use App\Models\ContactUsCms;
 use App\Traits\ImageTrait;
@@ -18,8 +19,15 @@ class ContactUsCmsController extends Controller
     public function index(Request $request)
     {
         if (auth()->user()->can('Manage Contact Us Page')) {
-            $contact_us = ContactUsCms::where('country_code', $request->get('content_country_code', 'US'))->orderBy('id', 'desc')->first();
-            return view('admin.contact-us-cms.update')->with(compact('contact_us'));
+            $countryCode = $request->get('content_country_code', 'US');
+            $loaded = Helper::loadCmsRowForEdit(ContactUsCms::class, $countryCode);
+
+            return view('admin.contact-us-cms.update', [
+                'contact_us' => $loaded['row'],
+                'isUsPrefill' => $loaded['isUsPrefill'],
+                'cmsEditCountryCode' => $loaded['countryCode'],
+                'prefillCountryName' => Helper::cmsPrefillCountryName($loaded['countryCode']),
+            ]);
         } else {
             return redirect()->route('admin.dashboard')->with('error', 'Unauthorized Access');
         }
@@ -52,9 +60,16 @@ class ContactUsCmsController extends Controller
             'description' => 'required',
         ]);
 
-        if ($request->id != '') {
-            $contact_us = ContactUsCms::find($request->id);
-        } else {
+        $country = $request->content_country_code ?? 'US';
+
+        $contact_us = null;
+        if ($request->filled('id')) {
+            $contact_us = ContactUsCms::query()
+                ->where('id', $request->id)
+                ->where('country_code', $country)
+                ->first();
+        }
+        if (!$contact_us) {
             $contact_us = new ContactUsCms();
         }
 
@@ -67,9 +82,9 @@ class ContactUsCmsController extends Controller
         if ($request->hasFile('banner_image')) {
             $contact_us->banner_image = $this->imageUpload($request->file('banner_image'), 'contact-us-cms');
         }
-        // $contact_us->save();
-        $country = $request->content_country_code ?? 'US';
-        $contact_us = ContactUsCms::updateOrCreate(['country_code' => $country], array_merge($contact_us->getAttributes(), ['country_code' => $country]));
+        $attrs = $contact_us->getAttributes();
+        unset($attrs['id']);
+        $contact_us = ContactUsCms::updateOrCreate(['country_code' => $country], array_merge($attrs, ['country_code' => $country]));
 
         return redirect()->route('contact-us-cms.index')->with('message', 'Contact Us created successfully.');
     }

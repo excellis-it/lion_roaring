@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Helpers\Helper;
 use App\Http\Controllers\Controller;
 use App\Models\Article;
 use App\Traits\ImageTrait;
@@ -14,8 +15,15 @@ class ArticleOfAssociationController extends Controller
     public function index(Request $request)
     {
         if (auth()->user()->can('Manage Article of Association Page')) {
-            $article = Article::where('country_code', $request->get('content_country_code', 'US'))->orderBy('id', 'desc')->first();
-            return view('admin.article_of_association.update', compact('article'));
+            $countryCode = $request->get('content_country_code', 'US');
+            $loaded = Helper::loadCmsRowForEdit(Article::class, $countryCode);
+
+            return view('admin.article_of_association.update', [
+                'article' => $loaded['row'],
+                'isUsPrefill' => $loaded['isUsPrefill'],
+                'cmsEditCountryCode' => $loaded['countryCode'],
+                'prefillCountryName' => Helper::cmsPrefillCountryName($loaded['countryCode']),
+            ]);
         } else {
             return redirect()->route('admin.dashboard')->with('error', 'Unauthorized Access');
         }

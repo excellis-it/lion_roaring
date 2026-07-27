@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\User\Admin;
 
+use App\Helpers\Helper;
 use App\Http\Controllers\Controller;
 use App\Models\Country;
 use App\Models\PrivacyPolicy;
@@ -29,12 +30,16 @@ class PrivacyPolicyController extends Controller
     public function index(Request $request)
     {
         if (auth()->user()->can('Manage Privacy Policy Page')) {
-            if ($this->user_type == 'Global') {
-                $privacy_policy = PrivacyPolicy::where('country_code', $request->get('content_country_code', 'US'))->orderBy('id', 'desc')->first();
-            } else {
-                $privacy_policy = PrivacyPolicy::where('country_code', $this->country->code)->orderBy('id', 'desc')->first();
-            }
-            return view('user.admin.privacy-policy.index')->with(compact('privacy_policy'));
+            $regionalCode = $this->country->code ?? null;
+            $countryCode = Helper::resolveCmsEditCountryCode($request, $regionalCode);
+            $loaded = Helper::loadCmsRowForEdit(PrivacyPolicy::class, $countryCode);
+
+            return view('user.admin.privacy-policy.index', [
+                'privacy_policy' => $loaded['row'],
+                'isUsPrefill' => $loaded['isUsPrefill'],
+                'cmsEditCountryCode' => $loaded['countryCode'],
+                'prefillCountryName' => Helper::cmsPrefillCountryName($loaded['countryCode']),
+            ]);
         } else {
             abort(403, 'You do not have permission to access this page.');
         }
@@ -55,22 +60,25 @@ class PrivacyPolicyController extends Controller
             'description.required' => 'Privacy Policy description is required',
         ]);
 
-        if ($request->id != '') {
-            $privacy_policy = PrivacyPolicy::find($request->id);
-        } else {
+        $country = Helper::resolveCmsEditCountryCode($request, $this->country->code ?? null);
+
+        $privacy_policy = null;
+        if ($request->filled('id')) {
+            $privacy_policy = PrivacyPolicy::query()
+                ->where('id', $request->id)
+                ->where('country_code', $country)
+                ->first();
+        }
+        if (!$privacy_policy) {
             $privacy_policy = new PrivacyPolicy();
         }
 
         $privacy_policy->text = $request->text;
         $privacy_policy->description = $request->description;
-        // $privacy_policy->save();
 
-        if ($this->user_type == 'Global') {
-            $country = $request->content_country_code ?? 'US';
-        } else {
-            $country = $this->country->code;
-        }
-        $privacy_policy = PrivacyPolicy::updateOrCreate(['country_code' => $country], array_merge($privacy_policy->getAttributes(), ['country_code' => $country]));
+        $attrs = $privacy_policy->getAttributes();
+        unset($attrs['id']);
+        $privacy_policy = PrivacyPolicy::updateOrCreate(['country_code' => $country], array_merge($attrs, ['country_code' => $country]));
 
         return redirect()->back()->with('message', 'Privacy Policy updated successfully');
     }

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Helpers\Helper;
 use App\Http\Controllers\Controller;
 use App\Models\Organization;
 use App\Models\OrganizationImage;
@@ -22,8 +23,15 @@ class OrganizationController extends Controller
     public function index(Request $request)
     {
         if (auth()->user()->can('Manage Organizations Page')) {
-            $organization = Organization::where('country_code', $request->get('content_country_code', 'US'))->orderBy('id', 'desc')->first();
-            return view('admin.organization.update')->with(compact('organization'));
+            $countryCode = $request->get('content_country_code', 'US');
+            $loaded = Helper::loadCmsRowForEdit(Organization::class, $countryCode);
+
+            return view('admin.organization.update', [
+                'organization' => $loaded['row'],
+                'isUsPrefill' => $loaded['isUsPrefill'],
+                'cmsEditCountryCode' => $loaded['countryCode'],
+                'prefillCountryName' => Helper::cmsPrefillCountryName($loaded['countryCode']),
+            ]);
         } else {
             return redirect()->route('admin.dashboard')->with('error', 'You do not have permission to access this page.');
         }
@@ -61,9 +69,16 @@ class OrganizationController extends Controller
             'project_section_two_description' => 'nullable',
         ]);
 
-        if ($request->id != '') {
-            $organization = Organization::find($request->id);
-        } else {
+        $country = $request->content_country_code ?? 'US';
+
+        $organization = null;
+        if ($request->filled('id')) {
+            $organization = Organization::query()
+                ->where('id', $request->id)
+                ->where('country_code', $country)
+                ->first();
+        }
+        if (!$organization) {
             $organization = new Organization();
         }
 
@@ -87,10 +102,9 @@ class OrganizationController extends Controller
         }
 
 
-        // $organization->save();
-
-        $country = $request->content_country_code ?? 'US';
-        $organization = Organization::updateOrCreate(['country_code' => $country], array_merge($organization->getAttributes(), ['country_code' => $country]));
+        $attrs = $organization->getAttributes();
+        unset($attrs['id']);
+        $organization = Organization::updateOrCreate(['country_code' => $country], array_merge($attrs, ['country_code' => $country]));
 
         if ($request->image) {
             foreach ($request->image as $key => $image) {

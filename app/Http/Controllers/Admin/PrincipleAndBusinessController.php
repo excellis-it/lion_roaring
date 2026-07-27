@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Helpers\Helper;
 use App\Http\Controllers\Controller;
 use App\Models\PrincipalAndBusiness;
 use App\Models\PrincipleBusinessImage;
@@ -21,9 +22,20 @@ class PrincipleAndBusinessController extends Controller
     public function index(Request $request)
     {
         if (auth()->user()->can('Manage Principle and Business Page')) {
-            $business = PrincipalAndBusiness::where('country_code', $request->get('content_country_code', 'US'))->orderBy('id', 'desc')->first();
-            $principle_images = PrincipleBusinessImage::get();
-            return view('admin.principle-and-business.update')->with(compact('business', 'principle_images'));
+            $countryCode = $request->get('content_country_code', 'US');
+            $loaded = Helper::loadCmsRowForEdit(PrincipalAndBusiness::class, $countryCode);
+            $business = $loaded['row'];
+            $principle_images = $business && $business->id
+                ? PrincipleBusinessImage::where('principle_id', $business->id)->get()
+                : collect();
+
+            return view('admin.principle-and-business.update', [
+                'business' => $business,
+                'principle_images' => $principle_images,
+                'isUsPrefill' => $loaded['isUsPrefill'],
+                'cmsEditCountryCode' => $loaded['countryCode'],
+                'prefillCountryName' => Helper::cmsPrefillCountryName($loaded['countryCode']),
+            ]);
         } else {
             return redirect()->route('admin.home')->with('error', 'Unauthorized Access');
         }
@@ -56,9 +68,16 @@ class PrincipleAndBusinessController extends Controller
             'description4' => 'required',
         ]);
 
-        if ($request->id != '') {
-            $business = PrincipalAndBusiness::find($request->id);
-        } else {
+        $country = $request->content_country_code ?? 'US';
+
+        $business = null;
+        if ($request->filled('id')) {
+            $business = PrincipalAndBusiness::query()
+                ->where('id', $request->id)
+                ->where('country_code', $country)
+                ->first();
+        }
+        if (!$business) {
             $business = new PrincipalAndBusiness();
         }
 
@@ -77,9 +96,9 @@ class PrincipleAndBusinessController extends Controller
             ]);
             $business->banner_image = $this->imageUpload($request->file('banner_image'), 'principle-and-business');
         }
-        // $business->save();
-        $country = $request->content_country_code ?? 'US';
-        $business = PrincipalAndBusiness::updateOrCreate(['country_code' => $country], array_merge($business->getAttributes(), ['country_code' => $country]));
+        $attrs = $business->getAttributes();
+        unset($attrs['id']);
+        $business = PrincipalAndBusiness::updateOrCreate(['country_code' => $country], array_merge($attrs, ['country_code' => $country]));
 
         if ($request->hasFile('image')) {
             foreach ($request->file('image') as $image) {

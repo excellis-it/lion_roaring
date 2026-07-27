@@ -21,15 +21,17 @@ class OurGovernanceController extends Controller
 
     public function index(Request $request)
     {
-        //  return $request->get('content_country_code', 'US');
         if (auth()->user()->can('Manage Our Governance')) {
-            // $our_governances = OurGovernance::orderBy('id', 'desc')->paginate(10);
-            $our_governances = OurGovernance::where('country_code', $request->get('content_country_code', 'US'))
-                ->orderBy('order_no', 'asc')
-                ->orderBy('id', 'desc')
-                ->paginate(10);
-            //   return $our_governances;
-            return view('admin.our-governances.list')->with(compact('our_governances'));
+            $code = $request->get('content_country_code', 'US');
+            $loaded = Helper::loadCmsRowsForEdit(OurGovernance::class, $code, 'order_no', 'asc');
+            $our_governances = Helper::paginateCollection($loaded['rows'], 10);
+
+            return view('admin.our-governances.list', [
+                'our_governances' => $our_governances,
+                'isUsPrefill' => $loaded['isUsPrefill'],
+                'cmsEditCountryCode' => $loaded['countryCode'],
+                'prefillCountryName' => Helper::cmsPrefillCountryName($loaded['countryCode']),
+            ]);
         } else {
             abort(403, 'You do not have permission to access this page.');
         }
@@ -49,16 +51,26 @@ class OurGovernanceController extends Controller
                 $sort_type = 'asc';
             }
 
-            $our_governances = OurGovernance::where('country_code', $request->get('content_country_code', 'US'))
-                ->where(function ($q) use ($query) {
-                    $q->where('id', 'like', '%' . $query . '%')
-                        ->orWhere('name', 'like', '%' . $query . '%')
-                        ->orWhere('slug', 'like', '%' . $query . '%');
-                })
-                ->orderBy($sort_by, $sort_type)
-                ->paginate(10);
+            $code = $request->get('content_country_code', 'US');
+            $loaded = Helper::loadCmsRowsForEdit(OurGovernance::class, $code, $sort_by, $sort_type);
 
-            return response()->json(['data' => view('admin.our-governances.table', compact('our_governances'))->render()]);
+            $filtered = $loaded['rows']->filter(function ($item) use ($query) {
+                if ($query === '' || $query === null) {
+                    return true;
+                }
+                $needle = str_replace('%', ' ', $query);
+
+                return stripos((string) $item->id, $needle) !== false
+                    || stripos((string) $item->name, $needle) !== false
+                    || stripos((string) $item->slug, $needle) !== false;
+            })->values();
+
+            $our_governances = Helper::paginateCollection($filtered, 10);
+
+            return response()->json(['data' => view('admin.our-governances.table', [
+                'our_governances' => $our_governances,
+                'isUsPrefill' => $loaded['isUsPrefill'],
+            ])->render()]);
         }
     }
 
@@ -266,6 +278,8 @@ class OurGovernanceController extends Controller
 
         $position = 1;
         foreach ($order as $id) {
+            // skip drafts (no real id yet)
+            if (!$id) continue;
             $item = OurGovernance::find($id);
             if (!$item) continue;
 

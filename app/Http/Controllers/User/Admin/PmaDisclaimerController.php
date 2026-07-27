@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\User\Admin;
 
+use App\Helpers\Helper;
 use App\Http\Controllers\Controller;
 use App\Models\Country;
 use App\Models\PmaTerm;
@@ -33,12 +34,16 @@ class PmaDisclaimerController extends Controller
     public function index(Request $request)
     {
         if (auth()->user()->can('Manage PMA Terms Page')) {
-            if ($this->user_type == 'Global') {
-                $term = PmaTerm::where('country_code', $request->get('content_country_code', 'US'))->orderBy('id', 'desc')->first();
-            } else {
-                $term = PmaTerm::where('country_code', $this->country->code)->orderBy('id', 'desc')->first();
-            }
-            return view('user.admin.pma-disclaimer.update')->with(compact('term'));
+            $regionalCode = $this->country->code ?? null;
+            $countryCode = Helper::resolveCmsEditCountryCode($request, $regionalCode);
+            $loaded = Helper::loadCmsRowForEdit(PmaTerm::class, $countryCode);
+
+            return view('user.admin.pma-disclaimer.update', [
+                'term' => $loaded['row'],
+                'isUsPrefill' => $loaded['isUsPrefill'],
+                'cmsEditCountryCode' => $loaded['countryCode'],
+                'prefillCountryName' => Helper::cmsPrefillCountryName($loaded['countryCode']),
+            ]);
         } else {
             abort(403, 'You do not have permission to access this page.');
         }
@@ -68,22 +73,25 @@ class PmaDisclaimerController extends Controller
             'checkbox_text' => 'nullable|string',
         ]);
 
-        if ($request->id != '') {
-            $terms = PmaTerm::find($request->id);
-        } else {
+        $country = Helper::resolveCmsEditCountryCode($request, $this->country->code ?? null);
+
+        $terms = null;
+        if ($request->filled('id')) {
+            $terms = PmaTerm::query()
+                ->where('id', $request->id)
+                ->where('country_code', $country)
+                ->first();
+        }
+        if (!$terms) {
             $terms = new PmaTerm();
         }
 
         $terms->title = $request->title;
         $terms->description = $request->description;
         $terms->checkbox_text = $request->checkbox_text;
-        // $terms->save();
-        if ($this->user_type == 'Global') {
-            $country = $request->content_country_code ?? 'US';
-        } else {
-            $country = $this->country->code;
-        }
-        $terms = PmaTerm::updateOrCreate(['country_code' => $country], array_merge($terms->getAttributes(), ['country_code' => $country]));
+        $attrs = $terms->getAttributes();
+        unset($attrs['id']);
+        $terms = PmaTerm::updateOrCreate(['country_code' => $country], array_merge($attrs, ['country_code' => $country]));
 
         return redirect()->back()->with('message', 'Terms and Conditions updated successfully');
     }

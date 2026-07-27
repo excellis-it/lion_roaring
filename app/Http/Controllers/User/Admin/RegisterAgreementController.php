@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\User\Admin;
 
+use App\Helpers\Helper;
 use App\Http\Controllers\Controller;
 use App\Models\Country;
 use App\Models\RegisterAgreement;
@@ -35,12 +36,16 @@ class RegisterAgreementController extends Controller
     public function index(Request $request)
     {
         if (auth()->user()->can('Manage Register Page Agreement Page')) {
-            if ($this->user_type == 'Global') {
-                $agreement = RegisterAgreement::where('country_code', $request->get('content_country_code', 'US'))->orderBy('id', 'desc')->first();
-            } else {
-                $agreement = RegisterAgreement::where('country_code', $this->country->code)->orderBy('id', 'desc')->first();
-            }
-            return view('user.admin.register_agreement.update', compact('agreement'));
+            $regionalCode = $this->country->code ?? null;
+            $countryCode = Helper::resolveCmsEditCountryCode($request, $regionalCode);
+            $loaded = Helper::loadCmsRowForEdit(RegisterAgreement::class, $countryCode);
+
+            return view('user.admin.register_agreement.update', [
+                'agreement' => $loaded['row'],
+                'isUsPrefill' => $loaded['isUsPrefill'],
+                'cmsEditCountryCode' => $loaded['countryCode'],
+                'prefillCountryName' => Helper::cmsPrefillCountryName($loaded['countryCode']),
+            ]);
         } else {
             return redirect()->route('user.profile')->with('error', 'Unauthorized Access');
         }
@@ -70,9 +75,16 @@ class RegisterAgreementController extends Controller
             'checkbox_text' => 'required',
         ]);
 
-        if ($request->id != '') {
-            $agreement = RegisterAgreement::find($request->id);
-        } else {
+        $country = Helper::resolveCmsEditCountryCode($request, $this->country->code ?? null);
+
+        $agreement = null;
+        if ($request->filled('id')) {
+            $agreement = RegisterAgreement::query()
+                ->where('id', $request->id)
+                ->where('country_code', $country)
+                ->first();
+        }
+        if (!$agreement) {
             $agreement = new RegisterAgreement();
         }
 
@@ -86,12 +98,9 @@ class RegisterAgreementController extends Controller
             $agreement->seal_image = $this->imageUpload($request->file('seal_image'), 'agreement_seals', true);
         }
 
-        if ($this->user_type == 'Global') {
-            $country = $request->content_country_code ?? 'US';
-        } else {
-            $country = $this->country->code;
-        }
-        $agreement = RegisterAgreement::updateOrCreate(['country_code' => $country], array_merge($agreement->getAttributes(), ['country_code' => $country]));
+        $attrs = $agreement->getAttributes();
+        unset($attrs['id']);
+        $agreement = RegisterAgreement::updateOrCreate(['country_code' => $country], array_merge($attrs, ['country_code' => $country]));
 
         return redirect()->back()->with('message', 'Register agreement updated successfully');
     }

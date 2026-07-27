@@ -15,6 +15,9 @@
                 <form action="{{ route('articles-of-association.store') }}" method="post" enctype="multipart/form-data">
                     @csrf
                     <input type="hidden" name="id" value="{{ $article->id ?? '' }}">
+
+                    @include('user.admin.partials.cms-us-prefill-banner')
+
                     <div class="row mb-4">
                         <div class="col-md-4">
                             <label for="country_code">Content Country</label>
@@ -22,7 +25,7 @@
                                 name="content_country_code" id="content_country_code" class="form-control">
                                 @foreach (\App\Models\Country::all() as $country)
                                     <option value="{{ $country->code }}"
-                                        {{ request()->get('content_country_code', 'US') == $country->code ? 'selected' : '' }}>
+                                        {{ request()->get('content_country_code', $cmsEditCountryCode ?? 'US') == $country->code ? 'selected' : '' }}>
                                         {{ $country->name }}
                                     </option>
                                 @endforeach

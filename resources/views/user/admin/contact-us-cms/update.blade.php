@@ -18,11 +18,15 @@
             <form action="{{ route('user.admin.contact-us-cms.store') }}" method="post" enctype="multipart/form-data">
                 @csrf
                 <input type="hidden" name="id" value="{{ $contact_us->id ?? '' }}">
+
+                @include('user.admin.partials.cms-us-prefill-banner')
+
                 <div class="sales-report-card-wrap">
                     <div class="form-head">
                         <h4>Menu Section</h4>
                     </div>
 
+                    @if (\App\Helpers\Helper::canSelectCmsContentCountry())
                     <div class="row mb-4">
                         <div class="col-md-4 mb-3">
                             <label for="country_code">Content Country</label>
@@ -30,13 +34,14 @@
                                 name="content_country_code" id="content_country_code" class="form-control">
                                 @foreach (\App\Models\Country::all() as $country)
                                     <option value="{{ $country->code }}"
-                                        {{ request()->get('content_country_code', 'US') == $country->code ? 'selected' : '' }}>
+                                        {{ request()->get('content_country_code', $cmsEditCountryCode ?? 'US') == $country->code ? 'selected' : '' }}>
                                         {{ $country->name }}
                                     </option>
                                 @endforeach
                             </select>
                         </div>
                     </div>
+                    @endif
 
                     <div class="row justify-content-between">
                         {{-- courses --}}

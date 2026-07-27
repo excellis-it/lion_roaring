@@ -12,6 +12,7 @@
     <div class="main-content">
         <div class="inner_page">
             <div class="card search_bar sales-report-card">
+                @include('user.admin.partials.cms-us-prefill-banner')
                 <form action="{{ route('details.store') }}" method="post" enctype="multipart/form-data">
                     @csrf
                     <div class="row mb-4">
@@ -21,7 +22,7 @@
                                 name="content_country_code" id="content_country_code" class="form-control">
                                 @foreach (\App\Models\Country::all() as $country)
                                     <option value="{{ $country->code }}"
-                                        {{ request()->get('content_country_code', 'US') == $country->code ? 'selected' : '' }}>
+                                        {{ ($cmsEditCountryCode ?? request()->get('content_country_code', 'US')) == $country->code ? 'selected' : '' }}>
                                         {{ $country->name }}
                                     </option>
                                 @endforeach

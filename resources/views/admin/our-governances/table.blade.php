@@ -2,7 +2,7 @@
     @foreach ($our_governances as $key => $our_governance)
         <tr data-id="{{ $our_governance->id }}">
             <td class="d-flex align-items-center">
-                @if (auth()->user()->can('Edit Our Governance'))
+                @if (auth()->user()->can('Edit Our Governance') && !is_null($our_governance->id))
                     <h4 class="drag-handle me-2 mr-3" style="cursor:move"><i class="ph ph-arrows-out-cardinal"></i></h4>
                 @endif
                 <span class="order-number">{{ $our_governance->order_no ?? '—' }}</span>
@@ -12,19 +12,23 @@
             <td>{{ $our_governance->slug ?? 'N/A' }}
             </td>
             <td>
-                <div class="edit-1 d-flex align-items-center justify-content-center">
-                    @if (auth()->user()->can('Delete Our Governance'))
-                        <a title="Edit" href="{{ route('our-governances.edit', $our_governance->id) }}">
-                            <span class="edit-icon"><i class="ph ph-pencil-simple"></i></span>
-                        </a>
-                    @endif
-                    @if (auth()->user()->can('Create Our Governance'))
-                        <a title="Delete" data-route="{{ route('our-governances.delete', $our_governance->id) }}"
-                            href="javascript:void(0);" id="delete">
-                            <span class="trash-icon"><i class="ph ph-trash"></i></span>
-                        </a>
-                    @endif
-                </div>
+                @if (is_null($our_governance->id))
+                    <span class="badge bg-info text-dark">US draft</span>
+                @else
+                    <div class="edit-1 d-flex align-items-center justify-content-center">
+                        @if (auth()->user()->can('Delete Our Governance'))
+                            <a title="Edit" href="{{ route('our-governances.edit', $our_governance->id) }}">
+                                <span class="edit-icon"><i class="ph ph-pencil-simple"></i></span>
+                            </a>
+                        @endif
+                        @if (auth()->user()->can('Create Our Governance'))
+                            <a title="Delete" data-route="{{ route('our-governances.delete', $our_governance->id) }}"
+                                href="javascript:void(0);" id="delete">
+                                <span class="trash-icon"><i class="ph ph-trash"></i></span>
+                            </a>
+                        @endif
+                    </div>
+                @endif
             </td>
         </tr>
     @endforeach

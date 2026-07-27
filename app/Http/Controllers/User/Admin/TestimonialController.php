@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\User\Admin;
 
+use App\Helpers\Helper;
 use App\Http\Controllers\Controller;
 use App\Models\Country;
 use App\Models\Testimonial;
@@ -22,19 +23,19 @@ class TestimonialController extends Controller
     public function index(Request $request)
     {
         if (auth()->user()->can('Manage Testimonials')) {
-            // $testimonials = Testimonial::orderByDesc('id')->paginate(15);
-            $user_type = auth()->user()->user_type;
             $user_country = auth()->user()->country;
-
             $country = Country::where('id', $user_country)->first();
 
-            if ($user_type == 'Global') {
-                $testimonials = Testimonial::where('country_code', $request->get('content_country_code', 'US'))->orderBy('id', 'desc')->paginate(10);
-            } else {
-                $testimonials = Testimonial::where('country_code', $country->code)->orderBy('id', 'desc')->paginate(10);
-            }
+            $countryCode = Helper::resolveCmsEditCountryCode($request, $country->code ?? null);
+            $loaded = Helper::loadCmsRowsForEdit(Testimonial::class, $countryCode, 'id', 'desc');
+            $testimonials = Helper::paginateCollection($loaded['rows'], 10);
 
-            return view('user.admin.testimonials.list', compact('testimonials'));
+            return view('user.admin.testimonials.list', [
+                'testimonials' => $testimonials,
+                'isUsPrefill' => $loaded['isUsPrefill'],
+                'cmsEditCountryCode' => $loaded['countryCode'],
+                'prefillCountryName' => Helper::cmsPrefillCountryName($loaded['countryCode']),
+            ]);
         } else {
             abort(403, 'You do not have permission to access this page.');
         }
@@ -44,39 +45,35 @@ class TestimonialController extends Controller
     {
         if ($request->ajax()) {
 
-            $sort_by = $request->get('sortby');
-            $sort_type = $request->get('sorttype');
+            $sort_by = $request->get('sortby') ?: 'id';
+            $sort_type = $request->get('sorttype') ?: 'desc';
             $query = $request->get('query');
             $query = str_replace(" ", "%", $query);
 
-            $user_type = auth()->user()->user_type;
             $user_country = auth()->user()->country;
-
             $country = Country::where('id', $user_country)->first();
 
-            if ($user_type == 'Global') {
-                $testimonials = Testimonial::where('country_code', $request->get('content_country_code', 'US'))
-                    ->where(function ($q) use ($query) {
-                        $q->where('id', 'like', '%' . $query . '%')
-                            ->orWhere('name', 'like', '%' . $query . '%')
-                            ->orWhere('description', 'like', '%' . $query . '%')
-                            ->orWhere('address', 'like', '%' . $query . '%');
-                    })
-                    ->orderBy($sort_by, $sort_type)
-                    ->paginate(15);
-            } else {
-                $testimonials = Testimonial::where('country_code', $country->code)
-                    ->where(function ($q) use ($query) {
-                        $q->where('id', 'like', '%' . $query . '%')
-                            ->orWhere('name', 'like', '%' . $query . '%')
-                            ->orWhere('description', 'like', '%' . $query . '%')
-                            ->orWhere('address', 'like', '%' . $query . '%');
-                    })
-                    ->orderBy($sort_by, $sort_type)
-                    ->paginate(15);
-            }
+            $countryCode = Helper::resolveCmsEditCountryCode($request, $country->code ?? null);
+            $loaded = Helper::loadCmsRowsForEdit(Testimonial::class, $countryCode, $sort_by, $sort_type);
 
-            return response()->json(['data' => view('user.admin.testimonials.table', compact('testimonials'))->render()]);
+            $filtered = $loaded['rows']->filter(function ($testimonial) use ($query) {
+                if ($query === '' || $query === null) {
+                    return true;
+                }
+                $needle = str_replace('%', ' ', $query);
+
+                return stripos((string) $testimonial->id, $needle) !== false
+                    || stripos((string) $testimonial->name, $needle) !== false
+                    || stripos((string) $testimonial->description, $needle) !== false
+                    || stripos((string) $testimonial->address, $needle) !== false;
+            })->values();
+
+            $testimonials = Helper::paginateCollection($filtered, 15);
+
+            return response()->json(['data' => view('user.admin.testimonials.table', [
+                'testimonials' => $testimonials,
+                'isUsPrefill' => $loaded['isUsPrefill'],
+            ])->render()]);
         }
     }
 
@@ -89,7 +86,13 @@ class TestimonialController extends Controller
     public function create()
     {
         if (auth()->user()->can('Create Testimonials')) {
-            return view('user.admin.testimonials.create');
+            $user_country = auth()->user()->country;
+            $country = Country::where('id', $user_country)->first();
+            $cmsEditCountryCode = Helper::resolveCmsEditCountryCode(request(), $country->code ?? null);
+
+            return view('user.admin.testimonials.create', [
+                'cmsEditCountryCode' => $cmsEditCountryCode,
+            ]);
         } else {
             abort(403, 'You do not have permission to access this page.');
         }
@@ -111,9 +114,7 @@ class TestimonialController extends Controller
             'address' => 'required',
         ]);
 
-        $user_type = auth()->user()->user_type;
         $user_country = auth()->user()->country;
-
         $country = Country::where('id', $user_country)->first();
 
         $testimonials = new Testimonial();
@@ -121,7 +122,7 @@ class TestimonialController extends Controller
         $testimonials->address = $request->address;
         $testimonials->description = $request->description;
         $testimonials->image = $this->imageUpload($request->file('image'), 'testimonials');
-        $testimonials->country_code = $user_type == 'Global' ? $request->content_country_code : $country->code ?? 'US';
+        $testimonials->country_code = Helper::resolveCmsEditCountryCode($request, $country->code ?? null);
         $testimonials->save();
 
         return redirect()->route('user.admin.testimonials.index')->with('message', 'Testimonial created successfully.');
@@ -148,6 +149,12 @@ class TestimonialController extends Controller
     {
         if (auth()->user()->can('Edit Testimonials')) {
             $testimonial = Testimonial::findOrFail($id);
+            $user_country = auth()->user()->country;
+            $country = Country::where('id', $user_country)->first();
+            if (!Helper::canSelectCmsContentCountry() && $testimonial->country_code !== ($country->code ?? null)) {
+                abort(403, 'You do not have permission to access this page.');
+            }
+
             return view('user.admin.testimonials.edit')->with(compact('testimonial'));
         } else {
             abort(403, 'You do not have permission to access this page.');
@@ -170,6 +177,12 @@ class TestimonialController extends Controller
         ]);
 
         $testimonials = Testimonial::findOrFail($id);
+        $user_country = auth()->user()->country;
+        $country = Country::where('id', $user_country)->first();
+        if (!Helper::canSelectCmsContentCountry() && $testimonials->country_code !== ($country->code ?? null)) {
+            abort(403, 'You do not have permission to access this page.');
+        }
+
         $testimonials->name = $request->name;
         $testimonials->address = $request->address;
         $testimonials->description = $request->description;
@@ -179,7 +192,7 @@ class TestimonialController extends Controller
             ]);
             $testimonials->image = $this->imageUpload($request->file('image'), 'testimonials');
         }
-        $testimonials->country_code = $request->content_country_code ?? $testimonials->country_code;
+        $testimonials->country_code = Helper::resolveCmsEditCountryCode($request, $country->code ?? null);
         $testimonials->save();
 
         return redirect()->route('user.admin.testimonials.index')->with('message', 'Testimonial updated successfully.');

@@ -1349,6 +1349,140 @@ class Helper
     }
 
     /**
+     * Whether the signed-in user may pick Content Country on CMS editors.
+     * Global users, or Super Admins on an effective global domain/context.
+     */
+    public static function canSelectCmsContentCountry(): bool
+    {
+        $user = auth()->user();
+        if (!$user) {
+            return false;
+        }
+        if ($user->user_type === 'Global') {
+            return true;
+        }
+        if (method_exists($user, 'hasNewRole') && $user->hasNewRole('SUPER ADMIN') && self::isEffectiveGlobalContext()) {
+            return true;
+        }
+
+        return false;
+    }
+
+    /**
+     * Resolve which country_code a CMS editor should load/save for.
+     */
+    public static function resolveCmsEditCountryCode(?\Illuminate\Http\Request $request = null, ?string $regionalCountryCode = null): string
+    {
+        $request = $request ?: request();
+        if (self::canSelectCmsContentCountry()) {
+            $code = strtoupper(trim((string) $request->input(
+                'content_country_code',
+                $request->query('content_country_code', 'US')
+            )));
+
+            return $code !== '' ? $code : 'US';
+        }
+        $regional = strtoupper(trim((string) ($regionalCountryCode ?: '')));
+
+        return $regional !== '' ? $regional : 'US';
+    }
+
+    public static function cmsPrefillCountryName(string $countryCode): string
+    {
+        $country = \App\Models\Country::query()->where('code', strtoupper($countryCode))->first();
+
+        return $country?->name ?: strtoupper($countryCode);
+    }
+
+    /**
+     * Load a single CMS row for edit. If the country has no row, prefill from US
+     * with a cleared primary key so save creates the selected country's row.
+     *
+     * @return array{row: ?\Illuminate\Database\Eloquent\Model, isUsPrefill: bool, countryCode: string}
+     */
+    public static function loadCmsRowForEdit(string $modelClass, string $countryCode): array
+    {
+        $countryCode = strtoupper(trim($countryCode)) ?: 'US';
+        $row = $modelClass::query()->where('country_code', $countryCode)->orderByDesc('id')->first();
+        if ($row || $countryCode === 'US') {
+            return ['row' => $row, 'isUsPrefill' => false, 'countryCode' => $countryCode];
+        }
+        $us = $modelClass::query()->where('country_code', 'US')->orderByDesc('id')->first();
+        if (!$us) {
+            return ['row' => null, 'isUsPrefill' => false, 'countryCode' => $countryCode];
+        }
+        $clone = $us->replicate();
+        $clone->exists = false;
+        $clone->id = null;
+        $clone->country_code = $countryCode;
+
+        return ['row' => $clone, 'isUsPrefill' => true, 'countryCode' => $countryCode];
+    }
+
+    /**
+     * Load CMS list rows for edit. Empty non-US countries get US rows as drafts (no ids).
+     *
+     * @return array{rows: \Illuminate\Support\Collection, isUsPrefill: bool, countryCode: string}
+     */
+    public static function loadCmsRowsForEdit(
+        string $modelClass,
+        string $countryCode,
+        string $orderColumn = 'id',
+        string $orderDirection = 'asc'
+    ): array {
+        $countryCode = strtoupper(trim($countryCode)) ?: 'US';
+        $rows = $modelClass::query()
+            ->where('country_code', $countryCode)
+            ->orderBy($orderColumn, $orderDirection)
+            ->get();
+        if ($rows->isNotEmpty() || $countryCode === 'US') {
+            return ['rows' => $rows, 'isUsPrefill' => false, 'countryCode' => $countryCode];
+        }
+        $usRows = $modelClass::query()
+            ->where('country_code', 'US')
+            ->orderBy($orderColumn, $orderDirection)
+            ->get();
+        if ($usRows->isEmpty()) {
+            return ['rows' => $usRows, 'isUsPrefill' => false, 'countryCode' => $countryCode];
+        }
+        $drafts = $usRows->map(function ($us) use ($countryCode) {
+            $clone = $us->replicate();
+            $clone->exists = false;
+            $clone->id = null;
+            $clone->country_code = $countryCode;
+
+            return $clone;
+        });
+
+        return ['rows' => $drafts, 'isUsPrefill' => true, 'countryCode' => $countryCode];
+    }
+
+    /**
+     * Paginate an in-memory collection (e.g. from loadCmsRowsForEdit) so existing
+     * list views that expect a LengthAwarePaginator (currentPage/perPage/links) keep working.
+     */
+    public static function paginateCollection(
+        \Illuminate\Support\Collection $items,
+        int $perPage = 15,
+        ?int $page = null,
+        array $options = []
+    ): \Illuminate\Pagination\LengthAwarePaginator {
+        $page = $page ?: (\Illuminate\Pagination\Paginator::resolveCurrentPage() ?: 1);
+        $options = array_merge([
+            'path' => \Illuminate\Pagination\Paginator::resolveCurrentPath(),
+            'query' => request()->query(),
+        ], $options);
+
+        return new \Illuminate\Pagination\LengthAwarePaginator(
+            $items->forPage($page, $perPage)->values(),
+            $items->count(),
+            $perPage,
+            $page,
+            $options
+        );
+    }
+
+    /**
      * Country shown in UI badges (header, profile). Logged-in users use their type/country;
      * guests use the effective request country.
      */

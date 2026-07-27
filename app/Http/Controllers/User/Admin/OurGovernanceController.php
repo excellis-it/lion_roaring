@@ -23,23 +23,19 @@ class OurGovernanceController extends Controller
     public function index(Request $request)
     {
         if (auth()->user()->can('Manage Our Governance')) {
-            $user_type = auth()->user()->user_type;
             $user_country = auth()->user()->country;
             $country = Country::where('id', $user_country)->first();
-            $contentCountryCode = $request->get('content_country_code', 'US');
-            if ($user_type == 'Global') {
-                $our_governances = OurGovernance::where('country_code', $contentCountryCode)
-                    ->orderBy('order_no', 'asc')
-                    ->orderBy('id', 'desc')
-                    ->paginate(10);
-            } else {
-                $our_governances = OurGovernance::where('country_code', $country->code)
-                    ->orderBy('order_no', 'asc')
-                    ->orderBy('id', 'desc')
-                    ->paginate(10);
-            }
 
-            return view('user.admin.our-governances.list')->with(compact('our_governances'));
+            $countryCode = Helper::resolveCmsEditCountryCode($request, $country->code ?? null);
+            $loaded = Helper::loadCmsRowsForEdit(OurGovernance::class, $countryCode, 'order_no', 'asc');
+            $our_governances = Helper::paginateCollection($loaded['rows'], 10);
+
+            return view('user.admin.our-governances.list', [
+                'our_governances' => $our_governances,
+                'isUsPrefill' => $loaded['isUsPrefill'],
+                'cmsEditCountryCode' => $loaded['countryCode'],
+                'prefillCountryName' => Helper::cmsPrefillCountryName($loaded['countryCode']),
+            ]);
         } else {
             abort(403, 'You do not have permission to access this page.');
         }
@@ -53,9 +49,6 @@ class OurGovernanceController extends Controller
             $sort_type = $request->get('sorttype');
             $query = $request->get('query');
             $query = str_replace(" ", "%", $query);
-            $user_type = auth()->user()->user_type;
-            $user_country = auth()->user()->country;
-            $country = Country::where('id', $user_country)->first();
 
             // default sort by order_no asc
             if (!$sort_by) {
@@ -63,26 +56,29 @@ class OurGovernanceController extends Controller
                 $sort_type = 'asc';
             }
 
-            if ($user_type == 'Global') {
-                $our_governances = OurGovernance::where('country_code', $request->get('content_country_code', 'US'))
-                    ->where(function ($q) use ($query) {
-                        $q->where('id', 'like', '%' . $query . '%')
-                            ->orWhere('name', 'like', '%' . $query . '%')
-                            ->orWhere('slug', 'like', '%' . $query . '%');
-                    })
-                    ->orderBy($sort_by, $sort_type)
-                    ->paginate(10);
-            } else {
-                $our_governances = OurGovernance::where('country_code', $country->code)
-                    ->where(function ($q) use ($query) {
-                        $q->where('id', 'like', '%' . $query . '%')
-                            ->orWhere('name', 'like', '%' . $query . '%')
-                            ->orWhere('slug', 'like', '%' . $query . '%');
-                    })
-                    ->orderBy($sort_by, $sort_type)
-                    ->paginate(10);
-            }
-            return response()->json(['data' => view('user.admin.our-governances.table', compact('our_governances'))->render()]);
+            $user_country = auth()->user()->country;
+            $country = Country::where('id', $user_country)->first();
+
+            $countryCode = Helper::resolveCmsEditCountryCode($request, $country->code ?? null);
+            $loaded = Helper::loadCmsRowsForEdit(OurGovernance::class, $countryCode, $sort_by, $sort_type);
+
+            $filtered = $loaded['rows']->filter(function ($item) use ($query) {
+                if ($query === '' || $query === null) {
+                    return true;
+                }
+                $needle = str_replace('%', ' ', $query);
+
+                return stripos((string) $item->id, $needle) !== false
+                    || stripos((string) $item->name, $needle) !== false
+                    || stripos((string) $item->slug, $needle) !== false;
+            })->values();
+
+            $our_governances = Helper::paginateCollection($filtered, 10);
+
+            return response()->json(['data' => view('user.admin.our-governances.table', [
+                'our_governances' => $our_governances,
+                'isUsPrefill' => $loaded['isUsPrefill'],
+            ])->render()]);
         }
     }
 
@@ -94,7 +90,13 @@ class OurGovernanceController extends Controller
     public function create()
     {
         if (auth()->user()->can('Create Our Governance')) {
-            return view('user.admin.our-governances.create');
+            $user_country = auth()->user()->country;
+            $country = Country::where('id', $user_country)->first();
+            $cmsEditCountryCode = Helper::resolveCmsEditCountryCode(request(), $country->code ?? null);
+
+            return view('user.admin.our-governances.create', [
+                'cmsEditCountryCode' => $cmsEditCountryCode,
+            ]);
         } else {
             abort(403, 'You do not have permission to access this page.');
         }
@@ -126,9 +128,7 @@ class OurGovernanceController extends Controller
             $slug = $slug . '-' . time();
         }
 
-        $user_type = auth()->user()->user_type;
         $user_country = auth()->user()->country;
-
         $country = Country::where('id', $user_country)->first();
 
         $our_governance = new OurGovernance();
@@ -141,7 +141,7 @@ class OurGovernanceController extends Controller
         $our_governance->banner_image = $this->imageUpload($request->file('banner_image'), 'our_governances');
         $our_governance->image = $this->imageUpload($request->file('image'), 'our_governances');
 
-        $our_governance->country_code = $user_type == 'Global' ? $request->content_country_code : $country->code ?? 'US';
+        $our_governance->country_code = Helper::resolveCmsEditCountryCode($request, $country->code ?? null);
 
         // set order_no to be last in that country
         $contentCountryCode = $our_governance->country_code ?? 'US';
@@ -176,7 +176,13 @@ class OurGovernanceController extends Controller
     public function edit($id)
     {
         if (auth()->user()->can('Edit Our Governance')) {
-            $our_governance = OurGovernance::find($id);
+            $our_governance = OurGovernance::findOrFail($id);
+            $user_country = auth()->user()->country;
+            $country = Country::where('id', $user_country)->first();
+            if (!Helper::canSelectCmsContentCountry() && $our_governance->country_code !== ($country->code ?? null)) {
+                abort(403, 'You do not have permission to access this page.');
+            }
+
             return view('user.admin.our-governances.edit')->with(compact('our_governance'));
         } else {
             abort(403, 'You do not have permission to access this page.');
@@ -201,7 +207,13 @@ class OurGovernanceController extends Controller
             'meta_keywords' => 'nullable',
         ]);
 
-        $our_governance = OurGovernance::find($id);
+        $our_governance = OurGovernance::findOrFail($id);
+        $user_country = auth()->user()->country;
+        $country = Country::where('id', $user_country)->first();
+        if (!Helper::canSelectCmsContentCountry() && $our_governance->country_code !== ($country->code ?? null)) {
+            abort(403, 'You do not have permission to access this page.');
+        }
+
         if ($our_governance->name != $request->name) {
             $slug = $this->createSlug($request->name);
             $is_slug_exist = OurGovernance::where('slug', $slug)->first();
@@ -228,7 +240,7 @@ class OurGovernanceController extends Controller
             $our_governance->image = $this->imageUpload($request->file('image'), 'our_governances');
         }
 
-        $newCountryCode = $request->content_country_code ?? $our_governance->country_code ?? 'US';
+        $newCountryCode = Helper::resolveCmsEditCountryCode($request, $country->code ?? null);
         $oldCountryCode = $our_governance->country_code ?? 'US';
 
         if ($newCountryCode !== $oldCountryCode) {
@@ -295,6 +307,8 @@ class OurGovernanceController extends Controller
 
         $position = 1;
         foreach ($order as $id) {
+            // skip drafts (no real id yet)
+            if (!$id) continue;
             $item = OurGovernance::find($id);
             if (!$item) continue;
 

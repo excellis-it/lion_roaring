@@ -16,20 +16,26 @@
                         @csrf
                         <input type="hidden" name="id" value="{{ isset($cms->id) ? $cms->id : '' }}">
 
-                        <div class="row mb-4">
-                            <div class="col-md-4">
-                                <label for="country_code">Content Country</label>
-                                <select onchange="window.location.href='?content_country_code='+$(this).val()"
-                                    name="content_country_code" id="content_country_code" class="form-control">
-                                    @foreach (\App\Models\Country::all() as $country)
-                                        <option value="{{ $country->code }}"
-                                            {{ (request()->get('content_country_code', 'US') == $country->code) ? 'selected' : '' }}>
-                                            {{ $country->name }}
-                                        </option>
-                                    @endforeach
-                                </select>
+                        @include('user.admin.partials.cms-us-prefill-banner')
+
+                        @if (\App\Helpers\Helper::canSelectCmsContentCountry())
+                            <div class="row mb-4">
+                                <div class="col-md-4">
+                                    <label for="country_code">Content Country</label>
+                                    <select onchange="window.location.href='?content_country_code='+$(this).val()"
+                                        name="content_country_code" id="content_country_code" class="form-control">
+                                        @foreach (\App\Models\Country::all() as $country)
+                                            <option value="{{ $country->code }}"
+                                                {{ (request()->get('content_country_code', $cmsEditCountryCode ?? 'US') == $country->code) ? 'selected' : '' }}>
+                                                {{ $country->name }}
+                                            </option>
+                                        @endforeach
+                                    </select>
+                                </div>
                             </div>
-                        </div>
+                        @else
+                            <input type="hidden" name="content_country_code" value="{{ $cmsEditCountryCode ?? 'US' }}">
+                        @endif
 
                         <div class="row">
                             <div class="col-md-12">

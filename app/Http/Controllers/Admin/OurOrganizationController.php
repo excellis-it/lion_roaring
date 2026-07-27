@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Helpers\Helper;
 use App\Http\Controllers\Controller;
 use App\Models\OurOrganization;
 use App\Traits\CreateSlug;
@@ -20,8 +21,16 @@ class OurOrganizationController extends Controller
     public function index(Request $request)
     {
         if (auth()->user()->can('Manage Our Organization')) {
-            $our_organizations = OurOrganization::where('country_code', $request->get('content_country_code', 'US'))->orderBy('id', 'desc')->paginate(10);
-            return view('admin.our-organizations.list')->with(compact('our_organizations'));
+            $code = $request->get('content_country_code', 'US');
+            $loaded = Helper::loadCmsRowsForEdit(OurOrganization::class, $code, 'id', 'desc');
+            $our_organizations = Helper::paginateCollection($loaded['rows'], 10);
+
+            return view('admin.our-organizations.list', [
+                'our_organizations' => $our_organizations,
+                'isUsPrefill' => $loaded['isUsPrefill'],
+                'cmsEditCountryCode' => $loaded['countryCode'],
+                'prefillCountryName' => Helper::cmsPrefillCountryName($loaded['countryCode']),
+            ]);
         } else {
             abort(403, 'You do not have permission to access this page.');
         }
@@ -31,20 +40,31 @@ class OurOrganizationController extends Controller
     {
         if ($request->ajax()) {
 
-            $sort_by = $request->get('sortby');
-            $sort_type = $request->get('sorttype');
+            $sort_by = $request->get('sortby') ?: 'id';
+            $sort_type = $request->get('sorttype') ?: 'desc';
             $query = $request->get('query');
             $query = str_replace(" ", "%", $query);
-            $our_organizations = OurOrganization::where('country_code', $request->get('content_country_code', 'US'))
-                ->where(function ($q) use ($query) {
-                    $q->where('id', 'like', '%' . $query . '%')
-                        ->orWhere('name', 'like', '%' . $query . '%')
-                        ->orWhere('slug', 'like', '%' . $query . '%');
-                })
-                ->orderBy($sort_by, $sort_type)
-                ->paginate(10);
 
-            return response()->json(['data' => view('admin.our-organizations.table', compact('our_organizations'))->render()]);
+            $code = $request->get('content_country_code', 'US');
+            $loaded = Helper::loadCmsRowsForEdit(OurOrganization::class, $code, $sort_by, $sort_type);
+
+            $filtered = $loaded['rows']->filter(function ($item) use ($query) {
+                if ($query === '' || $query === null) {
+                    return true;
+                }
+                $needle = str_replace('%', ' ', $query);
+
+                return stripos((string) $item->id, $needle) !== false
+                    || stripos((string) $item->name, $needle) !== false
+                    || stripos((string) $item->slug, $needle) !== false;
+            })->values();
+
+            $our_organizations = Helper::paginateCollection($filtered, 10);
+
+            return response()->json(['data' => view('admin.our-organizations.table', [
+                'our_organizations' => $our_organizations,
+                'isUsPrefill' => $loaded['isUsPrefill'],
+            ])->render()]);
         }
     }
 
@@ -77,13 +97,6 @@ class OurOrganizationController extends Controller
             'image' => 'required|image|mimes:jpeg,png,jpg,gif,svg',
             'slug' => 'required|unique:our_organizations,slug',
         ]);
-
-        // $slug = $this->createSlug($request->name);
-        // // check slug is already exist or not
-        // $is_slug_exist = OurOrganization::where('slug', $slug)->first();
-        // if ($is_slug_exist) {
-        //     $slug = $slug . '-' . time();
-        // }
 
         $our_organization = new OurOrganization();
         $our_organization->name = $request->name;
@@ -141,14 +154,6 @@ class OurOrganizationController extends Controller
         ]);
 
         $our_organization = OurOrganization::find($id);
-        // if ($our_organization->name != $request->name) {
-        //     $slug = $this->createSlug($request->name);
-        //     $is_slug_exist = OurOrganization::where('slug', $slug)->first();
-        //     if ($is_slug_exist) {
-        //         $slug = $slug . '-' . time();
-        //     }
-        //     $our_organization->slug = $slug;
-        // }
         $our_organization->slug = $request->slug;
         $our_organization->name = $request->name;
         $our_organization->description = $request->description;

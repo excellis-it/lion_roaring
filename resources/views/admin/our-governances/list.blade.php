@@ -34,6 +34,7 @@
         <div class="inner_page">
 
             <div class="card table_sec stuff-list-table">
+                @include('user.admin.partials.cms-us-prefill-banner')
                 <div class="row justify-content-end">
 
 

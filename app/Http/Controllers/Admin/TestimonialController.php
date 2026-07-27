@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Helpers\Helper;
 use App\Http\Controllers\Controller;
 use App\Models\Testimonial;
 use App\Traits\CreateSlug;
@@ -21,9 +22,16 @@ class TestimonialController extends Controller
     public function index(Request $request)
     {
         if (auth()->user()->can('Manage Testimonials')) {
-            // $testimonials = Testimonial::orderByDesc('id')->paginate(15);
-            $testimonials = Testimonial::where('country_code', $request->get('content_country_code', 'US'))->orderBy('id', 'desc')->paginate(10);
-            return view('admin.testimonials.list', compact('testimonials'));
+            $code = $request->get('content_country_code', 'US');
+            $loaded = Helper::loadCmsRowsForEdit(Testimonial::class, $code, 'id', 'desc');
+            $testimonials = Helper::paginateCollection($loaded['rows'], 10);
+
+            return view('admin.testimonials.list', [
+                'testimonials' => $testimonials,
+                'isUsPrefill' => $loaded['isUsPrefill'],
+                'cmsEditCountryCode' => $loaded['countryCode'],
+                'prefillCountryName' => Helper::cmsPrefillCountryName($loaded['countryCode']),
+            ]);
         } else {
             abort(403, 'You do not have permission to access this page.');
         }
@@ -33,21 +41,32 @@ class TestimonialController extends Controller
     {
         if ($request->ajax()) {
 
-            $sort_by = $request->get('sortby');
-            $sort_type = $request->get('sorttype');
+            $sort_by = $request->get('sortby') ?: 'id';
+            $sort_type = $request->get('sorttype') ?: 'desc';
             $query = $request->get('query');
             $query = str_replace(" ", "%", $query);
-            $testimonials = Testimonial::where('country_code', $request->get('content_country_code', 'US'))
-                ->where(function ($q) use ($query) {
-                    $q->where('id', 'like', '%' . $query . '%')
-                        ->orWhere('name', 'like', '%' . $query . '%')
-                        ->orWhere('description', 'like', '%' . $query . '%')
-                        ->orWhere('address', 'like', '%' . $query . '%');
-                })
-                ->orderBy($sort_by, $sort_type)
-                ->paginate(15);
 
-            return response()->json(['data' => view('admin.testimonials.table', compact('testimonials'))->render()]);
+            $code = $request->get('content_country_code', 'US');
+            $loaded = Helper::loadCmsRowsForEdit(Testimonial::class, $code, $sort_by, $sort_type);
+
+            $filtered = $loaded['rows']->filter(function ($testimonial) use ($query) {
+                if ($query === '' || $query === null) {
+                    return true;
+                }
+                $needle = str_replace('%', ' ', $query);
+
+                return stripos((string) $testimonial->id, $needle) !== false
+                    || stripos((string) $testimonial->name, $needle) !== false
+                    || stripos((string) $testimonial->description, $needle) !== false
+                    || stripos((string) $testimonial->address, $needle) !== false;
+            })->values();
+
+            $testimonials = Helper::paginateCollection($filtered, 15);
+
+            return response()->json(['data' => view('admin.testimonials.table', [
+                'testimonials' => $testimonials,
+                'isUsPrefill' => $loaded['isUsPrefill'],
+            ])->render()]);
         }
     }
 

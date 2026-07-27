@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Helpers\Helper;
 use App\Http\Controllers\Controller;
 use App\Models\Detail;
 use App\Traits\ImageTrait;
@@ -18,8 +19,15 @@ class DetailsController extends Controller
     public function index(Request $request)
     {
         if (auth()->user()->can('Manage Details Page')) {
-            $details = Detail::where('country_code', $request->get('content_country_code', 'US'))->orderBy('id', 'asc')->get();
-            return view('admin.details.update')->with('details', $details);
+            $code = $request->get('content_country_code', 'US');
+            $loaded = Helper::loadCmsRowsForEdit(Detail::class, $code, 'id', 'asc');
+
+            return view('admin.details.update', [
+                'details' => $loaded['rows'],
+                'isUsPrefill' => $loaded['isUsPrefill'],
+                'cmsEditCountryCode' => $loaded['countryCode'],
+                'prefillCountryName' => Helper::cmsPrefillCountryName($loaded['countryCode']),
+            ]);
         } else {
             abort(403, 'You do not have permission to access this page.');
         }

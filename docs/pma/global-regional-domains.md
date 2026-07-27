@@ -69,7 +69,7 @@ Lion Roaring is one Laravel app served on multiple country domains. Access and C
 | Use Global domain | Yes | Yes | Yes | No* | No |
 | Use assigned regional | Yes | No | Yes (assigned) | Yes | Assigned only |
 | Other regional country | Yes | No | No | No | No |
-| CMS country picker | Typically yes | Yes | Module-dependent | Own country | Own country |
+| CMS country picker | Yes on global domain (`Helper::canSelectCmsContentCountry`) | Yes | Module-dependent | Own country | Own country |
 | Education list on global server | Unscoped | GL scope | GL scope | Own country | Own country |
 
 \* Wrong instance → logout + redirect (`EnsureUserInstanceAccess`).
@@ -88,13 +88,14 @@ Lion Roaring is one Laravel app served on multiple country domains. Access and C
 
 | Pattern | Who | Behavior |
 |---------|-----|----------|
-| `content_country_code` (Pages, FAQ, Gallery, Estore/Elearning CMS, …) | `user_type == Global` | Dropdown; default **US**; pick any regional content |
-| Same | Regional | Locked to own country code |
+| `content_country_code` (Pages, FAQ, Gallery, Estore/Elearning CMS, …) | `Helper::canSelectCmsContentCountry()` — Global user, or Super Admin on effective global domain | Dropdown; default **US**; pick any country’s content |
+| Same | Regional / Super Admin on regional domain | Locked to own country code (no picker) |
+| Empty country row | Any editor above | Form/list **prefills US** content (`Helper::loadCmsRowForEdit` / `loadCmsRowsForEdit`) with banner; saving creates that country’s row — US source never overwritten |
 | Education / Strategy / Files / Meetings (`country_id`) | Global or `G_R` on global server | Scope to **GL** country |
 | Same | Regional / G_R on regional | Own `user.country` |
 | API Super Admin | — | Must pass `country_id` (`AppliesPmaCountryFromRequest`) |
 
-**Important:** Public CMS rows are usually **regional codes (US, IN, …)**, not `GL`. Global editors edit country-specific content while logged into the Global domain.
+**Important:** Public CMS rows are usually **regional codes (US, IN, …)**, not `GL`. Global editors edit country-specific content while logged into the Global domain. Public visitors already fall back to US via `Helper::getVisitorCmsContent()`; admin editors now mirror that with US prefill.
 
 ### Surfaces that inherit these rules
 

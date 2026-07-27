@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\User\Admin;
 
+use App\Helpers\Helper;
 use App\Http\Controllers\Controller;
 use App\Models\Country;
 use App\Models\Faq;
@@ -36,12 +37,16 @@ class FaqController extends Controller
     public function index(Request $request)
     {
         if (auth()->user()->can('Manage Faq')) {
-            if ($this->user_type == 'Global') {
-                $faqs = Faq::where('country_code', $request->get('content_country_code', 'US'))->orderBy('id', 'ASC')->paginate(15);
-            } else {
-                $faqs = Faq::where('country_code', $this->country->code)->orderBy('id', 'ASC')->paginate(15);
-            }
-            return view('user.admin.faq.list', compact('faqs'));
+            $countryCode = Helper::resolveCmsEditCountryCode($request, $this->country->code ?? null);
+            $loaded = Helper::loadCmsRowsForEdit(Faq::class, $countryCode, 'id', 'asc');
+            $faqs = Helper::paginateCollection($loaded['rows'], 15);
+
+            return view('user.admin.faq.list', [
+                'faqs' => $faqs,
+                'isUsPrefill' => $loaded['isUsPrefill'],
+                'cmsEditCountryCode' => $loaded['countryCode'],
+                'prefillCountryName' => Helper::cmsPrefillCountryName($loaded['countryCode']),
+            ]);
         } else {
             abort(403, 'You do not have permission to access this page.');
         }
@@ -51,30 +56,31 @@ class FaqController extends Controller
     {
         if ($request->ajax()) {
 
-            $sort_by = $request->get('sortby');
-            $sort_type = $request->get('sorttype');
+            $sort_by = $request->get('sortby') ?: 'id';
+            $sort_type = $request->get('sorttype') ?: 'asc';
             $query = $request->get('query');
             $query = str_replace(" ", "%", $query);
-            if ($this->user_type == 'Global') {
-                $faqs = Faq::where('country_code', $request->get('content_country_code', 'US'))
-                    ->where(function ($q) use ($query) {
-                        $q->where('id', 'like', '%' . $query . '%')
-                            ->orWhere('question', 'like', '%' . $query . '%')
-                            ->orWhere('answer', 'like', '%' . $query . '%');
-                    })
-                    ->orderBy($sort_by, $sort_type)
-                    ->paginate(15);
-            } else {
-                $faqs = Faq::where('country_code', $this->country->code)
-                    ->where(function ($q) use ($query) {
-                        $q->where('id', 'like', '%' . $query . '%')
-                            ->orWhere('question', 'like', '%' . $query . '%')
-                            ->orWhere('answer', 'like', '%' . $query . '%');
-                    })
-                ->orderBy($sort_by, $sort_type)
-                ->paginate(15);
-            }
-            return response()->json(['data' => view('user.admin.faq.table', compact('faqs'))->render()]);
+
+            $countryCode = Helper::resolveCmsEditCountryCode($request, $this->country->code ?? null);
+            $loaded = Helper::loadCmsRowsForEdit(Faq::class, $countryCode, $sort_by, $sort_type);
+
+            $filtered = $loaded['rows']->filter(function ($faq) use ($query) {
+                if ($query === '' || $query === null) {
+                    return true;
+                }
+                $needle = str_replace('%', ' ', $query);
+
+                return stripos((string) $faq->id, $needle) !== false
+                    || stripos((string) $faq->question, $needle) !== false
+                    || stripos((string) $faq->answer, $needle) !== false;
+            })->values();
+
+            $faqs = Helper::paginateCollection($filtered, 15);
+
+            return response()->json(['data' => view('user.admin.faq.table', [
+                'faqs' => $faqs,
+                'isUsPrefill' => $loaded['isUsPrefill'],
+            ])->render()]);
         }
     }
 
@@ -87,7 +93,11 @@ class FaqController extends Controller
     public function create()
     {
         if (auth()->user()->can('Create Faq')) {
-            return view('user.admin.faq.create');
+            $cmsEditCountryCode = Helper::resolveCmsEditCountryCode(request(), $this->country->code ?? null);
+
+            return view('user.admin.faq.create', [
+                'cmsEditCountryCode' => $cmsEditCountryCode,
+            ]);
         } else {
             abort(403, 'You do not have permission to access this page.');
         }
@@ -107,11 +117,7 @@ class FaqController extends Controller
             'answer' => "required",
         ]);
 
-        if ($this->user_type == 'Global') {
-            $country = $request->content_country_code ?? 'US';
-        } else {
-            $country = $this->country->code;
-        }
+        $country = Helper::resolveCmsEditCountryCode($request, $this->country->code ?? null);
 
         $faq = new Faq();
         $faq->question = $request->question;
@@ -143,6 +149,10 @@ class FaqController extends Controller
     {
         if (auth()->user()->can('Edit Faq')) {
             $faq = Faq::findOrFail($id);
+            if (!Helper::canSelectCmsContentCountry() && $faq->country_code !== ($this->country->code ?? null)) {
+                abort(403, 'You do not have permission to access this page.');
+            }
+
             return view('user.admin.faq.edit')->with(compact('faq'));
         } else {
             abort(403, 'You do not have permission to access this page.');
@@ -163,12 +173,12 @@ class FaqController extends Controller
             'answer' => "required",
         ]);
 
-        if ($this->user_type == 'Global') {
-            $country = $request->content_country_code ?? 'US';
-        } else {
-            $country = $this->country->code;
-        }
         $faq = Faq::findOrFail($id);
+        if (!Helper::canSelectCmsContentCountry() && $faq->country_code !== ($this->country->code ?? null)) {
+            abort(403, 'You do not have permission to access this page.');
+        }
+
+        $country = Helper::resolveCmsEditCountryCode($request, $this->country->code ?? null);
         $faq->question = $request->question;
         $faq->answer = $request->answer;
         $faq->country_code = $country;

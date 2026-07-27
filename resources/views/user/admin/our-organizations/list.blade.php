@@ -34,12 +34,14 @@
                 </div>
             </div>
 
+            @include('user.admin.partials.cms-us-prefill-banner')
+
             <div class="row justify-content-end">
                 <div class="col-md-6">
                     <div class="row g-1 justify-content-end">
 
                         <div class="col-md-4">
-                            @if (auth()->user()->user_type == 'Global')
+                            @if (\App\Helpers\Helper::canSelectCmsContentCountry())
                                 <label for="country_code">Content Country</label>
                                 <select onchange="window.location.href='?content_country_code='+$(this).val()"
                                     name="content_country_code" id="content_country_code" class="form-control">

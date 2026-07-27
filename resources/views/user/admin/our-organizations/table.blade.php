@@ -6,19 +6,23 @@
             <td>{{ $our_organizatio->slug ?? 'N/A' }}
             </td>
             <td>
-                <div class="edit-1 d-flex align-items-center justify-content-center">
-                    @if (auth()->user()->can('Edit Our Organization'))
-                        <a title="Edit" href="{{ route('user.admin.our-organizations.edit', $our_organizatio->id) }}">
-                            <span class="edit-icon"><i class="fas fa-edit"></i></span>
-                        </a>
-                    @endif
-                    @if (auth()->user()->can('Delete Our Organization'))
-                        <a title="Delete" data-route="{{ route('user.admin.our-organizations.delete', $our_organizatio->id) }}"
-                            href="javascript:void(0);" id="delete">
-                            <span class="trash-icon"><i class="fas fa-trash"></i></span>
-                        </a>
-                    @endif
-                </div>
+                @if (is_null($our_organizatio->id))
+                    <span class="badge bg-info text-dark">US draft</span>
+                @else
+                    <div class="edit-1 d-flex align-items-center justify-content-center">
+                        @if (auth()->user()->can('Edit Our Organization'))
+                            <a title="Edit" href="{{ route('user.admin.our-organizations.edit', $our_organizatio->id) }}">
+                                <span class="edit-icon"><i class="fas fa-edit"></i></span>
+                            </a>
+                        @endif
+                        @if (auth()->user()->can('Delete Our Organization'))
+                            <a title="Delete" data-route="{{ route('user.admin.our-organizations.delete', $our_organizatio->id) }}"
+                                href="javascript:void(0);" id="delete">
+                                <span class="trash-icon"><i class="fas fa-trash"></i></span>
+                            </a>
+                        @endif
+                    </div>
+                @endif
             </td>
         </tr>
     @endforeach

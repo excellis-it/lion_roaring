@@ -15,9 +15,10 @@
                     <p class="text-muted small mb-0">Update details page</p>
                 </div>
             </div>
+            @include('user.admin.partials.cms-us-prefill-banner')
             <form action="{{ route('user.admin.details.store') }}" method="post" enctype="multipart/form-data">
                 @csrf
-                @if (auth()->user()->user_type == 'Global')
+                @if (\App\Helpers\Helper::canSelectCmsContentCountry())
                     <div class="row mb-4">
                         <div class="col-md-4">
                             <label for="country_code">Content Country</label>
@@ -25,13 +26,15 @@
                                 name="content_country_code" id="content_country_code" class="form-control">
                                 @foreach (\App\Models\Country::all() as $country)
                                     <option value="{{ $country->code }}"
-                                        {{ request()->get('content_country_code', 'US') == $country->code ? 'selected' : '' }}>
+                                        {{ ($cmsEditCountryCode ?? request()->get('content_country_code', 'US')) == $country->code ? 'selected' : '' }}>
                                         {{ $country->name }}
                                     </option>
                                 @endforeach
                             </select>
                         </div>
                     </div>
+                @else
+                    <input type="hidden" name="content_country_code" value="{{ $cmsEditCountryCode ?? 'US' }}">
                 @endif
                 <div class="sales-report-card-wrap mt-5">
                     <div class="row count-class" id="add-more">

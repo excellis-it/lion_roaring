@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\User\Admin;
 
+use App\Helpers\Helper;
 use App\Http\Controllers\Controller;
 use App\Models\Country;
 use App\Models\OurOrganization;
@@ -37,12 +38,16 @@ class OurOrganizationController extends Controller
     public function index(Request $request)
     {
         if (auth()->user()->can('Manage Our Organization')) {
-            if ($this->user_type == 'Global') {
-                $our_organizations = OurOrganization::where('country_code', $request->get('content_country_code', 'US'))->orderBy('id', 'desc')->paginate(10);
-            } else {
-                $our_organizations = OurOrganization::where('country_code', $this->country->code)->orderBy('id', 'desc')->paginate(10);
-            }
-            return view('user.admin.our-organizations.list')->with(compact('our_organizations'));
+            $countryCode = Helper::resolveCmsEditCountryCode($request, $this->country->code ?? null);
+            $loaded = Helper::loadCmsRowsForEdit(OurOrganization::class, $countryCode, 'id', 'desc');
+            $our_organizations = Helper::paginateCollection($loaded['rows'], 10);
+
+            return view('user.admin.our-organizations.list', [
+                'our_organizations' => $our_organizations,
+                'isUsPrefill' => $loaded['isUsPrefill'],
+                'cmsEditCountryCode' => $loaded['countryCode'],
+                'prefillCountryName' => Helper::cmsPrefillCountryName($loaded['countryCode']),
+            ]);
         } else {
             abort(403, 'You do not have permission to access this page.');
         }
@@ -52,30 +57,31 @@ class OurOrganizationController extends Controller
     {
         if ($request->ajax()) {
 
-            $sort_by = $request->get('sortby');
-            $sort_type = $request->get('sorttype');
+            $sort_by = $request->get('sortby') ?: 'id';
+            $sort_type = $request->get('sorttype') ?: 'desc';
             $query = $request->get('query');
             $query = str_replace(" ", "%", $query);
-            if ($this->user_type == 'Global') {
-                $our_organizations = OurOrganization::where('country_code', $request->get('content_country_code', 'US'))
-                    ->where(function ($q) use ($query) {
-                        $q->where('id', 'like', '%' . $query . '%')
-                            ->orWhere('name', 'like', '%' . $query . '%')
-                            ->orWhere('slug', 'like', '%' . $query . '%');
-                    })
-                    ->orderBy($sort_by, $sort_type)
-                    ->paginate(10);
-            } else {
-                $our_organizations = OurOrganization::where('country_code', $this->country->code)
-                    ->where(function ($q) use ($query) {
-                        $q->where('id', 'like', '%' . $query . '%')
-                            ->orWhere('name', 'like', '%' . $query . '%')
-                            ->orWhere('slug', 'like', '%' . $query . '%');
-                    })
-                    ->orderBy($sort_by, $sort_type)
-                    ->paginate(10);
-            }
-            return response()->json(['data' => view('user.admin.our-organizations.table', compact('our_organizations'))->render()]);
+
+            $countryCode = Helper::resolveCmsEditCountryCode($request, $this->country->code ?? null);
+            $loaded = Helper::loadCmsRowsForEdit(OurOrganization::class, $countryCode, $sort_by, $sort_type);
+
+            $filtered = $loaded['rows']->filter(function ($item) use ($query) {
+                if ($query === '' || $query === null) {
+                    return true;
+                }
+                $needle = str_replace('%', ' ', $query);
+
+                return stripos((string) $item->id, $needle) !== false
+                    || stripos((string) $item->name, $needle) !== false
+                    || stripos((string) $item->slug, $needle) !== false;
+            })->values();
+
+            $our_organizations = Helper::paginateCollection($filtered, 10);
+
+            return response()->json(['data' => view('user.admin.our-organizations.table', [
+                'our_organizations' => $our_organizations,
+                'isUsPrefill' => $loaded['isUsPrefill'],
+            ])->render()]);
         }
     }
 
@@ -87,7 +93,11 @@ class OurOrganizationController extends Controller
     public function create()
     {
         if (auth()->user()->can('Create Our Organization')) {
-            return view('user.admin.our-organizations.create');
+            $cmsEditCountryCode = Helper::resolveCmsEditCountryCode(request(), $this->country->code ?? null);
+
+            return view('user.admin.our-organizations.create', [
+                'cmsEditCountryCode' => $cmsEditCountryCode,
+            ]);
         } else {
             abort(403, 'You do not have permission to access this page.');
         }
@@ -109,19 +119,12 @@ class OurOrganizationController extends Controller
             'slug' => 'required|unique:our_organizations,slug',
         ]);
 
-        // $slug = $this->createSlug($request->name);
-        // // check slug is already exist or not
-        // $is_slug_exist = OurOrganization::where('slug', $slug)->first();
-        // if ($is_slug_exist) {
-        //     $slug = $slug . '-' . time();
-        // }
-
         $our_organization = new OurOrganization();
         $our_organization->name = $request->name;
         $our_organization->slug = $request->slug;
         $our_organization->description = $request->description;
         $our_organization->image = $this->imageUpload($request->file('image'), 'our_organizations');
-        $our_organization->country_code =  $this->user_type == 'Global' ? $request->content_country_code : $this->country->code ?? 'US';
+        $our_organization->country_code = Helper::resolveCmsEditCountryCode($request, $this->country->code ?? null);
         $our_organization->save();
 
         return redirect()->route('user.admin.our-organizations.index')->with('message', 'Our Organization created successfully.');
@@ -147,7 +150,11 @@ class OurOrganizationController extends Controller
     public function edit($id)
     {
         if (auth()->user()->can('Edit Our Organization')) {
-            $our_organization = OurOrganization::find($id);
+            $our_organization = OurOrganization::findOrFail($id);
+            if (!Helper::canSelectCmsContentCountry() && $our_organization->country_code !== ($this->country->code ?? null)) {
+                abort(403, 'You do not have permission to access this page.');
+            }
+
             return view('user.admin.our-organizations.edit')->with(compact('our_organization'));
         } else {
             abort(403, 'You do not have permission to access this page.');
@@ -170,15 +177,11 @@ class OurOrganizationController extends Controller
             'slug' => 'required|unique:our_organizations,slug,' . $id,
         ]);
 
-        $our_organization = OurOrganization::find($id);
-        // if ($our_organization->name != $request->name) {
-        //     $slug = $this->createSlug($request->name);
-        //     $is_slug_exist = OurOrganization::where('slug', $slug)->first();
-        //     if ($is_slug_exist) {
-        //         $slug = $slug . '-' . time();
-        //     }
-        //     $our_organization->slug = $slug;
-        // }
+        $our_organization = OurOrganization::findOrFail($id);
+        if (!Helper::canSelectCmsContentCountry() && $our_organization->country_code !== ($this->country->code ?? null)) {
+            abort(403, 'You do not have permission to access this page.');
+        }
+
         $our_organization->slug = $request->slug;
         $our_organization->name = $request->name;
         $our_organization->description = $request->description;
@@ -188,7 +191,7 @@ class OurOrganizationController extends Controller
             ]);
             $our_organization->image = $this->imageUpload($request->file('image'), 'our_organizations');
         }
-        $our_organization->country_code =  $request->content_country_code ?? $our_organization->country_code ?? 'US';
+        $our_organization->country_code = Helper::resolveCmsEditCountryCode($request, $this->country->code ?? null);
         $our_organization->save();
 
         return redirect()->route('user.admin.our-organizations.index')->with('message', 'Our Organization updated successfully.');

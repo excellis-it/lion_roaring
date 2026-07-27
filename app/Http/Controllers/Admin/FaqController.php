@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Helpers\Helper;
 use App\Http\Controllers\Controller;
 use App\Models\Faq;
 use Illuminate\Http\Request;
@@ -18,8 +19,16 @@ class FaqController extends Controller
     public function index(Request $request)
     {
         if (auth()->user()->can('Manage Faq')) {
-            $faqs = Faq::where('country_code', $request->get('content_country_code', 'US'))->orderBy('id', 'ASC')->paginate(15);
-            return view('admin.faq.list', compact('faqs'));
+            $code = $request->get('content_country_code', 'US');
+            $loaded = Helper::loadCmsRowsForEdit(Faq::class, $code, 'id', 'asc');
+            $faqs = Helper::paginateCollection($loaded['rows'], 15);
+
+            return view('admin.faq.list', [
+                'faqs' => $faqs,
+                'isUsPrefill' => $loaded['isUsPrefill'],
+                'cmsEditCountryCode' => $loaded['countryCode'],
+                'prefillCountryName' => Helper::cmsPrefillCountryName($loaded['countryCode']),
+            ]);
         } else {
             abort(403, 'You do not have permission to access this page.');
         }
@@ -29,20 +38,31 @@ class FaqController extends Controller
     {
         if ($request->ajax()) {
 
-            $sort_by = $request->get('sortby');
-            $sort_type = $request->get('sorttype');
+            $sort_by = $request->get('sortby') ?: 'id';
+            $sort_type = $request->get('sorttype') ?: 'asc';
             $query = $request->get('query');
             $query = str_replace(" ", "%", $query);
-            $faqs = Faq::where('country_code', $request->get('content_country_code', 'US'))
-                ->where(function ($q) use ($query) {
-                    $q->where('id', 'like', '%' . $query . '%')
-                        ->orWhere('question', 'like', '%' . $query . '%')
-                        ->orWhere('answer', 'like', '%' . $query . '%');
-                })
-                ->orderBy($sort_by, $sort_type)
-                ->paginate(15);
 
-            return response()->json(['data' => view('admin.faq.table', compact('faqs'))->render()]);
+            $code = $request->get('content_country_code', 'US');
+            $loaded = Helper::loadCmsRowsForEdit(Faq::class, $code, $sort_by, $sort_type);
+
+            $filtered = $loaded['rows']->filter(function ($faq) use ($query) {
+                if ($query === '' || $query === null) {
+                    return true;
+                }
+                $needle = str_replace('%', ' ', $query);
+
+                return stripos((string) $faq->id, $needle) !== false
+                    || stripos((string) $faq->question, $needle) !== false
+                    || stripos((string) $faq->answer, $needle) !== false;
+            })->values();
+
+            $faqs = Helper::paginateCollection($filtered, 15);
+
+            return response()->json(['data' => view('admin.faq.table', [
+                'faqs' => $faqs,
+                'isUsPrefill' => $loaded['isUsPrefill'],
+            ])->render()]);
         }
     }
 
