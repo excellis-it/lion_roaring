@@ -17,9 +17,9 @@
                             <div class="name_bull notranslate" translate="no">
                                 {!! no_translate(isset($bulletin->user->full_name) && !empty($bulletin->user->full_name) ? $bulletin->user->full_name : 'Unknown') !!}
                             </div>
-                            <h4 class="bulletin-title notranslate" translate="no">
+                            <h4 class="bulletin-title">
                                 {{ isset($bulletin->title) && !empty($bulletin->title) ? $bulletin->title : '' }} </h4>
-                            <p class="bulletin-description notranslate" translate="no">
+                            <p class="bulletin-description">
                                 {!! isset($bulletin->description) && !empty($bulletin->description)
                                     ? preg_replace_callback(
                                         '/(https?:\/\/[^\s]+)/',
@@ -50,9 +50,9 @@
                             <div class="name_bull notranslate" translate="no">
                                 {!! no_translate(isset($bulletin->user->full_name) && !empty($bulletin->user->full_name) ? $bulletin->user->full_name : 'Unknown') !!}
                             </div>
-                            <h4 class="bulletin-title notranslate" translate="no">
+                            <h4 class="bulletin-title">
                                 {{ isset($bulletin->title) && !empty($bulletin->title) ? $bulletin->title : '' }} </h4>
-                            <p class="bulletin-description notranslate" translate="no">
+                            <p class="bulletin-description">
                                 {!! isset($bulletin->description) && !empty($bulletin->description)
                                     ? preg_replace_callback(
                                         '/(https?:\/\/[^\s]+)/',
@@ -91,4 +91,3 @@
         <h4>No Bulletin Found</h4>
     </div>
 @endif
-

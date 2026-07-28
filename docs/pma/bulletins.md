@@ -18,8 +18,10 @@ Community publishing tools: Bulletin Board (read), Create Bulletins, Job Posting
 ### Bulletin Board / Create Bulletins
 
 - Board lists posts for members; Create Bulletins manages posts with country / user-type scoping.
-- Title/description may be server-translated on the board when language cookie is set (see ContentTranslationService).
-- Author display names are never translated (`no_translate` / `notranslate`), consistent with site-wide person-name protection under Google Website Translator.
+- **Non-English languages:** post title/description translate with the rest of the page via Google Website Translator (same as other PMA pages). They are not marked `notranslate`.
+- **English:** Google Translate is neutralized for the UI, so Spanish/other posts are server-translated into English via `ContentTranslationService` when `content_lang=en`.
+- **Original:** no machine translation; posts stay in the author’s language.
+- Author display names are never translated (`no_translate` / `notranslate`), consistent with site-wide person-name protection.
 
 ### Job Posting / Meeting Schedule / Live Events
 
