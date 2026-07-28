@@ -83,17 +83,25 @@
     }
 
     /**
-     * Cookie paths for path-based demos (/lion-roaring-org) and host-based production (/).
-     * Google Translate often writes googtrans with the subdirectory path; clearing only
-     * path=/ leaves that cookie and language switching appears stuck.
+     * WRITE cookies only at site root (and app base path). Writing per-page path
+     * segments caused Hindi on /user/a and Spanish on /user/b (multiple googtrans).
      */
-    function getTranslateCookiePaths() {
+    function getCanonicalWritePaths() {
         const paths = new Set(['/']);
         const base = String(window.appBasePath || '').replace(/\/$/, '');
         if (base) {
             paths.add(base);
             paths.add(base + '/');
         }
+        return Array.from(paths);
+    }
+
+    /**
+     * CLEAR cookies on current path ancestors + common app prefixes + any paths
+     * we previously visited (sessionStorage), so path-scoped leftovers die.
+     */
+    function getClearCookiePaths() {
+        const paths = new Set(getCanonicalWritePaths());
         const pathname = window.location.pathname || '/';
         const parts = pathname.split('/').filter(Boolean);
         let acc = '';
@@ -102,7 +110,35 @@
             paths.add(acc);
             paths.add(acc + '/');
         }
+        // Common surface prefixes (GT often re-writes googtrans here)
+        [
+            '/user', '/e-learning', '/e-store', '/admin', '/chatbot',
+            '/frontend', '/login', '/register'
+        ].forEach(function (p) {
+            paths.add(p);
+            paths.add(p + '/');
+        });
+        try {
+            var stored = JSON.parse(sessionStorage.getItem('lr_gt_clear_paths') || '[]');
+            if (Array.isArray(stored)) {
+                stored.forEach(function (p) {
+                    if (typeof p === 'string' && p) {
+                        paths.add(p);
+                    }
+                });
+            }
+            var merged = Array.from(paths);
+            if (merged.length > 80) {
+                merged = merged.slice(-80);
+            }
+            sessionStorage.setItem('lr_gt_clear_paths', JSON.stringify(merged));
+        } catch (e) {}
         return Array.from(paths);
+    }
+
+    // Back-compat alias used by older call sites
+    function getTranslateCookiePaths() {
+        return getClearCookiePaths();
     }
 
     function cookieDomainVariants() {
@@ -151,77 +187,93 @@
         document.cookie = cookie;
     }
 
+    function writeCanonicalCookie(name, value) {
+        const paths = getCanonicalWritePaths();
+        const domains = cookieDomainVariants();
+        paths.forEach(function (path) {
+            domains.forEach(function (domain) {
+                writeNamedCookie(name, value, path, domain);
+            });
+        });
+    }
+
+    function expireNamedCookieEverywhere(name) {
+        const paths = getClearCookiePaths();
+        const domains = cookieDomainVariants();
+        paths.forEach(function (path) {
+            domains.forEach(function (domain) {
+                expireNamedCookie(name, path, domain);
+            });
+        });
+    }
+
     /**
      * clearGoogleTranslateCookies()
      * Clears googtrans across domain + path + Secure/SameSite variants.
      */
     function clearGoogleTranslateCookies() {
-        const paths = getTranslateCookiePaths();
-        const domains = cookieDomainVariants();
-        paths.forEach(function (path) {
-            domains.forEach(function (domain) {
-                expireNamedCookie('googtrans', path, domain);
-            });
-        });
+        expireNamedCookieEverywhere('googtrans');
     }
     window.clearGoogleTranslateCookies = clearGoogleTranslateCookies;
 
     /**
      * Overwrite leftovers with /en/en (source=target) so GT stops translating.
-     * Deleting alone often fails when Google set a Secure path-scoped cookie.
+     * Only at canonical paths — never per-page paths.
      */
     function neutralizeGoogtransCookie() {
-        const paths = getTranslateCookiePaths();
-        const domains = cookieDomainVariants();
-        paths.forEach(function (path) {
-            domains.forEach(function (domain) {
-                writeNamedCookie('googtrans', '/en/en', path, domain);
-            });
-        });
+        writeCanonicalCookie('googtrans', '/en/en');
+    }
+
+    function readContentLangFromCookie() {
+        const match = document.cookie.match(/(?:^|;\s*)content_lang=([^;]+)/);
+        if (!match || !match[1]) {
+            return null;
+        }
+        return decodeURIComponent(match[1]);
     }
 
     /**
-     * content_lang marks an explicit language choice for UGC (bulletins).
-     * __original__ (or absent) = keep author language; expire alone is unreliable across
-     * path/domain variants, so Original also overwrites leftovers with the sentinel.
+     * content_lang is the site-wide language intent.
+     * __original__ (or absent) = keep author language.
      */
     function setContentLangCookie(lang) {
-        const paths = getTranslateCookiePaths();
-        const domains = cookieDomainVariants();
+        expireNamedCookieEverywhere('content_lang');
         if (!lang || lang === '__original__') {
-            paths.forEach(function (path) {
-                domains.forEach(function (domain) {
-                    expireNamedCookie('content_lang', path, domain);
-                });
-            });
-            // Overwrite any stuck en/fr content_lang that expire could not remove
-            paths.forEach(function (path) {
-                domains.forEach(function (domain) {
-                    writeNamedCookie('content_lang', '__original__', path, domain);
-                });
-            });
+            writeCanonicalCookie('content_lang', '__original__');
             return;
         }
-        paths.forEach(function (path) {
-            domains.forEach(function (domain) {
-                writeNamedCookie('content_lang', lang, path, domain);
-            });
-        });
+        writeCanonicalCookie('content_lang', lang);
     }
     window.setContentLangCookie = setContentLangCookie;
 
     function setGoogtransCookie(lang) {
         const value = '/auto/' + lang;
-        const paths = getTranslateCookiePaths();
-        const domains = cookieDomainVariants();
-        // Clear first so Secure leftovers cannot win over a new language
+        // Clear path-scoped leftovers first, then write only at site root
         clearGoogleTranslateCookies();
-        paths.forEach(function (path) {
-            domains.forEach(function (domain) {
-                writeNamedCookie('googtrans', value, path, domain);
-            });
-        });
+        writeCanonicalCookie('googtrans', value);
     }
+
+    /**
+     * On every page load: wipe path-scoped googtrans leftovers and re-apply the
+     * language from content_lang at path=/ so Hindi/Spanish cannot diverge by URL.
+     */
+    function reconcileLanguageCookies() {
+        var intent = readContentLangFromCookie();
+        clearGoogleTranslateCookies();
+        if (!intent || intent === '__original__') {
+            writeCanonicalCookie('content_lang', '__original__');
+            neutralizeGoogtransCookie();
+            return;
+        }
+        writeCanonicalCookie('content_lang', intent);
+        if (intent === 'en') {
+            neutralizeGoogtransCookie();
+            return;
+        }
+        writeCanonicalCookie('googtrans', '/auto/' + intent);
+    }
+    // Run immediately (before Google Translate script applies a stale path cookie)
+    reconcileLanguageCookies();
 
     /**
      * Full document navigation (not reload) so a Google-Translate-mutated DOM
@@ -243,11 +295,12 @@
             window.LrTranslationDiagnostics.clearPendingVerification();
         }
         clearGoogleTranslateCookies();
-        neutralizeGoogtransCookie();
         if (nextContentLang) {
             setContentLangCookie(nextContentLang);
+            neutralizeGoogtransCookie();
         } else {
             setContentLangCookie('__original__');
+            neutralizeGoogtransCookie();
         }
         hardNavigateForLanguageChange();
     }
@@ -273,11 +326,11 @@
             return;
         }
 
+        // content_lang is site-wide source of truth; googtrans drives GT widget
         setContentLangCookie(lang);
         if (window.LrTranslationDiagnostics) {
             window.LrTranslationDiagnostics.markPendingVerification(lang);
         }
-        // Other languages: set googtrans then navigate so server UGC translation + GT widget both apply
         setGoogtransCookie(lang);
         hardNavigateForLanguageChange();
     }
@@ -405,12 +458,23 @@
     }
 
     function getActiveTranslateLang() {
+        // content_lang is the intentional site-wide choice (avoids path-scoped googtrans drift)
+        const contentMatch = document.cookie.match(/(?:^|;\s*)content_lang=([^;]+)/);
+        if (contentMatch && contentMatch[1]) {
+            const contentLang = decodeURIComponent(contentMatch[1]);
+            if (contentLang && contentLang !== '__original__') {
+                return contentLang;
+            }
+            if (contentLang === '__original__') {
+                return '__original__';
+            }
+        }
         const match = document.cookie.match(/(?:^|;\s*)googtrans=([^;]+)/);
         if (match && match[1]) {
             const raw = decodeURIComponent(match[1]);
             // /en/en = GT neutralized (English source=target); treat as no machine language
             if (raw === '/en/en' || raw === 'en|en') {
-                // fall through to content_lang / Original
+                // fall through
             } else {
                 const auto = raw.match(/^\/auto\/(.+)$/);
                 if (auto && auto[1] && auto[1] !== 'en') {
@@ -420,13 +484,6 @@
                 if (pair && pair[2] && pair[1] !== pair[2]) {
                     return pair[2];
                 }
-            }
-        }
-        const contentMatch = document.cookie.match(/(?:^|;\s*)content_lang=([^;]+)/);
-        if (contentMatch && contentMatch[1]) {
-            const contentLang = decodeURIComponent(contentMatch[1]);
-            if (contentLang && contentLang !== '__original__') {
-                return contentLang;
             }
         }
         const html = document.documentElement;

@@ -12,18 +12,19 @@
     }
 
     $activeLang = null;
-    if (!empty($_COOKIE['googtrans'])) {
+    // Prefer content_lang (site-wide intent) over googtrans (can be path-scoped / stale)
+    if (!empty($_COOKIE['content_lang'])) {
+        $contentLang = (string) $_COOKIE['content_lang'];
+        if ($contentLang !== '__original__') {
+            $activeLang = $contentLang;
+        }
+    }
+    if ($activeLang === null && !empty($_COOKIE['googtrans'])) {
         $gt = urldecode((string) $_COOKIE['googtrans']);
         if ($gt !== '/en/en' && preg_match('#^/auto/([^;]+)$#', $gt, $matches) && $matches[1] !== 'en') {
             $activeLang = $matches[1];
         } elseif ($gt !== '/en/en' && preg_match('#^/([^/]+)/([^;]+)$#', $gt, $matches) && $matches[1] !== $matches[2]) {
             $activeLang = $matches[2];
-        }
-    }
-    if ($activeLang === null && !empty($_COOKIE['content_lang'])) {
-        $contentLang = (string) $_COOKIE['content_lang'];
-        if ($contentLang !== '__original__') {
-            $activeLang = $contentLang;
         }
     }
 @endphp

@@ -41,7 +41,8 @@ Deep domain rules: see **Global & Regional Domains**.
 ### Language / Google Website Translator
 
 - Header language switcher drives Google Website Translator (`frontend.includes.google_translate`).
-- **Original** clears/overwrites translation cookies (`googtrans` → `/en/en`, `content_lang` → `__original__`) and hard-navigates so the page (and UGC such as bulletin posts) returns to author language; a plain reload is not used because Google Translate’s mutated DOM can stick via bfcache.
+- Language choice is stored site-wide in `content_lang` (path=`/`). `googtrans` is written only at the site root too; on each page load path-scoped leftover cookies are cleared and re-applied from `content_lang` so navigating between pages cannot flip Hindi ↔ Spanish.
+- **Original** sets `content_lang=__original__`, neutralizes `googtrans` to `/en/en`, and hard-navigates so the page (and UGC such as bulletin posts) returns to author language.
 - Choosing a language (including English) sets cookies and hard-navigates the same way; English uses `content_lang=en` so server-side UGC translation still runs while the UI stays untranslated.
 - **Person names and usernames are never machine-translated.** Displays use `no_translate()` (`Helper::noTranslate`) → `<span class="notranslate" translate="no">…</span>`. Name inputs and known name UI nodes (e.g. `.GroupName`) are also marked via `protect-names-from-translate.js`.
 - **Translation failure diagnostics:** if Google Translate does not apply after a language change (blocked script, missing widget, cookie issues), the browser shows a warning popup and POSTs anonymized diagnostics to `POST /translation-client-log` (logged as `Translation client failure` in Laravel logs). Surface tag: `website` (or `ecom` / `elearning` on those hosts).
