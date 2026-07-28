@@ -51,7 +51,7 @@ Flutter app at `lion-roaring-app`. Talks to Laravel **`/api/v3`**. Country selec
 - Drawer top-level: **Support Reports**, **Change Logs** (always listed; no management UI in the app).
 - APIs: `GET/POST /api/v3/user/support-reports`, `GET /api/v3/user/support-reports/{id}`, `GET /api/v3/user/change-logs?platform=web|mobile`.
 - If those routes are missing (HTTP **404**), the screen shows **Coming soon** — so the app can ship against production before the API is deployed; once the same API code reaches production, features work without an app update.
-- Member parity with web (list/create/view reports with optional attachment; published change logs with Web/Mobile tabs and current version chip).
+- Member parity with web (list/create/view reports with optional attachment; published change logs with Web/Mobile tabs — default **Web** — and current version chip). Description HTML renders bold/italic and bullet/numbered lists; plain `- ` lines are normalized to lists when needed.
 
 ### Chatbot sidebar
 

@@ -69,7 +69,6 @@
                     <input type="datetime-local" name="published_at" id="published_at"
                         class="form-control @error('published_at') is-invalid @enderror"
                         value="{{ old('published_at', $defaultPublishedAt) }}">
-                    <small class="text-muted">Publishes immediately on save. Past or current only — future dates are not allowed.</small>
                     @error('published_at')<div class="invalid-feedback">{{ $message }}</div>@enderror
                 </div>
             </div>
