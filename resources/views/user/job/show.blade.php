@@ -45,7 +45,7 @@
                                         </div>
                                         <div class="col-md-6 text-right">
                                             <p class="card-text"><strong>Job posted By:</strong>
-                                                {{ $job->user ? $job->user->full_name : 'N/A' }}</p>
+                                                {!! no_translate($job->user ? $job->user->full_name : 'N/A') !!}</p>
                                             </p>
                                         </div>
                                         <div class="col-md-6 text-right">
@@ -75,3 +75,4 @@
 
 @push('scripts')
 @endpush
+

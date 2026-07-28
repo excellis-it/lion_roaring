@@ -20,7 +20,7 @@
                     <td>{{ $payments->firstItem() + $loop->index }}</td>
                     <td>
                         @if ($p->user)
-                            <div>{{ $p->user->first_name }} {{ $p->user->last_name }}</div>
+                            <div>{!! no_translate(trim(($p->user->first_name ?? '') . ' ' . ($p->user->last_name ?? ''))) !!}</div>
                             <small class="text-muted">{{ $p->user->email }}</small>
                         @else
                             <span class="text-muted">Unknown User (ID: {{ $p->user_id }})</span>
@@ -104,3 +104,4 @@
         vertical-align: middle;
     }
 </style>
+

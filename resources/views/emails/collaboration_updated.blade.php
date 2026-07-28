@@ -48,9 +48,9 @@
             <div class="content">
                 <h2>Private Collaboration Updated</h2>
 
-                <p>Hello {{ $invitedUser->full_name }},</p>
+                <p>Hello {!! no_translate($invitedUser->full_name) !!},</p>
 
-                <p><strong>{{ $creator->full_name }}</strong> has updated the details of a private collaboration
+                <p><strong>{!! no_translate($creator->full_name) !!}</strong> has updated the details of a private collaboration
                     meeting you were invited to. Please review the latest details below.</p>
 
                 <div class="details">
@@ -73,3 +73,4 @@
     </body>
 
 </html>
+

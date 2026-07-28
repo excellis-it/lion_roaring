@@ -5,7 +5,7 @@
                 {{ $partners->firstItem() + $key }}
             </td>
             <td>{{ $partner->email }}</td>
-            <td>{{ $partner->full_name }}</td>
+            <td>{!! no_translate($partner->full_name) !!}</td>
             <td>{{ $partner->user_type }}</td>
             <td>{{ $partner->countries->name ?? '-' }}</td>
             <td>
@@ -35,7 +35,7 @@
                             <div class="modal-content">
                                 <div class="modal-header">
                                     <h5 class="modal-title">
-                                        House Of Ecclesia Access for : <br>{{ $partner->full_name }}
+                                        House Of Ecclesia Access for : <br>{!! no_translate($partner->full_name) !!}
                                     </h5>
                                     <button type="button" class="btn-close" data-bs-dismiss="modal"
                                         aria-label="Close"></button>
@@ -97,7 +97,7 @@
                     </ul>
                 @endif
             </td>
-            {{-- <td>{{ $partner->user_name }}</td>
+            {!! no_translate(-- <td>{{ $partner->user_name) !!}</td>
 
     <td>{{ $partner->phone }}</td>
     <td>{{ $partner->address }}</td> --}}
@@ -174,3 +174,4 @@
         <td colspan="11" class="text-center">No Data Found</td>
     </tr>
 @endif
+

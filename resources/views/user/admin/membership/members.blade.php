@@ -28,7 +28,7 @@
                                     <td>{{ $m->id }}</td>
                                     <td>
                                         @if ($m->user)
-                                            {{ $m->user->first_name }} {{ $m->user->last_name }}<br>{{ $m->user->email }}
+                                            {!! no_translate(trim(($m->user->first_name ?? '') . ' ' . ($m->user->last_name ?? ''))) !!}<br>{{ $m->user->email }}
                                         @else
                                             <span class="text-muted">Unknown User (ID: {{ $m->user_id }})</span>
                                         @endif
@@ -57,3 +57,4 @@
         </div>
     </div>
 @endsection
+

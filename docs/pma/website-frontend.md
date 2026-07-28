@@ -1,6 +1,6 @@
 ---
 title: Website Frontend
-updated: 2026-07-24
+updated: 2026-07-28
 status: ready
 sidebar_key: website_frontend
 ---
@@ -37,6 +37,11 @@ Deep domain rules: see **Global & Regional Domains**.
 - Newsletter POST → site contact email.
 - Contact form requires **reCAPTCHA**.
 - Donations: Stripe Charge (USD), guests allowed → thank-you page.
+
+### Language / Google Website Translator
+
+- Header language switcher drives Google Website Translator (`frontend.includes.google_translate`).
+- **Person names and usernames are never machine-translated.** Displays use `no_translate()` (`Helper::noTranslate`) → `<span class="notranslate" translate="no">…</span>`. Name inputs and known name UI nodes (e.g. `.GroupName`) are also marked via `protect-names-from-translate.js`.
 
 ### Chatbot
 

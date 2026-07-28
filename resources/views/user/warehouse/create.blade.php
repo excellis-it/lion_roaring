@@ -165,7 +165,7 @@
                                         @foreach ($all_users as $user)
                                             <option value="{{ $user->id }}"
                                                 {{ collect(old('assign_user'))->contains($user->id) ? 'selected' : '' }}>
-                                                {{ $user->full_name }} ({{ $user->email }})
+                                                {!! no_translate($user->full_name) !!} ({{ $user->email }})
                                             </option>
                                         @endforeach
                                     </select>
@@ -442,3 +442,4 @@
         });
     </script>
 @endpush
+

@@ -42,7 +42,7 @@
                 @endif
             </td>
             <td> {{ $product->created_at->format('d M Y') }}</td>
-            <td>{{ $product->user->full_name ?? '—' }}</td>
+            <td>{!! no_translate($product->user->full_name ?? '—') !!}</td>
             <td>
 
 
@@ -112,3 +112,4 @@
         <td colspan="12" class="text-center">No data found</td>
     </tr>
 @endif
+

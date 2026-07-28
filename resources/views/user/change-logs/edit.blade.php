@@ -60,15 +60,17 @@
                 <div class="col-md-12">
                     <label class="form-label fw-semibold">Description <span class="text-danger">*</span></label>
                     <textarea name="description" id="description" rows="10"
-                        class="form-control @error('description') is-invalid @enderror"
-                        required>{{ old('description', $changeLog->description) }}</textarea>
+                        class="form-control notranslate @error('description') is-invalid @enderror"
+                        translate="no">{{ old('description', $changeLog->description) }}</textarea>
                     <small class="text-muted">Use bold/italic and bullet or numbered lists only.</small>
                     @error('description')<div class="invalid-feedback d-block">{{ $message }}</div>@enderror
                 </div>
                 <div class="col-md-4">
                     <label class="form-label fw-semibold">Publish Date</label>
-                    <input type="datetime-local" name="published_at" class="form-control @error('published_at') is-invalid @enderror"
-                        value="{{ old('published_at', $changeLog->published_at?->format('Y-m-d\TH:i')) }}">
+                    <input type="datetime-local" name="published_at" id="published_at"
+                        class="form-control @error('published_at') is-invalid @enderror"
+                        value="{{ old('published_at', $publishedAtLocal) }}">
+                    <small class="text-muted">Past or current only — future dates are not allowed. Saving publishes immediately.</small>
                     @error('published_at')<div class="invalid-feedback">{{ $message }}</div>@enderror
                 </div>
             </div>
@@ -82,20 +84,59 @@
 
 @push('scripts')
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote-lite.min.css">
+    <style>
+        #changeLogForm .note-editable ul { list-style-type: disc; padding-left: 1.5rem; margin: 0.35rem 0; }
+        #changeLogForm .note-editable ol { list-style-type: decimal; padding-left: 1.5rem; margin: 0.35rem 0; }
+        #changeLogForm .note-editable li { margin-bottom: 0.25rem; }
+    </style>
     <script src="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote-lite.min.js"></script>
     <script>
-        $('#description').summernote({
-            placeholder: 'Describe what changed…',
-            tabsize: 2,
-            height: 260,
-            toolbar: [
-                ['style', ['bold', 'italic', 'underline', 'clear']],
-                ['para', ['ul', 'ol']],
-            ]
-        });
+        $(function () {
+            var $desc = $('#description');
+            $desc.summernote({
+                placeholder: 'Describe what changed…',
+                tabsize: 2,
+                height: 260,
+                toolbar: [
+                    ['style', ['bold', 'italic', 'underline', 'clear']],
+                    ['para', ['ul', 'ol']],
+                ],
+                callbacks: {
+                    onInit: function () {
+                        var $editable = $desc.next('.note-editor').find('.note-editable');
+                        $editable.addClass('notranslate').attr('translate', 'no');
+                    }
+                }
+            });
 
-        $('#changeLogForm').on('submit', function () {
-            $('#description').val($('#description').summernote('code'));
+            var $publishedAt = $('#published_at');
+            function setPublishMax() {
+                var now = new Date();
+                var pad = function (n) { return String(n).padStart(2, '0'); };
+                var max = now.getFullYear() + '-' + pad(now.getMonth() + 1) + '-' + pad(now.getDate())
+                    + 'T' + pad(now.getHours()) + ':' + pad(now.getMinutes());
+                $publishedAt.attr('max', max);
+            }
+            setPublishMax();
+            setInterval(setPublishMax, 30000);
+
+            $('#changeLogForm').on('submit', function (e) {
+                var code = $desc.summernote('code');
+                $desc.val(code);
+                var text = $('<div>').html(code).text().replace(/\u00a0/g, ' ').trim();
+                if (!text) {
+                    e.preventDefault();
+                    alert('The description field is required.');
+                    $desc.summernote('focus');
+                    return false;
+                }
+                setPublishMax();
+                if ($publishedAt.val() && $publishedAt.attr('max') && $publishedAt.val() > $publishedAt.attr('max')) {
+                    e.preventDefault();
+                    alert('Publish date cannot be in the future.');
+                    return false;
+                }
+            });
         });
     </script>
 @endpush

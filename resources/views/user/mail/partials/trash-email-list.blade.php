@@ -9,7 +9,7 @@
 
 
     <h3 class="emailRow__title view-mail" data-route="{{ route('mail.trash.view', base64_encode(!empty($mail->reply_of) ? $mail->reply_of : $mail->id)) }}">
-        {{ $mail->user->full_name ?? '' }}
+        {!! no_translate($mail->user->full_name ?? '') !!}
     </h3>
 
     <div class="emailRow__message view-mail" data-route="{{ route('mail.trash.view', base64_encode(!empty($mail->reply_of) ? $mail->reply_of : $mail->id)) }}">
@@ -32,3 +32,4 @@
     <h3 class="emailRow__title">No mail found</h3>
 </div>
 @endif
+

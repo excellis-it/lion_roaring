@@ -41,8 +41,8 @@
                         @foreach ($warehouseAdmins as $key => $admin)
                             <tr>
                                 <td>{{ $key + 1 }}</td>
-                                <td>{{ $admin->first_name }} {{ $admin->last_name }}</td>
-                                <td>{{ $admin->user_name }}</td>
+                                <td>{!! no_translate(trim(($admin->first_name ?? '') . ' ' . ($admin->last_name ?? ''))) !!}</td>
+                                <td>{!! no_translate($admin->user_name) !!}</td>
                                 <td>{{ $admin->email }}</td>
                                 <td>
                                     @if ($admin->warehouses->count() > 0)
@@ -130,3 +130,4 @@
         });
     </script>
 @endpush
+

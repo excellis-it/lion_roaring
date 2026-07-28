@@ -4,7 +4,7 @@
         <td> {{ ($donations->currentPage()-1) * $donations->perPage() + $loop->index + 1 }}</td>
         <td>{{ $donation->transaction_id ?? 'N/A' }}</td>
         <td>${{ $donation->donation_amount ?? 'N/A' }}</td>
-        <td>{{ $donation->full_name ?? 'N/A' }}</td>
+        <td>{!! no_translate($donation->full_name ?? 'N/A') !!}</td>
         <td>{{ $donation->email ?? 'N/A' }}</td>
         <td>{{ $donation->address ?? 'N/A' }}
         </td>
@@ -50,3 +50,4 @@
     <td colspan="13" class="text-center">No Donation Found</td>
 </tr>
 @endif
+

@@ -120,7 +120,7 @@
                         <h4 class="sr-card-title">{{ $report->subject }}</h4>
                         <div class="sr-card-meta">
                             @if ($canManage && $scope === 'all')
-                                {{ $report->user->full_name ?? $report->user->email ?? 'Unknown' }} ·
+                                {!! no_translate($report->user->full_name ?? $report->user->email ?? 'Unknown') !!} ·
                             @endif
                             Submitted {{ $report->created_at->format('d M Y') }}
                         </div>
@@ -148,3 +148,4 @@
     </div>
 </div>
 @endsection
+

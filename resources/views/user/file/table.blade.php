@@ -7,7 +7,7 @@
             <td> {{ $file->type }}</td>
             <td> {{ $file->topic->topic_name ?? '--' }}</td>
             <td> {{ $file->country->name ?? '--' }}</td>
-            <td> {{ $file->user?->full_name ?? '--' }}</td>
+            <td> {!! no_translate($file->user?->full_name ?? '--') !!}</td>
             <td> {{ $file->created_at?->format('d M Y') ?? '--' }}</td>
             <td>
                 <div class="d-flex">
@@ -50,3 +50,4 @@
         <td colspan="9" class="text-center">No data found</td>
     </tr>
 @endif
+

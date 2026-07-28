@@ -6,8 +6,10 @@ use App\Helpers\Helper;
 use App\Http\Controllers\Controller;
 use App\Models\ChangeLog;
 use App\Models\SiteSetting;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Arr;
+use Illuminate\Validation\ValidationException;
 
 class ChangeLogController extends Controller
 {
@@ -16,6 +18,33 @@ class ChangeLogController extends Controller
         $user = auth()->user();
 
         return $user->hasNewRole('SUPER ADMIN') || $user->can('Manage Change Logs');
+    }
+
+    private function userTimezone(): string
+    {
+        return auth()->user()->time_zone ?? config('app.timezone');
+    }
+
+    /**
+     * Parse a datetime-local value as the user's wall time and store in app timezone.
+     * Blank => publish immediately. Future values are rejected (no scheduled publish).
+     */
+    private function resolvePublishedAt(?string $value): Carbon
+    {
+        if ($value === null || trim($value) === '') {
+            return now();
+        }
+
+        $parsed = Carbon::parse($value, $this->userTimezone())
+            ->timezone(config('app.timezone'));
+
+        if ($parsed->gt(now())) {
+            throw ValidationException::withMessages([
+                'published_at' => 'Publish date cannot be in the future. Entries publish immediately on save.',
+            ]);
+        }
+
+        return $parsed;
     }
 
     private function sanitizeDescription(string $html): string
@@ -109,7 +138,11 @@ class ChangeLogController extends Controller
             ? $request->platform
             : 'web';
 
-        return view('user.change-logs.create', compact('platform'));
+        $defaultPublishedAt = now()
+            ->timezone($this->userTimezone())
+            ->format('Y-m-d\TH:i');
+
+        return view('user.change-logs.create', compact('platform', 'defaultPublishedAt'));
     }
 
     public function store(Request $request)
@@ -139,7 +172,7 @@ class ChangeLogController extends Controller
             'type' => $validated['type'],
             'platform' => $validated['platform'],
             'description' => $description,
-            'published_at' => $validated['published_at'] ?? now(),
+            'published_at' => $this->resolvePublishedAt($validated['published_at'] ?? null),
         ]);
 
         return redirect()->route('change-logs.index', ['platform' => $validated['platform']])
@@ -152,7 +185,11 @@ class ChangeLogController extends Controller
             abort(403, 'You do not have permission to access this page.');
         }
 
-        return view('user.change-logs.edit', compact('changeLog'));
+        $publishedAtLocal = $changeLog->published_at
+            ? $changeLog->published_at->timezone($this->userTimezone())->format('Y-m-d\TH:i')
+            : null;
+
+        return view('user.change-logs.edit', compact('changeLog', 'publishedAtLocal'));
     }
 
     public function update(Request $request, ChangeLog $changeLog)
@@ -174,6 +211,8 @@ class ChangeLogController extends Controller
         if (trim(strip_tags($validated['description'])) === '') {
             return back()->withErrors(['description' => 'The description field is required.'])->withInput();
         }
+
+        $validated['published_at'] = $this->resolvePublishedAt($validated['published_at'] ?? null);
 
         $changeLog->update(Arr::except($validated, ['created_by']));
 

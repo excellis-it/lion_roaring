@@ -587,7 +587,7 @@
                                 $.each(response.users, function(index, user) {
                                     html += '<tr>';
                                     html += '<td class="px-2">' + (index + 1) + '</td>';
-                                    html += '<td class="px-2">' + user.full_name +
+                                    html += '<td class="px-2 notranslate" translate="no">' + user.full_name +
                                         '</td>';
                                     html += '<td class="px-2">' + user.email + '</td>';
                                     html += '<td class="px-2">' + (user.role_name ||

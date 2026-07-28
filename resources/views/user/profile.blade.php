@@ -94,7 +94,7 @@
                                     </div>
                                     <div class="right_text profile-info">
                                         <p>Hello!</p>
-                                        <h2> {{ Auth::user()->first_name }} {{ Auth::user()->last_name }}</h2>
+                                        <h2> {!! no_translate(trim((Auth::user()->first_name ?? '') . ' ' . (Auth::user()->last_name ?? ''))) !!}</h2>
                                         <p>{{ Auth::user()->email }}</p>
                                         <p>Lion Roaring ID: {{ Auth::user()->lion_roaring_id ?? '' }}</p>
                                         <p>Roar ID: {{ Auth::user()->roar_id ?? '' }}</p>
@@ -517,3 +517,4 @@
         });
     </script>
 @endpush
+

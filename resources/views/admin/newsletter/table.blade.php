@@ -2,7 +2,7 @@
     @foreach ($newsletters as $key => $newsletter)
         <tr>
             <td> {{ ($newsletters->currentPage() - 1) * $newsletters->perPage() + $loop->index + 1 }}</td>
-            <td>{{ $newsletter->full_name }}</td>
+            <td>{!! no_translate($newsletter->full_name) !!}</td>
             <td>{{ $newsletter->email }}</td>
             <td>{{ $newsletter->message }}
             </td>
@@ -30,3 +30,4 @@
         <td colspan="5" class="text-center">No Newsletter Found</td>
     </tr>
 @endif
+

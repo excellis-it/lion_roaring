@@ -41,7 +41,7 @@
                                                     alt="">
                                             </div>
                                             <div>
-                                                <p class="GroupName">{{ $user->full_name }}</p>
+                                                <p class="GroupName">{!! no_translate($user->full_name) !!}</p>
                                                 <p class="GroupDescrp">{{ $user->email }}</p>
                                             </div>
 
@@ -121,7 +121,7 @@
                                                     ? Storage::url($member->user->profile_picture)
                                                     : asset('user_assets/images/profile_dummy.png') }}"
                                                 alt=""></div>
-                                        <p class="GroupName">{{ $member->user ? $member->user->full_name : '' }}</p>
+                                        <p class="GroupName">{!! no_translate($member->user ? $member->user->full_name : '') !!}</p>
                                         <p class="GroupDescrp">{{ $member->user ? $member->user->email : '' }}</p>
                                         <div class="time_online mt-3"
                                             id="show-permission-{{ $team->id }}-{{ $member->user_id }}">
@@ -182,3 +182,4 @@
     </div>
 
 @endif
+

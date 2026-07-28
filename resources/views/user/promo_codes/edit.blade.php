@@ -125,7 +125,7 @@
                                 @foreach ($users as $user)
                                     <option value="{{ $user->id }}"
                                         {{ in_array($user->id, old('user_ids', $promoCode->user_ids ?? [])) ? 'selected' : '' }}>
-                                        {{ $user->first_name }} ({{ $user->email }})
+                                        {!! no_translate($user->first_name) !!} ({{ $user->email }})
                                     </option>
                                 @endforeach
                             </select>
@@ -233,7 +233,7 @@
                                 @foreach ($promoCode->usages()->latest()->take(10)->get() as $index => $usage)
                                     <tr>
                                         <td>{{ $index + 1 }}</td>
-                                        <td>{{ $usage->user->first_name ?? 'N/A' }}</td>
+                                        <td>{!! no_translate($usage->user->first_name ?? 'N/A') !!}</td>
                                         <td>{{ $usage->subscription->subscription_name ?? 'N/A' }}</td>
                                         <td>{{ $usage->used_at->format('M d, Y h:i A') }}</td>
                                     </tr>

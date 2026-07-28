@@ -173,11 +173,11 @@
                             <div class="row">
                                 <div class="col-md-6">
                                     <h6>Customer Information</h6>
-                                    <p><strong>Name:</strong> {{ $order->full_name }}</p>
+                                    <p><strong>Name:</strong> {!! no_translate($order->full_name) !!}</p>
                                     <p><strong>Email:</strong> {{ $order->email }}</p>
                                     <p><strong>Phone:</strong> {{ $order->phone }}</p>
                                     @if ($order->user)
-                                        <p><strong>Username:</strong> {{ $order->user->user_name }}</p>
+                                        <p><strong>Username:</strong> {!! no_translate($order->user->user_name) !!}</p>
                                     @endif
                                 </div>
 
@@ -914,3 +914,4 @@
         }
     </script>
 @endpush
+

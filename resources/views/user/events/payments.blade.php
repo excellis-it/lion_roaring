@@ -56,7 +56,7 @@
                                 @forelse($event->payments as $payment)
                                     <tr>
                                         <td>{{ $payment->transaction_id }}</td>
-                                        <td>{{ $payment->user->getFullNameAttribute() }}</td>
+                                        <td>{!! no_translate($payment->user->getFullNameAttribute()) !!}</td>
                                         <td>{{ $payment->user->email }}</td>
                                         <td>${{ number_format($payment->amount, 2) }}</td>
                                         <td>
@@ -86,3 +86,4 @@
         </div>
     </div>
 @endsection
+

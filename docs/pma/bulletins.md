@@ -1,6 +1,6 @@
 ---
 title: Bulletins
-updated: 2026-07-24
+updated: 2026-07-28
 status: ready
 sidebar_key: bulletins
 ---
@@ -19,6 +19,7 @@ Community publishing tools: Bulletin Board (read), Create Bulletins, Job Posting
 
 - Board lists posts for members; Create Bulletins manages posts with country / user-type scoping.
 - Title/description may be server-translated on the board when language cookie is set (see ContentTranslationService).
+- Author display names are never translated (`no_translate` / `notranslate`), consistent with site-wide person-name protection under Google Website Translator.
 
 ### Job Posting / Meeting Schedule / Live Events
 

@@ -397,7 +397,7 @@ $(document).ready(function () {
                 <div class="avatar">
                     <img src="${profileImage}" alt="" onerror="this.onerror=null;this.src='${profileFallback}'">
                 </div>
-                <p class="GroupName">${user.first_name || ""} ${
+                <p class="GroupName notranslate" translate="no">${user.first_name || ""} ${
                     user.middle_name || ""
                 } ${user.last_name || ""}</p>
                 <p class="GroupDescrp" id="message-app-${user.id}">

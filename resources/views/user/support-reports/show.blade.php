@@ -114,7 +114,7 @@
                         @if ($canManage)
                         <div class="sr-meta-item">
                             <span class="label">Submitted By</span>
-                            <span class="value">{{ $report->user->full_name ?? '-' }}</span>
+                            <span class="value">{!! no_translate($report->user->full_name ?? '-') !!}</span>
                         </div>
                         <div class="sr-meta-item">
                             <span class="label">Email</span>
@@ -140,7 +140,7 @@
                         @if($canManage && $report->resolver)
                         <div class="sr-meta-item">
                             <span class="label">Last Handled By</span>
-                            <span class="value">{{ $report->resolver->full_name ?? $report->resolver->email }}</span>
+                            <span class="value">{!! no_translate($report->resolver->full_name ?? $report->resolver->email) !!}</span>
                         </div>
                         @endif
                     </div>
@@ -220,3 +220,4 @@
     </div>
 </div>
 @endsection
+

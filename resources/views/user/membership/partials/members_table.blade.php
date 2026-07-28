@@ -20,7 +20,7 @@
                     <td>{{ $members->firstItem() + $loop->index }}</td>
                     <td>
                         @if ($m->user)
-                            <div>{{ $m->user->first_name }} {{ $m->user->last_name }}</div>
+                            <div>{!! no_translate(trim(($m->user->first_name ?? '') . ' ' . ($m->user->last_name ?? ''))) !!}</div>
                             <small class="text-muted">{{ $m->user->email }}</small>
                         @else
                             <span class="text-muted">User (ID: {{ $m->user_id }})</span>
@@ -91,3 +91,4 @@
 <div class="mt-3">
     {!! $members->links() !!}
 </div>
+

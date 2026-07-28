@@ -26,6 +26,7 @@ PMA sidebar parent for **Chats**, **Team**, and **Mail**. Visible when the user 
 - Chat image URLs prefer the **original** file via `Helper::chatMediaUrl()` — older Intervention v3 `resize(2000,2000)` compressions squashed portraits into squares; new uploads use `scaleDown()` and keep aspect ratio.
 - Chat list / chat header / app header user avatars resolve via `Helper::publicStorageUrl()` and fall back to `profile_dummy.png` (including `onerror` for missing local files).
 - Header notification badge sits on the top-right of the bell (does not use legacy `.round-note` margin).
+- Display names use `no_translate` / `.GroupName` so Google Website Translator does not alter person names.
 
 ### Team
 

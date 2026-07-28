@@ -91,7 +91,7 @@
                                         @foreach ($users as $user)
                                             <option value="{{ $user->id }}"
                                                 {{ in_array($user->id, $selectedUsers) ? 'selected' : '' }}>
-                                                {{ trim($user->full_name) ?: $user->email }}
+                                                {!! no_translate(trim($user->full_name) ?: $user->email) !!}
                                             </option>
                                         @endforeach
                                     </select>
@@ -257,3 +257,4 @@
         });
     </script>
 @endpush
+

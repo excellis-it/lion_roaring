@@ -77,8 +77,7 @@
                                             <img src="{{ $avatarUrl }}" alt=""
                                                 onerror="this.onerror=null;this.src='{{ $avatarFallback }}';">
                                         </div>
-                                        <p class="GroupName">{{ $user['first_name'] }} {{ $user['middle_name'] ?? '' }}
-                                            {{ $user['last_name'] ?? '' }}</p>
+                                        <p class="GroupName notranslate" translate="no">{!! no_translate(trim(($user['first_name'] ?? '') . ' ' . ($user['middle_name'] ?? '') . ' ' . ($user['last_name'] ?? ''))) !!}</p>
                                         <p class="GroupDescrp last-chat-{{ isset($user['last_message']) ? $user['last_message']['id'] : '' }}"
                                             id="message-app-{{ $user['id'] }}">
                                             @if (isset($user['last_message']['message']))

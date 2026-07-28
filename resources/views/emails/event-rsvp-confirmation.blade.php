@@ -61,7 +61,7 @@
                 <h1>✓ Registration Confirmed!</h1>
             </div>
             <div class="content">
-                <p>Hi {{ $user->getFullNameAttribute() }},</p>
+                <p>Hi {!! no_translate($user->getFullNameAttribute()) !!},</p>
 
                 <p>Your registration for <strong>{{ $event->title }}</strong> has been confirmed!</p>
 
@@ -72,7 +72,7 @@
                     <p><strong>Time:</strong> {{ $event->start->format('g:i A') }} - {{ $event->end->format('g:i A') }}
                         ({{ $event->start->format('T') }})
                     </p>
-                    <p><strong>Host:</strong> {{ $event->user->getFullNameAttribute() }}</p>
+                    <p><strong>Host:</strong> {!! no_translate($event->user->getFullNameAttribute()) !!}</p>
                 </div>
 
                 <p>Your event access link is ready. You can join the event using the button below:</p>
@@ -99,3 +99,4 @@
     </body>
 
 </html>
+

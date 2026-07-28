@@ -61,7 +61,7 @@
                 <p><strong>When:</strong> {{ $event->start->format('l, F j, Y \a\t g:i A') }}
                     ({{ $event->start->format('T') }})</p>
                 <p><strong>Ends:</strong> {{ $event->end->format('l, F j, Y \a\t g:i A') }}</p>
-                <p><strong>Host:</strong> {{ $event->user->getFullNameAttribute() }}</p>
+                <p><strong>Host:</strong> {!! no_translate($event->user->getFullNameAttribute()) !!}</p>
 
                 @if ($event->type === 'paid')
                     <p><strong>Price:</strong> ${{ number_format($event->price, 2) }} USD</p>
@@ -91,3 +91,4 @@
     </body>
 
 </html>
+

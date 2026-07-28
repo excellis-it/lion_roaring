@@ -116,7 +116,7 @@
                                             </span>
                                         </div>
                                         <div class="name_text_p">
-                                            <h5>{{ $mail_details->user->full_name }}</h5>
+                                            <h5>{!! no_translate($mail_details->user->full_name) !!}</h5>
                                             <h6><span class="time_text">From: {{ $mail_details->user->email }}</span></h6>
                                             <h6><span class="time_text">To: </span>
                                                 @foreach (explode(',', $mail_details->to) as $toEmail)
@@ -481,3 +481,4 @@
         });
     </script>
 @endpush
+

@@ -68,7 +68,7 @@
                         </div>
 
                         <div class="mb-4">
-                            <p><strong>Host:</strong> {{ $event->user->getFullNameAttribute() }}</p>
+                            <p><strong>Host:</strong> {!! no_translate($event->user->getFullNameAttribute()) !!}</p>
                         </div>
 
                         <div class="access-link">
@@ -156,3 +156,4 @@
         }
     </script>
 @endpush
+

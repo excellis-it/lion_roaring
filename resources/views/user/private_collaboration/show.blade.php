@@ -68,7 +68,7 @@
                                             </div>
                                             <div class="col-md-6 text-right">
                                                 <p class="card-text"><strong>Created By:</strong>
-                                                    {{ $collaboration->user ? $collaboration->user->full_name : 'N/A' }}
+                                                    {!! no_translate($collaboration->user ? $collaboration->user->full_name : 'N/A') !!}
                                                 </p>
                                                 <p class="card-text"><strong>Your Status:</strong>
                                                     @if ($isCreator)
@@ -113,7 +113,7 @@
                                                 <tbody>
                                                     @forelse($collaboration->invitations as $invitation)
                                                         <tr>
-                                                            <td>{{ $invitation->user->full_name }}</td>
+                                                            <td>{!! no_translate($invitation->user->full_name) !!}</td>
                                                             <td>{{ $invitation->user->email }}</td>
                                                             <td>
                                                                 @if ($invitation->status == 'accepted')
@@ -148,3 +148,4 @@
 
 @push('scripts')
 @endpush
+

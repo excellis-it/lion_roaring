@@ -5,7 +5,7 @@
         <div class="bg_white_border">
             <div class="row mb-3">
                 <div class="col-md-12">
-                    <h3 class="mb-3">Payment History: {{ $user->first_name }} {{ $user->last_name }}</h3>
+                    <h3 class="mb-3">Payment History: {!! no_translate(trim(($user->first_name ?? '') . ' ' . ($user->last_name ?? ''))) !!}</h3>
                     <p class="text-muted">{{ $user->email }}</p>
                 </div>
             </div>
@@ -48,3 +48,4 @@
         </div>
     </div>
 @endsection
+

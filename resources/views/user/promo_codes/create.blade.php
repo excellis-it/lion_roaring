@@ -114,7 +114,7 @@
                                 @foreach ($users as $user)
                                     <option value="{{ $user->id }}"
                                         {{ in_array($user->id, old('user_ids', [])) ? 'selected' : '' }}>
-                                        {{ $user->first_name }} ({{ $user->email }})
+                                        {!! no_translate($user->first_name) !!} ({{ $user->email }})
                                     </option>
                                 @endforeach
                             </select>

@@ -132,7 +132,7 @@
                                                             <img src="{{ $user->profile_picture ? Storage::url($user->profile_picture) : asset('user_assets/images/profile_dummy.png') }}"
                                                                 alt="">
                                                         </div>
-                                                        <p class="GroupName">{{ $user->full_name }}</p>
+                                                        <p class="GroupName">{!! no_translate($user->full_name) !!}</p>
                                                     </li>
                                                 @endforeach
                                             @endif
@@ -350,3 +350,4 @@
         });
     </script>
 @endpush
+

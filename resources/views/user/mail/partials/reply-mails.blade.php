@@ -26,7 +26,7 @@
 
                             <div class="name_text_p">
 
-                                <h5>{{ $reply->user->full_name }}</h5>
+                                <h5>{!! no_translate($reply->user->full_name) !!}</h5>
                                 <h6><span class="time_text">From: {{ $reply->user->email }}</span></h6>
                                 <h6 hidden><span class="time_text">To: </span>
                                     @foreach (explode(',', $reply->to) as $toEmail)
@@ -113,3 +113,4 @@
         </div>
     @endforeach
 @endif
+

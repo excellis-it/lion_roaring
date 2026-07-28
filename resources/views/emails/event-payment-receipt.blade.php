@@ -61,7 +61,7 @@
                 <h1>Payment Successful!</h1>
             </div>
             <div class="content">
-                <p>Hi {{ $user->getFullNameAttribute() }},</p>
+                <p>Hi {!! no_translate($user->getFullNameAttribute()) !!},</p>
 
                 <p>Thank you for your payment. Your transaction has been successfully processed.</p>
 
@@ -103,3 +103,4 @@
     </body>
 
 </html>
+

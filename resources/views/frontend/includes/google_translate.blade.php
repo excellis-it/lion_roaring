@@ -1,5 +1,6 @@
 <div id="google_translate_element_mount" class="google-translate-mount" aria-hidden="true"></div>
 
+<script src="{{ asset('frontend_assets/js/protect-names-from-translate.js') }}"></script>
 
 <script>
     // Use Helper::getVisitorCountryLanguages() which returns:

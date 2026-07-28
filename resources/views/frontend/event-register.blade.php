@@ -96,7 +96,7 @@
                                 </div>
 
                                 <div class="mb-4">
-                                    <p><strong>Host:</strong> {{ $event->user->getFullNameAttribute() }}</p>
+                                    <p><strong>Host:</strong> {!! no_translate($event->user->getFullNameAttribute()) !!}</p>
                                     <p><strong>Country:</strong> {{ $event->country->name ?? 'N/A' }}</p>
                                 </div>
 
@@ -221,3 +221,4 @@
         });
     </script>
 @endpush
+

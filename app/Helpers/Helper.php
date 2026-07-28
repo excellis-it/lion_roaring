@@ -37,10 +37,25 @@ use App\Models\GlobalImage;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\HtmlString;
 
 class Helper
 {
     private static $settingsCache = null;
+
+    /**
+     * Mark text as excluded from Google Website Translator (person names, usernames, etc.).
+     */
+    public static function noTranslate(mixed $text): HtmlString
+    {
+        if ($text instanceof HtmlString) {
+            $text = $text->toHtml();
+        }
+
+        $safe = e((string) ($text ?? ''));
+
+        return new HtmlString('<span class="notranslate" translate="no">' . $safe . '</span>');
+    }
 
     public static function renderCategoryTree($categories = null)
     {

@@ -4,11 +4,11 @@
             <td>
                 {{ $partners->firstItem() + $key }}
             </td>
-            <td>{{ $partner->full_name }}</td>
+            <td>{!! no_translate($partner->full_name) !!}</td>
             <td>
-                {{ $partner->ecclesia ? $partner->ecclesia->full_name : '' }}
+                {!! no_translate($partner->ecclesia ? $partner->ecclesia->full_name : '') !!}
             </td>
-            <td>{{ $partner->user_name }}</td>
+            <td>{!! no_translate($partner->user_name) !!}</td>
             <td>{{ $partner->email }}</td>
             <td>{{ $partner->phone }}</td>
             <td>{{ $partner->address }}</td>
@@ -45,3 +45,4 @@
         <td colspan="10" class="text-center">No Data Found</td>
     </tr>
 @endif
+

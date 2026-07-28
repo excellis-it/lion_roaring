@@ -39,7 +39,7 @@
                         @endif
                     </span>
                     <div class="ms-2">
-                        <h5>{{ $mail_details->user->full_name }}</h5>
+                        <h5>{!! no_translate($mail_details->user->full_name) !!}</h5>
                         <h6>From: {{ $mail_details->user->email }}</h6>
                         <h6>TO: <span class="text-dark">{{ $mail_details->to }}</span></h6>
                         <h6>CC: <span class="text-dark">{{ $mail_details->cc }}</span></h6>
@@ -87,7 +87,7 @@
                                 @endif
                             </span>
                             <div class="ms-2">
-                                <h5>{{ $reply->user->full_name }}</h5>
+                                <h5>{!! no_translate($reply->user->full_name) !!}</h5>
                                 <h6>From: {{ $reply->user->email }}</h6>
                                 <h6>TO: <span class="text-dark">{{ $reply->to }}</span></h6>
                                 <h6>CC: <span class="text-dark">{{ $reply->cc }}</span></h6>
@@ -132,3 +132,4 @@
 </body>
 
 </html>
+

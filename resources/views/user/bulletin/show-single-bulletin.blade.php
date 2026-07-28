@@ -3,7 +3,7 @@
 </td>
 @if (auth()->user()->hasNewRole('SUPER ADMIN'))
     <td>
-        {{ isset($bulletin->user->full_name) && !empty($bulletin->user->full_name) ? $bulletin->user->full_name : 'Unknown' }}
+        {!! no_translate(isset($bulletin->user->full_name) && !empty($bulletin->user->full_name) ? $bulletin->user->full_name : 'Unknown') !!}
     </td>
 @endif
 <td id="bulletin-title-{{ $bulletin->id }}"> {{ $bulletin->title }}</td>
@@ -26,3 +26,4 @@
         @endif
     </div>
 </td>
+

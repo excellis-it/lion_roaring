@@ -92,7 +92,7 @@
                             <div class="shipping-address mb-4">
                                 <h5>{{ $orderHasDigitalProduct ? 'Billing Details' : 'Shipping Address' }}</h5>
                                 <div class="bg-light rounded">
-                                    <p class="mb-1"><strong>{{ $order->full_name }}</strong></p>
+                                    <p class="mb-1"><strong>{!! no_translate($order->full_name) !!}</strong></p>
                                     <p class="mb-1">{{ $order->email }}</p>
                                     <p class="mb-1">{{ $order->phone }}</p>
                                     <p class="mb-0">{{ $order->full_address }}</p>
@@ -576,3 +576,4 @@
         </div>
     </section>
 @endsection
+

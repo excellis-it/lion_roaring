@@ -1,6 +1,6 @@
 ---
 title: User PMA
-updated: 2026-07-27
+updated: 2026-07-28
 status: ready
 sidebar_key: user_pma
 ---
@@ -27,6 +27,11 @@ Open **Detailed topics** on the index for each sidebar menu. Shared instance rul
 | `member.access` | Non-expired subscription unless Super Admin or `membership_excluded` |
 | `agreement.signed` | Signature + register agreement row unless Super Admin |
 | `super_admin` | Restore + Documentation only |
+
+### Language / names
+
+- User layout includes Google Website Translator (same as public site).
+- Person names and usernames shown in the panel are excluded from translation via `no_translate()` and `protect-names-from-translate.js` (see Website Frontend).
 
 ### Major menu groups
 

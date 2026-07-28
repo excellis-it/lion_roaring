@@ -38,7 +38,7 @@
                         </div>
                         <div class="right_text profile-info">
                             <p>Hello!</p>
-                            <h2> {{ Auth::user()->first_name }} {{ Auth::user()->last_name }}</h2>
+                            <h2> {!! no_translate(trim((Auth::user()->first_name ?? '') . ' ' . (Auth::user()->last_name ?? ''))) !!}</h2>
                             <p>{{ Auth::user()->email }}</p>
                             <span>
 
@@ -129,3 +129,4 @@
     }
 </script>
 @endpush
+

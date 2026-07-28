@@ -56,7 +56,7 @@
                                 </td>
                                 <td>
                                     @if ($conv->user)
-                                        <div class="fw-bold">{{ $conv->user->full_name }}</div>
+                                        <div class="fw-bold">{!! no_translate($conv->user->full_name) !!}</div>
                                         <small class="text-muted">Registered Member</small>
                                     @else
                                         <div class="fw-bold">{{ $conv->guest_name ?? 'Guest User' }}</div>
@@ -99,3 +99,4 @@
         </div>
     </div>
 @endsection
+

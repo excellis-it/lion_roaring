@@ -88,7 +88,7 @@
                             <tbody>
                                 @forelse($event->rsvps as $rsvp)
                                     <tr>
-                                        <td>{{ $rsvp->user->getFullNameAttribute() }}</td>
+                                        <td>{!! no_translate($rsvp->user->getFullNameAttribute()) !!}</td>
                                         <td>{{ $rsvp->user->email }}</td>
                                         <td>{{ $rsvp->rsvp_date->format('M d, Y h:i A') }}</td>
                                         <td>
@@ -184,3 +184,4 @@
         </script>
     @endpush
 @endif
+

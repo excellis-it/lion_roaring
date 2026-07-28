@@ -48,9 +48,9 @@
             <div class="content">
                 <h2>Invitation Accepted</h2>
 
-                <p>Hello {{ $creator->full_name }},</p>
+                <p>Hello {!! no_translate($creator->full_name) !!},</p>
 
-                <p><strong>{{ $acceptedUser->full_name }}</strong> has accepted your invitation to the private
+                <p><strong>{!! no_translate($acceptedUser->full_name) !!}</strong> has accepted your invitation to the private
                     collaboration meeting.</p>
 
                 <div class="details">
@@ -70,3 +70,4 @@
     </body>
 
 </html>
+

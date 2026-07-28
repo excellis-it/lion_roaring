@@ -88,7 +88,7 @@
                                         multiple="multiple" required aria-required="true">
                                         <option></option>
                                         @foreach ($eligibleUsers as $user)
-                                            <option value="{{ $user->id }}">{{ $user->full_name }}
+                                            <option value="{{ $user->id }}">{!! no_translate($user->full_name) !!}
                                                 &lt;{{ $user->email }}&gt;</option>
                                         @endforeach
                                     </select>
@@ -276,3 +276,4 @@
         });
     </script>
 @endpush
+

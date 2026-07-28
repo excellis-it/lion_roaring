@@ -46,8 +46,14 @@
     .cl-entry-body { margin-top: 0.75rem; color: #374151; font-size: 0.95rem; line-height: 1.6; }
     .cl-entry-body p { margin-bottom: 0.5rem; }
     .cl-entry-body p:last-child { margin-bottom: 0; }
-    .cl-entry-body ul, .cl-entry-body ol { margin: 0.35rem 0 0.5rem 1.1rem; padding: 0; }
-    .cl-entry-body li { margin-bottom: 0.25rem; }
+    .cl-entry-body ul, .cl-entry-body ol {
+        margin: 0.35rem 0 0.5rem 0;
+        padding-left: 1.5rem;
+        list-style-position: outside;
+    }
+    .cl-entry-body ul { list-style-type: disc; }
+    .cl-entry-body ol { list-style-type: decimal; }
+    .cl-entry-body li { margin-bottom: 0.25rem; display: list-item; }
     .cl-entry-actions { display: flex; gap: 0.4rem; margin-top: 0.85rem; }
     .cl-empty {
         text-align: center; color: #6b7280; padding: 3rem 1rem;
@@ -148,7 +154,7 @@
                         <h4 class="cl-entry-title">{{ $log->title }}</h4>
                     </div>
                     <div class="cl-entry-date">
-                        {{ $log->published_at?->format('d M Y') }}
+                        {{ $log->published_at?->timezone(auth()->user()->time_zone ?? config('app.timezone'))->format('d M Y') }}
                     </div>
                 </div>
                 <div class="cl-entry-body">

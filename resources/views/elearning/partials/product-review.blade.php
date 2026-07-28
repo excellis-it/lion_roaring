@@ -13,7 +13,7 @@
                     @endif
                 </div>
                 <div class="name-user">
-                    <strong>{{ isset($review->user->full_name) ? $review->user->full_name : 'User' }}</strong>
+                    <strong>{!! no_translate(isset($review->user->full_name) ? $review->user->full_name : 'User') !!}</strong>
                     <span>{{ $review->created_at->diffForHumans() }}</span>
                 </div>
             </div>
@@ -33,3 +33,4 @@
     </div>
 @endforeach
 @endif
+

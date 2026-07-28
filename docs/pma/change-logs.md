@@ -36,8 +36,17 @@ Gated by `Manage Change Logs` permission, **or Super Admin** (always has full ac
 - **Edit** `/user/change-logs/{id}/edit` — update any field including platform.
 - **Delete** — delete button on list entries.
 
-Managers and Super Admins also see unpublished/future-dated entries on the list (marked Unpublished). Regular users only see published entries (`published_at <= now()`).
+### Publish Date rules
 
+- Entries **publish immediately on save**. There is no scheduled / future publishing.
+- Publish Date may be left as the default (now) or set to a **past or current** datetime (e.g. backdating a release note).
+- Future date/times are blocked in the form (`max` = now) and rejected by the server.
+- Datetime is interpreted in the manager’s profile timezone, then stored in app timezone, so a past local time is not marked Unpublished due to UTC offset.
+- Blank Publish Date defaults to now (published).
+
+Managers and Super Admins see all entries for the selected platform. The Unpublished badge only appears when `published_at` is null (legacy) or somehow still after now. Regular users only see published entries (`published_at <= now()`).
+
+Bullet and numbered lists in descriptions render with visible markers on the list page (and in the editor while composing).
 ## Platforms
 
 | Platform | Label | Description |

@@ -211,7 +211,7 @@
                                     onerror="this.onerror=null;this.src='{{ $ddAvatarFallback }}';">
                                 <div class="min-w-0 flex-grow-1">
                                     <h5 class="mb-1 fs-5 lh-sm text-break">
-                                        {{ Auth::user()->full_name }}
+                                        {!! no_translate(Auth::user()->full_name) !!}
                                     </h5>
                                     <span
                                         class="d-block text-dark text-break">{{ Auth::user()->getFirstUserRoleName() }}</span>
@@ -303,3 +303,4 @@
 
     </nav>
 </header>
+

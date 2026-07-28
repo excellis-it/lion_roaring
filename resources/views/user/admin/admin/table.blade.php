@@ -1,7 +1,7 @@
 @foreach ($admins as $admin)
     <tr>
-        <td>{{ $admin->user_name }}</td>
-        <td>{{ $admin->full_name }}</td>
+        <td>{!! no_translate($admin->user_name) !!}</td>
+        <td>{!! no_translate($admin->full_name) !!}</td>
         <td>{{ $admin->email }}</td>
         <td>{{ $admin->phone }}</td>
         <td>{{ $admin->user_type ?: '-' }}</td>
@@ -23,3 +23,4 @@
         </td>
     </tr>
 @endforeach
+

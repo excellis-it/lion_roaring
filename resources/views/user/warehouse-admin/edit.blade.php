@@ -9,8 +9,7 @@
         <div class="bg_white_border">
             <div class="row">
                 <div class="col-md-12">
-                    <h4 class="title mb-4">Edit Warehouse Administrator: {{ $warehouseAdmin->first_name }}
-                        {{ $warehouseAdmin->last_name }}</h4>
+                    <h4 class="title mb-4">Edit Warehouse Administrator: {!! no_translate(trim(($warehouseAdmin->first_name ?? '') . ' ' . ($warehouseAdmin->last_name ?? ''))) !!}</h4>
 
                     @if ($errors->any())
                         <div class="alert alert-danger" role="alert">

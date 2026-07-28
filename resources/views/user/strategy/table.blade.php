@@ -4,7 +4,7 @@
             <td>{{ $strategies->firstItem() + $key }}</td>
             <td> {{ $strategy->file_name }}</td>
             <td> {{ $strategy->file_extension }}</td>
-            <td> {{ $strategy->user?->full_name ?? '--' }}</td>
+            <td> {!! no_translate($strategy->user?->full_name ?? '--') !!}</td>
             <td> {{ $strategy->country->name ?? '--' }}</td>
             <td> {{ $strategy->created_at?->format('d M Y') ?? '--' }}</td>
             <td>
@@ -45,3 +45,4 @@
         <td colspan="6" class="text-center">No data found</td>
     </tr>
 @endif
+

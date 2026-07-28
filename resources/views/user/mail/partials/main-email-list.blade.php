@@ -58,7 +58,7 @@ $mainMailUser = \App\Models\MailUser::where('send_mail_id', $mainMailId)
                     @if ($mails->type == 'sent')
                         {{ $mail->userToNames ?? '' }}
                     @else
-                        {{ $mail->userSender->full_name ?? '' }}
+                        {!! no_translate($mail->userSender->full_name ?? '') !!}
                     @endif
 
                 </h3>
@@ -100,3 +100,4 @@ $mainMailUser = \App\Models\MailUser::where('send_mail_id', $mainMailId)
         <h3 class="emailRow__title">No mail found</h3>
     </div>
 @endif
+

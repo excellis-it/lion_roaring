@@ -23,7 +23,7 @@
                 <!---<span class="d-sm-none d-lg-inline-block"><i class="ph-caret-down"></i></span>---->
             </a>
             <div class="dropdown-menu dropdown-menu-right pullDown">
-                <div class="dropdown-title">Hello {{Auth::user()->full_name}}</div>
+                <div class="dropdown-title">Hello {!! no_translate(Auth::user()->full_name) !!}</div>
                 <div class="dropdown-divider"></div>
                 <button type="submit" class="dropdown-item has-icon text-danger">
                     <i class="ph ph-sign-out"></i>
@@ -35,4 +35,5 @@
         </li>
     </ul>
 </nav>
+
 

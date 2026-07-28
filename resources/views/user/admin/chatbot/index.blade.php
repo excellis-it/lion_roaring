@@ -97,7 +97,7 @@
                                     </div>
                                     <p class="mb-0 small text-muted">
                                         @if ($analytic->conversation->user)
-                                            User: {{ $analytic->conversation->user->full_name }}
+                                            User: {!! no_translate($analytic->conversation->user->full_name) !!}
                                         @else
                                             Guest: {{ $analytic->conversation->guest_name ?? 'Anonymous' }}
                                         @endif
@@ -112,3 +112,4 @@
         </div>
     </div>
 @endsection
+

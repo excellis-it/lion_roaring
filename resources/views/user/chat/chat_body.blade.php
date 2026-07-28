@@ -93,7 +93,7 @@
                     <img src="{{ $chatAvatarUrl }}" alt=""
                         onerror="this.onerror=null;this.src='{{ $chatAvatarFallback }}';">
                 </div>
-                <p class="GroupName">{{ $reciver->full_name }}</p>
+                <p class="GroupName">{!! no_translate($reciver->full_name) !!}</p>
             </div>
         </div>
         <div class="col-xxl-4">
@@ -340,3 +340,4 @@
             interface, perfect for personal or professional use.</p>
     </div>
 @endif
+

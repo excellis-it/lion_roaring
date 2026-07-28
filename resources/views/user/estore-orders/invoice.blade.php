@@ -55,7 +55,7 @@
                         style="border-bottom:1px solid #cccccc; padding-bottom:10px;font-size: 16px;color: #7851a9;text-transform:uppercase;margin-bottom: 0px;">
                         BILL TO</p>
                     <p style="color: #313131"><span
-                            style="font-size:18px;color: #313131"><strong>{{ $order->full_name ?? '' }}</strong></span><br />
+                            style="font-size:18px;color: #313131"><strong>{!! no_translate($order->full_name ?? '') !!}</strong></span><br />
                         {{ $order->email ?? '' }}<br />
                         {{ $order->phone ?? '' }}<br />
                         {{ $order->city ?? '' }}, {{ $order->state ?? '' }} - {{ $order->pincode ?? '' }}<br />
@@ -286,3 +286,4 @@
 </body>
 
 </html>
+

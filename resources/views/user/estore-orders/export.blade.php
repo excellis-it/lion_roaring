@@ -26,8 +26,8 @@
                 </td>
                 <td>
                     <div>
-                        <strong>{{ $order->full_name }}</strong><br>
-                        <small class="text-muted">{{ $order->user->user_name ?? 'N/A' }}</small>
+                        <strong>{!! no_translate($order->full_name) !!}</strong><br>
+                        <small class="text-muted">{!! no_translate($order->user->user_name ?? 'N/A') !!}</small>
                     </div>
                 </td>
                 <td>
@@ -76,3 +76,4 @@
         @endforelse
     </tbody>
 </table>
+

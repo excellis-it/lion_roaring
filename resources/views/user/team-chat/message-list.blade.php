@@ -102,7 +102,7 @@
                         </div>
                         <div class="message_group">
                             <p class="messageContent">
-                                <span class="namemember">{{ $chat->user ? $chat->user->full_name : '' }}</span>
+                                <span class="namemember">{!! no_translate($chat->user ? $chat->user->full_name : '') !!}</span>
 
                                 @if ($chat->attachment != null)
                                     @php
@@ -163,3 +163,4 @@
         @endforeach
     @endforeach
 @endif
+

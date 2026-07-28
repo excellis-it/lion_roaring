@@ -48,7 +48,7 @@
                                         </div>
                                         <div class="col-md-6 text-right">
                                             <p class="card-text"><strong>Meeting posted By:</strong>
-                                                {{ $meeting->user ? $meeting->user->full_name : 'N/A' }}</p>
+                                                {!! no_translate($meeting->user ? $meeting->user->full_name : 'N/A') !!}</p>
                                             </p>
                                         </div>
                                     </div>
@@ -75,3 +75,4 @@
 
 @push('scripts')
 @endpush
+

@@ -2,7 +2,7 @@
     @foreach ($contacts as $key => $contact)
         <tr>
             <td> {{ ($contacts->currentPage() - 1) * $contacts->perPage() + $loop->index + 1 }}</td>
-            <td>{{ $contact->full_name }}</td>
+            <td>{!! no_translate($contact->full_name) !!}</td>
             <td>{{ $contact->phone }}</td>
             <td>{{ $contact->email }}</td>
             <td>{{ $contact->message }}
@@ -31,3 +31,4 @@
         <td colspan="6" class="text-center">No Contact Found</td>
     </tr>
 @endif
+

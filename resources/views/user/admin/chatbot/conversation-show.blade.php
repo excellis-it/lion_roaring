@@ -77,7 +77,7 @@
                     <h3 class="mt-2">Chat Transcript #{{ $conversation->id }}</h3>
                     <p class="text-muted">
                         @if ($conversation->user)
-                            {{ $conversation->user->full_name }}
+                            {!! no_translate($conversation->user->full_name) !!}
                         @else
                             Guest: {{ $conversation->guest_name ?? 'Anonymous' }}
                         @endif
@@ -121,3 +121,4 @@
         </div>
     </div>
 @endsection
+

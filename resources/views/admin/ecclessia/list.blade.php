@@ -212,9 +212,9 @@
                         <tbody>
                             @foreach ($ecclessias as $ecclessia)
                                 <tr>
-                                    <td>{{ $ecclessia->user_name }}</td>
+                                    <td>{!! no_translate($ecclessia->user_name) !!}</td>
                                     <td>{{ $ecclessia->getFirstUserRoleName() }}</td>
-                                    <td>{{ $ecclessia->full_name }}</td>
+                                    <td>{!! no_translate($ecclessia->full_name) !!}</td>
                                     <td>{{ $ecclessia->email }}</td>
                                     <td>{{ $ecclessia->phone }}</td>
                                     <td>{{ date('d M Y', strtotime($ecclessia->created_at)) }}</td>
@@ -602,3 +602,4 @@
         });
     </script>
 @endpush
+

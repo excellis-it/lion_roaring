@@ -19,7 +19,7 @@
         <span class=" ">Not Invited</span>
     @endif
 </td>
-<td>{{ $collaboration->user ? $collaboration->user->full_name : '-' }}</td>
+<td>{!! no_translate($collaboration->user ? $collaboration->user->full_name : '-') !!}</td>
 <td>
     {{ $collaboration->country->name ?? '-' }}
 </td>
@@ -74,3 +74,4 @@
         @endif
     </div>
 </td>
+

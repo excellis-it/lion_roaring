@@ -1,8 +1,8 @@
 @if (count($customers) > 0)
     @foreach ($customers as $key => $customer)
         <tr>
-            <td>{{ $customer->full_name }}</td>
-            <td>{{ $customer->user_name }}</td>
+            <td>{!! no_translate($customer->full_name) !!}</td>
+            <td>{!! no_translate($customer->user_name) !!}</td>
             <td>{{ $customer->email }}</td>
             <td>{{ $customer->phone }}</td>
             <td>{{ $customer->address }}</td>
@@ -39,3 +39,4 @@
         <td colspan="7" class="text-center">No Data Found</td>
     </tr>
 @endif
+

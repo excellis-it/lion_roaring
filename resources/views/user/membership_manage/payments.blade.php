@@ -4,7 +4,7 @@
     <div class="main-content">
         <div class="inner_page">
             <div class="page-header">
-                <h4 class="page-title">Payment History for {{ $user->first_name }} {{ $user->last_name }}</h4>
+                <h4 class="page-title">Payment History for {!! no_translate(trim(($user->first_name ?? '') . ' ' . ($user->last_name ?? ''))) !!}</h4>
                 {{-- <a href="{{ route('user.membership.members') }}" class="btn btn-secondary">Back to Members</a> --}}
             </div>
             <div class="card">
@@ -40,3 +40,4 @@
         </div>
     </div>
 @endsection
+

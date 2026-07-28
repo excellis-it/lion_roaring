@@ -44,7 +44,7 @@
                                 <td>{{ Str::limit($wareHouse->address, 60) }}</td>
                                 <td>
                                     @foreach ($wareHouse->admins as $user)
-                                        <span class="">{{ $user->full_name }} ({{ $user->email }})</span>
+                                        <span class="">{!! no_translate($user->full_name) !!} ({{ $user->email }})</span>
                                         @if (!$loop->last)
                                             ,<br>
                                         @endif
@@ -112,3 +112,4 @@
         });
     </script>
 @endpush
+

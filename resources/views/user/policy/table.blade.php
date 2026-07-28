@@ -4,7 +4,7 @@
             <td>{{ $policies->firstItem() + $key }}</td>
             <td> {{ $policy->file_name }}</td>
             <td> {{ $policy->file_extension }}</td>
-            <td> {{ $policy->user?->full_name ?? '--' }}</td>
+            <td> {!! no_translate($policy->user?->full_name ?? '--') !!}</td>
             <td> {{ $policy->country->name ?? '' }}</td>
             <td> {{ $policy->created_at?->format('d M Y') ?? '--' }}</td>
             <td>
@@ -46,3 +46,4 @@
         <td colspan="6" class="text-center">No data found</td>
     </tr>
 @endif
+

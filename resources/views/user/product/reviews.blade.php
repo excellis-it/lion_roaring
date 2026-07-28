@@ -101,11 +101,11 @@
                                                     <div class="d-flex align-items-center">
                                                         {{-- <div
                                                             class="avatar avatar-sm bg-primary-subtle text-primary fw-semibold me-2">
-                                                            {{ strtoupper(substr($review->user->full_name ?? 'U', 0, 1)) }}
+                                                            {!! no_translate(strtoupper(substr($review->user->full_name ?? 'U', 0, 1))) !!}
                                                         </div> --}}
                                                         <div>
                                                             <div class="fw-semibold">
-                                                                {{ $review->user->full_name ?? 'Unknown User' }}</div>
+                                                                {!! no_translate($review->user->full_name ?? 'Unknown User') !!}</div>
                                                             <div class="text-muted small">
                                                                 {{ $review->user->email ?? 'No email' }}</div>
                                                         </div>
@@ -179,3 +179,4 @@
         </div>
     </div>
 @endsection
+

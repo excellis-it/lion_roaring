@@ -5,7 +5,7 @@
                 {{ $partners->firstItem() + $key }}
             </td>
             <td class="p-3">{{ $partner->email }}</td>
-            <td class="p-3">{{ $partner->full_name }}</td>
+            <td class="p-3">{!! no_translate($partner->full_name) !!}</td>
 
             <td class="p-3">{{ $partner->phone }}</td>
 
@@ -24,3 +24,4 @@
         <td colspan="10" class="text-center">No Data Found</td>
     </tr>
 @endif
+

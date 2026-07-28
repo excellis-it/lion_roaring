@@ -201,7 +201,7 @@
                             </div>
                         </div>
                         <div class="card-body text-center profile-body">
-                            <h4 class="mb-1 profile-name">{{ $partner->full_name }}</h4>
+                            <h4 class="mb-1 profile-name">{!! no_translate($partner->full_name) !!}</h4>
                             <p class="mb-3 profile-email">
                                 <i class="fa fa-envelope"></i> {{ $partner->email }}
                             </p>
@@ -356,7 +356,7 @@
                                         <div>
                                             <div class="fw-bold">Agreement PDF</div>
                                             <small class="text-muted">
-                                                Signed by {{ $userAgreement->signer_name ?? $partner->full_name }}
+                                                Signed by {!! no_translate($userAgreement->signer_name ?? $partner->full_name) !!}
                                                 @if (!empty($userAgreement->country_code))
                                                     • {{ strtoupper($userAgreement->country_code) }}
                                                 @endif
@@ -391,3 +391,4 @@
 
 @push('scripts')
 @endpush
+

@@ -15,7 +15,7 @@
                     <div class="bulletin_text">
                         <div class="bulle_left">
                             <div class="name_bull notranslate" translate="no">
-                                {{ isset($bulletin->user->full_name) && !empty($bulletin->user->full_name) ? $bulletin->user->full_name : 'Unknown' }}
+                                {!! no_translate(isset($bulletin->user->full_name) && !empty($bulletin->user->full_name) ? $bulletin->user->full_name : 'Unknown') !!}
                             </div>
                             <h4 class="bulletin-title notranslate" translate="no">
                                 {{ isset($bulletin->title) && !empty($bulletin->title) ? $bulletin->title : '' }} </h4>
@@ -48,7 +48,7 @@
                     <div class="bulletin_text">
                         <div class="bulle_left">
                             <div class="name_bull notranslate" translate="no">
-                                {{ isset($bulletin->user->full_name) && !empty($bulletin->user->full_name) ? $bulletin->user->full_name : 'Unknown' }}
+                                {!! no_translate(isset($bulletin->user->full_name) && !empty($bulletin->user->full_name) ? $bulletin->user->full_name : 'Unknown') !!}
                             </div>
                             <h4 class="bulletin-title notranslate" translate="no">
                                 {{ isset($bulletin->title) && !empty($bulletin->title) ? $bulletin->title : '' }} </h4>
@@ -91,3 +91,4 @@
         <h4>No Bulletin Found</h4>
     </div>
 @endif
+
