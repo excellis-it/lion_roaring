@@ -31,6 +31,13 @@ class ContentTranslationServiceTest extends TestCase
         $this->assertNull(ContentTranslationService::resolveTargetLanguage('/en/en', '__original__'));
     }
 
+    public function test_original_content_lang_wins_over_googtrans(): void
+    {
+        // Leftover /auto/en must not force English when user chose Original
+        $this->assertNull(ContentTranslationService::resolveTargetLanguage('/auto/en', '__original__'));
+        $this->assertNull(ContentTranslationService::resolveTargetLanguage('/auto/bn', '__original__'));
+    }
+
     public function test_resolve_target_language_from_content_lang_cookie(): void
     {
         $this->assertSame('en', ContentTranslationService::resolveTargetLanguage(null, 'en'));

@@ -16,11 +16,19 @@ class ContentTranslationService
 
     /**
      * Resolve UGC target language.
-     * Returns null when the visitor has not explicitly chosen a language
-     * (first load / Original) so bulletins stay in the author's language.
+     * Returns null for Original / first visit so content stays in the author's language.
+     * Explicit content_lang=__original__ always wins over a leftover googtrans cookie.
      */
     public static function resolveTargetLanguage(?string $googtransCookie, ?string $contentLangCookie = null): ?string
     {
+        if ($contentLangCookie !== null) {
+            $contentRaw = strtolower(trim(urldecode($contentLangCookie)));
+            // Original sentinel (or empty) — never machine-translate UGC
+            if ($contentRaw === '' || $contentRaw === '__original__') {
+                return null;
+            }
+        }
+
         $gt = is_string($googtransCookie) ? trim(urldecode($googtransCookie)) : '';
         // /en/en means Google Translate is neutralized (no UI translation)
         if ($gt !== '' && $gt !== '/en/en' && preg_match('#/auto/([^;/]+)#', $gt, $m)) {

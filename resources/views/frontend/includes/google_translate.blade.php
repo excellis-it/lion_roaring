@@ -197,6 +197,20 @@
         });
     }
 
+    /**
+     * Write the same value on every clear-path we know about so a deep leftover
+     * (e.g. content_lang=en on /user/bulletin-board) cannot beat path=/.
+     */
+    function writeCookieEverywhere(name, value) {
+        const paths = getClearCookiePaths();
+        const domains = cookieDomainVariants();
+        paths.forEach(function (path) {
+            domains.forEach(function (domain) {
+                writeNamedCookie(name, value, path, domain);
+            });
+        });
+    }
+
     function expireNamedCookieEverywhere(name) {
         const paths = getClearCookiePaths();
         const domains = cookieDomainVariants();
@@ -218,10 +232,24 @@
 
     /**
      * Overwrite leftovers with /en/en (source=target) so GT stops translating.
-     * Only at canonical paths — never per-page paths.
      */
     function neutralizeGoogtransCookie() {
-        writeCanonicalCookie('googtrans', '/en/en');
+        writeCookieEverywhere('googtrans', '/en/en');
+    }
+
+    function setDocumentTranslateEnabled(enabled) {
+        var html = document.documentElement;
+        if (!html) {
+            return;
+        }
+        if (enabled) {
+            html.removeAttribute('translate');
+            html.classList.remove('notranslate');
+        } else {
+            // Original: block Google Translate from "fixing" non-English text into English
+            html.setAttribute('translate', 'no');
+            html.classList.add('notranslate');
+        }
     }
 
     function readContentLangFromCookie() {
@@ -290,17 +318,24 @@
     }
 
     /**
-     * Wipe leftovers and write content_lang + googtrans from intent at path=/ only.
+     * Wipe leftovers and write content_lang + googtrans from intent everywhere we can,
+     * so deep path leftovers (content_lang=en) cannot make "Original" serve English.
      */
     function applyLanguageIntent(intent) {
         var value = (!intent || intent === '__original__') ? '__original__' : String(intent);
         expireNamedCookieEverywhere('content_lang');
         clearGoogleTranslateCookies();
-        writeCanonicalCookie('content_lang', value);
-        if (value === '__original__' || value === 'en') {
+        // Overwrite on all known paths (same value) — expire alone is not enough
+        writeCookieEverywhere('content_lang', value);
+        if (value === '__original__') {
             neutralizeGoogtransCookie();
+            setDocumentTranslateEnabled(false);
+        } else if (value === 'en') {
+            neutralizeGoogtransCookie();
+            setDocumentTranslateEnabled(true);
         } else {
-            writeCanonicalCookie('googtrans', '/auto/' + value);
+            writeCookieEverywhere('googtrans', '/auto/' + value);
+            setDocumentTranslateEnabled(true);
         }
         return value;
     }
@@ -311,13 +346,13 @@
     function setContentLangCookie(lang) {
         var value = persistLanguageIntent(lang);
         expireNamedCookieEverywhere('content_lang');
-        writeCanonicalCookie('content_lang', value);
+        writeCookieEverywhere('content_lang', value);
     }
     window.setContentLangCookie = setContentLangCookie;
 
     function setGoogtransCookie(lang) {
         clearGoogleTranslateCookies();
-        writeCanonicalCookie('googtrans', '/auto/' + lang);
+        writeCookieEverywhere('googtrans', '/auto/' + lang);
     }
 
     /**
