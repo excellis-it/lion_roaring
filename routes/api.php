@@ -32,6 +32,8 @@ use App\Http\Controllers\Api\MeetingController;
 use App\Http\Controllers\Api\PartnerController;
 use App\Http\Controllers\Api\RolePermissionsController;
 use App\Http\Controllers\Api\StrategyController;
+use App\Http\Controllers\Api\SupportReportController;
+use App\Http\Controllers\Api\ChangeLogController;
 use App\Http\Controllers\Api\TopicController;
 use App\Http\Controllers\Api\FileController;
 use App\Http\Controllers\Api\PolicyGuidenceController;
@@ -570,6 +572,12 @@ Route::prefix('v3')->middleware(['userActivity'])->group(function () {
             Route::get('/view/{id}', [PolicyGuidenceController::class, 'view']);
         });
 
+        Route::get('support-reports', [SupportReportController::class, 'index']);
+        Route::post('support-reports', [SupportReportController::class, 'store']);
+        Route::get('support-reports/{supportReport}', [SupportReportController::class, 'show'])
+            ->whereNumber('supportReport');
+
+        Route::get('change-logs', [ChangeLogController::class, 'index']);
 
         Route::prefix('partners')->group(function () {
             Route::get('/list', [PartnerController::class, 'list']);

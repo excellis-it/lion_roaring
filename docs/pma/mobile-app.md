@@ -1,6 +1,6 @@
 ---
 title: Mobile App
-updated: 2026-07-24
+updated: 2026-07-28
 status: ready
 sidebar_key: mobile_app
 ---
@@ -34,7 +34,7 @@ Flutter app at `lion-roaring-app`. Talks to Laravel **`/api/v3`**. Country selec
 | Module | Contents |
 |--------|----------|
 | `frontend/` | Public: home, gallery, FAQ, auth, donate, orgs |
-| `pma/` | Messaging, chats, team, mail, bulletins, jobs, meetings, events+RSVP, private collaboration, partners, membership, education, strategy, policy, chatbot, agreement, notifications, profile |
+| `pma/` | Messaging, chats, team, mail, bulletins, jobs, meetings, events+RSVP, private collaboration, partners, membership, education, strategy, policy, support reports, change logs, chatbot, agreement, notifications, profile |
 | `ecom/` | Full E-Store: cart, wishlist, checkout, orders, addresses |
 | `country/` | Region picker + languages |
 | E-learning under PMA / services | Catalog **and** cart/checkout/library (unlike web public catalog) |
@@ -45,6 +45,13 @@ Flutter app at `lion-roaring-app`. Talks to Laravel **`/api/v3`**. Country selec
 - Membership tiers, subscribe/renew/cancel via Stripe PaymentSheet.
 - Post-login agreement navigation when required.
 - Drawer items gated by permission APIs.
+
+### Support Reports & Change Logs (member)
+
+- Drawer top-level: **Support Reports**, **Change Logs** (always listed; no management UI in the app).
+- APIs: `GET/POST /api/v3/user/support-reports`, `GET /api/v3/user/support-reports/{id}`, `GET /api/v3/user/change-logs?platform=web|mobile`.
+- If those routes are missing (HTTP **404**), the screen shows **Coming soon** — so the app can ship against production before the API is deployed; once the same API code reaches production, features work without an app update.
+- Member parity with web (list/create/view reports with optional attachment; published change logs with Web/Mobile tabs and current version chip).
 
 ### Chatbot sidebar
 
@@ -79,6 +86,7 @@ Wrong selection → restriction message / blocked API (see `InstanceAccessHelper
 | E-Store | Membership + agreement required | Same APIs; membership enforced server-side |
 | Country handoff | Domains + `?cc=` | Local storage host switch |
 | Documentation UI | Super Admin `/user/documentation` | Not in app |
+| Support Reports / Change Logs manage | Permission-gated manage UI | Not in app (member only) |
 
 ### Education country picker
 

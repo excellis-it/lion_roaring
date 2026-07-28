@@ -1,6 +1,6 @@
 ---
 title: Support Reports
-updated: 2026-07-27
+updated: 2026-07-28
 status: ready
 sidebar_key: support_reports
 ---
@@ -16,6 +16,12 @@ Allows all authenticated PMA users to submit support reports and track their sta
 - **My Reports** `/user/support-reports` — paginated list of own submitted reports with status badges (card UI).
 - **Submit Report** `/user/support-reports/create` — form with Subject, Message, and optional attachment (jpg/png/gif/pdf/doc/docx, max 5MB).
 - **View Report** `/user/support-reports/{id}` — detail including admin notes and attachment download. Authorization: own reports, or any report if manager/Super Admin.
+
+## Mobile App
+
+- Member APIs: `GET/POST /api/v3/user/support-reports`, `GET /api/v3/user/support-reports/{id}` (own reports only; optional attachment on create).
+- Flutter drawer: top-level **Support Reports** (no manage UI).
+- If the API route is missing (HTTP 404), the app shows **Coming soon** until the endpoint is deployed.
 
 ## Management Features
 

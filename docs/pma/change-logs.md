@@ -1,6 +1,6 @@
 ---
 title: Change Logs
-updated: 2026-07-27
+updated: 2026-07-28
 status: ready
 sidebar_key: change_logs
 ---
@@ -20,6 +20,12 @@ Entries are split by platform: **Web Version** and **Mobile App Version**.
 - Header chip shows **Current Web** or **Mobile App** version from Site Settings columns (`WEB_APP_VERSION` / `MOBILE_APP_VERSION`).
 - Each list entry shows the **full description** (rich text: bold/italic, bullet and numbered lists). There is no separate detail page.
 - PMA profile menu shows the current **Web Version** (only) below Log Out, with a link to Change Logs. Mobile app version is not shown in the web profile menu.
+
+## Mobile App
+
+- Member API: `GET /api/v3/user/change-logs?platform=web|mobile` (published only; includes `current_version` for the platform).
+- Flutter drawer: top-level **Change Logs** with Web/Mobile tabs (default Web); no manage CRUD or version editing.
+- If the API route is missing (HTTP 404), the app shows **Coming soon** until the endpoint is deployed.
 
 ## Management Features
 
