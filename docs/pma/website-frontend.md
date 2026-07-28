@@ -41,7 +41,7 @@ Deep domain rules: see **Global & Regional Domains**.
 ### Language / Google Website Translator
 
 - Header language switcher drives Google Website Translator (`frontend.includes.google_translate`).
-- Language choice is stored site-wide in `content_lang` (path=`/`). `googtrans` is written only at the site root too; on each page load path-scoped leftover cookies are cleared and re-applied from `content_lang` so navigating between pages cannot flip Hindi ↔ Spanish.
+- Language choice is stored site-wide in `localStorage` (`lr_content_lang`) and mirrored to `content_lang` / `googtrans` cookies at path=`/`. On each load, path-scoped leftovers are cleared and cookies are re-applied from that intent so a language change is not undone by a stale cookie, and navigating pages cannot flip Hindi ↔ Spanish.
 - **Original** sets `content_lang=__original__`, neutralizes `googtrans` to `/en/en`, and hard-navigates so the page (and UGC such as bulletin posts) returns to author language.
 - Choosing a language (including English) sets cookies and hard-navigates the same way; English uses `content_lang=en` so server-side UGC translation still runs while the UI stays untranslated.
 - **Person names and usernames are never machine-translated.** Displays use `no_translate()` (`Helper::noTranslate`) → `<span class="notranslate" translate="no">…</span>`. Name inputs and known name UI nodes (e.g. `.GroupName`) are also marked via `protect-names-from-translate.js`.

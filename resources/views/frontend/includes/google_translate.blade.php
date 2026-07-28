@@ -225,115 +225,164 @@
     }
 
     function readContentLangFromCookie() {
-        const match = document.cookie.match(/(?:^|;\s*)content_lang=([^;]+)/);
-        if (!match || !match[1]) {
+        // If duplicates exist, prefer the last value (most recently written).
+        var values = [];
+        document.cookie.split(';').forEach(function (part) {
+            var p = part.trim();
+            if (p.indexOf('content_lang=') === 0) {
+                try {
+                    values.push(decodeURIComponent(p.substring('content_lang='.length)));
+                } catch (e) {
+                    values.push(p.substring('content_lang='.length));
+                }
+            }
+        });
+        if (!values.length) {
             return null;
         }
-        return decodeURIComponent(match[1]);
+        return values[values.length - 1];
+    }
+
+    var LR_LANG_KEY = 'lr_content_lang';
+    var LR_LANG_PENDING = 'lr_lang_pending';
+
+    function persistLanguageIntent(lang) {
+        var value = (!lang || lang === '__original__') ? '__original__' : String(lang);
+        try {
+            localStorage.setItem(LR_LANG_KEY, value);
+            sessionStorage.setItem(LR_LANG_KEY, value);
+            sessionStorage.setItem(LR_LANG_PENDING, value);
+        } catch (e) {}
+        return value;
     }
 
     /**
-     * content_lang is the site-wide language intent.
-     * __original__ (or absent) = keep author language.
+     * Site-wide language intent. Pending (set on switch) wins over storage/cookies
+     * so a stale content_lang cookie cannot undo a fresh Hindi/Spanish selection.
+     */
+    function readLanguageIntent() {
+        try {
+            var pending = sessionStorage.getItem(LR_LANG_PENDING);
+            if (pending) {
+                sessionStorage.removeItem(LR_LANG_PENDING);
+                try {
+                    localStorage.setItem(LR_LANG_KEY, pending);
+                    sessionStorage.setItem(LR_LANG_KEY, pending);
+                } catch (e2) {}
+                return pending;
+            }
+        } catch (e) {}
+        try {
+            var stored = localStorage.getItem(LR_LANG_KEY) || sessionStorage.getItem(LR_LANG_KEY);
+            if (stored) {
+                return stored;
+            }
+        } catch (e) {}
+        var fromCookie = readContentLangFromCookie();
+        if (fromCookie) {
+            try {
+                localStorage.setItem(LR_LANG_KEY, fromCookie);
+                sessionStorage.setItem(LR_LANG_KEY, fromCookie);
+            } catch (e) {}
+            return fromCookie;
+        }
+        return '__original__';
+    }
+
+    /**
+     * Wipe leftovers and write content_lang + googtrans from intent at path=/ only.
+     */
+    function applyLanguageIntent(intent) {
+        var value = (!intent || intent === '__original__') ? '__original__' : String(intent);
+        expireNamedCookieEverywhere('content_lang');
+        clearGoogleTranslateCookies();
+        writeCanonicalCookie('content_lang', value);
+        if (value === '__original__' || value === 'en') {
+            neutralizeGoogtransCookie();
+        } else {
+            writeCanonicalCookie('googtrans', '/auto/' + value);
+        }
+        return value;
+    }
+
+    /**
+     * content_lang cookie helper (also updates localStorage intent).
      */
     function setContentLangCookie(lang) {
+        var value = persistLanguageIntent(lang);
         expireNamedCookieEverywhere('content_lang');
-        if (!lang || lang === '__original__') {
-            writeCanonicalCookie('content_lang', '__original__');
-            return;
-        }
-        writeCanonicalCookie('content_lang', lang);
+        writeCanonicalCookie('content_lang', value);
     }
     window.setContentLangCookie = setContentLangCookie;
 
     function setGoogtransCookie(lang) {
-        const value = '/auto/' + lang;
-        // Clear path-scoped leftovers first, then write only at site root
         clearGoogleTranslateCookies();
-        writeCanonicalCookie('googtrans', value);
+        writeCanonicalCookie('googtrans', '/auto/' + lang);
     }
 
     /**
-     * On every page load: wipe path-scoped googtrans leftovers and re-apply the
-     * language from content_lang at path=/ so Hindi/Spanish cannot diverge by URL.
+     * On every page load: apply stored language intent (not a possibly-stale cookie).
      */
     function reconcileLanguageCookies() {
-        var intent = readContentLangFromCookie();
-        clearGoogleTranslateCookies();
-        if (!intent || intent === '__original__') {
-            writeCanonicalCookie('content_lang', '__original__');
-            neutralizeGoogtransCookie();
-            return;
-        }
-        writeCanonicalCookie('content_lang', intent);
-        if (intent === 'en') {
-            neutralizeGoogtransCookie();
-            return;
-        }
-        writeCanonicalCookie('googtrans', '/auto/' + intent);
+        applyLanguageIntent(readLanguageIntent());
     }
     // Run immediately (before Google Translate script applies a stale path cookie)
     reconcileLanguageCookies();
 
     /**
-     * Full document navigation (not reload) so a Google-Translate-mutated DOM
-     * cannot come back from bfcache, and #googtrans(...) hashes cannot re-apply.
+     * Full document navigation with cache-buster so the new language always loads.
+     * Same-URL replace() can restore bfcache / skip applying new cookies.
      */
     function hardNavigateForLanguageChange() {
         var url = window.location.pathname + window.location.search;
         try {
-            if (window.history && typeof window.history.replaceState === 'function') {
-                window.history.replaceState(null, '', url);
-            }
+            var parsed = new URL(window.location.href);
+            parsed.searchParams.delete('_lr');
+            url = parsed.pathname + (parsed.search ? parsed.search : '');
         } catch (e) {}
-        window.location.replace(url);
+        var sep = url.indexOf('?') >= 0 ? '&' : '?';
+        window.location.replace(url + sep + '_lr=' + Date.now());
     }
     window.hardNavigateForLanguageChange = hardNavigateForLanguageChange;
+
+    // Strip cache-buster from the address bar after load
+    (function stripLangNavParam() {
+        try {
+            var parsed = new URL(window.location.href);
+            if (parsed.searchParams.has('_lr')) {
+                parsed.searchParams.delete('_lr');
+                var clean = parsed.pathname + (parsed.search ? parsed.search : '') + parsed.hash;
+                window.history.replaceState(null, '', clean);
+            }
+        } catch (e) {}
+    })();
 
     function resetGoogleTranslateUi(nextContentLang) {
         if (window.LrTranslationDiagnostics) {
             window.LrTranslationDiagnostics.clearPendingVerification();
         }
-        clearGoogleTranslateCookies();
-        if (nextContentLang) {
-            setContentLangCookie(nextContentLang);
-            neutralizeGoogtransCookie();
-        } else {
-            setContentLangCookie('__original__');
-            neutralizeGoogtransCookie();
-        }
+        var intent = persistLanguageIntent(nextContentLang || '__original__');
+        applyLanguageIntent(intent);
         hardNavigateForLanguageChange();
     }
 
     /**
      * changeGoogleTranslateLanguage(lang)
-     * - For Original: clear/overwrite translation cookies and hard-navigate (UGC stays original)
-     * - For English: clear googtrans, set content_lang=en, hard-navigate (UGC → English)
-     * - For other languages: set cookies and hard-navigate so GT + UGC both apply
+     * Persist intent first, sync cookies, then hard-navigate so the next paint matches.
      */
     window.changeGoogleTranslateLanguage = function(lang) {
         const langMap = { 'cn': 'zh-CN', 'us': 'en', 'uk': 'en' };
         if (langMap[lang]) lang = langMap[lang];
 
-        if (lang === '__original__') {
-            // Must full-navigate: Google Translate rewrites the whole DOM (menus, headers).
-            resetGoogleTranslateUi(null);
-            return;
+        var intent = persistLanguageIntent(lang === '__original__' ? '__original__' : lang);
+
+        if (intent !== '__original__' && intent !== 'en' && window.LrTranslationDiagnostics) {
+            window.LrTranslationDiagnostics.markPendingVerification(intent);
         }
 
-        if (lang === 'en') {
-            resetGoogleTranslateUi('en');
-            return;
-        }
-
-        // content_lang is site-wide source of truth; googtrans drives GT widget
-        setContentLangCookie(lang);
-        if (window.LrTranslationDiagnostics) {
-            window.LrTranslationDiagnostics.markPendingVerification(lang);
-        }
-        setGoogtransCookie(lang);
+        applyLanguageIntent(intent);
         hardNavigateForLanguageChange();
-    }
+    };
 
     /**
      * waitForTranslateSelect(callback)
@@ -364,61 +413,12 @@
 
     /**
      * forceSelectValue(selectEl, value)
-     * - For English: clears cookies and reloads (only reliable way to restore original content)
-     * - For other languages: sets the dropdown and triggers change
+     * Delegates to the same site-wide language change path (storage + cookies + navigate).
      */
     function forceSelectValue(selectEl, value) {
-        if (!selectEl) return;
-
-        if (value === '__original__') {
-            resetGoogleTranslateUi(null);
-            return;
-        }
-
-        setContentLangCookie(value);
-
-        // English UI = neutralize googtrans; content_lang still drives bulletin translation
-        if (value === 'en') {
-            resetGoogleTranslateUi('en');
-            return;
-        }
-
-        // For non-English: find matching option by exact value or value prefix
-        let found = Array.from(selectEl.options).find(opt =>
-            opt.value === value ||
-            opt.value.startsWith(value + '|')
-        );
-
-        if (found) {
-            selectEl.value = found.value;
-            const evt = document.createEvent('HTMLEvents');
-            evt.initEvent('change', true, true);
-            selectEl.dispatchEvent(evt);
-            
-            // Fallback for E-store and E-learning where dynamic translation might stall
-            setTimeout(() => {
-                const htmlEl = document.documentElement;
-                const isTranslated = htmlEl.classList.contains('translated-ltr') || 
-                                   htmlEl.classList.contains('translated-rtl') ||
-                                   htmlEl.lang === value;
-                
-                if (!isTranslated) {
-                    console.log("Translation not detected, forcing reload...");
-                    if (window.LrTranslationDiagnostics) {
-                        window.LrTranslationDiagnostics.markPendingVerification(value);
-                    }
-                    hardNavigateForLanguageChange();
-                }
-            }, 1000);
-        } else {
-            if (window.LrTranslationDiagnostics) {
-                window.LrTranslationDiagnostics.reportFailure(
-                    'translation_not_detected_after_select',
-                    value,
-                    { optionFound: false }
-                );
-            }
-            hardNavigateForLanguageChange();
+        if (!value) return;
+        if (window.changeGoogleTranslateLanguage) {
+            window.changeGoogleTranslateLanguage(value);
         }
     }
     window.forceSelectValue = forceSelectValue;
@@ -458,7 +458,14 @@
     }
 
     function getActiveTranslateLang() {
-        // content_lang is the intentional site-wide choice (avoids path-scoped googtrans drift)
+        // Prefer persisted intent (localStorage) — cookies can still hold stale duplicates
+        try {
+            var stored = localStorage.getItem(LR_LANG_KEY) || sessionStorage.getItem(LR_LANG_KEY);
+            if (stored) {
+                return stored;
+            }
+        } catch (e) {}
+
         const contentMatch = document.cookie.match(/(?:^|;\s*)content_lang=([^;]+)/);
         if (contentMatch && contentMatch[1]) {
             const contentLang = decodeURIComponent(contentMatch[1]);
@@ -472,7 +479,6 @@
         const match = document.cookie.match(/(?:^|;\s*)googtrans=([^;]+)/);
         if (match && match[1]) {
             const raw = decodeURIComponent(match[1]);
-            // /en/en = GT neutralized (English source=target); treat as no machine language
             if (raw === '/en/en' || raw === 'en|en') {
                 // fall through
             } else {
@@ -597,8 +603,8 @@
         } catch (e) {}
 
         clearGoogleTranslateCookies();
-        neutralizeGoogtransCookie();
-        setContentLangCookie('__original__');
+        persistLanguageIntent('__original__');
+        applyLanguageIntent('__original__');
         hardNavigateForLanguageChange();
     });
 </script>
