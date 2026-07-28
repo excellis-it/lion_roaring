@@ -7,10 +7,11 @@ alwaysApply: true
 
 When the user asks for a **web** or **mobile** change log / release notes / version update text:
 
-1. Determine platform: `web` or `mobile`.
-2. Read current versions from Site Settings (`WEB_APP_VERSION`, `MOBILE_APP_VERSION`) via DB/code if available; otherwise ask the user for the new version.
-3. Propose a **new version number** (semver bump: patch/minor/major based on change size) unless the user already specified one.
-4. Return ready-to-paste Change Log content in this exact structure:
+1. Read `CHANGELOG.md` at the repo root (and the Flutter app copy `lion-roaring-app/CHANGELOG.md` when that workspace is open) for the **last versions** and prior entries.
+2. Determine platform: `web` or `mobile` (or both if “today’s updates”).
+3. Cross-check Site Settings (`WEB_APP_VERSION`, `MOBILE_APP_VERSION`) and recent git commits; do not invent features.
+4. Propose a **new version number** (semver bump from the last version in `CHANGELOG.md`) unless the user already specified one.
+5. Return ready-to-paste Change Log content in this exact structure:
 
 ```
 Platform: Web Version | Mobile App Version
@@ -23,9 +24,10 @@ Description:
 - Bullet 3
 ```
 
-5. Base the Description only on real work from the conversation / git changes — do not invent features.
-6. If the user asks you to **apply** it, then:
+6. **Always update `CHANGELOG.md`** in the same turn: bump the Current versions table and prepend the new entry under Entries (newest first). Mark status `draft (ready to publish)` until the user confirms it was published in PMA; then set `published` and sync the “Last published” line. Keep web and Flutter `CHANGELOG.md` copies identical when both repos are in the workspace.
+7. If the user asks you to **apply** it, then:
    - Update Site Settings version (`WEB_APP_VERSION` or `MOBILE_APP_VERSION`) via Change Logs management (not Site Settings UI).
    - Create a `change_logs` row (or tell them to paste into PMA Change Logs → Add Entry) with matching platform/version/title/type/description. Prefer HTML lists (`<ul><li>…</li></ul>`) for the description field.
+   - Mark the matching `CHANGELOG.md` entry as `published`.
    - Update `docs/pma/change-logs.md` only if product behavior changed beyond the note itself.
-7. Keep tone clear and user-facing (PMA members read these notes).
+8. Keep tone clear and user-facing (PMA members read these notes).
