@@ -246,23 +246,7 @@
             return;
         }
 
-        // English UI = neutralize googtrans; content_lang drives bulletin translation
         if (lang === 'en') {
-            var hadGoogtrans = /(?:^|;\s*)googtrans=/.test(document.cookie);
-            var pageIsTranslated = document.documentElement.classList.contains('translated-ltr') ||
-                document.documentElement.classList.contains('translated-rtl');
-            var googtransIsNeutral = /(?:^|;\s*)googtrans=\/en\/en(?:;|$)/.test(document.cookie);
-            // Fast path only when UI was never machine-translated
-            if (!hadGoogtrans && !pageIsTranslated && document.getElementById('show-bulletin') && typeof window.applyBulletinBoardTranslations === 'function') {
-                setContentLangCookie('en');
-                window.applyBulletinBoardTranslations();
-                return;
-            }
-            if (googtransIsNeutral && !pageIsTranslated && document.getElementById('show-bulletin') && typeof window.applyBulletinBoardTranslations === 'function') {
-                setContentLangCookie('en');
-                window.applyBulletinBoardTranslations();
-                return;
-            }
             resetGoogleTranslateUi('en');
             return;
         }

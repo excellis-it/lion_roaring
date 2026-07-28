@@ -776,9 +776,6 @@
                     },
                     success: function(resp) {
                         $('#show-bulletin').html(resp.view);
-                        if (typeof window.applyBulletinBoardTranslations === 'function') {
-                            window.applyBulletinBoardTranslations();
-                        }
                     },
                     error: function(xhr) {
                         toastr.error('Something went wrong');

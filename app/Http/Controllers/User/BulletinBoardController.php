@@ -15,7 +15,7 @@ class BulletinBoardController extends Controller
     {
         $user = auth()->user();
         if ($user->can('Manage Bulletin')) {
-            $bulletins = $this->fetchBulletinsForUser($user);
+            $bulletins = $this->applyTranslations($this->fetchBulletinsForUser($user));
 
             return view('user.bulletin-board.list')->with('bulletins', $bulletins);
         }
@@ -26,62 +26,29 @@ class BulletinBoardController extends Controller
     public function load(Request $request)
     {
         $user = auth()->user();
-        $bulletins = $this->fetchBulletinsForUser($user);
+        $bulletins = $this->applyTranslations($this->fetchBulletinsForUser($user));
 
         return response()->json([
             'view' => view('user.bulletin-board.show-bulletin')->with('bulletins', $bulletins)->render(),
         ]);
     }
 
-    /**
-     * Translate bulletin title/description after the board has already rendered (async).
-     */
-    public function translateContent(Request $request)
+    private function applyTranslations(Collection $bulletins): Collection
     {
-        $user = auth()->user();
-        if (!$user->can('Manage Bulletin')) {
-            abort(403, 'You do not have permission to access this page.');
-        }
-
         $targetLang = ContentTranslationService::resolveTargetLanguage(
             $_COOKIE['googtrans'] ?? null,
             $_COOKIE['content_lang'] ?? null
         );
 
-        if ($targetLang === null && $request->filled('target')) {
-            $normalized = ContentTranslationService::normalizeLangCode((string) $request->input('target'));
-            $targetLang = $normalized !== '' ? $normalized : null;
-        }
-
         if ($targetLang === null) {
-            return response()->json(['items' => []]);
+            return $bulletins;
         }
 
-        $bulletins = $this->fetchBulletinsForUser($user);
-        if ($bulletins->isEmpty()) {
-            return response()->json(['items' => []]);
-        }
-
-        $flat = [];
         foreach ($bulletins as $bulletin) {
-            $flat[$bulletin->id . ':title'] = (string) ($bulletin->title ?? '');
-            $flat[$bulletin->id . ':description'] = (string) ($bulletin->description ?? '');
+            ContentTranslationService::translateBulletinFields($bulletin, $targetLang);
         }
 
-        $translated = ContentTranslationService::translateMany($flat, $targetLang);
-
-        $items = [];
-        foreach ($bulletins as $bulletin) {
-            $title = $translated[$bulletin->id . ':title'] ?? (string) ($bulletin->title ?? '');
-            $description = $translated[$bulletin->id . ':description'] ?? (string) ($bulletin->description ?? '');
-            $items[] = [
-                'id' => $bulletin->id,
-                'title' => $title,
-                'description_html' => $this->formatBulletinDescription($description),
-            ];
-        }
-
-        return response()->json(['items' => $items, 'target' => $targetLang]);
+        return $bulletins;
     }
 
     private function fetchBulletinsForUser($user): Collection
@@ -123,27 +90,5 @@ class BulletinBoardController extends Controller
         }
 
         return Bulletin::orderBy('id', 'desc')->get();
-    }
-
-    private function formatBulletinDescription(string $description): string
-    {
-        if ($description === '') {
-            return '';
-        }
-
-        return preg_replace_callback(
-            '/(https?:\/\/[^\s]+)/',
-            function ($m) {
-                $url = $m[1];
-                $short = strlen($url) > 40 ? substr($url, 0, 40) . '...' : $url;
-
-                return '<a href="' .
-                    $url .
-                    '" target="_blank" style="color:#0d6efd; text-decoration:underline;">' .
-                    $short .
-                    '</a>';
-            },
-            nl2br(e($description))
-        );
     }
 }
