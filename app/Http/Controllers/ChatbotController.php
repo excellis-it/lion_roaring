@@ -97,7 +97,7 @@ class ChatbotController extends Controller
             'language' => 'required|string|max:20',
         ]);
 
-        $language = $request->language === '__original__' ? 'en' : $request->language;
+        $language = $request->language;
 
         $conversation = ChatbotConversation::where('session_id', $request->session_id)->first();
 
@@ -563,7 +563,15 @@ class ChatbotController extends Controller
      */
     private function translateText($text, $targetLang, $sourceLang = 'auto')
     {
-        if (empty($text) || $targetLang === $sourceLang || ($targetLang === 'en' && $sourceLang === 'en')) {
+        $target = strtolower(trim((string) $targetLang));
+        $source = strtolower(trim((string) $sourceLang));
+
+        // UI sentinel: keep author/original language — never send to Google Translate
+        if ($target === '' || $target === '__original__' || $source === '__original__') {
+            return $text;
+        }
+
+        if (empty($text) || $target === $source || ($target === 'en' && $source === 'en')) {
             return $text;
         }
 

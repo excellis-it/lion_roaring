@@ -17,7 +17,7 @@ return new class extends Migration
             $table->foreignId('user_id')->nullable()->constrained()->onDelete('cascade');
             $table->string('session_id')->unique();
             $table->string('guest_name')->nullable();
-            $table->string('language', 10)->default('en');
+            $table->string('language', 20)->default('en');
             $table->timestamps();
 
             $table->index(['session_id', 'user_id']);

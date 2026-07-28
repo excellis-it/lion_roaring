@@ -1,6 +1,6 @@
 ---
 title: Chatbot Assistant
-updated: 2026-07-24
+updated: 2026-07-28
 status: ready
 sidebar_key: chatbot
 ---
@@ -22,6 +22,11 @@ PMA tools for the site chatbot. Behavior depends on `CHATBOT` env (`AI` vs `NORM
 - If `CHATBOT=AI`: sidebar Dashboard links to external `https://chatbot.lionroaring.us/`; in-app keyword/history may be hidden.
 - Else: Dashboard, Keywords CRUD/bulk, Conversation history inside PMA.
 - Seed also includes `View Chatbot Analytics`.
+
+### Conversation language
+
+- `chatbot_conversations.language` is `VARCHAR(20)` (not 10) so values like `__original__` from the language switcher can be stored on init without truncation errors.
+- `__original__` is stored as-is (UI sentinel for “Original”); chatbot machine-translation skips that value and leaves content unchanged.
 
 ### Mobile app sidebar (Chatbot)
 

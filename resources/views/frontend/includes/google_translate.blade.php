@@ -1,3 +1,15 @@
+@php
+    $translationSurface = 'website';
+    $requestPath = request()->path();
+    if (str_starts_with($requestPath, 'user')) {
+        $translationSurface = 'user_pma';
+    } elseif (str_starts_with($requestPath, 'e-store')) {
+        $translationSurface = 'ecom';
+    } elseif (str_starts_with($requestPath, 'e-learning')) {
+        $translationSurface = 'elearning';
+    }
+@endphp
+
 <div id="google_translate_element_mount" class="google-translate-mount" aria-hidden="true"></div>
 
 <script src="{{ asset('frontend_assets/js/protect-names-from-translate.js') }}"></script>
@@ -10,10 +22,15 @@
     window.sessionLanguages = @json(\App\Helpers\Helper::getVisitorCountryLanguages());
     // App URL path prefix (empty on production hosts; e.g. /lion-roaring-org on path-based demos)
     window.appBasePath = @json(rtrim((string) (parse_url(url('/'), PHP_URL_PATH) ?: ''), '/') ?: '');
+    window.lrTranslationDiagnostics = {
+        logUrl: @json(route('translation-client-log')),
+        csrfToken: @json(csrf_token()),
+        surface: @json($translationSurface),
+    };
 </script>
+<script src="{{ asset('frontend_assets/js/translation-diagnostics.js') }}"></script>
 
-<!-- Google Translate initialization + robust allowed-language logic -->
-<script type="text/javascript">
+<script>
     /**
      * parseLanguages(data)
      */
@@ -200,6 +217,9 @@
     }
 
     function resetGoogleTranslateUi(nextContentLang) {
+        if (window.LrTranslationDiagnostics) {
+            window.LrTranslationDiagnostics.clearPendingVerification();
+        }
         clearGoogleTranslateCookies();
         neutralizeGoogtransCookie();
         if (nextContentLang) {
@@ -248,6 +268,9 @@
         }
 
         setContentLangCookie(lang);
+        if (window.LrTranslationDiagnostics) {
+            window.LrTranslationDiagnostics.markPendingVerification(lang);
+        }
         // Other languages: set googtrans then reload so server UGC translation + GT widget both apply
         setGoogtransCookie(lang);
         window.location.reload();
@@ -322,10 +345,20 @@
                 
                 if (!isTranslated) {
                     console.log("Translation not detected, forcing reload...");
+                    if (window.LrTranslationDiagnostics) {
+                        window.LrTranslationDiagnostics.markPendingVerification(value);
+                    }
                     window.location.reload();
                 }
             }, 1000);
         } else {
+            if (window.LrTranslationDiagnostics) {
+                window.LrTranslationDiagnostics.reportFailure(
+                    'translation_not_detected_after_select',
+                    value,
+                    { optionFound: false }
+                );
+            }
             window.location.reload();
         }
     }
@@ -343,7 +376,17 @@
 
         // Watch for the dropdown and intercept English selection
         waitForTranslateSelect(function(selectEl) {
-            if (!selectEl) return;
+            if (!selectEl) {
+                const expectedLang = readGoogtransLangFromCookie();
+                if (expectedLang && window.LrTranslationDiagnostics) {
+                    window.LrTranslationDiagnostics.reportFailure(
+                        'google_translate_widget_timeout',
+                        expectedLang,
+                        { phase: 'googleTranslateElementInit' }
+                    );
+                }
+                return;
+            }
             selectEl.addEventListener('change', function(e) {
                 var selectedValue = selectEl.value;
                 if (selectedValue === 'en' || selectedValue === '' || selectedValue === 'en|en') {
@@ -355,9 +398,6 @@
         }, 5000);
     }
 
-    /**
-     * Active language from googtrans / content_lang, or Original when unset.
-     */
     function getActiveTranslateLang() {
         const match = document.cookie.match(/(?:^|;\s*)googtrans=([^;]+)/);
         if (match && match[1]) {
@@ -388,6 +428,28 @@
             return html.getAttribute('lang') || '__original__';
         }
         return '__original__';
+    }
+    window.getActiveTranslateLang = getActiveTranslateLang;
+    window.readGoogtransLangFromCookie = readGoogtransLangFromCookie;
+
+    function readGoogtransLangFromCookie() {
+        const match = document.cookie.match(/(?:^|;\s*)googtrans=([^;]+)/);
+        if (!match || !match[1]) {
+            return null;
+        }
+        const raw = decodeURIComponent(match[1]);
+        if (raw === '/en/en' || raw === 'en|en') {
+            return null;
+        }
+        const auto = raw.match(/^\/auto\/(.+)$/);
+        if (auto && auto[1] && auto[1] !== 'en') {
+            return auto[1];
+        }
+        const pair = raw.match(/^\/([^/]+)\/(.+)$/);
+        if (pair && pair[2] && pair[1] !== pair[2] && pair[2] !== 'en') {
+            return pair[2];
+        }
+        return null;
     }
 
     /**
@@ -436,5 +498,7 @@
         }
     });
 </script>
-<script type="text/javascript" src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit">
+<script type="text/javascript"
+    src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"
+    onerror="if (window.LrTranslationDiagnostics) { window.LrTranslationDiagnostics.reportFailure('google_translate_script_blocked', readGoogtransLangFromCookie(), { phase: 'script_onerror' }); }">
 </script>

@@ -42,6 +42,7 @@ Deep domain rules: see **Global & Regional Domains**.
 
 - Header language switcher drives Google Website Translator (`frontend.includes.google_translate`).
 - **Person names and usernames are never machine-translated.** Displays use `no_translate()` (`Helper::noTranslate`) → `<span class="notranslate" translate="no">…</span>`. Name inputs and known name UI nodes (e.g. `.GroupName`) are also marked via `protect-names-from-translate.js`.
+- **Translation failure diagnostics:** if Google Translate does not apply after a language change (blocked script, missing widget, cookie issues), the browser shows a warning popup and POSTs anonymized diagnostics to `POST /translation-client-log` (logged as `Translation client failure` in Laravel logs). Surface tag: `website` (or `ecom` / `elearning` on those hosts).
 
 ### Chatbot
 

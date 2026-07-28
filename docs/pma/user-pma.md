@@ -32,6 +32,7 @@ Open **Detailed topics** on the index for each sidebar menu. Shared instance rul
 
 - User layout includes Google Website Translator (same as public site).
 - Person names and usernames shown in the panel are excluded from translation via `no_translate()` and `protect-names-from-translate.js` (see Website Frontend).
+- Translation failure popup + client logging use the same `frontend.includes.google_translate` diagnostics; surface tag in logs is `user_pma`.
 
 ### Major menu groups
 
