@@ -65,6 +65,13 @@ Flutter app at `lion-roaring-app`. Talks to Laravel **`/api/v3`**. Country selec
 - Socket host configured for US (`lionroaring.us:3000` in constants).
 - Chat FCM + socket services.
 
+### Chat media (1:1 and team)
+
+- Attachment URLs use `ApiPath.resolveStorageUrl` (relative `chat/...` paths and absolute `/storage/...` or full URLs from socket/`chatMediaUrl`).
+- Video (`mp4`, `webm`, `ogg`, `mov`, `m4v`): tap opens in-app player; download is available from the player toolbar.
+- Images: tap opens fullscreen viewer with a download action.
+- Downloads: Android → device `Download` folder when writable; iOS → app Documents (`Files` → Lion Roaring) with file sharing enabled.
+
 ## Permissions and conditions
 
 ### Instance parity with web

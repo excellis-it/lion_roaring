@@ -1,6 +1,6 @@
 ---
 title: Messaging
-updated: 2026-07-24
+updated: 2026-07-28
 status: ready
 sidebar_key: messaging
 ---
@@ -21,7 +21,7 @@ PMA sidebar parent for **Chats**, **Team**, and **Mail**. Visible when the user 
 - One-to-one messaging among eligible panel users.
 - Recipients: `status = 1` and user role type in `{1, 2, 3}`.
 - Soft "deleted for me" flags; messages are not hard-deleted for the other party by default.
-- Video attachments (`mp4`, `webm`, `ogg`, `mov`, `m4v`) show as a compact thumbnail with a play overlay; clicking opens an in-app video player lightbox (download optional from the toolbar). Videos are **not** wrapped in the global `a.file-download` hijack.
+- Video attachments (`mp4`, `webm`, `ogg`, `mov`, `m4v`) show as a compact thumbnail with a play overlay; clicking opens an in-app video player lightbox (download optional from the toolbar). Videos are **not** wrapped in the global `a.file-download` hijack. Mobile mirrors this: in-app player on tap, download from the player / image viewer toolbar.
 - Image lightbox: height-first (`max-height ≈ 78vh`) so tall images show in full; centered on a dark stage so left/right gaps are expected.
 - Chat image URLs prefer the **original** file via `Helper::chatMediaUrl()` — older Intervention v3 `resize(2000,2000)` compressions squashed portraits into squares; new uploads use `scaleDown()` and keep aspect ratio.
 - Chat list / chat header / app header user avatars resolve via `Helper::publicStorageUrl()` and fall back to `profile_dummy.png` (including `onerror` for missing local files).
