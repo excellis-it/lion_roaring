@@ -182,7 +182,8 @@
 
     /**
      * content_lang marks an explicit language choice for UGC (bulletins).
-     * Absent on first load so posts stay in the author's original language.
+     * __original__ (or absent) = keep author language; expire alone is unreliable across
+     * path/domain variants, so Original also overwrites leftovers with the sentinel.
      */
     function setContentLangCookie(lang) {
         const paths = getTranslateCookiePaths();
@@ -191,6 +192,12 @@
             paths.forEach(function (path) {
                 domains.forEach(function (domain) {
                     expireNamedCookie('content_lang', path, domain);
+                });
+            });
+            // Overwrite any stuck en/fr content_lang that expire could not remove
+            paths.forEach(function (path) {
+                domains.forEach(function (domain) {
+                    writeNamedCookie('content_lang', '__original__', path, domain);
                 });
             });
             return;
@@ -216,6 +223,21 @@
         });
     }
 
+    /**
+     * Full document navigation (not reload) so a Google-Translate-mutated DOM
+     * cannot come back from bfcache, and #googtrans(...) hashes cannot re-apply.
+     */
+    function hardNavigateForLanguageChange() {
+        var url = window.location.pathname + window.location.search;
+        try {
+            if (window.history && typeof window.history.replaceState === 'function') {
+                window.history.replaceState(null, '', url);
+            }
+        } catch (e) {}
+        window.location.replace(url);
+    }
+    window.hardNavigateForLanguageChange = hardNavigateForLanguageChange;
+
     function resetGoogleTranslateUi(nextContentLang) {
         if (window.LrTranslationDiagnostics) {
             window.LrTranslationDiagnostics.clearPendingVerification();
@@ -225,23 +247,23 @@
         if (nextContentLang) {
             setContentLangCookie(nextContentLang);
         } else {
-            setContentLangCookie(null);
+            setContentLangCookie('__original__');
         }
-        window.location.reload();
+        hardNavigateForLanguageChange();
     }
 
     /**
      * changeGoogleTranslateLanguage(lang)
-     * - For Original: clear translation cookies and reload (UGC stays original)
-     * - For English: clear googtrans, set content_lang=en, reload (UGC → English)
-     * - For other languages: set cookies and updates the Google Translate widget
+     * - For Original: clear/overwrite translation cookies and hard-navigate (UGC stays original)
+     * - For English: clear googtrans, set content_lang=en, hard-navigate (UGC → English)
+     * - For other languages: set cookies and hard-navigate so GT + UGC both apply
      */
     window.changeGoogleTranslateLanguage = function(lang) {
         const langMap = { 'cn': 'zh-CN', 'us': 'en', 'uk': 'en' };
         if (langMap[lang]) lang = langMap[lang];
 
         if (lang === '__original__') {
-            // Must full-reload: Google Translate rewrites the whole DOM (menus, headers).
+            // Must full-navigate: Google Translate rewrites the whole DOM (menus, headers).
             resetGoogleTranslateUi(null);
             return;
         }
@@ -255,9 +277,9 @@
         if (window.LrTranslationDiagnostics) {
             window.LrTranslationDiagnostics.markPendingVerification(lang);
         }
-        // Other languages: set googtrans then reload so server UGC translation + GT widget both apply
+        // Other languages: set googtrans then navigate so server UGC translation + GT widget both apply
         setGoogtransCookie(lang);
-        window.location.reload();
+        hardNavigateForLanguageChange();
     }
 
     /**
@@ -332,7 +354,7 @@
                     if (window.LrTranslationDiagnostics) {
                         window.LrTranslationDiagnostics.markPendingVerification(value);
                     }
-                    window.location.reload();
+                    hardNavigateForLanguageChange();
                 }
             }, 1000);
         } else {
@@ -343,7 +365,7 @@
                     { optionFound: false }
                 );
             }
-            window.location.reload();
+            hardNavigateForLanguageChange();
         }
     }
     window.forceSelectValue = forceSelectValue;
@@ -402,7 +424,10 @@
         }
         const contentMatch = document.cookie.match(/(?:^|;\s*)content_lang=([^;]+)/);
         if (contentMatch && contentMatch[1]) {
-            return decodeURIComponent(contentMatch[1]);
+            const contentLang = decodeURIComponent(contentMatch[1]);
+            if (contentLang && contentLang !== '__original__') {
+                return contentLang;
+            }
         }
         const html = document.documentElement;
         if (
@@ -480,6 +505,44 @@
         if (customSelect && customSelect.dataset.translateBound !== '1') {
             initLanguageSwitcher(document.querySelector('.goog-te-combo'));
         }
+    });
+
+    /**
+     * If bfcache restores a Google-Translate-mutated DOM while Original is selected,
+     * clear cookies again and hard-navigate once (guarded to avoid loops).
+     */
+    window.addEventListener('pageshow', function (event) {
+        var active = typeof window.getActiveTranslateLang === 'function'
+            ? window.getActiveTranslateLang()
+            : '__original__';
+        var html = document.documentElement;
+        var isTranslated = html.classList.contains('translated-ltr') ||
+            html.classList.contains('translated-rtl');
+        var guardKey = 'lr_orig_restore_guard';
+
+        if (active !== '__original__') {
+            try { sessionStorage.removeItem(guardKey); } catch (e) {}
+            return;
+        }
+
+        if (!isTranslated) {
+            try { sessionStorage.removeItem(guardKey); } catch (e) {}
+            return;
+        }
+
+        // Original selected but page still machine-translated
+        try {
+            if (sessionStorage.getItem(guardKey) === '1') {
+                sessionStorage.removeItem(guardKey);
+                return;
+            }
+            sessionStorage.setItem(guardKey, '1');
+        } catch (e) {}
+
+        clearGoogleTranslateCookies();
+        neutralizeGoogtransCookie();
+        setContentLangCookie('__original__');
+        hardNavigateForLanguageChange();
     });
 </script>
 <script type="text/javascript"

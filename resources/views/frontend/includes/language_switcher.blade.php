@@ -21,7 +21,10 @@
         }
     }
     if ($activeLang === null && !empty($_COOKIE['content_lang'])) {
-        $activeLang = $_COOKIE['content_lang'];
+        $contentLang = (string) $_COOKIE['content_lang'];
+        if ($contentLang !== '__original__') {
+            $activeLang = $contentLang;
+        }
     }
 @endphp
 
