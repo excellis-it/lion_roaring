@@ -1,6 +1,6 @@
 ---
 title: Donations
-updated: 2026-07-24
+updated: 2026-07-29
 status: ready
 sidebar_key: donations
 ---
@@ -19,7 +19,7 @@ PMA Admin Portal list of donations submitted from the public website Stripe dona
 ### Donation list
 
 - View/fetch donation records; delete where permitted.
-- Public charge created by `Frontend\DonationController` (USD Stripe Charge).
+- Public charge created by `Frontend\DonationController` (USD Stripe Charge from Elements token).
 
 ## Permissions and conditions
 

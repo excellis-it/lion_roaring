@@ -493,50 +493,12 @@
                                             </div>
 
                                             <div class="col-md-12 mb-3">
-                                                <label for="card-element">Card Number</label>
-                                                <div style="position: relative;">
-                                                    <input class="form-control card-number" aria-hidden="true"
-                                                        aria-label=" " name="card_number" id="card-number"
-                                                        autocomplete="off">
-                                                    <img id="card-type-image"
-                                                        src="{{ asset('frontend_assets/images/unknown.webp') }}"
-                                                        alt="Card Type"
-                                                        style="position: absolute; right: 10px; top: 50%; transform: translateY(-50%); max-height: 24px;">
+                                                <label for="donation-card-element">Card details</label>
+                                                <div id="donation-card-element"
+                                                    style="border: 1px solid #ced4da; border-radius: 0.375rem; padding: 12px 14px; background: #fff;">
                                                 </div>
+                                                <div id="donation-card-errors" class="text-danger small mt-2" role="alert"></div>
                                             </div>
-                                            <div class="col-md-4 mb-3">
-                                                <label for="card-element">Month</label>
-                                                <select
-                                                    class="form-control form-control--sm card-expiry-month valid card-expiry-month"
-                                                    name="card_expiry_month" id="card-expiry-month"
-                                                    aria-invalid="false">
-                                                    <option selected="" value="1">January</option>
-                                                    <option value="2">February</option>
-                                                    <option value="3">March</option>
-                                                    <option value="4">April</option>
-                                                    <option value="5">May</option>
-                                                    <option value="6">June</option>
-                                                    <option value="7">July</option>
-                                                    <option value="8">August</option>
-                                                    <option value="9">September</option>
-                                                    <option value="10">October</option>
-                                                    <option value="11">November</option>
-                                                    <option value="12">December</option>
-                                                </select>
-                                            </div>
-                                            <div class="col-md-4 mb-3">
-                                                <label for="card-element">Year</label>
-                                                <input class="form-control" aria-hidden="true" aria-label=" "
-                                                    id="card-expiry-year" name="card_expiry_year"
-                                                    autocomplete="false" maxlength="5">
-                                            </div>
-                                            <div class="col-md-4 mb-3">
-                                                <label for="card-element">CVV</label>
-                                                <input class="form-control" aria-hidden="true" aria-label=" "
-                                                    name="card_cvc" id="card-cvc" autocomplete="false"
-                                                    maxlength="4">
-                                            </div>
-
                                         </div>
 
                                         <div class="mt-4">
@@ -1280,137 +1242,50 @@
             });
         });
     </script>
-    <script type="text/javascript" src="https://js.stripe.com/v2/"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.payment/1.4.1/jquery.payment.min.js"></script>
-
-
-
-
-
-
-
-
-    <script>
-        $(document).ready(function() {
-            var cardTypeImages = {
-                'visa': '{{ 'frontend_assets/images/visa.png' }}',
-                'mastercard': '{{ 'frontend_assets/images/mastercard.png' }}',
-                'amex': '{{ 'frontend_assets/images/amex.png' }}',
-                'unknown': '{{ 'frontend_assets/images/unknown.webp' }}'
-            };
-
-            $('#card-number').on('keyup change', function() {
-                var cardNumber = $(this).val();
-                var cardType = $.payment.cardType(cardNumber);
-
-                var cardTypeImage = cardTypeImages[cardType] || cardTypeImages['unknown'];
-                $('#card-type-image').attr('src', cardTypeImage);
-
-                // Adjust CVV validation based on card type
-                var cvvLength = cardType === 'amex' ? 4 : 3;
-                $('#card-cvc').attr('maxlength', cvvLength);
-            });
-        });
-
-        // $(document).on('click', '#submit-btn', function(){
-        //     $('#loading').addClass('loading');
-        //     $('#loading-content').addClass('loading-content');
-        // })
-    </script>
-    <script type="text/javascript" src="https://js.stripe.com/v2/"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.payment/1.4.1/jquery.payment.min.js"></script>
-
-    <script>
-        $(document).ready(function() {
-            var cardTypeImages = {
-                'visa': '{{ 'frontend_assets/images/visa.png' }}',
-                'mastercard': '{{ 'frontend_assets/images/mastercard.png' }}',
-                'amex': '{{ 'frontend_assets/images/amex.png' }}',
-                'unknown': '{{ 'frontend_assets/images/unknown.webp' }}'
-            };
-
-            $('#card-number').on('keyup change', function() {
-                var cardNumber = $(this).val();
-                var cardType = $.payment.cardType(cardNumber);
-
-                var cardTypeImage = cardTypeImages[cardType] || cardTypeImages['unknown'];
-                $('#card-type-image').attr('src', cardTypeImage);
-
-                // Adjust CVV validation based on card type
-                var cvvLength = cardType === 'amex' ? 4 : 3;
-                $('#card-cvc').attr('maxlength', cvvLength);
-            });
-        });
-    </script>
+    <script src="https://js.stripe.com/v3/"></script>
     <script type="text/javascript">
-        // $(function() {
-
-        //     /*------------------------------------------
-        //     --------------------------------------------
-        //     Stripe Payment Code
-        //     --------------------------------------------
-        //     --------------------------------------------*/
-
-        //     var $form = $(".require-validation");
-
-        //     $('form.require-validation').bind('submit', function(e) {
-        //         var $form = $(".require-validation"),
-        //         inputSelector = ['input[type=email]', 'input[type=password]',
-        //                          'input[type=text]', 'input[type=file]',
-        //                          'textarea'].join(', '),
-        //         $inputs = $form.find('.required').find(inputSelector),
-        //         $errorMessage = $form.find('div.error'),
-        //         valid = true;
-        //         $errorMessage.addClass('hide');
-
-        //         $('.has-error').removeClass('has-error');
-        //         $inputs.each(function(i, el) {
-        //           var $input = $(el);
-        //           if ($input.val() === '') {
-        //             $input.parent().addClass('has-error');
-        //             $errorMessage.removeClass('hide');
-        //             e.preventDefault();
-        //           }
-        //         });
-
-        //         if (!$form.data('cc-on-file')) {
-        //           e.preventDefault();
-        //           Stripe.setPublishableKey($form.data('stripe-publishable-key'));
-        //           Stripe.createToken({
-        //             number: $('.card-number').val(),
-        //             cvc: $('.card-cvc').val(),
-        //             exp_month: $('.card-expiry-month').val(),
-        //             exp_year: $('.card-expiry-year').val()
-        //           }, stripeResponseHandler);
-        //         }
-
-        //     });
-
-        //     /*------------------------------------------
-        //     --------------------------------------------
-        //     Stripe Response Handler
-        //     --------------------------------------------
-        //     --------------------------------------------*/
-        //     function stripeResponseHandler(status, response) {
-        //         if (response.error) {
-        //             $('.error')
-        //                 .removeClass('hide')
-        //                 .find('.alert')
-        //                 .text(response.error.message);
-        //         } else {
-        //             /* token contains id, last4, and card type */
-        //             var token = response['id'];
-
-        //             $form.find('input[type=text]').empty();
-        //             $form.append("<input type='hidden' name='stripeToken' value='" + token + "'/>");
-        //             $form.get(0).submit();
-        //         }
-        //     }
-
-        // });
-
         $(document).ready(function() {
             var $form = $(".require-validation");
+            var publishableKey = $form.data('stripe-publishable-key');
+            var donationStripe = null;
+            var donationCard = null;
+            var donationCardComplete = false;
+
+            if (publishableKey && typeof Stripe !== 'undefined') {
+                donationStripe = Stripe(publishableKey);
+                donationCard = donationStripe.elements().create('card', {
+                    style: {
+                        base: {
+                            color: '#32325d',
+                            fontFamily: '"Helvetica Neue", Helvetica, sans-serif',
+                            fontSmoothing: 'antialiased',
+                            fontSize: '16px',
+                            '::placeholder': {
+                                color: '#aab7c4'
+                            }
+                        },
+                        invalid: {
+                            color: '#fa755a',
+                            iconColor: '#fa755a'
+                        }
+                    }
+                });
+                donationCard.addEventListener('change', function(event) {
+                    donationCardComplete = !!event.complete;
+                    var errorEl = document.getElementById('donation-card-errors');
+                    if (errorEl) {
+                        errorEl.textContent = event.error ? event.error.message : '';
+                    }
+                });
+
+                // Mount when donate modal opens so Elements has a visible width.
+                $('#exampleModalToggle2').on('shown.bs.modal', function() {
+                    if (donationCard) {
+                        donationCard.mount('#donation-card-element');
+                    }
+                });
+            }
+
             $('.require-validation').validate({
                 rules: {
                     amount: {
@@ -1440,19 +1315,6 @@
                     },
                     postcode: {
                         required: true
-                    },
-                    card_number: {
-                        required: true
-                    },
-                    card_expiry_month: {
-                        required: true,
-                        number: true
-                    },
-                    card_expiry_year: {
-                        required: true
-                    },
-                    card_cvc: {
-                        required: true
                     }
                 },
                 errorElement: 'span',
@@ -1466,89 +1328,60 @@
                 unhighlight: function(element, errorClass, validClass) {
                     $(element).removeClass('is-invalid');
                 },
-
-
-
                 submitHandler: function(form) {
+                    var $submitForm = $(form);
+                    var errorEl = document.getElementById('donation-card-errors');
+
+                    if (!donationStripe || !donationCard) {
+                        if (errorEl) {
+                            errorEl.textContent = 'Payment form failed to load. Please refresh and try again.';
+                        }
+                        toastr.error('Payment form failed to load. Please refresh and try again.');
+                        return false;
+                    }
+
+                    if (!donationCardComplete) {
+                        if (errorEl) {
+                            errorEl.textContent = 'Please enter valid card details.';
+                        }
+                        toastr.error('Please enter valid card details.');
+                        return false;
+                    }
+
                     $('#loading').addClass('loading');
                     $('#loading-content').addClass('loading-content');
-                    var $form = $(form),
-                        inputSelector = ['input[type=email]', 'input[type=password]',
-                            'input[type=text]', 'input[type=file]',
-                            'textarea'
-                        ].join(', '),
-                        $inputs = $form.find('.required').find(inputSelector),
-                        $errorMessage = $form.find('div.error');
+                    $('#submit-btn').prop('disabled', true);
 
-                    $errorMessage.addClass('hide');
-                    $('.has-error').removeClass('has-error');
-
-                    $inputs.each(function(i, el) {
-                        var $input = $(el);
-                        if ($input.val() === '') {
-                            $input.parent().addClass('has-error');
-                            $errorMessage.removeClass('hide');
-                            return false; // Stop processing on the first validation error
+                    donationStripe.createToken(donationCard).then(function(result) {
+                        if (result.error) {
+                            $('#loading').removeClass('loading');
+                            $('#loading-content').removeClass('loading-content');
+                            $('#submit-btn').prop('disabled', false);
+                            if (errorEl) {
+                                errorEl.textContent = result.error.message;
+                            }
+                            toastr.error(result.error.message);
+                            return;
                         }
-                    });
 
-                    if (!$form.data('cc-on-file')) {
-                        // e is not defined here, so remove it
-                        Stripe.setPublishableKey($form.data('stripe-publishable-key'));
-                        Stripe.createToken({
-                            number: $('.card-number').val(),
-                            cvc: $('#card-cvc').val(),
-                            exp_month: $('#card-expiry-month').val(),
-                            exp_year: $('#card-expiry-year').val()
-                        }, stripeResponseHandler);
-                    }
+                        $submitForm.find('input[name="stripeToken"]').remove();
+                        $submitForm.append(
+                            $('<input>', {
+                                type: 'hidden',
+                                name: 'stripeToken',
+                                value: result.token.id
+                            })
+                        );
+                        form.submit();
+                    }).catch(function() {
+                        $('#loading').removeClass('loading');
+                        $('#loading-content').removeClass('loading-content');
+                        $('#submit-btn').prop('disabled', false);
+                        toastr.error('Unable to process card details. Please try again.');
+                    });
                 }
             });
-
-            function stripeResponseHandler(status, response) {
-                if (response.error) {
-                    $('#loading').removeClass('loading');
-                    $('#loading-content').removeClass('loading-content');
-                    toastr.error(response.error.message);
-
-                } else {
-                    // $('#loading').removeClass('loading');
-                    // $('#loading-content').removeClass('loading-content');
-                    var token = response['id'];
-                    $form.find('input[type=text]').empty();
-                    $form.append("<input type='hidden' name='stripeToken' value='" + token + "'/>");
-                    $form.get(0).submit();
-                }
-            }
         });
-    </script>
-    <script>
-        $('#card-number').on('input propertychange paste', function() {
-            var value = $('#card-number').val();
-            var formattedValue = formatCardNumber(value);
-            $('#card-number').val(formattedValue);
-        });
-
-        function formatCardNumber(value) {
-            var value = value.replace(/\D/g, '');
-            var formattedValue;
-            var maxLength;
-            // american express, 15 digits
-            if ((/^3[47]\d{0,13}$/).test(value)) {
-                formattedValue = value.replace(/(\d{4})/, '$1 ').replace(/(\d{4}) (\d{6})/, '$1 $2 ');
-                maxLength = 17;
-            } else if ((/^3(?:0[0-5]|[68]\d)\d{0,11}$/).test(value)) { // diner's club, 14 digits
-                formattedValue = value.replace(/(\d{4})/, '$1 ').replace(/(\d{4}) (\d{6})/, '$1 $2 ');
-                maxLength = 16;
-            } else if ((/^\d{0,16}$/).test(value)) { // regular cc number, 16 digits
-                formattedValue = value.replace(/(\d{4})/, '$1 ').replace(/(\d{4}) (\d{4})/, '$1 $2 ').replace(
-                    /(\d{4}) (\d{4}) (\d{4})/, '$1 $2 $3 ');
-                maxLength = 19;
-            }
-
-            $('#card-number').attr('maxlength', maxLength);
-            return formattedValue;
-        }
     </script>
     <script>
         document.addEventListener('DOMContentLoaded', function() {

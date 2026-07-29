@@ -36,7 +36,7 @@ Deep domain rules: see **Global & Regional Domains**.
 
 - Newsletter POST → site contact email.
 - Contact form requires **reCAPTCHA**.
-- Donations: Stripe Charge (USD), guests allowed → thank-you page.
+- Donations: Stripe Charge (USD) via Stripe Elements card form (not raw card fields), guests allowed → thank-you page.
 
 ### Language / Google Website Translator
 
