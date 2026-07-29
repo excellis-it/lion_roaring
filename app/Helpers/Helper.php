@@ -1786,12 +1786,13 @@ class Helper
         $languageSessionKey = 'visitor_country_languages';
 
         if ($countryCode === 'GL') {
-            $allLanguages = \App\Models\TranslateLanguage::orderBy('name', 'asc')->get();
-            $row = \App\Models\Country::query()->where('is_global', true)->first();
+            $row = \App\Models\Country::with('languages')->where('is_global', true)->first();
+            // Use languages assigned to the Global country (not every TranslateLanguage).
+            $languages = self::getLanguagesForCountryCode('GL');
             session([
                 $codeSessionKey => 'GL',
                 $nameSessionKey => $row ? $row->name : 'Global (Main)',
-                $languageSessionKey => $allLanguages,
+                $languageSessionKey => $languages,
             ]);
 
             return;
@@ -1958,31 +1959,30 @@ class Helper
     }
 
     /**
-     * Return the languages to show in the language dropdown.
-     * - If on LION_ROARING_USA: US-specific languages
-     * - If a country is selected: that country's languages
-     * - If on MAIN_URL with no country selected: ALL active languages
+     * Return the languages to show in the language dropdown / chatbot.
+     * - Global (GL) or MAIN_URL with no country: languages assigned to the Global country
+     * - Regional country selected / USA instance: that country's languages (session)
+     * - Fallback when Global has none configured: all TranslateLanguage rows
      */
     public static function getVisitorCountryLanguages()
     {
+        $ip = request()->ip();
+        $codeSessionKey = 'visitor_country_code_' . $ip;
+        $currentCode = strtoupper((string) session($codeSessionKey));
         $languageSessionKey = 'visitor_country_languages';
 
-        // If languages are already in session (country selected or USA instance), use those
+        // Global context: always use the Global country's assigned languages (ignore stale session).
+        if ($currentCode === 'GL' || ($currentCode === '' && self::isGlobalInstance())) {
+            return self::getLanguagesForCountryCode('GL');
+        }
+
+        // Regional / USA: prefer languages already stored in session
         if (session()->has($languageSessionKey)) {
             return session($languageSessionKey);
         }
 
-        // Check if we are on GLOBAL domain
-        if (self::isGlobalInstance()) {
-            $row = \App\Models\Country::with('languages')->where('is_global', true)->first();
-            if ($row && $row->languages->isNotEmpty()) {
-                return $row->languages;
-            }
-        }
-
         // Fallback: all active languages
-        $allLanguages = \App\Models\TranslateLanguage::orderBy('name', 'asc')->get();
-        return $allLanguages;
+        return \App\Models\TranslateLanguage::orderBy('name', 'asc')->get();
     }
 
     /**

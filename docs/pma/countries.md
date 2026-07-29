@@ -1,6 +1,6 @@
 ---
 title: Countries
-updated: 2026-07-24
+updated: 2026-07-29
 status: ready
 sidebar_key: countries
 ---
@@ -20,6 +20,7 @@ Admin CRUD for country records that drive multi-domain routing and CMS scoping. 
 
 - Create/edit name, code, domain, languages, flag, status.
 - Lists used across frontend redirects and PMA scoping.
+- Languages assigned to a country (including **Global / GL**) drive the public language switcher and chatbot AI language list for that context. Global no longer exposes every `TranslateLanguage` row.
 
 ## Permissions and conditions
 

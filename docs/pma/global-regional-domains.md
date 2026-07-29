@@ -1,6 +1,6 @@
 ---
 title: Global & Regional Domains
-updated: 2026-07-24
+updated: 2026-07-29
 status: ready
 sidebar_key: domains
 ---
@@ -83,6 +83,7 @@ Lion Roaring is one Laravel app served on multiple country domains. Access and C
 - **MAIN/Global:** session if set; else empty (no IP geo auto-detect) → CMS falls back to **US**.
 - `Helper::getVisitorCmsContent()`: visitor code → empty → **US** fallback.
 - Cross-domain handoff: `?cc=GL|us|in` consumed then stripped.
+- **Languages:** `Helper::getVisitorCountryLanguages()` / `setVisitorCountrySession` for **GL** use languages linked to the Global country (same as `getLanguagesForCountryCode('GL')`). Regional countries use their linked languages. Chatbot and header language UI share this helper.
 
 ### CMS editing: `content_country_code` vs `country_id`
 

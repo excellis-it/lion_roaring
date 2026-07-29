@@ -59,14 +59,9 @@ class VisitorController extends Controller
         // Store flag key (prevents popup from showing again)
         session([$flagSessionKey => $country]);
 
-        // Handle GLOBAL selection — redirect to main URL with all languages
+        // Handle GLOBAL selection — redirect to main URL with Global country's languages
         if ($country === 'GL') {
-            $allLanguages = \App\Models\TranslateLanguage::orderBy('name', 'asc')->get();
-            session([
-                $codeSessionKey => 'GL',
-                $nameSessionKey => 'Global (Main)',
-                $languageSessionKey => $allLanguages,
-            ]);
+            \App\Helpers\Helper::setVisitorCountrySession('GL');
 
             $redirectUrl = \App\Helpers\Helper::appendCountryCodeQueryParam(
                 \App\Helpers\Helper::getMainUrl(),
