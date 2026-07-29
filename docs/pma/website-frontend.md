@@ -1,6 +1,6 @@
 ---
 title: Website Frontend
-updated: 2026-07-28
+updated: 2026-07-29
 status: ready
 sidebar_key: website_frontend
 ---
@@ -41,7 +41,7 @@ Deep domain rules: see **Global & Regional Domains**.
 ### Language / Google Website Translator
 
 - Header language switcher drives Google Website Translator (`frontend.includes.google_translate`).
-- Language choice is stored site-wide in `localStorage` (`lr_content_lang`) and mirrored to `content_lang` / `googtrans` cookies at path=`/`. On each load, path-scoped leftovers are cleared and cookies are re-applied from that intent so a language change is not undone by a stale cookie, and navigating pages cannot flip Hindi ↔ Spanish.
+- Language choice is stored site-wide in `localStorage` (`lr_content_lang`) and mirrored to `content_lang` / `googtrans` cookies **only at path=`/`** (and app base path). On each load, path-scoped leftovers are **expired** everywhere, then cookies are re-applied from that intent at canonical paths — do **not** rewrite the same cookie on every URL path (that floods the browser jar and can evict the Laravel session cookie, which looks like a logout).
 - **Original** sets `content_lang=__original__`, neutralizes `googtrans` to `/en/en`, marks the document `translate=no` (so Google Translate cannot “fix” posts into English), and hard-navigates. Server-side UGC translation is skipped for Original even if a leftover `googtrans=/auto/en` cookie remains.
 - Choosing a language (including English) sets cookies and hard-navigates the same way; English uses `content_lang=en` so server-side UGC translation still runs while the UI stays untranslated.
 - **Person names and usernames are never machine-translated.** Displays use `no_translate()` (`Helper::noTranslate`) → `<span class="notranslate" translate="no">…</span>`. Name inputs and known name UI nodes (e.g. `.GroupName`) are also marked via `protect-names-from-translate.js`.

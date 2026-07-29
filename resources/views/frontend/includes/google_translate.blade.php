@@ -197,20 +197,6 @@
         });
     }
 
-    /**
-     * Write the same value on every clear-path we know about so a deep leftover
-     * (e.g. content_lang=en on /user/bulletin-board) cannot beat path=/.
-     */
-    function writeCookieEverywhere(name, value) {
-        const paths = getClearCookiePaths();
-        const domains = cookieDomainVariants();
-        paths.forEach(function (path) {
-            domains.forEach(function (domain) {
-                writeNamedCookie(name, value, path, domain);
-            });
-        });
-    }
-
     function expireNamedCookieEverywhere(name) {
         const paths = getClearCookiePaths();
         const domains = cookieDomainVariants();
@@ -232,9 +218,10 @@
 
     /**
      * Overwrite leftovers with /en/en (source=target) so GT stops translating.
+     * Write only at canonical paths — path leftovers were already expired.
      */
     function neutralizeGoogtransCookie() {
-        writeCookieEverywhere('googtrans', '/en/en');
+        writeCanonicalCookie('googtrans', '/en/en');
     }
 
     function setDocumentTranslateEnabled(enabled) {
@@ -318,15 +305,15 @@
     }
 
     /**
-     * Wipe leftovers and write content_lang + googtrans from intent everywhere we can,
-     * so deep path leftovers (content_lang=en) cannot make "Original" serve English.
+     * Wipe path-scoped leftovers everywhere, then write content_lang + googtrans
+     * only at canonical paths (usually `/`). Writing on every clear-path floods the
+     * browser cookie jar and can evict the Laravel session cookie (logout / dead sessions).
      */
     function applyLanguageIntent(intent) {
         var value = (!intent || intent === '__original__') ? '__original__' : String(intent);
         expireNamedCookieEverywhere('content_lang');
         clearGoogleTranslateCookies();
-        // Overwrite on all known paths (same value) — expire alone is not enough
-        writeCookieEverywhere('content_lang', value);
+        writeCanonicalCookie('content_lang', value);
         if (value === '__original__') {
             neutralizeGoogtransCookie();
             setDocumentTranslateEnabled(false);
@@ -334,7 +321,7 @@
             neutralizeGoogtransCookie();
             setDocumentTranslateEnabled(true);
         } else {
-            writeCookieEverywhere('googtrans', '/auto/' + value);
+            writeCanonicalCookie('googtrans', '/auto/' + value);
             setDocumentTranslateEnabled(true);
         }
         return value;
@@ -346,13 +333,13 @@
     function setContentLangCookie(lang) {
         var value = persistLanguageIntent(lang);
         expireNamedCookieEverywhere('content_lang');
-        writeCookieEverywhere('content_lang', value);
+        writeCanonicalCookie('content_lang', value);
     }
     window.setContentLangCookie = setContentLangCookie;
 
     function setGoogtransCookie(lang) {
         clearGoogleTranslateCookies();
-        writeCookieEverywhere('googtrans', '/auto/' + lang);
+        writeCanonicalCookie('googtrans', '/auto/' + lang);
     }
 
     /**
