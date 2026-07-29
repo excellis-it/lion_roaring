@@ -165,7 +165,7 @@
     function showFailurePopup(lang) {
         var langLabel = lang || 'your selected language';
         var message = 'We could not translate this page to ' + langLabel + '. ' +
-            'This can happen when a browser extension blocks Google Translate, or when cookies are restricted. ' +
+            'This can happen when a browser extension blocks Google Translate, or when cookies are restricted or when google translate is limited to access. ' +
             'Try disabling ad blockers for this site, allowing cookies, or using a different browser.';
 
         if (typeof Swal !== 'undefined' && typeof Swal.fire === 'function') {
