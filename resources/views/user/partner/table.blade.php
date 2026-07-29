@@ -97,10 +97,9 @@
                     </ul>
                 @endif
             </td>
-            {!! no_translate(-- <td>{{ $partner->user_name) !!}</td>
-
-    <td>{{ $partner->phone }}</td>
-    <td>{{ $partner->address }}</td> --}}
+            {{-- <td>{!! no_translate($partner->user_name) !!}</td>
+            <td>{{ $partner->phone }}</td>
+            <td>{{ $partner->address }}</td> --}}
             {{-- @dd(auth()->user()->hasNewRole('SUPER ADMIN')) --}}
             @if (auth()->user()->can('Edit Partners'))
                 <td>
