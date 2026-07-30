@@ -65,6 +65,7 @@ use App\Http\Controllers\User\PrivateCollaborationController;
 use App\Http\Controllers\User\NewsletterController as UserNewsletterController;
 use App\Http\Controllers\User\ElearningNewsletterController as UserElearningNewsletterController;
 use App\Http\Controllers\User\PartnerController;
+use App\Http\Controllers\User\RolePermissionAuditLogController;
 use App\Http\Controllers\User\ProductController;
 use App\Http\Controllers\User\ElearningController;
 use App\Http\Controllers\User\RolePermissionsController;
@@ -1070,6 +1071,10 @@ Route::prefix('user')->middleware(['user', 'preventBackHistory', 'userActivity',
     Route::get('/partner-reset-filters', [PartnerController::class, 'resetFilters'])->name('partners.reset-filters');
     Route::get('/partner-export-report', [PartnerController::class, 'exportReport'])->name('partners.export-report');
     Route::get('/partner-agreement-details', [PartnerController::class, 'getAgreementDetails'])->name('partners.agreement-details');
+    Route::get('/partner-audit-logs', [RolePermissionAuditLogController::class, 'index'])->name('partners.audit-logs');
+    Route::get('/partner-audit-logs/export', [RolePermissionAuditLogController::class, 'export'])->name('partners.audit-logs.export');
+    Route::get('/partner-audit-logs/{id}', [RolePermissionAuditLogController::class, 'member'])->name('partners.audit-logs.member');
+    Route::get('/partner-audit-logs/{id}/export', [RolePermissionAuditLogController::class, 'memberExport'])->name('partners.audit-logs.member.export');
 
     // Mail
     Route::prefix('mail')->group(function () {
