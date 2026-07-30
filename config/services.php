@@ -45,8 +45,13 @@ return [
             'monthly_char_limit' => (int) env('TRANSLATE_MONTHLY_CHAR_LIMIT', 0),
             // Longest single string we will pay to translate
             'max_chars_per_string' => (int) env('TRANSLATE_MAX_CHARS_PER_STRING', 5000),
-            // Legacy per-visitor daily cap (unused when 0). Kept for ops toggle.
-            'session_daily_char_limit' => (int) env('TRANSLATE_SESSION_DAILY_CHAR_LIMIT', 0),
+            /*
+             * Chargeable characters one visitor may cost us per day. `/translate/batch`
+             * is public and unauthenticated, so without this a single client can drive
+             * unbounded Google spend by submitting novel text. Only cache MISSES count,
+             * so ordinary browsing never approaches it. 0 disables the guard.
+             */
+            'visitor_daily_billed_chars' => (int) env('TRANSLATE_VISITOR_DAILY_BILLED_CHARS', 150000),
             // Bump to invalidate every visitor's localStorage translation cache
             'cache_version' => env('TRANSLATE_CACHE_VERSION', 'v2'),
         ],

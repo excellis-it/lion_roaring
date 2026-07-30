@@ -5,7 +5,6 @@ namespace App\Http\Controllers\User;
 use App\Http\Controllers\Controller;
 use App\Models\Bulletin;
 use App\Models\Country;
-use App\Services\ContentTranslationService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
 
@@ -15,7 +14,7 @@ class BulletinBoardController extends Controller
     {
         $user = auth()->user();
         if ($user->can('Manage Bulletin')) {
-            $bulletins = $this->applyTranslations($this->fetchBulletinsForUser($user));
+            $bulletins = $this->fetchBulletinsForUser($user);
 
             return view('user.bulletin-board.list')->with('bulletins', $bulletins);
         }
@@ -26,38 +25,11 @@ class BulletinBoardController extends Controller
     public function load(Request $request)
     {
         $user = auth()->user();
-        $bulletins = $this->applyTranslations($this->fetchBulletinsForUser($user));
+        $bulletins = $this->fetchBulletinsForUser($user);
 
         return response()->json([
             'view' => view('user.bulletin-board.show-bulletin')->with('bulletins', $bulletins)->render(),
         ]);
-    }
-
-    /**
-     * Server-translate bulletin UGC for the visitor's selected content language.
-     * Original / empty cookie leaves posts in the author's language.
-     */
-    private function applyTranslations(Collection $bulletins): Collection
-    {
-        $contentLang = isset($_COOKIE['content_lang']) ? trim((string) $_COOKIE['content_lang']) : null;
-        if ($contentLang === null || $contentLang === '' || $contentLang === '__original__') {
-            return $bulletins;
-        }
-
-        $targetLang = ContentTranslationService::resolveTargetLanguage(
-            $_COOKIE['googtrans'] ?? null,
-            $contentLang
-        );
-
-        if ($targetLang === null || $targetLang === '') {
-            return $bulletins;
-        }
-
-        foreach ($bulletins as $bulletin) {
-            ContentTranslationService::translateBulletinFields($bulletin, $targetLang);
-        }
-
-        return $bulletins;
     }
 
     private function fetchBulletinsForUser($user): Collection

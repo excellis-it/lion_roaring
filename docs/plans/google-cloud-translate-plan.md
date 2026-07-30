@@ -25,7 +25,48 @@
 | Cache + usage tables | `database/migrations/2026_07_30_1000*` |
 | Warm / stats commands | `app/Console/Commands/TranslateWarm.php`, `TranslateStats.php` |
 | Names codemod | `scripts/codemod-no-translate.php` |
+| Detected-source cache | `database/migrations/2026_07_30_170000_create_translation_source_table.php` |
+| Cache purge | `app/Console/Commands/TranslatePurge.php` |
+| 429-storm regression test | `tests/js/lr-translate-backoff.test.js` |
 | Exclusion-rule regression test | `tests/js/lr-translate.test.js` |
+
+**Follow-up 2026-07-30 (b) — 429 storm + mixed-language sources**
+
+Two defects found in production use, both fixed:
+
+1. **429 storm.** The endpoint capped batches at 128 items (Google's *Google-side* limit, wrongly applied to our own API), so a heavy page needed hundreds of requests. Worse, a failed batch left its nodes untranslated, the MutationObserver re-collected them, and the loop fed itself — 1,000+ console errors. Fixed by:
+   - `/translate/batch` now accepts **2,000 items / 400k chars**; `GoogleTranslateService` splits only the *cache misses* into Google-legal chunks (128 segments / 28k chars) and runs them through `Http::pool` with concurrency 8, retrying 429/5xx with exponential backoff + jitter.
+   - Client keeps per-hash `pending` / `cooldown` / `waiters` registries, so a string is requested **at most once per 60s cooldown** no matter how many times the DOM is rescanned, plus a circuit breaker (5 consecutive failures → 60s pause).
+   - Measured: **400 strings / 32,930 chars in one request, 2.03s cold, 385ms warm (0 API calls)**. Under a permanent-429 fault with 16 DOM bursts: **8 requests total**, page stays readable, Original still works.
+
+2. **Mixed-language pages.** The server hardcoded `source: 'en'`, so a Hindi post was translated *as if English* (producing subtly corrupted Hindi), and selecting English was a no-op (`passthrough: source_language`). Fixed by:
+   - New `translation_source` table caching the **detected language per unique string**. Detection is billed at the translation rate, so it is paid **once per string, ever** — never per page view.
+   - Unambiguous scripts (Devanagari, Arabic, CJK, Thai, Hebrew, …) resolve **locally for free**; only ambiguous Latin text reaches the detect API.
+   - `translateBatch` groups misses by detected source and translates each group with an explicit `source`. Strings already in the target language are stored as **identity** — the author's words are returned untouched and never round-tripped.
+   - English is now a real target, not a passthrough.
+   - `php artisan translate:purge` added; the existing cache was purged (2,499 rows) because it was built under the wrong-source assumption. `TRANSLATE_CACHE_VERSION` bumped to `v3`.
+
+**Audit 2026-07-30 (c) — four defects found and fixed**
+
+1. **Original showed translated text, not the author's words** (reported: "vestido Real"). `BulletinBoardController` server-translated bulletins whenever `content_lang` held a language, so a page loaded in English arrived already-English and the engine snapshotted *that* as the original. **Server-side bulletin translation removed** — the client engine already covers bulletins, and SSR both duplicated the cost and broke Original. Locked in by `tests/js/lr-translate-original.test.js`.
+2. **Over-broad icon selector silently blocked real copy.** `[class^="icon"]` / `[class*="-icon"]` matched `.icon-heading` (e-Store contact headings "Mail us", "Our Address", "Call us") and every `.form-control.has-icon` placeholder in the checkout form — none of them ever translated. Icon detection is now split: unambiguous icon fonts skip outright; loose `*icon*` class names skip only text that is ligature-shaped (single token, no spaces). `tests/js/lr-translate-icons.test.js`.
+3. **A transient detect failure poisoned the source cache permanently.** `callDetectApi` filled unresolved hashes with `'en'` and `detectLanguages` wrote that guess to `translation_source` — one timeout would permanently mislabel a Hindi post as English, and every later translation would use the wrong source. The fallback is now per-request only and never cached.
+4. **Redundant detection writes.** `persistDetected` re-upserted rows it had just read, so warming a second language rewrote the whole corpus on every batch. Only newly-resolved detections are written now.
+
+Also removed: dead `session_daily_char_limit` config (the per-visitor quota was dropped when budgets went unlimited) and a duplicated `strtolower` in `normalizeLangCode`.
+
+**Test suites:** 54 assertions across `tests/js/*.test.js` — exclusions, 429 storm, icon selectors, Original round-trip.
+
+**Audit 2026-07-30 (d) — second pass: 6 defects**
+
+1. **Stale-language writes (user-visible).** Responses already in flight applied their text unconditionally, so choosing **Original while a batch was outstanding re-translated the page moments after restoring it**. Added a `langEpoch` bumped on every switch; late results are still cached (they were paid for) but never written to the DOM. `tests/js/lr-translate-race.test.js`.
+2. **Single-word translations could not be restored (regression from audit (c)).** The ligature check ran against the *current* text, so `.icon-heading` "Mail us" → "Correo" (one word) was then classified as an icon and Original could never restore it. The check now always uses the original text.
+3. **Unbounded spend on a public endpoint.** `/translate/batch` is unauthenticated; with budgets unlimited and the old per-visitor cap deleted, `throttle:600,1` × 400k chars allowed ~$4,800/min. Throttle lowered to `90,1` and a **per-visitor daily cap on *billed* characters** added (`TRANSLATE_VISITOR_DAILY_BILLED_CHARS=150000` ≈ $3/visitor/day). Cache hits are free and never counted.
+4. **Over-quota blanked the site.** The first cut of the cap refused cached strings too, so one noisy visitor would lose all translation for the day. Over-quota now switches to **cache-only**: everything already paid for is still served, nothing new is bought.
+5. **Client cached failures as translations.** The endpoint echoed the source text back for anything it could not translate, and the browser cached "English → English" permanently. The endpoint now returns `null` for unresolved items; the client skips them and puts them in cooldown instead of re-sending every pass. `tests/js/lr-translate-nullsafe.test.js`.
+6. **Stale failure-reason allow-list** (`payload_too_large` missing, two removed reasons still listed) and dead `pendingPass` / `inFlight` variables; `clearCache()` did not reset the cooldown/circuit state.
+
+**Test suites:** 66 assertions across 6 files in `tests/js/`.
 
 **Measured:** warming every public page costs **$1.79 per language** (858 distinct strings, 89,698 chars after dedupe — down from ~4,500 raw strings). Cache hits cost nothing and are not counted against the budget.
 

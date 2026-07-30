@@ -506,9 +506,10 @@ Route::middleware(['userActivity'])->group(function () {
         ->middleware('throttle:30,1')
         ->name('translation-client-log');
     Route::post('/translate/batch', [TranslateController::class, 'batch'])
-        // Large pages need many batched calls; client serializes + backs off on 429.
-        // Google v2 allows far higher RPM — this only guards abuse, not page size.
-        ->middleware('throttle:600,1')
+        // Batches carry up to 1500 strings, so even the heaviest page needs only a
+        // few calls. Kept low deliberately: this endpoint is public, and the ceiling
+        // it sets is a spend ceiling as much as a traffic one.
+        ->middleware('throttle:90,1')
         ->name('translate.batch');
     Route::post('/contact-us', [CmsController::class, 'contactUsForm'])->name('contact-us.form');
     Route::Post('/session', [CmsController::class, 'session'])->name('session.store');

@@ -32,6 +32,10 @@ Last **published** in PMA / Site Settings: Web `v2.1.1` · Mobile `v1.0.37`.
   - Switching language no longer reloads the page, and "Original" restores the source text instantly
   - Personal names, usernames and icons are never translated anywhere, including content loaded after the page opens
   - Translations are cached permanently, so each phrase is translated once and repeat visits are instant
+  - Pages with thousands of items now translate in one pass instead of failing partway with "too many requests"
+  - Posts written in different languages on the same page are each detected and converted correctly, and choosing English now translates non-English posts into English
+  - A post already written in the language you selected is left exactly as the author wrote it
+  - While a page is translating, a blinking "Translating…" indicator is shown
   - Admin panel remains English-only by design
 
 ### Mobile App — v1.0.38

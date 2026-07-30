@@ -12,13 +12,14 @@ class TranslationClientLogController extends Controller
 {
     private const ALLOWED_SURFACES = ['website', 'user_pma', 'ecom', 'elearning'];
 
+    /** Must stay in step with TranslateController's passthrough reasons. */
     private const ALLOWED_REASONS = [
         'translate_request_failed',
-        'translate_budget_exhausted',
-        'translate_visitor_quota_exceeded',
+        'translate_source_language',
         'translate_language_not_allowed',
         'translate_disabled',
-        'translate_source_language',
+        'translate_payload_too_large',
+        'translate_budget_exhausted',
     ];
 
     /**

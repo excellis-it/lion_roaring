@@ -88,8 +88,10 @@ class TranslateWarm extends Command
 
             $bar = $this->output->createProgressBar(count($uncached));
             $bar->start();
-            foreach (array_chunk($uncached, 100) as $chunk) {
-                GoogleTranslateService::translateBatch($chunk, $lang, 'en');
+            // The service splits these into Google-legal chunks and pools them,
+            // so hand it large slices rather than paying per-call overhead here.
+            foreach (array_chunk($uncached, 1000) as $chunk) {
+                GoogleTranslateService::translateBatch($chunk, $lang, GoogleTranslateService::SOURCE_DETECT);
                 $bar->advance(count($chunk));
             }
             $bar->finish();
@@ -213,6 +215,9 @@ class TranslateWarm extends Command
         // Attributes the browser engine also translates.
         foreach (['placeholder', 'title', 'aria-label', 'alt'] as $attr) {
             foreach ($xpath->query('//*[@' . $attr . ']') ?: [] as $el) {
+                if (!$el instanceof \DOMElement) {
+                    continue;
+                }
                 $value = trim($el->getAttribute($attr));
                 if ($value !== '') {
                     $out[] = $value;

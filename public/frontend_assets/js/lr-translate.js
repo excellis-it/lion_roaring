@@ -30,16 +30,25 @@
     var LANG_KEY = 'lr_content_lang';
     var ORIGINAL = '__original__';
 
-    // Google Cloud Translation v2: max 128 `q` strings per request.
-    // Prefer fewer, fuller batches over many small ones (avoids Laravel/proxy 429s).
-    var MAX_ITEMS_PER_REQUEST = 128;
-    var MAX_CHARS_PER_REQUEST = 18000;
-    // One in-flight batch at a time keeps us well under rate limits on heavy pages.
-    var MAX_PARALLEL_REQUESTS = 1;
-    var MIN_REQUEST_GAP_MS = 75;
-    var MAX_429_RETRIES = 6;
+    // Google's 128-segment / 30k-char limit applies between Laravel and Google,
+    // not between the browser and Laravel. Cache hits never reach Google at all,
+    // so we send big batches and let the server split only the misses. A page with
+    // 3,000 strings becomes ~2 requests instead of ~25.
+    var MAX_ITEMS_PER_REQUEST = 1500;
+    var MAX_CHARS_PER_REQUEST = 200000;
+    var MAX_PARALLEL_REQUESTS = 2;
+    var MIN_REQUEST_GAP_MS = 60;
+    var MAX_429_RETRIES = 5;
     var LS_MAX_ENTRIES_PER_LANG = 8000;
     var OBSERVER_DEBOUNCE_MS = 400;
+
+    // After a hard failure a string is not re-requested until this cooldown ends.
+    // Without it, an unresolved node is re-collected by the next observer pass and
+    // re-requested forever — that feedback loop is what produces a 429 storm.
+    var FAILURE_COOLDOWN_MS = 60000;
+    // Consecutive request failures before the engine stops trying for a while.
+    var CIRCUIT_TRIP_FAILURES = 5;
+    var CIRCUIT_OPEN_MS = 60000;
 
     // ── skip rules (single source of truth) ─────────────────────────────────
 
@@ -49,15 +58,36 @@
         MATH: 1, TEMPLATE: 1, I: 1, TITLE: 1, HEAD: 1, META: 1, LINK: 1
     };
 
-    /** Icon fonts render glyphs as text ligatures — translating them destroys the icon. */
+    /**
+     * Icon fonts render glyphs as text ligatures — translating them destroys the icon.
+     * These classes are unambiguous, so anything inside them is skipped outright.
+     */
     var ICON_SELECTOR = [
         '.material-icons', '.material-icons-outlined', '.material-icons-round',
         '.material-icons-sharp', '.material-icons-two-tone',
         '.material-symbols-outlined', '.material-symbols-rounded', '.material-symbols-sharp',
         '.fa', '.fas', '.far', '.fab', '.fal', '.fad', '.fa-solid', '.fa-regular', '.fa-brands',
-        '.bi', '.glyphicon', '.icon', '.iconify', '.feather', '.ti', '.bx',
-        '[class*="fa-"]', '[class*="icon-"]', '[class^="icon"]', '[class*="-icon"]'
+        '.bi', '.glyphicon', '.iconify', '.feather', '.bx',
+        '[class*="fa-"]'
     ].join(',');
+
+    /**
+     * Class names that merely *mention* an icon — `.icon-heading`, `.has-icon`,
+     * `.upload-icon-wrap`. Treating these as icons hid real copy: the e-Store contact
+     * headings ("Mail us", "Our Address") and every `.form-control.has-icon`
+     * placeholder silently refused to translate. So text under these is skipped only
+     * when it actually looks like a ligature — one token, no spaces.
+     */
+    var LOOSE_ICON_SELECTOR = [
+        '.icon', '.ti', '[class*="icon-"]', '[class^="icon"]', '[class*="-icon"]', '[class*="_icon"]'
+    ].join(',');
+
+    var MAX_LIGATURE_LENGTH = 24;
+
+    function looksLikeLigature(text) {
+        var t = text.trim();
+        return t.length > 0 && t.length <= MAX_LIGATURE_LENGTH && !/\s/.test(t);
+    }
 
     /** Person names must never be translated, anywhere. */
     var NAME_SELECTOR = [
@@ -91,8 +121,6 @@
     var lsTimer = null;
     var applying = false;               // guards our own DOM writes from the observer
     var observer = null;
-    var pendingPass = null;
-    var inFlight = 0;
     var titleOriginal = null;
     var initialized = false;
     var translatedOnce = false;
@@ -109,6 +137,26 @@
     var batchActive = 0;
     var batchLastAt = 0;
     var passBusy = 0; // >0 while a translatePass is collecting/applying/networked
+
+    // Per-hash request state — the guard that makes repeated DOM scans free.
+    // "lang|hash" -> true while a request carrying it is in flight
+    var hashPending = Object.create(null);
+    // "lang|hash" -> timestamp until which we refuse to re-request it
+    var hashCooldown = Object.create(null);
+    // "lang|hash" -> [job, …] discovered while the hash was already in flight
+    var hashWaiters = Object.create(null);
+
+    var consecutiveFailures = 0;
+    var circuitOpenUntil = 0;
+
+    // Bumped on every language switch. A response that was already in flight when
+    // the user switched belongs to the old selection and must not touch the DOM —
+    // otherwise picking Original re-translates the page a moment after restoring it.
+    var langEpoch = 0;
+
+    function isCurrentEpoch(epoch) {
+        return epoch === langEpoch;
+    }
 
     // ── small utilities ─────────────────────────────────────────────────────
 
@@ -358,11 +406,27 @@
 
     // ── DOM collection ──────────────────────────────────────────────────────
 
+    /** Loose icon container whose text is ligature-shaped — an icon, not a sentence. */
+    function isLigatureIcon(el, text) {
+        if (!el || el.nodeType !== 1 || !el.matches) return false;
+        if (!looksLikeLigature(text)) return false;
+        try {
+            return el.matches(LOOSE_ICON_SELECTOR);
+        } catch (e) {
+            return false;
+        }
+    }
+
     function collectTextNodes(root, out) {
         var walker = document.createTreeWalker(root, NodeFilter.SHOW_TEXT, {
             acceptNode: function (node) {
                 if (!node.nodeValue || !node.nodeValue.trim()) return NodeFilter.FILTER_REJECT;
                 if (isSkipped(node.parentElement)) return NodeFilter.FILTER_REJECT;
+                // Judge on the ORIGINAL text, never the current value. "Mail us"
+                // translates to the single word "Correo"; testing the translation
+                // would classify it as a ligature and Original could never restore it.
+                var basis = textOriginals.has(node) ? textOriginals.get(node) : node.nodeValue;
+                if (isLigatureIcon(node.parentElement, basis)) return NodeFilter.FILTER_REJECT;
                 return NodeFilter.FILTER_ACCEPT;
             }
         });
@@ -494,7 +558,6 @@
 
             var job = batchQueue.shift();
             batchActive++;
-            inFlight = batchActive;
             batchLastAt = Date.now();
 
             postBatchWithRetry(job.lang, job.items)
@@ -506,7 +569,6 @@
                 })
                 .then(function () {
                     batchActive--;
-                    inFlight = batchActive;
                     drainBatchQueue();
                 });
         }, wait);
@@ -523,6 +585,76 @@
     function reportFailure(reason, lang, extra) {
         if (window.LrTranslationDiagnostics && window.LrTranslationDiagnostics.reportFailure) {
             try { window.LrTranslationDiagnostics.reportFailure(reason, lang, extra || {}); } catch (e) {}
+        }
+    }
+
+    // ── per-hash request state ──────────────────────────────────────────────
+
+    function stateKey(lang, h) { return lang + '|' + h; }
+
+    function circuitOpen() {
+        return Date.now() < circuitOpenUntil;
+    }
+
+    function noteRequestSuccess() {
+        consecutiveFailures = 0;
+        circuitOpenUntil = 0;
+    }
+
+    function noteRequestFailure(lang) {
+        consecutiveFailures++;
+        if (consecutiveFailures >= CIRCUIT_TRIP_FAILURES && !circuitOpen()) {
+            circuitOpenUntil = Date.now() + CIRCUIT_OPEN_MS;
+            log('circuit open for', CIRCUIT_OPEN_MS + 'ms after', consecutiveFailures, 'failures');
+            reportFailure('translate_request_failed', lang, { circuitOpen: true, failures: consecutiveFailures });
+        }
+    }
+
+    /** Can this hash be added to a new request right now? */
+    function isRequestable(lang, h) {
+        var key = stateKey(lang, h);
+        if (hashPending[key]) return false;
+        var until = hashCooldown[key];
+        if (until && Date.now() < until) return false;
+        if (until) delete hashCooldown[key];
+        return true;
+    }
+
+    function markPending(lang, hashes) {
+        for (var i = 0; i < hashes.length; i++) hashPending[stateKey(lang, hashes[i])] = true;
+    }
+
+    /** Release in-flight hashes; on failure put them in cooldown so no pass retries them. */
+    function releasePending(lang, hashes, failed) {
+        var now = Date.now();
+        for (var i = 0; i < hashes.length; i++) {
+            var key = stateKey(lang, hashes[i]);
+            delete hashPending[key];
+            if (failed) {
+                hashCooldown[key] = now + FAILURE_COOLDOWN_MS;
+            }
+            delete hashWaiters[key];
+        }
+    }
+
+    /** A later pass found the same string mid-flight — queue it for the same result. */
+    function addWaiter(lang, h, job) {
+        var key = stateKey(lang, h);
+        if (!hashWaiters[key]) hashWaiters[key] = [];
+        hashWaiters[key].push(job);
+    }
+
+    function flushWaiters(lang, h, value, epoch) {
+        var key = stateKey(lang, h);
+        var list = hashWaiters[key];
+        if (!list) return;
+        delete hashWaiters[key];
+        if (!isCurrentEpoch(epoch)) return;
+        applying = true;
+        try {
+            for (var i = 0; i < list.length; i++) list[i].apply(value);
+        } finally {
+            applying = false;
         }
     }
 
@@ -549,13 +681,19 @@
                     }
                     return;
                 }
-                needed[h] = norm;
-                jobs.push({
+                var job = {
                     hash: h,
                     apply: function (translated) {
                         node.nodeValue = padLike(original, translated);
                     }
-                });
+                };
+                // Already in flight or cooling down after a failure: never re-request.
+                if (!isRequestable(lang, h)) {
+                    if (hashPending[stateKey(lang, h)]) addWaiter(lang, h, job);
+                    return;
+                }
+                needed[h] = norm;
+                jobs.push(job);
             })(textNodes[i]);
         }
 
@@ -575,13 +713,18 @@
                     }
                     return;
                 }
-                needed[h] = norm;
-                jobs.push({
+                var job = {
                     hash: h,
                     apply: function (translated) {
                         target.el.setAttribute(target.attr, translated);
                     }
-                });
+                };
+                if (!isRequestable(lang, h)) {
+                    if (hashPending[stateKey(lang, h)]) addWaiter(lang, h, job);
+                    return;
+                }
+                needed[h] = norm;
+                jobs.push(job);
             })(attrTargets[j]);
         }
 
@@ -607,7 +750,7 @@
         return chunks;
     }
 
-    function runChunks(lang, chunks, jobsByHash, onDone) {
+    function runChunks(lang, epoch, chunks, jobsByHash, onDone) {
         var index = 0;
         var active = 0;
         var finished = false;
@@ -620,6 +763,9 @@
         }
 
         function applyHash(h, value) {
+            // The result is still cached by the caller — it was paid for — but it is
+            // only written to the page while the selection it belongs to is current.
+            if (!isCurrentEpoch(epoch)) return;
             var list = jobsByHash[h] || [];
             applying = true;
             try {
@@ -632,34 +778,69 @@
         }
 
         function next() {
-            // Serial queue lives in postBatch — still walk chunks one-at-a-time
-            // so we don't flood the queue with hundreds of pending jobs at once.
-            while (active < 1 && index < chunks.length) {
+            while (active < MAX_PARALLEL_REQUESTS && index < chunks.length) {
                 var chunk = chunks[index++];
                 active++;
                 (function (c) {
+                    var hashes = c.map(function (x) { return x.h; });
+                    markPending(lang, hashes);
+
+                    // Circuit open: fail fast into cooldown instead of piling on.
+                    if (circuitOpen()) {
+                        releasePending(lang, hashes, true);
+                        active--;
+                        next();
+                        done();
+                        return;
+                    }
+
+                    var succeeded = false;
+                    var unresolved = [];
+
                     postBatch(lang, c.map(function (x) { return x.text; }))
                         .then(function (data) {
-                            if (data && Array.isArray(data.translations)) {
-                                var ok = data.ok !== false;
-                                if (!ok && data.reason) {
-                                    log('passthrough:', data.reason);
-                                    reportFailure('translate_' + data.reason, lang, {});
-                                }
-                                for (var i = 0; i < c.length; i++) {
-                                    var value = data.translations[i];
-                                    if (ok && typeof value === 'string' && value.length) {
-                                        cacheSet(lang, c[i].h, value);
-                                        applyHash(c[i].h, value);
-                                    }
+                            if (!data || !Array.isArray(data.translations)) return;
+
+                            var ok = data.ok !== false;
+                            if (!ok && data.reason) {
+                                log('passthrough:', data.reason);
+                                reportFailure('translate_' + data.reason, lang, {});
+                                // A refusal (unsupported language, disabled, too large)
+                                // will not change on retry — cool these down.
+                                return;
+                            }
+
+                            if (data.degraded) log('degraded:', data.degraded);
+
+                            succeeded = true;
+                            noteRequestSuccess();
+                            for (var i = 0; i < c.length; i++) {
+                                var value = data.translations[i];
+                                // null = the server could not translate it. Caching the
+                                // source text here would permanently "translate" the
+                                // string to itself in this browser.
+                                if (typeof value === 'string' && value.length) {
+                                    cacheSet(lang, c[i].h, value);
+                                    applyHash(c[i].h, value);
+                                    flushWaiters(lang, c[i].h, value, epoch);
+                                } else {
+                                    unresolved.push(c[i].h);
                                 }
                             }
                         })
                         .catch(function (err) {
                             log('batch failed', err);
+                            noteRequestFailure(lang);
                             reportFailure('translate_request_failed', lang, { message: String(err && err.message || err) });
                         })
                         .then(function () {
+                            releasePending(lang, hashes, !succeeded);
+                            // Items the server declined stay in cooldown too, so a
+                            // permanently untranslatable string is not re-sent on
+                            // every observer pass.
+                            if (succeeded && unresolved.length) {
+                                releasePending(lang, unresolved, true);
+                            }
                             active--;
                             next();
                             done();
@@ -690,6 +871,7 @@
         }
 
         passBusy++;
+        var epoch = langEpoch;
         applying = true;
         var built;
         try {
@@ -720,8 +902,12 @@
             jobsByHash[job.hash].push(job);
         }
 
-        runChunks(lang, chunks, jobsByHash, function () {
-            if (trackBadge && passId !== progressPassId) {
+        runChunks(lang, epoch, chunks, jobsByHash, function () {
+            if ((trackBadge && passId !== progressPassId) || !isCurrentEpoch(epoch)) {
+                if (trackBadge) {
+                    document.documentElement.classList.remove('lr-translating');
+                    finishBadgeTracking();
+                }
                 passBusy = Math.max(0, passBusy - 1);
                 if (onComplete) onComplete();
                 return;
@@ -754,11 +940,13 @@
         var h = hash(norm);
         var cached = cacheGet(lang, h);
         if (cached !== undefined) { document.title = cached; return; }
+
+        var epoch = langEpoch;
         postBatch(lang, [norm]).then(function (data) {
             if (data && data.ok !== false && Array.isArray(data.translations) && data.translations[0]) {
                 cacheSet(lang, h, data.translations[0]);
-                document.title = data.translations[0];
                 scheduleFlush(lang);
+                if (isCurrentEpoch(epoch)) document.title = data.translations[0];
             }
         }).catch(function () {});
     }
@@ -858,6 +1046,8 @@
 
             if (next === currentLang) return;
 
+            // Invalidate anything already in flight for the previous selection.
+            langEpoch++;
             currentLang = next;
             writeStoredLang(next);
             skipCache = new WeakMap();
@@ -904,6 +1094,11 @@
 
         clearCache: function () {
             memCache = Object.create(null);
+            hashPending = Object.create(null);
+            hashCooldown = Object.create(null);
+            hashWaiters = Object.create(null);
+            consecutiveFailures = 0;
+            circuitOpenUntil = 0;
             try {
                 for (var i = window.localStorage.length - 1; i >= 0; i--) {
                     var k = window.localStorage.key(i);

@@ -51,10 +51,11 @@ class ContentTranslationService
     }
 
     /**
-     * @param  string  $sourceLang  'auto' detects (costs double — only for UGC of
-     *                              unknown origin); 'en' for site-authored copy.
+     * @param  string  $sourceLang  SOURCE_DETECT works out each string's language and
+     *                              caches the answer permanently — correct for UGC that
+     *                              mixes languages. Pass 'en' only for site-authored copy.
      */
-    public static function translate(?string $text, string $targetLang, string $sourceLang = 'auto'): string
+    public static function translate(?string $text, string $targetLang, string $sourceLang = GoogleTranslateService::SOURCE_DETECT): string
     {
         $map = self::translateMany([$text ?? ''], $targetLang, $sourceLang);
 
@@ -68,7 +69,7 @@ class ContentTranslationService
      * @param  array<int|string, string|null>  $texts
      * @return array<int|string, string>
      */
-    public static function translateMany(array $texts, string $targetLang, string $sourceLang = 'auto'): array
+    public static function translateMany(array $texts, string $targetLang, string $sourceLang = GoogleTranslateService::SOURCE_DETECT): array
     {
         $results = [];
         $payload = [];
@@ -101,7 +102,7 @@ class ContentTranslationService
         return $results;
     }
 
-    public static function translateBulletinFields(object $bulletin, string $targetLang, string $sourceLang = 'auto'): void
+    public static function translateBulletinFields(object $bulletin, string $targetLang, string $sourceLang = GoogleTranslateService::SOURCE_DETECT): void
     {
         $translated = self::translateMany([
             'title' => (string) ($bulletin->title ?? ''),

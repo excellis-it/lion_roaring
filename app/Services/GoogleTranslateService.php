@@ -28,16 +28,46 @@ class GoogleTranslateService
 {
     private const ENDPOINT = 'https://translation.googleapis.com/language/translate/v2';
 
-    /** Google allows up to 128 `q` segments per request. */
+    private const DETECT_ENDPOINT = 'https://translation.googleapis.com/language/translate/v2/detect';
+
+    /**
+     * Source sentinel meaning "the text may be in any language — work it out".
+     * Used for pages that mix user-generated content written in several languages.
+     */
+    public const SOURCE_DETECT = 'detect';
+
+    /** Google v2 hard limit: 128 `q` segments per request. */
     private const MAX_SEGMENTS_PER_CALL = 128;
 
-    /** Keep request bodies well under Google's 30k-char limit. */
-    private const MAX_CHARS_PER_CALL = 18000;
+    /** Google v2 hard limit is 30,000 code points per request; stay just under. */
+    private const MAX_CHARS_PER_CALL = 28000;
+
+    /**
+     * Google-legal chunks fired concurrently. The per-project quota is measured in
+     * millions of characters per minute, so concurrency — not serialization — is
+     * the right lever for a page with thousands of strings.
+     */
+    private const MAX_CONCURRENT_CALLS = 8;
+
+    /** Retries for a chunk that came back 429 / 5xx. */
+    private const MAX_CHUNK_RETRIES = 4;
 
     private const BUDGET_CACHE_TTL = 60;
 
     /** Per-request memo so repeated lookups in one page render never hit the DB twice. */
     private static array $memo = [];
+
+    /** Characters actually sent to Google during this PHP request (cache hits are free). */
+    private static int $billedThisRequest = 0;
+
+    /**
+     * Chargeable characters produced so far in this request. Lets the public
+     * endpoint meter a visitor on what they actually cost, not on what they submit.
+     */
+    public static function billedCharsThisRequest(): int
+    {
+        return self::$billedThisRequest;
+    }
 
     // ── config ──────────────────────────────────────────────────────────────
 
@@ -83,12 +113,16 @@ class GoogleTranslateService
         if ($code === '' || $code === '__original__') {
             return '';
         }
-        if (strtolower($code) === 'auto') {
+        $lowerCode = strtolower($code);
+        if ($lowerCode === 'auto') {
             return 'auto';
+        }
+        if ($lowerCode === self::SOURCE_DETECT) {
+            return self::SOURCE_DETECT;
         }
 
         // Google expects zh-CN / zh-TW / pt-PT style casing; everything else is lowercase.
-        $lower = strtolower($code);
+        $lower = $lowerCode;
         $keepRegion = [
             'zh-cn' => 'zh-CN', 'zh-tw' => 'zh-TW', 'pt-pt' => 'pt-PT',
             'fr-ca' => 'fr-CA', 'fa-af' => 'fa-AF',
@@ -196,20 +230,32 @@ class GoogleTranslateService
      * translated string. Untranslatable / failed / over-budget items map back to
      * their original value, so callers can always render the result blindly.
      *
+     * Only strings that were genuinely resolved appear in the result. A caller that
+     * wants a total mapping should fall back to its own input — silently returning
+     * the source text as if it were a translation would let clients cache "English
+     * translates to English" after a transient Google failure.
+     *
      * @param  array<int, string>  $texts
+     * @param  string  $source  a fixed language code, or self::SOURCE_DETECT when the
+     *                          page mixes languages (each unique string is detected
+     *                          once and the answer is cached forever).
+     * @param  bool  $cacheOnly  never call Google; serve whatever is already paid for.
      * @return array<string, string>
      */
-    public static function translateBatch(array $texts, string $target, string $source = 'en'): array
+    public static function translateBatch(array $texts, string $target, string $source = self::SOURCE_DETECT, bool $cacheOnly = false): array
     {
         $target = self::normalizeLangCode($target);
         $source = self::normalizeLangCode($source);
 
         $out = [];
-        foreach ($texts as $t) {
-            $out[$t] = $t;
-        }
 
-        if ($target === '' || $target === $source || (self::isEnglish($target) && self::isEnglish($source))) {
+        if ($target === '') {
+            return $out;
+        }
+        // With a fixed source, target == source is a no-op. With SOURCE_DETECT we
+        // cannot know yet — a page may hold English, Hindi and Spanish at once, so
+        // "translate everything to English" still has real work to do.
+        if ($source !== self::SOURCE_DETECT && $target === $source) {
             return $out;
         }
         if (!self::enabled()) {
@@ -234,7 +280,7 @@ class GoogleTranslateService
             return $out;
         }
 
-        $resolved = self::resolveHashes($byHash, $target, $source);
+        $resolved = self::resolveHashes($byHash, $target, $source, $cacheOnly);
 
         // 2. Map back onto the caller's original strings, restoring surrounding
         //    whitespace that normalization stripped.
@@ -252,7 +298,7 @@ class GoogleTranslateService
      * @param  array<string, string>  $byHash  hash => normalized source text
      * @return array<string, string>  hash => translated text
      */
-    private static function resolveHashes(array $byHash, string $target, string $source): array
+    private static function resolveHashes(array $byHash, string $target, string $source, bool $cacheOnly = false): array
     {
         $resolved = [];
         $missing = [];
@@ -296,13 +342,311 @@ class GoogleTranslateService
             return $resolved;
         }
 
+        // Over budget / over quota: hand back everything already paid for and stop.
+        // Refusing cached strings too would blank out a site that has been correctly
+        // translated for years just because one visitor was noisy today.
+        if ($cacheOnly) {
+            return $resolved;
+        }
+
         // Everything left has to be paid for.
-        $fresh = self::callApiForMissing($missing, $target, $source);
-        foreach ($fresh as $h => $translated) {
-            $resolved[$h] = $translated;
+        if ($source !== self::SOURCE_DETECT) {
+            foreach (self::callApiForMissing($missing, $target, $source) as $h => $translated) {
+                $resolved[$h] = $translated;
+            }
+
+            return $resolved;
+        }
+
+        // Mixed-language page: split the misses by their real source language, then
+        // translate each group with an explicit source. Strings already in the target
+        // language are recorded as identity so they are never processed again.
+        foreach (self::groupBySourceLanguage($missing) as $detected => $group) {
+            // Already in the requested language — record identity so this string is
+            // never detected or translated again, and hand back the author's words
+            // untouched rather than round-tripping them through Google.
+            if ($detected === '' || self::sameLanguage($detected, $target)) {
+                self::persistIdentity($group, $target);
+                foreach ($group as $h => $text) {
+                    $resolved[$h] = $text;
+                    self::$memo[$target . ':' . $h] = $text;
+                }
+                continue;
+            }
+
+            foreach (self::callApiForMissing($group, $target, $detected) as $h => $translated) {
+                $resolved[$h] = $translated;
+            }
         }
 
         return $resolved;
+    }
+
+    /** Google returns zh-CN/zh-TW etc.; compare on the base subtag. */
+    private static function sameLanguage(string $a, string $b): bool
+    {
+        $base = static fn (string $c) => strtolower(explode('-', $c, 2)[0]);
+
+        return $base($a) === $base($b);
+    }
+
+    /**
+     * Text already in the target language still gets a cache row, so the next
+     * visitor resolves it from the DB instead of paying to detect it again.
+     *
+     * @param  array<string, string>  $group  hash => text
+     */
+    private static function persistIdentity(array $group, string $target): void
+    {
+        self::persist($group, $group, $target);
+    }
+
+    /**
+     * @param  array<string, string>  $missing  hash => normalized text
+     * @return array<string, array<string, string>>  detected lang => (hash => text)
+     */
+    private static function groupBySourceLanguage(array $missing): array
+    {
+        $langs = self::detectLanguages($missing);
+
+        $groups = [];
+        foreach ($missing as $h => $text) {
+            $lang = $langs[$h] ?? 'en';
+            $groups[$lang][$h] = $text;
+        }
+
+        return $groups;
+    }
+
+    /**
+     * Detected language per hash, cached permanently in `translation_source`.
+     *
+     * @param  array<string, string>  $byHash  hash => normalized text
+     * @return array<string, string>           hash => language code
+     */
+    public static function detectLanguages(array $byHash): array
+    {
+        $out = [];
+        $unknown = $byHash;
+
+        foreach (array_chunk(array_keys($byHash), 500) as $hashChunk) {
+            $rows = DB::table('translation_source')
+                ->select('source_hash', 'detected_lang')
+                ->whereIn('source_hash', $hashChunk)
+                ->get();
+
+            foreach ($rows as $row) {
+                $out[$row->source_hash] = (string) $row->detected_lang;
+                unset($unknown[$row->source_hash]);
+            }
+        }
+
+        if ($unknown === []) {
+            return $out;
+        }
+
+        // Only genuinely new answers are written back. Re-upserting rows we just
+        // read would mean thousands of pointless writes every time a new target
+        // language is warmed against an already-detected corpus.
+        $fresh = [];
+
+        // Script is decisive and free: Devanagari is never English. Resolving these
+        // locally keeps the paid detect call for genuinely ambiguous Latin text.
+        foreach ($unknown as $h => $text) {
+            $script = self::scriptLanguage($text);
+            if ($script !== null) {
+                $out[$h] = $script;
+                $fresh[$h] = $script;
+                unset($unknown[$h]);
+            }
+        }
+
+        if ($unknown !== []) {
+            foreach (self::callDetectApi($unknown) as $h => $lang) {
+                $out[$h] = $lang;
+                $fresh[$h] = $lang;
+            }
+        }
+
+        if ($fresh !== []) {
+            self::persistDetected($fresh, $byHash);
+        }
+
+        // Strings detection could not resolve fall back to English for THIS request
+        // only. Caching the guess would permanently mislabel a Hindi post as English
+        // because of one timeout, and every later translation would use a wrong source.
+        foreach (array_keys($byHash) as $h) {
+            if (!isset($out[$h])) {
+                $out[$h] = 'en';
+            }
+        }
+
+        return $out;
+    }
+
+    /**
+     * Unambiguous writing systems mapped to their dominant language. Only used when
+     * the string is overwhelmingly in one script, so Latin text never matches.
+     */
+    private static function scriptLanguage(string $text): ?string
+    {
+        static $scripts = [
+            'Devanagari' => 'hi',
+            'Bengali' => 'bn',
+            'Gurmukhi' => 'pa',
+            'Gujarati' => 'gu',
+            'Tamil' => 'ta',
+            'Telugu' => 'te',
+            'Kannada' => 'kn',
+            'Malayalam' => 'ml',
+            'Sinhala' => 'si',
+            'Thai' => 'th',
+            'Lao' => 'lo',
+            'Khmer' => 'km',
+            'Myanmar' => 'my',
+            'Georgian' => 'ka',
+            'Armenian' => 'hy',
+            'Hebrew' => 'iw',
+            'Hangul' => 'ko',
+            'Hiragana' => 'ja',
+            'Katakana' => 'ja',
+        ];
+
+        $letters = preg_match_all('/\p{L}/u', $text);
+        if ($letters < 3) {
+            return null;
+        }
+
+        foreach ($scripts as $script => $lang) {
+            $count = preg_match_all('/\p{' . $script . '}/u', $text);
+            if ($count !== false && $count >= $letters * 0.6) {
+                return $lang;
+            }
+        }
+
+        return null;
+    }
+
+    /**
+     * @param  array<string, string>  $unknown  hash => text
+     * @return array<string, string>            hash => language code
+     */
+    private static function callDetectApi(array $unknown): array
+    {
+        $out = [];
+        $chunks = self::chunkByChars($unknown);
+
+        $pendingIdx = array_keys($chunks);
+        for ($attempt = 0; $attempt <= self::MAX_CHUNK_RETRIES && $pendingIdx !== []; $attempt++) {
+            if ($attempt > 0) {
+                usleep(min(8000000, (int) (250000 * (2 ** ($attempt - 1)))) + random_int(0, 200000));
+            }
+
+            try {
+                $responses = Http::pool(function ($pool) use ($chunks, $pendingIdx) {
+                    foreach ($pendingIdx as $i) {
+                        $pool->as((string) $i)
+                            ->asJson()
+                            ->timeout(30)
+                            ->post(self::DETECT_ENDPOINT . '?key=' . urlencode(self::apiKey()), [
+                                'q' => array_values($chunks[$i]),
+                            ]);
+                    }
+                }, self::MAX_CONCURRENT_CALLS);
+            } catch (\Throwable $e) {
+                Log::warning('GoogleTranslateService: detect pool failed', ['message' => $e->getMessage()]);
+                break;
+            }
+
+            $retry = [];
+            $billed = 0;
+            $calls = 0;
+            foreach ($pendingIdx as $i) {
+                $response = $responses[(string) $i] ?? null;
+
+                if ($response instanceof \Throwable || !$response instanceof \Illuminate\Http\Client\Response) {
+                    $retry[] = $i;
+                    continue;
+                }
+                if ($response->status() === 429 || $response->status() >= 500) {
+                    $retry[] = $i;
+                    continue;
+                }
+                if (!$response->successful()) {
+                    Log::warning('GoogleTranslateService: detect error', [
+                        'status' => $response->status(),
+                        'body' => mb_substr($response->body(), 0, 300),
+                    ]);
+                    continue;
+                }
+
+                $detections = $response->json('data.detections');
+                $hashes = array_keys($chunks[$i]);
+                if (!is_array($detections)) {
+                    continue;
+                }
+
+                foreach ($detections as $k => $candidates) {
+                    if (!isset($hashes[$k])) {
+                        continue;
+                    }
+                    $best = is_array($candidates) ? ($candidates[0] ?? null) : null;
+                    $lang = is_array($best) ? ($best['language'] ?? null) : null;
+                    if (is_string($lang) && $lang !== '') {
+                        $out[$hashes[$k]] = self::normalizeLangCode($lang) ?: 'en';
+                    }
+                }
+
+                $billed += self::chunkChars($chunks[$i]);
+                $calls++;
+            }
+
+            // Detection is billed at the translation rate — count it honestly.
+            if ($calls > 0) {
+                self::recordUsage('detect', $billed, $calls, 0);
+            }
+
+            $pendingIdx = $retry;
+        }
+
+        // Deliberately returns only what was actually detected. Unresolved hashes are
+        // handled by the caller as a per-request fallback and are never cached.
+        return $out;
+    }
+
+    /**
+     * @param  array<string, string>  $langs   hash => language
+     * @param  array<string, string>  $byHash  hash => text
+     */
+    private static function persistDetected(array $langs, array $byHash): void
+    {
+        $now = Carbon::now();
+        $rows = [];
+        foreach ($langs as $hash => $lang) {
+            if (!isset($byHash[$hash])) {
+                continue;
+            }
+            $rows[] = [
+                'source_hash' => $hash,
+                'detected_lang' => $lang,
+                'confidence' => null,
+                'char_count' => mb_strlen($byHash[$hash]),
+                'created_at' => $now,
+                'updated_at' => $now,
+            ];
+        }
+
+        if ($rows === []) {
+            return;
+        }
+
+        try {
+            foreach (array_chunk($rows, 200) as $batch) {
+                DB::table('translation_source')->upsert($batch, ['source_hash'], ['detected_lang', 'updated_at']);
+            }
+        } catch (\Throwable $e) {
+            Log::warning('GoogleTranslateService: detect cache write failed', ['message' => $e->getMessage()]);
+        }
     }
 
     /**
@@ -311,16 +655,15 @@ class GoogleTranslateService
      */
     private static function callApiForMissing(array $missing, string $target, string $source): array
     {
+        $chunks = self::chunkByChars($missing);
+        $unlimited = self::isBudgetUnlimited();
         $remaining = self::budgetRemaining();
-        $resolved = [];
 
-        foreach (self::chunkByChars($missing) as $chunk) {
-            $chars = 0;
-            foreach ($chunk as $text) {
-                $chars += mb_strlen($text);
-            }
-
-            if (!self::isBudgetUnlimited() && $chars > $remaining) {
+        // Gate on budget first so we never start a wave we cannot finish paying for.
+        $allowed = [];
+        foreach ($chunks as $chunk) {
+            $chars = self::chunkChars($chunk);
+            if (!$unlimited && $chars > $remaining) {
                 Log::warning('GoogleTranslateService: monthly character budget exhausted', [
                     'target' => $target,
                     'limit' => self::monthlyCharLimit(),
@@ -328,14 +671,29 @@ class GoogleTranslateService
                 ]);
                 break;
             }
+            $remaining -= $chars;
+            $allowed[] = $chunk;
+        }
 
-            $translated = self::requestChunk($chunk, $target, $source);
+        $resolved = [];
+        if ($allowed === []) {
+            return $resolved;
+        }
+
+        // All Google-legal chunks are submitted at once with bounded concurrency,
+        // so a 3,000-string page becomes a few parallel calls instead of dozens
+        // of sequential ones.
+        $results = self::requestChunksConcurrently($allowed, $target, $source);
+
+        $billedChars = 0;
+        $calls = 0;
+        foreach ($results as $i => $translated) {
             if ($translated === null) {
                 continue;
             }
-
-            $remaining -= $chars;
-            self::recordUsage($target, $chars, 1, 0);
+            $chunk = $allowed[$i];
+            $billedChars += self::chunkChars($chunk);
+            $calls++;
             self::persist($translated, $chunk, $target);
 
             foreach ($translated as $h => $value) {
@@ -344,16 +702,107 @@ class GoogleTranslateService
             }
         }
 
+        if ($calls > 0) {
+            self::recordUsage($target, $billedChars, $calls, 0);
+        }
+
         return $resolved;
     }
 
-    /**
-     * @param  array<string, string>  $chunk  hash => source text
-     * @return array<string, string>|null    hash => translated text
-     */
-    private static function requestChunk(array $chunk, string $target, string $source): ?array
+    /** @param array<string, string> $chunk */
+    private static function chunkChars(array $chunk): int
     {
-        $hashes = array_keys($chunk);
+        $chars = 0;
+        foreach ($chunk as $text) {
+            $chars += mb_strlen($text);
+        }
+
+        return $chars;
+    }
+
+    /**
+     * Send every Google-legal chunk with bounded concurrency, retrying only the
+     * chunks that came back 429 / 5xx using exponential backoff with jitter —
+     * Google's documented guidance for RESOURCE_EXHAUSTED.
+     *
+     * @param  array<int, array<string, string>>  $wave  chunk index => (hash => text)
+     * @return array<int, array<string, string>|null>    chunk index => (hash => translated)
+     */
+    private static function requestChunksConcurrently(array $wave, string $target, string $source): array
+    {
+        $results = [];
+        $pending = array_keys($wave);
+
+        for ($attempt = 0; $attempt <= self::MAX_CHUNK_RETRIES && $pending !== []; $attempt++) {
+            if ($attempt > 0) {
+                usleep(min(8000000, (int) (250000 * (2 ** ($attempt - 1)))) + random_int(0, 200000));
+            }
+
+            $payloads = [];
+            foreach ($pending as $i) {
+                $payloads[$i] = self::buildPayload($wave[$i], $target, $source);
+            }
+
+            try {
+                $responses = Http::pool(function ($pool) use ($payloads) {
+                    foreach ($payloads as $i => $payload) {
+                        $pool->as((string) $i)
+                            ->asJson()
+                            ->timeout(30)
+                            ->post(self::ENDPOINT . '?key=' . urlencode(self::apiKey()), $payload);
+                    }
+                }, self::MAX_CONCURRENT_CALLS);
+            } catch (\Throwable $e) {
+                Log::warning('GoogleTranslateService: pool failed', ['message' => $e->getMessage()]);
+                break;
+            }
+
+            $retry = [];
+            foreach ($pending as $i) {
+                $response = $responses[(string) $i] ?? null;
+
+                if ($response instanceof \Throwable) {
+                    $retry[] = $i;
+                    continue;
+                }
+                if (!$response instanceof \Illuminate\Http\Client\Response) {
+                    $retry[] = $i;
+                    continue;
+                }
+                if ($response->status() === 429 || $response->status() >= 500) {
+                    $retry[] = $i;
+                    continue;
+                }
+                if (!$response->successful()) {
+                    Log::warning('GoogleTranslateService: API error', [
+                        'status' => $response->status(),
+                        'body' => mb_substr($response->body(), 0, 500),
+                        'target' => $target,
+                    ]);
+                    $results[$i] = null;
+                    continue;
+                }
+
+                $results[$i] = self::parseTranslations($response->json('data.translations'), array_keys($wave[$i]));
+            }
+
+            $pending = $retry;
+        }
+
+        foreach ($pending as $i) {
+            Log::warning('GoogleTranslateService: chunk exhausted retries', ['target' => $target]);
+            $results[$i] = null;
+        }
+
+        return $results;
+    }
+
+    /**
+     * @param  array<string, string>  $chunk
+     * @return array<string, mixed>
+     */
+    private static function buildPayload(array $chunk, string $target, string $source): array
+    {
         $payload = [
             'q' => array_values($chunk),
             'target' => $target,
@@ -366,60 +815,34 @@ class GoogleTranslateService
             $payload['source'] = $source;
         }
 
-        for ($attempt = 1; $attempt <= 3; $attempt++) {
-            try {
-                // JSON body, not form-encoded: `q` is a repeated field and
-                // http_build_query would turn it into q[0]=… which the API rejects.
-                $response = Http::asJson()
-                    ->timeout(20)
-                    ->post(self::ENDPOINT . '?key=' . urlencode(self::apiKey()), $payload);
+        return $payload;
+    }
 
-                if ($response->status() === 429 || $response->status() >= 500) {
-                    usleep(200000 * $attempt);
-                    continue;
-                }
+    /**
+     * @param  array<int, string>  $hashes
+     * @return array<string, string>|null
+     */
+    private static function parseTranslations($translations, array $hashes): ?array
+    {
+        if (!is_array($translations) || count($translations) !== count($hashes)) {
+            Log::warning('GoogleTranslateService: unexpected payload shape', [
+                'expected' => count($hashes),
+                'got' => is_array($translations) ? count($translations) : 'null',
+            ]);
 
-                if (!$response->successful()) {
-                    Log::warning('GoogleTranslateService: API error', [
-                        'status' => $response->status(),
-                        'body' => mb_substr($response->body(), 0, 500),
-                        'target' => $target,
-                    ]);
+            return null;
+        }
 
-                    return null;
-                }
-
-                $translations = $response->json('data.translations');
-                if (!is_array($translations) || count($translations) !== count($hashes)) {
-                    Log::warning('GoogleTranslateService: unexpected payload shape', [
-                        'expected' => count($hashes),
-                        'got' => is_array($translations) ? count($translations) : 'null',
-                    ]);
-
-                    return null;
-                }
-
-                $out = [];
-                foreach ($translations as $i => $item) {
-                    $text = is_array($item) ? ($item['translatedText'] ?? null) : null;
-                    if (is_string($text) && $text !== '') {
-                        // format=text still returns a few HTML entities (&#39; &amp;)
-                        $out[$hashes[$i]] = html_entity_decode($text, ENT_QUOTES | ENT_HTML5, 'UTF-8');
-                    }
-                }
-
-                return $out;
-            } catch (\Throwable $e) {
-                Log::warning('GoogleTranslateService: request failed', [
-                    'attempt' => $attempt,
-                    'target' => $target,
-                    'message' => $e->getMessage(),
-                ]);
-                usleep(200000 * $attempt);
+        $out = [];
+        foreach ($translations as $i => $item) {
+            $text = is_array($item) ? ($item['translatedText'] ?? null) : null;
+            if (is_string($text) && $text !== '') {
+                // format=text still returns a few HTML entities (&#39; &amp;)
+                $out[$hashes[$i]] = html_entity_decode($text, ENT_QUOTES | ENT_HTML5, 'UTF-8');
             }
         }
 
-        return null;
+        return $out;
     }
 
     /**
@@ -494,6 +917,8 @@ class GoogleTranslateService
         if ($chars <= 0 && $requests <= 0 && $hits <= 0) {
             return;
         }
+
+        self::$billedThisRequest += max(0, $chars);
 
         try {
             $date = Carbon::now()->toDateString();
