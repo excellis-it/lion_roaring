@@ -72,6 +72,20 @@ class RolePermissionAuditLoggerTest extends TestCase
         $this->assertSame('(changed)', $changes[1]['new']);
     }
 
+    public function test_build_field_changes_permissions_include_added_and_removed(): void
+    {
+        $logger = new RolePermissionAuditLogger();
+        $changes = $logger->buildFieldChanges(
+            ['permissions' => ['Manage Chat', 'View Partners']],
+            ['permissions' => ['Manage Chat', 'Edit Partners', 'Delete Partners']]
+        );
+
+        $this->assertCount(1, $changes);
+        $this->assertSame('permissions', $changes[0]['field']);
+        $this->assertSame(['Delete Partners', 'Edit Partners'], $changes[0]['added']);
+        $this->assertSame(['View Partners'], $changes[0]['removed']);
+    }
+
     public function test_log_persists_field_changes_for_member_updated(): void
     {
         $actor = $this->createApiUser(['first_name' => 'Actor', 'last_name' => 'One']);

@@ -90,11 +90,14 @@ class RolePermissionAuditLogger
                 if ($oldPerms === $newPerms) {
                     continue;
                 }
+                $diff = $this->diffPermissions($oldPerms, $newPerms);
                 $changes[] = [
                     'field' => 'permissions',
                     'label' => self::FIELD_LABELS['permissions'],
                     'old' => $oldPerms,
                     'new' => $newPerms,
+                    'added' => $diff['added'],
+                    'removed' => $diff['removed'],
                 ];
                 continue;
             }
@@ -170,7 +173,23 @@ class RolePermissionAuditLogger
             $payload['permissions_removed'] = $payload['permissions_removed'] ?? $diff['removed'];
 
             if (isset($payload['field_changes']) && is_array($payload['field_changes'])) {
-                $payload['field_changes'] = array_values($payload['field_changes']);
+                $payload['field_changes'] = array_values(array_map(function ($change) {
+                    if (!is_array($change)) {
+                        return $change;
+                    }
+                    if (($change['field'] ?? null) !== 'permissions') {
+                        return $change;
+                    }
+                    $oldPerms = $this->normalizePermissions(is_array($change['old'] ?? null) ? $change['old'] : []);
+                    $newPerms = $this->normalizePermissions(is_array($change['new'] ?? null) ? $change['new'] : []);
+                    $diff = $this->diffPermissions($oldPerms, $newPerms);
+                    $change['old'] = $oldPerms;
+                    $change['new'] = $newPerms;
+                    $change['added'] = $change['added'] ?? $diff['added'];
+                    $change['removed'] = $change['removed'] ?? $diff['removed'];
+
+                    return $change;
+                }, $payload['field_changes']));
             }
 
             if (!$this->hasMeaningfulChange($payload)) {

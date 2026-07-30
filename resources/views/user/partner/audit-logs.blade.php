@@ -214,6 +214,60 @@
             color: var(--audit-muted);
         }
 
+        .audit-perm-diff {
+            display: grid;
+            gap: 0.65rem;
+            width: 100%;
+        }
+
+        .audit-perm-group-title {
+            font-size: 0.75rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.03em;
+            margin-bottom: 0.35rem;
+        }
+
+        .audit-perm-group-title.is-added {
+            color: #047857;
+        }
+
+        .audit-perm-group-title.is-removed {
+            color: var(--audit-danger);
+        }
+
+        .audit-perm-chips {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.35rem;
+        }
+
+        .audit-perm-chip {
+            border-radius: 999px;
+            padding: 0.2rem 0.55rem;
+            font-size: 0.78rem;
+            font-weight: 600;
+            line-height: 1.35;
+            max-width: 100%;
+            word-break: break-word;
+        }
+
+        .audit-perm-chip.is-added {
+            background: #d1fae5;
+            color: #065f46;
+        }
+
+        .audit-perm-chip.is-removed {
+            background: var(--audit-danger-soft);
+            color: var(--audit-danger);
+            text-decoration: line-through;
+        }
+
+        .audit-perm-empty {
+            font-size: 0.82rem;
+            color: var(--audit-muted);
+        }
+
         .audit-empty {
             text-align: center;
             padding: 3rem 1rem;
@@ -301,7 +355,7 @@
                     </select>
                 </div>
                 <div class="col-md-2">
-                    <label class="form-label small text-muted mb-1">Actor</label>
+                    <label class="form-label small text-muted mb-1">By</label>
                     <input type="text" name="actor" class="form-control" placeholder="Name or email"
                         value="{{ request('actor') }}">
                 </div>
@@ -397,7 +451,21 @@
                             </div>
                         @elseif ($changeCount)
                             <div class="audit-card__summary">
-                                {{ collect($changes)->take(3)->pluck('label')->implode(', ') }}
+                                @php
+                                    $summaryLabels = collect($changes)->take(3)->map(function ($change) {
+                                        if (($change['field'] ?? '') === 'permissions') {
+                                            $a = count($change['added'] ?? []);
+                                            $r = count($change['removed'] ?? []);
+                                            if ($a === 0 && $r === 0 && is_array($change['old'] ?? null) && is_array($change['new'] ?? null)) {
+                                                $a = count(array_values(array_diff($change['new'], $change['old'])));
+                                                $r = count(array_values(array_diff($change['old'], $change['new'])));
+                                            }
+                                            return 'Permissions +' . $a . '/−' . $r;
+                                        }
+                                        return $change['label'] ?? ($change['field'] ?? 'Field');
+                                    });
+                                @endphp
+                                {{ $summaryLabels->implode(', ') }}
                                 @if ($changeCount > 3)
                                     +{{ $changeCount - 3 }} more
                                 @endif
@@ -411,15 +479,58 @@
                                         <li>
                                             <div class="field-label">{{ $change['label'] ?? ($change['field'] ?? 'Field') }}</div>
                                             <div class="field-values">
-                                                @php
-                                                    $old = $change['old'] ?? null;
-                                                    $new = $change['new'] ?? null;
-                                                    $oldText = is_array($old) ? implode(', ', $old) : ($old ?? '—');
-                                                    $newText = is_array($new) ? implode(', ', $new) : ($new ?? '—');
-                                                @endphp
-                                                <span class="audit-old">{{ $oldText }}</span>
-                                                <span class="audit-arrow">→</span>
-                                                <span class="audit-new">{{ $newText }}</span>
+                                                @if (($change['field'] ?? '') === 'permissions')
+                                                    @php
+                                                        $permAdded = $change['added'] ?? null;
+                                                        $permRemoved = $change['removed'] ?? null;
+                                                        if ($permAdded === null || $permRemoved === null) {
+                                                            $oldList = is_array($change['old'] ?? null) ? $change['old'] : [];
+                                                            $newList = is_array($change['new'] ?? null) ? $change['new'] : [];
+                                                            $permAdded = array_values(array_diff($newList, $oldList));
+                                                            $permRemoved = array_values(array_diff($oldList, $newList));
+                                                        }
+                                                    @endphp
+                                                    <div class="audit-perm-diff">
+                                                        <div>
+                                                            <div class="audit-perm-group-title is-added">
+                                                                Added ({{ count($permAdded) }})
+                                                            </div>
+                                                            @if (count($permAdded))
+                                                                <div class="audit-perm-chips">
+                                                                    @foreach ($permAdded as $permission)
+                                                                        <span class="audit-perm-chip is-added">+ {{ $permission }}</span>
+                                                                    @endforeach
+                                                                </div>
+                                                            @else
+                                                                <div class="audit-perm-empty">None</div>
+                                                            @endif
+                                                        </div>
+                                                        <div>
+                                                            <div class="audit-perm-group-title is-removed">
+                                                                Removed ({{ count($permRemoved) }})
+                                                            </div>
+                                                            @if (count($permRemoved))
+                                                                <div class="audit-perm-chips">
+                                                                    @foreach ($permRemoved as $permission)
+                                                                        <span class="audit-perm-chip is-removed">− {{ $permission }}</span>
+                                                                    @endforeach
+                                                                </div>
+                                                            @else
+                                                                <div class="audit-perm-empty">None</div>
+                                                            @endif
+                                                        </div>
+                                                    </div>
+                                                @else
+                                                    @php
+                                                        $old = $change['old'] ?? null;
+                                                        $new = $change['new'] ?? null;
+                                                        $oldText = is_array($old) ? implode(', ', $old) : ($old ?? '—');
+                                                        $newText = is_array($new) ? implode(', ', $new) : ($new ?? '—');
+                                                    @endphp
+                                                    <span class="audit-old">{{ $oldText }}</span>
+                                                    <span class="audit-arrow">→</span>
+                                                    <span class="audit-new">{{ $newText }}</span>
+                                                @endif
                                             </div>
                                         </li>
                                     @endforeach

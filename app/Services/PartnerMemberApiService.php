@@ -461,12 +461,8 @@ class PartnerMemberApiService
             }
         }
 
-        $usedTierPermissionSync = $theRole->name === 'MEMBER_SOVEREIGN'
-            && $request->filled('membership_tier_id')
-            && !$request->boolean('membership_excluded');
-        $newPermissions = $usedTierPermissionSync
-            ? $data->getAllPermissions()->pluck('name')->all()
-            : $permissions;
+        $data->forgetCachedPermissions();
+        $newPermissions = $data->getAllPermissions()->pluck('name')->all();
 
         app(RolePermissionAuditLogger::class)->log([
             'action' => 'member_created',
@@ -483,6 +479,13 @@ class PartnerMemberApiService
             'new_permissions' => $newPermissions,
             'new_membership_tier_id' => $theRole->name === 'MEMBER_SOVEREIGN' ? $newMembershipTierId : null,
             'new_membership_tier_name' => $theRole->name === 'MEMBER_SOVEREIGN' ? $newMembershipTierName : null,
+            'field_changes' => app(RolePermissionAuditLogger::class)->buildFieldChanges([], [
+                'role' => $theRole->name,
+                'user_type' => $data->user_type,
+                'permissions' => $newPermissions,
+                'membership_tier' => $theRole->name === 'MEMBER_SOVEREIGN' ? $newMembershipTierName : null,
+                'membership_excluded' => (bool) $request->boolean('membership_excluded'),
+            ]),
         ]);
 
         Mail::to($request->email)->send(new RegistrationMail([
@@ -649,14 +652,11 @@ class PartnerMemberApiService
             }
         }
 
-        $usedTierPermissionSync = $theRole->name === 'MEMBER_SOVEREIGN'
-            && $request->filled('membership_tier_id')
-            && !$request->boolean('membership_excluded');
-        $newPermissions = $usedTierPermissionSync
-            ? $data->getAllPermissions()->pluck('name')->all()
-            : $permissions;
+        $data->forgetCachedPermissions();
+        $newPermissions = $data->getAllPermissions()->pluck('name')->all();
+        $logger = app(RolePermissionAuditLogger::class);
 
-        app(RolePermissionAuditLogger::class)->log([
+        $logger->log([
             'action' => 'member_updated',
             'source' => 'api',
             'target_user_id' => $data->id,
@@ -673,6 +673,21 @@ class PartnerMemberApiService
             'old_membership_tier_name' => $oldMembershipTierName,
             'new_membership_tier_id' => $theRole->name === 'MEMBER_SOVEREIGN' ? $newMembershipTierId : null,
             'new_membership_tier_name' => $theRole->name === 'MEMBER_SOVEREIGN' ? $newMembershipTierName : null,
+            'field_changes' => $logger->buildFieldChanges(
+                [
+                    'role' => $oldRoleName,
+                    'user_type' => $oldUserType,
+                    'permissions' => $oldPermissions,
+                    'membership_tier' => $oldMembershipTierName,
+                ],
+                [
+                    'role' => $theRole->name,
+                    'user_type' => $data->user_type,
+                    'permissions' => $newPermissions,
+                    'membership_tier' => $theRole->name === 'MEMBER_SOVEREIGN' ? $newMembershipTierName : null,
+                    'membership_excluded' => (bool) $request->boolean('membership_excluded'),
+                ]
+            ),
         ]);
 
         return [true, 'Member updated successfully.', 200];

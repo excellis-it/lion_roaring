@@ -31,6 +31,17 @@ class RolePermissionAuditLogsExport implements FromCollection, WithHeadings, Wit
     {
         $fieldChanges = collect($row->field_changes ?? [])
             ->map(function ($change) {
+                if (($change['field'] ?? '') === 'permissions') {
+                    $added = $change['added'] ?? [];
+                    $removed = $change['removed'] ?? [];
+                    if ($added === [] && $removed === [] && is_array($change['old'] ?? null) && is_array($change['new'] ?? null)) {
+                        $added = array_values(array_diff($change['new'], $change['old']));
+                        $removed = array_values(array_diff($change['old'], $change['new']));
+                    }
+
+                    return 'Permissions: +[' . implode(', ', $added) . '] -[' . implode(', ', $removed) . ']';
+                }
+
                 $old = is_array($change['old'] ?? null)
                     ? implode(', ', $change['old'])
                     : ($change['old'] ?? '—');

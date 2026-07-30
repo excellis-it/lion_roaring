@@ -700,14 +700,9 @@ class PartnerController extends Controller
             }
         }
 
-        $usedTierPermissionSync = $the_role->name == 'MEMBER_SOVEREIGN'
-            && $request->has('membership_tier_id')
-            && !$request->boolean('membership_excluded');
-        $newPermissions = $usedTierPermissionSync
-            ? $data->getAllPermissions()->pluck('name')->all()
-            : ($request->has('permissions') ? $request->permissions : $data->getAllPermissions()->pluck('name')->all());
-
         $logger = app(RolePermissionAuditLogger::class);
+        $data->forgetCachedPermissions();
+        $newPermissions = $data->getAllPermissions()->pluck('name')->all();
         $newSnapshot = $this->memberAuditSnapshot($data, $the_role->name, $newPermissions, $newMembershipTierName, (bool) $request->password);
         $fieldChanges = $logger->buildFieldChanges([], $newSnapshot);
 
@@ -1049,13 +1044,6 @@ class PartnerController extends Controller
                 }
             }
 
-            $usedTierPermissionSync = $the_role->name == 'MEMBER_SOVEREIGN'
-                && $request->has('membership_tier_id')
-                && !$request->boolean('membership_excluded');
-            $newPermissions = $usedTierPermissionSync
-                ? $data->getAllPermissions()->pluck('name')->all()
-                : ($request->has('permissions') ? $request->permissions : $data->getAllPermissions()->pluck('name')->all());
-
             if ($the_role->name !== 'MEMBER_SOVEREIGN') {
                 $newMembershipTierId = null;
                 $newMembershipTierName = null;
@@ -1063,6 +1051,10 @@ class PartnerController extends Controller
 
             $logger = app(RolePermissionAuditLogger::class);
             $data->refresh();
+            $data->forgetCachedPermissions();
+            // Always read effective permissions after sync — never trust request checkboxes
+            // (MEMBER_SOVEREIGN + excluded still posts stale permission fields).
+            $newPermissions = $data->getAllPermissions()->pluck('name')->all();
             $newSnapshot = $this->memberAuditSnapshot(
                 $data,
                 $the_role->name,

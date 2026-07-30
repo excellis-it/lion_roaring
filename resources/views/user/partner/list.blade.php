@@ -16,11 +16,11 @@
                         <div class="row">
                             <div class="col-md-12">
 
-                                <div class="row mb-3">
-                                    <div class="col-md-10">
-                                        <h2 class="mb-3">Members List</h2>
+                                <div class="row mb-3 align-items-center">
+                                    <div class="col-md-6">
+                                        <h2 class="mb-0">Members List</h2>
                                     </div>
-                                    <div class="col-md-5 float-right text-end">
+                                    <div class="col-md-6 text-end">
                                         @if (auth()->user()->can('Create Partners'))
                                             <a href="{{ route('partners.create') }}" class="btn btn-primary">+ Add
                                                 Members</a>
