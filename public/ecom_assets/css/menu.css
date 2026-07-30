@@ -139,7 +139,9 @@
   text-align: right;
 }
 #cssmenu ul ul li {
-  height: 0;
+  height: auto;
+  max-height: 0;
+  overflow: hidden;
   -webkit-transition: all .25s ease;
   -moz-transition: all .25s ease;
   -ms-transition: all .25s ease;
@@ -154,7 +156,8 @@
   right: 0;
 }
 #cssmenu li:hover > ul > li {
-  height: 35px;
+  max-height: 140px;
+  min-height: 35px;
 }
 #cssmenu ul ul ul {
   margin-left: -100%;
@@ -242,6 +245,8 @@
   #cssmenu ul ul li,
   #cssmenu li:hover > ul > li {
     height: auto;
+    max-height: none;
+    overflow: visible;
   }
   #cssmenu ul li a,
   #cssmenu ul ul li a {

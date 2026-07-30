@@ -142,9 +142,10 @@
                             <i class="fas fa-plus me-1"></i> Add Admin
                         </a>
                     @endif
-                    <div class="search-field mb-0" style="min-width: 300px;">
+                    <div class="search-field mb-0 flex-grow-1" style="min-width: 300px; max-width: 420px;">
                         <input type="text" name="search" id="search"
-                            placeholder="Search by name, username or email..." required class="form-control">
+                            placeholder="Search by name, username or email..." required
+                            class="form-control text-truncate" style="padding-right: 40px;">
                         <button class="submit_search" id="search-button">
                             <i class="fa fa-search"></i>
                         </button>

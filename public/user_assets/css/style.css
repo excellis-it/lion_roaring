@@ -3785,3 +3785,34 @@ span[id^="show-notification-count-"].header-notif-badge[data-count="0"] {
 .box_label .select2-container--classic .select2-selection--multiple .select2-selection__rendered {
     padding-top: 0 !important;
 }
+
+/*
+ * BUG-82: translated labels are longer than their English source, so any
+ * label surface with a fixed track (the 130px icon rail, header rows with a
+ * search box) clipped its text. Let those surfaces wrap or ellipsise instead.
+ */
+.sidebar-nav ul .sidebar-item .sidebar-link .hide-menu,
+.sidebar-nav ul .sidebar-item .sidebar-link span:last-child,
+.menu_bb a span,
+.breadcome-menu li span,
+.app-header .nav-item .btn {
+    overflow-wrap: break-word;
+    word-break: break-word;
+    hyphens: auto;
+}
+
+/* Header rows that pair a title with actions: stack instead of squeezing. */
+.bg_white_border > .d-flex.justify-content-between.align-items-center {
+    flex-wrap: wrap;
+    gap: 12px;
+}
+
+/* A translated placeholder can outgrow its field — ellipsise, never hard-cut. */
+.search-field {
+    min-width: 0;
+}
+
+.search-field .form-control,
+.form-control::placeholder {
+    text-overflow: ellipsis;
+}

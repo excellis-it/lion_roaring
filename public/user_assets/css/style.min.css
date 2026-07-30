@@ -37565,7 +37565,10 @@ fieldset:disabled .btn {
     color: #fff;
     display: block;
     font-size: 15px;
-    white-space: wrap;
+    white-space: normal;
+    overflow-wrap: break-word;
+    word-break: break-word;
+    hyphens: auto;
     align-items: center;
     line-height: 25px;
     position: relative;
@@ -37581,6 +37584,11 @@ fieldset:disabled .btn {
 .sidebar-nav ul .sidebar-item .sidebar-link span:last-child {
     padding-left: 5px;
     color: #fff;
+    display: block;
+    max-width: 100%;
+    overflow-wrap: break-word;
+    word-break: break-word;
+    hyphens: auto;
 }
 
 .sidebar-nav ul .sidebar-item .sidebar-link.active span:last-child {
@@ -47131,6 +47139,9 @@ ul {
 .menu_bb a span {
     width: 100%;
     display: block;
+    overflow-wrap: break-word;
+    word-break: break-word;
+    hyphens: auto;
 }
 .menu_bb a span img {
     width: 35px;
