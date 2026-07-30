@@ -243,7 +243,20 @@ class GoogleTranslateService
             return true;
         }
 
-        return in_array(strtolower(trim($code)), $supported, true);
+        $normalized = self::normalizeLangCode($code);
+        if ($normalized === '' || $normalized === 'auto' || $normalized === self::SOURCE_DETECT) {
+            return false;
+        }
+
+        $lower = strtolower($normalized);
+        if (in_array($lower, $supported, true)) {
+            return true;
+        }
+
+        // Google lists zh-CN as zh-cn; also accept base tag when region form is offered.
+        $base = strtolower(explode('-', $normalized, 2)[0]);
+
+        return $base !== $lower && in_array($base, $supported, true);
     }
 
     /**
@@ -499,6 +512,34 @@ class GoogleTranslateService
             // never detected or translated again, and hand back the author's words
             // untouched rather than round-tripping them through Google.
             if ($source !== '' && self::sameLanguage($source, $target)) {
+                // Mis-detect guard: Latin UI copy must not be treated as already-Chinese/etc.
+                if (self::isNonLatinTarget($target)) {
+                    $latin = [];
+                    $realIdentity = [];
+                    foreach ($group as $h => $text) {
+                        if (self::looksLikeLatinScript($text)) {
+                            $latin[$h] = $text;
+                        } else {
+                            $realIdentity[$h] = $text;
+                        }
+                    }
+                    if ($realIdentity !== []) {
+                        self::$stats['identity'] += count($realIdentity);
+                        self::notePair($source, $target, count($realIdentity));
+                        self::persistIdentity($realIdentity, $target);
+                        foreach ($realIdentity as $h => $text) {
+                            $resolved[$h] = $text;
+                            self::$memo[$target . ':' . $h] = $text;
+                        }
+                    }
+                    if ($latin !== []) {
+                        foreach (self::callApiForMissing($latin, $target, 'en') as $h => $translated) {
+                            $resolved[$h] = $translated;
+                        }
+                    }
+                    continue;
+                }
+
                 self::$stats['identity'] += count($group);
                 self::notePair($source, $target, count($group));
                 self::persistIdentity($group, $target);
@@ -517,12 +558,49 @@ class GoogleTranslateService
         return $resolved;
     }
 
-    /** Google returns zh-CN/zh-TW etc.; compare on the base subtag. */
+    /** Google returns zh-CN/zh-TW etc.; compare exact normalized codes (not just base). */
     private static function sameLanguage(string $a, string $b): bool
     {
-        $base = static fn (string $c) => strtolower(explode('-', $c, 2)[0]);
+        $a = self::normalizeLangCode($a);
+        $b = self::normalizeLangCode($b);
+        if ($a === '' || $b === '') {
+            return false;
+        }
+        if (strcasecmp($a, $b) === 0) {
+            return true;
+        }
 
-        return $base($a) === $base($b);
+        // en / en-US
+        $baseA = strtolower(explode('-', $a, 2)[0]);
+        $baseB = strtolower(explode('-', $b, 2)[0]);
+        if ($baseA !== $baseB) {
+            return false;
+        }
+
+        // zh-CN vs zh-TW are NOT the same for translation purposes.
+        $regionSensitive = ['zh', 'pt', 'fr', 'fa'];
+        if (in_array($baseA, $regionSensitive, true)) {
+            return strcasecmp($a, $b) === 0;
+        }
+
+        return true;
+    }
+
+    private static function looksLikeLatinScript(string $text): bool
+    {
+        if (!preg_match_all('/\p{L}/u', $text, $letters) || $letters[0] === []) {
+            return false;
+        }
+        $latin = preg_match_all('/[A-Za-z]/', $text);
+
+        return $latin > 0 && ($latin / count($letters[0])) >= 0.8;
+    }
+
+    private static function isNonLatinTarget(string $target): bool
+    {
+        $base = strtolower(explode('-', self::normalizeLangCode($target), 2)[0]);
+
+        return in_array($base, ['zh', 'ja', 'ko', 'ar', 'he', 'fa', 'ur', 'ru', 'uk', 'th', 'hi', 'bn', 'ta', 'te', 'ml', 'gu', 'pa'], true);
     }
 
     /**

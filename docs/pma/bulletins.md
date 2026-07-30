@@ -18,7 +18,7 @@ Community publishing tools: Bulletin Board (read), Create Bulletins, Job Posting
 ### Bulletin Board / Create Bulletins
 
 - Board lists posts for members; Create Bulletins manages posts with country / user-type scoping.
-- **Any selected language (not Original):** post title/description are server-translated via `ContentTranslationService` / Google Cloud Translation when `content_lang` is set, and the page chrome is translated client-side by LrTranslate. Titles/descriptions are not marked `notranslate`.
+- **Any selected language (not Original):** post titles/descriptions are translated client-side by LrTranslate with the rest of the page (no server-side UGC pre-translate — that broke “Original” by snapshotting already-translated text). Titles/descriptions are not marked `notranslate`.
 - **Original:** no machine translation; posts stay in the author’s language.
 - Author display names are never translated (`no_translate` / `notranslate`), consistent with site-wide person-name protection.
 - AJAX reloads of the board call `LrTranslate.refresh` so newly injected HTML is translated.

@@ -51,12 +51,12 @@ return [
              * unbounded Google spend by submitting novel text. Only cache MISSES count,
              * so ordinary browsing never approaches it. 0 disables the guard.
              */
-            'visitor_daily_billed_chars' => (int) env('TRANSLATE_VISITOR_DAILY_BILLED_CHARS', 150000),
+            'visitor_daily_billed_chars' => (int) env('TRANSLATE_VISITOR_DAILY_BILLED_CHARS', 0),
             // One summary line per /translate/batch call: languages, API status,
             // characters bought vs reused, and dollar cost.
             'log_summary' => env('TRANSLATE_LOG_SUMMARY', true),
             // Bump to invalidate every visitor's localStorage translation cache
-            'cache_version' => env('TRANSLATE_CACHE_VERSION', 'v2'),
+            'cache_version' => env('TRANSLATE_CACHE_VERSION', 'v4'),
         ],
     ],
 

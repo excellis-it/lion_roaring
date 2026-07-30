@@ -73,7 +73,7 @@ class TranslateController extends Controller
         $startedAt = microtime(true);
 
         $quotaKey = $this->visitorQuotaKey($request);
-        $quota = (int) config('services.google.translate.visitor_daily_billed_chars', 150000);
+        $quota = (int) config('services.google.translate.visitor_daily_billed_chars', 0);
         // Over quota still serves everything already paid for — it just stops buying
         // anything new. Blanking the site for the rest of the day would be worse.
         $cacheOnly = $quota > 0 && (int) Cache::get($quotaKey, 0) >= $quota;

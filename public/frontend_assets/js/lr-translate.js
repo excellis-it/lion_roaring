@@ -255,9 +255,13 @@
             if (!raw) return;
             var obj = JSON.parse(raw);
             for (var k in obj) {
-                if (Object.prototype.hasOwnProperty.call(obj, k)) {
-                    memCache[lang + '|' + k] = obj[k];
+                if (!Object.prototype.hasOwnProperty.call(obj, k)) continue;
+                var val = obj[k];
+                // Skip poisoned identity entries from older clients/server mis-detect.
+                if (typeof val === 'string' && isSuspiciousIdentity(val, val, lang)) {
+                    continue;
                 }
+                memCache[lang + '|' + k] = val;
             }
             log('cache loaded', lang, Object.keys(obj).length);
         } catch (e) { /* quota/parse issues are non-fatal */ }
@@ -385,6 +389,64 @@
         var secure = window.location.protocol === 'https:' ? '; Secure' : '';
         document.cookie = 'content_lang=' + encodeURIComponent(lang) +
             '; path=/; Max-Age=31536000; SameSite=Lax' + secure;
+    }
+
+    /**
+     * Keep every language <select> (and its custom cs-select label) in sync with
+     * LrTranslate — chatbot / RAG changes language without touching the dropdown.
+     */
+    function syncSwitcher(lang) {
+        var selects = document.querySelectorAll('#languageSwitcher, select.languageSwitcher');
+        for (var s = 0; s < selects.length; s++) {
+            var select = selects[s];
+            var matched = false;
+            for (var i = 0; i < select.options.length; i++) {
+                if (select.options[i].value === lang) {
+                    select.selectedIndex = i;
+                    matched = true;
+                    break;
+                }
+            }
+            if (!matched && lang !== ORIGINAL) {
+                // zh vs zh-CN etc.
+                var base = String(lang).toLowerCase().split('-')[0];
+                for (var j = 0; j < select.options.length; j++) {
+                    var ov = String(select.options[j].value).toLowerCase();
+                    if (ov === String(lang).toLowerCase() || ov.split('-')[0] === base) {
+                        select.selectedIndex = j;
+                        matched = true;
+                        break;
+                    }
+                }
+            }
+            var wrapper = select.closest ? select.closest('.cst-select-wrapper') : null;
+            var display = wrapper && wrapper.querySelector('.cst-select-content');
+            if (display && select.selectedIndex >= 0) {
+                var opt = select.options[select.selectedIndex];
+                display.textContent = opt ? opt.text : '';
+            }
+        }
+    }
+
+    /** Reset failure cooldowns so a fresh language choice always gets a real try. */
+    function resetRequestGuards() {
+        hashPending = Object.create(null);
+        hashCooldown = Object.create(null);
+        hashWaiters = Object.create(null);
+        consecutiveFailures = 0;
+        circuitOpenUntil = 0;
+    }
+
+    /** Long Latin copy "translated" to itself for a non-Latin target is almost always poison. */
+    function isSuspiciousIdentity(source, translated, lang) {
+        if (!source || !translated || source !== translated) return false;
+        if (source.length < 12) return false;
+        var base = String(lang || '').toLowerCase().split('-')[0];
+        if (!base || base === 'en' || base === ORIGINAL) return false;
+        // Target scripts that should rarely round-trip English unchanged.
+        var nonLatinTargets = { zh: 1, ja: 1, ko: 1, ar: 1, he: 1, fa: 1, ur: 1, ru: 1, uk: 1, th: 1, hi: 1 };
+        if (!nonLatinTargets[base]) return false;
+        return /[A-Za-z]{8,}/.test(source) && !/[\u0400-\u04FF\u0600-\u06FF\u0900-\u097F\u3040-\u30FF\u4E00-\u9FFF\uAC00-\uD7AF]/.test(translated);
     }
 
     /** One-time cleanup of cookies left behind by the old Google Translate widget. */
@@ -678,12 +740,17 @@
                 var h = hash(norm);
                 var cached = cacheGet(lang, h);
                 if (cached !== undefined) {
-                    var padded = padLike(original, cached);
-                    if (node.nodeValue !== padded) {
-                        applying = true;
-                        try { node.nodeValue = padded; } finally { applying = false; }
+                    if (isSuspiciousIdentity(norm, cached, lang)) {
+                        // Poisoned local/DB identity — fall through and re-request.
+                        try { delete memCache[lang + '|' + h]; } catch (e) {}
+                    } else {
+                        var padded = padLike(original, cached);
+                        if (node.nodeValue !== padded) {
+                            applying = true;
+                            try { node.nodeValue = padded; } finally { applying = false; }
+                        }
+                        return;
                     }
-                    return;
                 }
                 var job = {
                     hash: h,
@@ -711,11 +778,15 @@
                 var h = hash(norm);
                 var cached = cacheGet(lang, h);
                 if (cached !== undefined) {
-                    if (target.el.getAttribute(target.attr) !== cached) {
-                        applying = true;
-                        try { target.el.setAttribute(target.attr, cached); } finally { applying = false; }
+                    if (isSuspiciousIdentity(norm, cached, lang)) {
+                        try { delete memCache[lang + '|' + h]; } catch (e) {}
+                    } else {
+                        if (target.el.getAttribute(target.attr) !== cached) {
+                            applying = true;
+                            try { target.el.setAttribute(target.attr, cached); } finally { applying = false; }
+                        }
+                        return;
                     }
-                    return;
                 }
                 var job = {
                     hash: h,
@@ -824,6 +895,10 @@
                                 // source text here would permanently "translate" the
                                 // string to itself in this browser.
                                 if (typeof value === 'string' && value.length) {
+                                    if (isSuspiciousIdentity(c[i].text, value, lang)) {
+                                        unresolved.push(c[i].h);
+                                        continue;
+                                    }
                                     cacheSet(lang, c[i].h, value);
                                     applyHash(c[i].h, value);
                                     flushWaiters(lang, c[i].h, value, epoch);
@@ -1045,15 +1120,23 @@
             var next = (!lang || lang === ORIGINAL || lang === '') ? ORIGINAL : String(lang);
 
             // Legacy aliases the old widget accepted.
-            var alias = { cn: 'zh-CN', us: 'en', uk: 'en' };
-            if (alias[next]) next = alias[next];
+            var alias = { cn: 'zh-CN', 'zh-hans': 'zh-CN', 'zh-hant': 'zh-TW', us: 'en', uk: 'en' };
+            var aliasKey = next.toLowerCase();
+            if (alias[aliasKey]) next = alias[aliasKey];
+            else if (alias[next]) next = alias[next];
 
-            if (next === currentLang) return;
+            if (next === currentLang) {
+                // Still refresh the visible dropdown (chatbot may have changed UI only).
+                syncSwitcher(next);
+                return;
+            }
 
             // Invalidate anything already in flight for the previous selection.
             langEpoch++;
             currentLang = next;
             writeStoredLang(next);
+            syncSwitcher(next);
+            resetRequestGuards();
             skipCache = new WeakMap();
 
             // Always restore first: translating an already-translated DOM would
@@ -1075,6 +1158,7 @@
             beginBadgeTracking();
             translateDocumentTitle(next);
             translatePass(document.body, next, function () {
+                syncSwitcher(next);
                 document.dispatchEvent(new CustomEvent('lr:translated', { detail: { lang: next } }));
             }, { trackBadge: true });
         },
@@ -1151,24 +1235,16 @@
     }
 
     function bindSwitcher() {
-        var select = document.getElementById('languageSwitcher');
-        if (!select || select.dataset.lrBound === '1') return;
-        select.dataset.lrBound = '1';
-
-        var active = currentLang;
-        for (var i = 0; i < select.options.length; i++) {
-            if (select.options[i].value === active) { select.selectedIndex = i; break; }
+        var selects = document.querySelectorAll('#languageSwitcher, select.languageSwitcher');
+        for (var s = 0; s < selects.length; s++) {
+            var select = selects[s];
+            if (select.dataset.lrBound === '1') continue;
+            select.dataset.lrBound = '1';
+            select.addEventListener('change', function () {
+                LrTranslate.setLanguage(this.value);
+            });
         }
-        // Keep the custom cs-select display label in sync.
-        var wrapper = select.closest ? select.closest('.cst-select-wrapper') : null;
-        var display = wrapper && wrapper.querySelector('.cst-select-content');
-        if (display && select.selectedIndex >= 0) {
-            display.textContent = select.options[select.selectedIndex].text;
-        }
-
-        select.addEventListener('change', function () {
-            LrTranslate.setLanguage(select.value);
-        });
+        syncSwitcher(currentLang);
     }
 
     // ── back-compat shims for existing call sites (chatbot, diagnostics) ────
