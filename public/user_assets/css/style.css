@@ -3768,3 +3768,20 @@ span[id^="show-notification-count-"].header-notif-badge[data-count="0"] {
 .select2-container--classic .select2-selection--multiple .select2-selection__choice span {
     color: #ffffff !important;
 }
+
+/*
+ * Select2 multi-select inside a notched .box_label (BUG-79)
+ * .box_label label is absolutely positioned at top:-9px and sits on the field
+ * border, so it occupies the first ~10px inside the box. Chips start at the
+ * very top of the container and render underneath the label. Reserve that
+ * space so the first chip row always clears the label.
+ */
+.box_label .select2-container--default .select2-selection--multiple,
+.box_label .select2-container--classic .select2-selection--multiple {
+    padding-top: 10px !important;
+}
+
+.box_label .select2-container--default .select2-selection--multiple .select2-selection__rendered,
+.box_label .select2-container--classic .select2-selection--multiple .select2-selection__rendered {
+    padding-top: 0 !important;
+}
