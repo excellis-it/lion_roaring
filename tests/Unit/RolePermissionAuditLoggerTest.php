@@ -3,9 +3,9 @@
 namespace Tests\Unit;
 
 use App\Models\RolePermissionAuditLog;
-use App\Models\User;
 use App\Services\RolePermissionAuditLogger;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
+use Illuminate\Support\Facades\Log;
 use Tests\Support\CreatesApiUsers;
 use Tests\TestCase;
 
@@ -67,5 +67,29 @@ class RolePermissionAuditLoggerTest extends TestCase
         $this->assertSame($actor->id, $row->actor_id);
         $this->assertSame(['B'], $row->permissions_added);
         $this->assertSame([], $row->permissions_removed);
+    }
+
+    public function test_log_returns_null_and_logs_error_when_create_fails(): void
+    {
+        Log::shouldReceive('error')
+            ->once()
+            ->withArgs(function (string $message, array $context): bool {
+                return str_contains($message, 'RolePermissionAuditLogger failed:')
+                    && ($context['action'] ?? null) === 'member_role_updated';
+            });
+
+        $logger = new RolePermissionAuditLogger();
+        $result = $logger->log([
+            'action' => 'member_role_updated',
+            'source' => 'pma',
+            'target_user_id' => 999999999,
+            'old_role_name' => 'OLD',
+            'new_role_name' => 'NEW',
+            'old_permissions' => ['A'],
+            'new_permissions' => ['B'],
+        ]);
+
+        $this->assertNull($result);
+        $this->assertSame(0, RolePermissionAuditLog::count());
     }
 }
