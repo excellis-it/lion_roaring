@@ -4,7 +4,7 @@
     <title>Thank You for Contacting Us</title>
 </head>
 <body>
-    <p>Dear {{ $contactData['first_name'] }} {{ $contactData['last_name'] }},</p>
+    <p>Dear {!! no_translate($contactData['first_name']) !!} {!! no_translate($contactData['last_name']) !!},</p>
 
     <p>Thank you for reaching out to us. We have received your message and will get back to you as soon as possible.</p>
 

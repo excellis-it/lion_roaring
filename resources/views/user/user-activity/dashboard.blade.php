@@ -394,7 +394,7 @@
                         res.data.forEach((item, i) => {
                             rows += `<tr>
                                 <td>${offset + i + 1}</td>
-                                <td>${item.user_name || '-'}</td>
+                                <td class="notranslate" translate="no">${item.user_name || '-'}</td>
                                 <td>${item.email || '-'}</td>
                                 <td>${item.country_name || '-'}</td>
                                 <td>${item.last_seen ? new Date(item.last_seen).toLocaleDateString() : '-'}</td>

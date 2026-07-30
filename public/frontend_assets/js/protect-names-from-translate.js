@@ -11,6 +11,12 @@
         '.name_bull',
         '.person-name',
         '.profile-name',
+        '.user-name',
+        '.username',
+        '.member-name',
+        '.author-name',
+        '.full-name',
+        '[data-nt]',
         '[data-person-name]',
         '[data-user-name]'
     ].join(',');

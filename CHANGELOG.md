@@ -12,7 +12,7 @@ Keep in sync with the mobile app copy: `lion-roaring-app/CHANGELOG.md`.
 
 | Platform | Version | Status | Updated |
 |----------|---------|--------|---------|
-| Web | v2.1.2 | draft (ready to publish) | 2026-07-28 |
+| Web | v2.2.0 | draft (ready to publish) | 2026-07-30 |
 | Mobile App | v1.0.38 | draft (ready to publish; app build `1.0.38+43`) | 2026-07-28 |
 
 Last **published** in PMA / Site Settings: Web `v2.1.1` · Mobile `v1.0.37`.
@@ -20,6 +20,19 @@ Last **published** in PMA / Site Settings: Web `v2.1.1` · Mobile `v1.0.37`.
 ---
 
 ## Entries
+
+### Web — v2.2.0
+
+- **Status:** draft (ready to publish)
+- **Type:** feature
+- **Date:** 2026-07-30
+- **Title:** New translation system (Google Cloud Translation)
+- **Description:**
+  - Replaced the free Google Translate widget with Google Cloud Translation, so translation is reliable across the website, PMA, e-Store and e-Learning
+  - Switching language no longer reloads the page, and "Original" restores the source text instantly
+  - Personal names, usernames and icons are never translated anywhere, including content loaded after the page opens
+  - Translations are cached permanently, so each phrase is translated once and repeat visits are instant
+  - Admin panel remains English-only by design
 
 ### Mobile App — v1.0.38
 

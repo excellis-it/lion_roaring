@@ -220,7 +220,7 @@
                         html += `
                             <tr>
                                 <td>${rowNumber}</td>
-                                <td>${activity.user_name || '-'}</td>
+                                <td class="notranslate" translate="no">${activity.user_name || '-'}</td>
                                 <td>${activity.email || '-'}</td>
                                 <td>${activity.user_roles || '-'}</td>
                                 <td>${activity.ecclesia_name || '-'}</td>

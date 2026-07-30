@@ -39,6 +39,7 @@ use App\Http\Controllers\Elearning\ElearningHomeController;
 use App\Http\Controllers\Elearning\ElearningProductController as ElearningProductController;
 use App\Http\Controllers\Frontend\CmsController;
 use App\Http\Controllers\Frontend\TranslationClientLogController;
+use App\Http\Controllers\Frontend\TranslateController;
 use App\Http\Controllers\Frontend\DonationController;
 use App\Http\Controllers\User\AuthController as UserAuthController;
 use App\Http\Controllers\User\BecomingChristLikeController;
@@ -504,6 +505,9 @@ Route::middleware(['userActivity'])->group(function () {
     Route::post('/translation-client-log', [TranslationClientLogController::class, 'store'])
         ->middleware('throttle:30,1')
         ->name('translation-client-log');
+    Route::post('/translate/batch', [TranslateController::class, 'batch'])
+        ->middleware('throttle:120,1')
+        ->name('translate.batch');
     Route::post('/contact-us', [CmsController::class, 'contactUsForm'])->name('contact-us.form');
     Route::Post('/session', [CmsController::class, 'session'])->name('session.store');
     Route::post('/donation', [DonationController::class, 'donation'])->name('donation');

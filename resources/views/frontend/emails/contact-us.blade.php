@@ -51,8 +51,8 @@
         <br>
         <div class="container">
             <h1>New Contact Us Form Submission</h1>
-            <p><strong>First Name:</strong> {{ $contactData['first_name'] }}</p>
-            <p><strong>Last Name:</strong> {{ $contactData['last_name'] }}</p>
+            <p><strong>First Name:</strong> {!! no_translate($contactData['first_name']) !!}</p>
+            <p><strong>Last Name:</strong> {!! no_translate($contactData['last_name']) !!}</p>
             <p><strong>Email:</strong> {{ $contactData['email'] }}</p>
             <p><strong>Phone:</strong> {{ $contactData['phone'] }}</p>
             <p><strong>Message:</strong> {{ $contactData['message'] }}</p>

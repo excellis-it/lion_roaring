@@ -11,20 +11,13 @@
         $languageOptions->prepend((object) ['code' => 'en', 'name' => 'English']);
     }
 
-    $activeLang = null;
-    // Prefer content_lang (site-wide intent) over googtrans (can be path-scoped / stale)
+    // `content_lang` is the single source of truth. LrTranslate keeps it in sync
+    // with localStorage on every switch; the old googtrans cookie is not read.
+    $activeLang = '__original__';
     if (!empty($_COOKIE['content_lang'])) {
-        $contentLang = (string) $_COOKIE['content_lang'];
-        if ($contentLang !== '__original__') {
-            $activeLang = $contentLang;
-        }
-    }
-    if ($activeLang === null && !empty($_COOKIE['googtrans'])) {
-        $gt = urldecode((string) $_COOKIE['googtrans']);
-        if ($gt !== '/en/en' && preg_match('#^/auto/([^;]+)$#', $gt, $matches) && $matches[1] !== 'en') {
-            $activeLang = $matches[1];
-        } elseif ($gt !== '/en/en' && preg_match('#^/([^/]+)/([^;]+)$#', $gt, $matches) && $matches[1] !== $matches[2]) {
-            $activeLang = $matches[2];
+        $cookieLang = trim((string) $_COOKIE['content_lang']);
+        if ($cookieLang !== '' && $cookieLang !== '__original__') {
+            $activeLang = $cookieLang;
         }
     }
 @endphp
@@ -32,9 +25,10 @@
 <select id="languageSwitcher"
     class="languageSwitcher form-select form-select-sm cst-select cst-select-bottom notranslate"
     translate="no"
-    aria-label="{{ __('Select language') }}">
-    <option value="__original__" {{ $activeLang === null ? 'selected' : '' }}>Original</option>
+    data-nt
+    aria-label="Select language">
+    <option value="__original__" {{ $activeLang === '__original__' ? 'selected' : '' }}>Original</option>
     @foreach ($languageOptions as $lang)
-        <option value="{{ $lang->code }}" {{ $activeLang !== null && $lang->code === $activeLang ? 'selected' : '' }}>{{ $lang->name }}</option>
+        <option value="{{ $lang->code }}" {{ $lang->code === $activeLang ? 'selected' : '' }}>{{ $lang->name }}</option>
     @endforeach
 </select>

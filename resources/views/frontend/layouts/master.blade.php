@@ -39,18 +39,6 @@
     <link href="https://cdnjs.cloudflare.com/ajax/libs/flag-icon-css/3.5.0/css/flag-icon.min.css" rel="stylesheet"
         type="text/css" />
     <style>
-        .goog-te-banner-frame.skiptranslate {
-            display: none !important;
-        }
-
-        body {
-            top: 0px !important;
-        }
-
-        .goog-logo-link {
-            display: none !important;
-        }
-
         .trans-section {
             margin: 100px;
         }
@@ -972,24 +960,8 @@
         });
     </script>
 
-    {{-- <script type="text/javascript" src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit">
-        </script>
-
-        <script type="text/javascript">
-            function googleTranslateElementInit() {
-                new google.translate.TranslateElement({
-                    pageLanguage: 'en'
-                }, 'google_translate_element');
-            }
-        </script> --}}
-    <!-- make sure this line sets the session languages (you already have this) -->
-    <script>
-        // Use Helper::getVisitorCountryLanguages() — returns all active languages when no country selected
-        window.sessionLanguages = @json(\App\Helpers\Helper::getVisitorCountryLanguages());
-        // console.log(window.sessionLanguages);
-    </script>
-
-    <!-- Google Translate initialization + robust allowed-language logic -->
+    
+    <!-- Site-wide translation engine (Google Cloud Translation via our own endpoint) -->
     @include('frontend.includes.google_translate')
 
 

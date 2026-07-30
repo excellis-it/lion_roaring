@@ -13,12 +13,12 @@ class TranslationClientLogController extends Controller
     private const ALLOWED_SURFACES = ['website', 'user_pma', 'ecom', 'elearning'];
 
     private const ALLOWED_REASONS = [
-        'page_not_translated_after_reload',
-        'google_translate_script_blocked',
-        'google_translate_widget_missing',
-        'google_translate_widget_timeout',
-        'translation_not_detected_after_select',
-        'googtrans_cookie_mismatch',
+        'translate_request_failed',
+        'translate_budget_exhausted',
+        'translate_visitor_quota_exceeded',
+        'translate_language_not_allowed',
+        'translate_disabled',
+        'translate_source_language',
     ];
 
     /**
@@ -37,12 +37,9 @@ class TranslationClientLogController extends Controller
             'diagnostics.selectedLang' => 'nullable|string|max:30',
             'diagnostics.cookies' => 'nullable|array|max:20',
             'diagnostics.cookies.*' => 'nullable|string|max:500',
-            'diagnostics.googTeCombo' => 'nullable|boolean',
-            'diagnostics.googTeValue' => 'nullable|string|max:100',
             'diagnostics.htmlClasses' => 'nullable|string|max:500',
             'diagnostics.htmlLang' => 'nullable|string|max:30',
-            'diagnostics.gtScriptLoaded' => 'nullable|boolean',
-            'diagnostics.translatedDetected' => 'nullable|boolean',
+            'diagnostics.engineLoaded' => 'nullable|boolean',
             'diagnostics.activeTranslateLang' => 'nullable|string|max:30',
             'diagnostics.sessionLanguagesCount' => 'nullable|integer|min:0|max:500',
             'extra' => 'nullable|array',

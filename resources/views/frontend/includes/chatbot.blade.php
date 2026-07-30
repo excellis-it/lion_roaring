@@ -413,17 +413,15 @@
         let currentView = 'main';
         let faqCache = {};
 
-        // Helper to get Google Translate language
+        // Helper to get the active site language
         function getGoogleTranslateLang() {
             // First check if the user selected a specific language inside the chatbot
             const storedLang = localStorage.getItem('chatbot_language');
             if (storedLang) return storedLang;
 
-            const cookie = document.cookie.split('; ').find(row => row.startsWith('googtrans='));
-            if (cookie) {
-                const parts = cookie.split('/');
-                return parts[parts.length - 1];
-            }
+            const siteLang = window.LrTranslate ? window.LrTranslate.getLanguage() : null;
+            if (siteLang && siteLang !== '__original__') return siteLang;
+
             return 'en';
         }
 
@@ -644,14 +642,9 @@
                     }
                     addBotMsg(isOriginal ? `Showing original content. ✅` : `Language updated! ✅`);
 
-                    // Use the same approach as the header language switcher
-                    if (window.changeGoogleTranslateLanguage) {
-                        window.changeGoogleTranslateLanguage(isOriginal ? '__original__' : lang);
-                    } else if (window.forceSelectValue) {
-                        const translateSelect = document.querySelector('.goog-te-combo');
-                        if (translateSelect) {
-                            window.forceSelectValue(translateSelect, isOriginal ? '__original__' : lang);
-                        }
+                    // Same path as the header language switcher
+                    if (window.LrTranslate) {
+                        window.LrTranslate.setLanguage(isOriginal ? '__original__' : lang);
                     }
 
                     showMainMenu();

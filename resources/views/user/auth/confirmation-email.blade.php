@@ -137,6 +137,9 @@
         });
     </script>
 
+
+    {{-- Site-wide translation engine --}}
+    @include('frontend.includes.google_translate')
 </body>
 
 </html>
