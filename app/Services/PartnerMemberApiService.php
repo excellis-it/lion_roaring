@@ -451,6 +451,40 @@ class PartnerMemberApiService
             $this->syncMembershipTier($data, (int) $request->membership_tier_id);
         }
 
+        $newMembershipTierId = null;
+        $newMembershipTierName = null;
+        if ($theRole->name === 'MEMBER_SOVEREIGN' && $request->filled('membership_tier_id') && !$request->boolean('membership_excluded')) {
+            $tier = MembershipTier::find($request->membership_tier_id);
+            if ($tier) {
+                $newMembershipTierId = $tier->id;
+                $newMembershipTierName = $tier->name;
+            }
+        }
+
+        $usedTierPermissionSync = $theRole->name === 'MEMBER_SOVEREIGN'
+            && $request->filled('membership_tier_id')
+            && !$request->boolean('membership_excluded');
+        $newPermissions = $usedTierPermissionSync
+            ? $data->getAllPermissions()->pluck('name')->all()
+            : $permissions;
+
+        app(RolePermissionAuditLogger::class)->log([
+            'action' => 'member_role_created',
+            'source' => 'api',
+            'target_user_id' => $data->id,
+            'target_user_name' => trim($data->first_name . ' ' . $data->last_name),
+            'target_user_email' => $data->email,
+            'target_country_id' => $data->country,
+            'old_role_name' => null,
+            'new_role_name' => $theRole->name,
+            'old_user_type' => null,
+            'new_user_type' => $data->user_type,
+            'old_permissions' => [],
+            'new_permissions' => $newPermissions,
+            'new_membership_tier_id' => $theRole->name === 'MEMBER_SOVEREIGN' ? $newMembershipTierId : null,
+            'new_membership_tier_name' => $theRole->name === 'MEMBER_SOVEREIGN' ? $newMembershipTierName : null,
+        ]);
+
         Mail::to($request->email)->send(new RegistrationMail([
             'name' => $request->first_name . ' ' . $request->last_name,
             'email' => $request->email,
@@ -536,6 +570,16 @@ class PartnerMemberApiService
         }
 
         $data = User::findOrFail($id);
+        $oldRoleName = $data->userRole?->name;
+        $oldUserType = $data->user_type;
+        $oldPermissions = $data->getAllPermissions()->pluck('name')->all();
+        $oldMembershipTierId = $oldRoleName === 'MEMBER_SOVEREIGN'
+            ? $data->userLastSubscription?->plan_id
+            : null;
+        $oldMembershipTierName = $oldRoleName === 'MEMBER_SOVEREIGN'
+            ? $data->userLastSubscription?->subscription_name
+            : null;
+
         $data->first_name = $request->first_name;
         $data->last_name = $request->last_name;
         $data->middle_name = $request->middle_name;
@@ -594,6 +638,42 @@ class PartnerMemberApiService
         if ($theRole->name === 'MEMBER_SOVEREIGN' && $request->filled('membership_tier_id') && !$request->boolean('membership_excluded')) {
             $this->syncMembershipTier($data, (int) $request->membership_tier_id, true);
         }
+
+        $newMembershipTierId = null;
+        $newMembershipTierName = null;
+        if ($theRole->name === 'MEMBER_SOVEREIGN' && $request->filled('membership_tier_id') && !$request->boolean('membership_excluded')) {
+            $tier = MembershipTier::find($request->membership_tier_id);
+            if ($tier) {
+                $newMembershipTierId = $tier->id;
+                $newMembershipTierName = $tier->name;
+            }
+        }
+
+        $usedTierPermissionSync = $theRole->name === 'MEMBER_SOVEREIGN'
+            && $request->filled('membership_tier_id')
+            && !$request->boolean('membership_excluded');
+        $newPermissions = $usedTierPermissionSync
+            ? $data->getAllPermissions()->pluck('name')->all()
+            : $permissions;
+
+        app(RolePermissionAuditLogger::class)->log([
+            'action' => 'member_role_updated',
+            'source' => 'api',
+            'target_user_id' => $data->id,
+            'target_user_name' => trim($data->first_name . ' ' . $data->last_name),
+            'target_user_email' => $data->email,
+            'target_country_id' => $data->country,
+            'old_role_name' => $oldRoleName,
+            'new_role_name' => $theRole->name,
+            'old_user_type' => $oldUserType,
+            'new_user_type' => $data->user_type,
+            'old_permissions' => $oldPermissions,
+            'new_permissions' => $newPermissions,
+            'old_membership_tier_id' => $oldMembershipTierId,
+            'old_membership_tier_name' => $oldMembershipTierName,
+            'new_membership_tier_id' => $theRole->name === 'MEMBER_SOVEREIGN' ? $newMembershipTierId : null,
+            'new_membership_tier_name' => $theRole->name === 'MEMBER_SOVEREIGN' ? $newMembershipTierName : null,
+        ]);
 
         return [true, 'Member updated successfully.', 200];
     }

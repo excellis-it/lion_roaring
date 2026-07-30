@@ -149,6 +149,10 @@ class MembershipPrivilegeService
         $user->loadMissing('roles');
         $userRole = $this->resolveCustomRole($user);
 
+        $oldPermissions = $userRole
+            ? $userRole->permissions->pluck('name')->all()
+            : $user->getDirectPermissions()->pluck('name')->all();
+
         if (!empty($tier->permissions)) {
             $permissions = $this->tierPermissionNames($tier);
 
@@ -175,6 +179,19 @@ class MembershipPrivilegeService
 
         app()->make(PermissionRegistrar::class)->forgetCachedPermissions();
         $user->forgetCachedPermissions();
+
+        app(RolePermissionAuditLogger::class)->log([
+            'action' => 'membership_privilege_synced',
+            'source' => 'membership_sync',
+            'target_user_id' => $user->id,
+            'target_user_name' => trim(($user->first_name ?? '') . ' ' . ($user->last_name ?? '')),
+            'target_user_email' => $user->email,
+            'target_country_id' => $user->country,
+            'old_permissions' => $oldPermissions,
+            'new_permissions' => $this->tierPermissionNames($tier),
+            'new_membership_tier_id' => $tier->id,
+            'new_membership_tier_name' => $tier->name ?? (string) $tier->id,
+        ]);
     }
 
     public function applyDowngradeReset(User $user, MembershipTier $newTier): void

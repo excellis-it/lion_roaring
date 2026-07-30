@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\User;
 use App\Models\UserType;
 use App\Models\UserTypePermission;
+use App\Services\RolePermissionAuditLogger;
 use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Auth;
@@ -80,6 +81,7 @@ class RolePermissionsController extends Controller
         $role->is_admin = $request['is_admin'];
         $role->save();
 
+        $newPermissions = [];
         if ($name != 'MEMBER_SOVEREIGN' && $request->has('permissions')) {
             foreach ($request->permissions as $permName) {
                 $permission = Permission::where('name', $permName)->first();
@@ -88,9 +90,20 @@ class RolePermissionsController extends Controller
                         'user_type_id' => $role->id,
                         'permission_id' => $permission->id,
                     ]);
+                    $newPermissions[] = $permName;
                 }
             }
         }
+
+        app(RolePermissionAuditLogger::class)->log([
+            'action' => 'role_template_created',
+            'source' => 'pma',
+            'role_template_id' => $role->id,
+            'role_template_name' => $role->name,
+            'old_permissions' => [],
+            'new_permissions' => $newPermissions,
+            'meta' => ['affected_users' => 0],
+        ]);
 
         return redirect()->route('roles.index')->with('message', 'Role created successfully.');
     }
@@ -153,6 +166,8 @@ class RolePermissionsController extends Controller
         ]);
 
         $role = UserType::findOrFail($id);
+        $oldPermissions = $this->templatePermissionNames($role->id);
+        $affectedUsers = User::where('user_type_id', $role->id)->count();
         $wasAdmin = $role->is_admin;
         $role->name = $request->role_name;
         $role->is_ecclesia = $request['is_ecclesia'];
@@ -166,8 +181,10 @@ class RolePermissionsController extends Controller
                 ->update(['user_type' => 'G_R']);
         }
 
+        $newPermissions = $oldPermissions;
         if ($role->name != 'MEMBER_SOVEREIGN') {
             UserTypePermission::where('user_type_id', $role->id)->delete();
+            $newPermissions = [];
             if ($request->has('permissions')) {
                 foreach ($request->permissions as $permName) {
                     $permission = Permission::where('name', $permName)->first();
@@ -176,10 +193,21 @@ class RolePermissionsController extends Controller
                             'user_type_id' => $role->id,
                             'permission_id' => $permission->id,
                         ]);
+                        $newPermissions[] = $permName;
                     }
                 }
             }
         }
+
+        app(RolePermissionAuditLogger::class)->log([
+            'action' => 'role_template_updated',
+            'source' => 'pma',
+            'role_template_id' => $role->id,
+            'role_template_name' => $role->name,
+            'old_permissions' => $oldPermissions,
+            'new_permissions' => $newPermissions,
+            'meta' => ['affected_users' => $affectedUsers],
+        ]);
 
         return redirect()->route('roles.index')->with('message', 'Role updated successfully.');
     }
@@ -223,6 +251,18 @@ class RolePermissionsController extends Controller
         // If no users assigned, proceed with deletion
         Log::info($role->id . ' deleted by ' . auth()->user()->email . ' deleted at ' . now());
 
+        $oldPermissions = $this->templatePermissionNames($role->id);
+
+        app(RolePermissionAuditLogger::class)->log([
+            'action' => 'role_template_deleted',
+            'source' => 'pma',
+            'role_template_id' => $role->id,
+            'role_template_name' => $role->name,
+            'old_permissions' => $oldPermissions,
+            'new_permissions' => [],
+            'meta' => ['affected_users' => 0],
+        ]);
+
         // Delete associated permissions
         UserTypePermission::where('user_type_id', $role->id)->delete();
 
@@ -261,5 +301,17 @@ class RolePermissionsController extends Controller
             'count' => $users->count(),
             'users' => $users,
         ]);
+    }
+
+    /**
+     * @return list<string>
+     */
+    private function templatePermissionNames(int $userTypeId): array
+    {
+        return UserTypePermission::where('user_type_id', $userTypeId)
+            ->join('permissions', 'user_type_permissions.permission_id', '=', 'permissions.id')
+            ->pluck('permissions.name')
+            ->values()
+            ->all();
     }
 }
