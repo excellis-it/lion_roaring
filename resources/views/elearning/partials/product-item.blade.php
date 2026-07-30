@@ -37,7 +37,6 @@
 
                 <li>({{ Helper::getRatingCount($product['id']) ? Helper::getRatingCount($product['id']) : 0 }})
                 </li> --}}
-                    </ul>
                     <a href="{{ $product['affiliate_link'] }}">{{ $product['name'] }}</a>
                     @php
                         $topicName = '';
@@ -51,10 +50,12 @@
                             $topicName = $product->elearningTopic->topic_name ?? '';
                         }
                     @endphp
-                    @if (!empty($topicName))
-                        <p class="topic_text"><strong>Topic:</strong> {{ $topicName }}</p>
-                    @endif
-                    <p>{{ strlen($product['short_description']) > 50 ? substr($product['short_description'], 0, 50) . '...' : $product['short_description'] }}
+                    <p class="topic_text">
+                        @if (!empty($topicName))
+                            <strong>Topic:</strong> {{ $topicName }}
+                        @endif
+                    </p>
+                    <p class="desc_text">{{ strlen($product['short_description']) > 50 ? substr($product['short_description'], 0, 50) . '...' : $product['short_description'] }}
                     </p>
                     {{-- <span class="price_text">${{ $product['price'] }}</span> --}}
 
