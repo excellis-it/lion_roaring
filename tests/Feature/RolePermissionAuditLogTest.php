@@ -5,6 +5,8 @@ namespace Tests\Feature;
 use App\Models\MembershipTier;
 use App\Models\RolePermissionAuditLog;
 use App\Models\User;
+use App\Models\UserType;
+use App\Models\UserTypePermission;
 use App\Services\MembershipPrivilegeService;
 use App\Services\RolePermissionAuditLogger;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
@@ -58,6 +60,36 @@ class RolePermissionAuditLogTest extends TestCase
         $user->givePermissionTo('Manage Partners');
 
         return $user->fresh();
+    }
+
+    private function roleTemplateAdmin(): User
+    {
+        $adminType = new UserType();
+        $adminType->name = 'SUPER ADMIN TEST ' . Str::random(6);
+        $adminType->type = '1';
+        $adminType->guard_name = 'web';
+        $adminType->is_ecclesia = 0;
+        $adminType->is_admin = 1;
+        $adminType->save();
+
+        return $this->createApiUser([
+            'user_type' => 'Global',
+            'user_type_id' => $adminType->id,
+            'membership_excluded' => true,
+        ])->fresh();
+    }
+
+    private function pmaRoleTemplate(array $overrides = []): UserType
+    {
+        $role = new UserType();
+        $role->name = $overrides['name'] ?? ('Audit PMA Role ' . Str::random(6));
+        $role->type = $overrides['type'] ?? '2';
+        $role->guard_name = $overrides['guard_name'] ?? 'web';
+        $role->is_ecclesia = $overrides['is_ecclesia'] ?? 0;
+        $role->is_admin = $overrides['is_admin'] ?? 0;
+        $role->save();
+
+        return $role;
     }
 
     public function test_user_without_permission_forbidden(): void
@@ -158,6 +190,67 @@ class RolePermissionAuditLogTest extends TestCase
         $this->assertNotNull($disposition);
         $this->assertStringContainsString('role_permission_audit', $disposition);
         $this->assertStringContainsString('.xlsx', $disposition);
+    }
+
+    public function test_role_template_store_creates_audit_log(): void
+    {
+        $admin = $this->roleTemplateAdmin();
+        $perm = Permission::findOrCreate('Audit Test Role Template Perm');
+        $roleName = 'Audit Created Role ' . Str::random(6);
+
+        $this->asAuditUser($admin)
+            ->post(route('roles.store'), [
+                'role_name' => $roleName,
+                'is_ecclesia' => '0',
+                'is_admin' => '0',
+                'permissions' => [$perm->name],
+            ])
+            ->assertRedirect(route('roles.index'));
+
+        $role = UserType::where('name', $roleName)->first();
+        $this->assertNotNull($role);
+
+        $this->assertDatabaseHas('role_permission_audit_logs', [
+            'action' => 'role_template_created',
+            'source' => 'pma',
+            'role_template_id' => $role->id,
+            'role_template_name' => $roleName,
+            'actor_id' => $admin->id,
+        ]);
+    }
+
+    public function test_role_template_update_creates_audit_log(): void
+    {
+        $admin = $this->roleTemplateAdmin();
+        $perm = Permission::findOrCreate('Audit Test Role Update Perm');
+        $role = $this->pmaRoleTemplate();
+        $oldName = $role->name;
+
+        UserTypePermission::create([
+            'user_type_id' => $role->id,
+            'permission_id' => $perm->id,
+        ]);
+
+        $newName = 'Audit Updated Role ' . Str::random(6);
+
+        $this->asAuditUser($admin)
+            ->put(route('roles.update', Crypt::encrypt($role->id)), [
+                'role_name' => $newName,
+                'is_ecclesia' => '0',
+                'is_admin' => '0',
+                'permissions' => [$perm->name],
+            ])
+            ->assertRedirect(route('roles.index'));
+
+        $this->assertDatabaseHas('role_permission_audit_logs', [
+            'action' => 'role_template_updated',
+            'source' => 'pma',
+            'role_template_id' => $role->id,
+            'role_template_name' => $newName,
+            'old_role_name' => $oldName,
+            'new_role_name' => $newName,
+            'actor_id' => $admin->id,
+        ]);
     }
 
     public function test_sync_tier_permissions_creates_membership_privilege_synced_audit_log(): void
