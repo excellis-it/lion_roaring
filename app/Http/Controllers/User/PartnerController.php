@@ -28,6 +28,7 @@ use App\Models\MembershipTier;
 use App\Models\UserSubscription;
 use Spatie\Permission\Models\Permission;
 use App\Models\UserTypePermission;
+use App\Services\RolePermissionAuditLogger;
 use Illuminate\Support\Facades\Storage;
 
 class PartnerController extends Controller
@@ -677,9 +678,13 @@ class PartnerController extends Controller
         $data->assignRole($newRole->name);
 
         // If MEMBER_SOVEREIGN, create subscription
+        $newMembershipTierId = null;
+        $newMembershipTierName = null;
         if ($the_role->name == 'MEMBER_SOVEREIGN' && $request->has('membership_tier_id') && !$request->boolean('membership_excluded')) {
             $tier = MembershipTier::find($request->membership_tier_id);
             if ($tier) {
+                $newMembershipTierId = $tier->id;
+                $newMembershipTierName = $tier->name;
                 $durationMonths = $tier->duration_months ?? 12;
                 UserSubscription::create([
                     'user_id' => $data->id,
@@ -693,6 +698,25 @@ class PartnerController extends Controller
                 ]);
             }
         }
+
+        app(RolePermissionAuditLogger::class)->log([
+            'action' => 'member_role_created',
+            'source' => 'pma',
+            'target_user_id' => $data->id,
+            'target_user_name' => trim($data->first_name . ' ' . $data->last_name),
+            'target_user_email' => $data->email,
+            'target_country_id' => $data->country,
+            'old_role_name' => null,
+            'new_role_name' => $the_role->name,
+            'old_user_type' => null,
+            'new_user_type' => $data->user_type,
+            'old_permissions' => [],
+            'new_permissions' => $request->has('permissions')
+                ? $request->permissions
+                : $data->getAllPermissions()->pluck('name')->all(),
+            'new_membership_tier_id' => $newMembershipTierId,
+            'new_membership_tier_name' => $newMembershipTierName,
+        ]);
 
         $maildata = [
             'name' => trim("{$request->first_name} {$request->middle_name} {$request->last_name}"),
@@ -866,7 +890,14 @@ class PartnerController extends Controller
                 }
             }
 
-            $data = User::find($id);
+            $data = User::with(['userRole', 'roles.permissions', 'userLastSubscription'])->find($id);
+
+            $oldRoleName = $data->userRole?->name;
+            $oldUserType = $data->user_type;
+            $oldPermissions = $data->getAllPermissions()->pluck('name')->all();
+            $oldMembershipTierId = $data->userLastSubscription?->plan_id;
+            $oldMembershipTierName = $data->userLastSubscription?->subscription_name;
+
             $data->first_name = $request->first_name;
             $data->last_name = $request->last_name;
             $data->middle_name = $request->middle_name;
@@ -965,9 +996,13 @@ class PartnerController extends Controller
             $data->forgetCachedPermissions();
 
             // Handle Membership Subscription Update
+            $newMembershipTierId = null;
+            $newMembershipTierName = null;
             if ($the_role->name == 'MEMBER_SOVEREIGN' && $request->has('membership_tier_id') && !$request->boolean('membership_excluded')) {
                 $tier = MembershipTier::find($request->membership_tier_id);
                 if ($tier) {
+                    $newMembershipTierId = $tier->id;
+                    $newMembershipTierName = $tier->name;
                     $sub = UserSubscription::where('user_id', $data->id)->orderBy('id', 'desc')->first();
                     if ($sub) {
                         $sub->update([
@@ -991,6 +1026,27 @@ class PartnerController extends Controller
                     }
                 }
             }
+
+            app(RolePermissionAuditLogger::class)->log([
+                'action' => 'member_role_updated',
+                'source' => 'pma',
+                'target_user_id' => $data->id,
+                'target_user_name' => trim($data->first_name . ' ' . $data->last_name),
+                'target_user_email' => $data->email,
+                'target_country_id' => $data->country,
+                'old_role_name' => $oldRoleName,
+                'new_role_name' => $the_role->name,
+                'old_user_type' => $oldUserType,
+                'new_user_type' => $data->user_type,
+                'old_permissions' => $oldPermissions,
+                'new_permissions' => $request->has('permissions')
+                    ? $request->permissions
+                    : $data->getAllPermissions()->pluck('name')->all(),
+                'old_membership_tier_id' => $oldMembershipTierId,
+                'old_membership_tier_name' => $oldMembershipTierName,
+                'new_membership_tier_id' => $newMembershipTierId,
+                'new_membership_tier_name' => $newMembershipTierName,
+            ]);
 
             return redirect()->route('partners.index')->with('message', 'Member updated successfully.');
         } else {
