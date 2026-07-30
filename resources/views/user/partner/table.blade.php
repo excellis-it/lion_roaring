@@ -124,7 +124,8 @@
             @endif
             @if (auth()->user()->can('Edit Partners') ||
                     auth()->user()->can('Delete Partners') ||
-                    auth()->user()->can('View Partners'))
+                    auth()->user()->can('View Partners') ||
+                    \App\Support\PartnerVisibility::canAccessAudit(auth()->user()))
                 <td>
                     <div class="d-flex">
                         @if (Auth::user()->can('Edit Partners'))

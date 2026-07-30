@@ -147,7 +147,8 @@
                                                 @endif
                                                 @if (auth()->user()->can('Edit Partners') ||
                                                         auth()->user()->can('Delete Partners') ||
-                                                        auth()->user()->can('View Partners'))
+                                                        auth()->user()->can('View Partners') ||
+                                                        \App\Support\PartnerVisibility::canAccessAudit(auth()->user()))
                                                     <th class="p-3"></th>
                                                 @endif
                                             </tr>
