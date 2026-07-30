@@ -28,6 +28,11 @@
                                         <a href="javascript:void(0);" id="export-report" class="btn btn-primary">
                                             <i class="ti ti-download"></i> Export Report
                                         </a>
+                                        @if (\App\Support\PartnerVisibility::canAccessAudit(auth()->user()))
+                                            <a href="{{ route('partners.audit-logs') }}" class="btn btn-primary">
+                                                <i class="ti ti-history"></i> Audit Logs
+                                            </a>
+                                        @endif
                                     </div>
                                 </div>
                                 <div class="row ">

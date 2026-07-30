@@ -143,6 +143,12 @@
                                 <i class="ti ti-eye"></i>
                             </a>
                         @endif
+                        @if (\App\Support\PartnerVisibility::canAccessAudit(auth()->user()))
+                            <a href="{{ route('partners.audit-logs.member', Crypt::encrypt($partner->id)) }}"
+                                class="view_icon me-2" title="Audit Logs">
+                                <i class="ti ti-history"></i>
+                            </a>
+                        @endif
                         @if (Auth::user()->can('Delete Partners'))
                             {{-- @if (auth()->user()->hasNewRole('SUPER ADMIN') || $partner->created_id == auth()->user()->id || (auth()->user()->roles()->first()->is_ecclesia == 1 && auth()->id() != $partner->id)) --}}
                             @if (auth()->id() != $partner->id)
