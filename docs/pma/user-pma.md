@@ -1,6 +1,6 @@
 ---
 title: User PMA
-updated: 2026-07-28
+updated: 2026-07-30
 status: ready
 sidebar_key: user_pma
 ---
@@ -30,9 +30,10 @@ Open **Detailed topics** on the index for each sidebar menu. Shared instance rul
 
 ### Language / names
 
-- User layout includes Google Website Translator (same as public site).
+- User layout boots the same LrTranslate engine as the public site (`frontend.includes.google_translate`). Language switcher may live on the public header; intent still follows `content_lang` / `lr_content_lang` across surfaces.
+- A temporary header badge shows a blinking **Translating…** indicator while a pass runs (slot: `[data-lr-translate-badge]`).
 - Person names and usernames shown in the panel are excluded from translation via `no_translate()` and `protect-names-from-translate.js` (see Website Frontend).
-- Translation failure popup + client logging use the same `frontend.includes.google_translate` diagnostics; surface tag in logs is `user_pma`.
+- Translation failure popup + client logging use the same diagnostics; surface tag in logs is `user_pma`. No per-user character quota stops translation.
 
 ### Major menu groups
 

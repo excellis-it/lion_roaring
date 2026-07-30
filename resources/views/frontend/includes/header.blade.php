@@ -108,7 +108,8 @@
                                 </nav>
                             </div>
                         </div>
-                        <div class="right_tran ms-1">
+                        <div class="right_tran ms-1 d-flex align-items-center gap-2">
+                            <span data-lr-translate-badge class="notranslate" translate="no"></span>
                             @include('frontend.includes.language_switcher')
                         </div>
                     </div>

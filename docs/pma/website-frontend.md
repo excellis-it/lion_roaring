@@ -1,6 +1,6 @@
 ---
 title: Website Frontend
-updated: 2026-07-29
+updated: 2026-07-30
 status: ready
 sidebar_key: website_frontend
 ---
@@ -38,14 +38,15 @@ Deep domain rules: see **Global & Regional Domains**.
 - Contact form requires **reCAPTCHA**.
 - Donations: Stripe Charge (USD) via Stripe Elements card form (not raw card fields), guests allowed → thank-you page.
 
-### Language / Google Website Translator
+### Language / Cloud Translation
 
-- Header language switcher drives Google Website Translator (`frontend.includes.google_translate`).
-- Language choice is stored site-wide in `localStorage` (`lr_content_lang`) and mirrored to `content_lang` / `googtrans` cookies **only at path=`/`** (and app base path). On each load, path-scoped leftovers are **expired** everywhere, then cookies are re-applied from that intent at canonical paths — do **not** rewrite the same cookie on every URL path (that floods the browser jar and can evict the Laravel session cookie, which looks like a logout).
-- **Original** sets `content_lang=__original__`, neutralizes `googtrans` to `/en/en`, marks the document `translate=no` (so Google Translate cannot “fix” posts into English), and hard-navigates. Server-side UGC translation is skipped for Original even if a leftover `googtrans=/auto/en` cookie remains.
-- Choosing a language (including English) sets cookies and hard-navigates the same way; English uses `content_lang=en` so server-side UGC translation still runs while the UI stays untranslated.
+- Header language switcher drives **LrTranslate** (`frontend.includes.google_translate` → `lr-translate.js` → `POST /translate/batch`), backed by Google Cloud Translation with a permanent DB cache (`translation_cache`).
+- Language intent is stored in `localStorage` (`lr_content_lang`) and the `content_lang` cookie. Switching language does **not** reload the page. **Original** (`__original__`) restores source text instantly with no API calls.
+- There is **no per-user or monthly character quota** that stops translation (`TRANSLATE_*_CHAR_LIMIT=0`). Cost control is cache reuse; usage is still logged in `translation_usage`.
+- While a page is translating, a temporary header badge shows a blinking **Translating…** indicator (no percentage). Badge mounts into `[data-lr-translate-badge]` when present, otherwise fixed top-right. Large pages use a serial queued batcher (Google v2 max **128** strings/request) with 429 backoff so content-heavy pages still finish.
+- Choosing English (`content_lang=en`) leaves English UI as-is; server-side UGC may still be translated into English when the author wrote in another language.
 - **Person names and usernames are never machine-translated.** Displays use `no_translate()` (`Helper::noTranslate`) → `<span class="notranslate" translate="no">…</span>`. Name inputs and known name UI nodes (e.g. `.GroupName`) are also marked via `protect-names-from-translate.js`.
-- **Translation failure diagnostics:** if Google Translate does not apply after a language change (blocked script, missing widget, cookie issues), the browser shows a warning popup and POSTs anonymized diagnostics to `POST /translation-client-log` (logged as `Translation client failure` in Laravel logs). Surface tag: `website` (or `ecom` / `elearning` on those hosts).
+- **Translation failure diagnostics:** API/network failures leave original text readable and POST anonymized diagnostics to `POST /translation-client-log`. Surface tag: `website` (or `ecom` / `elearning` on those hosts).
 
 ### Chatbot
 

@@ -88,7 +88,9 @@ class ChatbotController extends Controller
     }
 
     /**
-     * Change language
+     * Change language for a chatbot conversation.
+     * Creates the conversation row if the widget calls this before /init finishes
+     * (RAG widget race) so the client never gets a spurious 404.
      */
     public function changeLanguage(Request $request)
     {
@@ -99,12 +101,19 @@ class ChatbotController extends Controller
 
         $language = $request->language;
 
-        $conversation = ChatbotConversation::where('session_id', $request->session_id)->first();
+        $conversation = ChatbotConversation::firstOrCreate(
+            ['session_id' => $request->session_id],
+            [
+                'user_id' => Auth::id(),
+                'language' => $language,
+            ]
+        );
 
-        if ($conversation) {
+        if ($conversation->language !== $language) {
             $conversation->update(['language' => $language]);
+        }
 
-            // Track analytics
+        try {
             ChatbotAnalytics::create([
                 'conversation_id' => $conversation->id,
                 'event_type' => 'language_changed',
@@ -114,14 +123,14 @@ class ChatbotController extends Controller
                     'requested' => $request->language,
                 ],
             ]);
-
-            return response()->json([
-                'success' => true,
-                'language' => $language,
-            ]);
+        } catch (\Throwable $e) {
+            // Analytics must not block language changes.
         }
 
-        return response()->json(['success' => false], 404);
+        return response()->json([
+            'success' => true,
+            'language' => $language,
+        ]);
     }
 
 

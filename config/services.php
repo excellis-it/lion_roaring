@@ -41,14 +41,14 @@ return [
         'translate' => [
             'key' => env('GOOGLE_TRANSLATE_API_KEY'),
             'enabled' => env('TRANSLATE_ENABLED', true),
-            // Hard stop: characters sent to Google per calendar month ($20 / 1M chars)
-            'monthly_char_limit' => (int) env('TRANSLATE_MONTHLY_CHAR_LIMIT', 2000000),
+            // Characters sent to Google per calendar month. 0 = unlimited.
+            'monthly_char_limit' => (int) env('TRANSLATE_MONTHLY_CHAR_LIMIT', 0),
             // Longest single string we will pay to translate
             'max_chars_per_string' => (int) env('TRANSLATE_MAX_CHARS_PER_STRING', 5000),
-            // Per-visitor characters per day (abuse guard on the public endpoint)
-            'session_daily_char_limit' => (int) env('TRANSLATE_SESSION_DAILY_CHAR_LIMIT', 200000),
+            // Legacy per-visitor daily cap (unused when 0). Kept for ops toggle.
+            'session_daily_char_limit' => (int) env('TRANSLATE_SESSION_DAILY_CHAR_LIMIT', 0),
             // Bump to invalidate every visitor's localStorage translation cache
-            'cache_version' => env('TRANSLATE_CACHE_VERSION', 'v1'),
+            'cache_version' => env('TRANSLATE_CACHE_VERSION', 'v2'),
         ],
     ],
 

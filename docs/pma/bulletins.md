@@ -1,6 +1,6 @@
 ---
 title: Bulletins
-updated: 2026-07-28
+updated: 2026-07-30
 status: ready
 sidebar_key: bulletins
 ---
@@ -18,10 +18,10 @@ Community publishing tools: Bulletin Board (read), Create Bulletins, Job Posting
 ### Bulletin Board / Create Bulletins
 
 - Board lists posts for members; Create Bulletins manages posts with country / user-type scoping.
-- **Non-English languages:** post title/description translate with the rest of the page via Google Website Translator (same as other PMA pages). They are not marked `notranslate`.
-- **English:** Google Translate is neutralized for the UI, so Spanish/other posts are server-translated into English via `ContentTranslationService` when `content_lang=en`.
-- **Original:** no machine translation (server skips even if a leftover English cookie exists); posts stay in the author’s language. Google Translate is blocked on the document for that mode.
+- **Any selected language (not Original):** post title/description are server-translated via `ContentTranslationService` / Google Cloud Translation when `content_lang` is set, and the page chrome is translated client-side by LrTranslate. Titles/descriptions are not marked `notranslate`.
+- **Original:** no machine translation; posts stay in the author’s language.
 - Author display names are never translated (`no_translate` / `notranslate`), consistent with site-wide person-name protection.
+- AJAX reloads of the board call `LrTranslate.refresh` so newly injected HTML is translated.
 
 ### Job Posting / Meeting Schedule / Live Events
 

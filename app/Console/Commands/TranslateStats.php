@@ -53,20 +53,28 @@ class TranslateStats extends Command
 
         $used = (int) $rows->sum('chars');
         $limit = GoogleTranslateService::monthlyCharLimit();
-        $pct = $limit > 0 ? round($used / $limit * 100, 1) : 0;
 
         $this->newLine();
-        $this->line(sprintf(
-            'Budget: %s / %s chars (%s%%) — $%s of $%s',
-            number_format($used),
-            number_format($limit),
-            $pct,
-            number_format($used / 1000000 * self::USD_PER_MILLION_CHARS, 2),
-            number_format($limit / 1000000 * self::USD_PER_MILLION_CHARS, 2)
-        ));
+        if ($limit <= 0) {
+            $this->line(sprintf(
+                'Budget: unlimited — %s chars billed this month (~$%s)',
+                number_format($used),
+                number_format($used / 1000000 * self::USD_PER_MILLION_CHARS, 2)
+            ));
+        } else {
+            $pct = round($used / $limit * 100, 1);
+            $this->line(sprintf(
+                'Budget: %s / %s chars (%s%%) — $%s of $%s',
+                number_format($used),
+                number_format($limit),
+                $pct,
+                number_format($used / 1000000 * self::USD_PER_MILLION_CHARS, 2),
+                number_format($limit / 1000000 * self::USD_PER_MILLION_CHARS, 2)
+            ));
 
-        if ($pct >= 90) {
-            $this->warn('Budget almost exhausted — new strings will stop being translated.');
+            if ($pct >= 90) {
+                $this->warn('Budget almost exhausted — new strings will stop being translated.');
+            }
         }
 
         $cache = DB::table('translation_cache')

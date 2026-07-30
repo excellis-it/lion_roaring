@@ -21,6 +21,41 @@
         opacity: .97;
         transition: opacity .15s ease;
     }
+
+    .lr-translate-progress {
+        display: inline-block;
+        vertical-align: middle;
+        font-size: 11px;
+        font-weight: 700;
+        letter-spacing: .04em;
+        text-transform: uppercase;
+        padding: 4px 10px;
+        border-radius: 4px;
+        background: #c62828;
+        color: #fff;
+        white-space: nowrap;
+        line-height: 1.3;
+    }
+
+    .lr-translate-progress[hidden] {
+        display: none !important;
+    }
+
+    .lr-translate-progress.is-active {
+        animation: lr-translate-blink 1s linear infinite;
+    }
+
+    @keyframes lr-translate-blink {
+        0%, 100% { opacity: 1; background: #c62828; box-shadow: 0 0 0 0 rgba(198, 40, 40, .55); }
+        50% { opacity: .55; background: #ef6c00; box-shadow: 0 0 0 4px rgba(239, 108, 0, .25); }
+    }
+
+    .lr-translate-progress--fixed {
+        position: fixed;
+        top: 12px;
+        right: 12px;
+        z-index: 10050;
+    }
 </style>
 
 <script>

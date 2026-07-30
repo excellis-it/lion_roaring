@@ -2,6 +2,7 @@
 
 **Date:** 2026-07-30
 **Status: IMPLEMENTED** (Phases 1–6). Phase 7 (Flutter) deliberately deferred.
+**Follow-up 2026-07-30:** unlimited char budgets (0 = unlimited), progress badge, bulletin SSR for any `content_lang`, client cache-poison fix. See `docs/superpowers/specs/2026-07-30-unlimited-translate-progress-badge-design.md`.
 **Repo:** `lion_roaring` (Laravel web).
 **Replaces:** free Google Translate Element widget (`resources/views/frontend/includes/google_translate.blade.php`, 636 lines)
 
@@ -127,17 +128,14 @@ Without persistent cache, whole-DOM translation of 517 views for every visitor i
 
 **Mandatory controls (build these in Phase 1, not later):**
 
-1. `translation_cache` **DB table** — *not* Laravel's cache. `CACHE_DRIVER=file` will collapse under 100k+ entries. Table:
-   ```
-   id, source_hash CHAR(40), target_lang VARCHAR(10), source_text TEXT,
-   translated_text TEXT, char_count INT, hit_count INT, created_at
-   UNIQUE KEY (source_hash, target_lang)
-   ```
-2. **Monthly character budget** in `.env` (`TRANSLATE_MONTHLY_CHAR_LIMIT`) — when exceeded, serve cache-only and log; never silently overspend.
-3. **Per-IP / per-session rate limit** on `/api/translate` — the endpoint is public-facing and otherwise a free translation proxy for anyone.
-4. **`translation_usage` daily rollup table** for an admin cost dashboard.
+1. `translation_cache` **DB table** — permanent reuse keyed by `source_hash` + `target_lang` (not Laravel `CACHE_DRIVER`).
+2. ~~**Monthly character budget**~~ — **changed 2026-07-30:** `TRANSLATE_MONTHLY_CHAR_LIMIT=0` / `TRANSLATE_SESSION_DAILY_CHAR_LIMIT=0` mean **unlimited**. Always translate cache misses; cost control is DB reuse + usage logging (`translate:stats`). Optional non-zero limits remain supported in code for ops.
+3. Mild route throttle on `/translate/batch` + language allowlist (not a user quota).
+4. **`translation_usage` daily rollup table** for cost visibility.
 5. **Restrict the API key** in Google Cloud Console: Cloud Translation API only + server IP allowlist.
 6. Only allow target languages present in `translate_languages` — reject arbitrary `tl` values.
+
+**UI (2026-07-30):** temporary header progress badge (`Translating… N%`) on every surface that boots LrTranslate.
 
 ---
 

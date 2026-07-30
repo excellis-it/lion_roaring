@@ -4,8 +4,8 @@
  *
  * Rewritten for LrTranslate. The old Google Translate widget watchdogs (polling
  * for `.goog-te-combo`, comparing `googtrans` cookies) are gone — there is no
- * third-party widget left to fail. What can still fail is our own endpoint, the
- * character budget, or the network, and the engine reports those directly.
+ * third-party widget left to fail. What can still fail is our own endpoint or
+ * the network, and the engine reports those directly.
  */
 (function (window) {
     'use strict';
@@ -17,8 +17,6 @@
     /** Reasons the visitor should actually be told about. */
     var USER_VISIBLE = {
         translate_request_failed: 'We could not reach the translation service.',
-        translate_budget_exhausted: 'Translation is temporarily limited on this site.',
-        translate_visitor_quota_exceeded: 'You have reached today’s translation limit.',
         translate_language_not_allowed: 'That language is not available on this site.'
     };
 

@@ -86,6 +86,9 @@
         </div>
 
         <ul class="navbar-nav flex-row ms-auto align-items-center justify-content-end">
+            <li class="nav-item d-flex align-items-center px-2">
+                <span data-lr-translate-badge class="notranslate" translate="no"></span>
+            </li>
             <li class="nav-item m-3">
                 <style>
                     .blink {

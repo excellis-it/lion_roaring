@@ -776,6 +776,9 @@
                     },
                     success: function(resp) {
                         $('#show-bulletin').html(resp.view);
+                        if (window.LrTranslate && typeof window.LrTranslate.refresh === 'function') {
+                            window.LrTranslate.refresh(document.getElementById('show-bulletin'));
+                        }
                     },
                     error: function(xhr) {
                         toastr.error('Something went wrong');
@@ -792,6 +795,9 @@
                     },
                     success: function(resp) {
                         $('#bulletin-table').html(resp.view);
+                        if (window.LrTranslate && typeof window.LrTranslate.refresh === 'function') {
+                            window.LrTranslate.refresh(document.getElementById('bulletin-table'));
+                        }
                     },
                     error: function(xhr) {
                         toastr.error('Something went wrong');
@@ -809,6 +815,10 @@
                     },
                     success: function(resp) {
                         $('#single-bulletin-' + bulletin_id).html(resp.view);
+                        if (window.LrTranslate && typeof window.LrTranslate.refresh === 'function') {
+                            var el = document.getElementById('single-bulletin-' + bulletin_id);
+                            if (el) window.LrTranslate.refresh(el);
+                        }
                     },
                     error: function(xhr) {
                         toastr.error('Something went wrong');

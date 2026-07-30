@@ -22,14 +22,14 @@ use Illuminate\Support\Facades\Log;
  *   4. Per-call dedupe — a string repeated 40 times on a page is sent once.
  *   5. isTranslatable() — numbers, money, dates, emails, URLs and single glyphs
  *      never reach the API. Google would happily bill for them.
- *   6. Monthly + per-visitor character budgets that fail closed to cache-only.
+ *   6. Optional monthly budget (TRANSLATE_MONTHLY_CHAR_LIMIT). 0 = unlimited.
  */
 class GoogleTranslateService
 {
     private const ENDPOINT = 'https://translation.googleapis.com/language/translate/v2';
 
     /** Google allows up to 128 `q` segments per request. */
-    private const MAX_SEGMENTS_PER_CALL = 100;
+    private const MAX_SEGMENTS_PER_CALL = 128;
 
     /** Keep request bodies well under Google's 30k-char limit. */
     private const MAX_CHARS_PER_CALL = 18000;
@@ -175,7 +175,18 @@ class GoogleTranslateService
 
     public static function budgetRemaining(): int
     {
-        return max(0, self::monthlyCharLimit() - self::monthlyCharsUsed());
+        $limit = self::monthlyCharLimit();
+        // 0 (or negative) = unlimited — always translate cache misses.
+        if ($limit <= 0) {
+            return PHP_INT_MAX;
+        }
+
+        return max(0, $limit - self::monthlyCharsUsed());
+    }
+
+    public static function isBudgetUnlimited(): bool
+    {
+        return self::monthlyCharLimit() <= 0;
     }
 
     // ── main entry point ────────────────────────────────────────────────────
@@ -309,7 +320,7 @@ class GoogleTranslateService
                 $chars += mb_strlen($text);
             }
 
-            if ($chars > $remaining) {
+            if (!self::isBudgetUnlimited() && $chars > $remaining) {
                 Log::warning('GoogleTranslateService: monthly character budget exhausted', [
                     'target' => $target,
                     'limit' => self::monthlyCharLimit(),

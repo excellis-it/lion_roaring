@@ -30,11 +30,16 @@
     var LANG_KEY = 'lr_content_lang';
     var ORIGINAL = '__original__';
 
-    var MAX_ITEMS_PER_REQUEST = 100;
-    var MAX_CHARS_PER_REQUEST = 12000;
-    var MAX_PARALLEL_REQUESTS = 3;
-    var LS_MAX_ENTRIES_PER_LANG = 4000;
-    var OBSERVER_DEBOUNCE_MS = 200;
+    // Google Cloud Translation v2: max 128 `q` strings per request.
+    // Prefer fewer, fuller batches over many small ones (avoids Laravel/proxy 429s).
+    var MAX_ITEMS_PER_REQUEST = 128;
+    var MAX_CHARS_PER_REQUEST = 18000;
+    // One in-flight batch at a time keeps us well under rate limits on heavy pages.
+    var MAX_PARALLEL_REQUESTS = 1;
+    var MIN_REQUEST_GAP_MS = 75;
+    var MAX_429_RETRIES = 6;
+    var LS_MAX_ENTRIES_PER_LANG = 8000;
+    var OBSERVER_DEBOUNCE_MS = 400;
 
     // ── skip rules (single source of truth) ─────────────────────────────────
 
@@ -91,6 +96,19 @@
     var titleOriginal = null;
     var initialized = false;
     var translatedOnce = false;
+
+    // Progress badge — blinking indicator only (no percentage).
+    // MutationObserver refreshes must NOT own the badge.
+    var badgeEl = null;
+    var badgeHideTimer = null;
+    var badgeTracking = false;
+    var progressPassId = 0;
+
+    // Global batch queue: serializes all /translate/batch traffic site-wide.
+    var batchQueue = [];
+    var batchActive = 0;
+    var batchLastAt = 0;
+    var passBusy = 0; // >0 while a translatePass is collecting/applying/networked
 
     // ── small utilities ─────────────────────────────────────────────────────
 
@@ -229,6 +247,73 @@
         memCache[lang + '|' + h] = value;
     }
 
+    // ── progress badge ──────────────────────────────────────────────────────
+
+    function ensureBadge() {
+        if (badgeEl && badgeEl.isConnected) return badgeEl;
+
+        badgeEl = document.getElementById('lr-translate-progress');
+        if (!badgeEl) {
+            badgeEl = document.createElement('span');
+            badgeEl.id = 'lr-translate-progress';
+            badgeEl.className = 'lr-translate-progress notranslate';
+            badgeEl.setAttribute('translate', 'no');
+            badgeEl.setAttribute('data-nt', '');
+            badgeEl.setAttribute('aria-live', 'polite');
+            badgeEl.hidden = true;
+
+            var slot = document.querySelector('[data-lr-translate-badge]');
+            if (slot) {
+                slot.appendChild(badgeEl);
+            } else {
+                badgeEl.classList.add('lr-translate-progress--fixed');
+                (document.body || document.documentElement).appendChild(badgeEl);
+            }
+        }
+        return badgeEl;
+    }
+
+    function hideBadge() {
+        if (badgeHideTimer) {
+            clearTimeout(badgeHideTimer);
+            badgeHideTimer = null;
+        }
+        badgeTracking = false;
+        var el = ensureBadge();
+        el.hidden = true;
+        el.classList.remove('is-active');
+        el.textContent = '';
+    }
+
+    function setBadgeActive(on) {
+        if (!badgeTracking && on) return;
+        var el = ensureBadge();
+        if (!on || currentLang === ORIGINAL) {
+            hideBadge();
+            return;
+        }
+        el.hidden = false;
+        el.classList.add('is-active');
+        el.textContent = 'Translating…';
+    }
+
+    function beginBadgeTracking() {
+        if (badgeHideTimer) {
+            clearTimeout(badgeHideTimer);
+            badgeHideTimer = null;
+        }
+        badgeTracking = true;
+        setBadgeActive(true);
+    }
+
+    function finishBadgeTracking() {
+        if (!badgeTracking) return;
+        if (badgeHideTimer) clearTimeout(badgeHideTimer);
+        badgeHideTimer = setTimeout(function () {
+            hideBadge();
+        }, 500);
+    }
+
     // ── language intent ─────────────────────────────────────────────────────
 
     function readStoredLang() {
@@ -355,9 +440,13 @@
         }
     }
 
-    // ── network ─────────────────────────────────────────────────────────────
+    // ── network (queued, Google-friendly batching, 429 backoff) ─────────────
 
-    function postBatch(lang, items) {
+    function sleep(ms) {
+        return new Promise(function (resolve) { setTimeout(resolve, ms); });
+    }
+
+    function postBatchRaw(lang, items) {
         return fetch(ENDPOINT, {
             method: 'POST',
             credentials: 'same-origin',
@@ -369,8 +458,65 @@
             },
             body: JSON.stringify({ target: lang, items: items })
         }).then(function (res) {
+            if (res.status === 429) {
+                var err = new Error('HTTP 429');
+                err.status = 429;
+                err.retryAfter = parseInt(res.headers.get('Retry-After') || '0', 10) || 0;
+                throw err;
+            }
             if (!res.ok) throw new Error('HTTP ' + res.status);
             return res.json();
+        });
+    }
+
+    function postBatchWithRetry(lang, items, attempt) {
+        attempt = attempt || 0;
+        return postBatchRaw(lang, items).catch(function (err) {
+            if (err && err.status === 429 && attempt < MAX_429_RETRIES) {
+                var backoff = err.retryAfter
+                    ? err.retryAfter * 1000
+                    : Math.min(30000, 400 * Math.pow(2, attempt) + Math.floor(Math.random() * 250));
+                log('429 backoff', backoff + 'ms', 'attempt', attempt + 1);
+                return sleep(backoff).then(function () {
+                    return postBatchWithRetry(lang, items, attempt + 1);
+                });
+            }
+            throw err;
+        });
+    }
+
+    function drainBatchQueue() {
+        if (batchActive >= MAX_PARALLEL_REQUESTS || batchQueue.length === 0) return;
+
+        var wait = Math.max(0, MIN_REQUEST_GAP_MS - (Date.now() - batchLastAt));
+        setTimeout(function () {
+            if (batchActive >= MAX_PARALLEL_REQUESTS || batchQueue.length === 0) return;
+
+            var job = batchQueue.shift();
+            batchActive++;
+            inFlight = batchActive;
+            batchLastAt = Date.now();
+
+            postBatchWithRetry(job.lang, job.items)
+                .then(function (data) {
+                    job.resolve(data);
+                })
+                .catch(function (err) {
+                    job.reject(err);
+                })
+                .then(function () {
+                    batchActive--;
+                    inFlight = batchActive;
+                    drainBatchQueue();
+                });
+        }, wait);
+    }
+
+    /** Enqueue a batch; all site traffic shares one serial queue. */
+    function postBatch(lang, items) {
+        return new Promise(function (resolve, reject) {
+            batchQueue.push({ lang: lang, items: items, resolve: resolve, reject: reject });
+            drainBatchQueue();
         });
     }
 
@@ -383,7 +529,7 @@
     // ── translation pass ────────────────────────────────────────────────────
 
     function buildJobs(root, lang) {
-        var jobs = [];       // { apply(translated) , norm, hash }
+        var jobs = [];       // { apply(translated) , hash }
         var needed = {};     // hash -> normalized text (deduped)
 
         var textNodes = [];
@@ -397,7 +543,10 @@
                 var cached = cacheGet(lang, h);
                 if (cached !== undefined) {
                     var padded = padLike(original, cached);
-                    if (node.nodeValue !== padded) node.nodeValue = padded;
+                    if (node.nodeValue !== padded) {
+                        applying = true;
+                        try { node.nodeValue = padded; } finally { applying = false; }
+                    }
                     return;
                 }
                 needed[h] = norm;
@@ -420,7 +569,10 @@
                 var h = hash(norm);
                 var cached = cacheGet(lang, h);
                 if (cached !== undefined) {
-                    target.el.setAttribute(target.attr, cached);
+                    if (target.el.getAttribute(target.attr) !== cached) {
+                        applying = true;
+                        try { target.el.setAttribute(target.attr, cached); } finally { applying = false; }
+                    }
                     return;
                 }
                 needed[h] = norm;
@@ -455,7 +607,7 @@
         return chunks;
     }
 
-    function runChunks(lang, chunks, onDone) {
+    function runChunks(lang, chunks, jobsByHash, onDone) {
         var index = 0;
         var active = 0;
         var finished = false;
@@ -467,23 +619,39 @@
             }
         }
 
+        function applyHash(h, value) {
+            var list = jobsByHash[h] || [];
+            applying = true;
+            try {
+                for (var i = 0; i < list.length; i++) {
+                    list[i].apply(value);
+                }
+            } finally {
+                applying = false;
+            }
+        }
+
         function next() {
-            while (active < MAX_PARALLEL_REQUESTS && index < chunks.length) {
+            // Serial queue lives in postBatch — still walk chunks one-at-a-time
+            // so we don't flood the queue with hundreds of pending jobs at once.
+            while (active < 1 && index < chunks.length) {
                 var chunk = chunks[index++];
                 active++;
                 (function (c) {
                     postBatch(lang, c.map(function (x) { return x.text; }))
                         .then(function (data) {
                             if (data && Array.isArray(data.translations)) {
-                                for (var i = 0; i < c.length; i++) {
-                                    var value = data.translations[i];
-                                    if (typeof value === 'string' && value.length) {
-                                        cacheSet(lang, c[i].h, value);
-                                    }
-                                }
-                                if (data.ok === false && data.reason) {
+                                var ok = data.ok !== false;
+                                if (!ok && data.reason) {
                                     log('passthrough:', data.reason);
                                     reportFailure('translate_' + data.reason, lang, {});
+                                }
+                                for (var i = 0; i < c.length; i++) {
+                                    var value = data.translations[i];
+                                    if (ok && typeof value === 'string' && value.length) {
+                                        cacheSet(lang, c[i].h, value);
+                                        applyHash(c[i].h, value);
+                                    }
                                 }
                             }
                         })
@@ -493,7 +661,6 @@
                         })
                         .then(function () {
                             active--;
-                            inFlight = active;
                             next();
                             done();
                         });
@@ -506,9 +673,23 @@
         next();
     }
 
-    function translatePass(root, lang, onComplete) {
-        if (lang === ORIGINAL || !lang) { if (onComplete) onComplete(); return; }
+    /**
+     * @param {Element} root
+     * @param {string} lang
+     * @param {Function} [onComplete]
+     * @param {{ trackBadge?: boolean }} [options]
+     */
+    function translatePass(root, lang, onComplete, options) {
+        options = options || {};
+        var trackBadge = !!options.trackBadge;
 
+        if (lang === ORIGINAL || !lang) {
+            if (trackBadge) hideBadge();
+            if (onComplete) onComplete();
+            return;
+        }
+
+        passBusy++;
         applying = true;
         var built;
         try {
@@ -517,27 +698,50 @@
             applying = false;
         }
 
+        var passId = trackBadge ? ++progressPassId : progressPassId;
         var chunks = chunkNeeded(built.needed);
+
         if (!chunks.length) {
+            passBusy = Math.max(0, passBusy - 1);
+            if (trackBadge) finishBadgeTracking();
             if (onComplete) onComplete();
             return;
         }
 
-        document.documentElement.classList.add('lr-translating');
+        if (trackBadge) {
+            setBadgeActive(true);
+            document.documentElement.classList.add('lr-translating');
+        }
 
-        runChunks(lang, chunks, function () {
+        var jobsByHash = {};
+        for (var i = 0; i < built.jobs.length; i++) {
+            var job = built.jobs[i];
+            if (!jobsByHash[job.hash]) jobsByHash[job.hash] = [];
+            jobsByHash[job.hash].push(job);
+        }
+
+        runChunks(lang, chunks, jobsByHash, function () {
+            if (trackBadge && passId !== progressPassId) {
+                passBusy = Math.max(0, passBusy - 1);
+                if (onComplete) onComplete();
+                return;
+            }
             applying = true;
             try {
-                for (var i = 0; i < built.jobs.length; i++) {
-                    var job = built.jobs[i];
-                    var value = cacheGet(lang, job.hash);
-                    if (value !== undefined) job.apply(value);
+                for (var j = 0; j < built.jobs.length; j++) {
+                    var pending = built.jobs[j];
+                    var value = cacheGet(lang, pending.hash);
+                    if (value !== undefined) pending.apply(value);
                 }
             } finally {
                 applying = false;
             }
-            document.documentElement.classList.remove('lr-translating');
+            if (trackBadge) {
+                document.documentElement.classList.remove('lr-translating');
+                finishBadgeTracking();
+            }
             scheduleFlush(lang);
+            passBusy = Math.max(0, passBusy - 1);
             if (onComplete) onComplete();
         });
     }
@@ -551,7 +755,7 @@
         var cached = cacheGet(lang, h);
         if (cached !== undefined) { document.title = cached; return; }
         postBatch(lang, [norm]).then(function (data) {
-            if (data && Array.isArray(data.translations) && data.translations[0]) {
+            if (data && data.ok !== false && Array.isArray(data.translations) && data.translations[0]) {
                 cacheSet(lang, h, data.translations[0]);
                 document.title = data.translations[0];
                 scheduleFlush(lang);
@@ -569,14 +773,31 @@
 
         function flush() {
             timer = null;
+            // Wait until the main/queued pass finishes so we don't stampede /translate/batch.
+            if (passBusy > 0 || batchActive > 0 || batchQueue.length > 0) {
+                timer = setTimeout(flush, OBSERVER_DEBOUNCE_MS);
+                return;
+            }
             var roots = queue;
             queue = [];
             if (currentLang === ORIGINAL) return;
 
+            // Coalesce many tiny mutations into one subtree union when possible.
+            var seen = [];
             for (var i = 0; i < roots.length; i++) {
                 var node = roots[i];
                 if (!node || !node.isConnected) continue;
-                translatePass(node.nodeType === 1 ? node : node.parentElement, currentLang);
+                var el = node.nodeType === 1 ? node : node.parentElement;
+                if (!el) continue;
+                var covered = false;
+                for (var s = 0; s < seen.length; s++) {
+                    if (seen[s].contains && seen[s].contains(el)) { covered = true; break; }
+                    if (el.contains && el.contains(seen[s])) { seen[s] = el; covered = true; break; }
+                }
+                if (!covered) seen.push(el);
+            }
+            for (var r = 0; r < seen.length; r++) {
+                translatePass(seen[r], currentLang);
             }
         }
 
@@ -650,16 +871,18 @@
 
             if (next === ORIGINAL) {
                 translatedOnce = false;
+                hideBadge();
                 document.dispatchEvent(new CustomEvent('lr:translated', { detail: { lang: ORIGINAL } }));
                 return;
             }
 
             translatedOnce = true;
             loadLangCache(next);
+            beginBadgeTracking();
             translateDocumentTitle(next);
             translatePass(document.body, next, function () {
                 document.dispatchEvent(new CustomEvent('lr:translated', { detail: { lang: next } }));
-            });
+            }, { trackBadge: true });
         },
 
         /** Re-scan a subtree — call after injecting HTML if you bypass the observer. */
@@ -672,7 +895,10 @@
         translateStrings: function (texts, callback) {
             if (currentLang === ORIGINAL) { callback(texts); return; }
             postBatch(currentLang, texts)
-                .then(function (data) { callback(data && data.translations ? data.translations : texts); })
+                .then(function (data) {
+                    if (data && data.ok !== false && data.translations) callback(data.translations);
+                    else callback(texts);
+                })
                 .catch(function () { callback(texts); });
         },
 
@@ -693,6 +919,7 @@
             initialized = true;
 
             purgeLegacyWidgetCookies();
+            ensureBadge();
 
             if (titleOriginal === null) titleOriginal = document.title;
 
@@ -705,10 +932,11 @@
                 document.documentElement.setAttribute('dir', isRtl(currentLang) ? 'rtl' : 'ltr');
                 translatedOnce = true;
                 loadLangCache(currentLang);
+                beginBadgeTracking();
                 translateDocumentTitle(currentLang);
                 translatePass(document.body, currentLang, function () {
                     document.dispatchEvent(new CustomEvent('lr:translated', { detail: { lang: currentLang } }));
-                });
+                }, { trackBadge: true });
             }
 
             startObserver();

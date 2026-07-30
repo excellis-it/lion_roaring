@@ -10,6 +10,7 @@
                     </div>
                 </div>
                 <div class="right_btm">
+                    <span data-lr-translate-badge class="notranslate me-2 align-self-center" translate="no"></span>
                     <div id="cssmenu">
                         <ul>
                             <li><a href="{{ route('e-learning') }}">Home</a></li>

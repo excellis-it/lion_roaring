@@ -34,8 +34,8 @@ class BulletinBoardController extends Controller
     }
 
     /**
-     * Server-translate bulletin UGC only for English (not Original).
-     * Other languages use Google Website Translator on the page (same as the rest of PMA).
+     * Server-translate bulletin UGC for the visitor's selected content language.
+     * Original / empty cookie leaves posts in the author's language.
      */
     private function applyTranslations(Collection $bulletins): Collection
     {
@@ -49,13 +49,12 @@ class BulletinBoardController extends Controller
             $contentLang
         );
 
-        // English UI neutralizes googtrans; GT will not machine-translate posts into English.
-        if ($targetLang !== 'en') {
+        if ($targetLang === null || $targetLang === '') {
             return $bulletins;
         }
 
         foreach ($bulletins as $bulletin) {
-            ContentTranslationService::translateBulletinFields($bulletin, 'en');
+            ContentTranslationService::translateBulletinFields($bulletin, $targetLang);
         }
 
         return $bulletins;

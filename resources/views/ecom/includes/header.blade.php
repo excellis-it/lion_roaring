@@ -75,6 +75,7 @@
                 </div>
 
                 <div class="menu-with-login-right">
+                    <span data-lr-translate-badge class="notranslate me-2 align-self-center" translate="no"></span>
                     <div class="right_btm order-4 order-lg-3">
                         <div id="cssmenu">
                             <ul>
