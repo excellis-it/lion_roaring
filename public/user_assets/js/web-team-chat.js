@@ -1,4 +1,43 @@
 $(document).ready(function () {
+    // Keep in sync with Helper::chatInlineImageExtensions() (PHP) — formats a browser
+    // can render with <img>. HEIC/HEIF/TIFF are accepted on upload but fall back to a
+    // download card because no browser decodes them reliably.
+    var TEAM_CHAT_INLINE_IMAGE_EXTENSIONS = [
+        "jpg", "jpeg", "jfif", "jpe", "png", "gif", "svg", "webp", "avif", "bmp",
+    ];
+    // Local picker preview: the browser may still preview HEIC via object URLs.
+    var TEAM_CHAT_PICKER_IMAGE_EXTENSIONS = TEAM_CHAT_INLINE_IMAGE_EXTENSIONS.concat([
+        "heic", "heif", "tif", "tiff",
+    ]);
+    // The team send calls define no `error:` callback, so a rejected upload used to
+    // leave the send button spinning with nothing shown. Scoped to the send route so
+    // the group form handlers that already report their own 422s are untouched.
+    $(document).ajaxError(function (event, xhr, settings) {
+        var target =
+            window.Laravel && window.Laravel.routes
+                ? window.Laravel.routes.teamChatSend
+                : null;
+        if (!target || ((settings && settings.url) || "").indexOf(target) === -1) {
+            return;
+        }
+        $(".Send").removeClass("sendloading");
+
+        var msg = "Message could not be sent.";
+        if (xhr.status === 413) {
+            msg = "That file is too large to send.";
+        } else if (xhr.status === 422 && xhr.responseJSON) {
+            var errors = xhr.responseJSON.errors;
+            msg = errors
+                ? $.map(errors, function (value) {
+                      return value[0];
+                  }).join(" ")
+                : xhr.responseJSON.message || msg;
+        }
+        if (typeof toastr !== "undefined") {
+            toastr.error(msg);
+        }
+    });
+
     var pastedFiles = []; // Store pasted image files
     $.ajaxSetup({
         headers: {
@@ -288,7 +327,7 @@ $(document).ready(function () {
                         ? res.chat.attachment_name
                         : attachment;
                     if (
-                        ["jpg", "jpeg", "jfif", "png", "gif", "svg", "webp"].includes(
+                        TEAM_CHAT_INLINE_IMAGE_EXTENSIONS.includes(
                             attachement_extention
                         )
                     ) {
@@ -340,7 +379,7 @@ $(document).ready(function () {
                 '<div style="display: flex; flex-wrap: wrap; gap: 10px;">';
 
             Array.from(files).forEach(function (file, index) {
-                var isImage = file.type.startsWith("image/") || ["jpg","jpeg","jfif","png","gif","webp","heic","heif","bmp","svg"].indexOf(((file.name || "").split(".").pop() || "").toLowerCase()) !== -1;
+                var isImage = file.type.startsWith("image/") || TEAM_CHAT_PICKER_IMAGE_EXTENSIONS.indexOf(((file.name || "").split(".").pop() || "").toLowerCase()) !== -1;
 
                 if (isImage) {
                     var reader = new FileReader();
@@ -369,7 +408,7 @@ $(document).ready(function () {
 
             if (Array.from(files).every((f) => {
                 var ext = ((f.name || "").split(".").pop() || "").toLowerCase();
-                var imageExts = ["jpg","jpeg","jfif","png","gif","webp","heic","heif","bmp","svg"];
+                var imageExts = TEAM_CHAT_PICKER_IMAGE_EXTENSIONS;
                 return !(f.type.startsWith("image/") || imageExts.indexOf(ext) !== -1);
             })) {
                 $fileNameDisplay.html(displayContent).show();
@@ -680,7 +719,7 @@ $(document).ready(function () {
                 ? data.attachment_name
                 : attachment;
 
-            if (["jpg", "jpeg", "jfif", "png", "gif", "svg", "webp"].includes(attachement_extention)) {
+            if (TEAM_CHAT_INLINE_IMAGE_EXTENSIONS.includes(attachement_extention)) {
                 html += `<p class="messageContent">
                     <a href="${fileUrl}" class="chat-image-preview" data-image-url="${fileUrl}" data-file-name="${dataFileName}">
                         <img src="${fileUrl}" class="chat-image-attachment" alt="attachment" style="max-width: 280px; max-height: 360px; width: auto; height: auto;">
@@ -1570,7 +1609,7 @@ $(document).ready(function () {
                 let attachement_extention = attachment.split(".").pop().toLowerCase();
 
                 if (
-                    ["jpg", "jpeg", "jfif", "png", "gif", "svg", "webp"].includes(
+                    TEAM_CHAT_INLINE_IMAGE_EXTENSIONS.includes(
                         attachement_extention
                     )
                 ) {

@@ -822,7 +822,7 @@ class Helper
      */
     public static function chatImageExtensions(): array
     {
-        return ['jpg', 'jpeg', 'jfif', 'png', 'gif', 'bmp', 'svg', 'webp', 'heic', 'heif'];
+        return ['jpg', 'jpeg', 'jfif', 'jpe', 'png', 'gif', 'bmp', 'svg', 'webp', 'avif', 'tif', 'tiff', 'heic', 'heif'];
     }
 
     public static function isChatImageExtension(?string $extension): bool
@@ -841,7 +841,100 @@ class Helper
      */
     public static function chatInlineImageExtensions(): array
     {
-        return array_values(array_diff(self::chatImageExtensions(), ['heic', 'heif']));
+        return array_values(array_diff(self::chatImageExtensions(), ['heic', 'heif', 'tif', 'tiff']));
+    }
+
+    public static function chatAudioExtensions(): array
+    {
+        return ['mp3', 'wav', 'aac', 'm4a', 'oga', 'ogg'];
+    }
+
+    public static function chatDocumentExtensions(): array
+    {
+        return ['pdf', 'doc', 'docx', 'xls', 'xlsx', 'ppt', 'pptx', 'txt', 'csv', 'zip'];
+    }
+
+    /**
+     * Everything a chat / team-chat attachment may be. Mirrors
+     * chatAllowedUploadExtensions in lib/features/pma/chats/utils/chat_media_utils.dart.
+     */
+    public static function chatUploadExtensions(): array
+    {
+        return array_values(array_unique(array_merge(
+            // SVG is deliberately excluded: it is served from our own origin and can
+            // carry <script>, so an attachment link would be stored XSS. Other
+            // features (CMS, logos) still accept it — chat is the untrusted surface.
+            array_diff(self::chatImageExtensions(), ['svg']),
+            self::chatVideoExtensions(),
+            self::chatAudioExtensions(),
+            self::chatDocumentExtensions(),
+        )));
+    }
+
+    /**
+     * Extensions imageUpload() is allowed to write to the public disk.
+     *
+     * The public disk is exposed verbatim through the public/storage symlink, so an
+     * attacker-chosen extension is attacker-chosen server behaviour: .php executes
+     * under mod_php, .html is same-origin stored XSS. Anything outside this list is
+     * stored as .bin — the bytes survive, the handler does not.
+     */
+    public static function safeUploadExtensions(): array
+    {
+        return array_values(array_unique(array_merge(
+            self::chatUploadExtensions(),
+            // svg is not a chat attachment type but CMS/org logos and avatars use it.
+            ['svg', 'json', 'ics', 'rtf', 'odt', 'ods', 'odp', 'mp2', 'weba', 'mid'],
+        )));
+    }
+
+    /**
+     * Validation rules for the chat / team-chat attachment endpoints, which accept
+     * either a single `file` or a `files[]` array.
+     */
+    public static function chatAttachmentRules(int $maxKilobytes = 51200): array
+    {
+        $extensions = 'extensions:'.implode(',', self::chatUploadExtensions());
+
+        return [
+            'file' => ['sometimes', 'file', 'max:'.$maxKilobytes, $extensions],
+            // Matches PHP's default max_file_uploads so we never reject a batch the
+            // runtime would have accepted.
+            'files' => ['sometimes', 'array', 'max:20'],
+            'files.*' => ['file', 'max:'.$maxKilobytes, $extensions],
+        ];
+    }
+
+    public static function safeUploadExtension(?string $extension): string
+    {
+        $ext = strtolower(trim((string) $extension));
+        $ext = preg_replace('/[^a-z0-9]/', '', $ext) ?? '';
+
+        return ($ext !== '' && in_array($ext, self::safeUploadExtensions(), true)) ? $ext : 'bin';
+    }
+
+    public static function isChatInlineImageExtension(?string $extension): bool
+    {
+        if ($extension === null || $extension === '') {
+            return false;
+        }
+
+        return in_array(strtolower($extension), self::chatInlineImageExtensions(), true);
+    }
+
+    /** Extension of a storage path or absolute media URL. */
+    public static function mediaExtension(?string $path): string
+    {
+        if ($path === null || trim($path) === '') {
+            return '';
+        }
+
+        $path = trim($path);
+        if (str_starts_with($path, 'http://') || str_starts_with($path, 'https://')) {
+            $path = parse_url($path, PHP_URL_PATH) ?: $path;
+        }
+
+        return strtolower(pathinfo($path, PATHINFO_EXTENSION));
     }
 
     /**
@@ -923,7 +1016,19 @@ class Helper
         $disk = Storage::disk('public');
         $original = self::getOriginalImage($relative);
         if ($original && $disk->exists($original)) {
-            return self::publicStorageUrl($original);
+            // Older uploads kept the source format (HEIC/HEIF/TIFF/JFIF) as the "original"
+            // while the stored path is a browser-renderable derivative. Swapping to the
+            // original there turns an image bubble into a plain download card, so only
+            // prefer the original when it is at least as renderable as what we were given.
+            $currentExt = self::mediaExtension($relative);
+            $originalExt = self::mediaExtension($original);
+            $downgrades = self::isChatInlineImageExtension($currentExt)
+                && self::isChatImageExtension($originalExt)
+                && ! self::isChatInlineImageExtension($originalExt);
+
+            if (! $downgrades) {
+                return self::publicStorageUrl($original);
+            }
         }
 
         return self::publicStorageUrl($relative) ?? (str_starts_with($path, 'http') ? $path : Storage::url($relative));

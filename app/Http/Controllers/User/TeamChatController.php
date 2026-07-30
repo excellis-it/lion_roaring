@@ -247,6 +247,8 @@ class TeamChatController extends Controller
 
     public function send(Request $request)
     {
+        $request->validate(Helper::chatAttachmentRules());
+
         $input_message = $request->message;
 
         // Handle multiple files

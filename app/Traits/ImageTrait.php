@@ -40,7 +40,8 @@ trait ImageTrait
             }
         }
 
-        $filename = date('YmdHis') . '_' . uniqid() . '.' . ($ext !== '' ? $ext : 'bin');
+        // Never let the client pick the extension the public disk serves back.
+        $filename = date('YmdHis') . '_' . uniqid() . '.' . \App\Helpers\Helper::safeUploadExtension($ext);
 
         if ($heicConverted) {
             $originalPath = $path . '/' . $filename;

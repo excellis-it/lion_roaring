@@ -22,7 +22,7 @@ class FCMService
     {
         try {
             $factory = (new Factory)
-                ->withServiceAccount(storage_path('app/public/firebase-adminsdk.json'));
+                ->withServiceAccount(config('firebase.projects.app.credentials.file'));
 
             $this->messaging = $factory->createMessaging();
         } catch (Exception $e) {

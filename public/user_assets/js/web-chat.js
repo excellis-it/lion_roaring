@@ -1,4 +1,42 @@
 $(document).ready(function () {
+    // Keep in sync with Helper::chatInlineImageExtensions() (PHP) — formats a browser
+    // can render with <img>. HEIC/HEIF/TIFF are accepted on upload but fall back to a
+    // download card because no browser decodes them reliably.
+    var CHAT_INLINE_IMAGE_EXTENSIONS = [
+        "jpg", "jpeg", "jfif", "jpe", "png", "gif", "svg", "webp", "avif", "bmp",
+    ];
+    // None of the send calls below define an `error:` callback — one of them has no
+    // callbacks at all — so a rejected upload used to leave the send button spinning
+    // with nothing shown. Scoped to the send route so form handlers that already
+    // report their own 422s are untouched.
+    $(document).ajaxError(function (event, xhr, settings) {
+        var target =
+            window.Laravel && window.Laravel.routes
+                ? window.Laravel.routes.chatSend
+                : null;
+        if (!target || ((settings && settings.url) || "").indexOf(target) === -1) {
+            return;
+        }
+        $(".Send").removeClass("sendloading");
+        $("#loading").removeClass("loading");
+        $("#loading-content").removeClass("loading-content");
+
+        var msg = "Message could not be sent.";
+        if (xhr.status === 413) {
+            msg = "That file is too large to send.";
+        } else if (xhr.status === 422 && xhr.responseJSON) {
+            var errors = xhr.responseJSON.errors;
+            msg = errors
+                ? $.map(errors, function (value) {
+                      return value[0];
+                  }).join(" ")
+                : xhr.responseJSON.message || msg;
+        }
+        if (typeof toastr !== "undefined") {
+            toastr.error(msg);
+        }
+    });
+
     var sender_id = window.Laravel.authUserId;
     var receiver_id = null;
     var pastedFiles = []; // Store pasted image files
@@ -783,7 +821,7 @@ $(document).ready(function () {
                 ? chat.attachment_name
                 : chat.attachment;
             if (
-                ["jpg", "jpeg", "jfif", "png", "gif", "svg", "webp"].includes(extension)
+                CHAT_INLINE_IMAGE_EXTENSIONS.includes(extension)
             ) {
                 html += `<p class="messageContent"><a href="${fileUrl}" class="chat-image-preview" data-image-url="${fileUrl}" data-file-name="${dataFileName}">
                     <img class="chat-image-attachment" src="${fileUrl}" alt="attachment" style="max-width: 280px; max-height: 360px; width: auto; height: auto;">
@@ -1074,7 +1112,7 @@ $(document).ready(function () {
                 let extension = attachment.split(".").pop().toLowerCase();
 
                 if (
-                    ["jpg", "jpeg", "jfif", "png", "gif", "svg", "webp"].includes(
+                    CHAT_INLINE_IMAGE_EXTENSIONS.includes(
                         extension,
                     )
                 ) {

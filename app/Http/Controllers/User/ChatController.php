@@ -239,6 +239,10 @@ class ChatController extends Controller
 
     public function send(Request $request)
     {
+        // Outside the try: a ValidationException must reach the handler as a 422,
+        // not be flattened into the generic catch below.
+        $request->validate(Helper::chatAttachmentRules());
+
         try {
             // count chat
             $chat_count = Chat::where(function ($query) use ($request) {

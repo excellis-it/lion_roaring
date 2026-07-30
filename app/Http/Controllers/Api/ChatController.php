@@ -504,6 +504,10 @@ class ChatController extends Controller
      */
     public function send(Request $request)
     {
+        // Outside the try: a ValidationException must reach the handler as a 422,
+        // not be flattened into the generic catch below.
+        $request->validate(Helper::chatAttachmentRules());
+
         try {
             // Count chat
             $chat_count = Chat::where(function ($query) use ($request) {
@@ -604,7 +608,10 @@ class ChatController extends Controller
             return 'text';
         }
 
-        $extension = strtolower($file->getClientOriginalExtension());
+        // Callers pass either an UploadedFile or a stored attachment path.
+        $extension = is_string($file)
+            ? strtolower(pathinfo(parse_url($file, PHP_URL_PATH) ?? $file, PATHINFO_EXTENSION))
+            : strtolower($file->getClientOriginalExtension());
 
         $image_extensions = \App\Helpers\Helper::chatImageExtensions();
         $audio_extensions = ['mp3', 'wav', 'ogg', 'oga', 'aac', 'm4a'];
