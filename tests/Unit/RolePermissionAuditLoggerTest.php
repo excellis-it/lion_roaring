@@ -1,0 +1,71 @@
+<?php
+
+namespace Tests\Unit;
+
+use App\Models\RolePermissionAuditLog;
+use App\Models\User;
+use App\Services\RolePermissionAuditLogger;
+use Illuminate\Foundation\Testing\DatabaseTransactions;
+use Tests\Support\CreatesApiUsers;
+use Tests\TestCase;
+
+class RolePermissionAuditLoggerTest extends TestCase
+{
+    use CreatesApiUsers;
+    use DatabaseTransactions;
+
+    public function test_diff_permissions_computes_added_and_removed(): void
+    {
+        $logger = new RolePermissionAuditLogger();
+        $diff = $logger->diffPermissions(['A', 'B'], ['B', 'C']);
+
+        $this->assertSame(['C'], $diff['added']);
+        $this->assertSame(['A'], $diff['removed']);
+    }
+
+    public function test_log_skips_noop_when_permissions_unchanged(): void
+    {
+        $logger = new RolePermissionAuditLogger();
+        $result = $logger->log([
+            'action' => 'member_permissions_updated',
+            'source' => 'pma',
+            'old_permissions' => ['Manage Chat'],
+            'new_permissions' => ['Manage Chat'],
+            'old_role_name' => 'MEMBER_SOVEREIGN',
+            'new_role_name' => 'MEMBER_SOVEREIGN',
+            'old_user_type' => 'Regional',
+            'new_user_type' => 'Regional',
+        ]);
+
+        $this->assertNull($result);
+        $this->assertSame(0, RolePermissionAuditLog::count());
+    }
+
+    public function test_log_persists_row_and_never_throws_on_success(): void
+    {
+        $actor = $this->createApiUser(['first_name' => 'Actor', 'last_name' => 'One']);
+        $this->actingAs($actor);
+
+        $target = $this->createApiUser(['first_name' => 'Target', 'last_name' => 'Two', 'country' => 1]);
+
+        $logger = new RolePermissionAuditLogger();
+        $row = $logger->log([
+            'action' => 'member_role_updated',
+            'source' => 'pma',
+            'target_user_id' => $target->id,
+            'target_user_name' => 'Target Two',
+            'target_user_email' => $target->email,
+            'target_country_id' => $target->country,
+            'old_role_name' => 'OLD',
+            'new_role_name' => 'NEW',
+            'old_permissions' => ['A'],
+            'new_permissions' => ['A', 'B'],
+        ]);
+
+        $this->assertInstanceOf(RolePermissionAuditLog::class, $row);
+        $this->assertSame('member_role_updated', $row->action);
+        $this->assertSame($actor->id, $row->actor_id);
+        $this->assertSame(['B'], $row->permissions_added);
+        $this->assertSame([], $row->permissions_removed);
+    }
+}
