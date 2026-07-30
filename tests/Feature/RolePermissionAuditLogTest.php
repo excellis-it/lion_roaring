@@ -60,7 +60,7 @@ class RolePermissionAuditLogTest extends TestCase
         return $user->fresh();
     }
 
-    public function test_guest_without_permission_forbidden(): void
+    public function test_user_without_permission_forbidden(): void
     {
         $user = $this->createApiUser(['membership_excluded' => true]);
         $this->asAuditUser($user)
@@ -128,9 +128,36 @@ class RolePermissionAuditLogTest extends TestCase
     public function test_export_returns_successful_download(): void
     {
         $user = $this->manager();
-        $this->asAuditUser($user)
-            ->get(route('partners.audit-logs.export'))
-            ->assertOk();
+        $response = $this->asAuditUser($user)
+            ->get(route('partners.audit-logs.export'));
+
+        $response->assertOk();
+
+        $disposition = $response->headers->get('content-disposition');
+        $this->assertNotNull($disposition);
+        $this->assertStringContainsString('role_permission_audit', $disposition);
+        $this->assertStringContainsString('.xlsx', $disposition);
+    }
+
+    public function test_member_export_returns_successful_download(): void
+    {
+        $manager = $this->manager();
+        $target = $this->createApiUser([
+            'first_name' => 'Mem',
+            'last_name' => 'Ber',
+            'user_type' => 'Global',
+            'membership_excluded' => true,
+        ]);
+
+        $response = $this->asAuditUser($manager)
+            ->get(route('partners.audit-logs.member.export', Crypt::encrypt($target->id)));
+
+        $response->assertOk();
+
+        $disposition = $response->headers->get('content-disposition');
+        $this->assertNotNull($disposition);
+        $this->assertStringContainsString('role_permission_audit', $disposition);
+        $this->assertStringContainsString('.xlsx', $disposition);
     }
 
     public function test_sync_tier_permissions_creates_membership_privilege_synced_audit_log(): void
