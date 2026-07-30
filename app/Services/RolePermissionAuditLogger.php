@@ -9,6 +9,33 @@ use Throwable;
 
 class RolePermissionAuditLogger
 {
+    public const FIELD_LABELS = [
+        'first_name' => 'First Name',
+        'middle_name' => 'Middle Name',
+        'last_name' => 'Last Name',
+        'email' => 'Email',
+        'phone' => 'Phone',
+        'phone_country_code_name' => 'Phone Country',
+        'user_name' => 'Username',
+        'lion_roaring_id' => 'Lion Roaring ID',
+        'roar_id' => 'Roar ID',
+        'user_type' => 'User Type',
+        'role' => 'Profile Role',
+        'permissions' => 'Permissions',
+        'ecclesia' => 'House of Ecclesia',
+        'is_ecclesia_admin' => 'Ecclesia Admin',
+        'manage_ecclesia' => 'Manage Ecclesia',
+        'country' => 'Country',
+        'state' => 'State',
+        'city' => 'City',
+        'zip' => 'Zip',
+        'address' => 'Address',
+        'address2' => 'Address 2',
+        'membership_excluded' => 'Membership Excluded',
+        'membership_tier' => 'Membership Tier',
+        'password' => 'Password',
+    ];
+
     public function normalizePermissions(iterable $names): array
     {
         return collect($names)
@@ -31,8 +58,70 @@ class RolePermissionAuditLogger
         ];
     }
 
+    /**
+     * @param  array<string, mixed>  $old
+     * @param  array<string, mixed>  $new
+     * @return array<int, array{field: string, label: string, old: mixed, new: mixed}>
+     */
+    public function buildFieldChanges(array $old, array $new): array
+    {
+        $keys = array_values(array_unique(array_merge(array_keys($old), array_keys($new))));
+        $changes = [];
+
+        foreach ($keys as $key) {
+            $oldVal = $old[$key] ?? null;
+            $newVal = $new[$key] ?? null;
+
+            if ($key === 'password') {
+                if (!empty($newVal)) {
+                    $changes[] = [
+                        'field' => 'password',
+                        'label' => self::FIELD_LABELS['password'],
+                        'old' => null,
+                        'new' => '(changed)',
+                    ];
+                }
+                continue;
+            }
+
+            if ($key === 'permissions') {
+                $oldPerms = $this->normalizePermissions(is_array($oldVal) ? $oldVal : []);
+                $newPerms = $this->normalizePermissions(is_array($newVal) ? $newVal : []);
+                if ($oldPerms === $newPerms) {
+                    continue;
+                }
+                $changes[] = [
+                    'field' => 'permissions',
+                    'label' => self::FIELD_LABELS['permissions'],
+                    'old' => $oldPerms,
+                    'new' => $newPerms,
+                ];
+                continue;
+            }
+
+            $oldCmp = $this->normalizeComparable($oldVal);
+            $newCmp = $this->normalizeComparable($newVal);
+            if ($oldCmp === $newCmp) {
+                continue;
+            }
+
+            $changes[] = [
+                'field' => $key,
+                'label' => self::FIELD_LABELS[$key] ?? ucwords(str_replace('_', ' ', $key)),
+                'old' => $this->displayValue($oldVal),
+                'new' => $this->displayValue($newVal),
+            ];
+        }
+
+        return $changes;
+    }
+
     public function hasMeaningfulChange(array $payload): bool
     {
+        if (!empty($payload['field_changes']) && is_array($payload['field_changes'])) {
+            return true;
+        }
+
         if (($payload['old_role_name'] ?? null) !== ($payload['new_role_name'] ?? null)) {
             return true;
         }
@@ -80,6 +169,10 @@ class RolePermissionAuditLogger
             $payload['permissions_added'] = $payload['permissions_added'] ?? $diff['added'];
             $payload['permissions_removed'] = $payload['permissions_removed'] ?? $diff['removed'];
 
+            if (isset($payload['field_changes']) && is_array($payload['field_changes'])) {
+                $payload['field_changes'] = array_values($payload['field_changes']);
+            }
+
             if (!$this->hasMeaningfulChange($payload)) {
                 return null;
             }
@@ -105,9 +198,43 @@ class RolePermissionAuditLogger
         } catch (Throwable $e) {
             Log::error('RolePermissionAuditLogger failed: ' . $e->getMessage(), [
                 'action' => $payload['action'] ?? null,
+                'exception' => $e,
             ]);
 
             return null;
         }
+    }
+
+    private function normalizeComparable(mixed $value): string
+    {
+        if (is_bool($value)) {
+            return $value ? '1' : '0';
+        }
+        if (is_array($value)) {
+            $normalized = array_map(fn ($v) => trim((string) $v), $value);
+            sort($normalized);
+
+            return implode('|', $normalized);
+        }
+        if ($value === null) {
+            return '';
+        }
+
+        return trim((string) $value);
+    }
+
+    private function displayValue(mixed $value): mixed
+    {
+        if (is_bool($value)) {
+            return $value ? 'Yes' : 'No';
+        }
+        if (is_array($value)) {
+            return array_values($value);
+        }
+        if ($value === null || $value === '') {
+            return null;
+        }
+
+        return is_scalar($value) ? (string) $value : $value;
     }
 }

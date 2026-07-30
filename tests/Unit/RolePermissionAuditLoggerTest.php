@@ -48,6 +48,59 @@ class RolePermissionAuditLoggerTest extends TestCase
         $this->assertSame(0, RolePermissionAuditLog::count());
     }
 
+    public function test_build_field_changes_includes_only_changed_fields_and_masks_password(): void
+    {
+        $logger = new RolePermissionAuditLogger();
+        $changes = $logger->buildFieldChanges(
+            [
+                'email' => 'a@example.com',
+                'city' => 'Austin',
+                'password' => null,
+            ],
+            [
+                'email' => 'b@example.com',
+                'city' => 'Austin',
+                'password' => true,
+            ]
+        );
+
+        $this->assertCount(2, $changes);
+        $this->assertSame('email', $changes[0]['field']);
+        $this->assertSame('a@example.com', $changes[0]['old']);
+        $this->assertSame('b@example.com', $changes[0]['new']);
+        $this->assertSame('password', $changes[1]['field']);
+        $this->assertSame('(changed)', $changes[1]['new']);
+    }
+
+    public function test_log_persists_field_changes_for_member_updated(): void
+    {
+        $actor = $this->createApiUser(['first_name' => 'Actor', 'last_name' => 'One']);
+        $this->actingAs($actor);
+        $target = $this->createApiUser(['first_name' => 'Target', 'last_name' => 'Two', 'country' => 1]);
+
+        $logger = new RolePermissionAuditLogger();
+        $row = $logger->log([
+            'action' => 'member_updated',
+            'source' => 'pma',
+            'target_user_id' => $target->id,
+            'target_user_name' => 'Target Two',
+            'target_user_email' => $target->email,
+            'target_country_id' => $target->country,
+            'field_changes' => [
+                [
+                    'field' => 'email',
+                    'label' => 'Email',
+                    'old' => 'old@example.com',
+                    'new' => 'new@example.com',
+                ],
+            ],
+        ]);
+
+        $this->assertInstanceOf(RolePermissionAuditLog::class, $row);
+        $this->assertSame('member_updated', $row->action);
+        $this->assertSame('email', $row->field_changes[0]['field']);
+    }
+
     public function test_log_persists_row_and_never_throws_on_success(): void
     {
         $actor = $this->createApiUser(['first_name' => 'Actor', 'last_name' => 'One']);
@@ -57,7 +110,7 @@ class RolePermissionAuditLoggerTest extends TestCase
 
         $logger = new RolePermissionAuditLogger();
         $row = $logger->log([
-            'action' => 'member_role_updated',
+            'action' => 'member_updated',
             'source' => 'pma',
             'target_user_id' => $target->id,
             'target_user_name' => 'Target Two',
@@ -70,7 +123,7 @@ class RolePermissionAuditLoggerTest extends TestCase
         ]);
 
         $this->assertInstanceOf(RolePermissionAuditLog::class, $row);
-        $this->assertSame('member_role_updated', $row->action);
+        $this->assertSame('member_updated', $row->action);
         $this->assertSame($actor->id, $row->actor_id);
         $this->assertSame(['B'], $row->permissions_added);
         $this->assertSame([], $row->permissions_removed);
@@ -112,12 +165,12 @@ class RolePermissionAuditLoggerTest extends TestCase
             ->once()
             ->withArgs(function (string $message, array $context): bool {
                 return str_contains($message, 'RolePermissionAuditLogger failed:')
-                    && ($context['action'] ?? null) === 'member_role_updated';
+                    && ($context['action'] ?? null) === 'member_updated';
             });
 
         $logger = new RolePermissionAuditLogger();
         $result = $logger->log([
-            'action' => 'member_role_updated',
+            'action' => 'member_updated',
             'source' => 'pma',
             'target_user_id' => 999999999,
             'old_role_name' => 'OLD',

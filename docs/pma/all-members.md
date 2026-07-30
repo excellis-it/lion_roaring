@@ -24,11 +24,14 @@ Partners / all-members directory (create, edit, status, export, agreement detail
 
 ### Role & permission audit logs
 
-- **Header button** — After **Export Report**, an **Audit Logs** button (history icon) opens the global audit index (`partners.audit-logs`). Shown only when the viewer passes the audit access gate.
-- **Per-row action** — Each member row includes a history icon linking to that member’s audit page (`partners.audit-logs.member`, encrypted user id). Shown only when the viewer passes the audit access gate (members already visible in the list).
-- **Global page** — Title: `Role & Permission Audit Logs`. Table: date/time, action, actor, target member (or role template name for template-only rows), role old → new, permissions +/- summary, source, IP. Expandable row detail: full permission before/after lists, user type and membership tier changes, user agent, meta. Filters: date range, action, source, actor, target member, role name. Pagination; newest first. Empty state: `No audit logs yet`.
-- **Per-member page** — Title: `Audit Logs — {Member Name}`. Same table and filters except target-member filter is omitted (scope is fixed to that member). Back link to Members List.
-- **Export** — **Export** downloads Excel (`.xlsx`) of the current filtered result set, capped at 5000 rows. Routes: `partners.audit-logs.export` (global) and `partners.audit-logs.member.export` (per member). Export uses the same visibility scoping as the list.
+- **Header button** — After **Export Report**, an **Audit Logs** button (history icon) opens the global audit timeline (`partners.audit-logs`). Shown only when the viewer passes the audit access gate.
+- **Per-row action** — Each member row includes a history icon linking to that member’s audit timeline (`partners.audit-logs.member`, encrypted user id).
+- **Timeline UI** — Modern card timeline (not a dense table). Each save is one card with actor, time, action/source badges, and expandable field-level before → after diffs.
+- **Member create/edit logging** — One row per save (`member_created` / `member_updated`) with `field_changes` JSON covering all Member Edit fields that changed (name, email, phone, IDs, address/location, ecclesia, membership, user type, role, permissions). Password changes are logged as `(changed)` only — never plaintext.
+- **Still separate cards** — Role Permission template create/update/delete and membership privilege auto-sync remain their own actions.
+- **Legacy rows** — Older role-only rows (without `field_changes`) still render with role/permission summaries.
+- **Filters** — Date range, action, source, actor, target member (global only), role name. Pagination; newest first. Empty state: `No audit logs yet`.
+- **Export** — Excel (`.xlsx`) of the current filtered result set (includes a Field Changes column), capped at 5000 rows.
 
 ## Permissions and conditions
 

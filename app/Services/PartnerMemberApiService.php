@@ -469,7 +469,7 @@ class PartnerMemberApiService
             : $permissions;
 
         app(RolePermissionAuditLogger::class)->log([
-            'action' => 'member_role_created',
+            'action' => 'member_created',
             'source' => 'api',
             'target_user_id' => $data->id,
             'target_user_name' => trim($data->first_name . ' ' . $data->last_name),
@@ -657,7 +657,7 @@ class PartnerMemberApiService
             : $permissions;
 
         app(RolePermissionAuditLogger::class)->log([
-            'action' => 'member_role_updated',
+            'action' => 'member_updated',
             'source' => 'api',
             'target_user_id' => $data->id,
             'target_user_name' => trim($data->first_name . ' ' . $data->last_name),

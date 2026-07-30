@@ -18,7 +18,7 @@ class RolePermissionAuditLog extends Model
         'old_permissions', 'new_permissions', 'permissions_added', 'permissions_removed',
         'old_membership_tier_id', 'old_membership_tier_name',
         'new_membership_tier_id', 'new_membership_tier_name',
-        'ip', 'user_agent', 'country_code', 'meta', 'created_at',
+        'ip', 'user_agent', 'country_code', 'meta', 'field_changes', 'created_at',
     ];
 
     protected $casts = [
@@ -27,6 +27,7 @@ class RolePermissionAuditLog extends Model
         'permissions_added' => 'array',
         'permissions_removed' => 'array',
         'meta' => 'array',
+        'field_changes' => 'array',
         'created_at' => 'datetime',
     ];
 

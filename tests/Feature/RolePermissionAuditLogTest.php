@@ -120,7 +120,7 @@ class RolePermissionAuditLogTest extends TestCase
 
         $this->actingAs($manager);
         app(RolePermissionAuditLogger::class)->log([
-            'action' => 'member_role_updated',
+            'action' => 'member_updated',
             'source' => 'pma',
             'target_user_id' => $target->id,
             'target_user_name' => 'Mem Ber',
@@ -130,13 +130,22 @@ class RolePermissionAuditLogTest extends TestCase
             'new_role_name' => 'B',
             'old_permissions' => [],
             'new_permissions' => ['Manage Chat'],
+            'field_changes' => [
+                [
+                    'field' => 'email',
+                    'label' => 'Email',
+                    'old' => 'old@example.com',
+                    'new' => $target->email,
+                ],
+            ],
         ]);
 
         $this->asAuditUser($manager)
             ->get(route('partners.audit-logs.member', Crypt::encrypt($target->id)))
             ->assertOk()
-            ->assertSee('Member Role Updated')
-            ->assertSee('Mem Ber');
+            ->assertSee('Member Updated')
+            ->assertSee('Mem Ber')
+            ->assertSee('Email');
     }
 
     public function test_regional_manager_cannot_view_other_country_member_audit(): void

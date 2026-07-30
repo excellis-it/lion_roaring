@@ -153,6 +153,8 @@ class RolePermissionAuditLogController extends Controller
     private function actionOptions(): array
     {
         return [
+            'member_created',
+            'member_updated',
             'member_role_created',
             'member_role_updated',
             'member_permissions_updated',

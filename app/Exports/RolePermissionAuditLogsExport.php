@@ -23,12 +23,25 @@ class RolePermissionAuditLogsExport implements FromCollection, WithHeadings, Wit
             'Date', 'Action', 'Source', 'Actor', 'Actor Email',
             'Target Member', 'Target Email', 'Old Role', 'New Role',
             'Old User Type', 'New User Type', 'Permissions Added',
-            'Permissions Removed', 'IP',
+            'Permissions Removed', 'Field Changes', 'IP',
         ];
     }
 
     public function map($row): array
     {
+        $fieldChanges = collect($row->field_changes ?? [])
+            ->map(function ($change) {
+                $old = is_array($change['old'] ?? null)
+                    ? implode(', ', $change['old'])
+                    : ($change['old'] ?? '—');
+                $new = is_array($change['new'] ?? null)
+                    ? implode(', ', $change['new'])
+                    : ($change['new'] ?? '—');
+
+                return ($change['label'] ?? $change['field'] ?? 'field') . ': ' . $old . ' → ' . $new;
+            })
+            ->implode('; ');
+
         return [
             optional($row->created_at)?->format('Y-m-d H:i:s'),
             $row->action,
@@ -43,6 +56,7 @@ class RolePermissionAuditLogsExport implements FromCollection, WithHeadings, Wit
             $row->new_user_type,
             implode(', ', $row->permissions_added ?? []),
             implode(', ', $row->permissions_removed ?? []),
+            $fieldChanges,
             $row->ip,
         ];
     }

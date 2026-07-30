@@ -12,6 +12,7 @@ use App\Mail\RegistrationMail;
 use App\Models\ChatMember;
 use App\Models\Country;
 use App\Models\Ecclesia;
+use App\Models\State;
 use App\Models\Team;
 use App\Models\TeamMember;
 use App\Models\User;
@@ -706,8 +707,12 @@ class PartnerController extends Controller
             ? $data->getAllPermissions()->pluck('name')->all()
             : ($request->has('permissions') ? $request->permissions : $data->getAllPermissions()->pluck('name')->all());
 
-        app(RolePermissionAuditLogger::class)->log([
-            'action' => 'member_role_created',
+        $logger = app(RolePermissionAuditLogger::class);
+        $newSnapshot = $this->memberAuditSnapshot($data, $the_role->name, $newPermissions, $newMembershipTierName, (bool) $request->password);
+        $fieldChanges = $logger->buildFieldChanges([], $newSnapshot);
+
+        $logger->log([
+            'action' => 'member_created',
             'source' => 'pma',
             'target_user_id' => $data->id,
             'target_user_name' => trim($data->first_name . ' ' . $data->last_name),
@@ -721,6 +726,7 @@ class PartnerController extends Controller
             'new_permissions' => $newPermissions,
             'new_membership_tier_id' => $the_role->name === 'MEMBER_SOVEREIGN' ? $newMembershipTierId : null,
             'new_membership_tier_name' => $the_role->name === 'MEMBER_SOVEREIGN' ? $newMembershipTierName : null,
+            'field_changes' => $fieldChanges,
         ]);
 
         $maildata = [
@@ -906,6 +912,13 @@ class PartnerController extends Controller
             $oldMembershipTierName = $oldRoleName === 'MEMBER_SOVEREIGN'
                 ? $data->userLastSubscription?->subscription_name
                 : null;
+            $oldSnapshot = $this->memberAuditSnapshot(
+                $data,
+                $oldRoleName,
+                $oldPermissions,
+                $oldMembershipTierName,
+                false
+            );
 
             $data->first_name = $request->first_name;
             $data->last_name = $request->last_name;
@@ -1043,8 +1056,24 @@ class PartnerController extends Controller
                 ? $data->getAllPermissions()->pluck('name')->all()
                 : ($request->has('permissions') ? $request->permissions : $data->getAllPermissions()->pluck('name')->all());
 
-            app(RolePermissionAuditLogger::class)->log([
-                'action' => 'member_role_updated',
+            if ($the_role->name !== 'MEMBER_SOVEREIGN') {
+                $newMembershipTierId = null;
+                $newMembershipTierName = null;
+            }
+
+            $logger = app(RolePermissionAuditLogger::class);
+            $data->refresh();
+            $newSnapshot = $this->memberAuditSnapshot(
+                $data,
+                $the_role->name,
+                $newPermissions,
+                $newMembershipTierName,
+                (bool) $request->password
+            );
+            $fieldChanges = $logger->buildFieldChanges($oldSnapshot, $newSnapshot);
+
+            $logger->log([
+                'action' => 'member_updated',
                 'source' => 'pma',
                 'target_user_id' => $data->id,
                 'target_user_name' => trim($data->first_name . ' ' . $data->last_name),
@@ -1058,8 +1087,9 @@ class PartnerController extends Controller
                 'new_permissions' => $newPermissions,
                 'old_membership_tier_id' => $oldMembershipTierId,
                 'old_membership_tier_name' => $oldMembershipTierName,
-                'new_membership_tier_id' => $the_role->name === 'MEMBER_SOVEREIGN' ? $newMembershipTierId : null,
-                'new_membership_tier_name' => $the_role->name === 'MEMBER_SOVEREIGN' ? $newMembershipTierName : null,
+                'new_membership_tier_id' => $newMembershipTierId,
+                'new_membership_tier_name' => $newMembershipTierName,
+                'field_changes' => $fieldChanges,
             ]);
 
             return redirect()->route('partners.index')->with('message', 'Member updated successfully.');
@@ -1458,5 +1488,92 @@ class PartnerController extends Controller
         } else {
             return response()->json(['error' => 'Unauthorized'], 403);
         }
+    }
+
+    /**
+     * Snapshot of member edit-page fields for audit diffs (human-readable where possible).
+     *
+     * @param  array<int, string>|null  $permissions
+     * @return array<string, mixed>
+     */
+    private function memberAuditSnapshot(
+        User $user,
+        ?string $roleName,
+        ?array $permissions,
+        ?string $membershipTierName,
+        bool $passwordChanged
+    ): array {
+        return [
+            'first_name' => $user->first_name,
+            'middle_name' => $user->middle_name,
+            'last_name' => $user->last_name,
+            'email' => $user->email,
+            'phone' => $user->phone,
+            'phone_country_code_name' => $user->phone_country_code_name,
+            'user_name' => $user->user_name,
+            'lion_roaring_id' => $user->lion_roaring_id,
+            'roar_id' => $user->roar_id,
+            'user_type' => $user->user_type,
+            'role' => $roleName,
+            'permissions' => $permissions ?? [],
+            'ecclesia' => $this->resolveEcclesiaName($user->ecclesia_id),
+            'is_ecclesia_admin' => (int) ($user->is_ecclesia_admin ?? 0) === 1,
+            'manage_ecclesia' => $this->resolveManageEcclesiaLabel($user->manage_ecclesia),
+            'country' => $this->resolveCountryName($user->country),
+            'state' => $this->resolveStateName($user->state),
+            'city' => $user->city,
+            'zip' => $user->zip,
+            'address' => $user->address,
+            'address2' => $user->address2,
+            'membership_excluded' => (bool) ($user->membership_excluded ?? false),
+            'membership_tier' => $membershipTierName,
+            'password' => $passwordChanged ? true : null,
+        ];
+    }
+
+    private function resolveCountryName(mixed $countryId): ?string
+    {
+        if ($countryId === null || $countryId === '') {
+            return null;
+        }
+
+        return Country::query()->where('id', $countryId)->value('name') ?: (string) $countryId;
+    }
+
+    private function resolveStateName(mixed $stateId): ?string
+    {
+        if ($stateId === null || $stateId === '') {
+            return null;
+        }
+
+        return State::query()->where('id', $stateId)->value('name') ?: (string) $stateId;
+    }
+
+    private function resolveEcclesiaName(mixed $ecclesiaId): ?string
+    {
+        if ($ecclesiaId === null || $ecclesiaId === '') {
+            return null;
+        }
+
+        return Ecclesia::query()->where('id', $ecclesiaId)->value('name') ?: (string) $ecclesiaId;
+    }
+
+    private function resolveManageEcclesiaLabel(mixed $manageEcclesia): ?string
+    {
+        if ($manageEcclesia === null || $manageEcclesia === '') {
+            return null;
+        }
+
+        $ids = is_array($manageEcclesia)
+            ? $manageEcclesia
+            : array_filter(array_map('trim', explode(',', (string) $manageEcclesia)));
+
+        if ($ids === []) {
+            return null;
+        }
+
+        $names = Ecclesia::query()->whereIn('id', $ids)->pluck('name')->all();
+
+        return $names !== [] ? implode(', ', $names) : implode(', ', $ids);
     }
 }
