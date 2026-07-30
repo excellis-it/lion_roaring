@@ -21,25 +21,16 @@
         '[data-user-name]'
     ].join(',');
 
-    var NAME_INPUT_SELECTORS = [
-        'input[name="first_name"]',
-        'input[name="last_name"]',
-        'input[name="middle_name"]',
-        'input[name="user_name"]',
-        'input[name="full_name"]',
-        'input[name="edit_user_name"]',
-        'input[name="edit_first_name"]',
-        'input[name="edit_last_name"]',
-        'input[id="first_name"]',
-        'input[id="last_name"]',
-        'input[id="middle_name"]',
-        'input[id="user_name"]',
-        'input[id="register-first-name"]',
-        'input[id="register-last-name"]',
-        'textarea[name="first_name"]',
-        'textarea[name="last_name"]',
-        'textarea[name="full_name"]'
-    ].join(',');
+    /*
+     * Name INPUTS are deliberately not marked any more.
+     *
+     * The old Google widget rewrote input values, so the whole field had to be
+     * flagged `notranslate`. LrTranslate never touches a text input's value — it
+     * only translates submit/button captions, and it already excludes name fields
+     * there. Flagging the element made `isSkipped()` true for the element as a
+     * whole, which also suppressed its **placeholder** and `title`: that is why
+     * "Middle Name" stayed English on a fully translated profile page.
+     */
 
     function protectElement(el) {
         if (!el || el.nodeType !== 1) {
@@ -58,7 +49,6 @@
             return;
         }
         root.querySelectorAll(NAME_NODE_SELECTORS).forEach(protectElement);
-        root.querySelectorAll(NAME_INPUT_SELECTORS).forEach(protectElement);
     }
 
     function boot() {
@@ -76,7 +66,7 @@
                     if (node.nodeType !== 1) {
                         continue;
                     }
-                    if (node.matches && (node.matches(NAME_NODE_SELECTORS) || node.matches(NAME_INPUT_SELECTORS))) {
+                    if (node.matches && node.matches(NAME_NODE_SELECTORS)) {
                         protectElement(node);
                     }
                     scan(node);

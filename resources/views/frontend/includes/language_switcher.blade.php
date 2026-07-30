@@ -1,8 +1,12 @@
 @php
     use App\Helpers\Helper;
 
+    // Our language table lists ~56 codes Google cannot translate (crh-Latn, sat,
+    // ber, wo, …). Offering them produced a 400 for every batch and a page that
+    // silently stayed in English, so they are hidden rather than shown as broken.
     $languageOptions = collect(Helper::getVisitorCountryLanguages())
         ->filter(fn ($lang) => !empty($lang->code))
+        ->filter(fn ($lang) => \App\Services\GoogleTranslateService::isSupportedLanguage($lang->code))
         ->unique('code')
         ->sortBy('name')
         ->values();

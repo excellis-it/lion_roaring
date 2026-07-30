@@ -25,6 +25,7 @@
     var ENDPOINT = CFG.endpoint || '/translate/batch';
     var CSRF = CFG.csrf || '';
     var CACHE_VERSION = CFG.cacheVersion || 'v1';
+    var SURFACE = CFG.surface || 'website';
     var DEBUG = !!CFG.debug;
 
     var LANG_KEY = 'lr_content_lang';
@@ -208,7 +209,9 @@
         if (/^[^\d]?\s?[\d.,\s]+\s?[A-Za-z%]{0,4}$/.test(text)) return false; // numbers/money/units
         if (/^\S+@\S+\.\S+$/.test(text)) return false;                        // email
         if (/^(https?:\/\/|www\.|\/)\S*$/i.test(text)) return false;          // url/path
-        if (text.indexOf(' ') === -1 && /^[\w\-.:#]+$/.test(text) && /[\d_\-]/.test(text)) return false;
+        // Hyphen alone is not an identifier marker: "E-Learning", "E-Store",
+        // "Sign-in" and "non-profit" are words. Require a digit or underscore.
+        if (text.indexOf(' ') === -1 && /^[\w\-.:#]+$/.test(text) && /[\d_]/.test(text)) return false;
         return true;
     }
 
@@ -518,7 +521,8 @@
                 'Content-Type': 'application/json',
                 'Accept': 'application/json',
                 'X-CSRF-TOKEN': CSRF,
-                'X-Requested-With': 'XMLHttpRequest'
+                'X-Requested-With': 'XMLHttpRequest',
+                'X-LR-Surface': SURFACE
             },
             body: JSON.stringify({ target: lang, items: items })
         }).then(function (res) {

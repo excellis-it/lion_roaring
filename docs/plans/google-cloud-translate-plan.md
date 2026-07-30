@@ -68,6 +68,29 @@ Also removed: dead `session_daily_char_limit` config (the per-visitor quota was 
 
 **Test suites:** 66 assertions across 6 files in `tests/js/`.
 
+**2026-07-30 (e) — bad language pairs + per-page cost logging**
+
+*Bug: `Bad language pair: uk-Latn|hi`.* Google's **detect** endpoint returns codes the **translate** endpoint rejects (`uk-Latn` romanised Ukrainian). One such detection 400'd an entire 128-string chunk, and the bad code was cached in `translation_source`, so it failed forever. The same mismatch existed for targets: **57 of the 249 codes in `translate_languages` are not translatable by Google at all** (`crh-Latn`, `sat`, `ber`, `wo`, …) — selecting one 400'd every batch and left the page silently English.
+
+- `supportedLanguages()` pulls Google's real list (`/languages`, cached 7 days, fails open).
+- `usableSourceLang()` coerces a detected code to a valid source (`uk-Latn` → `uk`), else falls back to auto-detect for that group only.
+- Detected codes are sanitised **before** being cached, so a detection-only variant can never be replayed.
+- Defensive: a 400 mentioning "Bad language pair" retries that chunk once without `source` instead of losing 128 strings.
+- Unsupported targets are rejected up front and hidden from the switcher (192 offered instead of 249).
+- Existing `translation_source` rows were repaired in place.
+
+*Feature: per-page translation summary log.* `Log::info('translate.page', …)` on every batch, toggled by `TRANSLATE_LOG_SUMMARY`:
+
+```
+translate.page page=/user/profile surface=user_pma target=hi
+  pairs=[en>hi:1, es>hi:1, hi>hi:1]  api_status=[200x3]  api_calls=3
+  items=5 submitted=125 translated=78 detected=78 billed=156
+  cache_reused=2 already_in_target=1 unresolved=0
+  cost=$0.003120 duration=1248ms
+```
+
+Warm repeat of the same page: `pairs=[(all cached)] api_status=[(no api call)] billed=0 cost=$0.000000 duration=9ms`.
+
 **Measured:** warming every public page costs **$1.79 per language** (858 distinct strings, 89,698 chars after dedupe — down from ~4,500 raw strings). Cache hits cost nothing and are not counted against the budget.
 
 ---

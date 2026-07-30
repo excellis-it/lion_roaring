@@ -60,6 +60,20 @@ class GoogleTranslateService
     /** Characters actually sent to Google during this PHP request (cache hits are free). */
     private static int $billedThisRequest = 0;
 
+    public const USD_PER_MILLION_CHARS = 20;
+
+    /** Everything one HTTP request cost us, for the per-page summary log. */
+    private static array $stats = [
+        'translate_chars' => 0,
+        'detect_chars' => 0,
+        'translate_calls' => 0,
+        'detect_calls' => 0,
+        'cache_hits' => 0,
+        'identity' => 0,
+        'pairs' => [],
+        'statuses' => [],
+    ];
+
     /**
      * Chargeable characters produced so far in this request. Lets the public
      * endpoint meter a visitor on what they actually cost, not on what they submit.
@@ -67,6 +81,43 @@ class GoogleTranslateService
     public static function billedCharsThisRequest(): int
     {
         return self::$billedThisRequest;
+    }
+
+    public static function resetRequestStats(): void
+    {
+        self::$billedThisRequest = 0;
+        self::$stats = [
+            'translate_chars' => 0,
+            'detect_chars' => 0,
+            'translate_calls' => 0,
+            'detect_calls' => 0,
+            'cache_hits' => 0,
+            'identity' => 0,
+            'pairs' => [],
+            'statuses' => [],
+        ];
+    }
+
+    /** @return array<string, mixed> */
+    public static function requestStats(): array
+    {
+        $stats = self::$stats;
+        $billed = $stats['translate_chars'] + $stats['detect_chars'];
+        $stats['billed_chars'] = $billed;
+        $stats['cost_usd'] = round($billed / 1000000 * self::USD_PER_MILLION_CHARS, 6);
+
+        return $stats;
+    }
+
+    private static function noteStatus(int $status): void
+    {
+        self::$stats['statuses'][$status] = (self::$stats['statuses'][$status] ?? 0) + 1;
+    }
+
+    private static function notePair(string $source, string $target, int $count): void
+    {
+        $key = ($source === '' ? 'auto' : $source) . '>' . $target;
+        self::$stats['pairs'][$key] = (self::$stats['pairs'][$key] ?? 0) + $count;
     }
 
     // ── config ──────────────────────────────────────────────────────────────
@@ -143,6 +194,81 @@ class GoogleTranslateService
         return $lower;
     }
 
+    // ── what Google will actually accept ────────────────────────────────────
+
+    /**
+     * Languages the API can translate, straight from Google.
+     *
+     * This list is NOT the same as the list Google can *detect*: detection happily
+     * returns romanised variants such as `uk-Latn`, which the translate endpoint
+     * rejects with "Bad language pair". It is also smaller than our own
+     * `translate_languages` table, which offers dozens of codes Google cannot do.
+     * Either mismatch 400s an entire chunk, so both directions are validated here.
+     *
+     * @return array<int, string> lowercase codes; empty when unknown (fail open)
+     */
+    public static function supportedLanguages(): array
+    {
+        return Cache::remember('translate:google_supported_langs', 60 * 60 * 24 * 7, function () {
+            if (!self::enabled()) {
+                return [];
+            }
+            try {
+                $response = Http::timeout(20)->get(self::ENDPOINT . '/languages', ['key' => self::apiKey()]);
+                if (!$response->successful()) {
+                    return [];
+                }
+                $codes = [];
+                foreach ((array) $response->json('data.languages') as $row) {
+                    $code = is_array($row) ? ($row['language'] ?? null) : null;
+                    if (is_string($code) && $code !== '') {
+                        $codes[] = strtolower($code);
+                    }
+                }
+
+                return $codes;
+            } catch (\Throwable $e) {
+                Log::warning('GoogleTranslateService: could not fetch supported languages', ['message' => $e->getMessage()]);
+
+                return [];
+            }
+        });
+    }
+
+    /** Unknown list = fail open, so a fetch failure never blocks translation. */
+    public static function isSupportedLanguage(string $code): bool
+    {
+        $supported = self::supportedLanguages();
+        if ($supported === []) {
+            return true;
+        }
+
+        return in_array(strtolower(trim($code)), $supported, true);
+    }
+
+    /**
+     * Coerce a detected language into something usable as a translate `source`.
+     * Falls back to the base subtag (`uk-Latn` → `uk`) and finally to '' meaning
+     * "let Google auto-detect", which always works and only costs a little more.
+     */
+    public static function usableSourceLang(string $code): string
+    {
+        $code = self::normalizeLangCode($code);
+        if ($code === '' || $code === 'auto' || $code === self::SOURCE_DETECT) {
+            return '';
+        }
+        if (self::isSupportedLanguage($code)) {
+            return $code;
+        }
+
+        $base = strtolower(explode('-', $code, 2)[0]);
+        if ($base !== '' && $base !== strtolower($code) && self::isSupportedLanguage($base)) {
+            return $base;
+        }
+
+        return '';
+    }
+
     public static function isEnglish(string $code): bool
     {
         $c = strtolower(trim($code));
@@ -180,8 +306,10 @@ class GoogleTranslateService
         if (preg_match('#^(https?://|www\.|/)\S*$#i', $t)) {
             return false;
         }
-        // Bare identifiers/slugs with no spaces: "user_name", "btn-primary", "ID-4471"
-        if (!str_contains($t, ' ') && preg_match('/^[\w\-.:#]+$/u', $t) && preg_match('/[\d_\-]/', $t)) {
+        // Bare identifiers with no spaces: "user_name", "ID-4471", "col_2".
+        // A hyphen alone must NOT qualify — "E-Learning", "E-Store", "Sign-in" and
+        // "non-profit" are ordinary words and were silently never translated.
+        if (!str_contains($t, ' ') && preg_match('/^[\w\-.:#]+$/u', $t) && preg_match('/[\d_]/', $t)) {
             return false;
         }
 
@@ -335,6 +463,7 @@ class GoogleTranslateService
         }
 
         if ($hits > 0) {
+            self::$stats['cache_hits'] += $hits;
             self::recordUsage($target, 0, 0, $hits);
         }
 
@@ -362,10 +491,16 @@ class GoogleTranslateService
         // translate each group with an explicit source. Strings already in the target
         // language are recorded as identity so they are never processed again.
         foreach (self::groupBySourceLanguage($missing) as $detected => $group) {
+            // Detection can return codes translation rejects (uk-Latn). Coerce to
+            // something usable, or fall back to auto-detect for just this group.
+            $source = self::usableSourceLang((string) $detected);
+
             // Already in the requested language — record identity so this string is
             // never detected or translated again, and hand back the author's words
             // untouched rather than round-tripping them through Google.
-            if ($detected === '' || self::sameLanguage($detected, $target)) {
+            if ($source !== '' && self::sameLanguage($source, $target)) {
+                self::$stats['identity'] += count($group);
+                self::notePair($source, $target, count($group));
                 self::persistIdentity($group, $target);
                 foreach ($group as $h => $text) {
                     $resolved[$h] = $text;
@@ -374,7 +509,7 @@ class GoogleTranslateService
                 continue;
             }
 
-            foreach (self::callApiForMissing($group, $target, $detected) as $h => $translated) {
+            foreach (self::callApiForMissing($group, $target, $source ?: 'auto') as $h => $translated) {
                 $resolved[$h] = $translated;
             }
         }
@@ -568,6 +703,7 @@ class GoogleTranslateService
                     $retry[] = $i;
                     continue;
                 }
+                self::noteStatus($response->status());
                 if ($response->status() === 429 || $response->status() >= 500) {
                     $retry[] = $i;
                     continue;
@@ -593,7 +729,9 @@ class GoogleTranslateService
                     $best = is_array($candidates) ? ($candidates[0] ?? null) : null;
                     $lang = is_array($best) ? ($best['language'] ?? null) : null;
                     if (is_string($lang) && $lang !== '') {
-                        $out[$hashes[$k]] = self::normalizeLangCode($lang) ?: 'en';
+                        // Store only codes translation can actually consume, so a
+                        // detection-only variant never gets cached and replayed.
+                        $out[$hashes[$k]] = self::usableSourceLang($lang) ?: 'en';
                     }
                 }
 
@@ -603,6 +741,8 @@ class GoogleTranslateService
 
             // Detection is billed at the translation rate — count it honestly.
             if ($calls > 0) {
+                self::$stats['detect_chars'] += $billed;
+                self::$stats['detect_calls'] += $calls;
                 self::recordUsage('detect', $billed, $calls, 0);
             }
 
@@ -703,6 +843,9 @@ class GoogleTranslateService
         }
 
         if ($calls > 0) {
+            self::$stats['translate_chars'] += $billedChars;
+            self::$stats['translate_calls'] += $calls;
+            self::notePair($source, $target, count($resolved));
             self::recordUsage($target, $billedChars, $calls, 0);
         }
 
@@ -769,15 +912,32 @@ class GoogleTranslateService
                     $retry[] = $i;
                     continue;
                 }
+                self::noteStatus($response->status());
                 if ($response->status() === 429 || $response->status() >= 500) {
                     $retry[] = $i;
                     continue;
                 }
                 if (!$response->successful()) {
+                    $body = $response->body();
+
+                    // "Bad language pair" means the source we supplied is not a valid
+                    // translate source. Rather than lose up to 128 strings, redo this
+                    // one chunk letting Google detect the source itself.
+                    if ($source !== '' && $source !== 'auto' && str_contains($body, 'Bad language pair')) {
+                        Log::warning('GoogleTranslateService: unusable source, retrying with auto-detect', [
+                            'source' => $source,
+                            'target' => $target,
+                        ]);
+                        $retryAuto = self::requestChunksConcurrently([$wave[$i]], $target, 'auto');
+                        $results[$i] = $retryAuto[0] ?? null;
+                        continue;
+                    }
+
                     Log::warning('GoogleTranslateService: API error', [
                         'status' => $response->status(),
-                        'body' => mb_substr($response->body(), 0, 500),
+                        'body' => mb_substr($body, 0, 500),
                         'target' => $target,
+                        'source' => $source,
                     ]);
                     $results[$i] = null;
                     continue;

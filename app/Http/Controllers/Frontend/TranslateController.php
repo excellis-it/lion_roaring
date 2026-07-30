@@ -8,6 +8,7 @@ use App\Services\GoogleTranslateService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\Log;
 
 /**
  * Batch translation proxy for the client-side DOM engine (lr-translate.js).
@@ -47,7 +48,9 @@ class TranslateController extends Controller
             return $this->passthrough($items, $target, 'source_language');
         }
 
-        if (!self::isAllowedLanguage($target)) {
+        // Offered by us AND actually translatable by Google — our language table
+        // lists dozens of codes the API rejects, which used to 400 the whole batch.
+        if (!self::isAllowedLanguage($target) || !GoogleTranslateService::isSupportedLanguage($target)) {
             return $this->passthrough($items, $target, 'language_not_allowed');
         }
 
@@ -66,6 +69,9 @@ class TranslateController extends Controller
         // Public endpoint: meter each visitor on chargeable characters. Cache hits
         // cost nothing and are not counted, so real browsing never trips this — but
         // a client feeding us novel text cannot run up an unbounded Google bill.
+        GoogleTranslateService::resetRequestStats();
+        $startedAt = microtime(true);
+
         $quotaKey = $this->visitorQuotaKey($request);
         $quota = (int) config('services.google.translate.visitor_daily_billed_chars', 150000);
         // Over quota still serves everything already paid for — it just stops buying
@@ -99,6 +105,8 @@ class TranslateController extends Controller
             }
         }
 
+        $this->logSummary($request, $target, count($items), $missing, $chars, $cacheOnly, $startedAt);
+
         return response()->json([
             'ok' => true,
             'target' => $target,
@@ -124,6 +132,62 @@ class TranslateController extends Controller
         });
 
         return in_array($target, $allowed, true);
+    }
+
+    /**
+     * One line per translated page batch: which languages, what Google answered,
+     * how much was bought, how much was reused, and what it cost.
+     *
+     * Example:
+     *   translate.page /user/profile en>hi,es>hi status=200x2 items=412 sent=8,231
+     *   reused=390 identity=12 unresolved=0 cost=$0.000165 in 843ms
+     */
+    private function logSummary(
+        Request $request,
+        string $target,
+        int $items,
+        int $unresolved,
+        int $submittedChars,
+        bool $cacheOnly,
+        float $startedAt
+    ): void {
+        if (!config('services.google.translate.log_summary', true)) {
+            return;
+        }
+
+        $s = GoogleTranslateService::requestStats();
+
+        $pairs = [];
+        foreach ($s['pairs'] as $pair => $count) {
+            $pairs[] = $pair . ':' . $count;
+        }
+        $statuses = [];
+        foreach ($s['statuses'] as $code => $count) {
+            $statuses[] = $code . 'x' . $count;
+        }
+
+        $referer = (string) $request->headers->get('referer', '');
+        $page = $referer !== '' ? (parse_url($referer, PHP_URL_PATH) ?: '/') : '-';
+
+        Log::info('translate.page', [
+            'page' => $page,
+            'surface' => $request->headers->get('x-lr-surface', '-'),
+            'target' => $target,
+            'pairs' => $pairs === [] ? ['(all cached)'] : $pairs,
+            'api_status' => $statuses === [] ? ['(no api call)'] : $statuses,
+            'items' => $items,
+            'submitted_chars' => $submittedChars,
+            'chars_translated' => $s['translate_chars'],
+            'chars_detected' => $s['detect_chars'],
+            'chars_billed' => $s['billed_chars'],
+            'cache_reused' => $s['cache_hits'],
+            'already_in_target' => $s['identity'],
+            'unresolved' => $unresolved,
+            'api_calls' => $s['translate_calls'] + $s['detect_calls'],
+            'cost_usd' => '$' . number_format($s['cost_usd'], 6),
+            'cache_only' => $cacheOnly,
+            'duration_ms' => (int) round((microtime(true) - $startedAt) * 1000),
+        ]);
     }
 
     /** Binds a browser session, falling back to IP for cookie-less clients. */
