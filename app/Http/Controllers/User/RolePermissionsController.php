@@ -168,7 +168,9 @@ class RolePermissionsController extends Controller
         $role = UserType::findOrFail($id);
         $oldPermissions = $this->templatePermissionNames($role->id);
         $affectedUsers = User::where('user_type_id', $role->id)->count();
+        $previousName = $role->name;
         $wasAdmin = $role->is_admin;
+        $wasEcclesia = $role->is_ecclesia;
         $role->name = $request->role_name;
         $role->is_ecclesia = $request['is_ecclesia'];
         $role->is_admin = $request['is_admin'];
@@ -204,9 +206,17 @@ class RolePermissionsController extends Controller
             'source' => 'pma',
             'role_template_id' => $role->id,
             'role_template_name' => $role->name,
+            'old_role_name' => $previousName,
+            'new_role_name' => $role->name,
             'old_permissions' => $oldPermissions,
             'new_permissions' => $newPermissions,
-            'meta' => ['affected_users' => $affectedUsers],
+            'meta' => [
+                'affected_users' => $affectedUsers,
+                'old_is_admin' => (bool) $wasAdmin,
+                'new_is_admin' => (bool) $role->is_admin,
+                'old_is_ecclesia' => (bool) $wasEcclesia,
+                'new_is_ecclesia' => (bool) $role->is_ecclesia,
+            ],
         ]);
 
         return redirect()->route('roles.index')->with('message', 'Role updated successfully.');

@@ -48,6 +48,16 @@ class RolePermissionAuditLogger
             return true;
         }
 
+        if (($payload['action'] ?? '') === 'role_template_updated') {
+            $meta = $payload['meta'] ?? [];
+            if (($meta['old_is_admin'] ?? null) !== ($meta['new_is_admin'] ?? null)) {
+                return true;
+            }
+            if (($meta['old_is_ecclesia'] ?? null) !== ($meta['new_is_ecclesia'] ?? null)) {
+                return true;
+            }
+        }
+
         $old = $this->normalizePermissions($payload['old_permissions'] ?? []);
         $new = $this->normalizePermissions($payload['new_permissions'] ?? []);
 

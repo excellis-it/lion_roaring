@@ -69,6 +69,36 @@ class RolePermissionAuditLoggerTest extends TestCase
         $this->assertSame([], $row->permissions_removed);
     }
 
+    public function test_has_meaningful_change_for_rename_only_role_template_update(): void
+    {
+        $logger = new RolePermissionAuditLogger();
+
+        $this->assertTrue($logger->hasMeaningfulChange([
+            'action' => 'role_template_updated',
+            'old_role_name' => 'OLD_TEMPLATE',
+            'new_role_name' => 'NEW_TEMPLATE',
+            'old_permissions' => ['Manage Chat'],
+            'new_permissions' => ['Manage Chat'],
+        ]));
+    }
+
+    public function test_has_meaningful_change_for_flag_only_role_template_update(): void
+    {
+        $logger = new RolePermissionAuditLogger();
+
+        $this->assertTrue($logger->hasMeaningfulChange([
+            'action' => 'role_template_updated',
+            'old_permissions' => ['Manage Chat'],
+            'new_permissions' => ['Manage Chat'],
+            'meta' => [
+                'old_is_admin' => false,
+                'new_is_admin' => true,
+                'old_is_ecclesia' => false,
+                'new_is_ecclesia' => false,
+            ],
+        ]));
+    }
+
     public function test_log_returns_null_and_logs_error_when_create_fails(): void
     {
         Log::shouldReceive('error')
