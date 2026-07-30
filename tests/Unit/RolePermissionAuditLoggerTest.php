@@ -14,6 +14,13 @@ class RolePermissionAuditLoggerTest extends TestCase
     use CreatesApiUsers;
     use DatabaseTransactions;
 
+    protected function setUp(): void
+    {
+        parent::setUp();
+
+        RolePermissionAuditLog::query()->delete();
+    }
+
     public function test_diff_permissions_computes_added_and_removed(): void
     {
         $logger = new RolePermissionAuditLogger();
