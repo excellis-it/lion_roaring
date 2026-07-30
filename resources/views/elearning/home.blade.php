@@ -103,7 +103,7 @@
                                     </div>
                                     <div class="feature_text">
                                         <a href="{{ $product['affiliate_link'] }}">{{ $product->name }}</a>
-                                        <p class="desc_text">{{ strlen($product->short_description) > 50 ? substr($product->short_description, 0, 50) . '...' : $product->short_description }}
+                                        <p class="desc_text">{{ Str::limit($product->short_description, 50) }}
                                         </p>
 
                                         <div class="addelarn">
@@ -150,7 +150,7 @@
                                     </div>
                                     <div class="feature_text">
                                         <a href="{{ $product['affiliate_link'] }}">{{ $product->name }}</a>
-                                        <p class="desc_text">{{ strlen($product->short_description) > 50 ? substr($product->short_description, 0, 50) . '...' : $product->short_description }}
+                                        <p class="desc_text">{{ Str::limit($product->short_description, 50) }}
                                         </p>
 
                                         <div class="addelarn">

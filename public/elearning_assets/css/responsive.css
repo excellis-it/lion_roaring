@@ -59,7 +59,7 @@
     }
     .featured_slider .feature_box,
     .filter_and_productlist .feature_box {
-        max-height: 435px;
+        max-height: none;
     }
     .left_ali h4{
         font-size: 18px;

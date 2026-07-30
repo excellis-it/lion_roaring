@@ -55,7 +55,7 @@
                             <strong>Topic:</strong> {{ $topicName }}
                         @endif
                     </p>
-                    <p class="desc_text">{{ strlen($product['short_description']) > 50 ? substr($product['short_description'], 0, 50) . '...' : $product['short_description'] }}
+                    <p class="desc_text">{{ Str::limit($product['short_description'], 50) }}
                     </p>
                     {{-- <span class="price_text">${{ $product['price'] }}</span> --}}
 
