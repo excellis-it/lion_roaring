@@ -13,13 +13,13 @@
                 <input type="checkbox" class="selectMail" id="check-box" data-id="{{ $mail->id }}" />
                 {{-- <span class="material-symbols-outlined"> star_border </span> --}}
                 @if ($isStar == 1)
-                    <a href="javascript:void(0);" onclick="setMailStar(this, {{ $mail->id }})">
-                        <span class="material-symbols-outlined"
-                            style="color: orange; font-variation-settings: 'FILL' 1;">grade</span>
+                    <a href="javascript:void(0);" onclick="setMailStar(this, {{ $mail->id }})" class="mail-star-btn" title="Starred">
+                        <i class="fa-solid fa-star mail-star-icon" style="color: orange;" aria-hidden="true"></i>
                     </a>
                 @else
-                    <a href="javascript:void(0);" onclick="setMailStar(this, {{ $mail->id }})">
-                        <span class="material-symbols-outlined">grade</span></a>
+                    <a href="javascript:void(0);" onclick="setMailStar(this, {{ $mail->id }})" class="mail-star-btn" title="Star">
+                        <i class="fa-regular fa-star mail-star-icon" aria-hidden="true"></i>
+                    </a>
                 @endif
             </div>
 

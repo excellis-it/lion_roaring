@@ -6,8 +6,14 @@ use App\Http\Controllers\Controller;
 use App\Models\Country;
 use App\Models\Donation;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
 use Stripe;
+use Stripe\Exception\ApiConnectionException;
+use Stripe\Exception\AuthenticationException;
+use Stripe\Exception\CardException;
+use Stripe\Exception\InvalidRequestException;
+use Stripe\Exception\RateLimitException;
 
 /**
  * @group Donation
@@ -33,29 +39,45 @@ class DonationController extends Controller
     public function donation(Request $request)
     {
         $validator = Validator::make($request->all(), [
-            'first_name' => 'required',
-            'last_name' => 'required',
+            'first_name' => 'required|string|max:255',
+            'last_name' => 'required|string|max:255',
             'email' => 'required|email',
-            'address' => 'required',
-            'city' => 'required',
-            'state' => 'required',
-            'postcode' => 'required',
-            'amount' => 'required|integer',
+            'address' => 'required|string|max:255',
+            'city' => 'required|string|max:255',
+            'state' => 'required|string|max:255',
+            'postcode' => 'required|string|max:50',
+            'amount' => 'required|numeric|min:1',
             'country_id' => 'required',
-            'stripeToken' => 'required',
+            'stripeToken' => 'required|string',
         ]);
 
         if ($validator->fails()) {
-            return response()->json(['message' => $validator->errors()->first(), 'status' => false], 201);
+            return response()->json(['message' => $validator->errors()->first(), 'status' => false], 422);
         }
 
         try {
+            if (empty(config('services.stripe.secret'))) {
+                return response()->json([
+                    'message' => 'Payment is temporarily unavailable. Please try again later.',
+                    'status' => false,
+                ], 503);
+            }
+
             Stripe\Stripe::setApiKey(config('services.stripe.secret'));
+            $amountCents = (int) round(((float) $request->amount) * 100);
+            if ($amountCents < 100) {
+                return response()->json([
+                    'message' => 'Minimum donation amount is US$ 1.00.',
+                    'status' => false,
+                ], 422);
+            }
+
             $charge = Stripe\Charge::create([
-                'amount' => $request->amount * 100,
+                'amount' => $amountCents,
                 'currency' => 'usd',
                 'source' => $request->stripeToken,
                 'description' => 'Donation',
+                'receipt_email' => $request->email,
             ]);
 
             if ($charge->status == 'succeeded') {
@@ -78,12 +100,65 @@ class DonationController extends Controller
                 $donation->save();
 
                 return response()->json(['message' => 'Payment success.', 'status' => true, 'data' => $donation], 200);
-            } else {
-                return response()->json(['message' => 'Payment failed!', 'status' => false], 201);
             }
+
+            return response()->json([
+                'message' => 'Your payment could not be completed. Please check your card details and try again.',
+                'status' => false,
+            ], 402);
+        } catch (CardException $e) {
+            return response()->json([
+                'message' => $this->friendlyStripeMessage($e),
+                'status' => false,
+            ], 402);
+        } catch (InvalidRequestException $e) {
+            return response()->json([
+                'message' => 'Invalid payment details. Please check your card information and try again.',
+                'status' => false,
+            ], 422);
+        } catch (AuthenticationException $e) {
+            Log::error('API donation Stripe authentication error', ['message' => $e->getMessage()]);
+
+            return response()->json([
+                'message' => 'Payment is temporarily unavailable. Please try again later.',
+                'status' => false,
+            ], 503);
+        } catch (ApiConnectionException|RateLimitException $e) {
+            return response()->json([
+                'message' => 'Unable to reach the payment provider. Please try again in a moment.',
+                'status' => false,
+            ], 503);
         } catch (\Throwable $th) {
-            return response()->json(['message' =>  $th->getMessage(), 'status' => false], 401);
+            Log::error('API donation payment error', [
+                'message' => $th->getMessage(),
+                'type' => get_class($th),
+            ]);
+
+            return response()->json([
+                'message' => 'Payment could not be processed. Please check your card details and try again.',
+                'status' => false,
+            ], 500);
         }
+    }
+
+    private function friendlyStripeMessage(CardException $e): string
+    {
+        $message = trim((string) $e->getMessage());
+        if ($message !== '') {
+            return $message;
+        }
+
+        $code = $e->getDeclineCode() ?: $e->getStripeCode();
+
+        return match ($code) {
+            'insufficient_funds' => 'Your card has insufficient funds.',
+            'lost_card', 'stolen_card' => 'Your card was declined. Please contact your card issuer or try another card.',
+            'expired_card' => 'Your card has expired. Please use a different card.',
+            'incorrect_cvc', 'invalid_cvc' => 'Your card\'s security code is incorrect.',
+            'incorrect_number', 'invalid_number' => 'Your card number is invalid.',
+            'card_declined' => 'Your card was declined. Please try another card or contact your bank.',
+            default => 'Your card was declined. Please check your card details or try another card.',
+        };
     }
 
     /**

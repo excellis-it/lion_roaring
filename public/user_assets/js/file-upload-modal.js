@@ -14,6 +14,120 @@
     let chatFileInputChangeDepth = 0;
     let teamFileInputChangeDepth = 0;
 
+    var CHAT_IMAGE_EXTENSIONS = [
+        "jpg",
+        "jpeg",
+        "jfif",
+        "png",
+        "gif",
+        "webp",
+        "heic",
+        "heif",
+        "bmp",
+        "svg",
+    ];
+
+    function chatFileExtension(file) {
+        var name = (file && file.name) || "";
+        var parts = name.split(".");
+        return parts.length > 1 ? parts.pop().toLowerCase() : "";
+    }
+
+    function isChatImageFile(file) {
+        if (!file) return false;
+        var ext = chatFileExtension(file);
+        if (CHAT_IMAGE_EXTENSIONS.indexOf(ext) !== -1) {
+            return true;
+        }
+        var type = (file.type || "").toLowerCase();
+        return type.indexOf("image/") === 0;
+    }
+
+    var CHAT_VIDEO_EXTENSIONS = [
+        "mp4",
+        "mkv",
+        "avi",
+        "mov",
+        "wmv",
+        "webm",
+        "flv",
+        "mpeg",
+        "mpg",
+        "m4v",
+        "3gp",
+        "ogv",
+    ];
+
+    function isChatVideoFile(file) {
+        if (!file) return false;
+        var ext = chatFileExtension(file);
+        if (CHAT_VIDEO_EXTENSIONS.indexOf(ext) !== -1) {
+            return true;
+        }
+        var type = (file.type || "").toLowerCase();
+        return type.indexOf("video/") === 0;
+    }
+
+    /**
+     * Convert HEIC/HEIF to JPEG in-browser (browsers often can't preview HEIC).
+     * JFIF is renamed to .jpg for wider compatibility.
+     */
+    function normalizeChatImageFile(file) {
+        return new Promise(function (resolve) {
+            var ext = chatFileExtension(file);
+            var type = (file.type || "").toLowerCase();
+
+            if (ext === "jfif") {
+                resolve(
+                    new File([file], file.name.replace(/\.jfif$/i, ".jpg"), {
+                        type: "image/jpeg",
+                        lastModified: file.lastModified,
+                    })
+                );
+                return;
+            }
+
+            var isHeic =
+                ["heic", "heif"].indexOf(ext) !== -1 ||
+                type === "image/heic" ||
+                type === "image/heif";
+
+            if (!isHeic) {
+                resolve(file);
+                return;
+            }
+
+            if (typeof heic2any !== "function") {
+                resolve(file);
+                return;
+            }
+
+            heic2any({ blob: file, toType: "image/jpeg", quality: 0.85 })
+                .then(function (result) {
+                    var blob = Array.isArray(result) ? result[0] : result;
+                    var newName = file.name.replace(/\.(heic|heif)$/i, ".jpg");
+                    resolve(
+                        new File([blob], newName, {
+                            type: "image/jpeg",
+                            lastModified: Date.now(),
+                        })
+                    );
+                })
+                .catch(function () {
+                    if (typeof toastr !== "undefined") {
+                        toastr.warning(
+                            "Could not convert HEIC for in-app preview. It will upload as a downloadable file."
+                        );
+                    }
+                    resolve(file);
+                });
+        });
+    }
+
+    function normalizeChatImageFiles(files) {
+        return Promise.all(Array.from(files).map(normalizeChatImageFile));
+    }
+
     // Initialize for regular chat
     function initChatFileModal() {
         console.log("Initializing chat file modal...");
@@ -71,7 +185,7 @@
                 }
                 try {
                     const files = Array.from(e.target.files);
-                    handleChatFiles(files);
+                    normalizeChatImageFiles(files).then(handleChatFiles);
                 } catch (ex) {
                     console.error("Error in fileInput change handler", ex);
                 } finally {
@@ -106,7 +220,7 @@
                 $(this).removeClass("dragover");
 
                 const files = Array.from(e.originalEvent.dataTransfer.files);
-                handleChatFiles(files);
+                normalizeChatImageFiles(files).then(handleChatFiles);
             });
 
         // Click on drop zone to select files (delegated)
@@ -201,9 +315,9 @@
             chatSelectedFiles.forEach((fileObj, index) => {
                 const file = fileObj.file;
                 const fileSize = formatFileSize(file.size);
-                const fileExt = file.name.split(".").pop().toLowerCase();
-                const isImage = file.type.startsWith("image/");
-                const isVideo = file.type.startsWith("video/");
+                const fileExt = chatFileExtension(file);
+                const isImage = isChatImageFile(file);
+                const isVideo = isChatVideoFile(file);
 
                 let previewHTML = `
                     <div class="file-preview-item" data-index="${index}">
@@ -224,6 +338,13 @@
                             }" class="file-preview-thumbnail" alt="${escapeHtml(
                                 file.name
                             )}">`
+                        );
+                    };
+                    reader.onerror = function () {
+                        $(
+                            `#filesList [data-index="${index}"] .file-preview-placeholder`
+                        ).replaceWith(
+                            `<div class="file-preview-icon"><i class="fas fa-image"></i></div>`
                         );
                     };
                     reader.readAsDataURL(file);
@@ -369,7 +490,7 @@
                 }
                 try {
                     const files = Array.from(e.target.files);
-                    handleTeamFiles(files);
+                    normalizeChatImageFiles(files).then(handleTeamFiles);
                 } catch (ex) {
                     console.error("Error in teamFileInput change handler", ex);
                 } finally {
@@ -404,7 +525,7 @@
                 $(this).removeClass("dragover");
 
                 const files = Array.from(e.originalEvent.dataTransfer.files);
-                handleTeamFiles(files);
+                normalizeChatImageFiles(files).then(handleTeamFiles);
             });
 
         // Click on drop zone to select files (delegated)
@@ -498,9 +619,9 @@
             teamSelectedFiles.forEach((fileObj, index) => {
                 const file = fileObj.file;
                 const fileSize = formatFileSize(file.size);
-                const fileExt = file.name.split(".").pop().toLowerCase();
-                const isImage = file.type.startsWith("image/");
-                const isVideo = file.type.startsWith("video/");
+                const fileExt = chatFileExtension(file);
+                const isImage = isChatImageFile(file);
+                const isVideo = isChatVideoFile(file);
 
                 let previewHTML = `
                     <div class="file-preview-item" data-index="${index}">
@@ -521,6 +642,13 @@
                             }" class="file-preview-thumbnail" alt="${escapeHtml(
                                 file.name
                             )}">`
+                        );
+                    };
+                    reader.onerror = function () {
+                        $(
+                            `#teamFilesList [data-index="${index}"] .file-preview-placeholder`
+                        ).replaceWith(
+                            `<div class="file-preview-icon"><i class="fas fa-image"></i></div>`
                         );
                     };
                     reader.readAsDataURL(file);

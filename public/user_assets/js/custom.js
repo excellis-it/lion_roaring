@@ -176,11 +176,16 @@ $(function () {
         var player = document.getElementById("chatVideoPreviewPlayer");
         var modalEl = document.getElementById("chatVideoPreviewModal");
         var $download = $("#chatVideoPreviewDownload");
+        var $fallback = $("#chatVideoPreviewFallback");
         if (!player || !modalEl) {
             window.open(url, "_blank");
             return;
         }
         $("#chatVideoPreviewModalLabel").text("Video");
+        if ($fallback.length) {
+            $fallback.addClass("d-none").text("");
+        }
+        player.classList.remove("d-none");
         $download
             .attr("href", url)
             .attr("data-download-url", url)
@@ -206,6 +211,30 @@ $(function () {
                 window.fitChatMediaElement(player, maxW, maxH);
             }
         };
+        var showPlaybackFallback = function () {
+            player.pause();
+            player.classList.add("d-none");
+            if ($fallback.length) {
+                $fallback
+                    .removeClass("d-none")
+                    .html(
+                        "This browser can't play <strong>" +
+                            $("<div>").text(fileName).html() +
+                            "</strong> in-app.<br>Use <strong>Download</strong> to open it on your device."
+                    );
+            }
+        };
+        player.onerror = showPlaybackFallback;
+        player.addEventListener(
+            "error",
+            showPlaybackFallback,
+            { once: true }
+        );
+        source.addEventListener(
+            "error",
+            showPlaybackFallback,
+            { once: true }
+        );
         player.addEventListener("loadedmetadata", sizeVideo, { once: true });
         var modal = bootstrap.Modal.getOrCreateInstance(modalEl);
         var playWhenShown = function () {
@@ -213,7 +242,12 @@ $(function () {
             sizeVideo();
             var playPromise = player.play();
             if (playPromise && typeof playPromise.catch === "function") {
-                playPromise.catch(function () {});
+                playPromise.catch(function () {
+                    // Autoplay blocked or unsupported codec — keep controls / fallback visible
+                    if (player.error) {
+                        showPlaybackFallback();
+                    }
+                });
             }
         };
         modalEl.addEventListener("shown.bs.modal", playWhenShown);
@@ -222,9 +256,15 @@ $(function () {
 
     $("#chatVideoPreviewModal").on("hidden.bs.modal", function () {
         var player = document.getElementById("chatVideoPreviewPlayer");
+        var $fallback = $("#chatVideoPreviewFallback");
+        if ($fallback.length) {
+            $fallback.addClass("d-none").text("");
+        }
         if (!player) {
             return;
         }
+        player.classList.remove("d-none");
+        player.onerror = null;
         player.pause();
         player.removeAttribute("src");
         while (player.firstChild) {

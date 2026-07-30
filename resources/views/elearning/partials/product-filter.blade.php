@@ -32,7 +32,7 @@
         </div>
     </div>
 </div>
-<div class="row mx-3" id="products">
+<div class="row" id="products">
     @include('elearning.partials.product-item', ['products' => $products, 'products_count' => $products_count])
     <div id="loading" style="display: none; ">
         <div style="justify-content: center; align-items: center; display:flex">

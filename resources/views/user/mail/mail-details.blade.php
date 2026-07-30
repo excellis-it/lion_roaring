@@ -62,13 +62,12 @@
                             <a href="javascript:void(0);"> <span
                                     class="material-symbols-outlined open_mail_reply_box">reply</span></a>
                             @if (isset($ownUserMailInfo->is_starred) && $ownUserMailInfo->is_starred == 1)
-                                <a href="javascript:void(0);" onclick="setMailStar(this, {{ $mail_details->id }})">
-                                    <span class="material-symbols-outlined"
-                                        style="color: orange; font-variation-settings: 'FILL' 1;">grade</span></a>
+                                <a href="javascript:void(0);" onclick="setMailStar(this, {{ $mail_details->id }})" class="mail-star-btn" title="Starred">
+                                    <i class="fa-solid fa-star mail-star-icon" style="color: orange;" aria-hidden="true"></i>
+                                </a>
                             @else
-                                <a href="javascript:void(0);" onclick="setMailStar(this, {{ $mail_details->id }})">
-                                    <!-- <span class="material-symbols-outlined">grade</span> -->
-                                     <i class="fa-regular fa-star"></i>
+                                <a href="javascript:void(0);" onclick="setMailStar(this, {{ $mail_details->id }})" class="mail-star-btn" title="Star">
+                                    <i class="fa-regular fa-star mail-star-icon" aria-hidden="true"></i>
                                 </a>
                             @endif
 

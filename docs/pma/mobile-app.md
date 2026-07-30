@@ -1,6 +1,6 @@
 ---
 title: Mobile App
-updated: 2026-07-28
+updated: 2026-07-30
 status: ready
 sidebar_key: mobile_app
 ---
@@ -68,7 +68,7 @@ Flutter app at `lion-roaring-app`. Talks to Laravel **`/api/v3`**. Country selec
 ### Chat media (1:1 and team)
 
 - Attachment URLs use `ApiPath.resolveStorageUrl` (relative `chat/...` paths and absolute `/storage/...` or full URLs from socket/`chatMediaUrl`).
-- Video (`mp4`, `webm`, `ogg`, `mov`, `m4v`): tap opens in-app player; download is available from the player toolbar.
+- Video (`mp4`, `mkv`, `avi`, `mov`, `wmv`, `webm`, `flv`, `mpeg`/`mpg`, `m4v`, `3gp`, `ogv`/`ogg`): tap opens in-app player; if the device cannot decode the file, the player shows a download message and Download remains available in the toolbar.
 - Images: tap opens fullscreen viewer with a download action.
 - Downloads: Android → device `Download` folder when writable; iOS → app Documents (`Files` → Lion Roaring) with file sharing enabled.
 

@@ -1018,15 +1018,15 @@ class TeamChatController extends Controller
 
         $extension = strtolower($file->getClientOriginalExtension());
 
-        $image_extensions = ['jpg', 'jpeg', 'png', 'gif', 'bmp', 'svg', 'webp'];
-        $audio_extensions = ['mp3', 'wav', 'ogg', 'aac', 'm4a'];
-        $video_extensions = ['mp4', 'mov', 'avi', 'mkv', 'webm'];
+        $image_extensions = \App\Helpers\Helper::chatImageExtensions();
+        $audio_extensions = ['mp3', 'wav', 'ogg', 'oga', 'aac', 'm4a'];
+        $video_extensions = \App\Helpers\Helper::chatVideoExtensions();
         $doc_extensions   = ['pdf', 'doc', 'docx', 'xls', 'xlsx', 'ppt', 'pptx', 'txt', 'csv'];
 
         return match (true) {
             in_array($extension, $image_extensions) => 'image',
-            in_array($extension, $audio_extensions) => 'audio',
             in_array($extension, $video_extensions) => 'video',
+            in_array($extension, $audio_extensions) => 'audio',
             in_array($extension, $doc_extensions)   => 'doc',
             default => 'text',
         };

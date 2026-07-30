@@ -288,7 +288,7 @@ $(document).ready(function () {
                         ? res.chat.attachment_name
                         : attachment;
                     if (
-                        ["jpg", "jpeg", "png", "gif"].includes(
+                        ["jpg", "jpeg", "jfif", "png", "gif", "svg", "webp"].includes(
                             attachement_extention
                         )
                     ) {
@@ -340,7 +340,7 @@ $(document).ready(function () {
                 '<div style="display: flex; flex-wrap: wrap; gap: 10px;">';
 
             Array.from(files).forEach(function (file, index) {
-                var isImage = file.type.startsWith("image/");
+                var isImage = file.type.startsWith("image/") || ["jpg","jpeg","jfif","png","gif","webp","heic","heif","bmp","svg"].indexOf(((file.name || "").split(".").pop() || "").toLowerCase()) !== -1;
 
                 if (isImage) {
                     var reader = new FileReader();
@@ -367,7 +367,11 @@ $(document).ready(function () {
             displayContent +=
                 '<i class="fas fa-times remove-team-file" style="cursor: pointer; color: red; margin-left: 10px;"></i></div>';
 
-            if (Array.from(files).every((f) => !f.type.startsWith("image/"))) {
+            if (Array.from(files).every((f) => {
+                var ext = ((f.name || "").split(".").pop() || "").toLowerCase();
+                var imageExts = ["jpg","jpeg","jfif","png","gif","webp","heic","heif","bmp","svg"];
+                return !(f.type.startsWith("image/") || imageExts.indexOf(ext) !== -1);
+            })) {
                 $fileNameDisplay.html(displayContent).show();
             } else {
                 $fileNameDisplay
@@ -626,26 +630,37 @@ $(document).ready(function () {
         });
     });
 
-    // BUG-049: playable video bubble (do not wrap in a.file-download)
-    var TEAM_CHAT_VIDEO_EXTENSIONS = ["mp4", "webm", "ogg", "mov", "m4v"];
+    // BUG-078: video bubble for common formats (browser may still require download for some)
+    var TEAM_CHAT_VIDEO_EXTENSIONS = [
+        "mp4", "mkv", "avi", "mov", "wmv", "webm", "flv", "mpeg", "mpg", "m4v", "3gp", "ogv",
+    ];
     var TEAM_CHAT_VIDEO_MIME = {
         mp4: "video/mp4",
         m4v: "video/mp4",
         webm: "video/webm",
-        ogg: "video/ogg",
+        ogv: "video/ogg",
         mov: "video/quicktime",
+        mkv: "video/x-matroska",
+        avi: "video/x-msvideo",
+        wmv: "video/x-ms-wmv",
+        flv: "video/x-flv",
+        mpeg: "video/mpeg",
+        mpg: "video/mpeg",
+        "3gp": "video/3gpp",
     };
 
     function buildTeamChatVideoHtml(fileUrl, extension, fileName) {
         var ext = (extension || "").toLowerCase();
         var mime = TEAM_CHAT_VIDEO_MIME[ext] || "video/mp4";
         var name = fileName || fileUrl.split("/").pop() || "video";
+        var badge = ext ? ext.toUpperCase() : "VIDEO";
         return (
             `<button type="button" class="chat-video-preview" data-video-url="${fileUrl}" data-file-name="${name}" data-mime="${mime}" aria-label="Play video">` +
             `<video class="chat-video-attachment" muted playsinline preload="metadata" style="max-width: 280px; max-height: 360px; width: auto; height: auto;">` +
             `<source src="${fileUrl}" type="${mime}">` +
             `</video>` +
             `<span class="chat-video-play-icon" aria-hidden="true"><i class="fa-solid fa-play"></i></span>` +
+            `<span class="chat-video-format-badge">${badge}</span>` +
             `</button>`
         );
     }
@@ -665,7 +680,7 @@ $(document).ready(function () {
                 ? data.attachment_name
                 : attachment;
 
-            if (["jpg", "jpeg", "png", "gif", "svg", "webp"].includes(attachement_extention)) {
+            if (["jpg", "jpeg", "jfif", "png", "gif", "svg", "webp"].includes(attachement_extention)) {
                 html += `<p class="messageContent">
                     <a href="${fileUrl}" class="chat-image-preview" data-image-url="${fileUrl}" data-file-name="${dataFileName}">
                         <img src="${fileUrl}" class="chat-image-attachment" alt="attachment" style="max-width: 280px; max-height: 360px; width: auto; height: auto;">
@@ -1555,7 +1570,7 @@ $(document).ready(function () {
                 let attachement_extention = attachment.split(".").pop().toLowerCase();
 
                 if (
-                    ["jpg", "jpeg", "png", "gif", "svg", "webp"].includes(
+                    ["jpg", "jpeg", "jfif", "png", "gif", "svg", "webp"].includes(
                         attachement_extention
                     )
                 ) {

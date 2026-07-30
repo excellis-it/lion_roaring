@@ -100,7 +100,7 @@
                                     </a>
                                 </li>
                                 <li>
-                                    <a href="{{ route('logout') }}">
+                                    <a href="{{ route('logout') }}" class="js-confirm-logout">
                                         <span class="identy-box"><i class="fa-solid fa-right-from-bracket"></i></span>
                                         Logout
                                     </a>

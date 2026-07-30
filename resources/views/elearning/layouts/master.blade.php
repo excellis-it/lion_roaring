@@ -291,6 +291,27 @@
     <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
     <script src="{{ asset('elearning_assets/js/custom.js') }}"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.js"></script>
+    <script>
+        // BUG-074: confirm before logging out
+        document.addEventListener('click', function(e) {
+            var link = e.target.closest('a.js-confirm-logout');
+            if (!link) return;
+            e.preventDefault();
+            var url = link.getAttribute('href');
+            Swal.fire({
+                title: 'Log out?',
+                text: 'Are you sure you want to log out?',
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonText: 'Yes, log out',
+                cancelButtonText: 'Cancel'
+            }).then(function(result) {
+                if (result.isConfirmed) {
+                    window.location.href = url;
+                }
+            });
+        });
+    </script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/js/toastr.min.js"></script>
     <script>
         @if (Session::has('message'))

@@ -818,6 +818,78 @@ class Helper
     }
 
     /**
+     * Image extensions accepted for chat / team-chat attachments (preview + lightbox).
+     */
+    public static function chatImageExtensions(): array
+    {
+        return ['jpg', 'jpeg', 'jfif', 'png', 'gif', 'bmp', 'svg', 'webp', 'heic', 'heif'];
+    }
+
+    public static function isChatImageExtension(?string $extension): bool
+    {
+        if ($extension === null || $extension === '') {
+            return false;
+        }
+
+        return in_array(strtolower($extension), self::chatImageExtensions(), true);
+    }
+
+    /**
+     * Image extensions safe to render with <img> in browsers.
+     * HEIC/HEIF are accepted on upload and converted to JPEG when possible;
+     * unconverted HEIC is shown as a downloadable attachment instead.
+     */
+    public static function chatInlineImageExtensions(): array
+    {
+        return array_values(array_diff(self::chatImageExtensions(), ['heic', 'heif']));
+    }
+
+    /**
+     * Video extensions accepted for chat / team-chat preview UI.
+     * Browsers may not decode every container; unsupported ones still show a video card
+     * and the lightbox offers download when playback fails.
+     */
+    public static function chatVideoExtensions(): array
+    {
+        return ['mp4', 'mkv', 'avi', 'mov', 'wmv', 'webm', 'flv', 'mpeg', 'mpg', 'm4v', '3gp', 'ogv'];
+    }
+
+    public static function chatVideoMimeMap(): array
+    {
+        return [
+            'mp4' => 'video/mp4',
+            'm4v' => 'video/mp4',
+            'webm' => 'video/webm',
+            'ogv' => 'video/ogg',
+            'mov' => 'video/quicktime',
+            'mkv' => 'video/x-matroska',
+            'avi' => 'video/x-msvideo',
+            'wmv' => 'video/x-ms-wmv',
+            'flv' => 'video/x-flv',
+            'mpeg' => 'video/mpeg',
+            'mpg' => 'video/mpeg',
+            '3gp' => 'video/3gpp',
+        ];
+    }
+
+    public static function isChatVideoExtension(?string $extension): bool
+    {
+        if ($extension === null || $extension === '') {
+            return false;
+        }
+
+        return in_array(strtolower($extension), self::chatVideoExtensions(), true);
+    }
+
+    public static function chatVideoMime(?string $extension): string
+    {
+        $ext = strtolower((string) $extension);
+        $map = self::chatVideoMimeMap();
+
+        return $map[$ext] ?? 'video/mp4';
+    }
+
+    /**
      * Public URL for chat/team media. Prefers the original file when a GlobalImage
      * mapping exists — older compressions used Intervention v3 resize(2000,2000)
      * which squashed portraits into squares.

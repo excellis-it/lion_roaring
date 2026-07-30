@@ -265,44 +265,114 @@
             }
 
             function searchAndHighlight() {
-                var query = $('#search-chat').val().toLowerCase();
+                var query = ($('#search-chat').val() || '').trim();
+                var $container = $('.MessageContainer');
+                var $messages = $container.find('.message');
+                var $contents = $container.find('.messageContent');
+                var highlighted = [];
 
-                // Reset all messages to their original state
-                $('.messageContent').each(function() {
-                    var originalContent = $(this).data('originalContent');
-                    if (originalContent) {
-                        $(this).html(originalContent);
+                // Restore original HTML for any previously modified bubbles
+                $contents.each(function() {
+                    var originalHtml = $(this).data('searchOriginalHtml');
+                    if (originalHtml !== undefined) {
+                        $(this).html(originalHtml);
                     }
                 });
 
-                var highlighted = [];
+                $messages.removeClass('chat-search-match chat-search-dimmed');
+                $container.removeClass('chat-is-searching');
 
-                if (query) {
-                    $('.messageContent').each(function() {
-                        var content = $(this).text();
-                        var lowerContent = content.toLowerCase();
-                        if (lowerContent.includes(query)) {
-                            if (!$(this).data('originalContent')) {
-                                $(this).data('originalContent', content);
-                            }
+                if (!query) {
+                    currentIndex = -1;
+                    return;
+                }
 
-                            var regex = new RegExp('(' + query + ')', 'gi');
-                            var newContent = content.replace(regex, '<span class="highlight">$1</span>');
-                            $(this).html(newContent);
+                $container.addClass('chat-is-searching');
+                var escaped = query.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+                var regex = new RegExp('(' + escaped + ')', 'gi');
+                var queryLower = query.toLowerCase();
 
-                            highlighted.push($(this).closest('.message'));
-                        }
-                    });
+                $contents.each(function() {
+                    var $el = $(this);
+                    var $message = $el.closest('.message');
 
-                    if (highlighted.length > 0) {
-                        currentIndex = 0;
-                        scrollToHighlighted(highlighted[currentIndex]);
+                    if ($el.data('searchOriginalHtml') === undefined) {
+                        $el.data('searchOriginalHtml', $el.html());
                     }
+
+                    var text = $el.text();
+                    if (text && text.toLowerCase().indexOf(queryLower) !== -1) {
+                        highlightTeamChatTextNodes(this, regex);
+                        $message.addClass('chat-search-match');
+                        highlighted.push($message);
+                    } else {
+                        // Keep full history visible for context; only dim non-matches
+                        $message.addClass('chat-search-dimmed');
+                    }
+                });
+
+                if (highlighted.length > 0) {
+                    currentIndex = 0;
+                    scrollToHighlighted(highlighted[0]);
+                } else {
+                    currentIndex = -1;
                 }
             }
 
+            function highlightTeamChatTextNodes(root, regex) {
+                var walker = document.createTreeWalker(root, NodeFilter.SHOW_TEXT, {
+                    acceptNode: function(node) {
+                        if (!node.nodeValue || !node.nodeValue.trim()) {
+                            return NodeFilter.FILTER_REJECT;
+                        }
+                        if ($(node.parentNode).closest('script, style, .chat-search-highlight').length) {
+                            return NodeFilter.FILTER_REJECT;
+                        }
+                        return NodeFilter.FILTER_ACCEPT;
+                    }
+                });
+
+                var textNodes = [];
+                while (walker.nextNode()) {
+                    textNodes.push(walker.currentNode);
+                }
+
+                textNodes.forEach(function(textNode) {
+                    var text = textNode.nodeValue;
+                    regex.lastIndex = 0;
+                    if (!regex.test(text)) {
+                        return;
+                    }
+                    regex.lastIndex = 0;
+
+                    var frag = document.createDocumentFragment();
+                    var lastIndex = 0;
+                    var match;
+                    while ((match = regex.exec(text)) !== null) {
+                        if (match.index > lastIndex) {
+                            frag.appendChild(document.createTextNode(text.slice(lastIndex, match.index)));
+                        }
+                        var mark = document.createElement('mark');
+                        mark.className = 'chat-search-highlight';
+                        mark.textContent = match[0];
+                        frag.appendChild(mark);
+                        lastIndex = match.index + match[0].length;
+                    }
+                    if (lastIndex < text.length) {
+                        frag.appendChild(document.createTextNode(text.slice(lastIndex)));
+                    }
+                    textNode.parentNode.replaceChild(frag, textNode);
+                });
+            }
+
             function scrollToHighlighted(target) {
-                var container = target.closest('.MessageContainer'); // Closest container
+                if (!target || !target.length) {
+                    return;
+                }
+                var container = target.closest('.MessageContainer');
+                if (!container.length) {
+                    return;
+                }
                 var containerHeight = container.height();
                 var targetPosition = target.position().top + container.scrollTop();
 
@@ -312,12 +382,16 @@
             }
 
             $(document).on('input', '#search-chat', debounce(searchAndHighlight, 300));
+            $(document).on('click', '.groupChatHead #search-button', function(e) {
+                e.preventDefault();
+                searchAndHighlight();
+            });
 
             $(document).on('keypress', '#search-chat', function(e) {
                 if (e.which === 13) { // Enter key
                     e.preventDefault();
 
-                    var highlighted = $('.highlight').closest('.message');
+                    var highlighted = $('.MessageContainer .message.chat-search-match');
                     if (highlighted.length > 0) {
                         currentIndex = (currentIndex + 1) % highlighted.length;
                         scrollToHighlighted(highlighted.eq(currentIndex));

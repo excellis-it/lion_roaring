@@ -18,27 +18,63 @@ trait ImageTrait
         if (!$file) return null;
 
         $disk = Storage::disk('public');
-        $filename = date('YmdHis') . '_' . uniqid() . '.' . $file->getClientOriginalExtension();
+        $ext = strtolower((string) $file->getClientOriginalExtension());
+        $clientMime = (string) ($file->getMimeType() ?: '');
 
-        // Store original
-        $originalPath = $file->storeAs($path, $filename, 'public');
+        // Normalize aliases so browsers can display the stored file.
+        // JFIF is JPEG; HEIC/HEIF are converted to JPEG when possible.
+        if ($ext === 'jfif') {
+            $ext = 'jpg';
+        }
+
+        $heicConverted = false;
+        $sourcePath = $file->getRealPath();
+
+        if (in_array($ext, ['heic', 'heif'], true) || in_array($clientMime, ['image/heic', 'image/heif'], true)) {
+            $converted = $this->convertHeicToJpeg($sourcePath);
+            if ($converted !== null) {
+                $sourcePath = $converted;
+                $ext = 'jpg';
+                $clientMime = 'image/jpeg';
+                $heicConverted = true;
+            }
+        }
+
+        $filename = date('YmdHis') . '_' . uniqid() . '.' . ($ext !== '' ? $ext : 'bin');
+
+        if ($heicConverted) {
+            $originalPath = $path . '/' . $filename;
+            $disk->put($originalPath, file_get_contents($sourcePath));
+            @unlink($sourcePath);
+        } else {
+            // Store original (may keep original extension when HEIC could not be converted)
+            $originalPath = $file->storeAs($path, $filename, 'public');
+        }
 
         $compressedPath = null;
 
         // Basic validation: only try to compress if it's an uploaded file and compression requested
-        if ($compress && $file->isValid()) {
+        if ($compress && ($heicConverted || $file->isValid())) {
 
-            // Determine extension & mime (use client extension + getMimeType as safeguard)
-            $ext = strtolower($file->getClientOriginalExtension());
-            $clientMime = $file->getMimeType() ?: '';
+            // Allowed image extensions / mime prefix (incl. JFIF/HEIC aliases after normalize)
+            $allowedExts = ['jpg', 'jpeg', 'jfif', 'png', 'gif', 'webp', 'bmp', 'tiff', 'heic', 'heif'];
+            $isImageExt = in_array(strtolower((string) $file->getClientOriginalExtension()), $allowedExts, true)
+                || in_array($ext, $allowedExts, true);
+            $isImageMime = stripos($clientMime, 'image/') === 0
+                || in_array($clientMime, ['image/heic', 'image/heif'], true);
 
-            // Allowed image extensions / mime prefix
-            $allowedExts = ['jpg', 'jpeg', 'png', 'gif', 'webp', 'bmp', 'tiff'];
-            $isImageExt = in_array($ext, $allowedExts, true);
-            $isImageMime = stripos($clientMime, 'image/') === 0;
+            // HEIC without conversion is still an image attachment — skip GD compression
+            if (in_array($ext, ['heic', 'heif'], true)) {
+                return $originalPath;
+            }
 
             // If it isn't recognized as an image, skip compression
-            if (! $isImageExt || ! $isImageMime) {
+            if (! $isImageExt && ! $isImageMime) {
+                return $originalPath;
+            }
+
+            // Extension-only images (empty/odd mime) still compress when we know the type
+            if (! $isImageExt) {
                 return $originalPath;
             }
 
@@ -49,11 +85,13 @@ trait ImageTrait
                 } else {
                     $manager = ImageManager::gd();
                 }
-                $img = $manager->read($file->getRealPath());
+                $img = $manager->read($heicConverted ? Storage::disk('public')->path($originalPath) : $file->getRealPath());
                 // Get original properties
                 $origWidth  = $img->width();
                 $origHeight = $img->height();
-                $origSize   = $file->getSize(); // bytes
+                $origSize   = $heicConverted
+                    ? $disk->size($originalPath)
+                    : $file->getSize(); // bytes
 
                 // --- Decision: skip compression if image is already low-res or small ---
                 $minWidthForCompression  = 700;    // px
@@ -79,7 +117,8 @@ trait ImageTrait
                     $outputExt = 'png';
                     $quality = 70;
                 } else {
-                    $outputExt = in_array($ext, ['jpg', 'jpeg']) ? 'jpg' : $ext;
+                    // jfif / heic-normalized already map to jpg above
+                    $outputExt = in_array($ext, ['jpg', 'jpeg', 'jfif'], true) ? 'jpg' : $ext;
                     $quality = 60;
                 }
 
@@ -92,6 +131,8 @@ trait ImageTrait
                     $encoder = new \Intervention\Image\Encoders\GifEncoder();
                 } elseif ($outputExt === 'bmp') {
                     $encoder = new \Intervention\Image\Encoders\BmpEncoder();
+                } elseif ($outputExt === 'webp') {
+                    $encoder = new \Intervention\Image\Encoders\WebpEncoder($quality);
                 } else {
                     $encoder = new \Intervention\Image\Encoders\AutoEncoder();
                 }
@@ -128,5 +169,37 @@ trait ImageTrait
         ]);
 
         return $compressedPath ?? $originalPath;
+    }
+
+    /**
+     * Convert HEIC/HEIF to a temporary JPEG when Imagick supports it.
+     * Returns temp file path or null if conversion is unavailable.
+     */
+    private function convertHeicToJpeg(string $sourcePath): ?string
+    {
+        if (! extension_loaded('imagick') || ! is_readable($sourcePath)) {
+            return null;
+        }
+
+        try {
+            $imagick = new \Imagick();
+            $formats = array_map('strtoupper', $imagick->queryFormats());
+            if (! in_array('HEIC', $formats, true) && ! in_array('HEIF', $formats, true)) {
+                return null;
+            }
+
+            $imagick->readImage($sourcePath);
+            $imagick->setImageFormat('jpeg');
+            $imagick->setImageCompressionQuality(85);
+
+            $tmp = tempnam(sys_get_temp_dir(), 'heic_') . '.jpg';
+            $imagick->writeImage($tmp);
+            $imagick->clear();
+            $imagick->destroy();
+
+            return is_readable($tmp) ? $tmp : null;
+        } catch (\Throwable $e) {
+            return null;
+        }
     }
 }

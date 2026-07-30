@@ -144,7 +144,7 @@
                             <i class="fas fa-folder-open me-2"></i>Select Files
                         </button>
                         <input type="file" id="fileInput" style="display: none" multiple
-                            accept="image/*,video/*,application/pdf,.doc,.docx,.xls,.xlsx,.ppt,.pptx,.txt">
+                            accept="image/*,.jpg,.jpeg,.jfif,.png,.gif,.webp,.heic,.heif,image/heic,image/heif,image/jpeg,video/*,.mp4,.mkv,.avi,.mov,.wmv,.webm,.flv,.mpeg,.mpg,.m4v,.3gp,.ogv,.ogg,application/pdf,.doc,.docx,.xls,.xlsx,.ppt,.pptx,.txt">
                     </div>
 
                     <!-- Files Preview Area -->
@@ -185,7 +185,7 @@
                 </svg>
             </span>
             <input type="file" id="file2" style="display: none;" multiple
-                accept="image/*,video/*,application/pdf,.doc,.docx,.xls,.xlsx,.ppt,.pptx,.txt">
+                accept="image/*,.jpg,.jpeg,.jfif,.png,.gif,.webp,.heic,.heif,image/heic,image/heif,image/jpeg,video/*,.mp4,.mkv,.avi,.mov,.wmv,.webm,.flv,.mpeg,.mpg,.m4v,.3gp,.ogv,.ogg,application/pdf,.doc,.docx,.xls,.xlsx,.ppt,.pptx,.txt">
         </div>
 
         <textarea type="text" id="MessageInput" placeholder="Type a message..." rows="1" class="form-control"></textarea>

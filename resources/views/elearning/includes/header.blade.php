@@ -75,7 +75,7 @@
                                         </li>
                                         <li><a class="dropdown-item" href="{{ route('user.change.password') }}">Change
                                                 Password</a></li>
-                                        <li><a class="dropdown-item" href="{{ route('logout') }}">Logout</a>
+                                        <li><a class="dropdown-item js-confirm-logout" href="{{ route('logout') }}">Logout</a>
                                         </li>
                                     </ul>
                                 </div>

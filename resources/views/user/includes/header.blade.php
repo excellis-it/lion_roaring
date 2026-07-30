@@ -278,7 +278,7 @@
                         </div>
                         <div class="d-grid py-4 px-7 pt-8">
                             <a href="{{ route('logout') }}"
-                                class="btn btn-primary">{{ Helper::getMenuName('logout', 'Log Out') }}</a>
+                                class="btn btn-primary js-confirm-logout">{{ Helper::getMenuName('logout', 'Log Out') }}</a>
                         </div>
                         @php
                             $webVersion = Helper::getSettings()->WEB_APP_VERSION ?? null;

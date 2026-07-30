@@ -20,35 +20,30 @@
                     <div class="message you" id="chat-message-{{ $chat->id }}">
             @endif
             <div class="message-wrap">
-                <p class="messageContent" data-original-content="{{ $chat->message }}">
+                <p class="messageContent">
 
                     @if ($chat->attachment != null)
                         @php
                             $ext = strtolower(pathinfo($chat->attachment, PATHINFO_EXTENSION));
-                            $videoMime = [
-                                'mp4' => 'video/mp4',
-                                'm4v' => 'video/mp4',
-                                'webm' => 'video/webm',
-                                'ogg' => 'video/ogg',
-                                'mov' => 'video/quicktime',
-                            ];
-                        @endphp
-                        @php
+                            $videoMime = \App\Helpers\Helper::chatVideoMimeMap();
+                            $videoExts = \App\Helpers\Helper::chatVideoExtensions();
+                            $imageExts = \App\Helpers\Helper::chatInlineImageExtensions();
+                            $allImageExts = \App\Helpers\Helper::chatImageExtensions();
                             $mediaUrl = \App\Helpers\Helper::chatMediaUrl($chat->attachment) ?: Storage::url($chat->attachment);
                             // Detect type from original when compressed path is .webp/.jpg of an image
                             $mediaExt = strtolower(pathinfo(parse_url($mediaUrl, PHP_URL_PATH) ?? $chat->attachment, PATHINFO_EXTENSION));
-                            if (!in_array($mediaExt, ['jpg','jpeg','png','gif','svg','webp','mp4','webm','ogg','mov','m4v'], true)) {
+                            if (!in_array($mediaExt, array_merge($allImageExts, $videoExts), true)) {
                                 $mediaExt = $ext;
                             }
                         @endphp
-                        @if (in_array($mediaExt, ['jpg', 'jpeg', 'png', 'gif', 'svg', 'webp']))
+                        @if (in_array($mediaExt, $imageExts, true))
                             <a href="{{ $mediaUrl }}" class="chat-image-preview"
                                 data-image-url="{{ $mediaUrl }}"
                                 data-file-name="{{ $chat->attachment_name ?? pathinfo($chat->attachment, PATHINFO_BASENAME) }}">
                                 <img class="chat-image-attachment" src="{{ $mediaUrl }}" alt=""
                                     style="max-width: 280px; max-height: 360px; width: auto; height: auto;">
                             </a>
-                        @elseif (in_array($mediaExt, ['mp4', 'webm', 'ogg', 'mov', 'm4v']))
+                        @elseif (in_array($mediaExt, $videoExts, true))
                             {{-- Thumbnail only; click opens video player modal --}}
                             <button type="button" class="chat-video-preview"
                                 data-video-url="{{ $mediaUrl }}"
@@ -60,6 +55,7 @@
                                     <source src="{{ $mediaUrl }}" type="{{ $videoMime[$mediaExt] ?? 'video/mp4' }}">
                                 </video>
                                 <span class="chat-video-play-icon" aria-hidden="true"><i class="fa-solid fa-play"></i></span>
+                                <span class="chat-video-format-badge">{{ strtoupper($mediaExt) }}</span>
                             </button>
                         @else
                             <a href="{{ $mediaUrl }}" target="_blank" class="file-download"

@@ -29,7 +29,7 @@
         crossorigin="anonymous" referrerpolicy="no-referrer">
     <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
     <link href="{{ asset('frontend_assets/css/menu.css') }}" rel="stylesheet">
-    <link href="{{ asset('frontend_assets/css/style.css') }}" rel="stylesheet">
+    <link href="{{ asset('frontend_assets/css/style.css') }}?v={{ filemtime(public_path('frontend_assets/css/style.css')) }}" rel="stylesheet">
     {{-- <link href="{{ asset('user_assets/css/style.css') }}" rel="stylesheet"> --}}
     <link href="{{ asset('frontend_assets/css/responsive.css') }}" rel="stylesheet">
     <link rel="stylesheet" type="text/css"
@@ -410,28 +410,28 @@
                                 <div class="payment-option-form">
                                     <form role="form" action="{{ route('donation') }}" method="post"
                                         class="require-validation" data-cc-on-file="false"
-                                        data-stripe-publishable-key="{{ env('STRIPE_KEY') }}" id="payment-form">
+                                        data-stripe-publishable-key="{{ config('services.stripe.key') }}" id="payment-form">
                                         @csrf
                                         <div class="row">
                                             <div class="col-12 mb-3">
                                                 <label for="amount">Enter Amount (US$)</label>
                                                 <input class="form-control" id="amount" name="amount"
-                                                    inputmode="decimal" value="">
+                                                    inputmode="decimal" value="{{ old('amount') }}">
                                             </div>
                                             <div class="col-lg-6 mb-3">
                                                 <label for="billing_name">First Name</label>
                                                 <input class="form-control has-icon" type="text" id="billing-fname"
-                                                    name="first_name" value="">
+                                                    name="first_name" value="{{ old('first_name') }}">
                                             </div>
                                             <div class="col-lg-6 mb-3">
                                                 <label for="billing_name">Last Name</label>
                                                 <input class="form-control has-icon" type="text"
-                                                    id="billing-lname" name="last_name" value="">
+                                                    id="billing-lname" name="last_name" value="{{ old('last_name') }}">
                                             </div>
                                             <div class="col-lg-6 mb-3">
                                                 <label for="email">Email</label>
                                                 <input class="form-control has-icon" type="text" id="email"
-                                                    name="email" value="">
+                                                    name="email" value="{{ old('email') }}">
                                             </div>
                                             <div class="col-12 mb-3">
                                                 <div class="pure-u-1">
@@ -442,19 +442,19 @@
                                             <div class="col-lg-6 mb-3">
                                                 <label for="address">Address</label>
                                                 <input class="form-control has-icon" type="text" id="address"
-                                                    name="address">
+                                                    name="address" value="{{ old('address') }}">
                                             </div>
                                             <div class="col-lg-6 mb-3">
                                                 <label for="city">City</label>
                                                 <input class="form-control" type="text" id="city"
-                                                    name="city">
+                                                    name="city" value="{{ old('city') }}">
                                             </div>
                                             <div class="col-lg-6 mb-3">
                                                 <label for="country">Country</label>
                                                 <select class="form-control" name="country_id" id="country">
                                                     <option value="">—</option>
                                                     @foreach (Helper::getCountries() as $item)
-                                                        <option value="{{ $item->id }}">{{ $item->name }}
+                                                        <option value="{{ $item->id }}" @selected(old('country_id') == $item->id)>{{ $item->name }}
                                                         </option>
                                                     @endforeach
                                                 </select>
@@ -470,7 +470,7 @@
                                             <div class="col-lg-6 mb-3">
                                                 <label for="postcode">Postcode</label>
                                                 <input class="form-control" type="text" name="postcode"
-                                                    id="postcode">
+                                                    id="postcode" value="{{ old('postcode') }}">
                                             </div>
                                         </div>
                                         <div class="row">
@@ -986,9 +986,19 @@
                 "closeButton": true,
                 "progressBar": true,
                 "positionClass": "toast-bottom-right", // Change position to bottom right
-                "timeOut": "3000",
+                "timeOut": "6000",
             }
-            toastr.error("{{ session('error') }}");
+            toastr.error(@json(session('error')));
+        @endif
+
+        @if ($errors->any())
+            toastr.options = {
+                "closeButton": true,
+                "progressBar": true,
+                "positionClass": "toast-bottom-right",
+                "timeOut": "6000",
+            }
+            toastr.error(@json($errors->first()));
         @endif
 
         @if (request()->query('instance_error'))
@@ -1261,7 +1271,9 @@
             $('.require-validation').validate({
                 rules: {
                     amount: {
-                        required: true
+                        required: true,
+                        number: true,
+                        min: 1
                     },
                     first_name: {
                         required: true
@@ -1289,16 +1301,39 @@
                         required: true
                     }
                 },
+                messages: {
+                    amount: {
+                        required: 'Please enter a donation amount.',
+                        number: 'Please enter a valid amount.',
+                        min: 'Minimum donation amount is US$ 1.00.'
+                    },
+                    first_name: 'Please enter your first name.',
+                    last_name: 'Please enter your last name.',
+                    email: {
+                        required: 'Please enter your email.',
+                        email: 'Please enter a valid email address.'
+                    },
+                    address: 'Please enter your address.',
+                    city: 'Please enter your city.',
+                    country_id: 'Please select your country.',
+                    state: 'Please select your state.',
+                    postcode: 'Please enter your postcode.'
+                },
                 errorElement: 'span',
                 errorPlacement: function(error, element) {
-                    error.addClass('invalid-feedback');
-                    element.closest('.form-group').append(error);
+                    error.addClass('invalid-feedback d-block');
+                    element.closest('.mb-3').append(error);
                 },
-                highlight: function(element, errorClass, validClass) {
+                highlight: function(element) {
                     $(element).addClass('is-invalid');
                 },
-                unhighlight: function(element, errorClass, validClass) {
+                unhighlight: function(element) {
                     $(element).removeClass('is-invalid');
+                },
+                invalidHandler: function(event, validator) {
+                    if (validator.errorList.length) {
+                        toastr.error(validator.errorList[0].message);
+                    }
                 },
                 submitHandler: function(form) {
                     var $submitForm = $(form);
@@ -1349,7 +1384,10 @@
                         $('#loading').removeClass('loading');
                         $('#loading-content').removeClass('loading-content');
                         $('#submit-btn').prop('disabled', false);
-                        toastr.error('Unable to process card details. Please try again.');
+                        if (errorEl) {
+                            errorEl.textContent = 'Unable to process card details. Please check your card and try again.';
+                        }
+                        toastr.error('Unable to process card details. Please check your card and try again.');
                     });
                 }
             });
@@ -1616,10 +1654,11 @@
 
             const isDonation = "{{ request('is_donation') }}" === "yes";
             const hasAgree = {{ session()->has('agree') ? 'true' : 'false' }};
+            const openDonationModal = {{ session('open_donation_modal') || $errors->any() ? 'true' : 'false' }};
 
             setTimeout(() => {
 
-                if (isDonation) {
+                if (isDonation || openDonationModal) {
                     $('#onload_popup').modal('hide');
                     $('#exampleModalToggle2').modal('show');
                 } else {

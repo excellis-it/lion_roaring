@@ -40,8 +40,9 @@
     </section>
 
     <section class="filter_and_productlist">
-        <div class="row m-0">
-            <div class="col-xl-3 col-lg-4 p-0">
+        <div class="container-fluid">
+            <div class="row m-0">
+            <div class="col-xl-3 col-lg-4">
                 <div class="filter">
                     <div class="padding_filter">
                         <div class="filter_heading">
@@ -211,10 +212,12 @@
                     </div> --}}
                 </div>
             </div>
-            <div class="col-xl-9 col-lg-8 p-0" id="product-filter">
+            <div class="col-xl-9 col-lg-8" id="product-filter">
                 @include('elearning.partials.product-filter')
 
             </div>
+            </div>
+        </div>
     </section>
 @endsection
 

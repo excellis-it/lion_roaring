@@ -1307,11 +1307,16 @@ p {
 .filter {
     border-right: 1px solid #BDBDBD;
     background: var(--main-color);
+    height: 100%;
 }
 
-.padding_filter {
+.filter .padding_filter {
     padding: 20px 40px 20px 80px;
     border-bottom: 1px solid #BDBDBD;
+}
+
+.filter .padding_filter:last-child {
+    border-bottom: none;
 }
 
 .filter_heading {
@@ -1445,6 +1450,8 @@ p {
     background: var(--white-color);
     width: 100%;
     padding: 30px;
+    border-radius: 15px;
+    margin-bottom: 20px;
 }
 
 .filter_res_text h4 {
@@ -1464,7 +1471,18 @@ p {
 }
 
 .filter_and_productlist {
-    padding-bottom: 0px;
+    padding: 50px 0 0;
+}
+
+.filter_and_productlist #products {
+    width: 100%;
+    margin-left: 0;
+    margin-right: 0;
+}
+
+.filter_and_productlist #product-filter {
+    padding: 0 15px 30px;
+    border-bottom: 1px solid #BDBDBD;
 }
 
 .fa-star {

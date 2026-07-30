@@ -320,6 +320,25 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.2/jquery.validate.min.js"></script>
     <script src="https://cdn.datatables.net/1.13.2/js/jquery.dataTables.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/limonte-sweetalert2/7.2.0/sweetalert2.all.min.js"></script>
+    <script>
+        // BUG-074: confirm before logging out
+        $(document).on('click', 'a.js-confirm-logout', function(e) {
+            e.preventDefault();
+            var url = $(this).attr('href');
+            swal({
+                title: 'Log out?',
+                text: 'Are you sure you want to log out?',
+                type: 'warning',
+                confirmButtonText: 'Yes, log out',
+                showCancelButton: true,
+                cancelButtonText: 'Cancel'
+            }).then(function(result) {
+                if (result.value) {
+                    window.location.href = url;
+                }
+            });
+        });
+    </script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.4/js/select2.min.js"></script>
     <script src="{{ asset('user_assets/js/emojionearea.min.js') }}"></script>
     <script src="https://cdn.ckeditor.com/ckeditor5/39.0.0/classic/ckeditor.js"></script>
@@ -553,7 +572,8 @@
         }
     </script>
 
-    <script src="{{ asset('user_assets/js/file-upload-modal.js') }}"></script>
+    <script src="https://cdn.jsdelivr.net/npm/heic2any@0.0.4/dist/heic2any.min.js"></script>
+    <script src="{{ asset('user_assets/js/file-upload-modal.js') }}?v={{ @filemtime(public_path('user_assets/js/file-upload-modal.js')) }}"></script>
     <script src="{{ asset('user_assets/js/web-chat.js') }}?v={{ @filemtime(public_path('user_assets/js/web-chat.js')) }}"></script>
     <script src="{{ asset('user_assets/js/web-team-chat.js') }}?v={{ @filemtime(public_path('user_assets/js/web-team-chat.js')) }}"></script>
 
@@ -1267,20 +1287,23 @@
 
 
         function setMailStar(element, mailid) {
-            var materialIcon = element.querySelector('.material-symbols-outlined');
-            var faIcon = element.querySelector('.fa-star');
+            // Keep the same icon family/size for both states so the row layout does not shift.
+            var icon = element.querySelector('.fa-star, .material-symbols-outlined');
             var star_val = 0;
+            var isStarred = false;
 
-            if (materialIcon) {
-                // Currently starred (material icon with orange) -> unstar it
-                // Replace with FA icon
-                element.innerHTML = '<i class="fa-regular fa-star"></i>';
+            if (icon && icon.classList.contains('material-symbols-outlined')) {
+                var style = icon.getAttribute('style') || '';
+                isStarred = /FILL['\"]?\s*1/.test(style) || /color:\s*orange/i.test(style);
+            } else if (icon) {
+                isStarred = icon.classList.contains('fa-solid');
+            }
+
+            if (isStarred) {
+                element.innerHTML = '<i class="fa-regular fa-star mail-star-icon" aria-hidden="true"></i>';
                 star_val = 0;
-            } else if (faIcon) {
-                // Currently unstarred (FA icon) -> star it
-                // Replace with material icon
-                element.innerHTML =
-                    '<span class="material-symbols-outlined" style="color: orange; font-variation-settings: \'FILL\' 1;">grade</span>';
+            } else {
+                element.innerHTML = '<i class="fa-solid fa-star mail-star-icon" style="color: orange;" aria-hidden="true"></i>';
                 star_val = 1;
             }
 
@@ -1762,6 +1785,7 @@
                 <div class="modal-body chat-lightbox-body">
                     <video id="chatVideoPreviewPlayer" class="chat-video-preview-full" controls playsinline
                         preload="metadata"></video>
+                    <div id="chatVideoPreviewFallback" class="chat-video-preview-fallback d-none" role="status"></div>
                 </div>
             </div>
         </div>

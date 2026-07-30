@@ -727,25 +727,37 @@ $(document).ready(function () {
         });
     });
 
-    // BUG-049: playable video bubble (do not wrap in a.file-download — that hijacks play)
-    var CHAT_VIDEO_EXTENSIONS = ["mp4", "webm", "ogg", "mov", "m4v"];
+    // BUG-078: video bubble for common formats (browser may still require download for some)
+    var CHAT_VIDEO_EXTENSIONS = [
+        "mp4", "mkv", "avi", "mov", "wmv", "webm", "flv", "mpeg", "mpg", "m4v", "3gp", "ogv",
+    ];
     var CHAT_VIDEO_MIME = {
         mp4: "video/mp4",
         m4v: "video/mp4",
         webm: "video/webm",
-        ogg: "video/ogg",
+        ogv: "video/ogg",
         mov: "video/quicktime",
+        mkv: "video/x-matroska",
+        avi: "video/x-msvideo",
+        wmv: "video/x-ms-wmv",
+        flv: "video/x-flv",
+        mpeg: "video/mpeg",
+        mpg: "video/mpeg",
+        "3gp": "video/3gpp",
     };
 
     function buildChatVideoHtml(fileUrl, extension, fileName) {
-        var mime = CHAT_VIDEO_MIME[extension] || "video/mp4";
+        var ext = (extension || "").toLowerCase();
+        var mime = CHAT_VIDEO_MIME[ext] || "video/mp4";
         var name = fileName || fileUrl.split("/").pop() || "video";
+        var badge = ext ? ext.toUpperCase() : "VIDEO";
         return (
             `<button type="button" class="chat-video-preview" data-video-url="${fileUrl}" data-file-name="${name}" data-mime="${mime}" aria-label="Play video">` +
             `<video class="chat-video-attachment" muted playsinline preload="metadata" style="max-width: 280px; max-height: 360px; width: auto; height: auto;">` +
             `<source src="${fileUrl}" type="${mime}">` +
             `</video>` +
             `<span class="chat-video-play-icon" aria-hidden="true"><i class="fa-solid fa-play"></i></span>` +
+            `<span class="chat-video-format-badge">${badge}</span>` +
             `</button>`
         );
     }
@@ -771,7 +783,7 @@ $(document).ready(function () {
                 ? chat.attachment_name
                 : chat.attachment;
             if (
-                ["jpg", "jpeg", "png", "gif", "svg", "webp"].includes(extension)
+                ["jpg", "jpeg", "jfif", "png", "gif", "svg", "webp"].includes(extension)
             ) {
                 html += `<p class="messageContent"><a href="${fileUrl}" class="chat-image-preview" data-image-url="${fileUrl}" data-file-name="${dataFileName}">
                     <img class="chat-image-attachment" src="${fileUrl}" alt="attachment" style="max-width: 280px; max-height: 360px; width: auto; height: auto;">
@@ -1062,7 +1074,7 @@ $(document).ready(function () {
                 let extension = attachment.split(".").pop().toLowerCase();
 
                 if (
-                    ["jpg", "jpeg", "png", "gif", "svg", "webp"].includes(
+                    ["jpg", "jpeg", "jfif", "png", "gif", "svg", "webp"].includes(
                         extension,
                     )
                 ) {
