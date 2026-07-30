@@ -699,6 +699,13 @@ class PartnerController extends Controller
             }
         }
 
+        $usedTierPermissionSync = $the_role->name == 'MEMBER_SOVEREIGN'
+            && $request->has('membership_tier_id')
+            && !$request->boolean('membership_excluded');
+        $newPermissions = $usedTierPermissionSync
+            ? $data->getAllPermissions()->pluck('name')->all()
+            : ($request->has('permissions') ? $request->permissions : $data->getAllPermissions()->pluck('name')->all());
+
         app(RolePermissionAuditLogger::class)->log([
             'action' => 'member_role_created',
             'source' => 'pma',
@@ -711,11 +718,9 @@ class PartnerController extends Controller
             'old_user_type' => null,
             'new_user_type' => $data->user_type,
             'old_permissions' => [],
-            'new_permissions' => $request->has('permissions')
-                ? $request->permissions
-                : $data->getAllPermissions()->pluck('name')->all(),
-            'new_membership_tier_id' => $newMembershipTierId,
-            'new_membership_tier_name' => $newMembershipTierName,
+            'new_permissions' => $newPermissions,
+            'new_membership_tier_id' => $the_role->name === 'MEMBER_SOVEREIGN' ? $newMembershipTierId : null,
+            'new_membership_tier_name' => $the_role->name === 'MEMBER_SOVEREIGN' ? $newMembershipTierName : null,
         ]);
 
         $maildata = [
@@ -895,8 +900,12 @@ class PartnerController extends Controller
             $oldRoleName = $data->userRole?->name;
             $oldUserType = $data->user_type;
             $oldPermissions = $data->getAllPermissions()->pluck('name')->all();
-            $oldMembershipTierId = $data->userLastSubscription?->plan_id;
-            $oldMembershipTierName = $data->userLastSubscription?->subscription_name;
+            $oldMembershipTierId = $oldRoleName === 'MEMBER_SOVEREIGN'
+                ? $data->userLastSubscription?->plan_id
+                : null;
+            $oldMembershipTierName = $oldRoleName === 'MEMBER_SOVEREIGN'
+                ? $data->userLastSubscription?->subscription_name
+                : null;
 
             $data->first_name = $request->first_name;
             $data->last_name = $request->last_name;
@@ -1027,6 +1036,13 @@ class PartnerController extends Controller
                 }
             }
 
+            $usedTierPermissionSync = $the_role->name == 'MEMBER_SOVEREIGN'
+                && $request->has('membership_tier_id')
+                && !$request->boolean('membership_excluded');
+            $newPermissions = $usedTierPermissionSync
+                ? $data->getAllPermissions()->pluck('name')->all()
+                : ($request->has('permissions') ? $request->permissions : $data->getAllPermissions()->pluck('name')->all());
+
             app(RolePermissionAuditLogger::class)->log([
                 'action' => 'member_role_updated',
                 'source' => 'pma',
@@ -1039,13 +1055,11 @@ class PartnerController extends Controller
                 'old_user_type' => $oldUserType,
                 'new_user_type' => $data->user_type,
                 'old_permissions' => $oldPermissions,
-                'new_permissions' => $request->has('permissions')
-                    ? $request->permissions
-                    : $data->getAllPermissions()->pluck('name')->all(),
+                'new_permissions' => $newPermissions,
                 'old_membership_tier_id' => $oldMembershipTierId,
                 'old_membership_tier_name' => $oldMembershipTierName,
-                'new_membership_tier_id' => $newMembershipTierId,
-                'new_membership_tier_name' => $newMembershipTierName,
+                'new_membership_tier_id' => $the_role->name === 'MEMBER_SOVEREIGN' ? $newMembershipTierId : null,
+                'new_membership_tier_name' => $the_role->name === 'MEMBER_SOVEREIGN' ? $newMembershipTierName : null,
             ]);
 
             return redirect()->route('partners.index')->with('message', 'Member updated successfully.');
