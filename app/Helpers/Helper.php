@@ -944,7 +944,7 @@ class Helper
      */
     public static function chatVideoExtensions(): array
     {
-        return ['mp4', 'mkv', 'avi', 'mov', 'wmv', 'webm', 'flv', 'mpeg', 'mpg', 'm4v', '3gp', 'ogv'];
+        return ['mp4', 'mkv', 'avi', 'mov', 'wmv', 'webm', 'flv', 'mpeg', 'mpg', 'm4v', '3gp', 'ogv', 'hevc'];
     }
 
     public static function chatVideoMimeMap(): array
@@ -962,6 +962,9 @@ class Helper
             'mpeg' => 'video/mpeg',
             'mpg' => 'video/mpeg',
             '3gp' => 'video/3gpp',
+            // .hevc is usually H.265 muxed in MP4; raw Annex-B streams have no
+            // playable browser mime, so mp4 is the best chance at inline playback.
+            'hevc' => 'video/mp4',
         ];
     }
 
