@@ -12,35 +12,31 @@ Keep in sync with the mobile app copy: `lion-roaring-app/CHANGELOG.md`.
 
 | Platform | Version | Status | Updated |
 |----------|---------|--------|---------|
-| Web | v2.2.0 | draft (ready to publish) | 2026-07-30 |
-| Mobile App | v1.0.38 | draft (ready to publish; app build `1.0.38+43`) | 2026-07-28 |
+| Web | v2.1.2 | published | 2026-07-28 |
+| Mobile App | v1.0.39 | published (app build `1.0.39+44`) | 2026-07-31 |
 
-Last **published** in PMA / Site Settings: Web `v2.1.1` · Mobile `v1.0.37`.
+Last **published** in PMA / Site Settings: Web `v2.1.2` · Mobile `v1.0.39`.
 
 ---
 
 ## Entries
 
-### Web — v2.2.0
+### Mobile App — v1.0.39
 
-- **Status:** draft (ready to publish)
-- **Type:** feature
-- **Date:** 2026-07-30
-- **Title:** New translation system (Google Cloud Translation)
+- **Status:** published
+- **Type:** improvement
+- **Date:** 2026-07-31
+- **Title:** Cancel downloads, wider chat media & ownership controls
 - **Description:**
-  - Replaced the free Google Translate widget with Google Cloud Translation, so translation is reliable across the website, PMA, e-Store and e-Learning
-  - Switching language no longer reloads the page, and "Original" restores the source text instantly
-  - Personal names, usernames and icons are never translated anywhere, including content loaded after the page opens
-  - Translations are cached permanently, so each phrase is translated once and repeat visits are instant
-  - Pages with thousands of items now translate in one pass instead of failing partway with "too many requests"
-  - Posts written in different languages on the same page are each detected and converted correctly, and choosing English now translates non-English posts into English
-  - A post already written in the language you selected is left exactly as the author wrote it
-  - While a page is translating, a blinking "Translating…" indicator is shown
-  - Admin panel remains English-only by design
+  - Cancel in-progress downloads from the progress dialog across Files, Chat, Mail, Policies, and related screens
+  - Chat and Team Chat support more image and video formats (including HEIC/HEIF and JFIF), with clearer messages when a video cannot play
+  - Edit and delete actions on lists (Bulletins, Jobs, Policies, Strategies, and similar) only show for your own records or Super Admin — matching the web PMA
+  - Android storage permissions tightened for store compliance; previously stored passwords are cleared for security
+  - More reliable live chat connections and safer drawer layout on notched devices
 
 ### Mobile App — v1.0.38
 
-- **Status:** draft (ready to publish)
+- **Status:** published
 - **Type:** feature
 - **Date:** 2026-07-28
 - **Title:** Support Reports, Change Logs & chat media
@@ -52,7 +48,7 @@ Last **published** in PMA / Site Settings: Web `v2.1.1` · Mobile `v1.0.37`.
 
 ### Web — v2.1.2
 
-- **Status:** draft (ready to publish)
+- **Status:** published
 - **Type:** improvement
 - **Date:** 2026-07-28
 - **Title:** Protect names from auto-translate
