@@ -121,7 +121,7 @@
 @section('content')
     <div class="container-fluid">
         <div class="bg_white_border">
-            <form>
+            <form onsubmit="return false;">
                 <div class="row">
                     <div class="col-lg-12">
                         <div class="row">
@@ -151,7 +151,7 @@
                                         <div class="search-field">
                                             <input type="text" name="search" id="search" placeholder="Search..."
                                                 required="" class="form-control rounded_search">
-                                            <button class="submit_search" id="search-button"> <span class=""><i
+                                            <button type="button" class="submit_search" id="search-button"> <span class=""><i
                                                         class="fa fa-search"></i></span></button>
                                         </div>
                                     </div>

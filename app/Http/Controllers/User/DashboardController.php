@@ -63,12 +63,12 @@ class DashboardController extends Controller
     {
         if (auth()->user()->can('Manage Password')) {
             $request->validate([
-                'old_password' => 'required|min:8|password',
+                'old_password' => 'required|min:8|current_password',
                 'new_password' => ['required', 'different:old_password', 'regex:/^(?=.*[@$%&])[^\s]{8,}$/'],
                 'confirm_password' => 'required|min:8|same:new_password',
 
             ], [
-                'old_password.password' => 'Old password is not correct',
+                'old_password.current_password' => 'Old password is not correct',
                 'new_password.regex' => 'The password must be at least 8 characters long and include at least one special character from @$%&',
             ]);
 

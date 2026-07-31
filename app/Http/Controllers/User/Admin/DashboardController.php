@@ -11,10 +11,15 @@ class DashboardController extends Controller
 {
     public function index()
     {
-        $count['today_donation'] = Donation::whereDate('created_at', date('Y-m-d'))->sum('donation_amount');
-        $count['total_donation_this_month'] = Donation::whereMonth('created_at', date('m'))->sum('donation_amount');
-        $count['total_donation'] = Donation::sum('donation_amount');
-        $count['total_donation_this_year'] = Donation::whereYear('created_at', date('Y'))->sum('donation_amount');
+        // same Global/regional split the donations listing uses
+        $scoped = fn() => auth()->user()->user_type == 'Global'
+            ? Donation::query()
+            : Donation::where('country_id', auth()->user()->country);
+
+        $count['today_donation'] = $scoped()->whereDate('created_at', date('Y-m-d'))->sum('donation_amount');
+        $count['total_donation_this_month'] = $scoped()->whereMonth('created_at', date('m'))->sum('donation_amount');
+        $count['total_donation'] = $scoped()->sum('donation_amount');
+        $count['total_donation_this_year'] = $scoped()->whereYear('created_at', date('Y'))->sum('donation_amount');
         return view('user.user.profile')->with(compact('count'));
     }
 }

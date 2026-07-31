@@ -20,7 +20,7 @@ class ServiceContoller extends Controller
     public function index(Request $request)
     {
         if (auth()->user()->can('Manage Services')) {
-            $our_organization = OurOrganization::where('slug', $request->slug)->first();
+            $our_organization = OurOrganization::where('slug', $request->slug)->firstOrFail();
             $our_organization_id = $our_organization->id;
             $services = Service::where('our_organization_id', $our_organization_id)->get();
             return view('user.admin.service.update')->with(compact('services', 'our_organization_id'));
@@ -47,11 +47,30 @@ class ServiceContoller extends Controller
      */
     public function store(Request $request)
     {
+        if (!auth()->user()->can('Manage Services')) {
+            abort(403, 'You do not have permission to access this page.');
+        }
+
+        $request->validate([
+            'our_organization_id' => 'required|exists:our_organizations,id',
+        ]);
+
+        $submittedIds = array_filter((array) $request->image_id);
+
+        // remove rows of this organization that were dropped from the form
+        if ($request->column_count > 0) {
+            $removed = Service::where('our_organization_id', $request->our_organization_id);
+            if (!empty($submittedIds)) {
+                $removed->whereNotIn('id', $submittedIds);
+            }
+            $removed->delete();
+        }
+
         for ($key = 0; $key < $request->column_count; $key++) {
             if (isset($request->image_id[$key])) {
-                $service = Service::find($request->image_id[$key]);
-                // delete old image
-                Service::whereNotIn('id', $request->image_id)->delete();
+                $service = Service::where('our_organization_id', $request->our_organization_id)
+                    ->where('id', $request->image_id[$key])
+                    ->first() ?: new Service();
             } else {
                 $service = new Service();
             }

@@ -40,12 +40,19 @@ class MemberController extends Controller
     public function fetchData(Request $request)
     {
         if ($request->ajax()) {
-            $sort_by = $request->get('sortby');
-            $sort_type = $request->get('sorttype');
+            if (!Auth::user()->can('Manage Members Access')) {
+                abort(403, 'You do not have permission to access this page.');
+            }
+
+            $sort_by = $request->get('sortby') ?: 'id';
+            $sort_type = $request->get('sorttype') === 'asc' ? 'asc' : 'desc';
             $query = $request->get('query');
             $query = str_replace(" ", "%", $query);
 
             $partners = User::with(['ecclesia', 'roles'])
+                ->whereHas('roles', function ($q) {
+                    $q->whereNotIn('name', ['SUPER ADMIN', 'ECCLESIA']);
+                })
                 ->where(function ($q) use ($query) {
                     $q->where('id', 'like', '%' . $query . '%')
                         ->orWhereRaw('CONCAT(COALESCE(first_name, ""), " ", COALESCE(middle_name, ""), " ", COALESCE(last_name, "")) like ?', ['%' . $query . '%'])
@@ -61,6 +68,11 @@ class MemberController extends Controller
                         });
                 });
 
+            // ECCLESIA users only see their own members
+            if (Auth::user()->hasNewRole('ECCLESIA')) {
+                $partners->where('ecclesia_id', auth()->id());
+            }
+
             // Sorting logic
             if ($sort_by == 'name') {
                 $partners->orderBy(DB::raw('CONCAT(COALESCE(first_name, ""), " ", COALESCE(middle_name, ""), " ", COALESCE(last_name, ""))'), $sort_type);
@@ -68,31 +80,7 @@ class MemberController extends Controller
                 $partners->orderBy($sort_by, $sort_type);
             }
 
-            // Exclude users with the "SUPER ADMIN" role
-            // $partners->whereDoesntHave('roles', function ($q) {
-            //     $q->where('name', 'SUPER ADMIN')->orWhere('name', 'ECCLESIA');
-            // });
-
-            if (Auth::user()->hasNewRole('ECCLESIA')) {
-                // Exclude SUPER ADMIN and ECCLESIA roles
-                $partners = User::whereHas('roles', function ($q) {
-                    $q->whereNotIn('name', ['SUPER ADMIN', 'ECCLESIA']);
-                })->where('ecclesia_id', auth()->id())->orderBy('id', 'desc')->paginate(15);
-            } else {
-                // Exclude SUPER ADMIN and ECCLESIA roles, and filter by ecclesia_id
-                $partners = User::whereHas('roles', function ($q) {
-                    $q->whereNotIn('name', ['SUPER ADMIN', 'ECCLESIA']);
-                })
-
-                    ->orderBy('id', 'desc')
-                    ->paginate(15);
-            }
-
-            if (Auth::user()->hasNewRole('SUPER ADMIN')) {
-                $partners = $partners->paginate(15);
-            } else {
-                $partners = $partners->paginate(15);
-            }
+            $partners = $partners->paginate(15);
 
             return response()->json(['data' => view('user.admin.members.table', compact('partners'))->render()]);
         }
@@ -100,7 +88,11 @@ class MemberController extends Controller
 
     public function accept(Request $request, $id)
     {
-        $user = User::find($id);
+        if (!Auth::user()->can('Manage Members Access')) {
+            abort(403, 'You do not have permission to access this page.');
+        }
+
+        $user = $this->accessibleMember($id);
         $user->is_accept = 1;
         $user->status = 1;
         $user->save();
@@ -117,10 +109,14 @@ class MemberController extends Controller
 
     public function rejected(Request $request, $id)
     {
+        if (!Auth::user()->can('Manage Members Access')) {
+            abort(403, 'You do not have permission to access this page.');
+        }
+
         $request->validate([
             'reason' => 'required',
         ]);
-        $partner = User::findOrFail($id);
+        $partner = $this->accessibleMember($id);
         $partner->is_accept = 2; // mark as rejected
         $partner->save();
 
@@ -132,7 +128,27 @@ class MemberController extends Controller
 
     public function rejectedView($id)
     {
-        $partner = User::find($id);
+        if (!Auth::user()->can('Manage Members Access')) {
+            abort(403, 'You do not have permission to access this page.');
+        }
+
+        $partner = $this->accessibleMember($id);
         return view('user.admin.members.rejected', compact('partner'));
+    }
+
+    /**
+     * Resolve a member within the same scope the listing uses.
+     */
+    private function accessibleMember($id): User
+    {
+        $query = User::whereHas('roles', function ($q) {
+            $q->whereNotIn('name', ['SUPER ADMIN', 'ECCLESIA']);
+        })->where('id', $id);
+
+        if (Auth::user()->hasNewRole('ECCLESIA')) {
+            $query->where('ecclesia_id', auth()->id());
+        }
+
+        return $query->firstOrFail();
     }
 }

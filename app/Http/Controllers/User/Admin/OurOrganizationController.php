@@ -111,7 +111,10 @@ class OurOrganizationController extends Controller
      */
     public function store(Request $request)
     {
-        // dd($request->all());
+        if (!auth()->user()->can('Create Our Organization')) {
+            abort(403, 'You do not have permission to access this page.');
+        }
+
         $request->validate([
             'name' => 'required',
             'description' => 'required',
@@ -170,7 +173,10 @@ class OurOrganizationController extends Controller
      */
     public function update(Request $request, $id)
     {
-        // dd($request->all());
+        if (!auth()->user()->can('Edit Our Organization')) {
+            abort(403, 'You do not have permission to access this page.');
+        }
+
         $request->validate([
             'name' => 'required',
             'description' => 'required',
@@ -212,6 +218,10 @@ class OurOrganizationController extends Controller
     {
         if (auth()->user()->can('Delete Our Organization')) {
             $our_organization = OurOrganization::findOrfail($request->id);
+            if (!Helper::canSelectCmsContentCountry() && $our_organization->country_code !== ($this->country->code ?? null)) {
+                abort(403, 'You do not have permission to access this page.');
+            }
+
             $our_organization->delete();
             return redirect()->route('user.admin.our-organizations.index')->with('message', 'Our Organization deleted successfully.');
         } else {

@@ -39,7 +39,9 @@ class ProfileController extends Controller
         $data->last_name = $request->last_name;
         $data->email = $request->email;
         $data->phone = $request->phone_number;
-        $data->profile_picture = $this->imageUpload($request->file('profile_picture'), 'profile');
+        if ($request->hasFile('profile_picture')) {
+            $data->profile_picture = $this->imageUpload($request->file('profile_picture'), 'profile');
+        }
         $data->save();
         return redirect()->back()->with('message', 'Profile updated successfully.');
     }
@@ -57,12 +59,12 @@ class ProfileController extends Controller
     {
 
         $request->validate([
-            'old_password' => 'required|min:8|password',
+            'old_password' => 'required|min:8|current_password',
             'new_password' => 'required|min:8|different:old_password',
             'confirm_password' => 'required|min:8|same:new_password',
 
         ], [
-            'old_password.password' => 'Old password is not correct',
+            'old_password.current_password' => 'Old password is not correct',
         ]);
 
         $data = User::find(Auth::user()->id);

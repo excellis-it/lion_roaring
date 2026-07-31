@@ -41,12 +41,16 @@ class MemberPrivacyPolicyContoller extends Controller
      */
     public function store(Request $request)
     {
+        if (!auth()->user()->can('Manage Member Privacy Policy Page')) {
+            abort(403, 'You do not have permission to access this page.');
+        }
+
         $request->validate([
             'description' => 'required'
         ]);
 
         if ($request->id != '') {
-            $policy = MemberPrivacyPolicy::find($request->id);
+            $policy = MemberPrivacyPolicy::find($request->id) ?: new MemberPrivacyPolicy();
         } else {
             $policy = new MemberPrivacyPolicy();
         }

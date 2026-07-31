@@ -34,8 +34,8 @@ class DonationController extends Controller
     {
         if ($request->ajax()) {
 
-            $sort_by = $request->get('sortby');
-            $sort_type = $request->get('sorttype');
+            $sort_by = $request->get('sortby') ?: 'id';
+            $sort_type = $request->get('sorttype') === 'asc' ? 'asc' : 'desc';
             $query = $request->get('query');
             $query = str_replace(" ", "%", $query);
             $user_type = auth()->user()->user_type;
@@ -43,7 +43,7 @@ class DonationController extends Controller
 
             if ($user_type == 'Global') {
                 $donations = Donation::where('id', 'like', '%' . $query . '%')
-                    ->orWhereRaw("CONCAT(first_name, ' ', last_name) like '%" . $query . "%'")
+                    ->orWhereRaw("CONCAT(first_name, ' ', last_name) LIKE ?", ["%{$query}%"])
                     ->orWhere('email', 'like', '%' . $query . '%')
                     ->orWhere('address', 'like', '%' . $query . '%')
                     ->orWhere('city', 'like', '%' . $query . '%')
@@ -159,7 +159,11 @@ class DonationController extends Controller
     public function delete($id)
     {
         if (auth()->user()->can('Manage Donations')) {
-            Donation::where('id', $id)->delete();
+            $donations = Donation::where('id', $id);
+            if (auth()->user()->user_type != 'Global') {
+                $donations->where('country_id', auth()->user()->country);
+            }
+            $donations->delete();
             return redirect()->route('user.admin.donations.index')->with('message', 'Donation has been deleted successfully');
         } else {
             abort(403, 'You do not have permission to access this page.');

@@ -134,8 +134,12 @@ class AdminController extends Controller
 
     public function update(Request $request)
     {
+        if (!auth()->user()->can('Edit Admin List')) {
+            abort(403, 'You do not have permission to access this page.');
+        }
 
         $request->validate([
+            'id' => 'required|exists:users,id',
             'edit_first_name' => 'required',
             'edit_last_name' => 'required',
             'edit_middle_name' => 'nullable',
@@ -178,10 +182,7 @@ class AdminController extends Controller
             // Delete the user
             $user->delete();
             //check if user teamMember
-            $teamMember = TeamMember::where('user_id', $id)->get();
-            if ($teamMember) {
-                $teamMember->each->delete();
-            }
+            TeamMember::where('user_id', $id)->get()->each->delete();
             return redirect()->back()->with('error', 'Admin has been deleted!');
         } else {
             abort(403, 'You do not have permission to access this page.');

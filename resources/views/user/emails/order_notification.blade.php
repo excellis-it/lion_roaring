@@ -31,7 +31,7 @@
                                 <h3 style="margin:0; color:#333;">Hello {!! no_translate($user->full_name ?? '') !!},</h3>
                                 <p style="color:#555; font-size:14px;">A new order
                                     <strong>#{{ $order->order_number }}</strong> has been placed with
-                                    <strong>{{ count($warehouseCarts ?: $order->carts) }} item(s)</strong>.</p>
+                                    <strong>{{ count(!empty($warehouseCarts) ? $warehouseCarts : ($order->orderItems ?? [])) }} item(s)</strong>.</p>
                             </td>
                         </tr>
 

@@ -106,7 +106,10 @@ class TestimonialController extends Controller
      */
     public function store(Request $request)
     {
-        // return $request;
+        if (!auth()->user()->can('Create Testimonials')) {
+            abort(403, 'You do not have permission to access this page.');
+        }
+
         $request->validate([
             'name' => "required|string|max:255",
             'image' => "required|image|mimes:jpeg,png,jpg,gif,svg,webp",
@@ -170,6 +173,10 @@ class TestimonialController extends Controller
      */
     public function update(Request $request, $id)
     {
+        if (!auth()->user()->can('Edit Testimonials')) {
+            abort(403, 'You do not have permission to access this page.');
+        }
+
         $request->validate([
             'name' => "required|string|max:255",
             'description' => 'required',
@@ -214,6 +221,12 @@ class TestimonialController extends Controller
     {
         if (auth()->user()->can('Delete Testimonials')) {
             $testimonials = Testimonial::findOrFail($id);
+            $user_country = auth()->user()->country;
+            $country = Country::where('id', $user_country)->first();
+            if (!Helper::canSelectCmsContentCountry() && $testimonials->country_code !== ($country->code ?? null)) {
+                abort(403, 'You do not have permission to access this page.');
+            }
+
             $testimonials->delete();
             return redirect()->route('user.admin.testimonials.index')->with('error', 'Testimonial has been deleted successfully.');
         } else {

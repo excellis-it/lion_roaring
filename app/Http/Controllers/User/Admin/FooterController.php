@@ -51,7 +51,10 @@ class FooterController extends Controller
 
     public function update(Request $request)
     {
-        // return $request;
+        if (!auth()->user()->can('Manage Footer')) {
+            abort(403, 'You do not have permission to access this page.');
+        }
+
         $request->validate([
             'footer_title' => 'required',
             'footer_address_title' => 'required',

@@ -71,6 +71,10 @@ class HomeCmsController extends Controller
      */
     public function store(Request $request)
     {
+        if (!auth()->user()->can('Manage Home Page')) {
+            abort(403, 'You do not have permission to access this page.');
+        }
+
         $request->validate([
             'banner_title' => 'required',
             'banner_image' => 'nullable|mimes:jpeg,jpg,png,gif,webp',

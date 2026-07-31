@@ -50,42 +50,230 @@
             cursor: pointer;
         }
 
-        .lr-address-modal .lr-left {
-            background: var(--bs-gray-100);
-            border-right: 1px solid var(--bs-border-color);
-            min-height: 560px;
+        .lr-address-modal {
+            --lr-accent: var(--yellow-color, #ff6632);
+            --lr-navy: var(--main-color, #202d4d);
+            --lr-surface: #f7f5f2;
+            --lr-card: #ffffff;
+            --lr-border: rgba(32, 45, 77, 0.12);
+            --lr-muted: #6b7280;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            max-height: min(78vh, 680px);
+            background: #fff;
         }
 
-        .lr-address-modal .lr-left-header {
-            padding: 16px 16px 8px;
+        .lr-address-modal .lr-step {
+            display: flex;
+            flex-direction: column;
+            min-height: 0;
+            flex: 1 1 auto;
+            max-height: min(78vh, 680px);
         }
 
-        .lr-address-modal .lr-left-body {
-            padding: 0 16px 16px;
+        .lr-address-modal .lr-step-body {
+            padding: 16px 18px 8px;
+            overflow-y: auto;
+            flex: 1 1 auto;
+            min-height: 0;
         }
 
-        .lr-address-modal .lr-right {
-            padding: 16px;
+        .lr-address-modal .lr-step-hint {
+            margin-bottom: 12px !important;
+        }
+
+        .lr-address-modal .lr-step-footer {
+            padding: 12px 18px 16px;
+            border-top: 1px solid var(--lr-border);
+            background: var(--lr-surface);
+            flex-shrink: 0;
+        }
+
+        .lr-footer-actions {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .lr-footer-actions .btn {
+            width: auto;
+            min-width: 0;
+            flex: 0 1 auto;
+        }
+
+        .lr-footer-actions .red_btn,
+        .lr-footer-actions .lr-btn-ghost {
+            padding: 10px 20px;
+        }
+
+        .lr-footer-actions-single {
+            justify-content: center;
+        }
+
+        .lr-address-modal .lr-form-footer {
+            display: flex;
+            justify-content: flex-end;
+            align-items: center;
+            gap: 10px;
+            background: #fff;
+        }
+
+        .lr-address-modal .red_btn {
+            border: 0;
+            padding: 11px 22px;
+            letter-spacing: 0.4px;
+        }
+
+        .lr-back-btn {
+            padding: 6px 12px;
+            font-size: 13px;
+        }
+
+        .lr-busy-badge {
+            position: absolute;
+            top: 10px;
+            right: 14px;
+            z-index: 2;
+            font-size: 12px;
+            color: var(--lr-muted);
         }
 
         .lr-address-item {
-            border-radius: 12px;
-            border: 1px solid var(--bs-border-color);
-            background: var(--bs-body-bg);
-            padding: 12px;
+            border-radius: 14px;
+            border: 1.5px solid var(--lr-border);
+            background: var(--lr-card);
+            padding: 14px;
             margin-bottom: 10px;
+            cursor: pointer;
+            transition: border-color .18s ease, box-shadow .18s ease, background .18s ease;
         }
 
+        .lr-address-item:hover {
+            border-color: rgba(255, 102, 50, 0.45);
+            box-shadow: 0 6px 18px rgba(32, 45, 77, 0.06);
+        }
+
+        .lr-address-item:focus-visible {
+            outline: 2px solid var(--lr-accent);
+            outline-offset: 2px;
+        }
+
+        .lr-address-item.selected,
         .lr-address-item.active {
-            border-color: var(--bs-primary);
-            box-shadow: 0 0 0 .2rem rgba(13, 110, 253, .15);
+            border-color: var(--lr-accent);
+            background: rgba(255, 102, 50, 0.06);
+            box-shadow: 0 0 0 3px rgba(255, 102, 50, 0.14);
+        }
+
+        .lr-address-check {
+            width: 18px;
+            height: 18px;
+            border-radius: 50%;
+            border: 2px solid #c5cad3;
+            flex-shrink: 0;
+            margin-top: 2px;
+            transition: border-color .15s ease, background .15s ease;
+        }
+
+        .lr-address-item.selected .lr-address-check,
+        .lr-address-item.active .lr-address-check {
+            border-color: var(--lr-accent);
+            background: var(--lr-accent);
+            box-shadow: inset 0 0 0 3px #fff;
+        }
+
+        .lr-address-title {
+            color: var(--lr-navy);
+            font-size: 0.95rem;
+        }
+
+        .lr-address-text {
+            line-height: 1.4;
+            display: -webkit-box;
+            -webkit-line-clamp: 3;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+
+        .lr-badge-default {
+            display: inline-block;
+            font-size: 11px;
+            font-weight: 600;
+            letter-spacing: 0.3px;
+            text-transform: uppercase;
+            color: #fff;
+            background: var(--lr-navy);
+            border-radius: 999px;
+            padding: 3px 9px;
+            line-height: 1.2;
+        }
+
+        .lr-address-item .lr-item-actions {
+            display: flex;
+            gap: 2px;
+            flex-shrink: 0;
+            align-items: flex-start;
+        }
+
+        .lr-btn-text {
+            color: var(--lr-navy);
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 13px;
+            padding: 2px 6px;
+            line-height: 1.4;
+        }
+
+        .lr-btn-text:hover {
+            color: var(--lr-accent);
+        }
+
+        .lr-btn-text.text-danger {
+            color: #dc3545;
+        }
+
+        .lr-btn-text.text-danger:hover {
+            color: #b02a37;
+        }
+
+        .lr-btn-ghost {
+            border: 1.5px solid var(--lr-border);
+            background: #fff;
+            color: var(--lr-navy);
+            border-radius: 30px;
+            padding: 10px 18px;
+            font-weight: 600;
+            font-size: 14px;
+        }
+
+        .lr-btn-ghost:hover {
+            border-color: var(--lr-accent);
+            color: var(--lr-accent);
+            background: rgba(255, 102, 50, 0.04);
+        }
+
+        .lr-choose-empty {
+            border: 1.5px dashed var(--lr-border);
+            border-radius: 16px;
+            padding: 36px 22px;
+            text-align: center;
+            background: var(--lr-surface);
         }
 
         .lr-map-wrap {
             position: relative;
-            border-radius: 12px;
+            border-radius: 14px;
             overflow: hidden;
-            border: 1px solid var(--bs-border-color);
+            border: 1px solid var(--lr-border);
+            min-height: 200px;
+        }
+
+        .lr-map {
+            min-height: 200px;
+            height: 220px;
         }
 
         .lr-map-action {
@@ -93,11 +281,27 @@
             right: 12px;
             bottom: 12px;
             z-index: 500;
+            box-shadow: 0 4px 14px rgba(0, 0, 0, 0.12);
+            background: #fff !important;
         }
 
-        .lr-chip-group .btn {
-            border-radius: 999px;
-            padding: 6px 14px;
+        .lr-address-modal .form-control:focus {
+            border-color: var(--lr-accent);
+            box-shadow: 0 0 0 .2rem rgba(255, 102, 50, 0.18);
+        }
+
+        .lr-address-modal .form-check-input:checked {
+            background-color: var(--lr-accent);
+            border-color: var(--lr-accent);
+        }
+
+        .location-modal .modal-header {
+            border-bottom: 1px solid var(--lr-border, rgba(32, 45, 77, 0.12));
+        }
+
+        .location-modal .modal-title {
+            color: var(--main-color, #202d4d);
+            font-weight: 700;
         }
 
         /* Google Places Autocomplete dropdown inside Bootstrap modal */

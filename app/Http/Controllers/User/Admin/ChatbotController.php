@@ -52,42 +52,62 @@ class ChatbotController extends Controller
 
     public function keywordCreate()
     {
+        if (!auth()->user()->can('Manage Chatbot Keywords')) {
+            abort(403);
+        }
+
         return view('user.admin.chatbot.keyword-form');
     }
 
     public function keywordStore(Request $request)
     {
-        $request->validate([
+        if (!auth()->user()->can('Manage Chatbot Keywords')) {
+            abort(403);
+        }
+
+        $data = $request->validate([
             'keyword' => 'required|unique:chatbot_keywords,keyword',
             'search_type' => 'required|in:others,estore,elearning',
             'response' => 'required',
         ]);
 
-        ChatbotKeyword::create($request->all());
+        ChatbotKeyword::create($data);
         return redirect()->route('user.admin.chatbot.keywords')->with('message', 'Keyword created successfully');
     }
 
     public function keywordEdit($id)
     {
+        if (!auth()->user()->can('Manage Chatbot Keywords')) {
+            abort(403);
+        }
+
         $keyword = ChatbotKeyword::findOrFail($id);
         return view('user.admin.chatbot.keyword-form', compact('keyword'));
     }
 
     public function keywordUpdate(Request $request, $id)
     {
+        if (!auth()->user()->can('Manage Chatbot Keywords')) {
+            abort(403);
+        }
+
         $keyword = ChatbotKeyword::findOrFail($id);
-        $request->validate([
+        $data = $request->validate([
             'keyword' => 'required|unique:chatbot_keywords,keyword,' . $id,
             'search_type' => 'required|in:others,estore,elearning',
             'response' => 'required',
         ]);
 
-        $keyword->update($request->all());
+        $keyword->update($data);
         return redirect()->route('user.admin.chatbot.keywords')->with('message', 'Keyword updated successfully');
     }
 
     public function keywordDelete($id)
     {
+        if (!auth()->user()->can('Manage Chatbot Keywords')) {
+            abort(403);
+        }
+
         $keyword = ChatbotKeyword::findOrFail($id);
         $keyword->delete();
         return redirect()->route('user.admin.chatbot.keywords')->with('message', 'Keyword deleted successfully');
@@ -95,6 +115,10 @@ class ChatbotController extends Controller
 
     public function keywordBulkUpload(Request $request)
     {
+        if (!auth()->user()->can('Manage Chatbot Keywords')) {
+            abort(403);
+        }
+
         $request->validate([
             'csv_file' => 'required|mimes:csv,txt,xlsx,xls',
         ]);
@@ -111,11 +135,16 @@ class ChatbotController extends Controller
 
                 // Check if we have at least keyword and response
                 if (!empty($row[0]) && !empty($row[1])) {
+                    $searchType = !empty($row[2]) ? trim(strtolower($row[2])) : 'others';
+                    if (!in_array($searchType, ['others', 'estore', 'elearning'], true)) {
+                        $searchType = 'others';
+                    }
+
                     ChatbotKeyword::updateOrCreate(
                         ['keyword' => trim($row[0])],
                         [
                             'response' => trim($row[1]),
-                            'search_type' => (!empty($row[2]) ? trim(strtolower($row[2])) : 'others'),
+                            'search_type' => $searchType,
                             'is_active' => true
                         ]
                     );
@@ -131,6 +160,10 @@ class ChatbotController extends Controller
 
     public function keywordSampleDownload()
     {
+        if (!auth()->user()->can('Manage Chatbot Keywords')) {
+            abort(403);
+        }
+
         $headers = [
             'Content-Type' => 'text/csv',
             'Content-Disposition' => 'attachment; filename="chatbot_keywords_sample.csv"',
@@ -188,6 +221,10 @@ class ChatbotController extends Controller
 
     public function conversationShow($id)
     {
+        if (!auth()->user()->can('View Chatbot History')) {
+            abort(403);
+        }
+
         $conversation = ChatbotConversation::with(['user', 'messages' => function ($q) {
             $q->orderBy('created_at', 'asc');
         }])->findOrFail($id);

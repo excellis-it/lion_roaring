@@ -63,6 +63,10 @@ class ArticleOfAssociationController extends Controller
      */
     public function store(Request $request)
     {
+        if (!auth()->user()->can('Manage Article of Association Page')) {
+            abort(403, 'You do not have permission to access this page.');
+        }
+
         $request->validate([
             'pdf' => 'nullable|mimes:pdf',
             'checkbox_text' => 'nullable|string|max:255'

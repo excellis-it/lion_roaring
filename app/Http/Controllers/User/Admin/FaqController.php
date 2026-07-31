@@ -111,7 +111,10 @@ class FaqController extends Controller
      */
     public function store(Request $request)
     {
-        // return $request;
+        if (!auth()->user()->can('Create Faq')) {
+            abort(403, 'You do not have permission to access this page.');
+        }
+
         $request->validate([
             'question' => "required",
             'answer' => "required",
@@ -168,6 +171,10 @@ class FaqController extends Controller
      */
     public function update(Request $request, $id)
     {
+        if (!auth()->user()->can('Edit Faq')) {
+            abort(403, 'You do not have permission to access this page.');
+        }
+
         $request->validate([
             'question' => "required",
             'answer' => "required",
@@ -202,6 +209,10 @@ class FaqController extends Controller
     {
         if (auth()->user()->can('Delete Faq')) {
             $faq = Faq::findOrFail($id);
+            if (!Helper::canSelectCmsContentCountry() && $faq->country_code !== ($this->country->code ?? null)) {
+                abort(403, 'You do not have permission to access this page.');
+            }
+
             $faq->delete();
             return redirect()->route('user.admin.faq.index')->with('error', 'Faq has been deleted successfully.');
         } else {

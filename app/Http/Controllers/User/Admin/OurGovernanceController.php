@@ -110,7 +110,10 @@ class OurGovernanceController extends Controller
      */
     public function store(Request $request)
     {
-        // dd($request->all());
+        if (!auth()->user()->can('Create Our Governance')) {
+            abort(403, 'You do not have permission to access this page.');
+        }
+
         $request->validate([
             'name' => 'required',
             'description' => 'required',
@@ -198,7 +201,10 @@ class OurGovernanceController extends Controller
      */
     public function update(Request $request, $id)
     {
-        // dd($request->all());
+        if (!auth()->user()->can('Edit Our Governance')) {
+            abort(403, 'You do not have permission to access this page.');
+        }
+
         $request->validate([
             'name' => 'required',
             'description' => 'required',
@@ -277,6 +283,12 @@ class OurGovernanceController extends Controller
     {
         if (auth()->user()->can('Delete Our Governance')) {
             $our_governance = OurGovernance::findOrfail($request->id);
+            $user_country = auth()->user()->country;
+            $country = Country::where('id', $user_country)->first();
+            if (!Helper::canSelectCmsContentCountry() && $our_governance->country_code !== ($country->code ?? null)) {
+                abort(403, 'You do not have permission to access this page.');
+            }
+
             $countryCode = $our_governance->country_code ?? 'US';
             $our_governance->delete();
 
@@ -303,6 +315,15 @@ class OurGovernanceController extends Controller
 
         if (!is_array($order)) {
             return response()->json(['status' => false, 'message' => 'Invalid order payload'], 422);
+        }
+
+        // regional users may only reorder their own country's rows
+        if (!Helper::canSelectCmsContentCountry()) {
+            $country = Country::where('id', auth()->user()->country)->first();
+            $countryCode = $country->code ?? null;
+            if (!$countryCode) {
+                return response()->json(['status' => false, 'message' => 'Forbidden'], 403);
+            }
         }
 
         $position = 1;

@@ -32,8 +32,12 @@ class OrganizationCenterController extends Controller
     {
         if ($request->ajax()) {
 
-            $sort_by = $request->get('sortby');
-            $sort_type = $request->get('sorttype');
+            if (!auth()->user()->can('Manage Organization Center')) {
+                abort(403, 'You do not have permission to access this page.');
+            }
+
+            $sort_by = $request->get('sortby') ?: 'id';
+            $sort_type = $request->get('sorttype') === 'asc' ? 'asc' : 'desc';
             $query = $request->get('query');
             $query = str_replace(" ", "%", $query);
             $organization_centers = OrganizationCenter::where('id', 'like', '%' . $query . '%')
@@ -72,7 +76,10 @@ class OrganizationCenterController extends Controller
      */
     public function store(Request $request)
     {
-        // dd($request->all());
+        if (!auth()->user()->can('Create Organization Center')) {
+            abort(403, 'You do not have permission to access this page.');
+        }
+
         $request->validate([
             'our_organization_id' => 'required', // 'our_organization_id' => 'required
             'name' => 'required',
@@ -127,7 +134,7 @@ class OrganizationCenterController extends Controller
     {
         if (auth()->user()->can('Edit Organization Center')) {
             $organizations = OurOrganization::orderBy('name', 'asc')->get();
-            $organization_center = OrganizationCenter::find($id);
+            $organization_center = OrganizationCenter::findOrFail($id);
             return view('user.admin.organization-centers.edit')->with(compact('organization_center', 'organizations'));
         } else {
             abort(403, 'You do not have permission to access this page.');
@@ -143,6 +150,10 @@ class OrganizationCenterController extends Controller
      */
     public function update(Request $request, $id)
     {
+        if (!auth()->user()->can('Edit Organization Center')) {
+            abort(403, 'You do not have permission to access this page.');
+        }
+
         $request->validate([
             'our_organization_id' => 'required', // 'our_organization_id' => 'required
             'name' => 'required',
@@ -152,7 +163,7 @@ class OrganizationCenterController extends Controller
             'meta_keywords' => 'nullable',
         ]);
 
-        $organization_center = OrganizationCenter::find($id);
+        $organization_center = OrganizationCenter::findOrFail($id);
         if ($organization_center->name != $request->name) {
             $slug = $this->createSlug($request->name);
             $is_slug_exist = OrganizationCenter::where('slug', $slug)->first();

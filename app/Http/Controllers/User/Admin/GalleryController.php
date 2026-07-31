@@ -78,7 +78,10 @@ class GalleryController extends Controller
      */
     public function store(Request $request)
     {
-        // return $request;
+        if (!auth()->user()->can('Create Gallery')) {
+            abort(403, 'You do not have permission to access this page.');
+        }
+
         $request->validate([
             'image.*' => "required|image|mimes:jpeg,png,jpg,gif,svg,webp",
         ], [
@@ -138,6 +141,10 @@ class GalleryController extends Controller
      */
     public function update(Request $request, $id)
     {
+        if (!auth()->user()->can('Edit Gallery')) {
+            abort(403, 'You do not have permission to access this page.');
+        }
+
         $request->validate([
             'image' => "required|image|mimes:jpeg,png,jpg,gif,svg,webp",
         ]);
@@ -171,6 +178,10 @@ class GalleryController extends Controller
     {
         if (auth()->user()->can('Delete Gallery')) {
             $gallery = Gallery::findOrFail($id);
+            if (!Helper::canSelectCmsContentCountry() && $gallery->country_code !== ($this->country->code ?? null)) {
+                abort(403, 'You do not have permission to access this page.');
+            }
+
             $gallery->delete();
             return redirect()->route('user.admin.gallery.index')->with('error', 'Gallery has been deleted successfully.');
         } else {

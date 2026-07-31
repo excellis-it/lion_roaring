@@ -70,6 +70,10 @@ class AboutUsController extends Controller
      */
     public function store(Request $request)
     {
+        if (!auth()->user()->can('Manage About Us Page')) {
+            abort(403, 'You do not have permission to access this page.');
+        }
+
         $request->validate([
             'banner_title' => 'required',
             'description' => 'required',

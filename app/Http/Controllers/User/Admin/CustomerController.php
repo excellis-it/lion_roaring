@@ -102,7 +102,7 @@ class CustomerController extends Controller
      */
     public function edit($id)
     {
-        $customer = User::findOrFail($id);
+        $customer = User::role('MEMBER_SOVEREIGN')->findOrFail($id);
         return view('user.admin.customer.edit')->with(compact('customer'));
     }
 
@@ -125,7 +125,7 @@ class CustomerController extends Controller
             'phone' => 'required',
             'status' => 'required',
         ]);
-        $data = User::findOrFail($id);
+        $data = User::role('MEMBER_SOVEREIGN')->findOrFail($id);
         $data->user_name = $request->user_name;
         $data->first_name = $request->first_name;
         $data->last_name = $request->last_name;
@@ -159,7 +159,11 @@ class CustomerController extends Controller
 
     public function changeCustomersStatus(Request $request)
     {
-        $user = User::find($request->user_id);
+        $user = User::role('MEMBER_SOVEREIGN')->find($request->user_id);
+        if (!$user) {
+            return response()->json(['error' => 'Customer not found.'], 404);
+        }
+
         $user->status = $request->status;
         $user->save();
         return response()->json(['success' => 'Status change successfully.']);
@@ -167,7 +171,7 @@ class CustomerController extends Controller
 
     public function delete($id)
     {
-        $user = User::findOrFail($id);
+        $user = User::role('MEMBER_SOVEREIGN')->findOrFail($id);
         $user->delete();
         return redirect()->route('customers.index')->with('error', 'Customer has been deleted successfully.');
     }
@@ -175,21 +179,24 @@ class CustomerController extends Controller
     public function fetchData(Request $request)
     {
         if ($request->ajax()) {
-            $sort_by = $request->get('sortby');
-            $sort_type = $request->get('sorttype');
+            $sort_by = $request->get('sortby') ?: 'id';
+            $sort_type = $request->get('sorttype') === 'asc' ? 'asc' : 'desc';
             $query = $request->get('query');
             $query = str_replace(" ", "%", $query);
-            $customers = User::where('id', 'like', '%' . $query . '%')
-                ->orWhereRaw('CONCAT(first_name, " ", middle_name, " ", last_name) like ?', '%' . $query . '%')
-                ->orWhere('email', 'like', '%' . $query . '%')
-                ->orWhere('phone', 'like', '%' . $query . '%')
-                ->orWhere('address', 'like', '%' . $query . '%');
+            $customers = User::Role('MEMBER_SOVEREIGN')
+                ->where(function ($q) use ($query) {
+                    $q->where('id', 'like', '%' . $query . '%')
+                        ->orWhereRaw('CONCAT(first_name, " ", middle_name, " ", last_name) like ?', ['%' . $query . '%'])
+                        ->orWhere('email', 'like', '%' . $query . '%')
+                        ->orWhere('phone', 'like', '%' . $query . '%')
+                        ->orWhere('address', 'like', '%' . $query . '%');
+                });
             if ($sort_by == 'name') {
                 $customers->orderBy(DB::raw('CONCAT(first_name, " ", middle_name, " ", last_name)'), $sort_type);
             } else {
                 $customers->orderBy($sort_by, $sort_type);
             }
-            $customers = $customers->Role('MEMBER_SOVEREIGN')->paginate(15);
+            $customers = $customers->paginate(15);
 
             return response()->json(['data' => view('user.admin.customer.table', compact('customers'))->render()]);
         }

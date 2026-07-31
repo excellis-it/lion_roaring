@@ -1,6 +1,6 @@
 ---
 title: E-Store
-updated: 2026-07-27
+updated: 2026-07-31
 status: ready
 sidebar_key: e_store
 ---
@@ -24,6 +24,15 @@ sidebar_key: e_store
 - Physical + digital checkout (Stripe PaymentIntent).
 - Promo codes, my orders, tracking, cancel window, digital download (signed guest URL exists).
 - Registration assigns `ESTORE_USER`.
+
+### Delivery address picker
+
+Header **Near My Location** opens a single-panel step modal (`resources/views/ecom/includes/header.blade.php`):
+
+1. **Choose** — one list of saved addresses. Tap a card to select, then **Deliver here** / **Done** in the sticky footer. **Edit** stays on each card; **+ Add New Address** is in the footer.
+2. **Add / Edit** — replaces the list with the form (Back / Cancel returns to Choose). Address preview is read-only. **Other** label supports a custom name. Stored map coordinates are kept on edit unless they are >50km from a geocode of the address text.
+
+Guests must set a location before the modal can close. Map pin uses stored coordinates first; geocode is a mismatch fallback only.
 
 ### Public access rules
 

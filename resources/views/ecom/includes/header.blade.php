@@ -188,40 +188,74 @@
 <!-- Location Modal -->
 <div class="modal location-modal fade" id="locationModal" tabindex="-1" aria-labelledby="locationModalLabel"
     aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered modal-xl modal-dialog-scrollable">
+    <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-lg">
         <div class="modal-content rounded-3 shadow">
             <div class="modal-header">
                 <h5 class="modal-title" id="locationModalLabel">Choose Delivery Address</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body p-0">
-                <div class="lr-address-modal">
-                    <div class="row g-0">
-                        <div class="col-md-4 lr-left">
-                            <div class="lr-left-header">
-                                <div class="fw-semibold">Saved Addresses</div>
-                                <div class="text-muted small">Manage your delivery locations</div>
-                            </div>
-                            <div class="lr-left-body">
-                                @if (Auth::check())
-                                    <div id="savedAddresses"></div>
-                                    <div id="savedAddressesEmpty" class="text-muted small d-none">No saved addresses
-                                        yet.</div>
-                                    <button id="addNewAddressBtn" type="button"
-                                        class="btn btn-light red_btn w-100 mt-2">
-                                        <span> + Add New Address</span>
+                <div class="lr-address-modal is-choose" id="lrAddressModalRoot">
+                    <span id="locationBusy" class="text-muted small d-none lr-busy-badge">Working…</span>
+
+                    {{-- Step 1: pick an address --}}
+                    <div id="lrChoosePane" class="lr-step lr-choose-pane">
+                        <div class="lr-step-body">
+                            <p class="lr-step-hint text-muted small mb-3" id="lrListHint">
+                                Tap an address to select it, then confirm below.
+                            </p>
+
+                            @if (Auth::check())
+                                <div id="savedAddresses"></div>
+                                <div id="savedAddressesEmpty" class="lr-choose-empty text-muted d-none">
+                                    <p class="mb-3">No saved addresses yet.</p>
+                                    <button type="button" id="lrAddFromEmptyBtn" class="btn red_btn">
+                                        <span>+ Add New Address</span>
                                     </button>
-                                    <div class="text-muted small mt-2" hidden>Tip: select radio to set default.</div>
-                                @else
-                                    <div class="text-muted small">Login to manage multiple addresses.</div>
-                                @endif
-                            </div>
+                                </div>
+                            @else
+                                <div class="lr-choose-empty text-muted">
+                                    <p class="mb-0">Sign in to save multiple addresses, or set a delivery location next.</p>
+                                </div>
+                            @endif
                         </div>
 
-                        <div class="col-md-8 lr-right">
-                            <div class="d-flex align-items-center justify-content-between mb-2">
+                        @if (Auth::check())
+                            <div class="lr-step-footer" id="lrChooseFooter">
+                                <div class="lr-footer-actions">
+                                    <button type="button" id="lrUseAddressBtn" class="btn red_btn">
+                                        <span>Deliver here</span>
+                                    </button>
+                                    <button type="button" id="lrDoneBtn" class="btn red_btn d-none">
+                                        <span>Done</span>
+                                    </button>
+                                    <button id="addNewAddressBtn" type="button" class="btn lr-btn-ghost">
+                                        + Add New
+                                    </button>
+                                </div>
+                                <p class="text-muted small text-center mt-2 mb-0" id="lrChooseAlreadyDefault" hidden>
+                                    This is already your default delivery address.
+                                </p>
+                            </div>
+                        @else
+                            <div class="lr-step-footer">
+                                <div class="lr-footer-actions lr-footer-actions-single">
+                                    <button type="button" id="addNewAddressBtnGuest" class="btn red_btn">
+                                        <span>Set Delivery Location</span>
+                                    </button>
+                                </div>
+                            </div>
+                        @endif
+                    </div>
+
+                    {{-- Step 2: add / edit form --}}
+                    <div id="lrFormPane" class="lr-step lr-form-pane d-none">
+                        <div class="lr-step-body">
+                            <div class="d-flex align-items-center gap-2 mb-3">
+                                <button type="button" id="lrFormBackBtn" class="btn lr-btn-ghost lr-back-btn" aria-label="Back">
+                                    ← Back
+                                </button>
                                 <div class="fw-semibold" id="lrFormTitle">Add New Address</div>
-                                <span id="locationBusy" class="text-muted small d-none">Working…</span>
                             </div>
 
                             <div class="mb-2">
@@ -231,7 +265,7 @@
 
                             <div class="lr-map-wrap mb-3">
                                 <div id="lr-map" class="lr-map"></div>
-                                <button id="getLocationBtn" type="button" class="btn btn-light lr-map-action">
+                                <button id="getLocationBtn" type="button" class="btn lr-btn-ghost lr-map-action">
                                     Use Current Location
                                 </button>
                             </div>
@@ -294,11 +328,14 @@
                                             <label class="form-check-label" for="lr_label_other">Other</label>
                                         </div>
                                     </div>
+                                    <input type="text" id="lr_label_custom" class="form-control mt-2 d-none"
+                                        placeholder="e.g. Mom's house, Office 2" maxlength="100" />
                                 </div>
 
                                 <div class="col-12">
-                                    <label class="form-label">Full Address</label>
-                                    <textarea id="lr_formatted_address" class="form-control" rows="2" placeholder="Auto-filled, editable"></textarea>
+                                    <label class="form-label">Address preview</label>
+                                    <textarea id="lr_formatted_address" class="form-control" rows="2"
+                                        placeholder="Filled from the fields above" readonly></textarea>
                                 </div>
 
                                 @if (Auth::check())
@@ -312,13 +349,13 @@
                                     </div>
                                 @endif
                             </div>
+                        </div>
 
-                            <div class="d-flex justify-content-end gap-2 mt-3">
-                                <button type="button" class="btn btn-light btn-link"
-                                    data-bs-dismiss="modal">Cancel</button>
-                                <button id="saveAddressBtn" type="button" class="btn btn-primary">Save
-                                    Address</button>
-                            </div>
+                        <div class="lr-step-footer lr-form-footer">
+                            <button type="button" id="lrFormCancelBtn" class="btn lr-btn-ghost">Cancel</button>
+                            <button id="saveAddressBtn" type="button" class="btn red_btn">
+                                <span>Save Address</span>
+                            </button>
                         </div>
                     </div>
                 </div>
@@ -555,6 +592,12 @@
     <script>
         (function() {
             const isLoggedIn = {{ Auth::check() ? 'true' : 'false' }};
+            const locationRequiredOnOpen = {{ (
+                Auth::check()
+                    ? (is_null(Auth::user()->location_lat) || is_null(Auth::user()->location_lng))
+                    : (!session()->has('location_lat') || !session()->has('location_lng'))
+            ) ? 'true' : 'false' }};
+            let locationSatisfied = !locationRequiredOnOpen;
             const routes = {
                 store: "{{ route('user-update.location') }}",
                 @if (Auth::check())
@@ -567,12 +610,24 @@
             const csrf = "{{ csrf_token() }}";
 
             const modalEl = document.getElementById('locationModal');
+            const modalRoot = document.getElementById('lrAddressModalRoot');
             const busyEl = document.getElementById('locationBusy');
             const getLocationBtn = document.getElementById('getLocationBtn');
             const saveBtn = document.getElementById('saveAddressBtn');
+            const formCancelBtn = document.getElementById('lrFormCancelBtn');
+            const useAddressBtn = document.getElementById('lrUseAddressBtn');
+            const doneBtn = document.getElementById('lrDoneBtn');
 
             const formTitleEl = document.getElementById('lrFormTitle');
+            const modalTitleEl = document.getElementById('locationModalLabel');
             const addNewAddressBtn = document.getElementById('addNewAddressBtn');
+            const addNewAddressBtnGuest = document.getElementById('addNewAddressBtnGuest');
+            const addFromEmptyBtn = document.getElementById('lrAddFromEmptyBtn');
+            const choosePane = document.getElementById('lrChoosePane');
+            const formPane = document.getElementById('lrFormPane');
+            const chooseFooter = document.getElementById('lrChooseFooter');
+            const chooseAlreadyDefault = document.getElementById('lrChooseAlreadyDefault');
+            const formBackBtn = document.getElementById('lrFormBackBtn');
 
             const savedBox = document.getElementById('savedAddresses');
             const savedEmpty = document.getElementById('savedAddressesEmpty');
@@ -589,6 +644,7 @@
             const countryEl = document.getElementById('lr_country');
             const formattedEl = document.getElementById('lr_formatted_address');
             const makeDefaultEl = document.getElementById('lr_make_default');
+            const labelCustomEl = document.getElementById('lr_label_custom');
 
             const labelRadios = document.querySelectorAll('input[name="lr_label"]');
 
@@ -596,14 +652,137 @@
             let googleGeocoder, googleAutocomplete;
             let mapProvider = null; // 'google' | 'leaflet'
             let editingId = null;
+            let selectedId = null;
+            let uiMode = 'choose'; // choose | edit | add
             let addressCache = [];
-            let formattedTouched = false;
+            let mapNeedsResize = false;
+            let formLoadGen = 0;
 
             function setBusy(isBusy) {
                 if (!busyEl) return;
                 busyEl.classList.toggle('d-none', !isBusy);
                 if (getLocationBtn) getLocationBtn.disabled = isBusy;
                 if (saveBtn) saveBtn.disabled = isBusy;
+                if (useAddressBtn) useAddressBtn.disabled = isBusy;
+            }
+
+            function escapeHtml(str) {
+                return String(str == null ? '' : str)
+                    .replace(/&/g, '&amp;')
+                    .replace(/</g, '&lt;')
+                    .replace(/>/g, '&gt;')
+                    .replace(/"/g, '&quot;')
+                    .replace(/'/g, '&#39;');
+            }
+
+            function addressDisplayText(a) {
+                if (!a) return '';
+                return a.formatted_address || [a.address_line1, a.address_line2, a.city, a.state, a.postal_code, a
+                        .country
+                    ]
+                    .filter(Boolean)
+                    .join(', ');
+            }
+
+            function addressListTitle(a) {
+                const label = (a && a.label) ? String(a.label).trim() : 'Address';
+                const city = (a && a.city) ? String(a.city).trim() : '';
+                return city ? (label + ' · ' + city) : label;
+            }
+
+            function syncLabelCustomVisibility() {
+                if (!labelCustomEl) return;
+                const checked = document.querySelector('input[name="lr_label"]:checked');
+                const isOther = checked && checked.value === 'Other';
+                labelCustomEl.classList.toggle('d-none', !isOther);
+                if (!isOther) labelCustomEl.value = '';
+            }
+
+            function setMode(mode) {
+                uiMode = mode;
+                const isForm = mode === 'edit' || mode === 'add';
+                if (modalRoot) {
+                    modalRoot.classList.toggle('is-choose', !isForm);
+                    modalRoot.classList.toggle('is-edit', isForm);
+                }
+                if (choosePane) choosePane.classList.toggle('d-none', isForm);
+                if (formPane) formPane.classList.toggle('d-none', !isForm);
+
+                if (modalTitleEl) {
+                    if (mode === 'edit') modalTitleEl.textContent = 'Edit Delivery Address';
+                    else if (mode === 'add') modalTitleEl.textContent = 'Add Delivery Address';
+                    else modalTitleEl.textContent = 'Choose Delivery Address';
+                }
+
+                if (isForm) {
+                    mapNeedsResize = true;
+                    setTimeout(resizeMapIfNeeded, 80);
+                }
+            }
+
+            function resizeMapIfNeeded() {
+                if (!mapNeedsResize) return;
+                mapNeedsResize = false;
+                if (mapProvider === 'leaflet' && map && typeof map.invalidateSize === 'function') {
+                    map.invalidateSize();
+                }
+                if (mapProvider === 'google' && typeof google !== 'undefined' && google.maps && google.maps.event &&
+                    map) {
+                    google.maps.event.trigger(map, 'resize');
+                    const p = getLatLng();
+                    if (p.ok) map.setCenter({
+                        lat: p.lat,
+                        lng: p.lng
+                    });
+                }
+            }
+
+            function updateChoosePane() {
+                const a = (addressCache || []).find(x => String(x.id) === String(selectedId));
+                const hasSelection = !!a;
+                const isDefault = !!(a && a.is_default);
+
+                if (chooseFooter) {
+                    chooseFooter.classList.toggle('d-none', !(addressCache && addressCache.length));
+                }
+                if (useAddressBtn) {
+                    useAddressBtn.classList.toggle('d-none', !hasSelection || isDefault);
+                    useAddressBtn.disabled = !hasSelection;
+                }
+                if (doneBtn) {
+                    doneBtn.classList.toggle('d-none', !hasSelection || !isDefault);
+                }
+                if (chooseAlreadyDefault) {
+                    chooseAlreadyDefault.hidden = !isDefault;
+                }
+            }
+
+            function selectAddress(a, opts) {
+                if (!a) return;
+                selectedId = parseInt(String(a.id), 10);
+                updateActiveCard();
+                updateChoosePane();
+                // Default: return to Choose when picking from the list (including while Add/Edit is open)
+                if (!opts || opts.enterChoose !== false) {
+                    editingId = null;
+                    setMode('choose');
+                }
+            }
+
+            function haversineKm(lat1, lon1, lat2, lon2) {
+                const toRad = (d) => d * Math.PI / 180;
+                const dLat = toRad(lat2 - lat1);
+                const dLon = toRad(lon2 - lon1);
+                const a = Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+                    Math.cos(toRad(lat1)) * Math.cos(toRad(lat2)) *
+                    Math.sin(dLon / 2) * Math.sin(dLon / 2);
+                return 2 * 6371 * Math.asin(Math.sqrt(a));
+            }
+
+            function closeLocationModal() {
+                if (!modalEl || typeof bootstrap === 'undefined') return;
+                const modal = bootstrap.Modal.getInstance(modalEl) || bootstrap.Modal.getOrCreateInstance(modalEl);
+                modal.hide();
             }
 
             function setLatLng(lat, lng) {
@@ -623,18 +802,32 @@
 
             function getSelectedLabel() {
                 const checked = document.querySelector('input[name="lr_label"]:checked');
-                return checked ? checked.value : null;
+                if (!checked) return null;
+                if (checked.value === 'Other') {
+                    const custom = labelCustomEl ? labelCustomEl.value.trim() : '';
+                    return custom || 'Other';
+                }
+                return checked.value;
             }
 
             function setSelectedLabel(value) {
-                if (!value) return;
+                if (!value) {
+                    const home = document.getElementById('lr_label_home');
+                    if (home) home.checked = true;
+                    syncLabelCustomVisibility();
+                    return;
+                }
                 const normalized = String(value).toLowerCase();
                 let target = null;
                 if (normalized === 'home') target = document.getElementById('lr_label_home');
                 else if (normalized === 'work' || normalized === 'office') target = document.getElementById(
                     'lr_label_work');
-                else target = document.getElementById('lr_label_other');
+                else {
+                    target = document.getElementById('lr_label_other');
+                    if (labelCustomEl && normalized !== 'other') labelCustomEl.value = value;
+                }
                 if (target) target.checked = true;
+                syncLabelCustomVisibility();
             }
 
             function buildFormattedAddress() {
@@ -649,7 +842,6 @@
                 if (l1) parts.push(l1);
                 if (l2) parts.push(l2);
 
-                const cityState = [city, state].filter(Boolean).join(', ');
                 const stateZip = [state, zip].filter(Boolean).join(' ');
                 const cityStateZip = [city, stateZip].filter(Boolean).join(', ');
 
@@ -661,7 +853,6 @@
 
             function syncFormattedAddressFromFields() {
                 if (!formattedEl) return;
-                if (formattedTouched) return;
                 formattedEl.value = buildFormattedAddress();
             }
 
@@ -820,7 +1011,6 @@
                 if (zipEl) zipEl.value = postal || '';
                 if (countryEl) countryEl.value = country || '';
 
-                formattedTouched = false;
                 syncFormattedAddressFromFields();
             }
 
@@ -848,7 +1038,8 @@
                         `https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat=${encodeURIComponent(lat)}&lon=${encodeURIComponent(lng)}`;
                     const resp = await fetch(url, {
                         headers: {
-                            'Accept': 'application/json'
+                            'Accept': 'application/json',
+                            'Accept-Language': 'en'
                         }
                     });
                     const data = await resp.json();
@@ -871,7 +1062,6 @@
                     if (zipEl) zipEl.value = postcode;
                     if (countryEl) countryEl.value = country;
 
-                    formattedTouched = false;
                     syncFormattedAddressFromFields();
                 } catch (e) {
                     // ignore
@@ -889,6 +1079,10 @@
                             'X-Requested-With': 'XMLHttpRequest'
                         }
                     });
+                    if (!resp.ok) {
+                        toastr.error('Could not load saved addresses.');
+                        return;
+                    }
                     const json = await resp.json();
                     const list = json && json.status ? (json.data || []) : [];
                     addressCache = list;
@@ -896,41 +1090,49 @@
                     savedBox.innerHTML = '';
                     if (!list.length) {
                         if (savedEmpty) savedEmpty.classList.remove('d-none');
+                        selectedId = null;
+                        updateChoosePane();
+                        setMode('add');
+                        startNew();
                         return;
                     }
                     if (savedEmpty) savedEmpty.classList.add('d-none');
 
                     list.forEach(a => {
-                        const text = a.formatted_address || [a.address_line1, a.address_line2, a.city, a
-                                .state, a.postal_code, a.country
-                            ]
-                            .filter(Boolean)
-                            .join(', ');
+                        const text = addressDisplayText(a);
+                        const title = addressListTitle(a);
 
                         const wrap = document.createElement('div');
                         wrap.className = 'lr-address-item';
                         wrap.dataset.addressId = a.id;
+                        wrap.setAttribute('role', 'button');
+                        wrap.setAttribute('tabindex', '0');
+                        wrap.setAttribute('aria-pressed', a.is_default ? 'true' : 'false');
                         wrap.innerHTML = `
                             <div class="d-flex align-items-start gap-2">
-                                <input class="form-check-input mt-1" type="radio" name="saved_address" ${a.is_default ? 'checked' : ''} aria-label="Set as default">
-                                <div class="flex-grow-1">
-                                    <div class="d-flex align-items-center gap-2">
-                                        <div class="fw-semibold">${a.label ? a.label : 'Address'}</div>
-                                        ${a.is_default ? '<span class="badge bg-primary">Default</span>' : ''}
+                                <div class="lr-address-check" aria-hidden="true"></div>
+                                <div class="flex-grow-1 min-w-0">
+                                    <div class="d-flex align-items-center gap-2 flex-wrap">
+                                        <div class="fw-semibold lr-address-title">${escapeHtml(title)}</div>
+                                        ${a.is_default ? '<span class="lr-badge-default">Default</span>' : ''}
                                     </div>
-                                    <div class="small text-muted">${text}</div>
-                                    <div class="small text-muted">Click to edit</div>
+                                    <div class="small text-muted mt-1 lr-address-text">${escapeHtml(text)}</div>
                                 </div>
-                               ${a.is_default ? '' : `<button type="button" class="btn btn-link p-0 text-danger lr-delete-btn" aria-label="Delete address" title="Delete">
-                                                            <i class="fa-solid fa-trash"></i>
-                                                        </button>`}
+                                <div class="lr-item-actions">
+                                    <button type="button" class="btn btn-sm lr-btn-text lr-edit-btn" aria-label="Edit address" title="Edit">Edit</button>
+                                    ${a.is_default ? '' : `<button type="button" class="btn btn-sm lr-btn-text text-danger lr-delete-btn" aria-label="Delete address" title="Delete"><i class="fa-solid fa-trash"></i></button>`}
+                                </div>
                             </div>
                         `;
 
-                        const radio = wrap.querySelector('input');
-                        radio.addEventListener('change', function() {
-                            setDefaultAddress(a.id);
-                        });
+                        const editBtn = wrap.querySelector('.lr-edit-btn');
+                        if (editBtn) {
+                            editBtn.addEventListener('click', function(e) {
+                                e.preventDefault();
+                                e.stopPropagation();
+                                startEdit(a);
+                            });
+                        }
 
                         const delBtn = wrap.querySelector('.lr-delete-btn');
                         if (delBtn) {
@@ -942,33 +1144,106 @@
                         }
 
                         wrap.addEventListener('click', function(e) {
-                            if (e.target && e.target.tagName === 'INPUT') return;
-                            startEdit(a);
+                            if (e.target && e.target.closest('.lr-item-actions')) return;
+                            selectAddress(a);
+                        });
+                        wrap.addEventListener('keydown', function(e) {
+                            if (e.key === 'Enter' || e.key === ' ') {
+                                e.preventDefault();
+                                selectAddress(a);
+                            }
                         });
                         savedBox.appendChild(wrap);
                     });
 
-                    // Auto-load default address into form (nice UX)
-                    const def = list.find(x => x.is_default);
-                    if (def) startEdit(def);
+                    const def = list.find(x => x.is_default) || list[0];
+                    if (def) selectAddress(def);
+                    else updateChoosePane();
+                    setMode('choose');
                 } catch (e) {
-                    // ignore
+                    toastr.error('Could not load saved addresses.');
                 }
             }
 
             function updateActiveCard() {
                 if (!savedBox) return;
-                const activeId = (editingId === null || editingId === undefined) ? null : parseInt(String(editingId),
+                const activeId = (selectedId === null || selectedId === undefined) ? null : parseInt(String(selectedId),
                     10);
                 [...savedBox.querySelectorAll('.lr-address-item')].forEach(el => {
                     const id = parseInt(el.dataset.addressId || '0', 10);
-                    el.classList.toggle('active', activeId !== null && Number.isFinite(activeId) && id ===
-                        activeId);
+                    const isSelected = activeId !== null && Number.isFinite(activeId) && id === activeId;
+                    el.classList.toggle('selected', isSelected);
+                    el.classList.toggle('active', isSelected);
+                    el.setAttribute('aria-pressed', isSelected ? 'true' : 'false');
                 });
             }
 
-            function fillFormFromAddress(a) {
+            function moveMapTo(lat, lng) {
+                setLatLng(lat, lng);
+                initMap(lat, lng);
+                if (marker) {
+                    if (mapProvider === 'google' && typeof marker.setPosition === 'function') {
+                        marker.setPosition({
+                            lat,
+                            lng
+                        });
+                        if (map && typeof map.panTo === 'function') map.panTo({
+                            lat,
+                            lng
+                        });
+                    } else if (typeof marker.setLatLng === 'function') {
+                        marker.setLatLng([lat, lng]);
+                        if (map && typeof map.setView === 'function') map.setView([lat, lng], 15);
+                    }
+                }
+            }
+
+            async function geocodeAddressQuery(query) {
+                if (!query) return null;
+                try {
+                    const hasGoogle = (typeof google !== 'undefined') && google.maps && google.maps.Geocoder;
+                    if (hasGoogle) {
+                        if (!googleGeocoder) googleGeocoder = new google.maps.Geocoder();
+                        return await new Promise((resolve) => {
+                            googleGeocoder.geocode({
+                                address: query
+                            }, function(results, status) {
+                                if (status === 'OK' && results && results[0] && results[0].geometry) {
+                                    const loc = results[0].geometry.location;
+                                    resolve({
+                                        lat: loc.lat(),
+                                        lng: loc.lng()
+                                    });
+                                } else resolve(null);
+                            });
+                        });
+                    }
+                    // Browser cannot set User-Agent; prefer Google when available.
+                    const url =
+                        `https://nominatim.openstreetmap.org/search?format=jsonv2&limit=1&q=${encodeURIComponent(query)}`;
+                    const resp = await fetch(url, {
+                        headers: {
+                            'Accept': 'application/json',
+                            'Accept-Language': 'en'
+                        }
+                    });
+                    const data = await resp.json();
+                    if (data && data[0]) {
+                        return {
+                            lat: parseFloat(data[0].lat),
+                            lng: parseFloat(data[0].lon)
+                        };
+                    }
+                } catch (e) {
+                    // ignore
+                }
+                return null;
+            }
+
+            async function fillFormFromAddress(a) {
                 if (!a) return;
+                const gen = ++formLoadGen;
+
                 setSelectedLabel(a.label || 'Home');
                 if (line1El) line1El.value = a.address_line1 || '';
                 if (line2El) line2El.value = a.address_line2 || '';
@@ -976,61 +1251,98 @@
                 if (stateEl) stateEl.value = a.state || '';
                 if (zipEl) zipEl.value = a.postal_code || '';
                 if (countryEl) countryEl.value = a.country || '';
-                if (formattedEl) formattedEl.value = a.formatted_address || '';
+                if (formattedEl) formattedEl.value = a.formatted_address || addressDisplayText(a);
                 if (makeDefaultEl) makeDefaultEl.checked = !!a.is_default;
+                if (searchEl) searchEl.value = '';
 
-                formattedTouched = !!(formattedEl && formattedEl.value);
+                const lat = parseFloat(a.latitude);
+                const lng = parseFloat(a.longitude);
+                const hasCoords = Number.isFinite(lat) && Number.isFinite(lng);
+                const q = addressDisplayText(a);
 
-                if (Number.isFinite(a.latitude) && Number.isFinite(a.longitude)) {
-                    setLatLng(a.latitude, a.longitude);
-                    initMap(a.latitude, a.longitude);
-                    if (marker) {
-                        if (mapProvider === 'google' && typeof marker.setPosition === 'function') {
-                            marker.setPosition({
-                                lat: a.latitude,
-                                lng: a.longitude
-                            });
-                        } else if (typeof marker.setLatLng === 'function') {
-                            marker.setLatLng([a.latitude, a.longitude]);
+                // Prefer stored coordinates so Save does not silently rewrite the pin.
+                // If text geocodes >50km away, snap the map to match the visible address.
+                if (hasCoords) {
+                    moveMapTo(lat, lng);
+                    if (q) {
+                        setBusy(true);
+                        const found = await geocodeAddressQuery(q);
+                        if (gen !== formLoadGen) {
+                            setBusy(false);
+                            return;
+                        }
+                        setBusy(false);
+                        if (found && haversineKm(lat, lng, found.lat, found.lng) > 50) {
+                            moveMapTo(found.lat, found.lng);
+                            toastr.info('Map pin updated to match this address.');
                         }
                     }
+                    return;
                 }
+
+                if (q) {
+                    setBusy(true);
+                    const found = await geocodeAddressQuery(q);
+                    if (gen !== formLoadGen) {
+                        setBusy(false);
+                        return;
+                    }
+                    setBusy(false);
+                    if (found) {
+                        moveMapTo(found.lat, found.lng);
+                        return;
+                    }
+                }
+
+                if (gen !== formLoadGen) return;
+                seedInitialLatLng();
+            }
+
+            function setSaveBtnLabel(text) {
+                if (!saveBtn) return;
+                const span = saveBtn.querySelector('span');
+                if (span) span.textContent = text;
+                else saveBtn.innerHTML = '<span>' + text + '</span>';
             }
 
             function startNew() {
+                formLoadGen++;
                 editingId = null;
                 if (formTitleEl) formTitleEl.textContent = 'Add New Address';
-                if (saveBtn) saveBtn.textContent = 'Save Address';
+                setSaveBtnLabel('Save Address');
                 clearAddressFields();
                 if (makeDefaultEl) makeDefaultEl.checked = true;
                 setSelectedLabel('Home');
                 if (searchEl) searchEl.value = '';
-                updateActiveCard();
+                setMode('add');
                 seedInitialLatLng();
-                setTimeout(() => {
-                    if (mapProvider === 'leaflet' && map && typeof map.invalidateSize === 'function') map
-                        .invalidateSize();
-                    if (mapProvider === 'google' && typeof google !== 'undefined' && google.maps && google.maps
-                        .event && map) {
-                        google.maps.event.trigger(map, 'resize');
-                    }
-                }, 50);
             }
 
             function startEdit(a) {
+                if (!a) return;
                 editingId = parseInt(String(a.id), 10);
-                if (formTitleEl) formTitleEl.textContent = 'Edit Address11';
-                if (saveBtn) saveBtn.textContent = 'Save Changes';
-                fillFormFromAddress(a);
+                selectedId = editingId;
                 updateActiveCard();
-                setTimeout(() => {
-                    if (mapProvider === 'leaflet' && map && typeof map.invalidateSize === 'function') map
-                        .invalidateSize();
-                    if (mapProvider === 'google' && typeof google !== 'undefined' && google.maps && google.maps
-                        .event && map) {
-                        google.maps.event.trigger(map, 'resize');
+                if (formTitleEl) formTitleEl.textContent = 'Edit Address';
+                setSaveBtnLabel('Save Changes');
+                setMode('edit');
+                fillFormFromAddress(a);
+            }
+
+            function cancelForm() {
+                formLoadGen++;
+                if (!isLoggedIn) {
+                    if (locationRequiredOnOpen && !locationSatisfied) {
+                        toastr.error('Please set a delivery location to continue.');
+                        return;
                     }
-                }, 50);
+                    closeLocationModal();
+                    return;
+                }
+                editingId = null;
+                clearAddressFields();
+                setMode('choose');
+                updateChoosePane();
             }
 
             async function setDefaultAddress(addressId) {
@@ -1046,6 +1358,7 @@
                         }
                     });
                     if (resp && resp.status) {
+                        locationSatisfied = true;
                         toastr.success(resp.message || 'Default address updated');
                         window.location.reload();
                     } else {
@@ -1075,20 +1388,6 @@
 
                     if (resp && resp.status) {
                         toastr.success(resp.message || 'Address deleted');
-
-                        // Update UI without full reload
-                        addressCache = (addressCache || []).filter(x => String(x.id) !== String(addressId));
-                        const el = savedBox ? savedBox.querySelector(
-                            `.lr-address-item[data-address-id="${addressId}"]`) : null;
-                        if (el) el.remove();
-                        if (savedEmpty && (!addressCache || !addressCache.length)) savedEmpty.classList.remove(
-                            'd-none');
-
-                        if (editingId && String(editingId) === String(addressId)) {
-                            startNew();
-                        }
-
-                        // If default was deleted, backend may switch default; refresh to update header location
                         window.location.reload();
                     } else {
                         toastr.error((resp && resp.message) || 'Failed to delete');
@@ -1130,7 +1429,7 @@
                 if (zipEl) zipEl.value = '';
                 if (countryEl) countryEl.value = '';
                 if (formattedEl) formattedEl.value = '';
-                formattedTouched = false;
+                if (labelCustomEl) labelCustomEl.value = '';
             }
 
             async function useCurrentLocation() {
@@ -1234,9 +1533,9 @@
                         data: payload
                     });
                     if (resp && resp.status) {
+                        locationSatisfied = true;
                         toastr.success(resp.message || 'Address saved');
-                        const modal = bootstrap.Modal.getInstance(modalEl);
-                        if (modal) modal.hide();
+                        closeLocationModal();
                         window.location.reload();
                     } else {
                         toastr.error((resp && resp.message) || 'Failed to save');
@@ -1255,36 +1554,91 @@
             }
 
             if (modalEl) {
+                modalEl.addEventListener('hide.bs.modal', function(e) {
+                    if (locationRequiredOnOpen && !locationSatisfied) {
+                        e.preventDefault();
+                        toastr.error('Please set a delivery location to continue.');
+                    }
+                });
+
                 modalEl.addEventListener('shown.bs.modal', function() {
-                    seedInitialLatLng();
-                    setTimeout(() => {
-                        if (map && mapProvider === 'leaflet') map.invalidateSize();
-                    }, 50);
-                    loadSavedAddresses();
-                    if (!isLoggedIn) {
-                        // Guest flow: just show new-address form
-                        if (formTitleEl) formTitleEl.textContent = 'Add New Address';
+                    if (isLoggedIn) {
+                        setMode('choose');
+                        loadSavedAddresses();
+                    } else {
+                        // Guest flow: set delivery location via form only
+                        if (formTitleEl) formTitleEl.textContent = 'Set Delivery Location';
+                        setSaveBtnLabel('Use This Location');
+                        setMode('add');
+                        seedInitialLatLng();
+                        setTimeout(resizeMapIfNeeded, 50);
                     }
                 });
             }
 
-            if (formattedEl) {
-                formattedEl.addEventListener('input', function() {
-                    formattedTouched = true;
+            labelRadios.forEach(function(radio) {
+                radio.addEventListener('change', syncLabelCustomVisibility);
+            });
+            if (labelCustomEl) {
+                labelCustomEl.addEventListener('input', function() {
+                    const other = document.getElementById('lr_label_other');
+                    if (other) other.checked = true;
+                    if (labelCustomEl) labelCustomEl.classList.remove('d-none');
                 });
             }
 
             [line1El, line2El, cityEl, stateEl, zipEl, countryEl].forEach(el => {
                 if (!el) return;
                 el.addEventListener('input', function() {
-                    // remove validation state when user types and keep full address in sync
                     el.classList.remove('is-invalid');
                     syncFormattedAddressFromFields();
                 });
             });
 
             if (addNewAddressBtn) {
-                addNewAddressBtn.addEventListener('click', startNew);
+                addNewAddressBtn.addEventListener('click', function() {
+                    startNew();
+                });
+            }
+            if (addNewAddressBtnGuest) {
+                addNewAddressBtnGuest.addEventListener('click', startNew);
+            }
+            if (addFromEmptyBtn) {
+                addFromEmptyBtn.addEventListener('click', startNew);
+            }
+
+            if (formCancelBtn) {
+                formCancelBtn.addEventListener('click', cancelForm);
+            }
+            if (formBackBtn) {
+                formBackBtn.addEventListener('click', cancelForm);
+            }
+
+            if (useAddressBtn) {
+                useAddressBtn.addEventListener('click', function() {
+                    if (!selectedId) {
+                        toastr.error('Please select an address first.');
+                        return;
+                    }
+                    const a = (addressCache || []).find(x => String(x.id) === String(selectedId));
+                    if (a && a.is_default) {
+                        closeLocationModal();
+                        return;
+                    }
+                    setDefaultAddress(selectedId);
+                });
+            }
+
+            if (doneBtn) {
+                doneBtn.addEventListener('click', function() {
+                    // If location was never synced to the profile/session, re-apply default
+                    // so closing the forced modal still persists delivery coords.
+                    if (locationRequiredOnOpen && !locationSatisfied && selectedId) {
+                        setDefaultAddress(selectedId);
+                        return;
+                    }
+                    closeLocationModal();
+                });
             }
 
             if (getLocationBtn) {

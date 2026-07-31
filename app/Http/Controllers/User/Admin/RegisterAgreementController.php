@@ -69,6 +69,10 @@ class RegisterAgreementController extends Controller
      */
     public function store(Request $request)
     {
+        if (!auth()->user()->can('Manage Register Page Agreement Page')) {
+            abort(403, 'You do not have permission to access this page.');
+        }
+
         $request->validate([
             'agreement_title' => 'required',
             'agreement_description' => 'required',

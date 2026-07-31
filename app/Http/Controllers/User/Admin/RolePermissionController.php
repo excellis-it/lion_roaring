@@ -64,6 +64,10 @@ class RolePermissionController extends Controller
      */
     public function store(Request $request)
     {
+        if (Auth::user()->getFirstUserRoleType() != 1 && Auth::user()->getFirstUserRoleType() != 3) {
+            abort(403, 'You do not have permission to access this page.');
+        }
+
         if (Auth::user()->getFirstUserRoleType() == 1) {
             $roleType = 3;
         } else {
@@ -84,7 +88,6 @@ class RolePermissionController extends Controller
         if (!empty($permissions)) {
             foreach ($permissions as $permission) {
                 $p = Permission::where('id', '=', $permission)->firstOrFail();
-                $role = Role::where('name', '=', $name)->whereIn('type', [3])->first();
                 $role->givePermissionTo($p);
             }
         }
@@ -112,8 +115,8 @@ class RolePermissionController extends Controller
     public function edit($id)
     {
         if (Auth::user()->getFirstUserRoleType() == 1 || Auth::user()->getFirstUserRoleType() == 3) {
-            $id = Crypt::decrypt($id);
-            $role = Role::findOrFail($id);
+            $id = $this->decryptRoleId($id);
+            $role = $this->authorizedRole($id);
 
             $user = Auth::user();
             $firstRoleType = $user->getFirstUserRoleType();
@@ -146,13 +149,17 @@ class RolePermissionController extends Controller
      */
     public function update(Request $request, $id)
     {
-        $id = Crypt::decrypt($id);
+        if (Auth::user()->getFirstUserRoleType() != 1 && Auth::user()->getFirstUserRoleType() != 3) {
+            abort(403, 'You do not have permission to access this page.');
+        }
+
+        $id = $this->decryptRoleId($id);
         $request->validate([
             'role_name' => 'required|unique:roles,name,' . $id,
             'permissions' => 'required'
         ]);
 
-        $role = Role::findOrFail($id);
+        $role = $this->authorizedRole($id);
         $role->name = $request->role_name;
         $permissions = $request['permissions'];
         $role->save();
@@ -179,13 +186,43 @@ class RolePermissionController extends Controller
      */
     public function destroy($id)
     {
-        $id = Crypt::decrypt($id);
-        $role = Role::findOrFail($id);
+        if (Auth::user()->getFirstUserRoleType() != 1 && Auth::user()->getFirstUserRoleType() != 3) {
+            abort(403, 'You do not have permission to access this page.');
+        }
+
+        $id = $this->decryptRoleId($id);
+        $role = $this->authorizedRole($id);
         if ($role->name != 'SUPER ADMIN') {
             $role->delete();
             return redirect()->back()->with('message', 'Role deleted successfully.');
         } else {
             return redirect()->back()->with('error', 'You can not delete this role.');
         }
+    }
+
+    /**
+     * Decrypt a route-supplied role id, 404 instead of 500 on a tampered value.
+     */
+    private function decryptRoleId($id)
+    {
+        try {
+            return Crypt::decrypt($id);
+        } catch (\Illuminate\Contracts\Encryption\DecryptException $e) {
+            abort(404);
+        }
+    }
+
+    /**
+     * Resolve a role the current user is allowed to manage, using the same
+     * role-type scoping as index().
+     */
+    private function authorizedRole($id): Role
+    {
+        $types = Auth::user()->getFirstUserRoleType() == 1 ? [1, 3] : [2];
+
+        return Role::where('id', $id)
+            ->where('name', '!=', 'SUPER ADMIN')
+            ->whereIn('type', $types)
+            ->firstOrFail();
     }
 }

@@ -39,15 +39,15 @@ class SettingsController extends Controller
             'STRIPE_SECRET' => 'nullable|string|max:255',  // Stripe secret key
         ]);
 
-        $settings = SiteSetting::first();
+        $settings = SiteSetting::first() ?: new SiteSetting();
 
         // Handle file upload for SITE_LOGO
         if ($request->hasFile('SITE_LOGO')) {
             $logo = $request->file('SITE_LOGO');
 
             // If you want to remove the old logo before uploading a new one:
-            if (File::exists(public_path('storage/' . $settings->SITE_LOGO))) {
-                File::delete(public_path('storage/' . $settings->SITE_LOGO));
+            if ($settings->SITE_LOGO && File::exists(public_path($settings->SITE_LOGO))) {
+                File::delete(public_path($settings->SITE_LOGO));
             }
 
             // Define the path to store the file

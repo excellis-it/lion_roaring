@@ -74,6 +74,10 @@ class OrganizationController extends Controller
      */
     public function store(Request $request)
     {
+        if (!auth()->user()->can('Manage Organizations Page')) {
+            abort(403, 'You do not have permission to access this page.');
+        }
+
         $validator = Validator::make($request->all(), [
             'banner_title' => 'required',
             'banner_description' => 'required',
@@ -216,7 +220,16 @@ class OrganizationController extends Controller
 
     public function imageDelete(Request $request)
     {
-        $organization_image = OrganizationImage::find($request->id);
+        if (!auth()->user()->can('Manage Organizations Page')) {
+            return response()->json(['error' => 'You do not have permission to perform this action.'], 403);
+        }
+
+        $organization_image = OrganizationImage::whereIn('organization_id', $this->editableOrganizationIds())
+            ->find($request->id);
+        if (!$organization_image) {
+            return response()->json(['error' => 'Image not found.'], 404);
+        }
+
         if (!empty($organization_image->image) && Storage::exists($organization_image->image)) {
             Storage::delete($organization_image->image);
         }
@@ -227,13 +240,35 @@ class OrganizationController extends Controller
 
     public function imageReorder(Request $request)
     {
+        if (!auth()->user()->can('Manage Organizations Page')) {
+            return response()->json(['status' => false, 'message' => 'You do not have permission to perform this action.'], 403);
+        }
+
         $order = $request->order;
         if (is_array($order)) {
+            $editableIds = $this->editableOrganizationIds();
             foreach ($order as $index => $id) {
-                OrganizationImage::where('id', $id)->update(['sort_order' => $index]);
+                OrganizationImage::where('id', $id)
+                    ->whereIn('organization_id', $editableIds)
+                    ->update(['sort_order' => $index]);
             }
         }
         return response()->json(['status' => true, 'message' => 'Image order updated successfully.']);
+    }
+
+    /**
+     * Organization rows the current user is allowed to touch.
+     */
+    private function editableOrganizationIds(): array
+    {
+        $query = Organization::query();
+        if (!Helper::canSelectCmsContentCountry()) {
+            // same resolver index()/store() use, so a user without a country
+            // still matches the US row they are actually editing
+            $query->where('country_code', Helper::resolveCmsEditCountryCode(request(), $this->country->code ?? null));
+        }
+
+        return $query->pluck('id')->all();
     }
 
     /**

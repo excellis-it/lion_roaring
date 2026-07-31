@@ -77,6 +77,10 @@ class PrincipleAndBusinessController extends Controller
      */
     public function store(Request $request)
     {
+        if (!auth()->user()->can('Manage Principle and Business Page')) {
+            abort(403, 'You do not have permission to access this page.');
+        }
+
         $request->validate([
             'banner_title' => 'required',
             'description' => 'required',
@@ -192,7 +196,24 @@ class PrincipleAndBusinessController extends Controller
 
     public function imageDelete(Request $request)
     {
-        $principle_image = PrincipleBusinessImage::find($request->id);
+        if (!auth()->user()->can('Manage Principle and Business Page')) {
+            return response()->json(['error' => 'You do not have permission to perform this action.'], 403);
+        }
+
+        $editableIds = PrincipalAndBusiness::query()
+            ->when(!Helper::canSelectCmsContentCountry(), function ($q) {
+                // same resolver index()/store() use, so a user without a country
+                // still matches the US row they are actually editing
+                $q->where('country_code', Helper::resolveCmsEditCountryCode(request(), $this->country->code ?? null));
+            })
+            ->pluck('id')
+            ->all();
+
+        $principle_image = PrincipleBusinessImage::whereIn('principle_id', $editableIds)->find($request->id);
+        if (!$principle_image) {
+            return response()->json(['error' => 'Image not found.'], 404);
+        }
+
         if (!empty($principle_image->image) && Storage::exists($principle_image->image)) {
             Storage::delete($principle_image->image);
         }

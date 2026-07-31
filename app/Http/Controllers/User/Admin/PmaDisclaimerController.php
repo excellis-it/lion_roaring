@@ -67,6 +67,10 @@ class PmaDisclaimerController extends Controller
      */
     public function store(Request $request)
     {
+        if (!auth()->user()->can('Manage PMA Terms Page')) {
+            abort(403, 'You do not have permission to access this page.');
+        }
+
         $request->validate([
             'title' => 'required',
             'description' => 'required',

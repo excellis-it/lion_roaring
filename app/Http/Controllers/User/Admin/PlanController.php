@@ -75,7 +75,7 @@ class PlanController extends Controller
      */
     public function edit($id)
     {
-        $plan = Plan::find($id);
+        $plan = Plan::findOrFail($id);
         return view('user.admin.plans.edit', compact('plan'));
     }
 
@@ -96,7 +96,7 @@ class PlanController extends Controller
             'plan_description' => 'required|max:152',
         ]);
 
-        $plan = Plan::find($id);
+        $plan = Plan::findOrFail($id);
         $plan->plan_name = $request->plan_name;
         $plan->plan_price = $request->plan_price;
         $plan->plan_validity = $request->plan_validity;
@@ -120,7 +120,7 @@ class PlanController extends Controller
 
     public function delete($id)
     {
-        $plan = Plan::find($id);
+        $plan = Plan::findOrFail($id);
         $plan->delete();
         return redirect()->route('plans.index')->with('message', 'Plan deleted successfully.');
     }
@@ -128,6 +128,10 @@ class PlanController extends Controller
     public function changePlansStatus(Request $request)
     {
         $plan = Plan::find($request->user_id);
+        if (!$plan) {
+            return response()->json(['error' => 'Plan not found.'], 404);
+        }
+
         $plan->plan_status = $request->status;
         $plan->save();
         return response()->json(['success' => 'Status change successfully.']);
@@ -135,8 +139,8 @@ class PlanController extends Controller
     public function fetchData(Request $request)
     {
         if ($request->ajax()) {
-            $sort_by = $request->get('sortby');
-            $sort_type = $request->get('sorttype');
+            $sort_by = $request->get('sortby') ?: 'id';
+            $sort_type = $request->get('sorttype') === 'asc' ? 'asc' : 'desc';
             $query = $request->get('query');
             $query = str_replace(" ", "%", $query);
             $plans = Plan::where('id', 'like', '%' . $query . '%')

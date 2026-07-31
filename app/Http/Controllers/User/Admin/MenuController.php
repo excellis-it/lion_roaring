@@ -10,6 +10,10 @@ class MenuController extends Controller
 {
     public function index()
     {
+        if (!auth()->user()->can('Manage Menu Settings')) {
+            abort(403, 'You do not have permission to access this page.');
+        }
+
         $items = MenuItem::orderBy('id')->get()->groupBy('type');
         return view('user.admin.menu.index', compact('items'));
     }
@@ -17,6 +21,10 @@ class MenuController extends Controller
 
     public function update(Request $request)
     {
+        if (!auth()->user()->can('Manage Menu Settings')) {
+            abort(403, 'You do not have permission to access this page.');
+        }
+
         $data = $request->get('names', []);
         foreach ($data as $key => $name) {
             $item = MenuItem::where('key', $key)->first();

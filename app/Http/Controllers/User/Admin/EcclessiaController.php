@@ -88,8 +88,12 @@ class EcclessiaController extends Controller
 
     public function update(Request $request)
     {
-        // dd($request->all());
+        if (!auth()->user()->can('Edit All Users')) {
+            abort(403, 'You do not have permission to access this page.');
+        }
+
         $request->validate([
+            'id' => 'required|exists:users,id',
             'role' => 'required',
             'edit_first_name' => 'required',
             'edit_last_name' => 'required',
@@ -139,10 +143,7 @@ class EcclessiaController extends Controller
             // Delete the user
             $user->delete();
             //check if user teamMember
-            $teamMember = TeamMember::where('user_id', $id)->get();
-            if ($teamMember) {
-                $teamMember->each->delete();
-            }
+            TeamMember::where('user_id', $id)->get()->each->delete();
             return redirect()->back()->with('error', 'Ecclessia has been deleted!');
         } else {
             abort(403, 'You do not have permission to access this page.');

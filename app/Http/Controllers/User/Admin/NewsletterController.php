@@ -34,8 +34,12 @@ class NewsletterController extends Controller
     {
         if ($request->ajax()) {
 
-            $sort_by = $request->get('sortby');
-            $sort_type = $request->get('sorttype');
+            if (!auth()->user()->can('Manage Newsletters')) {
+                abort(403, 'You do not have permission to access this page.');
+            }
+
+            $sort_by = $request->get('sortby') ?: 'id';
+            $sort_type = $request->get('sorttype') === 'asc' ? 'asc' : 'desc';
             $query = $request->get('query');
             $query = str_replace(" ", "%", $query);
             $user_type = auth()->user()->user_type;

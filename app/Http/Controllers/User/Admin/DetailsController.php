@@ -71,6 +71,10 @@ class DetailsController extends Controller
      */
     public function store(Request $request)
     {
+        if (!auth()->user()->can('Manage Details Page')) {
+            abort(403, 'You do not have permission to access this page.');
+        }
+
         $country = Helper::resolveCmsEditCountryCode($request, $this->country->code ?? null);
 
         // Determine submitted IDs (if any) and remove only records for this country that aren't submitted

@@ -70,6 +70,10 @@ class ContactUsCmsController extends Controller
      */
     public function store(Request $request)
     {
+        if (!auth()->user()->can('Manage Contact Us Page')) {
+            abort(403, 'You do not have permission to access this page.');
+        }
+
         $request->validate([
             'banner_title' => 'required',
             'email' => 'required|email',

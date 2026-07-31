@@ -19,7 +19,7 @@ class OrderNotificationMail extends Mailable
     {
         $this->order = $order;
         $this->user = $user;
-        $this->warehouseCarts = $warehouseCarts;
+        $this->warehouseCarts = $warehouseCarts ?? [];
     }
 
     public function build()
