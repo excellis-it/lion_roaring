@@ -124,13 +124,144 @@
         });
     }
 
-    function normalizeChatImageFiles(files) {
-        return Promise.all(Array.from(files).map(normalizeChatImageFile));
+    function normalizeChatImageFiles(files, onProgress) {
+        var list = Array.from(files);
+        var total = list.length;
+        var done = 0;
+        if (typeof onProgress === "function") onProgress(0, total);
+        return Promise.all(
+            list.map(function (file) {
+                return normalizeChatImageFile(file).then(function (result) {
+                    done++;
+                    if (typeof onProgress === "function") {
+                        onProgress(done, total);
+                    }
+                    return result;
+                });
+            })
+        );
+    }
+
+    // ---- Busy overlay (processing / uploading feedback) ----
+    var BUSY_STYLE_ID = "chat-upload-busy-style";
+
+    function ensureBusyStyles() {
+        if (document.getElementById(BUSY_STYLE_ID)) return;
+        var style = document.createElement("style");
+        style.id = BUSY_STYLE_ID;
+        style.textContent = [
+            ".chat-upload-busy{position:absolute;top:0;left:0;right:0;bottom:0;display:none;align-items:center;justify-content:center;background:rgba(255,255,255,.94);z-index:10;border-radius:.5rem}",
+            ".chat-upload-busy.show{display:flex}",
+            ".chat-upload-busy-box{text-align:center;padding:20px;max-width:340px;width:100%}",
+            ".chat-upload-spinner{width:48px;height:48px;margin:0 auto 14px;border:4px solid #e9e2f0;border-top-color:#643271;border-radius:50%;animation:chatUploadSpin 1s linear infinite}",
+            "@keyframes chatUploadSpin{to{transform:rotate(360deg)}}",
+            ".chat-upload-busy-text{font-weight:600;color:#3b2b46;margin-bottom:10px}",
+            ".chat-upload-progress{height:8px;background:#ece6f2;border-radius:6px;overflow:hidden;display:none}",
+            ".chat-upload-progress-bar{height:100%;width:0;background:#643271;transition:width .2s ease}",
+        ].join("");
+        document.head.appendChild(style);
+    }
+
+    function getBusyOverlay(modalId) {
+        var modalEl = document.getElementById(modalId);
+        if (!modalEl) return null;
+        var content = modalEl.querySelector(".modal-content");
+        if (!content) return null;
+        var overlay = content.querySelector(".chat-upload-busy");
+        if (!overlay) {
+            ensureBusyStyles();
+            overlay = document.createElement("div");
+            overlay.className = "chat-upload-busy";
+            overlay.innerHTML =
+                '<div class="chat-upload-busy-box">' +
+                '<div class="chat-upload-spinner"></div>' +
+                '<div class="chat-upload-busy-text"></div>' +
+                '<div class="chat-upload-progress"><div class="chat-upload-progress-bar"></div></div>' +
+                "</div>";
+            content.appendChild(overlay);
+        }
+        return overlay;
+    }
+
+    function toggleModalControls(modalId, disabled) {
+        $("#" + modalId)
+            .find("button")
+            .not(".chat-upload-busy button")
+            .prop("disabled", disabled);
+    }
+
+    function showModalBusy(modalId, text, percent) {
+        var overlay = getBusyOverlay(modalId);
+        if (!overlay) return;
+        overlay.querySelector(".chat-upload-busy-text").textContent = text;
+        var progress = overlay.querySelector(".chat-upload-progress");
+        var bar = overlay.querySelector(".chat-upload-progress-bar");
+        if (typeof percent === "number" && isFinite(percent)) {
+            progress.style.display = "block";
+            bar.style.width = Math.max(0, Math.min(100, percent)) + "%";
+        } else {
+            progress.style.display = "none";
+        }
+        overlay.classList.add("show");
+        toggleModalControls(modalId, true);
+    }
+
+    function hideModalBusy(modalId) {
+        var overlay = getBusyOverlay(modalId);
+        if (overlay) overlay.classList.remove("show");
+        toggleModalControls(modalId, false);
+    }
+
+    function isModalBusy(modalId) {
+        var modalEl = document.getElementById(modalId);
+        return !!(modalEl && modalEl.querySelector(".chat-upload-busy.show"));
+    }
+
+    // Block ESC / backdrop dismissal while processing or uploading
+    function guardModalWhileBusy(modalId) {
+        $(document)
+            .off("hide.bs.modal", "#" + modalId)
+            .on("hide.bs.modal", "#" + modalId, function (e) {
+                if (isModalBusy(modalId)) {
+                    e.preventDefault();
+                }
+            });
+    }
+
+    function processFilesWithFeedback(modalId, files, onDone) {
+        if (!files.length) return;
+        showModalBusy(
+            modalId,
+            "Processing files... (0 of " + files.length + ")",
+            0
+        );
+        // Yield so the overlay actually paints before HEIC decoding hogs the
+        // main thread (setTimeout rather than rAF: rAF is throttled in
+        // background tabs and would stall processing there).
+        setTimeout(function () {
+            normalizeChatImageFiles(files, function (done, total) {
+                showModalBusy(
+                    modalId,
+                    "Processing files... (" + done + " of " + total + ")",
+                    (done / total) * 100
+                );
+            })
+                .then(function (normalized) {
+                    onDone(normalized);
+                    hideModalBusy(modalId);
+                })
+                .catch(function (err) {
+                    console.error("File processing failed", err);
+                    hideModalBusy(modalId);
+                });
+        }, 50);
     }
 
     // Initialize for regular chat
     function initChatFileModal() {
         console.log("Initializing chat file modal...");
+
+        guardModalWhileBusy("fileUploadModal");
 
         // Open modal when attachment icon is clicked (delegated event)
         $(document)
@@ -185,7 +316,11 @@
                 }
                 try {
                     const files = Array.from(e.target.files);
-                    normalizeChatImageFiles(files).then(handleChatFiles);
+                    processFilesWithFeedback(
+                        "fileUploadModal",
+                        files,
+                        handleChatFiles
+                    );
                 } catch (ex) {
                     console.error("Error in fileInput change handler", ex);
                 } finally {
@@ -220,7 +355,11 @@
                 $(this).removeClass("dragover");
 
                 const files = Array.from(e.originalEvent.dataTransfer.files);
-                normalizeChatImageFiles(files).then(handleChatFiles);
+                processFilesWithFeedback(
+                    "fileUploadModal",
+                    files,
+                    handleChatFiles
+                );
             });
 
         // Click on drop zone to select files (delegated)
@@ -385,28 +524,48 @@
                 return;
             }
 
+            if (typeof window.sendChatFilesWithMessages !== "function") {
+                console.error("sendChatFilesWithMessages function not found");
+                return;
+            }
+
             // Store files globally so the main send function can access them
             window.chatFilesToSend = chatSelectedFiles.slice(); // Create a copy
 
-            // Close modal using Bootstrap 5 API (same as newsletter example)
-            const modalEl = document.getElementById("fileUploadModal");
-            if (modalEl) {
-                const modalInstance = bootstrap.Modal.getInstance(modalEl);
-                if (modalInstance) {
-                    modalInstance.hide();
-                }
-            }
+            const total = window.chatFilesToSend.length;
+            showModalBusy(
+                "fileUploadModal",
+                "Uploading 0 of " + total + " file(s)...",
+                0
+            );
 
-            // Trigger the actual send after modal closes
-            setTimeout(() => {
-                if (typeof window.sendChatFilesWithMessages === "function") {
-                    window.sendChatFilesWithMessages(window.chatFilesToSend);
-                } else {
-                    console.error(
-                        "sendChatFilesWithMessages function not found"
-                    );
-                }
-            }, 300);
+            Promise.resolve(
+                window.sendChatFilesWithMessages(
+                    window.chatFilesToSend,
+                    function (done, count) {
+                        showModalBusy(
+                            "fileUploadModal",
+                            "Uploading " + done + " of " + count + " file(s)...",
+                            (done / count) * 100
+                        );
+                    }
+                )
+            )
+                .then(function () {
+                    hideModalBusy("fileUploadModal");
+                    const modalEl = document.getElementById("fileUploadModal");
+                    if (modalEl) {
+                        const modalInstance =
+                            bootstrap.Modal.getInstance(modalEl);
+                        if (modalInstance) {
+                            modalInstance.hide();
+                        }
+                    }
+                })
+                .catch(function (err) {
+                    console.error("Chat file upload failed", err);
+                    hideModalBusy("fileUploadModal");
+                });
         }
 
         function resetChatModal() {
@@ -426,6 +585,8 @@
     // Initialize for team chat
     function initTeamFileModal() {
         console.log("Initializing team file modal...");
+
+        guardModalWhileBusy("teamFileUploadModal");
 
         // Open modal when attachment icon is clicked (delegated)
         $(document)
@@ -490,7 +651,11 @@
                 }
                 try {
                     const files = Array.from(e.target.files);
-                    normalizeChatImageFiles(files).then(handleTeamFiles);
+                    processFilesWithFeedback(
+                        "teamFileUploadModal",
+                        files,
+                        handleTeamFiles
+                    );
                 } catch (ex) {
                     console.error("Error in teamFileInput change handler", ex);
                 } finally {
@@ -525,7 +690,11 @@
                 $(this).removeClass("dragover");
 
                 const files = Array.from(e.originalEvent.dataTransfer.files);
-                normalizeChatImageFiles(files).then(handleTeamFiles);
+                processFilesWithFeedback(
+                    "teamFileUploadModal",
+                    files,
+                    handleTeamFiles
+                );
             });
 
         // Click on drop zone to select files (delegated)
@@ -689,28 +858,49 @@
                 return;
             }
 
+            if (typeof window.sendTeamFilesWithMessages !== "function") {
+                console.error("sendTeamFilesWithMessages function not found");
+                return;
+            }
+
             // Store files globally so the main send function can access them
             window.teamFilesToSend = teamSelectedFiles.slice(); // Create a copy
 
-            // Close modal using Bootstrap 5 API (same as newsletter example)
-            const modalEl = document.getElementById("teamFileUploadModal");
-            if (modalEl) {
-                const modalInstance = bootstrap.Modal.getInstance(modalEl);
-                if (modalInstance) {
-                    modalInstance.hide();
-                }
-            }
+            const total = window.teamFilesToSend.length;
+            showModalBusy(
+                "teamFileUploadModal",
+                "Uploading 0 of " + total + " file(s)...",
+                0
+            );
 
-            // Trigger the actual send after modal closes
-            setTimeout(() => {
-                if (typeof window.sendTeamFilesWithMessages === "function") {
-                    window.sendTeamFilesWithMessages(window.teamFilesToSend);
-                } else {
-                    console.error(
-                        "sendTeamFilesWithMessages function not found"
-                    );
-                }
-            }, 300);
+            Promise.resolve(
+                window.sendTeamFilesWithMessages(
+                    window.teamFilesToSend,
+                    function (done, count) {
+                        showModalBusy(
+                            "teamFileUploadModal",
+                            "Uploading " + done + " of " + count + " file(s)...",
+                            (done / count) * 100
+                        );
+                    }
+                )
+            )
+                .then(function () {
+                    hideModalBusy("teamFileUploadModal");
+                    const modalEl =
+                        document.getElementById("teamFileUploadModal");
+                    if (modalEl) {
+                        const modalInstance =
+                            bootstrap.Modal.getInstance(modalEl);
+                        if (modalInstance) {
+                            modalInstance.hide();
+                        }
+                    }
+                })
+                .catch(function (err) {
+                    console.error("Team file upload failed", err);
+                    hideModalBusy("teamFileUploadModal");
+                });
         }
 
         function resetTeamModal() {

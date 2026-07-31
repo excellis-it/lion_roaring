@@ -1289,27 +1289,27 @@ $(document).ready(function () {
     });
 
     // Function to send files from modal with individual messages
-    window.sendChatFilesWithMessages = function (filesWithMessages) {
+    window.sendChatFilesWithMessages = function (filesWithMessages, onProgress) {
         if (!filesWithMessages || filesWithMessages.length === 0) {
             toastr.warning("No files to send");
-            return;
+            return Promise.reject(new Error("No files to send"));
         }
 
         var receiver_id = $(".reciver_id").val();
         if (!receiver_id) {
             toastr.error("Please select a user to chat with");
-            return;
+            return Promise.reject(new Error("No receiver selected"));
         }
 
         var url = window.Laravel.routes.chatSend;
         const sendButton = $(".Send");
         sendButton.addClass("sendloading");
 
-        $("#loading").addClass("loading");
-        $("#loading-content").addClass("loading-content");
-
         // Send each file with its individual message
         let promises = [];
+        let uploaded = 0;
+        const totalFiles = filesWithMessages.length;
+        if (typeof onProgress === "function") onProgress(0, totalFiles);
 
         filesWithMessages.forEach(function (fileObj) {
             var formData = new FormData();
@@ -1325,17 +1325,21 @@ $(document).ready(function () {
                 data: formData,
                 processData: false,
                 contentType: false,
+            }).then(function (res) {
+                uploaded++;
+                if (typeof onProgress === "function") {
+                    onProgress(uploaded, totalFiles);
+                }
+                return res;
             });
 
             promises.push(promise);
         });
 
         // Wait for all files to be sent
-        Promise.all(promises)
+        return Promise.all(promises)
             .then(function (responses) {
                 sendButton.removeClass("sendloading");
-                $("#loading").removeClass("loading");
-                $("#loading-content").removeClass("loading-content");
 
                 responses.forEach(function (res) {
                     if (res.success === true) {
@@ -1425,10 +1429,9 @@ $(document).ready(function () {
             })
             .catch(function (error) {
                 sendButton.removeClass("sendloading");
-                $("#loading").removeClass("loading");
-                $("#loading-content").removeClass("loading-content");
                 toastr.error("Failed to send files");
                 console.error(error);
+                throw error;
             });
     };
 });
