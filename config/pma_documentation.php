@@ -71,6 +71,14 @@ return [
             'file' => 'automation-implementations.md',
             'status' => 'ready',
         ],
+        [
+            'slug' => 'estore-elearning-enhancement',
+            'title' => 'E-Store & E-Learning Enhancement',
+            'summary' => 'Usability, CMS, search, checkout, and performance enhancements for E-Store and E-Learning.',
+            'icon' => 'fa-solid fa-wand-magic-sparkles',
+            'file' => 'estore-elearning-enhancement.md',
+            'status' => 'ready',
+        ],
     ],
 
     /*
