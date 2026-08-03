@@ -10,32 +10,19 @@
     --shadow: 0 10px 28px rgba(19, 36, 34, 0.07);
     --radius: 16px;
     --pad: clamp(1.5rem, 3vw, 2.75rem);
-    --header-clearance: calc(76px + 24px);
     width: 100%;
     margin: 0;
-    /* Keep theme fixed-header clearance (do not collapse padding-top) */
-    padding: var(--header-clearance) 0 3rem !important;
+    /* Theme already clears the fixed header on .body-wrapper > .container-fluid */
+    padding: 0.5rem 0 2.5rem !important;
     min-height: 70vh;
     background: linear-gradient(180deg, #f4f9f8 0%, #eef5f3 100%);
     color: var(--ink);
     overflow: visible;
 }
 
-/* Coupon ticker sits above the fixed header — add room so the title is not clipped */
-body:has(.coupon_slider) .body-wrapper > .container-fluid.pma-docs {
-    --header-clearance: calc(76px + 52px + 24px);
-    padding-top: var(--header-clearance) !important;
-}
-
 @media (max-width: 767.98px) {
     .pma-docs {
-        --header-clearance: calc(70px + 20px);
-        padding: var(--header-clearance) 0 2.5rem !important;
-    }
-
-    body:has(.coupon_slider) .body-wrapper > .container-fluid.pma-docs {
-        --header-clearance: calc(70px + 48px + 20px);
-        padding-top: var(--header-clearance) !important;
+        padding: 0.35rem 0 2rem !important;
     }
 }
 
@@ -53,8 +40,8 @@ body:has(.coupon_slider) .body-wrapper > .container-fluid.pma-docs {
 }
 
 .pma-docs-hero {
-    margin: 0 0 1.5rem;
-    padding-top: 0.35rem;
+    margin: 0 0 1.25rem;
+    padding-top: 0;
     overflow: visible;
 }
 

@@ -1,6 +1,6 @@
 ---
 title: User PMA
-updated: 2026-07-30
+updated: 2026-08-03
 status: ready
 sidebar_key: user_pma
 ---
@@ -53,6 +53,7 @@ Open **Detailed topics** on the index for each sidebar menu. Shared instance rul
 
 - Last sidebar item; Super Admin only.
 - Markdown under `docs/pma/`; agents must update docs when features change.
+- Index hubs include product surfaces (1–5) plus **Chatbot Guides**, **Improvement Performance Report**, and **Automation Implementations** (6–8).
 
 ## Permissions and conditions
 

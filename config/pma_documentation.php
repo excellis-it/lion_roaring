@@ -47,6 +47,30 @@ return [
             'file' => 'mobile-app.md',
             'status' => 'ready',
         ],
+        [
+            'slug' => 'chatbot-guides',
+            'title' => 'Chatbot Guides',
+            'summary' => 'Multi-tenant RAG chatbot user, admin, AI, and developer documentation suite.',
+            'icon' => 'fa-solid fa-robot',
+            'file' => 'chatbot-guides.md',
+            'status' => 'ready',
+        ],
+        [
+            'slug' => 'improvement-performance-report',
+            'title' => 'Improvement Performance Report',
+            'summary' => 'E-Store & E-Learning PageSpeed assessment and optimization recommendations.',
+            'icon' => 'fa-solid fa-gauge-high',
+            'file' => 'improvement-performance-report.md',
+            'status' => 'ready',
+        ],
+        [
+            'slug' => 'automation-implementations',
+            'title' => 'Automation Implementations',
+            'summary' => 'Role Permission, Membership, and All Members automation report v2.2.0.',
+            'icon' => 'fa-solid fa-gears',
+            'file' => 'automation-implementations.md',
+            'status' => 'ready',
+        ],
     ],
 
     /*

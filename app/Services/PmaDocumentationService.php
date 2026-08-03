@@ -59,9 +59,9 @@ class PmaDocumentationService
     }
 
     /**
-     * @return array{meta: array<string, string>, html: string, body_markdown: string}
+     * Resolve a path under docs/pma (markdown or attachment). Returns null if missing or outside base.
      */
-    public function loadDocument(string $relativeFile): array
+    public function attachmentPath(string $relativeFile): ?string
     {
         $base = rtrim((string) config('pma_documentation.base_path', base_path('docs/pma')), DIRECTORY_SEPARATOR);
         $path = $base.DIRECTORY_SEPARATOR.ltrim($relativeFile, DIRECTORY_SEPARATOR);
@@ -70,6 +70,20 @@ class PmaDocumentationService
         $realPath = realpath($path);
 
         if ($realBase === false || $realPath === false || ! str_starts_with($realPath, $realBase) || ! File::isFile($realPath)) {
+            return null;
+        }
+
+        return $realPath;
+    }
+
+    /**
+     * @return array{meta: array<string, string>, html: string, body_markdown: string}
+     */
+    public function loadDocument(string $relativeFile): array
+    {
+        $realPath = $this->attachmentPath($relativeFile);
+
+        if ($realPath === null) {
             throw new RuntimeException('Documentation file not found: '.$relativeFile);
         }
 

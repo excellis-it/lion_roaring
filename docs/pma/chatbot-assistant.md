@@ -1,6 +1,6 @@
 ---
 title: Chatbot Assistant
-updated: 2026-07-30
+updated: 2026-08-03
 status: ready
 sidebar_key: chatbot
 ---
@@ -10,6 +10,8 @@ sidebar_key: chatbot
 ## Overview
 
 PMA tools for the site chatbot. Behavior depends on `CHATBOT` env (`AI` vs `NORMAL`).
+
+For the full Multi-Tenant RAG Chatbot suite (user/admin/AI/developer guides), open **Chatbot Guides**.
 
 **Controller:** `User\Admin\ChatbotController`  
 **Routes:** `user.admin.chatbot.*`  
