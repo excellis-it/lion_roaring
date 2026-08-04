@@ -13,7 +13,7 @@
                 <img src="{{ $avatarUrl }}" alt=""
                     onerror="this.onerror=null;this.src='{{ $avatarFallback }}';">
             </div>
-            <p class="GroupName notranslate" translate="no">{!! no_translate(trim(($user['first_name'] ?? '') . ' ' . ($user['middle_name'] ?? '') . ' ' . ($user['last_name'] ?? ''))) !!}</p>
+            <p class="GroupName notranslate" translate="no">{!! no_translate($user['full_name'] ?? trim(implode(' ', array_filter([$user['first_name'] ?? null, $user['middle_name'] ?? null, $user['last_name'] ?? null])))) !!}</p>
             <p class="GroupDescrp" id="message-app-{{ $user['id'] }}">
                 @if (isset($user['last_message']['message']))
                     {!! $user['last_message']['message'] !!}

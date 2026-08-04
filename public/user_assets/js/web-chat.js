@@ -435,9 +435,14 @@ $(document).ready(function () {
                 <div class="avatar">
                     <img src="${profileImage}" alt="" onerror="this.onerror=null;this.src='${profileFallback}'">
                 </div>
-                <p class="GroupName notranslate" translate="no">${user.first_name || ""} ${
-                    user.middle_name || ""
-                } ${user.last_name || ""}</p>
+                <p class="GroupName notranslate" translate="no">${[
+                    user.first_name,
+                    user.middle_name,
+                    user.last_name,
+                ]
+                    .map((part) => (part || "").trim())
+                    .filter(Boolean)
+                    .join(" ")}</p>
                 <p class="GroupDescrp" id="message-app-${user.id}">
                     ${messageContent}
                 </p>

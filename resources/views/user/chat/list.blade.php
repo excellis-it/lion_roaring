@@ -77,7 +77,7 @@
                                             <img src="{{ $avatarUrl }}" alt=""
                                                 onerror="this.onerror=null;this.src='{{ $avatarFallback }}';">
                                         </div>
-                                        <p class="GroupName notranslate" translate="no">{!! no_translate(trim(($user['first_name'] ?? '') . ' ' . ($user['middle_name'] ?? '') . ' ' . ($user['last_name'] ?? ''))) !!}</p>
+                                        <p class="GroupName notranslate" translate="no">{!! no_translate($user['full_name'] ?? trim(implode(' ', array_filter([$user['first_name'] ?? null, $user['middle_name'] ?? null, $user['last_name'] ?? null])))) !!}</p>
                                         <p class="GroupDescrp last-chat-{{ isset($user['last_message']) ? $user['last_message']['id'] : '' }}"
                                             id="message-app-{{ $user['id'] }}">
                                             @if (isset($user['last_message']['message']))
@@ -266,9 +266,9 @@
 
             // User search functionality
             $(document).on('keyup', '#user-search', function() {
-                var value = $(this).val().toLowerCase();
+                var value = $(this).val().toLowerCase().replace(/\s+/g, ' ').trim();
                 $(".user-list").each(function() {
-                    var userName = $(this).find('.GroupName').text().toLowerCase();
+                    var userName = $(this).find('.GroupName').text().toLowerCase().replace(/\s+/g, ' ').trim();
                     if (userName.indexOf(value) > -1) {
                         $(this).attr('style', 'display: grid !important');
                     } else {

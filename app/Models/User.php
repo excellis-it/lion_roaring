@@ -86,7 +86,15 @@ class User extends Authenticatable
 
     public function getFullNameAttribute()
     {
-        return $this->first_name . ' ' . $this->middle_name . ' ' . $this->last_name;
+        $parts = array_filter(
+            array_map(
+                static fn ($part) => trim((string) ($part ?? '')),
+                [$this->first_name, $this->middle_name, $this->last_name]
+            ),
+            static fn ($part) => $part !== ''
+        );
+
+        return implode(' ', $parts);
     }
 
     public function userSubscription()
