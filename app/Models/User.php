@@ -60,6 +60,7 @@ class User extends Authenticatable
         'profile_picture',
         'signature',
         'membership_excluded',
+        'stripe_customer_id',
     ];
     protected $appends = ['ecclesia_access', 'full_name']; // Add this line
 

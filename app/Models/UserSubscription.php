@@ -38,7 +38,7 @@ class UserSubscription extends BaseModel
 
     public function tier()
     {
-        return $this->belongsTo(MembershipTier::class);
+        return $this->belongsTo(MembershipTier::class, 'plan_id');
     }
 
     public function payments()

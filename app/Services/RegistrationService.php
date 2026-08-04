@@ -226,6 +226,7 @@ class RegistrationService
         $paymentStatus = 'Pending';
         $transactionId = null;
         $paymentAmount = 0;
+        $stripeCustomerId = null;
 
         if (($tier->pricing_type ?? 'amount') === 'amount' && $finalPrice > 0) {
             $paid = $this->processPayment($request, $finalPrice, $tier, $promoCode);
@@ -239,6 +240,7 @@ class RegistrationService
             $paymentStatus = 'Success';
             $transactionId = $paid['transaction_id'];
             $paymentAmount = $paid['amount'];
+            $stripeCustomerId = $paid['customer_id'] ?? null;
         }
 
         $phone = $request->phone;
@@ -260,9 +262,11 @@ class RegistrationService
             $basePrice,
             $paymentStatus,
             $transactionId,
-            $paymentAmount
+            $paymentAmount,
+            $stripeCustomerId
         ) {
             $user = new User();
+            app(\App\Services\CheckoutPaymentService::class)->setCustomerIdIfSupported($user, $stripeCustomerId);
             $user->user_name = $request->user_name;
             $user->lion_roaring_id = $fullLionRoaringId;
             $user->roar_id = $request->roar_id;
@@ -518,7 +522,7 @@ class RegistrationService
     }
 
     /**
-     * @return array{ok: bool, message?: string, transaction_id?: string, amount?: float}
+     * @return array{ok: bool, message?: string, transaction_id?: string, amount?: float, customer_id?: string|null}
      */
     private function processPayment(Request $request, float $finalPrice, MembershipTier $tier, ?MembershipPromoCode $promoCode): array
     {
@@ -539,6 +543,7 @@ class RegistrationService
                     'ok' => true,
                     'transaction_id' => $intent->id,
                     'amount' => $finalPrice,
+                    'customer_id' => $intent->customer ? (string) $intent->customer : null,
                 ];
             }
 
@@ -558,18 +563,35 @@ class RegistrationService
 
             if ($request->filled('stripeToken') && $request->stripeToken !== 'free_tier') {
                 if ($finalPrice > 0) {
-                    $charge = \Stripe\Charge::create([
+                    $email = (string) $request->input('email');
+                    $customerId = app(\App\Services\CheckoutPaymentService::class)->createGuestCustomerId(
+                        $email,
+                        trim($request->input('first_name', '') . ' ' . $request->input('last_name', '')),
+                        ['tier_id' => (string) $tier->id, 'context' => 'registration']
+                    );
+
+                    $charge = app(\App\Services\CheckoutPaymentService::class)->chargeWithToken([
                         'amount' => (int) ($finalPrice * 100),
                         'currency' => 'usd',
                         'source' => $request->stripeToken,
+                        'metadata' => [
+                            'tier_id' => $tier->id,
+                            'tier_name' => $tier->name,
+                            'billing_period' => MembershipPricing::validatePeriod($request->input('billing_period')),
+                            'type' => 'membership',
+                            'context' => 'registration',
+                            'email' => $email,
+                            'promo_code' => $promoCode?->code ?? '',
+                        ],
                         'description' => 'Membership Registration - ' . $tier->name . ($promoCode ? ' (Promo: ' . $promoCode->code . ')' : ''),
-                    ]);
+                    ], $customerId);
 
                     if ($charge->status === 'succeeded') {
                         return [
                             'ok' => true,
                             'transaction_id' => $charge->id,
                             'amount' => $finalPrice,
+                            'customer_id' => $customerId,
                         ];
                     }
 
@@ -721,6 +743,7 @@ class RegistrationService
             'tier_id' => 'required|exists:membership_tiers,id',
             'promo_code' => 'nullable|string|max:50',
             'billing_period' => 'nullable|in:monthly,yearly',
+            'email' => 'nullable|email',
         ]);
 
         if ($validator->fails()) {
@@ -771,6 +794,7 @@ class RegistrationService
                         'tier_name' => $tier->name,
                         'billing_period' => $billingPeriod,
                         'promo_code' => $request->promo_code ?? '',
+                        'email' => (string) $request->input('email', ''),
                     ],
                 ]);
 
@@ -809,17 +833,36 @@ class RegistrationService
 
         try {
             \Stripe\Stripe::setApiKey(config('services.stripe.secret'));
-            $intent = \Stripe\PaymentIntent::create([
+
+            // The app may post the registrant's email before the User row exists; without it the
+            // charge lands in Stripe with no customer and no email (blank export columns).
+            $email = (string) $request->input('email', '');
+            $customerId = $email
+                ? app(CheckoutPaymentService::class)->createGuestCustomerId(
+                    $email,
+                    trim($request->input('first_name', '') . ' ' . $request->input('last_name', '')),
+                    ['tier_id' => (string) $tier->id, 'context' => 'registration']
+                )
+                : null;
+
+            $intentParams = [
                 'amount' => (int) round($finalPrice * 100),
                 'currency' => 'usd',
                 'payment_method_types' => ['card'],
-                'metadata' => [
+                'metadata' => array_filter([
                     'context' => 'registration',
                     'tier_id' => (string) $tier->id,
                     'tier_name' => $tier->name,
                     'billing_period' => $billingPeriod,
-                ],
-            ]);
+                    'type' => 'membership',
+                    'email' => $email,
+                ]),
+            ];
+            if ($customerId) {
+                $intentParams['customer'] = $customerId;
+            }
+
+            $intent = \Stripe\PaymentIntent::create($intentParams);
 
             return [
                 'status' => true,

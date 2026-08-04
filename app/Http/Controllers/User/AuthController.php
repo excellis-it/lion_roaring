@@ -367,6 +367,7 @@ class AuthController extends Controller
         $payment_status = 'Pending';
         $transaction_id = null;
         $payment_amount = 0;
+        $customerId = null;
         $promoCode = null;
         $discount = 0;
         $billingPeriod = MembershipPricing::validatePeriod($request->input('billing_period'));
@@ -388,12 +389,27 @@ class AuthController extends Controller
         if (($tier->pricing_type ?? 'amount') === 'amount' && floatval($finalPrice) > 0) {
             try {
                 \Stripe\Stripe::setApiKey(config('services.stripe.secret'));
-                $charge = \Stripe\Charge::create([
+                $customerId = app(\App\Services\CheckoutPaymentService::class)->createGuestCustomerId(
+                    (string) $request->email,
+                    trim($request->input('first_name', '') . ' ' . $request->input('last_name', '')),
+                    ['tier_id' => (string) $tier->id, 'context' => 'registration']
+                );
+
+                $charge = app(\App\Services\CheckoutPaymentService::class)->chargeWithToken([
                     'amount' => (int) ($finalPrice * 100),
                     'currency' => 'usd',
                     'source' => $request->stripeToken,
+                    'metadata' => [
+                        'tier_id' => $tier->id,
+                        'tier_name' => $tier->name,
+                        'billing_period' => $billingPeriod,
+                        'type' => 'membership',
+                        'context' => 'registration',
+                        'email' => (string) $request->email,
+                        'promo_code' => $promoCode?->code ?? '',
+                    ],
                     'description' => 'Membership Registration - ' . $tier->name . ($promoCode ? ' (Promo: ' . $promoCode->code . ')' : ''),
-                ]);
+                ], $customerId);
 
                 if ($charge->status == 'succeeded') {
                     $payment_status = 'Success';
@@ -422,6 +438,7 @@ class AuthController extends Controller
         }
 
         $user = new User();
+        app(\App\Services\CheckoutPaymentService::class)->setCustomerIdIfSupported($user, $customerId);
         $user->user_name = $request->user_name;
         $user->lion_roaring_id = $fullLionRoaringId;
         $user->roar_id = $request->roar_id;

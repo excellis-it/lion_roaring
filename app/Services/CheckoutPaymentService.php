@@ -4,6 +4,8 @@ namespace App\Services;
 
 use App\Models\User;
 use Exception;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Schema;
 use Stripe\Customer as StripeCustomer;
 use Stripe\EphemeralKey as StripeEphemeralKey;
 use Stripe\PaymentIntent as StripePaymentIntent;
@@ -55,6 +57,7 @@ class CheckoutPaymentService
                 'customer' => $customerId,
                 'metadata' => array_merge([
                     'user_id' => $user->id,
+                    'email' => $user->email,
                 ], $metadata),
             ];
 
@@ -181,7 +184,7 @@ class CheckoutPaymentService
      * Relies on `users.stripe_customer_id`; stores silently if the column exists, otherwise
      * the customer is re-created per checkout (still functional, just less efficient).
      */
-    private function getOrCreateCustomerId(User $user): string
+    public function getOrCreateCustomerId(User $user): string
     {
         if (!empty($user->stripe_customer_id)) {
             return $user->stripe_customer_id;
@@ -193,12 +196,82 @@ class CheckoutPaymentService
             'metadata' => ['user_id' => $user->id],
         ]);
 
-        if (in_array('stripe_customer_id', $user->getFillable(), true)
-            || \Schema::hasColumn($user->getTable(), 'stripe_customer_id')) {
+        // Column check only — writing the attribute when the migration has not run yet would
+        // throw on save() and take the payment down with it.
+        if (Schema::hasColumn($user->getTable(), 'stripe_customer_id')) {
             $user->stripe_customer_id = $customer->id;
             $user->save();
         }
 
         return $customer->id;
+    }
+
+    /**
+     * Customer for a registration charge, taken before the User row exists.
+     * Keeps the Stripe dashboard/export rows attributable (customer id + email).
+     * Never throws — a failed lookup must not block the payment.
+     */
+    public function createGuestCustomerId(string $email, ?string $name = null, array $metadata = []): ?string
+    {
+        try {
+            return StripeCustomer::create([
+                'email' => $email,
+                'name' => $name ?: $email,
+                'metadata' => $metadata,
+            ])->id;
+        } catch (Exception $e) {
+            Log::warning('Stripe guest customer create failed: ' . $e->getMessage(), ['email' => $email]);
+
+            return null;
+        }
+    }
+
+    /**
+     * Sets the customer id on an unsaved User, but only when the column is actually there —
+     * keeps registration working if the code is deployed ahead of the migration.
+     */
+    public function setCustomerIdIfSupported(User $user, ?string $customerId): void
+    {
+        if ($customerId && Schema::hasColumn($user->getTable(), 'stripe_customer_id')) {
+            $user->stripe_customer_id = $customerId;
+        }
+    }
+
+    /**
+     * Same as getOrCreateCustomerId() but returns null instead of throwing, for call sites
+     * where the customer is only there to enrich the charge record.
+     */
+    public function customerIdOrNull(User $user): ?string
+    {
+        try {
+            return $this->getOrCreateCustomerId($user);
+        } catch (\Throwable $e) {
+            Log::warning('Stripe customer lookup failed: ' . $e->getMessage(), ['user_id' => $user->id]);
+
+            return null;
+        }
+    }
+
+    /**
+     * Legacy token charge with the customer attached. A stale/foreign customer id (e.g. a
+     * database copied between Stripe accounts) makes Stripe reject the request — retry once
+     * without it rather than lose the payment. Only InvalidRequestException is retried: it is
+     * raised during validation, before any money moves, so no double charge is possible.
+     */
+    public function chargeWithToken(array $params, ?string $customerId): \Stripe\Charge
+    {
+        if (!$customerId) {
+            return \Stripe\Charge::create($params);
+        }
+
+        try {
+            return \Stripe\Charge::create($params + ['customer' => $customerId]);
+        } catch (\Stripe\Exception\InvalidRequestException $e) {
+            Log::warning('Stripe charge with customer rejected, retrying without: ' . $e->getMessage(), [
+                'customer' => $customerId,
+            ]);
+
+            return \Stripe\Charge::create($params);
+        }
     }
 }

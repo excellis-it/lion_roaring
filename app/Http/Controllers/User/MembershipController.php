@@ -902,13 +902,24 @@ class MembershipController extends Controller
             }
             try {
                 \Stripe\Stripe::setApiKey(config('services.stripe.secret'));
-                $charge = \Stripe\Charge::create([
+                $checkout = app(CheckoutPaymentService::class);
+                $charge = $checkout->chargeWithToken([
                     'amount'      => (int) ($finalPrice * 100),
                     'currency'    => 'usd',
                     'source'      => $stripeToken,
+                    'metadata'    => [
+                        'user_id'        => $user->id,
+                        'email'          => $user->email,
+                        'tier_id'        => $tier->id,
+                        'tier_name'      => $tier->name,
+                        'billing_period' => $billingPeriod,
+                        'type'           => 'membership',
+                        'context'        => $isRenew ? 'renewal' : 'upgrade',
+                        'promo_code'     => $promoCode?->code ?? '',
+                    ],
                     'description' => 'Membership ' . ($isRenew ? 'Renewal' : '') . ' - ' . $tier->name
                         . ($promoCode ? ' (Promo: ' . $promoCode->code . ')' : ''),
-                ]);
+                ], $checkout->customerIdOrNull($user));
                 if ($charge->status !== 'succeeded') {
                     return response()->json(['success' => false, 'message' => 'Payment failed. Please try again.']);
                 }
