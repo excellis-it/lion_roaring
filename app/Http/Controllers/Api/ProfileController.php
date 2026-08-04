@@ -106,7 +106,7 @@ class ProfileController extends Controller
             'countries' => $user->countries,
             'states' => $user->states,
             'user_role' => $user->userRole,
-            'user_last_subscription' => $user->userLastSubscription,
+            'user_last_subscription' => $this->subscriptionForMobile($user->userLastSubscription),
             'has_register_agreement' => UserRegisterAgreement::where('user_id', $user->id)->exists(),
             'has_signature' => !empty($user->signature),
             'is_member_sovereign' => $user->isMemberSovereign(),
@@ -115,6 +115,21 @@ class ProfileController extends Controller
             'membership_app_applicable' => $user->membershipAppApplicable(),
             'membership_panel_applicable' => $user->membershipPanelApplicable(),
         ];
+    }
+
+    /** Start-of-day expire → 23:59:59 so production app does not gate mid expire-day. */
+    private function subscriptionForMobile($sub): ?array
+    {
+        if (!$sub) {
+            return null;
+        }
+        $data = $sub->toArray();
+        $raw = $data['subscription_expire_date'] ?? null;
+        if ($raw && \Carbon\Carbon::parse($raw)->format('H:i:s') === '00:00:00') {
+            $data['subscription_expire_date'] = \Carbon\Carbon::parse($raw)->endOfDay()->format('Y-m-d H:i:s');
+        }
+
+        return $data;
     }
 
     /**

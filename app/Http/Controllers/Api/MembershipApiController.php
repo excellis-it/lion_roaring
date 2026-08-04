@@ -84,15 +84,22 @@ class MembershipApiController extends Controller
         }
 
         $tier = MembershipTier::find($sub->plan_id);
-        $now = now();
         $expireDate = $sub->subscription_expire_date
             ? \Carbon\Carbon::parse($sub->subscription_expire_date)
             : null;
-        $expired = $expireDate && $expireDate->isPast();
+        // Start-of-day admin dates: valid through end of that calendar day.
+        $expired = $expireDate && (
+            $expireDate->format('H:i:s') === '00:00:00'
+                ? $expireDate->copy()->endOfDay()->isPast()
+                : $expireDate->isPast()
+        );
         $daysUntilExpiry = $expireDate
-            ? (int) $now->diffInDays($expireDate, false)
+            ? (int) now()->startOfDay()->diffInDays($expireDate->copy()->startOfDay(), false)
             : null;
-        // Web PMA sets $canRenew = true whenever the user has a subscription.
+        $subPayload = $sub->toArray();
+        if ($expireDate && $expireDate->format('H:i:s') === '00:00:00') {
+            $subPayload['subscription_expire_date'] = $expireDate->copy()->endOfDay()->format('Y-m-d H:i:s');
+        }
         $canRenew = true;
 
         return response()->json([
@@ -100,7 +107,7 @@ class MembershipApiController extends Controller
             'message' => 'Current subscription.',
             'in_app_membership' => (bool) config('lion_roaring.in_app_membership'),
             'data' => [
-                'subscription' => $sub,
+                'subscription' => $subPayload,
                 'tier' => $tier,
                 'is_expired' => $expired,
                 'days_until_expiry' => $daysUntilExpiry,
