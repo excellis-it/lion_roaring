@@ -849,6 +849,8 @@ class RegistrationService
                 'amount' => (int) round($finalPrice * 100),
                 'currency' => 'usd',
                 'payment_method_types' => ['card'],
+                'description' => 'Membership Registration - ' . $tier->name
+                    . ($request->filled('promo_code') ? ' (Promo: ' . $request->promo_code . ')' : ''),
                 'metadata' => array_filter([
                     'context' => 'registration',
                     'tier_id' => (string) $tier->id,

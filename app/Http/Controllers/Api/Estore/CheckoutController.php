@@ -1055,7 +1055,8 @@ class CheckoutController extends Controller
             [
                 'type' => 'estore',
                 'order_draft_id' => $request->input('order_draft_id'),
-            ]
+            ],
+            description: 'Estore Order' . ($request->filled('order_draft_id') ? ' #' . $request->input('order_draft_id') : ''),
         );
 
         if (!$result['success']) {

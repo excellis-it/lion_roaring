@@ -558,7 +558,9 @@ class MembershipApiController extends Controller
                 'promo_code' => $promoCode,
                 'billing_period' => $billingPeriod,
             ],
-            cardOnly: true
+            cardOnly: true,
+            description: 'Membership ' . ($user->userLastSubscription?->plan_id == $tier->id ? 'Renewal' : 'Purchase')
+                . ' - ' . $tier->name . ($promoCode ? ' (Promo: ' . $promoCode . ')' : ''),
         );
 
         if (!$intent['success']) {

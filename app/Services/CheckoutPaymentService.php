@@ -35,9 +35,11 @@ class CheckoutPaymentService
      * @param array  $metadata  Free-form metadata merged into the PaymentIntent.
      *                          Callers SHOULD set at least `type` (membership|estore|event|elearning)
      *                          and the relevant foreign key (tier_id, order_id, event_id, etc).
+     * @param string|null $description Human-readable label — this is the Description column in
+     *                          Stripe's dashboard and CSV exports. Always pass one.
      * @return array{success:bool,payment_intent_id?:string,client_secret?:string,ephemeral_key?:string,customer_id?:string,publishable_key?:string,error?:string}
      */
-    public function createIntent(float $amount, string $currency, User $user, array $metadata = [], bool $cardOnly = false): array
+    public function createIntent(float $amount, string $currency, User $user, array $metadata = [], bool $cardOnly = false, ?string $description = null): array
     {
         try {
             if ($amount <= 0) {
@@ -60,6 +62,10 @@ class CheckoutPaymentService
                     'email' => $user->email,
                 ], $metadata),
             ];
+
+            if ($description) {
+                $intentParams['description'] = $description;
+            }
 
             if ($cardOnly) {
                 $intentParams['payment_method_types'] = ['card'];

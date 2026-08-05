@@ -626,7 +626,8 @@ class EventController extends Controller
                 'event_id' => $event->id,
                 'rsvp_id' => $rsvp->id,
                 'payment_id' => $pending->id,
-            ]
+            ],
+            description: 'Event Registration - ' . $event->title,
         );
 
         if (!$result['success']) {

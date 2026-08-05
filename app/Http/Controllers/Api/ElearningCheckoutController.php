@@ -182,7 +182,8 @@ class ElearningCheckoutController extends Controller
             [
                 'type' => 'elearning',
                 'elearning_order_id' => $order->id,
-            ]
+            ],
+            description: 'E-Learning Order #' . $order->id,
         );
 
         if (!$result['success']) {
