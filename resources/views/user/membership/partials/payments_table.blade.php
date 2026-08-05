@@ -22,12 +22,29 @@
                         @if ($p->user)
                             <div>{!! no_translate(trim(($p->user->first_name ?? '') . ' ' . ($p->user->last_name ?? ''))) !!}</div>
                             <small class="text-muted">{{ $p->user->email }}</small>
+                            @if ($p->user->trashed())
+                                <div>
+                                    <span class="badge"
+                                        style="background: #dc3545; color: white; padding: 3px 8px; border-radius: 4px; font-size: 11px;">
+                                        <i class="fa fa-user-times"></i> Deleted
+                                        {{ $p->user->deleted_at?->format('M d, Y') }}
+                                    </span>
+                                </div>
+                            @endif
                         @else
-                            <span class="text-muted">Unknown User (ID: {{ $p->user_id }})</span>
+                            {{-- No users row at all: the account was purged, not soft-deleted. --}}
+                            <div class="text-muted">Account permanently removed</div>
+                            <small class="text-muted">Member ID: {{ $p->user_id }}</small>
                         @endif
                     </td>
                     <td>{{ $p->userSubscription ? $p->userSubscription->subscription_name : '-' }}</td>
-                    <td><small>{{ $p->transaction_id }}</small></td>
+                    <td>
+                        <div><small>{{ $p->transaction_id }}</small></div>
+                        @if (!empty($p->stripe_charge_id) && $p->stripe_charge_id !== $p->transaction_id)
+                            {{-- The id Stripe's dashboard and CSV export show for the same payment. --}}
+                            <small class="text-muted" title="ID shown in Stripe reports">Stripe: {{ $p->stripe_charge_id }}</small>
+                        @endif
+                    </td>
                     <td>${{ number_format($p->payment_amount, 2) }}</td>
                     <td>
                         @if ($p->promo_code)

@@ -27,7 +27,13 @@
                             <tr>
                                 <td>{{ $p->id }}</td>
                                 <td>{{ $p->userSubscription ? $p->userSubscription->subscription_name : '-' }}</td>
-                                <td><small>{{ $p->transaction_id }}</small></td>
+                                <td>
+                                    <div><small>{{ $p->transaction_id }}</small></div>
+                                    @if (!empty($p->stripe_charge_id) && $p->stripe_charge_id !== $p->transaction_id)
+                                        <small class="text-muted" title="ID shown in Stripe reports">Stripe:
+                                            {{ $p->stripe_charge_id }}</small>
+                                    @endif
+                                </td>
                                 <td>${{ number_format($p->payment_amount, 2) }}</td>
                                 <td>{{ $p->payment_method }}</td>
                                 <td>

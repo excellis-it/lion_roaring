@@ -638,6 +638,7 @@ class MembershipApiController extends Controller
                 return response()->json(['status' => false, 'message' => 'This membership requires payment.'], 422);
             }
             $transactionId = 'FREE-' . strtoupper(uniqid());
+            $stripeChargeId = null;
             $amountPaid = 0.0;
             $paymentMethod = 'Free';
         } elseif ($request->filled('setup_intent_id')) {
@@ -665,6 +666,7 @@ class MembershipApiController extends Controller
 
             $promoCode = $verification['metadata']['promo_code'] ?? $request->promo_code;
             $transactionId = $request->setup_intent_id;
+            $stripeChargeId = null;
             $amountPaid = 0.0;
             $paymentMethod = 'Stripe';
         } else {
@@ -692,6 +694,7 @@ class MembershipApiController extends Controller
             }
 
             $transactionId = $request->payment_intent_id;
+            $stripeChargeId = ($verification['intent']->latest_charge ?? null) ? (string) $verification['intent']->latest_charge : null;
             $amountPaid = (float) ($verification['amount'] ?? $basePrice);
             $promoCode = $verification['metadata']['promo_code'] ?? null;
             $paymentMethod = 'Stripe';
@@ -699,7 +702,7 @@ class MembershipApiController extends Controller
 
         $discountAmount = max(0, $basePrice - $amountPaid);
 
-        $subscription = DB::transaction(function () use ($user, $tier, $isRenew, $amountPaid, $promoCode, $transactionId, $paymentMethod, $billingPeriod, $basePrice, $duration, $discountAmount, $previousPlanId) {
+        $subscription = DB::transaction(function () use ($user, $tier, $isRenew, $amountPaid, $promoCode, $transactionId, $stripeChargeId, $paymentMethod, $billingPeriod, $basePrice, $duration, $discountAmount, $previousPlanId) {
             if ($isRenew && $user->userLastSubscription && $user->userLastSubscription->plan_id == $tier->id) {
                 $sub = $user->userLastSubscription;
                 $base = $sub->subscription_expire_date
@@ -730,7 +733,7 @@ class MembershipApiController extends Controller
                 $sub->save();
             }
 
-            SubscriptionPayment::create([
+            SubscriptionPayment::create(SubscriptionPayment::chargeIdAttrs($stripeChargeId) + [
                 'user_id' => $user->id,
                 'user_subscription_id' => $sub->id,
                 'transaction_id' => $transactionId,

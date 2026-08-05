@@ -366,6 +366,7 @@ class RegistrationService
                 $payment->user_id = $user->id;
                 $payment->user_subscription_id = $userSubscription->id;
                 $payment->transaction_id = $transactionId;
+                $payment->fill(SubscriptionPayment::chargeIdAttrs(str_starts_with((string) $transactionId, 'ch_') ? $transactionId : null));
                 $payment->payment_method = $paymentAmount > 0 ? 'Stripe' : 'Promo';
                 $payment->payment_amount = $paymentAmount;
                 $payment->billing_period = $billingPeriod;

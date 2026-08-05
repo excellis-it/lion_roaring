@@ -580,6 +580,7 @@ class AuthController extends Controller
             $payment->user_id = $user->id;
             $payment->user_subscription_id = $user_subscription->id;
             $payment->transaction_id = $transaction_id;
+            $payment->fill(SubscriptionPayment::chargeIdAttrs(str_starts_with((string) $transaction_id, 'ch_') ? $transaction_id : null));
             $payment->payment_method = $payment_amount > 0 ? 'Stripe' : 'Promo';
             $payment->payment_amount = $payment_amount;
             $payment->billing_period = $billingPeriod;

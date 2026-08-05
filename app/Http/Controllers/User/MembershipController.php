@@ -393,7 +393,9 @@ class MembershipController extends Controller
 
         $date_after = '2025-11-01';
         $query = SubscriptionPayment::where('created_at', '>', $date_after)
-            ->with(['user', 'userSubscription']);
+            // Soft-deleted members still have payment history — show who they were rather
+            // than "Unknown User". Rows purged from the users table stay unresolvable.
+            ->with(['user' => fn ($q) => $q->withTrashed(), 'userSubscription']);
 
         if (!auth()->user()->hasNewRole('SUPER ADMIN')) {
             $query->where('user_id', auth()->id());
@@ -402,13 +404,20 @@ class MembershipController extends Controller
         // Search filter
         if ($request->filled('search')) {
             $search = $request->search;
-            $query->where(function ($q) use ($search) {
+            // Stripe's dashboard/export shows the charge id (ch_), we key on the PaymentIntent
+            // (pi_) — match either so a pasted Stripe id always resolves.
+            $hasChargeId = \Illuminate\Support\Facades\Schema::hasColumn('subscription_payments', 'stripe_charge_id');
+            $query->where(function ($q) use ($search, $hasChargeId) {
                 $q->where('transaction_id', 'like', "%{$search}%")
+                    ->when($hasChargeId, fn ($q2) => $q2->orWhere('stripe_charge_id', 'like', "%{$search}%"))
                     ->orWhere('promo_code', 'like', "%{$search}%")
                     ->orWhereHas('user', function ($q2) use ($search) {
-                        $q2->where('first_name', 'like', "%{$search}%")
-                            ->orWhere('last_name', 'like', "%{$search}%")
-                            ->orWhere('email', 'like', "%{$search}%");
+                        $q2->withTrashed()
+                            ->where(function ($q3) use ($search) {
+                                $q3->where('first_name', 'like', "%{$search}%")
+                                    ->orWhere('last_name', 'like', "%{$search}%")
+                                    ->orWhere('email', 'like', "%{$search}%");
+                            });
                     });
             });
         }
@@ -978,6 +987,7 @@ class MembershipController extends Controller
             $payment->user_id              = $user->id;
             $payment->user_subscription_id = $userSubscription->id;
             $payment->transaction_id       = $transactionId;
+            $payment->fill(SubscriptionPayment::chargeIdAttrs(str_starts_with((string) $transactionId, 'ch_') ? $transactionId : null));
             $payment->payment_method       = 'Stripe';
             $payment->payment_amount       = $finalPrice;
             $payment->billing_period       = $billingPeriod;
