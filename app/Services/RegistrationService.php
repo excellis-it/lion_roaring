@@ -189,23 +189,14 @@ class RegistrationService
         });
 
         if ($validator->fails()) {
-            return [
-                'status' => false,
-                'http_code' => 422,
-                'body' => ['status' => false, 'errors' => $validator->errors()],
-            ];
+            return $this->rejectRegistration($request, $validator->errors()->toArray());
         }
 
         $fullLionRoaringId = $request->generated_id_part . $request->lion_roaring_id_suffix;
         if (User::where('lion_roaring_id', $fullLionRoaringId)->exists()) {
-            return [
-                'status' => false,
-                'http_code' => 422,
-                'body' => [
-                    'status' => false,
-                    'errors' => ['lion_roaring_id_suffix' => ['This Lion Roaring ID is already taken. Please try different last 4 digits.']],
-                ],
-            ];
+            return $this->rejectRegistration($request, [
+                'lion_roaring_id_suffix' => ['This Lion Roaring ID is already taken. Please try different last 4 digits.'],
+            ]);
         }
 
         $tier = MembershipTier::findOrFail($request->tier_id);
@@ -231,11 +222,7 @@ class RegistrationService
         if (($tier->pricing_type ?? 'amount') === 'amount' && $finalPrice > 0) {
             $paid = $this->processPayment($request, $finalPrice, $tier, $promoCode);
             if (!$paid['ok']) {
-                return [
-                    'status' => false,
-                    'http_code' => 422,
-                    'body' => ['status' => false, 'errors' => ['payment' => [$paid['message']]]],
-                ];
+                return $this->rejectRegistration($request, ['payment' => [$paid['message']]]);
             }
             $paymentStatus = 'Success';
             $transactionId = $paid['transaction_id'];
@@ -250,7 +237,7 @@ class RegistrationService
 
         $signupValidation = SignupRule::validateSignupData($request->all());
 
-        $user = DB::transaction(function () use (
+        $createUser = function () use (
             $request,
             $fullLionRoaringId,
             $phone,
@@ -394,7 +381,50 @@ class RegistrationService
             ]);
 
             return $user;
-        });
+        };
+
+        try {
+            $user = DB::transaction($createUser);
+        } catch (\Throwable $e) {
+            // The card is already captured at this point, so nothing may leave the payer charged
+            // without an account: give the money back before surfacing the failure.
+            $wasCharged = $paymentStatus === 'Success' && $paymentAmount > 0;
+            $refunded = $wasCharged
+                ? $this->refundRegistrationPayment($transactionId, (float) $paymentAmount)
+                : false;
+
+            Log::error('Registration failed after payment was taken', [
+                'email' => (string) $request->input('email'),
+                'transaction_id' => $transactionId,
+                'charged' => $wasCharged,
+                'refunded' => $refunded,
+                'exception' => $e->getMessage(),
+            ]);
+
+            if (!$wasCharged) {
+                return [
+                    'status' => false,
+                    'http_code' => 422,
+                    'body' => [
+                        'status' => false,
+                        'errors' => ['registration' => ['We could not complete your registration. Please try again.']],
+                    ],
+                ];
+            }
+
+            return [
+                'status' => false,
+                'http_code' => 422,
+                'body' => [
+                    'status' => false,
+                    'errors' => ['payment' => [
+                        $refunded
+                            ? 'We could not complete your registration, so your payment has been refunded. Please try again.'
+                            : 'We could not complete your registration. Please contact support before paying again.',
+                    ]],
+                ],
+            ];
+        }
 
         $this->finalizeRegisterAgreement($user, (string) $request->agreement_token);
 
@@ -402,6 +432,91 @@ class RegistrationService
         Cache::put($this->registrationCacheKey($idempotencyKey), $user->id, now()->addHours(2));
 
         return $this->successResponse($user, $user->status == 1);
+    }
+
+    /**
+     * Reject an attempt without leaving the payer out of pocket: registration PaymentIntents are
+     * created with manual capture, so a rejected attempt must release the authorisation.
+     *
+     * @param  array<string, array<int, string>>  $errors
+     * @return array{status: bool, http_code: int, body: array}
+     */
+    private function rejectRegistration(Request $request, array $errors): array
+    {
+        Log::warning('Registration rejected', [
+            'email' => (string) $request->input('email'),
+            'user_name' => (string) $request->input('user_name'),
+            'payment_intent_id' => (string) $request->input('payment_intent_id'),
+            'errors' => $errors,
+        ]);
+
+        $this->releaseUncapturedIntent($request);
+
+        return [
+            'status' => false,
+            'http_code' => 422,
+            'body' => ['status' => false, 'errors' => $errors],
+        ];
+    }
+
+    /**
+     * Cancel an authorised-but-uncaptured registration PaymentIntent. Captured intents are left
+     * alone — those belong to a registration that got through and are refunded, not cancelled.
+     */
+    private function releaseUncapturedIntent(Request $request): void
+    {
+        $intentId = (string) $request->input('payment_intent_id', '');
+        if ($intentId === '' || !str_starts_with($intentId, 'pi_')) {
+            return;
+        }
+
+        try {
+            \Stripe\Stripe::setApiKey(config('services.stripe.secret'));
+            $intent = \Stripe\PaymentIntent::retrieve($intentId);
+
+            if (in_array($intent->status, ['requires_capture', 'requires_confirmation', 'requires_action', 'requires_payment_method'], true)) {
+                $intent->cancel();
+                Log::info('Registration payment authorisation released', ['payment_intent_id' => $intentId]);
+            }
+        } catch (\Throwable $e) {
+            Log::warning('Could not release registration payment authorisation', [
+                'payment_intent_id' => $intentId,
+                'error' => $e->getMessage(),
+            ]);
+        }
+    }
+
+    /**
+     * Refund a captured registration payment. Setup intents and free/promo placeholders carry no
+     * money, so they are skipped.
+     */
+    private function refundRegistrationPayment(?string $transactionId, float $amount): bool
+    {
+        if (!$transactionId || $amount <= 0) {
+            return false;
+        }
+
+        if (!str_starts_with($transactionId, 'pi_') && !str_starts_with($transactionId, 'ch_')) {
+            return false;
+        }
+
+        try {
+            \Stripe\Stripe::setApiKey(config('services.stripe.secret'));
+            \Stripe\Refund::create(
+                str_starts_with($transactionId, 'pi_')
+                    ? ['payment_intent' => $transactionId]
+                    : ['charge' => $transactionId]
+            );
+
+            return true;
+        } catch (\Throwable $e) {
+            Log::error('Registration refund failed', [
+                'transaction_id' => $transactionId,
+                'error' => $e->getMessage(),
+            ]);
+
+            return false;
+        }
     }
 
     private function registrationIdempotencyKey(Request $request): string
@@ -532,10 +647,22 @@ class RegistrationService
 
             if ($request->filled('payment_intent_id')) {
                 $intent = \Stripe\PaymentIntent::retrieve($request->payment_intent_id);
+                $expected = (int) round($finalPrice * 100);
+
+                // Registration intents use manual capture: the card is only authorised until every
+                // registration check has passed, so this is the first point money may be taken.
+                if ($intent->status === 'requires_capture') {
+                    if ((int) $intent->amount < $expected) {
+                        return ['ok' => false, 'message' => 'Payment amount does not match the tier price.'];
+                    }
+                    // Capture the tier price rather than whatever was authorised, so a price that
+                    // moved between checkout and registration can never overcharge.
+                    $intent = $intent->capture(['amount_to_capture' => $expected]);
+                }
+
                 if ($intent->status !== 'succeeded') {
                     return ['ok' => false, 'message' => 'Payment has not been completed.'];
                 }
-                $expected = (int) round($finalPrice * 100);
                 if ((int) $intent->amount_received < $expected) {
                     return ['ok' => false, 'message' => 'Payment amount does not match the tier price.'];
                 }
@@ -755,6 +882,20 @@ class RegistrationService
             ];
         }
 
+        $preflight = $this->preflightRegistrationErrors($request);
+        if ($preflight) {
+            Log::warning('Registration checkout blocked before payment', [
+                'email' => (string) $request->input('email'),
+                'errors' => $preflight,
+            ]);
+
+            return [
+                'status' => false,
+                'http_code' => 422,
+                'body' => ['status' => false, 'errors' => $preflight],
+            ];
+        }
+
         $tier = MembershipTier::findOrFail($request->tier_id);
 
         $tierLockError = $this->tierRegistrationPolicy->validateTierSelectable((int) $request->tier_id, $request);
@@ -846,10 +987,37 @@ class RegistrationService
                 )
                 : null;
 
+            $amount = (int) round($finalPrice * 100);
+
+            // Re-opening checkout for the same cart must not mint a second intent, or an abandoned
+            // attempt turns into a second charge. Only ever keyed by the agreement token: without
+            // one the key would be identical for everybody on that tier and two strangers would
+            // end up sharing a PaymentIntent.
+            $reuseKey = $this->registrationIntentCacheKey($request, $tier->id, $billingPeriod, $amount);
+
+            $reusable = $reuseKey ? $this->reusableIntent(Cache::get($reuseKey), $amount) : null;
+            if ($reusable) {
+                return [
+                    'status' => true,
+                    'http_code' => 200,
+                    'body' => [
+                        'status' => true,
+                        'free' => false,
+                        'payment_intent_id' => $reusable->id,
+                        'client_secret' => $reusable->client_secret,
+                        'publishable_key' => config('services.stripe.key'),
+                        'amount' => $finalPrice,
+                    ],
+                ];
+            }
+
             $intentParams = [
-                'amount' => (int) round($finalPrice * 100),
+                'amount' => $amount,
                 'currency' => 'usd',
                 'payment_method_types' => ['card'],
+                // Authorise only. The charge is captured in processPayment() once the registration
+                // has passed every check, so a rejected registration can never keep the money.
+                'capture_method' => 'manual',
                 'description' => 'Membership Registration - ' . $tier->name
                     . ($request->filled('promo_code') ? ' (Promo: ' . $request->promo_code . ')' : ''),
                 'metadata' => array_filter([
@@ -866,6 +1034,10 @@ class RegistrationService
             }
 
             $intent = \Stripe\PaymentIntent::create($intentParams);
+
+            if ($reuseKey) {
+                Cache::put($reuseKey, $intent->id, now()->addMinutes(30));
+            }
 
             return [
                 'status' => true,
@@ -885,6 +1057,100 @@ class RegistrationService
                 'http_code' => 422,
                 'body' => ['status' => false, 'message' => 'Could not create payment: ' . $e->getMessage()],
             ];
+        }
+    }
+
+    /**
+     * Checks that would otherwise only fail in register() — after the card has been charged.
+     * Running them before the PaymentIntent exists keeps a doomed attempt away from Stripe.
+     * Every field is optional so older app builds that post only tier/promo keep working.
+     *
+     * @return array<string, array<int, string>>
+     */
+    private function preflightRegistrationErrors(Request $request): array
+    {
+        $errors = [];
+
+        $email = strtolower(trim((string) $request->input('email', '')));
+        if ($email !== '' && $this->duplicateUserQuery()->whereRaw('LOWER(email) = ?', [$email])->exists()) {
+            $errors['email'] = ['The email has already been taken.'];
+        }
+
+        $username = trim((string) $request->input('user_name', ''));
+        if ($username !== '' && $this->duplicateUserQuery()->where('user_name', $username)->exists()) {
+            $errors['user_name'] = ['The user name has already been taken.'];
+        }
+
+        $idPart = trim((string) $request->input('generated_id_part', ''));
+        $suffix = trim((string) $request->input('lion_roaring_id_suffix', ''));
+        if ($idPart !== '' && $suffix !== ''
+            && User::where('lion_roaring_id', $idPart . $suffix)->exists()) {
+            $errors['lion_roaring_id_suffix'] = ['This Lion Roaring ID is already taken. Please try different last 4 digits.'];
+        }
+
+        $agreementToken = (string) $request->input('agreement_token', '');
+        if ($agreementToken !== '') {
+            $pending = $this->agreementPreview->getPendingForGuest($agreementToken);
+            if (!is_array($pending) || empty($pending['tmp_path']) || empty($pending['signer_name'])
+                || !Storage::disk('public')->exists($pending['tmp_path'])) {
+                $errors['agreement_token'] = ['Please review and accept the registration agreement before registering.'];
+            }
+        }
+
+        return $errors;
+    }
+
+    /**
+     * Users that register() would clear out as orphans of a failed attempt are not real duplicates,
+     * so they must not block the preflight.
+     */
+    private function duplicateUserQuery(): \Illuminate\Database\Eloquent\Builder
+    {
+        return User::withTrashed()->where(function ($query) {
+            $query->whereHas('userSubscription')
+                ->orWhere('created_at', '<', now()->subDay());
+        });
+    }
+
+    /**
+     * Null when the request carries no agreement token: the key would then be the same for every
+     * registrant on that tier, and reuse would hand one person's PaymentIntent to another.
+     */
+    private function registrationIntentCacheKey(Request $request, int $tierId, string $billingPeriod, int $amount): ?string
+    {
+        $agreementToken = trim((string) $request->input('agreement_token', ''));
+        if ($agreementToken === '') {
+            return null;
+        }
+
+        return 'registration_intent:' . hash('sha256', implode('|', [
+            $agreementToken,
+            strtolower(trim((string) $request->input('email', ''))),
+            (string) $tierId,
+            $billingPeriod,
+            (string) $request->input('promo_code', ''),
+            (string) $amount,
+        ]));
+    }
+
+    /**
+     * An intent may only be handed back when it is still waiting for a card. Anything already
+     * authorised, captured or cancelled must not be re-offered to the client.
+     */
+    private function reusableIntent(?string $intentId, int $amount): ?\Stripe\PaymentIntent
+    {
+        if (!$intentId) {
+            return null;
+        }
+
+        try {
+            $intent = \Stripe\PaymentIntent::retrieve($intentId);
+
+            $isOpen = in_array($intent->status, ['requires_payment_method', 'requires_confirmation'], true);
+
+            return $isOpen && (int) $intent->amount === $amount ? $intent : null;
+        } catch (\Throwable $e) {
+            return null;
         }
     }
 }
