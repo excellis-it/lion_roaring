@@ -16,7 +16,9 @@ return [
     |
     */
 
-    'enabled' => env('TELESCOPE_ENABLED', true),
+    // Off unless a developer opts in. Left on by default it recorded every request on production —
+    // 17.4M rows / 14 GB in telescope_entries with no pruning, which is what made the site crawl.
+    'enabled' => env('TELESCOPE_ENABLED', false),
 
     /*
     |--------------------------------------------------------------------------

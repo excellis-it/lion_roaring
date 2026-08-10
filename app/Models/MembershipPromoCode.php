@@ -107,8 +107,12 @@ class MembershipPromoCode extends BaseModel
      */
     public function canBeAppliedToTier($tierId): bool
     {
-        if ($this->scope_type === 'selected_tiers') {
-            return in_array($tierId, $this->tier_ids ?? []);
+        // tier_ids is authoritative whenever it is set: a code restricted to Tier I/II must stay
+        // restricted even if the scope is later switched to all_users/selected_users.
+        $tierIds = array_filter((array) ($this->tier_ids ?? []), fn ($id) => $id !== null && $id !== '');
+
+        if ($this->scope_type === 'selected_tiers' || !empty($tierIds)) {
+            return in_array((int) $tierId, array_map('intval', $tierIds), true);
         }
 
         return true; // For all_tiers, all_users, and selected_users

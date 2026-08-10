@@ -243,7 +243,12 @@ class BecomingSovereignController extends Controller
 
 
             if (!$user->hasNewRole('SUPER ADMIN')) {
-                if ($user_type == 'Global') {
+                // Must match index()/edit(): searching with the old rule listed another country's
+                // files to a G_R user on the global site, and opening one returned 404.
+                $currentCountry = Country::findByCurrentRequest();
+                $isOnGlobalServer = $currentCountry && $currentCountry->is_global;
+
+                if ($user_type == 'Global' || ($user_type == 'G_R' && $isOnGlobalServer)) {
                     $files->whereHas('country', function ($query) {
                         $query->where('code', 'GL');
                     });

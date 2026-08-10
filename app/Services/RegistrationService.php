@@ -170,12 +170,9 @@ class RegistrationService
             $billingPeriod = MembershipPricing::validatePeriod($request->input('billing_period'));
             $basePrice = MembershipPricing::priceFor($tier, $billingPeriod);
             $finalPrice = $basePrice;
-            if ($request->promo_code) {
-                $promo = MembershipPromoCode::where('code', $request->promo_code)->first();
-                if ($promo && $promo->canBeAppliedToTier($tier->id)) {
-                    $discount = $promo->calculateDiscount($basePrice);
-                    $finalPrice = max(0, $basePrice - $discount);
-                }
+            $promo = $this->resolveRegistrationPromo($request->promo_code, $tier);
+            if ($promo) {
+                $finalPrice = max(0, $basePrice - $promo->calculateDiscount($basePrice));
             }
 
             if ($finalPrice > 0 && !$request->filled('stripeToken') && !$request->filled('payment_intent_id')) {
@@ -206,12 +203,10 @@ class RegistrationService
         $basePrice = MembershipPricing::priceFor($tier, $billingPeriod);
         $finalPrice = $basePrice;
 
-        if ($request->filled('promo_code')) {
-            $promoCode = MembershipPromoCode::where('code', $request->promo_code)->first();
-            if ($promoCode && $promoCode->canBeAppliedToTier($tier->id)) {
-                $discount = $promoCode->calculateDiscount($basePrice);
-                $finalPrice = max(0, $basePrice - $discount);
-            }
+        $promoCode = $this->resolveRegistrationPromo($request->input('promo_code'), $tier);
+        if ($promoCode) {
+            $discount = $promoCode->calculateDiscount($basePrice);
+            $finalPrice = max(0, $basePrice - $discount);
         }
 
         $paymentStatus = 'Pending';
@@ -918,11 +913,9 @@ class RegistrationService
         $billingPeriod = MembershipPricing::validatePeriod($request->input('billing_period'));
         $basePrice = MembershipPricing::priceFor($tier, $billingPeriod);
         $finalPrice = $basePrice;
-        if ($request->filled('promo_code')) {
-            $promo = MembershipPromoCode::where('code', $request->promo_code)->first();
-            if ($promo && $promo->canBeAppliedToTier($tier->id)) {
-                $finalPrice = max(0, $basePrice - $promo->calculateDiscount($basePrice));
-            }
+        $promo = $this->resolveRegistrationPromo($request->input('promo_code'), $tier);
+        if ($promo) {
+            $finalPrice = max(0, $basePrice - $promo->calculateDiscount($basePrice));
         }
 
         if ($finalPrice <= 0 && $basePrice > 0) {
@@ -1067,6 +1060,25 @@ class RegistrationService
      *
      * @return array<string, array<int, string>>
      */
+    /**
+     * The one place registration decides whether a promo code counts. Checkout, the price the
+     * card is authorised for and the price /register expects all go through here, so a code can
+     * never discount one of them and be ignored by another (which charged full price).
+     */
+    private function resolveRegistrationPromo($code, MembershipTier $tier): ?MembershipPromoCode
+    {
+        // Untyped on purpose: the after() validation callback still runs when promo_code failed the
+        // string rule, and a TypeError there would answer 500 instead of the validation error.
+        $code = is_string($code) ? trim($code) : '';
+        if ($code === '') {
+            return null;
+        }
+
+        $promo = MembershipPromoCode::where('code', $code)->first();
+
+        return $promo && $promo->isValid() && $promo->canBeAppliedToTier($tier->id) ? $promo : null;
+    }
+
     private function preflightRegistrationErrors(Request $request): array
     {
         $errors = [];

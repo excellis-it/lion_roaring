@@ -1,6 +1,6 @@
 ---
 title: Role Permission
-updated: 2026-07-30
+updated: 2026-08-10
 status: ready
 sidebar_key: role_permission
 ---
@@ -24,7 +24,7 @@ Manage panel roles (`user_types`) and their permission maps (`user_type_permissi
   - Create → `role_template_created` (new permission set; `meta.affected_users` = 0).
   - Update → `role_template_updated` (name, permissions, `is_admin` / `is_ecclesia` diffs; `meta.affected_users` = users on that template).
   - Delete → `role_template_deleted` (final permission set before removal; `meta.affected_users` = 0).
-- These entries appear in the Members List **Audit Logs** UI (global and per-member views where applicable). See **All Members** for access gate, visibility, and export.
+- These entries appear in the Members List **Audit Logs** UI (global and per-member views where applicable). Audit Logs UI access requires `View Member Audit Logs` (or Super Admin). See **All Members** for gate, visibility, and export.
 
 ### Affected users
 

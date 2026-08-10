@@ -377,11 +377,15 @@ class AuthController extends Controller
         // Handle promo code if provided during registration
         if ($request->has('promo_code') && !empty($request->promo_code)) {
             $promoCode = MembershipPromoCode::where('code', $request->promo_code)->first();
-            if ($promoCode && $promoCode->isValid()) {
-                if ($promoCode->canBeAppliedToTier($tier->id)) {
-                    $discount = $promoCode->calculateDiscount($basePrice);
-                    $finalPrice = max(0, $basePrice - $discount);
-                }
+            if ($promoCode && $promoCode->isValid() && $promoCode->canBeAppliedToTier($tier->id)) {
+                $discount = $promoCode->calculateDiscount($basePrice);
+                $finalPrice = max(0, $basePrice - $discount);
+            } else {
+                // Never fall through to the undiscounted price: the member agreed to the total that
+                // included this code, so charging them anything else has to be stopped here.
+                return redirect()->back()
+                    ->withErrors(['promo_code' => 'This promo code is not valid for the selected membership tier. Please remove it and try again.'])
+                    ->withInput();
             }
         }
 

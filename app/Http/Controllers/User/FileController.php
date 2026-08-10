@@ -19,6 +19,22 @@ class FileController extends Controller
 {
     use ImageTrait;
 
+    /**
+     * Global users — and G_R users while they are on the global site — work against the GL
+     * library; everyone else against their own country. index() already worked this way while the
+     * rest of the module did not, so listed files returned 404 when opened.
+     */
+    private function isGlobalScope($user): bool
+    {
+        if ($user->user_type == 'Global') {
+            return true;
+        }
+
+        $currentCountry = Country::findByCurrentRequest();
+
+        return $user->user_type == 'G_R' && $currentCountry && $currentCountry->is_global;
+    }
+
     public function index()
     {
         if (auth()->user()->can('Manage File')) {
@@ -60,7 +76,7 @@ class FileController extends Controller
             $user_country = $user->country;
 
             if (!$user->hasNewRole('SUPER ADMIN')) {
-                if ($user_type == 'Global') {
+                if ($this->isGlobalScope($user)) {
                     $topics = Topic::orderBy('topic_name', 'asc')->whereHas('country', function ($query) {
                         $query->where('code', 'GL');
                     })->get();
@@ -82,13 +98,11 @@ class FileController extends Controller
         $user = auth()->user();
         $user_type = $user->user_type;
         $user_country = $user->country;
-        $country_id_ex = null;
-        if ($user_type == 'Global') {
-            $country = Country::where('code', 'GL')->first();
-            $country_id_ex = $country->id;
-        } elseif ($user_type == 'Regional') {
-            $country_id_ex = $user_country;
-        }
+        // G_R users matched neither branch and uploaded with a null country, which the validator
+        // then rejected as "country id is required".
+        $country_id_ex = $this->isGlobalScope($user)
+            ? Country::where('code', 'GL')->first()?->id
+            : $user_country;
 
         $country_id = auth()->user()->hasNewRole('SUPER ADMIN') ? $request->country_id : $country_id_ex;
 
@@ -199,7 +213,7 @@ class FileController extends Controller
             $user_country = $user->country;
 
             if (!$user->hasNewRole('SUPER ADMIN')) {
-                if ($user_type == 'Global') {
+                if ($this->isGlobalScope($user)) {
                     $files->whereHas('country', function ($query) {
                         $query->where('code', 'GL');
                     });
@@ -223,7 +237,7 @@ class FileController extends Controller
             $user_country = $user->country;
 
             if (!$user->hasNewRole('SUPER ADMIN')) {
-                if ($user_type == 'Global') {
+                if ($this->isGlobalScope($user)) {
                     $file = File::whereHas('country', function ($query) {
                         $query->where('code', 'GL');
                     })->findOrFail($id);
@@ -236,7 +250,7 @@ class FileController extends Controller
 
             if ($file) {
                 if (!$user->hasNewRole('SUPER ADMIN')) {
-                    if ($user_type == 'Global') {
+                    if ($this->isGlobalScope($user)) {
                         $countries = Country::orderBy('name', 'asc')->whereHas('files', function ($query) {
                             $query->where('code', 'GL');
                         })->get();
@@ -266,13 +280,9 @@ class FileController extends Controller
         $user = auth()->user();
         $user_type = $user->user_type;
         $user_country = $user->country;
-        $country_id_ex = null;
-        if ($user_type == 'Global') {
-            $country = Country::where('code', 'GL')->first();
-            $country_id_ex = $country->id;
-        } elseif ($user_type == 'Regional') {
-            $country_id_ex = $user_country;
-        }
+        $country_id_ex = $this->isGlobalScope($user)
+            ? Country::where('code', 'GL')->first()?->id
+            : $user_country;
 
         $country_id = auth()->user()->hasNewRole('SUPER ADMIN') ? $request->country_id : $country_id_ex;
 
@@ -323,7 +333,7 @@ class FileController extends Controller
         $query = Topic::where('education_type', $type);
 
         if (!$user->hasNewRole('SUPER ADMIN')) {
-            if ($user_type == 'Global') {
+            if ($this->isGlobalScope($user)) {
                 $query->whereHas('country', function ($q) {
                     $q->where('code', 'GL');
                 });
@@ -344,7 +354,7 @@ class FileController extends Controller
             $user_country = $user->country;
 
             if (!$user->hasNewRole('SUPER ADMIN')) {
-                if ($user_type == 'Global') {
+                if ($this->isGlobalScope($user)) {
                     $file = File::whereHas('country', function ($query) {
                         $query->where('code', 'GL');
                     })->findOrFail($id);

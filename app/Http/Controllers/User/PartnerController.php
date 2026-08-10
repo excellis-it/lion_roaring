@@ -408,7 +408,14 @@ class PartnerController extends Controller
                 Helper::getMenuName('chatbot', 'Chatbot') => ['Manage Chatbot', 'View Chatbot History', 'Manage Chatbot Keywords', 'View Chatbot Analytics'],
             ],
             Helper::getMenuName('management', 'Management') => [
-                Helper::getMenuName('all_members', 'All Members') => ['Create Partners', 'Edit Partners', 'Delete Partners', 'Manage Partners', 'View Partners'],
+                Helper::getMenuName('all_members', 'All Members') => [
+                    'Create Partners',
+                    'Edit Partners',
+                    'Delete Partners',
+                    'Manage Partners',
+                    'View Partners',
+                    'View Member Audit Logs',
+                ],
                 Helper::getMenuName('role_permission', 'Roles & Permissions') => ['Manage Role Permission'],
                 Helper::getMenuName('signup_rules', 'Signup Rules') => ['Manage Signup Rules', 'Create Signup Rules', 'Edit Signup Rules', 'Delete Signup Rules'],
                 Helper::getMenuName('strategy', 'Strategy') => [

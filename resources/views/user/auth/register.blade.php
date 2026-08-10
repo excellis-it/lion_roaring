@@ -1714,6 +1714,19 @@
                 // Handle Payment
                 $('#confirm-payment-btn').click(function() {
                     var btn = $(this);
+
+                    // A code typed but never applied used to be dropped silently and the member was
+                    // charged the full price, so stop here until Apply has confirmed it.
+                    var typedPromo = $('#promo_code').val().trim();
+                    if (typedPromo && (!promoCodeData || promoCodeData.code !== typedPromo)) {
+                        $('#promo-code-feedback').html(
+                            '<span class="text-danger fw-bold">' +
+                            '<i class="fa fa-exclamation-circle"></i> Please click Apply to use this promo code, or clear the field.' +
+                            '</span>'
+                        );
+                        return;
+                    }
+
                     // Disable button to prevent multiple clicks
                     btn.prop('disabled', true).text('Processing...');
 

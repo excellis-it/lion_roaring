@@ -1,6 +1,6 @@
 ---
 title: All Members
-updated: 2026-07-30
+updated: 2026-08-10
 status: ready
 sidebar_key: all_members
 ---
@@ -43,7 +43,10 @@ Partners / all-members directory (create, edit, status, export, agreement detail
 
 ### Audit log access and visibility
 
-- **Access gate** — Super Admin **or** `Manage Partners` **or** `Manage Role Permission`. Otherwise 403. No new Spatie permission.
+- **Permission:** `View Member Audit Logs` (under Management → All Members). Shown in member edit, role template, and membership tier permission grids.
+- **Access gate:** Super Admin **or** `View Member Audit Logs`. Otherwise 403.
+- **Not implied by:** `Manage Partners`, `Manage Role Permission`, or `View Partners`.
+- **Default:** Only Super Admin has this permission out of the box. Membership tiers do not include it unless explicitly checked.
 - **List scoping** — Matches Members List partner visibility (`PartnerVisibility`):
   - Super Admin: all audit rows.
   - Global: rows whose `target_user_id` is in the Global-visible partner set, plus template-only rows (`target_user_id` null).

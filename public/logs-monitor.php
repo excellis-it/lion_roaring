@@ -79,6 +79,16 @@ if ($PASSWORD !== '') {
 }
 
 // ---- Helpers --------------------------------------------------------------
+/**
+ * Log files routinely hold bytes that are not valid UTF-8 (stack traces, binary payloads, mangled
+ * encodings). Plain json_encode() returns false for the whole payload on those, which answered the
+ * dashboard with an empty 200 and made every log look empty — one bad entry hid thousands of good
+ * ones. Substitute the offending characters instead of losing the response.
+ */
+function jsonOut($data){
+    $json = json_encode($data, JSON_INVALID_UTF8_SUBSTITUTE | JSON_PARTIAL_OUTPUT_ON_ERROR);
+    return $json === false ? json_encode(['error'=>'Encoding failed: '.json_last_error_msg()]) : $json;
+}
 function humanBytes($b){ if($b<=0)return '0 B'; $u=['B','KB','MB','GB','TB']; $i=(int)floor(log($b,1024)); return round($b/pow(1024,$i),1).' '.$u[$i]; }
 function allLogDirs($base, $settings) {
     $dirs = [$base.'/storage/logs'];
@@ -104,6 +114,21 @@ function parseEntries($content){
         $entries[]=['date'=>$m[1][$i][0],'env'=>$m[2][$i][0],'level'=>strtoupper($m[3][$i][0]),'body'=>trim(substr($content,$s,$e-$s))]; }
     return array_reverse($entries);
 }
+/**
+ * Not every file in storage/logs is Laravel-formatted — cron, queue and websocket output is plain
+ * text, and parseEntries() finds nothing in it, so the dashboard claimed those files were empty
+ * while they were the ones worth reading.
+ */
+function rawEntries($content){
+    $out=[];
+    foreach(array_reverse(preg_split('/\R/',trim($content))) as $line){
+        if(trim($line)==='')continue;
+        $date=preg_match('/^\[?(\d{4}-\d{2}-\d{2}[ T]\d{2}:\d{2}:\d{2})/',$line,$m)?$m[1]:'';
+        $out[]=['date'=>$date,'env'=>'raw','level'=>preg_match('/\b(error|exception|fatal|failed|warning)\b/i',$line)?'ERROR':'OTHER','body'=>$line];
+        if(count($out)>=2000)break;
+    }
+    return $out;
+}
 function laravelVersion($base){
     $f="$base/vendor/laravel/framework/src/Illuminate/Foundation/Application.php";
     if(is_file($f)&&preg_match("/const VERSION = '([^']+)'/",file_get_contents($f),$m))return $m[1];
@@ -118,7 +143,7 @@ function envVal($base,$key,$def='—'){
 }
 function webhookSend($url,$text){
     if(!$url)return false;
-    $payload=json_encode(['text'=>$text]);
+    $payload=json_encode(['text'=>$text], JSON_INVALID_UTF8_SUBSTITUTE | JSON_PARTIAL_OUTPUT_ON_ERROR);
     if(function_exists('curl_init')){
         $ch=curl_init($url);curl_setopt_array($ch,[CURLOPT_POST=>1,CURLOPT_POSTFIELDS=>$payload,CURLOPT_HTTPHEADER=>['Content-Type: application/json'],CURLOPT_RETURNTRANSFER=>1,CURLOPT_TIMEOUT=>5,CURLOPT_SSL_VERIFYPEER=>0]);
         $ok=curl_exec($ch)!==false;curl_close($ch);return $ok;
@@ -197,13 +222,14 @@ if ($action === 'download') {
 
 if ($action) {
     header('Content-Type: application/json');
-    $guard = function() use ($readOnly){ if($readOnly){echo json_encode(['ok'=>false,'error'=>'Read-only mode is enabled']);exit;} };
+    $guard = function() use ($readOnly){ if($readOnly){echo jsonOut(['ok'=>false,'error'=>'Read-only mode is enabled']);exit;} };
 
     if ($action === 'entries') {
         $req=basename($_GET['file']??''); $since=(int)($_GET['since']??0);
-        if(!isset($files[$req])){echo json_encode(['error'=>'File not found']);exit;}
+        if(!isset($files[$req])){echo jsonOut(['error'=>'File not found']);exit;}
         [$data,$size]=tailFile($files[$req],$MAX_BYTES,$since);
         $entries=parseEntries($data);
+        if(!$entries && trim($data)!=='') $entries=rawEntries($data);
         $counts=['ERROR'=>0,'WARNING'=>0,'INFO'=>0,'DEBUG'=>0,'OTHER'=>0];
         foreach($entries as $e){$lv=$e['level'];
             if(isset($counts[$lv]))$counts[$lv]++;
@@ -215,14 +241,14 @@ if ($action) {
             if($hits){$first=reset($hits);$app=envVal($BASE_DIR,'APP_NAME','App');
                 webhookSend($SETTINGS['webhookUrl'],"🚨 *$app* — ".count($hits)." new ".$first['level']." in $req\n```".substr($first['body'],0,500)."```");}
         }
-        echo json_encode(['entries'=>$entries,'size'=>$size,'mtime'=>filemtime($files[$req]),'counts'=>$counts]); exit;
+        echo jsonOut(['entries'=>$entries,'size'=>$size,'mtime'=>filemtime($files[$req]),'counts'=>$counts]); exit;
     }
 
     if ($action === 'searchall') {
         $q=trim($_GET['q']??''); $res=[];
         if($q!==''){foreach($files as $name=>$path){[$data]=tailFile($path,$MAX_BYTES);
             foreach(parseEntries($data) as $e){ if(stripos($e['body'],$q)!==false){$e['file']=$name;$res[]=$e; if(count($res)>=400)break 2;} }}}
-        echo json_encode(['entries'=>$res,'q'=>$q]); exit;
+        echo jsonOut(['entries'=>$res,'q'=>$q]); exit;
     }
 
     if ($action === 'health') {
@@ -239,12 +265,12 @@ if ($action) {
         $h[]=['bootstrap/cache writable',is_writable("$BASE_DIR/bootstrap/cache"),''];
         $h[]=['APP_DEBUG off',strtolower(envVal($BASE_DIR,'APP_DEBUG','false'))!=='true','prod safety'];
         $h[]=['APP_KEY set',envVal($BASE_DIR,'APP_KEY','')!=='','' ];
-        echo json_encode(['checks'=>$h]); exit;
+        echo jsonOut(['checks'=>$h]); exit;
     }
 
-    if ($action === 'metrics') { echo json_encode(serverMetrics($BASE_DIR)); exit; }
+    if ($action === 'metrics') { echo jsonOut(serverMetrics($BASE_DIR)); exit; }
 
-    if ($action === 'settings') { echo json_encode(['settings'=>$SETTINGS]); exit; }
+    if ($action === 'settings') { echo jsonOut(['settings'=>$SETTINGS]); exit; }
 
     if ($action === 'savesettings') {
         $in=json_decode(file_get_contents('php://input'),true)?:[];
@@ -253,35 +279,35 @@ if ($action) {
         $SETTINGS['retentionDays']=max(1,(int)($in['retentionDays']??14));
         $SETTINGS['readOnly']=!empty($in['readOnly']);
         $SETTINGS['extraLogDirs']=array_values(array_filter(array_map('trim',(array)($in['extraLogDirs']??[]))));
-        echo json_encode(['ok'=>saveSettings($SETTINGS_FILE,$SETTINGS)]); exit;
+        echo jsonOut(['ok'=>saveSettings($SETTINGS_FILE,$SETTINGS)]); exit;
     }
 
     if ($action === 'testwebhook') {
         $url=trim($_POST['url']??$SETTINGS['webhookUrl']);
-        echo json_encode(['ok'=>webhookSend($url,'✅ Logs Monitor test message — webhook is working!')]); exit;
+        echo jsonOut(['ok'=>webhookSend($url,'✅ Logs Monitor test message — webhook is working!')]); exit;
     }
 
     if ($action === 'clear')  { $guard(); $req=basename($_POST['file']??'');
-        if(isset($files[$req])&&is_writable($files[$req])){file_put_contents($files[$req],'');echo json_encode(['ok'=>true]);}else echo json_encode(['ok'=>false,'error'=>'Not writable']); exit; }
+        if(isset($files[$req])&&is_writable($files[$req])){file_put_contents($files[$req],'');echo jsonOut(['ok'=>true]);}else echo jsonOut(['ok'=>false,'error'=>'Not writable']); exit; }
 
     if ($action === 'delete') { $guard(); $req=basename($_POST['file']??'');
-        if(isset($files[$req])&&is_writable($files[$req])){unlink($files[$req]);echo json_encode(['ok'=>true]);}else echo json_encode(['ok'=>false,'error'=>'Not writable']); exit; }
+        if(isset($files[$req])&&is_writable($files[$req])){unlink($files[$req]);echo jsonOut(['ok'=>true]);}else echo jsonOut(['ok'=>false,'error'=>'Not writable']); exit; }
 
     if ($action === 'backup') { $guard(); $req=basename($_POST['file']??'');
-        if(!isset($files[$req])){echo json_encode(['ok'=>false,'error'=>'Not found']);exit;}
+        if(!isset($files[$req])){echo jsonOut(['ok'=>false,'error'=>'Not found']);exit;}
         $src=$files[$req];$dir=dirname($src);
-        if(!is_writable($src)||!is_writable($dir)){echo json_encode(['ok'=>false,'error'=>'Not writable']);exit;}
+        if(!is_writable($src)||!is_writable($dir)){echo jsonOut(['ok'=>false,'error'=>'Not writable']);exit;}
         $n=pathinfo($req,PATHINFO_FILENAME);$x=pathinfo($req,PATHINFO_EXTENSION)?:'log';
         $dest="$dir/{$n}-backup-".date('Y-m-d_His').".$x";
-        if(rename($src,$dest)){touch($src);@chmod($src,0664);echo json_encode(['ok'=>true,'backup'=>basename($dest)]);}
-        else echo json_encode(['ok'=>false,'error'=>'Rename failed']); exit; }
+        if(rename($src,$dest)){touch($src);@chmod($src,0664);echo jsonOut(['ok'=>true,'backup'=>basename($dest)]);}
+        else echo jsonOut(['ok'=>false,'error'=>'Rename failed']); exit; }
 
     if ($action === 'prune') { $guard();
         $days=max(1,(int)($SETTINGS['retentionDays']??14));$cut=time()-$days*86400;$del=[];
         foreach($files as $name=>$path){ if(strpos($name,'-backup-')!==false && filemtime($path)<$cut){ if(@unlink($path))$del[]=$name; } }
-        echo json_encode(['ok'=>true,'deleted'=>$del,'days'=>$days]); exit; }
+        echo jsonOut(['ok'=>true,'deleted'=>$del,'days'=>$days]); exit; }
 
-    echo json_encode(['error'=>'Unknown action']); exit;
+    echo jsonOut(['error'=>'Unknown action']); exit;
 }
 
 // ---- System info ----------------------------------------------------------

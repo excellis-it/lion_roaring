@@ -94,6 +94,7 @@ class RolePermissionSeeder extends Seeder
             ["name" => "Delete Partners"],
             ["name" => "Manage Partners"],
             ["name" => "View Partners"],
+            ["name" => "View Member Audit Logs"],
 
             // Help
             ["name" => "Manage Help"],

@@ -15,8 +15,7 @@ class PartnerVisibility
         }
 
         return $user->hasNewRole('SUPER ADMIN')
-            || $user->can('Manage Partners')
-            || $user->can('Manage Role Permission');
+            || $user->can('View Member Audit Logs');
     }
 
     /**

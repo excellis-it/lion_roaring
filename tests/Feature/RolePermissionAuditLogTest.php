@@ -34,22 +34,22 @@ class RolePermissionAuditLogTest extends TestCase
         ]);
     }
 
-    private function manager(): User
+    private function auditViewer(): User
     {
-        Permission::findOrCreate('Manage Partners');
+        Permission::findOrCreate('View Member Audit Logs');
 
         $user = $this->createApiUser([
             'user_type' => 'Global',
             'membership_excluded' => true,
         ]);
-        $user->givePermissionTo('Manage Partners');
+        $user->givePermissionTo('View Member Audit Logs');
 
         return $user->fresh();
     }
 
-    private function regionalManager(int $countryId): User
+    private function regionalAuditViewer(int $countryId): User
     {
-        Permission::findOrCreate('Manage Partners');
+        Permission::findOrCreate('View Member Audit Logs');
 
         $user = $this->createApiUser([
             'user_type' => 'Regional',
@@ -57,7 +57,7 @@ class RolePermissionAuditLogTest extends TestCase
             'membership_excluded' => true,
             'status' => 1,
         ]);
-        $user->givePermissionTo('Manage Partners');
+        $user->givePermissionTo('View Member Audit Logs');
 
         return $user->fresh();
     }
@@ -100,9 +100,58 @@ class RolePermissionAuditLogTest extends TestCase
             ->assertForbidden();
     }
 
-    public function test_manager_can_view_audit_index(): void
+    public function test_manage_partners_without_audit_permission_forbidden(): void
     {
-        $user = $this->manager();
+        Permission::findOrCreate('Manage Partners');
+
+        $user = $this->createApiUser([
+            'user_type' => 'Global',
+            'membership_excluded' => true,
+        ]);
+        $user->givePermissionTo('Manage Partners');
+
+        $this->asAuditUser($user)
+            ->get(route('partners.audit-logs'))
+            ->assertForbidden();
+    }
+
+    public function test_manage_role_permission_without_audit_permission_forbidden(): void
+    {
+        Permission::findOrCreate('Manage Role Permission');
+
+        $user = $this->createApiUser([
+            'user_type' => 'Global',
+            'membership_excluded' => true,
+        ]);
+        $user->givePermissionTo('Manage Role Permission');
+
+        $this->asAuditUser($user)
+            ->get(route('partners.audit-logs'))
+            ->assertForbidden();
+    }
+
+    public function test_super_admin_can_view_audit_index(): void
+    {
+        $adminType = UserType::firstOrCreate(
+            ['name' => 'SUPER ADMIN'],
+            ['guard_name' => 'web', 'type' => '1', 'is_ecclesia' => 0]
+        );
+
+        $user = $this->createApiUser([
+            'user_type' => 'Global',
+            'membership_excluded' => true,
+        ]);
+        $user->user_type_id = $adminType->id;
+        $user->save();
+
+        $this->asAuditUser($user->fresh())
+            ->get(route('partners.audit-logs'))
+            ->assertOk();
+    }
+
+    public function test_audit_viewer_can_view_audit_index(): void
+    {
+        $user = $this->auditViewer();
         $this->asAuditUser($user)
             ->get(route('partners.audit-logs'))
             ->assertOk();
@@ -110,7 +159,7 @@ class RolePermissionAuditLogTest extends TestCase
 
     public function test_logger_row_appears_on_member_audit_page(): void
     {
-        $manager = $this->manager();
+        $manager = $this->auditViewer();
         $target = $this->createApiUser([
             'first_name' => 'Mem',
             'last_name' => 'Ber',
@@ -151,7 +200,7 @@ class RolePermissionAuditLogTest extends TestCase
     public function test_regional_manager_cannot_view_other_country_member_audit(): void
     {
         // PartnerVisibility compares users.country only — no Country table rows required.
-        $manager = $this->regionalManager(99001);
+        $manager = $this->regionalAuditViewer(99001);
         $target = $this->createApiUser([
             'first_name' => 'Other',
             'last_name' => 'Country',
@@ -168,7 +217,7 @@ class RolePermissionAuditLogTest extends TestCase
 
     public function test_export_returns_successful_download(): void
     {
-        $user = $this->manager();
+        $user = $this->auditViewer();
         $response = $this->asAuditUser($user)
             ->get(route('partners.audit-logs.export'));
 
@@ -182,7 +231,7 @@ class RolePermissionAuditLogTest extends TestCase
 
     public function test_member_export_returns_successful_download(): void
     {
-        $manager = $this->manager();
+        $manager = $this->auditViewer();
         $target = $this->createApiUser([
             'first_name' => 'Mem',
             'last_name' => 'Ber',

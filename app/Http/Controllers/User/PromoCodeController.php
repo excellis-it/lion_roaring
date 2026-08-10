@@ -184,6 +184,16 @@ class PromoCodeController extends Controller
             ], 404);
         }
 
+        // Registration happens while logged out, so without this a disabled/expired/used-up code
+        // was reported as "applied successfully" here and then silently ignored at checkout —
+        // the member saw a discounted total and was charged the full price.
+        if (!$promoCode->isValid()) {
+            return response()->json([
+                'valid' => false,
+                'message' => 'This promo code is no longer valid',
+            ], 400);
+        }
+
         $user = auth()->user();
 
         // Only check user-specific restrictions if user is authenticated
