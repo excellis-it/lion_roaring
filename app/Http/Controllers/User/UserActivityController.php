@@ -4,6 +4,7 @@ namespace App\Http\Controllers\User;
 
 use App\Http\Controllers\Controller;
 use App\Models\UserActivity;
+use App\Services\UserActivityExportService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Crypt;
@@ -131,51 +132,84 @@ class UserActivityController extends Controller
         // Debug log to see what filters are received
         Log::info('User Activity Filters Received:', $request->all());
 
-        $query = UserActivity::query()
-            ->leftJoin('users', 'user_activities.user_id', '=', 'users.id')
-            ->leftJoin('countries', 'users.country', '=', 'countries.id');
+        $exportService = app(UserActivityExportService::class);
 
-        // Apply filters
-        if ($request->filled('user_name')) {
-            $query->where('user_activities.user_name', 'like', '%' . $request->user_name . '%');
-        }
-        if ($request->filled('email')) {
-            $query->where('user_activities.email', 'like', '%' . $request->email . '%');
-        }
-        if ($request->filled('user_roles')) {
-            $query->where('user_activities.user_roles', 'like', '%' . $request->user_roles . '%');
-        }
-        if ($request->filled('country_name')) {
-            $query->where('countries.name', $request->country_name);
-        }
-        if ($request->filled('activity_type')) {
-            $query->where('user_activities.activity_type', $request->activity_type);
-        }
-        if ($request->filled('date_from')) {
-            $query->whereDate('user_activities.activity_date', '>=', $request->date_from);
-        }
-        if ($request->filled('date_to')) {
-            $query->whereDate('user_activities.activity_date', '<=', $request->date_to);
-        }
-
-        $activities = $query
-            ->select('user_activities.*')
-            ->addSelect('countries.name as profile_country_name')
-            ->addSelect('countries.code as profile_country_code')
-            ->orderBy('user_activities.id', 'desc')
+        $activities = $exportService->filteredQuery($request->all())
             ->paginate($request->get('per_page', 10));
-        $activities->getCollection()->transform(function ($activity) {
-            $activity->country_name = $activity->profile_country_name;
-            $activity->country_code = $activity->profile_country_code;
-            unset($activity->profile_country_name, $activity->profile_country_code);
-
-            return $activity;
+        $activities->getCollection()->transform(function ($activity) use ($exportService) {
+            return $exportService->mapActivityCountry($activity);
         });
 
         // Debug log to see query results
         Log::info('Activities Query Result Count:', ['count' => $activities->total()]);
 
         return response()->json($activities);
+    }
+
+    /**
+     * Start a chunked CSV export of the filtered activity list.
+     */
+    public function exportStart(Request $request)
+    {
+        if (!Auth::user()->can('Manage User Activity')) {
+            abort(403, 'You do not have permission to access this page.');
+        }
+
+        return response()->json(
+            app(UserActivityExportService::class)->start(Auth::id(), $request->all())
+        );
+    }
+
+    /**
+     * Append the next chunk of rows to the export file.
+     */
+    public function exportChunk(Request $request)
+    {
+        if (!Auth::user()->can('Manage User Activity')) {
+            abort(403, 'You do not have permission to access this page.');
+        }
+
+        $request->validate([
+            'export_id' => 'required|string',
+        ]);
+
+        return response()->json(
+            app(UserActivityExportService::class)->processChunk(Auth::id(), $request->export_id)
+        );
+    }
+
+    /**
+     * Cancel an in-progress export and delete its temp file.
+     */
+    public function exportCancel(Request $request)
+    {
+        if (!Auth::user()->can('Manage User Activity')) {
+            abort(403, 'You do not have permission to access this page.');
+        }
+
+        $request->validate([
+            'export_id' => 'required|string',
+        ]);
+
+        return response()->json(
+            app(UserActivityExportService::class)->cancel(Auth::id(), $request->export_id)
+        );
+    }
+
+    /**
+     * Download a completed export.
+     */
+    public function exportDownload(string $exportId)
+    {
+        if (!Auth::user()->can('Manage User Activity')) {
+            abort(403, 'You do not have permission to access this page.');
+        }
+
+        $download = app(UserActivityExportService::class)->download(Auth::id(), $exportId);
+
+        return response()->download($download['path'], $download['filename'], [
+            'Content-Type' => 'text/csv; charset=UTF-8',
+        ]);
     }
 
     /**

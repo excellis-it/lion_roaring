@@ -798,6 +798,10 @@ Route::prefix('user')->middleware(['user', 'preventBackHistory', 'userActivity',
 
     // Separate list page (activities table)
     Route::get('/get-user-activity/list', [UserActivityController::class, 'listPage'])->name('user-activity-get-list');
+    Route::post('/get-user-activity/export/start', [UserActivityController::class, 'exportStart'])->name('user-activity-export-start');
+    Route::post('/get-user-activity/export/chunk', [UserActivityController::class, 'exportChunk'])->name('user-activity-export-chunk');
+    Route::post('/get-user-activity/export/cancel', [UserActivityController::class, 'exportCancel'])->name('user-activity-export-cancel');
+    Route::get('/get-user-activity/export/download/{exportId}', [UserActivityController::class, 'exportDownload'])->name('user-activity-export-download');
 
     // User Activity AJAX routes
 

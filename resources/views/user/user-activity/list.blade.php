@@ -110,12 +110,15 @@
                                                 <input type="date" name="date_to" class="form-control"
                                                     value="{{ request('date_to') }}">
                                             </div>
-                                            <div class="col-md-3 mb-2 d-flex align-items-end">
-                                                <button type="button" id="apply-filter" class="btn btn-primary me-2">
+                                            <div class="col-md-3 mb-2 d-flex align-items-end flex-wrap gap-2">
+                                                <button type="button" id="apply-filter" class="btn btn-primary">
                                                     <i class="ti ti-filter"></i> Filter
                                                 </button>
                                                 <button type="button" id="reset-filter" class="btn btn-secondary">
                                                     <i class="ti ti-refresh"></i> Reset
+                                                </button>
+                                                <button type="button" id="export-activities" class="btn btn-primary">
+                                                    <i class="ti ti-download"></i> Export
                                                 </button>
                                             </div>
                                         </div>
@@ -164,6 +167,32 @@
             </form>
         </div>
     </div>
+
+    <div class="modal fade" id="exportProgressModal" tabindex="-1" aria-hidden="true" data-bs-backdrop="static"
+        data-bs-keyboard="false">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Exporting activity list</h5>
+                </div>
+                <div class="modal-body">
+                    <p id="export-progress-status" class="mb-2">Preparing export...</p>
+                    <div class="d-flex align-items-center justify-content-between mb-2">
+                        <span class="text-muted small">Progress</span>
+                        <span id="export-progress-percent" class="fw-bold">0%</span>
+                    </div>
+                    <div class="progress" style="height: 22px;">
+                        <div id="export-progress-bar" class="progress-bar progress-bar-striped progress-bar-animated"
+                            role="progressbar" style="width: 0%" aria-valuenow="0" aria-valuemin="0"
+                            aria-valuemax="100">0%</div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" id="export-cancel-btn" class="btn btn-outline-secondary">Cancel</button>
+                </div>
+            </div>
+        </div>
+    </div>
 @endsection
 
 @push('scripts')
@@ -171,6 +200,144 @@
         $(document).ready(function() {
             let currentPage = 1;
             let currentFilters = {};
+            let exportInProgress = false;
+            let exportCancelled = false;
+            let currentExportId = null;
+            const csrfToken = $('meta[name="csrf-token"]').attr('content');
+            const exportStartUrl = '{{ route('user-activity-export-start') }}';
+            const exportChunkUrl = '{{ route('user-activity-export-chunk') }}';
+            const exportCancelUrl = '{{ route('user-activity-export-cancel') }}';
+            const exportDownloadUrlTemplate = '{{ route('user-activity-export-download', ['exportId' => 'EXPORT_ID']) }}';
+
+            function exportModal() {
+                return bootstrap.Modal.getOrCreateInstance(document.getElementById('exportProgressModal'));
+            }
+
+            function formatCount(value) {
+                return Number(value).toLocaleString();
+            }
+
+            function setExportProgress(percent, status) {
+                percent = Math.max(0, Math.min(100, parseInt(percent, 10) || 0));
+                $('#export-progress-bar')
+                    .css('width', percent + '%')
+                    .attr('aria-valuenow', percent)
+                    .text(percent + '%');
+                $('#export-progress-percent').text(percent + '%');
+                $('#export-progress-status').text(status);
+            }
+
+            function finishExport() {
+                exportInProgress = false;
+                currentExportId = null;
+                $('#export-activities').prop('disabled', false);
+                $('#export-cancel-btn').prop('disabled', false);
+                exportModal().hide();
+            }
+
+            function cancelCurrentExport() {
+                if (!exportInProgress) {
+                    exportModal().hide();
+                    return;
+                }
+
+                exportCancelled = true;
+                $('#export-cancel-btn').prop('disabled', true);
+                setExportProgress($('#export-progress-bar').attr('aria-valuenow') || 0, 'Cancelling...');
+
+                if (currentExportId) {
+                    $.post(exportCancelUrl, {
+                        _token: csrfToken,
+                        export_id: currentExportId
+                    }).always(function() {
+                        finishExport();
+                    });
+                    return;
+                }
+
+                finishExport();
+            }
+
+            function processExportChunk() {
+                if (exportCancelled) {
+                    finishExport();
+                    return;
+                }
+
+                $.post(exportChunkUrl, {
+                    _token: csrfToken,
+                    export_id: currentExportId
+                }).done(function(chunk) {
+                    if (exportCancelled || chunk.status === 'cancelled') {
+                        finishExport();
+                        return;
+                    }
+
+                    setExportProgress(
+                        chunk.percent,
+                        formatCount(chunk.processed) + ' of ' + formatCount(chunk.total) + ' records'
+                    );
+
+                    if (chunk.done) {
+                        setExportProgress(100, 'Download starting...');
+                        const downloadUrl = exportDownloadUrlTemplate.replace('EXPORT_ID', currentExportId);
+                        const iframe = $('<iframe>', { src: downloadUrl }).hide();
+                        $('body').append(iframe);
+                        setTimeout(function() {
+                            iframe.remove();
+                            finishExport();
+                        }, 800);
+                        return;
+                    }
+
+                    processExportChunk();
+                }).fail(function(xhr) {
+                    if (xhr.status === 409 || exportCancelled) {
+                        finishExport();
+                        return;
+                    }
+                    setExportProgress(0, 'Export failed. Please try again.');
+                    setTimeout(finishExport, 1500);
+                });
+            }
+
+            function startChunkedExport() {
+                exportCancelled = false;
+                exportInProgress = true;
+                currentExportId = null;
+                $('#export-activities').prop('disabled', true);
+                $('#export-cancel-btn').prop('disabled', false);
+                setExportProgress(0, 'Preparing export...');
+                exportModal().show();
+
+                const payload = Object.assign({ _token: csrfToken }, currentFilters);
+
+                $.post(exportStartUrl, payload).done(function(start) {
+                    if (exportCancelled) {
+                        if (start.export_id) {
+                            $.post(exportCancelUrl, {
+                                _token: csrfToken,
+                                export_id: start.export_id
+                            });
+                        }
+                        finishExport();
+                        return;
+                    }
+
+                    if (!start.total) {
+                        setExportProgress(100, 'No records to export.');
+                        setTimeout(finishExport, 1200);
+                        return;
+                    }
+
+                    currentExportId = start.export_id;
+                    setExportProgress(0, '0 of ' + formatCount(start.total) + ' records');
+                    processExportChunk();
+                }).fail(function() {
+                    setExportProgress(0, 'Could not start export.');
+                    setTimeout(finishExport, 1500);
+                });
+            }
 
             // Load activities on page load
             loadActivities(1);
@@ -314,6 +481,18 @@
 
                 currentFilters = {};
                 loadActivities(1);
+            });
+
+            $('#export-activities').on('click', function(e) {
+                e.preventDefault();
+                if (exportInProgress) {
+                    return;
+                }
+                startChunkedExport();
+            });
+
+            $('#export-cancel-btn').on('click', function() {
+                cancelCurrentExport();
             });
 
             // Prevent form submission on enter key
