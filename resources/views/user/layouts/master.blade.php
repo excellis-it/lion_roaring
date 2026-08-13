@@ -529,38 +529,37 @@
             // setInterval(getSidebarNotiCounts, 5000);
         });
 
+        function formatSidebarBadgeCount(count) {
+            if (typeof window.formatNotificationBadgeCount === 'function') {
+                return window.formatNotificationBadgeCount(count);
+            }
+            count = parseInt(count, 10) || 0;
+            if (count <= 0) {
+                return '0';
+            }
+            return count > 99 ? '99+' : String(count);
+        }
+
+        function setSidebarUnreadBadge(selector, count) {
+            count = parseInt(count, 10) || 0;
+            var $el = $(selector);
+            if (count > 0) {
+                $el.text(formatSidebarBadgeCount(count)).show();
+            } else {
+                $el.hide().text('');
+            }
+        }
+
         function getSidebarNotiCounts() {
             $.ajax({
                 url: "{{ route('unread.messages.count') }}",
                 method: "GET",
                 success: function(response) {
-                    console.log('Notification count fetched successfully:', response);
                     if (response.status) {
-                        if (response.data.total > 0) {
-                            $('.count_chat_sidebar_count_all').show();
-                            $('.count_chat_sidebar_count_all').text(response.data.total);
-                        } else {
-                            $('.count_chat_sidebar_count_all').hide();
-                        }
-                        if (response.data.chat > 0) {
-                            $('.count_chat_sidebar_count_chat').show();
-                            $('.count_chat_sidebar_count_chat').text(response.data.chat);
-                        } else {
-                            $('.count_chat_sidebar_count_chat').hide();
-                        }
-                        if (response.data.team_chat > 0) {
-                            $('.count_chat_sidebar_count_team').show();
-                            $('.count_chat_sidebar_count_team').text(response.data.team_chat);
-                        } else {
-                            $('.count_chat_sidebar_count_team').hide();
-                        }
-                        if (response.data.mail > 0) {
-                            $('.count_chat_sidebar_count_mail').show();
-                            $('.count_chat_sidebar_count_mail').text(response.data.mail);
-                        } else {
-                            $('.count_chat_sidebar_count_mail').hide();
-                        }
-
+                        setSidebarUnreadBadge('.count_chat_sidebar_count_all', response.data.total);
+                        setSidebarUnreadBadge('.count_chat_sidebar_count_chat', response.data.chat);
+                        setSidebarUnreadBadge('.count_chat_sidebar_count_team', response.data.team_chat);
+                        setSidebarUnreadBadge('.count_chat_sidebar_count_mail', response.data.mail);
                     } else {
                         console.error('Failed to fetch notification count');
                     }

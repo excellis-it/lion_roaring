@@ -3938,3 +3938,36 @@ span[id^="show-notification-count-"].header-notif-badge[data-count="0"] {
 .form-control::placeholder {
     text-overflow: ellipsis;
 }
+
+/*
+ * Sidebar unread badges (Messaging / Chats / Team / Mail).
+ * Counts over 99 are shown as 99+ in JS. Keep that label inside the circle:
+ * parent .sidebar-link uses word-break, which otherwise wraps 106 as 10/6.
+ */
+.count_chat_sidebar {
+    position: absolute;
+    right: 6px;
+    top: 6px;
+    background: #ff0202;
+    color: #fff;
+    border-radius: 50%;
+    font-size: 9px;
+    font-weight: 700;
+    line-height: 1;
+    letter-spacing: -0.3px;
+    width: 22px;
+    height: 22px;
+    min-width: 22px;
+    padding: 0;
+    text-align: center;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-sizing: border-box;
+    overflow: hidden;
+    z-index: 2;
+    white-space: nowrap !important;
+    word-break: normal !important;
+    overflow-wrap: normal !important;
+    hyphens: none !important;
+}
