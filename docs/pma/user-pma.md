@@ -7,86 +7,125 @@ sidebar_key: user_pma
 
 # User PMA
 
-## Overview
+## What this is
 
-Authenticated user panel under `/user/*`. Includes Messaging → Chatbot sidebar areas, membership, Restore (Super Admin), Admin Portal CMS, and this Documentation UI.
+The **User PMA** is the signed-in control panel at `/user/…`. Members use it for everyday work (messaging, education, bulletins). Staff and Super Admins also use it to manage people, membership, website content, and support.
 
-**Layout:** `resources/views/user/layouts/master.blade.php`  
-**Middleware (typical):** `user`, `preventBackHistory`, `userActivity`, `member.access`, `agreement.signed`  
-**Plus global:** `EnsureCanonicalCountryUrl`, `EnsureUserInstanceAccess`, active-user checks
+This hub explains panel-wide rules that apply **before** any single menu. Open the topic cards below this page for each sidebar module.
 
-Open **Detailed topics** on the index for each sidebar menu. Shared instance rules: **Global & Regional Domains**.
+For shared domain behavior (which website host you must use), see **Global & Regional Domains**.
 
-## Features
+---
 
-### Panel-wide gates
+## Who can enter the panel
 
-| Middleware | Rule |
-|------------|------|
-| `user` | Logged in and `status == 1` |
-| `member.access` | Non-expired subscription unless Super Admin or `membership_excluded` |
-| `agreement.signed` | Signature + register agreement row unless Super Admin |
-| `super_admin` | Restore + Documentation only |
+Almost every PMA page requires all of the following:
 
-### Language / names
+1. **Logged in** with an **active** account.
+2. **Membership access** — a non-expired subscription, **or** the account is marked **excluded from membership**, **or** the user is **Super Admin**.
+3. **Register agreement signed** — unless the user is **Super Admin**.
+4. **Correct website** for their User Type (Global vs Regional vs G_R). Wrong host can log them out.
 
-- User layout boots the same LrTranslate engine as the public site (`frontend.includes.google_translate`). Language switcher may live on the public header; intent still follows `content_lang` / `lr_content_lang` across surfaces.
-- A temporary header badge shows a blinking **Translating…** indicator while a pass runs (slot: `[data-lr-translate-badge]`).
-- Person names and usernames shown in the panel are excluded from translation via `no_translate()` and `protect-names-from-translate.js` (see Website Frontend).
-- Translation failure popup + client logging use the same diagnostics; surface tag in logs is `user_pma`. No per-user character quota stops translation.
+If someone can log in on the public site but cannot use the PMA, check membership expiry, exclusion flag, agreement signature, and whether they opened the Global site vs their country site.
 
-### Major menu groups
+---
 
-1. **Messaging** — Chats, Team, Mail (`Manage Chat|Team|Email`)
-2. **Education** — Topics, becoming tracks, Files (SA can see parent without gates)
-3. **Bulletins** — Board, jobs, meetings, events, private collaboration
-4. **E-Store / Warehouse / E-Learning admin** — see E-Store and E-Learning hubs
-5. **Roles, Membership, Partners, Activity, Signup Rules**
-6. **Strategy / Policy** — country-scoped document libraries
-7. **Membership self-service** — if `membershipPanelApplicable()`
-8. **Restore** — Super Admin recycle bin
-9. **Admin Portal** — Donations, Newsletters, Testimonials, Orgs, Pages CMS, Countries, Settings, Super Admin list, Chatbot
-10. **Support Reports** — All users: submit/view own reports. `Manage Support Reports` permission **or Super Admin**: view all reports, update status, add admin notes. Email notifications sent on submit and status update.
-11. **Change Logs** — All users: read published release notes. `Manage Change Logs` permission **or Super Admin**: create, edit, delete entries.
+## How the sidebar works
 
-### Documentation UI
+- Menus appear only when the person has the matching **permission** (for example Manage Chat), or in a few cases a **role** check (Super Admin).
+- **Support Reports** and **Change Logs** appear for everyone in the panel; managing other people’s items needs extra permission or Super Admin.
+- **Membership** (self-service) appears for people who are **not** Super Admin and **not** membership-excluded.
+- **Restore** and **Documentation** appear only for **Super Admin**.
+- **E-Store**, **Warehouse Store**, and **E-Learning** admin menus are documented under the E-Store and E-Learning hubs.
 
-- Last sidebar item; Super Admin only.
-- Uses the same PMA page shell as other panel pages: `container-fluid` > `bg_white_border`, with left/right inner padding (`25px 40px`) so content is not flush to the card edges.
-- Index shows hubs as a Bootstrap `card` grid (3 columns on wide screens). Detail pages put markdown in a `card`; topic links are cards too.
-- Index title is `h3` with a full-width intro (`div.pma-docs-lead`, `line-height: 1.75`) so wrapped lines stay readable.
-- Markdown under `docs/pma/`; agents must update docs when features change.
-- Index hubs include product surfaces (1–5) plus **Chatbot Guides**, **Improvement Performance Report**, **Automation Implementations**, and **E-Store & E-Learning Enhancement** (6–9).
+---
 
-## Permissions and conditions
+## Menu map (what each area is for)
 
-### Global users in PMA
+| Area | Plain-language purpose |
+|------|------------------------|
+| **Messaging** | Chats, Team spaces, Mail |
+| **Education** | Topics, becoming tracks, files |
+| **Bulletins** | Board, jobs, meetings, events, private collaboration |
+| **Role Permission** | Role templates and what each role can do |
+| **Membership Management** | Plans, subscriber list, payments, promos, settings |
+| **All Members** | Directory of partners/members; edit; export; audit |
+| **Create Member** | Add a new person (from All Members → Add Members) |
+| **User Activity** | Who did what in the panel |
+| **Signup Rules** | Rules for **public** registration only |
+| **Strategy / Policy & Guidance** | Country-scoped document libraries |
+| **Membership** (self-service) | Buy, renew, or manage **your own** plan |
+| **Restore** | Recycle bin (Super Admin) |
+| **Donations / Newsletters / Testimonials / Governance / Orgs / Services / Pages** | Website content and public-site data |
+| **Countries** | Country records, domains, languages |
+| **Site Settings** | Logos, contact keys, sidebar menu labels |
+| **Super Admin** | List of Super Admin accounts |
+| **Chatbot Assistant** | Chatbot admin tools |
+| **Support Reports** | Help tickets |
+| **Change Logs** | Release notes for web and mobile |
+| **Documentation** | This documentation UI (Super Admin) |
 
-- May use Global domain only (not regional hosts).
-- CMS editors get `content_country_code` picker (default US).
-- Education/strategy on global server scope to **GL** `country_id`.
-- Partners list: Global + G_R visibility patterns.
+---
 
-### Regional users in PMA
+## User Types — why people get confused
 
-- Only assigned country instance; wrong host → logout.
-- CMS locked to own country code.
-- Education/files scoped to own country; ecclesia admins may further filter.
+| User Type | Simple meaning |
+|-----------|----------------|
+| **Global** | Uses the Global site; not a single regional country host |
+| **Regional** | Belongs to one country instance |
+| **G_R** | May use Global **or** their assigned regional country — not other regionals |
+| **Super Admin** | Full operator role; bypasses membership, agreement, and many list filters |
+
+Creating the wrong User Type for a new member is a top support issue. See **Create Member** and **Global & Regional Domains**.
+
+---
+
+## Global vs Regional staff — what they see
+
+### Global users
+
+- Must use the Global domain.
+- Partner lists: typically Global and G_R people.
+- Website CMS editors often get a **Content Country** picker (default US).
+- Education / strategy-style libraries on the global server often use the **GL** country scope.
+
+### Regional users
+
+- Must use their country host; wrong host → logout.
+- CMS locked to their country.
+- Partner lists: same-country Regional and G_R.
+- Education/files scoped to their country; ecclesia admins may see a narrower house list.
 
 ### G_R users
 
-- Allowed on Global **or** assigned regional (not other regionals).
-- On global server: often treated like Global for education GL scope.
-- On regional: own-country scope.
+- Allowed on Global or their assigned regional.
+- On Global, often treated like Global for library scope.
+- On regional, own-country scope.
 
 ### Super Admin
 
-- Bypasses membership, agreement, and instance middleware.
-- Unscoped lists in many controllers; can pick `country_id` / content country.
-- Only role that sees Restore + Documentation.
+- Bypasses membership, agreement, and instance locks.
+- Usually sees unscoped lists and can pick countries.
+- Only role with **Restore** and **Documentation**.
 
-### Spatie vs user_type
+---
 
-- Sidebar uses Spatie `Gate::check('Manage …')`.
-- Instance access uses string `users.user_type` + Super Admin `hasNewRole`.
-- Role Permission UI manages `user_types` / `user_type_permissions` with type hierarchy (SA type 1 manages 2&3).
+## Language and names
+
+- The panel can use the same translation tools as the public site.
+- **Person names and usernames should stay untranslated** — the product protects them on purpose.
+- A short **Translating…** badge may appear while a page is converting language.
+
+---
+
+## Documentation UI (this area)
+
+- Last item in the sidebar for Super Admins.
+- Index shows product hubs; each hub can list deeper topics.
+- When product behavior changes, these pages should be updated so staff are not trained on old rules.
+
+---
+
+## Related topics
+
+Start with **Create Member** if you are onboarding people, **All Members** for the directory, **Membership Management** for plans, and **Global & Regional Domains** for host/login rules.

@@ -1,38 +1,63 @@
 ---
 title: Education
-updated: 2026-07-24
+updated: 2026-08-13
 status: ready
 sidebar_key: education
 ---
 
 # Education
 
-## Overview
+## What this is
 
-Education tracks and file library in the PMA panel: Topics, Becoming Sovereign, Becoming Christ Like, Becoming a Leader, and Files.
+**Education** is the PMA library for learning content managed by staff:
 
-**Controllers:** `TopicController`, `BecomingSovereignController`, `BecomingChristLikeController`, `LeadershipDevelopmentController`, `FileController`  
-**Routes:** `topics.*`, `becoming-sovereign.*`, `becoming-christ-link.*`, `leadership-development.*`, `file.*`
+- **Topics**
+- **Becoming Sovereign**
+- **Becoming Christ Like**
+- **Becoming a Leader**
+- **Files**
 
-## Features
+This is separate from the public **E-Learning** product (courses/catalog), which has its own hub.
 
-### Topics
+---
 
-- CRUD for education topics; scoped by Global vs regional country rules.
+## Who sees the menu
 
-### Becoming tracks
+The parent can appear if you have any education-related permission (**Manage Topic**, becoming-track manages, **Manage File**, etc.), **or** if you are **Super Admin** (parent may show even when child gates differ).
 
-- Becoming Sovereign / Christ Like / Leader: upload, edit, delete content filtered by `education_type`.
-- Seed includes Upload/Edit/Delete variants (note historical typo permission `Manage Becomeing Sovereigns` may exist in DB).
+Each child link still checks its own permission (and create/edit/delete/upload variants where used).
+
+---
+
+## Country scoping (most important rule)
+
+Education items are stored with a **country** scope. What you see depends on who you are and which site you are on:
+
+| Who / where | Typical scope |
+|-------------|----------------|
+| **Super Admin** | Unscoped — can work across countries; can set country on upload |
+| **Global** (or G_R on Global site) | **GL** (global library scope) |
+| **Regional** (or G_R on regional site) | **Own country** |
+| **Ecclesia admins** | May be further limited to their houses |
+
+If two staff “don’t see the same files,” compare User Type, host (Global vs regional), and ecclesia access — not only permissions.
+
+---
+
+## Sub-areas
+
+### Topics / Becoming tracks
+
+Manage educational entries for each track. Create, edit, delete need the matching permissions for that track.
 
 ### Files
 
-- Upload/view/download education files; duplicate name checks per country scope.
-- Delete often requires owner **or** Super Admin.
+Shared file library with upload/download/delete rules. Deletes are often limited to the **owner** or **Super Admin**.
 
-## Permissions and conditions
+---
 
-- Parent sidebar: education permissions **or** Super Admin (`hasNewRole('SUPER ADMIN')`).
-- Gates include `Manage Topic` (+ Create/Edit/Delete), becoming-track manage/upload/edit/delete, `Manage File` (+ Upload/Edit/Delete/View).
-- Super Admin: unscoped lists; may set `country_id` on upload.
-- Non-SA: Global/`G_R` on global server vs own country Regional/`G_R`; ecclesia admins may further filter by managed ecclesia.
+## Related documentation
+
+- **Strategy** / **Policy & Guidance** — same country-scoping idea for documents  
+- **E-Learning** hub — paid/public learning catalog (different product)  
+- **Global & Regional Domains** — why GL vs country matters

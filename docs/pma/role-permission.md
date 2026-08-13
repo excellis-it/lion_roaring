@@ -1,42 +1,67 @@
 ---
 title: Role Permission
-updated: 2026-08-10
+updated: 2026-08-13
 status: ready
 sidebar_key: role_permission
 ---
 
 # Role Permission
 
-## Overview
+## What this is
 
-Manage panel roles (`user_types`) and their permission maps (`user_type_permissions`), separate from Spatie's seeded permission names used in `Gate::check`.
+**Role Permission** manages **role templates** (user types / templates) and which **permissions** each template includes. When you assign a role to a member, you are choosing one of these templates (and sometimes overriding permissions on the person).
 
-**Controller:** `User\RolePermissionsController`  
-**Routes:** `roles` resource, `roles.delete`, `roles.affected-users`
+This is the place to answer: “Why does this role see Membership Management but not All Members?”
 
-## Features
+---
 
-### Role CRUD
+## Who can use it
 
-- Create/edit roles and attach permissions.
-- Sidebar gate label: `Manage Role Permission` (may be legacy/DB-only; controller primarily uses **user_type.type** hierarchy).
-- **Audit logging** — Successful template create, update, and delete write rows to `role_permission_audit_logs` via `RolePermissionAuditLogger` (`source: pma`):
-  - Create → `role_template_created` (new permission set; `meta.affected_users` = 0).
-  - Update → `role_template_updated` (name, permissions, `is_admin` / `is_ecclesia` diffs; `meta.affected_users` = users on that template).
-  - Delete → `role_template_deleted` (final permission set before removal; `meta.affected_users` = 0).
-- These entries appear in the Members List **Audit Logs** UI (global and per-member views where applicable). Audit Logs UI access requires `View Member Audit Logs` (or Super Admin). See **All Members** for gate, visibility, and export.
+- Sidebar needs **Manage Role Permission**.
+- What you are allowed to edit also depends on hierarchy (below).
 
-### Affected users
+---
 
-- Preview users impacted by role changes before destructive actions.
+## Hierarchy (who may manage which templates)
 
-## Permissions and conditions
+| Your template type | You can manage |
+|--------------------|----------------|
+| Type **1** (Super Admin class) | Types **2** and **3** |
+| Types **2** or **3** | Type **2** only |
 
-| Auth user type | Can manage |
-|----------------|------------|
-| type `1` (Super Admin) | UserTypes type 2 and 3 |
-| type `2` or `3` | type `2` only |
+You cannot delete the **SUPER ADMIN** template, and you cannot delete a role that still has users assigned.
 
-- Cannot delete a role named `SUPER ADMIN`.
-- Cannot delete a role that still has assigned users.
-- Setting `is_admin = 1` bulk-sets those users' `user_type` to `G_R`.
+---
+
+## Flags that change member behavior
+
+| Flag on a role | Effect people notice |
+|----------------|----------------------|
+| **Admin** (`is_admin`) | Users with this role are forced to User Type **G_R** |
+| **Ecclesia** (`is_ecclesia`) | Create/Edit Member requires **House Of ECCLESIA** selection |
+
+Changing template permissions can affect many people who inherit that template. The UI may preview affected users. Changes are written to **All Members → Audit Logs** when audit logging is enabled.
+
+---
+
+## How this connects to Create Member
+
+- Create Member lists roles from these templates (partner/staff types).
+- MEMBER_SOVEREIGN with a membership plan often gets permissions from the **plan**, not only from free-checkbox picking.
+- Granting **View Member Audit Logs** here (or on a person) is required for non–Super Admins to see audit timelines.
+
+---
+
+## Common confusion
+
+1. **Editing Role Permission vs editing one member** — template change can ripple; member edit is one person.  
+2. **Permission name vs menu label** — menus use Site Settings → Menu Names for display text; gates still use permission names like Manage Partners.  
+3. **Create Membership vs Create Partners** — both appear in permission lists; they unlock different screens.
+
+---
+
+## Related documentation
+
+- **Create Member** / **All Members** — assigning roles to people  
+- **Membership Management** — plan permission lists  
+- **Site Settings** — menu display names

@@ -1111,6 +1111,128 @@ p {
     display: flex;
 }
 
+/* BUG-0015: PDF document viewers — fill remaining viewport; only the document pane scrolls */
+html:has(#pdf-viewer-wrapper),
+body:has(#pdf-viewer-wrapper) {
+    overflow: hidden;
+    height: 100%;
+}
+
+body:has(#pdf-viewer-wrapper) .body-wrapper {
+    min-height: 0;
+}
+
+.file-loader-overlay {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 420px;
+    padding: 40px 20px;
+    background: #f8f8f8;
+    border-radius: 4px;
+}
+
+.file-loader-overlay .spinner-border {
+    width: 3rem;
+    height: 3rem;
+    color: #7851a9;
+}
+
+.pdf-progress-wrap {
+    width: 340px;
+    max-width: 90%;
+    margin-top: 18px;
+}
+
+.pdf-progress-meta {
+    display: flex;
+    justify-content: space-between;
+    font-size: 13px;
+    color: #555;
+    margin-bottom: 6px;
+}
+
+.pdf-progress-track {
+    background: #ddd;
+    border-radius: 6px;
+    height: 9px;
+    overflow: hidden;
+}
+
+.pdf-progress-bar {
+    background: #7851a9;
+    height: 100%;
+    width: 0%;
+    border-radius: 6px;
+    transition: width 0.25s ease;
+}
+
+.pdf-viewer-wrapper {
+    background: #525659;
+    border-radius: 4px;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+
+.pdf-toolbar {
+    background: #323639;
+    padding: 8px 16px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    color: #fff;
+    font-size: 14px;
+    flex-wrap: wrap;
+}
+
+.pdf-toolbar button {
+    background: #4a4d50;
+    color: #fff;
+    border: none;
+    border-radius: 3px;
+    padding: 5px 12px;
+    cursor: pointer;
+    font-size: 14px;
+}
+
+.pdf-toolbar button:hover:not(:disabled) {
+    background: #6a6d70;
+}
+
+.pdf-toolbar button:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+}
+
+.pdf-toolbar .tb-spacer {
+    flex: 1;
+}
+
+#pdf-zoom-label {
+    min-width: 42px;
+    text-align: center;
+}
+
+.pdf-pages-container {
+    flex: 1 1 auto;
+    min-height: 0;
+    overflow-y: auto;
+    max-height: none;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+}
+
+.pdf-page-canvas {
+    display: block;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.6);
+    max-width: 100%;
+}
+
 /* BUG-030: contain chat pages to the viewport so only the inner panels scroll.
    Drop the template min-heights that force the page taller than the viewport,
    then hide the residual window scroll — layout flow is left untouched. */

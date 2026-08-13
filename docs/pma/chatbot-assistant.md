@@ -1,47 +1,63 @@
 ---
 title: Chatbot Assistant
-updated: 2026-08-03
+updated: 2026-08-13
 status: ready
 sidebar_key: chatbot
 ---
 
 # Chatbot Assistant
 
-## Overview
+## What this is
 
-PMA tools for the site chatbot. Behavior depends on `CHATBOT` env (`AI` vs `NORMAL`).
+**Chatbot Assistant** is the PMA area for operating the site chatbot. What you see depends on whether the site runs in **AI** mode or **NORMAL** mode (configured by operations with the `CHATBOT` setting).
 
-For the full Multi-Tenant RAG Chatbot suite (user/admin/AI/developer guides), open **Chatbot Guides**.
+For the full RAG chatbot manuals (user, admin, AI, developer), open the **Chatbot Guides** hub.
 
-**Controller:** `User\Admin\ChatbotController`  
-**Routes:** `user.admin.chatbot.*`  
-**Public:** `/chatbot/*` widget/API routes
+---
 
-## Features
+## Who can use it
 
-### Dashboard / Keywords / History
+| Area | Permission |
+|------|------------|
+| Parent / Dashboard | **Manage Chatbot** |
+| Keywords | **Manage Chatbot Keywords** |
+| History | **View Chatbot History** |
 
-- If `CHATBOT=AI`: sidebar Dashboard links to external `https://chatbot.lionroaring.us/`; in-app keyword/history may be hidden.
-- Else: Dashboard, Keywords CRUD/bulk, Conversation history inside PMA.
-- Seed also includes `View Chatbot Analytics`.
+---
 
-### Conversation language
+## AI mode vs NORMAL mode
 
-- `chatbot_conversations.language` is `VARCHAR(20)` (not 10) so values like `__original__` from the language switcher can be stored on init without truncation errors.
-- `__original__` is stored as-is (UI sentinel for “Original”); chatbot machine-translation skips that value and leaves content unchanged.
-- `POST /chatbot/language` uses `firstOrCreate` on `session_id` so the RAG widget can change language even if `/init` has not finished (avoids a 404 when the conversation row is missing).
-- `GET /chatbot/languages` uses `Helper::getVisitorCountryLanguages()` — on Global (`GL`) this is the languages assigned to the Global country in Country Management (plus `Original`), not the full TranslateLanguage catalog.
+| Mode | What staff see in PMA |
+|------|------------------------|
+| **AI** | Dashboard often opens the **external** chatbot admin (`chatbot.lionroaring.us`). In-app Keywords / History may be **hidden**. |
+| **NORMAL** | Dashboard, Keywords, and History stay **inside** the PMA. |
 
-### Mobile app sidebar (Chatbot)
+If Keywords disappeared after a configuration change, check whether the site was switched to AI mode — that is expected, not a missing permission by itself.
 
-- Label: **Chatbot** (chat icon). Driven by `CHATBOT` + `MOBILE_CHATBOT_URL` (config `lion_roaring.*`).
-- Exposed on `/api/v3/cms/site-settings` as `chatbot_mode` and `mobile_chatbot_url` (no DB migration).
-- `CHATBOT=AI` and non-empty URL → Flutter opens that URL in a JS WebView (AppBar + back).
-- `CHATBOT=NORMAL` (or empty URL) → existing in-app chat assistant screen.
+---
 
-## Permissions and conditions
+## Languages
 
-- Gates: `Manage Chatbot`, `Manage Chatbot Keywords`, `View Chatbot History`.
-- RAG env vars when AI mode: `RAG_WIDGET_URL`, `RAG_API_BASE`, `RAG_BOT_ID`, `RAG_AUTH_TOKEN`.
-- Mobile WebView URL: `MOBILE_CHATBOT_URL`.
-- Frontend/ecom/elearning layouts include chatbot partials with AI widget fallback timeout behavior.
+Chatbot language options follow the **visitor country / Global country language assignments** in **Countries** (including Original). On Global, this is **not** “every language in the database” — only languages linked to the Global country (plus Original).
+
+Conversation language can be stored as Original (`__original__`), meaning “do not machine-translate.”
+
+---
+
+## Mobile app
+
+The app shows a Chatbot entry driven by the same mode:
+
+- **AI** + configured mobile URL → opens that URL in an in-app browser view  
+- **NORMAL** (or empty URL) → built-in assistant screen  
+
+Members do not use this PMA admin menu for that; they use the app/website widget.
+
+---
+
+## Related documentation
+
+- **Chatbot Guides** — full suite  
+- **Countries** — which languages appear  
+- **Website Frontend** — public widget behavior  
+- **Site Settings** — related configuration keys may live with ops/env

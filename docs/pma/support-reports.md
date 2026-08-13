@@ -1,50 +1,65 @@
 ---
 title: Support Reports
-updated: 2026-07-28
+updated: 2026-08-13
 status: ready
 sidebar_key: support_reports
 ---
 
 # Support Reports
 
-## Overview
+## What this is
 
-Allows all authenticated PMA users to submit support reports and track their status. Users with the `Manage Support Reports` permission, **or Super Admin**, can view all reports, update status, and add admin notes from the main Support Reports pages.
+**Support Reports** is the in-panel help desk: any signed-in PMA user can submit a report and track its status. Staff with management access (or Super Admin) can see everyone’s reports, update status, and leave admin notes.
 
-## User Features (All Users)
+---
 
-- **My Reports** `/user/support-reports` — paginated list of own submitted reports with status badges (card UI).
-- **Submit Report** `/user/support-reports/create` — form with Subject, Message, and optional attachment (jpg/png/gif/pdf/doc/docx, max 5MB).
-- **View Report** `/user/support-reports/{id}` — detail including admin notes and attachment download. Authorization: own reports, or any report if manager/Super Admin.
+## Who sees the menu
 
-## Mobile App
+**Everyone** who can use the PMA sees Support Reports. No special permission is required to submit your own reports.
 
-- Member APIs: `GET/POST /api/v3/user/support-reports`, `GET /api/v3/user/support-reports/{id}` (own reports only; optional attachment on create).
-- Flutter drawer: top-level **Support Reports** (no manage UI).
-- If the API route is missing (HTTP 404), the app shows **Coming soon** until the endpoint is deployed.
+---
 
-## Management Features
+## For every member
 
-Gated by `Manage Support Reports` permission, **or Super Admin** (always has full access).
+| Action | What it does |
+|--------|----------------|
+| **My Reports** | List of reports you submitted, with status badges |
+| **Submit Report** | Subject, message, optional attachment (images/PDF/Word; size limited) |
+| **View Report** | Your report detail, admin notes, attachment download |
 
-- On `/user/support-reports`, managers see tabs: **All Reports** (default) and **My Reports**, plus status filter.
-- **Manage** (managers) / **View** (members) opens `/user/support-reports/{id}` with full report details. Managers also get a **Manage Report** side panel (status + admin notes). Saving emails the submitter.
-- Legacy URLs `/user/support-reports/manage` and `/user/support-reports/manage/{id}` redirect into the main list/detail pages. Status updates still POST to `support-reports.manage.update`.
+You only see **your own** reports unless you are a manager or Super Admin.
 
-## Status Flow
+---
 
-`open` → `in_progress` → `resolved` → `closed`
+## For managers (Manage Support Reports or Super Admin)
 
-Reports cannot be deleted — only moved to `closed` status.
+- Tabs such as **All Reports** and **My Reports**, plus status filters.
+- Open any report and use the manage panel to change status and add notes.
+- Saving a status/note **emails the submitter**.
+- New submissions **email** users who have Manage Support Reports **and** Super Admins.
 
-## Email Notifications
+Super Admin always has full manage access even without the Spatie permission.
 
-- **On new submission:** email sent to all users with `Manage Support Reports` permission **and** Super Admins.
-- **On status update:** email sent to the original submitter.
+---
 
-## Permissions
+## Status flow
 
-| Permission | Description |
-|---|---|
-| `Manage Support Reports` | Access all reports, update status, add notes |
-| Super Admin | Full access without requiring the permission |
+Reports move through:
+
+**open → in_progress → resolved → closed**
+
+There is **no delete**. Closing is how you finish a ticket.
+
+---
+
+## Mobile app
+
+Members can submit and view their own reports in the app. Management UI stays on the web PMA. If the API is not deployed yet, the app may show Coming soon.
+
+---
+
+## Related documentation
+
+- **User Activity** — automatic activity tracking (different from tickets)  
+- **Change Logs** — product release notes (not support tickets)  
+- **User PMA** — who can enter the panel

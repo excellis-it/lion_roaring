@@ -7,28 +7,44 @@ sidebar_key: user_activity
 
 # User Activity
 
-## Overview
+## What this is
 
-Activity dashboard and detailed activity list for visits/logins and related aggregates.
+**User Activity** shows engagement and actions people take while using the PMA (dashboard summaries and a detailed activity list). Staff use it to understand usage, investigate issues, or export activity for review.
 
-**Controller:** `User\UserActivityController`  
-**Routes:** `user-activity` resource, `user-activity-get-list`, chunked export (`user-activity-export-start` / `chunk` / `cancel` / `download`), AJAX by country/user/type, active members/countries
+---
 
-## Features
+## Who can use it
+
+- Sidebar: **Manage User Activity**
+- Related View / Create / Edit / Delete activity permissions may exist on roles for finer control
+- **Export** requires Manage User Activity
+
+---
+
+## What you will find
 
 ### Activity Dashboard
 
-- Charts/stats for engagement over date ranges.
+High-level view of activity. Super Admin dashboards are typically **global** (not forced to one country filter).
 
 ### Activity List
 
-- Tabular activity feed with filters (Name, Email, Country, Activity Type, Date From/To).
-- **Export** opens a progress modal and builds a CSV of the currently filtered list in chunks (5,000 rows per request, no overall row cap). Excel is not used because a worksheet cannot hold millions of rows.
-- The modal shows processed/total records and a **Cancel** button. Cancel stops the export and deletes the temp file. When complete, the CSV downloads automatically.
-- Export requires `Manage User Activity`.
+Searchable/filterable list of activity rows, with export.
 
-## Permissions and conditions
+Export is designed for large sets (chunked downloads) and can be cancelled if a run is too large.
 
-- Gates: `Manage User Activity` (+ View/Create/Edit/Delete in seed).
-- Super Admin: global stats (no extra country filter in dashboard).
-- Driven by `userActivity` middleware collecting activity on panel requests.
+---
+
+## Where the data comes from
+
+Panel requests are tracked by activity middleware while people use `/user/…`. If someone never opens the PMA, they will not generate PMA activity here.
+
+This is different from **Support Reports** (tickets people submit) and **All Members → Audit Logs** (role/permission/member field changes).
+
+---
+
+## Related documentation
+
+- **All Members** — audit logs for member/permission changes  
+- **Support Reports** — human-submitted tickets  
+- **User PMA** — panel entry rules

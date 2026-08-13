@@ -1,46 +1,47 @@
 ---
 title: Bulletins
-updated: 2026-07-30
+updated: 2026-08-13
 status: ready
 sidebar_key: bulletins
 ---
 
 # Bulletins
 
-## Overview
+## What this is
 
-Community publishing tools: Bulletin Board (read), Create Bulletins, Job Posting, Meeting Schedule, Live Events, Private Collaboration.
+**Bulletins** covers community and operations posting inside the PMA:
 
-**Controllers:** `BulletinBoardController`, `BulletinController`, `JobpostingController`, `MeetingSchedulingController`, `LiveEventController`, `PrivateCollaborationController`
+| Sub-menu | Purpose |
+|----------|---------|
+| **Bulletins Board** | Browse / read bulletin posts |
+| **Create Bulletins** | Create and manage bulletin posts |
+| **Job Posting** | Jobs |
+| **Meeting Schedule** | Meetings |
+| **Live Events** | Events |
+| **Private Collaboration** | Invite-only collaboration spaces |
 
-## Features
+---
 
-### Bulletin Board / Create Bulletins
+## Who sees the menu
 
-- Board lists posts for members; Create Bulletins manages posts with country / user-type scoping.
-- **Any selected language (not Original):** post titles/descriptions are translated client-side by LrTranslate with the rest of the page (no server-side UGC pre-translate — that broke “Original” by snapshotting already-translated text). Titles/descriptions are not marked `notranslate`.
-- **Original:** no machine translation; posts stay in the author’s language.
-- Author display names are never translated (`no_translate` / `notranslate`), consistent with site-wide person-name protection.
-- AJAX reloads of the board call `LrTranslate.refresh` so newly injected HTML is translated.
+Parent appears if you have any of: **Manage Bulletin**, **Manage Job Postings**, **Manage Meeting Schedule**, **Manage Event**, **Manage Private Collaboration**.
 
-### Job Posting / Meeting Schedule / Live Events
+Each child uses its own gate.
 
-- CRUD with View/Create/Edit/Delete permission variants.
-- Edit/delete often **creator + permission OR Super Admin**.
-- Events: RSVP (`confirmed` / `pending`), notifications; Meetings/PC may use Zoom signature endpoints.
+---
 
-### Private Collaboration
+## Rules that confuse people
 
-- Invitation/accept flow; eligible users loaded by country (Super Admin can pick country).
+1. **Board vs Create** — Board is for reading/browsing; Create is for managing posts. Having one permission does not always imply the other.
+2. **Edit / delete** — Often allowed for the **creator** (with permission) **or Super Admin**, not every staff user who can see the list.
+3. **Private Collaboration invites** — Country-scoped; Super Admins may pick country more freely.
+4. **Language** — Titles/descriptions may show in Original or a translated language depending on the viewer’s language tools.
+5. **Soft delete / Restore** — Removed items may be recoverable by Super Admin under **Restore**, depending on how the record was deleted.
 
-## Permissions and conditions
+---
 
-| Gate family | Menu |
-|-------------|------|
-| `Manage Bulletin` (+ Create/Edit/Delete) | Bulletins |
-| `Manage Job Postings` (+ View/Create/Edit/Delete) | Jobs |
-| `Manage Meeting Schedule` (+ View/Create/Edit/Delete) | Meetings |
-| `Manage Event` (+ Create/Edit) | Live Events |
-| `Manage Private Collaboration` (+ View/Create/Edit/Delete) | Private Collaboration |
+## Related documentation
 
-Country scoping follows Global vs Regional patterns used elsewhere in the panel.
+- **Restore** — recycle bin  
+- **Messaging** — notifications and chat are separate  
+- **User PMA** — who can enter the panel at all

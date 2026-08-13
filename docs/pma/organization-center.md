@@ -1,25 +1,45 @@
 ---
 title: Organization Center
-updated: 2026-07-24
+updated: 2026-08-13
 status: ready
 sidebar_key: organization_center
 ---
 
 # Organization Center
 
-## Overview
+## What this is
 
-Organization Center CMS (public `features/{slug}` pages under an organization).
+**Organization Center** manages **centers** that sit under organizations on the public site (feature/center pages). Visitors browse the org hierarchy; staff edit the content here.
 
-**Controller:** `User\Admin\OrganizationCenterController`
+Typical public path pattern: organization → center (`features/{slug}`) → services.
 
-## Features
+---
 
-### Centers CRUD
+## Who can use it
 
-- Create/list/edit/delete organization centers linked in the public hierarchy.
+| Action | Permission |
+|--------|------------|
+| Manage | **Manage Organization Center** |
+| Create | **Create Organization Center** |
+| Edit / Delete | Edit / Delete Organization Center |
 
-## Permissions and conditions
+Panel membership and agreement rules still apply unless the editor is Super Admin or membership-excluded.
 
-- Gates: Manage/Create/Edit/Delete Organization Center.
-- Access still requires `/user` membership + agreement unless Super Admin / excluded.
+---
+
+## Country rules
+
+Same as other Admin Portal CMS:
+
+- Global editors can choose **content country** (default often US).  
+- Regional editors only edit their country.  
+- Missing country content may start from a US prefill; saving creates a new country row without overwriting US.
+
+---
+
+## Related documentation
+
+- **Our Organizations** — parent orgs  
+- **Services** — services under orgs  
+- **Pages (CMS)** — shared CMS rules  
+- **Website Frontend**

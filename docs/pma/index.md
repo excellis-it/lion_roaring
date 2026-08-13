@@ -1,6 +1,6 @@
 ---
 title: Project Documentation
-updated: 2026-08-03
+updated: 2026-08-13
 status: ready
 sidebar_key: documentation
 ---
@@ -8,6 +8,8 @@ sidebar_key: documentation
 # Project Documentation
 
 Start with the product surfaces below, then open Chatbot Guides, Improvement Performance Report, Automation Implementations, or E-Store & E-Learning Enhancement. Use **Detailed topics** under each product hub for menu-by-menu rules.
+
+Under **User PMA**, open **Create Member** for the full staff guide to adding people (All Members → Add Members), and read each module topic for feature rules and conditions in plain language.
 
 ## How to use
 

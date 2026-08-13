@@ -1,27 +1,51 @@
 ---
 title: Super Admin
-updated: 2026-07-24
+updated: 2026-08-13
 status: ready
 sidebar_key: admin
 ---
 
 # Super Admin
 
-## Overview
+## What this is
 
-Manage Super Admin user accounts (list under `/user/detail`).
+The **Super Admin** sidebar item manages **Super Admin user accounts** (the operator list). It is not the same thing as “I have many permissions on a normal role.”
 
-**Controller:** `User\Admin\AdminController`  
-**Routes:** `user.admin.index|add|store|edit|delete|admin.update`
+Creating someone here makes them a Super Admin account (Global user type, Super Admin template, full permission set on a personal role). Creating a normal member is **All Members → Add Members** (**Create Member**).
 
-## Features
+---
 
-### Admin list
+## Who can use it
 
-- Lists users with user type name SUPER ADMIN (excludes self).
-- Create forces `user_type = Global`, `status = true`, Super Admin `user_type_id`.
+| Action | Permission |
+|--------|------------|
+| Open list | **Manage Admin List** |
+| Create | **Create Admin List** |
+| Edit / Delete | Edit / Delete Admin List |
 
-## Permissions and conditions
+---
 
-- Gates: `Manage Admin List`, Create/Edit/Delete Admin List.
-- Distinct from Spatie role "Super Admin" permission dump — identity is `user_types` via `hasNewRole('SUPER ADMIN')`.
+## What the list shows
+
+- Users whose user-type name is Super Admin.
+- Typically **excludes yourself** from the list.
+
+---
+
+## What happens when you create a Super Admin
+
+- User Type is forced to **Global**.
+- Account is active and accepted.
+- They receive a Super Admin user-type assignment and a role with **all** permissions.
+- This screen’s create flow does **not** use the Create Member form fields (no membership tier picker, no partner User Type Global/Regional/G_R chooser in the same way).
+
+Super Admins bypass membership walls, agreement gates, and many instance restrictions. Only Super Admins see **Restore** and **Documentation**.
+
+---
+
+## Related documentation
+
+- **Create Member** — create normal partners/members  
+- **Role Permission** — templates (do not delete SUPER ADMIN template)  
+- **User PMA** — what Super Admin bypasses  
+- **Restore** / **Documentation** — SA-only tools

@@ -167,6 +167,16 @@ return [
             'sidebar_key' => 'all_members',
         ],
         [
+            'slug' => 'create-member',
+            'title' => 'Create Member',
+            'summary' => 'Add a new partner/member from All Members — fields, rules, and who can create whom.',
+            'icon' => 'fa-solid fa-user-plus',
+            'file' => 'create-member.md',
+            'status' => 'ready',
+            'hub' => 'user-pma',
+            'sidebar_key' => 'create_member',
+        ],
+        [
             'slug' => 'user-activity',
             'title' => 'User Activity',
             'summary' => 'Activity dashboard and activity list.',
