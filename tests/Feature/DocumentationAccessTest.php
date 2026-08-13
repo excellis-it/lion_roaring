@@ -57,4 +57,29 @@ class DocumentationAccessTest extends TestCase
         $this->assertTrue(\Illuminate\Support\Facades\Route::has('user.documentation.index'));
         $this->assertTrue(\Illuminate\Support\Facades\Route::has('user.documentation.show'));
     }
+
+    public function test_documentation_index_uses_standard_pma_page_shell(): void
+    {
+        $index = file_get_contents(resource_path('views/user/documentation/index.blade.php'));
+        $show = file_get_contents(resource_path('views/user/documentation/show.blade.php'));
+        $css = file_get_contents(public_path('user_assets/css/documentation.css'));
+
+        foreach ([$index, $show] as $blade) {
+            $this->assertStringContainsString('container-fluid', $blade);
+            $this->assertStringContainsString('bg_white_border', $blade);
+            $this->assertStringNotContainsString('pma-docs-shell', $blade);
+        }
+
+        $this->assertStringContainsString('<h3>Project Documentation</h3>', $index);
+        $this->assertStringContainsString('pma-docs-lead', $index);
+        $this->assertStringContainsString('pma-docs-hub-card', $index);
+        $this->assertStringContainsString('class="card pma-docs-hub-card', $index);
+        $this->assertStringContainsString('class="card pma-docs-panel"', $show);
+        $this->assertStringContainsString('<div class="pma-docs-lead">', $index);
+        $this->assertStringContainsString('all: unset', $css);
+        $this->assertStringContainsString('line-height: 1.75', $css);
+        $this->assertStringContainsString('padding: 25px 40px', $css);
+        $this->assertStringNotContainsString('max-width: 42rem', $css);
+        $this->assertStringNotContainsString('padding: 0.5rem 0 2.5rem !important', $css);
+    }
 }

@@ -1,6 +1,6 @@
 ---
 title: User PMA
-updated: 2026-08-03
+updated: 2026-08-13
 status: ready
 sidebar_key: user_pma
 ---
@@ -52,6 +52,9 @@ Open **Detailed topics** on the index for each sidebar menu. Shared instance rul
 ### Documentation UI
 
 - Last sidebar item; Super Admin only.
+- Uses the same PMA page shell as other panel pages: `container-fluid` > `bg_white_border`, with left/right inner padding (`25px 40px`) so content is not flush to the card edges.
+- Index shows hubs as a Bootstrap `card` grid (3 columns on wide screens). Detail pages put markdown in a `card`; topic links are cards too.
+- Index title is `h3` with a full-width intro (`div.pma-docs-lead`, `line-height: 1.75`) so wrapped lines stay readable.
 - Markdown under `docs/pma/`; agents must update docs when features change.
 - Index hubs include product surfaces (1–5) plus **Chatbot Guides**, **Improvement Performance Report**, **Automation Implementations**, and **E-Store & E-Learning Enhancement** (6–9).
 

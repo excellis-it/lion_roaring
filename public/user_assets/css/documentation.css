@@ -1,29 +1,27 @@
-/* PMA Documentation — simple step flow */
+/* PMA Documentation — uses the same panel card as other PMA pages
+   (container-fluid > bg_white_border). Do not override theme padding. */
 
 .pma-docs {
-    --ink: #132422;
-    --muted: #5b6e6b;
-    --teal: #0a5c58;
-    --teal-soft: #e7f6f3;
-    --line: rgba(10, 92, 88, 0.12);
+    --ink: #1f2937;
+    --muted: #6b7280;
+    --teal: #643271;
+    --teal-soft: #f4f0fa;
+    --line: #ece8f4;
     --surface: #ffffff;
-    --shadow: 0 10px 28px rgba(19, 36, 34, 0.07);
-    --radius: 16px;
-    --pad: clamp(1.5rem, 3vw, 2.75rem);
+    --shadow: rgba(0, 0, 0, 0.09) 0px 0px 49px;
+    --radius: 7px;
+    display: block;
     width: 100%;
+    max-width: none;
     margin: 0;
-    /* Theme already clears the fixed header on .body-wrapper > .container-fluid */
-    padding: 0.5rem 0 2.5rem !important;
-    min-height: 70vh;
-    background: linear-gradient(180deg, #f4f9f8 0%, #eef5f3 100%);
+    background: transparent;
     color: var(--ink);
-    overflow: visible;
 }
 
-@media (max-width: 767.98px) {
-    .pma-docs {
-        padding: 0.35rem 0 2rem !important;
-    }
+.bg_white_border.pma-docs {
+    width: 100%;
+    max-width: none;
+    padding: 25px 40px;
 }
 
 .pma-docs *,
@@ -32,21 +30,45 @@
     box-sizing: border-box;
 }
 
-.pma-docs-shell {
-    max-width: 920px;
-    margin: 0 auto;
-    padding-left: var(--pad);
-    padding-right: var(--pad);
+.pma-docs-hero {
+    display: block;
+    width: 100%;
+    margin: 0 0 1.75rem;
+    line-height: 1.7;
 }
 
-.pma-docs-hero {
-    margin: 0 0 1.25rem;
-    padding-top: 0;
-    overflow: visible;
+.pma-docs-hero h3,
+.pma-docs-panel-head h3 {
+    margin: 0 0 12px;
+    padding: 0;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    line-height: 1.5;
+    color: var(--ink);
+}
+
+/* div (not p) so theme paragraph rules cannot collapse line-height */
+.pma-docs .pma-docs-lead {
+    all: unset;
+    display: block;
+    box-sizing: border-box;
+    width: 100%;
+    max-width: none;
+    margin: 0;
+    padding: 0;
+    font-family: "Roboto", sans-serif;
+    font-size: 15px;
+    font-weight: 400;
+    font-style: normal;
+    line-height: 1.75;
+    letter-spacing: normal;
+    color: var(--muted);
+    white-space: normal;
+    overflow-wrap: break-word;
 }
 
 .pma-docs-step {
-    margin: 0 0 0.55rem;
+    margin: 0;
     font-size: 0.78rem;
     font-weight: 700;
     letter-spacing: 0.06em;
@@ -54,51 +76,33 @@
     color: var(--teal);
 }
 
-.pma-docs-hero h1,
-.pma-docs-panel-head h1 {
-    margin: 0 0 0.55rem;
-    font-family: "Playfair Display", Georgia, serif;
-    font-size: clamp(1.75rem, 3vw, 2.35rem);
-    line-height: 1.25;
-    color: var(--ink);
-    overflow: visible;
-}
-
-.pma-docs-lead {
-    margin: 0;
-    max-width: 36rem;
-    font-size: 1rem;
-    line-height: 1.55;
-    color: var(--muted);
-}
-
-/* Home: simple numbered rows (no fragile card grid) */
-.pma-docs-hub-list {
-    display: flex;
-    flex-direction: column;
-    gap: 0.75rem;
-}
-
-.pma-docs-hub-row {
-    display: flex;
-    align-items: center;
-    gap: 0.9rem;
-    width: 100%;
-    min-height: 88px;
-    padding: 1rem 1.15rem;
-    border-radius: var(--radius);
-    background: var(--surface);
-    border: 1px solid var(--line);
-    box-shadow: var(--shadow);
+/* Home: PMA card grid */
+.pma-docs-hub-card {
+    display: block;
+    height: 100%;
+    margin-bottom: 0;
+    background-color: #fff;
     text-decoration: none !important;
     color: inherit !important;
-    transition: transform 0.15s ease, border-color 0.15s ease, box-shadow 0.15s ease;
+    transition: transform 0.15s ease, box-shadow 0.15s ease;
 }
 
-.pma-docs-hub-row:hover {
-    transform: translateY(-2px);
-    border-color: rgba(10, 92, 88, 0.28);
-    box-shadow: 0 14px 32px rgba(19, 36, 34, 0.1);
+.pma-docs-hub-card:hover {
+    transform: translateY(-3px);
+    color: inherit !important;
+}
+
+.pma-docs-hub-card .card-body {
+    display: flex;
+    flex-direction: column;
+    gap: 0.7rem;
+    min-height: 190px;
+}
+
+.pma-docs-hub-card-top {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
 }
 
 .pma-docs-hub-num {
@@ -128,31 +132,24 @@
     font-size: 1rem;
 }
 
-.pma-docs-hub-body {
-    flex: 1 1 auto;
-    min-width: 0;
-    display: flex;
-    flex-direction: column;
-    gap: 0.2rem;
-}
-
 .pma-docs-hub-title {
-    font-size: 1.05rem;
+    font-size: 1.1rem;
     font-weight: 700;
     color: var(--ink);
-    line-height: 1.3;
+    line-height: 1.4;
 }
 
 .pma-docs-hub-desc {
+    flex: 1 1 auto;
     font-size: 0.9rem;
-    line-height: 1.4;
+    line-height: 1.55;
     color: var(--muted);
 }
 
 .pma-docs-hub-go {
-    flex: 0 0 auto;
+    margin-top: auto;
     color: var(--teal);
-    font-size: 1.2rem;
+    font-size: 0.9rem;
     font-weight: 700;
 }
 
@@ -179,7 +176,7 @@
     text-decoration: none !important;
     font-size: 0.92rem;
     font-weight: 650;
-    box-shadow: var(--shadow);
+    box-shadow: 0 1px 3px rgba(100, 50, 113, 0.12);
 }
 
 .pma-docs-back:hover {
@@ -193,7 +190,7 @@
 }
 
 .pma-docs-back--solid:hover {
-    background: #084844;
+    background: #4e2760;
 }
 
 .pma-docs-back-icon {
@@ -201,13 +198,10 @@
     line-height: 1;
 }
 
-/* Content panel */
+/* Content card on detail pages */
 .pma-docs-panel {
-    background: var(--surface);
-    border: 1px solid var(--line);
-    border-radius: var(--radius);
-    box-shadow: var(--shadow);
-    padding: 1.5rem clamp(1.15rem, 2.5vw, 1.85rem) 1.75rem;
+    background: #fff;
+    margin-bottom: 0;
 }
 
 .pma-docs-panel-head {
@@ -267,7 +261,7 @@
 .pma-docs-body p,
 .pma-docs-body li {
     color: var(--muted);
-    line-height: 1.65;
+    line-height: 1.75;
     font-size: 0.97rem;
 }
 
@@ -344,33 +338,34 @@
     margin: 0 0 0.9rem;
     color: var(--muted);
     font-size: 0.92rem;
+    line-height: 1.6;
 }
 
 .pma-docs-topic-list {
     list-style: none;
     margin: 0;
     padding: 0;
-    display: flex;
-    flex-direction: column;
-    gap: 0.55rem;
 }
 
-.pma-docs-topic-list a {
-    display: flex;
-    align-items: center;
-    gap: 0.75rem;
-    min-height: 64px;
-    padding: 0.8rem 0.95rem;
-    border-radius: 12px;
-    border: 1px solid var(--line);
-    background: #fbfdfc;
+.pma-docs-topic-card {
+    display: block;
+    margin-bottom: 0;
+    background-color: #fff;
     text-decoration: none !important;
+    color: inherit !important;
+    transition: transform 0.15s ease;
+}
+
+.pma-docs-topic-card:hover {
+    transform: translateY(-2px);
     color: inherit !important;
 }
 
-.pma-docs-topic-list a:hover {
-    background: var(--teal-soft);
-    border-color: rgba(10, 92, 88, 0.22);
+.pma-docs-topic-card .card-body {
+    display: flex;
+    flex-direction: column;
+    gap: 0.65rem;
+    min-height: 140px;
 }
 
 .pma-docs-topic-icon {
@@ -381,9 +376,8 @@
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    background: var(--surface);
+    background: var(--teal-soft);
     color: var(--teal);
-    border: 1px solid var(--line);
 }
 
 .pma-docs-topic-text {
@@ -402,7 +396,7 @@
 .pma-docs-topic-text span {
     font-size: 0.84rem;
     color: var(--muted);
-    line-height: 1.35;
+    line-height: 1.5;
 }
 
 .pma-docs-footer-nav {
@@ -426,13 +420,17 @@
 }
 
 @media (max-width: 640px) {
-    .pma-docs-hub-row {
-        align-items: flex-start;
+    .bg_white_border.pma-docs {
+        padding: 20px 16px;
+    }
+
+    .pma-docs-hub-card .card-body {
+        min-height: 0;
     }
 
     .pma-docs-hub-desc {
         display: -webkit-box;
-        -webkit-line-clamp: 2;
+        -webkit-line-clamp: 3;
         -webkit-box-orient: vertical;
         overflow: hidden;
     }

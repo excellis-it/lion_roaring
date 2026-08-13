@@ -3,12 +3,12 @@
 @section('title', ($section['title'] ?? 'Documentation'))
 
 @push('styles')
-    <link rel="stylesheet" href="{{ asset('user_assets/css/documentation.css') }}">
+    <link rel="stylesheet" href="{{ asset('user_assets/css/documentation.css') }}?v={{ @filemtime(public_path('user_assets/css/documentation.css')) }}">
 @endpush
 
 @section('content')
-<div class="container-fluid pma-docs">
-    <div class="pma-docs-shell">
+<div class="container-fluid">
+    <div class="bg_white_border pma-docs">
         <div class="pma-docs-toolbar">
             <a class="pma-docs-back" href="{{ $backUrl }}">
                 <span class="pma-docs-back-icon" aria-hidden="true">←</span>
@@ -23,7 +23,8 @@
             </p>
         </div>
 
-        <article class="pma-docs-panel">
+        <article class="card pma-docs-panel">
+            <div class="card-body">
             <header class="pma-docs-panel-head">
                 @if (!empty($parentHub))
                     <p class="pma-docs-crumb">
@@ -41,7 +42,7 @@
                     </p>
                 @endif
 
-                <h1>{{ $meta['title'] ?? $section['title'] }}</h1>
+                <h3>{{ $meta['title'] ?? $section['title'] }}</h3>
                 @if (!empty($meta['updated']))
                     <p class="pma-docs-updated">Updated {{ $meta['updated'] }}</p>
                 @endif
@@ -55,20 +56,22 @@
                 <section class="pma-docs-next" aria-labelledby="pma-docs-next-title">
                     <h2 id="pma-docs-next-title">Next · Browse topics in this area</h2>
                     <p class="pma-docs-next-lead">Optional deeper pages. Open one, then use Back to return here.</p>
-                    <ul class="pma-docs-topic-list">
+                    <div class="row g-3 pma-docs-topic-list">
                         @foreach ($childSections as $child)
-                            <li>
-                                <a href="{{ route('user.documentation.show', $child['slug']) }}">
-                                    <span class="pma-docs-topic-icon" aria-hidden="true"><i class="{{ $child['icon'] }}"></i></span>
-                                    <span class="pma-docs-topic-text">
-                                        <strong>{{ $child['title'] }}</strong>
-                                        <span>{{ $child['summary'] }}</span>
-                                    </span>
-                                    <span class="pma-docs-hub-go" aria-hidden="true">→</span>
+                            <div class="col-12 col-md-6">
+                                <a class="card pma-docs-topic-card h-100" href="{{ route('user.documentation.show', $child['slug']) }}">
+                                    <div class="card-body">
+                                        <span class="pma-docs-topic-icon" aria-hidden="true"><i class="{{ $child['icon'] }}"></i></span>
+                                        <span class="pma-docs-topic-text">
+                                            <strong>{{ $child['title'] }}</strong>
+                                            <span>{{ $child['summary'] }}</span>
+                                        </span>
+                                        <span class="pma-docs-hub-go">Open <span aria-hidden="true">→</span></span>
+                                    </div>
                                 </a>
-                            </li>
+                            </div>
                         @endforeach
-                    </ul>
+                    </div>
                 </section>
             @endif
 
@@ -80,6 +83,7 @@
                 @if (empty($isHub))
                     <a class="pma-docs-home-link" href="{{ route('user.documentation.index') }}">All documentation</a>
                 @endif
+            </div>
             </div>
         </article>
     </div>
