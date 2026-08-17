@@ -1,6 +1,6 @@
 ---
 title: Messaging
-updated: 2026-08-13
+updated: 2026-08-17
 status: ready
 sidebar_key: messaging
 ---
@@ -62,6 +62,7 @@ Permission: **Manage Team**. Extra permissions such as **Create Team** / **Delet
 - Same attachment behavior as Chats.
 - Adding someone to a team does **not** create a new account — they must already exist (see **Create Member** / **All Members**).
 - Group avatars fall back to a default image if a custom file is missing.
+- **Team list visibility** follows the same Global / Regional context as the member picker: a group appears only when **every active member** is visible in the current server context. A G_R user on the **Global** site will not see groups that include Regional-only members; on a **Regional** site they will not see groups whose members are Global-only. Super Admins are not restricted by this filter.
 
 ---
 

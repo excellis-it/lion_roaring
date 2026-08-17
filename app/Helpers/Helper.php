@@ -605,6 +605,9 @@ class Helper
             ->whereHas('chat', function ($query) {
                 $query->whereNull('deleted_at');
             })
+            ->whereHas('chat.team', function ($query) {
+                $query->visibleInAuthContext();
+            })
             ->whereHas('chat.team.members', function ($query) use ($user) {
                 // Check user is still a member and not removed
                 $query->where('user_id', $user->id)

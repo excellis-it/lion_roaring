@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Http\Controllers\Concerns\ResolvesAccessibleTeam;
 use App\Helpers\Helper;
 use App\Models\ChatMember;
 use App\Models\Notification;
@@ -12,6 +13,7 @@ use App\Models\TeamMember;
 use App\Models\User;
 use App\Traits\ImageTrait;
 use Illuminate\Http\Request;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\DB;
 use App\Services\FCMService;
 use Illuminate\Support\Facades\Log;
@@ -25,6 +27,7 @@ use Illuminate\Support\Facades\Storage;
 class TeamChatController extends Controller
 {
     use ImageTrait;
+    use ResolvesAccessibleTeam;
 
     protected $fcmService;
 
@@ -38,6 +41,17 @@ class TeamChatController extends Controller
         return TeamChat::where('team_id', $team_id)->whereHas('chatMembers', function ($query) use ($user_id) {
             $query->where('user_id', $user_id);
         })->latest()->first();
+    }
+
+    private function accessibleTeamOrApiError(int $teamId): Team|JsonResponse
+    {
+        $team = $this->accessibleTeam($teamId);
+
+        if (!$team) {
+            return response()->json(['msg' => 'Team not found', 'status' => false], 201);
+        }
+
+        return $team;
     }
 
     /**
@@ -322,17 +336,15 @@ class TeamChatController extends Controller
             $search_query = $request->input('search');
             // Get the teams that the authenticated user is a member of
             if (!empty($search_query)) {
-                $teams = Team::whereHas('members', function ($query) {
-                    $query->where('user_id', auth()->id());
-                })
+                $teams = Team::visibleInAuthContext()
+                    ->whereActiveMember()
                     ->where('name', 'like', '%' . $search_query . '%')
                     ->orderBy('id', 'desc')
                     ->get()
                     ->toArray();
             } else {
-                $teams = Team::whereHas('members', function ($query) {
-                    $query->where('user_id', auth()->id());
-                })
+                $teams = Team::visibleInAuthContext()
+                    ->whereActiveMember()
                     ->orderBy('id', 'desc')
                     ->get()
                     ->toArray();
@@ -741,18 +753,18 @@ class TeamChatController extends Controller
             $team_id = $request->team_id;
             $includeMembers = $request->boolean('include_members', false);
 
-            $team = Team::where('id', $team_id)
-                ->with([
-                    'members' => function ($query) {
-                        $query->where('is_removed', false);
-                    },
-                    'members.user:id,user_name,first_name,middle_name,last_name,profile_picture,email',
-                ])
-                ->first();
+            $team = Team::accessibleToAuth((int) $team_id);
 
             if (!$team) {
                 return response()->json(['msg' => 'Team not found', 'status' => false], 201);
             }
+
+            $team->load([
+                'members' => function ($query) {
+                    $query->where('is_removed', false);
+                },
+                'members.user:id,user_name,first_name,middle_name,last_name,profile_picture,email',
+            ]);
 
             $team->isMeAdmin = Helper::checkAdminTeam(auth()->user()->id, $team->id);
             $team->isMeRemoved = Helper::checkRemovedFromTeam($team->id, auth()->user()->id);
@@ -914,6 +926,10 @@ class TeamChatController extends Controller
 
         try {
             $input_message = $request->message;
+            $teamOrError = $this->accessibleTeamOrApiError((int) $request->team_id);
+            if ($teamOrError instanceof JsonResponse) {
+                return $teamOrError;
+            }
             $files = $request->file('files') ?? ($request->file('file') ? [$request->file('file')] : []);
             $team_chats = [];
 
@@ -941,7 +957,7 @@ class TeamChatController extends Controller
             $team_members = TeamMember::where('team_id', $request->team_id)
                 ->where('is_removed', false)
                 ->get();
-            $team = Team::find($request->team_id);
+            $team = $teamOrError;
             $lastTeamChat = null;
             $lastChatMemberIds = [];
 
@@ -1085,19 +1101,15 @@ class TeamChatController extends Controller
     public function groupInfo(Request $request)
     {
         try {
-            $team_id = $request->team_id;
-
-            // Retrieve the team and its active members
-            $team = Team::where('id', $team_id)
-                ->with(['members' => function ($query) {
-                    $query->where('is_removed', false); // Include only active members
-                }, 'members.user'])
-                ->first();
-
-            // If team not found, return error response
-            if (!$team) {
-                return response()->json(['message' => 'Team not found', 'status' => false], 201);
+            $team_id = (int) $request->team_id;
+            $teamOrError = $this->accessibleTeamOrApiError($team_id);
+            if ($teamOrError instanceof JsonResponse) {
+                return $teamOrError;
             }
+
+            $team = $teamOrError->load(['members' => function ($query) {
+                $query->where('is_removed', false);
+            }, 'members.user']);
 
             // Prepare team data with member details
             $team_data = [
@@ -1161,12 +1173,11 @@ class TeamChatController extends Controller
                 'group_image' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
             ]);
 
-            $team = Team::find($request->team_id);
-
-            // Check if team exists
-            if (!$team) {
-                return response()->json(['message' => 'Team not found', 'status' => false], 201);
+            $teamOrError = $this->accessibleTeamOrApiError((int) $request->team_id);
+            if ($teamOrError instanceof JsonResponse) {
+                return $teamOrError;
             }
+            $team = $teamOrError;
 
             // Update group image
             $team->group_image = $this->imageUpload($request->file('group_image'), 'team');
@@ -1216,12 +1227,11 @@ class TeamChatController extends Controller
                 'description' => 'required|max:255',
             ]);
 
-            $team = Team::find($request->team_id);
-
-            // Check if the team exists
-            if (!$team) {
-                return response()->json(['message' => 'Team not found', 'status' => false], 201);
+            $teamOrError = $this->accessibleTeamOrApiError((int) $request->team_id);
+            if ($teamOrError instanceof JsonResponse) {
+                return $teamOrError;
             }
+            $team = $teamOrError;
 
             // Update team name and description
             $team->name = $request->name;
@@ -1284,7 +1294,11 @@ class TeamChatController extends Controller
     public function removeMember(Request $request)
     {
         try {
-            $team_id = $request->team_id;
+            $team_id = (int) $request->team_id;
+            $teamOrError = $this->accessibleTeamOrApiError($team_id);
+            if ($teamOrError instanceof JsonResponse) {
+                return $teamOrError;
+            }
             $user_id = $request->user_id;
 
             $team_member = TeamMember::where('team_id', $team_id)->where('user_id', $user_id)->first();
@@ -1409,7 +1423,11 @@ class TeamChatController extends Controller
                 'members.*' => 'required|integer',
             ]);
 
-            $team_id = $request->team_id;
+            $team_id = (int) $request->team_id;
+            $teamOrError = $this->accessibleTeamOrApiError($team_id);
+            if ($teamOrError instanceof JsonResponse) {
+                return $teamOrError;
+            }
             $only_added_members = $request->members;
 
             $already_member_arr = [];
@@ -1536,7 +1554,11 @@ class TeamChatController extends Controller
     public function exitFromGroup(Request $request)
     {
         try {
-            $team_id = $request->team_id;
+            $team_id = (int) $request->team_id;
+            $teamOrError = $this->accessibleTeamOrApiError($team_id);
+            if ($teamOrError instanceof JsonResponse) {
+                return $teamOrError;
+            }
             $user_id = auth()->id();
 
             // Remove the user from the team
@@ -1620,7 +1642,11 @@ class TeamChatController extends Controller
     public function deleteGroup(Request $request)
     {
         try {
-            $team_id = $request->team_id;
+            $team_id = (int) $request->team_id;
+            $teamOrError = $this->accessibleTeamOrApiError($team_id);
+            if ($teamOrError instanceof JsonResponse) {
+                return $teamOrError;
+            }
             $user_id = auth()->id();
 
             // Check if the authenticated user is an admin of the group
@@ -1636,7 +1662,7 @@ class TeamChatController extends Controller
                 ], 201);
             }
 
-            $team = Team::find($team_id);
+            $team = $teamOrError;
 
             // Get all member IDs before deleting
             $team_member_id = TeamMember::where('team_id', $team_id)->pluck('user_id')->toArray();
@@ -1705,7 +1731,11 @@ class TeamChatController extends Controller
     public function makeAdmin(Request $request)
     {
         try {
-            $team_id = $request->team_id;
+            $team_id = (int) $request->team_id;
+            $teamOrError = $this->accessibleTeamOrApiError($team_id);
+            if ($teamOrError instanceof JsonResponse) {
+                return $teamOrError;
+            }
             $user_id = $request->user_id;
             $auth_user_id = auth()->id();
 
@@ -1810,6 +1840,19 @@ class TeamChatController extends Controller
         try {
             $chat_id = $request->chat_id;
 
+            $teamChat = TeamChat::find($chat_id);
+            if (!$teamChat) {
+                return response()->json([
+                    'message' => 'Chat message not found.',
+                    'status' => false
+                ], 201);
+            }
+
+            $teamOrError = $this->accessibleTeamOrApiError((int) $teamChat->team_id);
+            if ($teamOrError instanceof JsonResponse) {
+                return $teamOrError;
+            }
+
             // Retrieve the chat member for the authenticated user
             $chat_member = ChatMember::where('chat_id', $chat_id)
                 ->where('user_id', auth()->id())
@@ -1873,6 +1916,11 @@ class TeamChatController extends Controller
     public function removeChat(Request $request)
     {
         try {
+            $teamOrError = $this->accessibleTeamOrApiError((int) $request->team_id);
+            if ($teamOrError instanceof JsonResponse) {
+                return $teamOrError;
+            }
+
             $chat_id = $request->chat_id;
             $del_from = $request->del_from;
             $team_id = $request->team_id;
@@ -1953,7 +2001,11 @@ class TeamChatController extends Controller
     public function clearAllConversation(Request $request)
     {
         try {
-            $team_id = $request->team_id;
+            $team_id = (int) $request->team_id;
+            $teamOrError = $this->accessibleTeamOrApiError($team_id);
+            if ($teamOrError instanceof JsonResponse) {
+                return $teamOrError;
+            }
             $user_id = auth()->id();
 
             // Check if the user is an admin of the team
@@ -2030,7 +2082,11 @@ class TeamChatController extends Controller
     {
 
         try {
-            $team_id = $request->team_id;
+            $team_id = (int) $request->team_id;
+            $teamOrError = $this->accessibleTeamOrApiError($team_id);
+            if ($teamOrError instanceof JsonResponse) {
+                return $teamOrError;
+            }
             $chat_id = $request->chat_id;
             $user_id = auth()->id();
 

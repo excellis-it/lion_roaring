@@ -42,6 +42,48 @@ class Team extends BaseModel
         return $this->hasOne(TeamChat::class, 'team_id', 'id')->latest();
     }
 
+    /**
+     * Teams whose active members are all visible to the auth user in the current
+     * server context (Global vs Regional). Hides regional-only groups when a G_R
+     * user is on the global site, and vice versa.
+     */
+    public function scopeVisibleInAuthContext($query)
+    {
+        $authUser = auth()->user();
+
+        if (!$authUser || $authUser->hasNewRole('SUPER ADMIN')) {
+            return $query;
+        }
+
+        return $query->whereDoesntHave('members', function ($memberQuery) {
+            $memberQuery->where('is_removed', false)
+                ->whereNotIn('user_id', User::visibleToAuthUser()->select('id'));
+        });
+    }
+
+    /**
+     * Active membership for the given user (defaults to the authenticated user).
+     */
+    public function scopeWhereActiveMember($query, ?int $userId = null)
+    {
+        $userId = $userId ?? auth()->id();
+
+        return $query->whereHas('members', function ($memberQuery) use ($userId) {
+            $memberQuery->where('user_id', $userId)->where('is_removed', false);
+        });
+    }
+
+    /**
+     * Resolve a team the auth user may access in the current context.
+     */
+    public static function accessibleToAuth(int $teamId): ?self
+    {
+        return static::visibleInAuthContext()
+            ->whereActiveMember()
+            ->where('id', $teamId)
+            ->first();
+    }
+
     public function getNewCreatedAtAttribute($value)
     {
         return $this->created_at;
