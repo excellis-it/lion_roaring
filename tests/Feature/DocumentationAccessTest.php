@@ -59,6 +59,29 @@ class DocumentationAccessTest extends TestCase
         $this->assertTrue(\Illuminate\Support\Facades\Route::has('user.documentation.attachment'));
     }
 
+    public function test_markdown_attachment_urls_keep_slash_after_attachments_prefix(): void
+    {
+        $controller = app(\App\Http\Controllers\User\DocumentationController::class);
+        $method = new \ReflectionMethod($controller, 'rewriteAttachmentUrls');
+
+        $html = '<p><img src="attachments/automation-framework/05-01-login-logout-terminal.png" alt="Figure 5.1"></p>'
+            .'<p><a href="attachments/Lion_Roaring_Automation_Framework_Implementation_Report.docx">Report</a></p>';
+
+        $rewritten = $method->invoke($controller, $html);
+
+        $imageUrl = route('user.documentation.attachment', [
+            'path' => 'automation-framework/05-01-login-logout-terminal.png',
+        ]);
+        $docUrl = route('user.documentation.attachment', [
+            'path' => 'Lion_Roaring_Automation_Framework_Implementation_Report.docx',
+        ]);
+
+        $this->assertStringContainsString('src="'.$imageUrl.'"', $rewritten);
+        $this->assertStringContainsString('href="'.$docUrl.'"', $rewritten);
+        $this->assertStringNotContainsString('attachmentsautomation-framework', $rewritten);
+        $this->assertStringNotContainsString('attachmentsLion_Roaring', $rewritten);
+    }
+
     public function test_documentation_index_uses_standard_pma_page_shell(): void
     {
         $index = file_get_contents(resource_path('views/user/documentation/index.blade.php'));

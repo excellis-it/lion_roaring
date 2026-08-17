@@ -80,7 +80,13 @@ class DocumentationController extends Controller
 
     private function rewriteAttachmentUrls(string $html): string
     {
-        $prefix = url('/user/documentation/attachments/');
+        // url() / UrlGenerator strips a trailing slash, which glued
+        // ".../attachments" onto the relative path ("attachmentsfoo.png").
+        $prefix = substr(
+            route('user.documentation.attachment', ['path' => '__att__']),
+            0,
+            -strlen('__att__')
+        );
 
         return (string) preg_replace(
             '#(src|href)="attachments/#',
