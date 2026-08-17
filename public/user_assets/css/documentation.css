@@ -439,3 +439,22 @@
         width: 100%;
     }
 }
+
+.pma-docs-body img {
+    display: block;
+    max-width: 100%;
+    height: auto;
+    margin: 1rem 0 1.5rem;
+    border: 1px solid rgba(0, 0, 0, 0.08);
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+}
+
+.pma-docs-body em + img,
+.pma-docs-body img + em {
+    display: block;
+    margin-top: -0.75rem;
+    margin-bottom: 1.25rem;
+    font-size: 0.9rem;
+    color: #5a6672;
+}

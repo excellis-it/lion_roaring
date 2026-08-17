@@ -4,7 +4,9 @@ namespace App\Http\Controllers\User;
 
 use App\Http\Controllers\Controller;
 use App\Services\PmaDocumentationService;
+use Illuminate\Support\Facades\File;
 use Illuminate\View\View;
+use Symfony\Component\HttpFoundation\BinaryFileResponse;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class DocumentationController extends Controller
@@ -55,10 +57,35 @@ class DocumentationController extends Controller
             'parentHub' => $parentHub,
             'childSections' => $childSections,
             'meta' => $document['meta'],
-            'html' => $document['html'],
+            'html' => $this->rewriteAttachmentUrls($document['html']),
             'status' => $status,
             'backUrl' => $backUrl,
             'backLabel' => $backLabel,
         ]);
+    }
+
+    public function attachment(string $path): BinaryFileResponse
+    {
+        $relativeFile = str_starts_with($path, 'attachments/') ? $path : 'attachments/'.$path;
+        $realPath = $this->documentation->attachmentPath($relativeFile);
+
+        if ($realPath === null) {
+            throw new NotFoundHttpException('Documentation attachment not found.');
+        }
+
+        return response()->file($realPath, [
+            'Content-Type' => File::mimeType($realPath) ?: 'application/octet-stream',
+        ]);
+    }
+
+    private function rewriteAttachmentUrls(string $html): string
+    {
+        $prefix = url('/user/documentation/attachments/');
+
+        return (string) preg_replace(
+            '#(src|href)="attachments/#',
+            '$1="'.$prefix,
+            $html
+        );
     }
 }

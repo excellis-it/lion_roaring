@@ -66,9 +66,17 @@ return [
         [
             'slug' => 'automation-implementations',
             'title' => 'Automation Implementations',
-            'summary' => 'Role Permission, Membership, and All Members automation report v2.2.0.',
+            'summary' => 'Selenium automation framework: login, members, roles, promos, E-Store, chat, exports.',
             'icon' => 'fa-solid fa-gears',
             'file' => 'automation-implementations.md',
+            'status' => 'ready',
+        ],
+        [
+            'slug' => 'penetration-testing-report',
+            'title' => 'Penetration Testing Report',
+            'summary' => 'Web application security assessment (11–12 Aug 2026): live and staging environments.',
+            'icon' => 'fa-solid fa-shield-virus',
+            'file' => 'penetration-testing-report.md',
             'status' => 'ready',
         ],
         [

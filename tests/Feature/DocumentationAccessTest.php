@@ -56,6 +56,7 @@ class DocumentationAccessTest extends TestCase
     {
         $this->assertTrue(\Illuminate\Support\Facades\Route::has('user.documentation.index'));
         $this->assertTrue(\Illuminate\Support\Facades\Route::has('user.documentation.show'));
+        $this->assertTrue(\Illuminate\Support\Facades\Route::has('user.documentation.attachment'));
     }
 
     public function test_documentation_index_uses_standard_pma_page_shell(): void

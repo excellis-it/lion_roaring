@@ -638,6 +638,9 @@ Route::prefix('user')->middleware(['user', 'preventBackHistory', 'userActivity',
     // Project Documentation (SUPER ADMIN Only)
     Route::prefix('documentation')->middleware('super_admin')->name('user.documentation.')->group(function () {
         Route::get('/', [DocumentationController::class, 'index'])->name('index');
+        Route::get('/attachments/{path}', [DocumentationController::class, 'attachment'])
+            ->where('path', '.+')
+            ->name('attachment');
         Route::get('/{section}', [DocumentationController::class, 'show'])
             ->where('section', '[a-z0-9\-]+')
             ->name('show');

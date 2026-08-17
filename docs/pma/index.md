@@ -1,19 +1,19 @@
 ---
 title: Project Documentation
-updated: 2026-08-13
+updated: 2026-08-17
 status: ready
 sidebar_key: documentation
 ---
 
 # Project Documentation
 
-Start with the product surfaces below, then open Chatbot Guides, Improvement Performance Report, Automation Implementations, or E-Store & E-Learning Enhancement. Use **Detailed topics** under each product hub for menu-by-menu rules.
+Start with the product surfaces below, then open Chatbot Guides, Improvement Performance Report, Automation Implementations, Penetration Testing Report, or E-Store & E-Learning Enhancement. Use **Detailed topics** under each product hub for menu-by-menu rules.
 
 Under **User PMA**, open **Create Member** for the full staff guide to adding people (All Members → Add Members), and read each module topic for feature rules and conditions in plain language.
 
 ## How to use
 
-1. Open a **hub** card (1–9 below).
+1. Open a **hub** card (1–10 below).
 2. Read Overview, domain rules, and feature blocks.
 3. Use **Detailed topics** for sidebar menus and shared domain rules.
 4. When behavior changes, update the matching `docs/pma/*.md` file and bump `updated`.
@@ -29,8 +29,9 @@ Under **User PMA**, open **Create Member** for the full staff guide to adding pe
 | 5 | Mobile App | Flutter + `/api/v3` | App users |
 | 6 | Chatbot Guides | RAG chatbot suite | Super Admins / AI chatbot ops |
 | 7 | Improvement Performance Report | E-Store & E-Learning QA | Dev / ops |
-| 8 | Automation Implementations | Account management automation | PMA admins |
-| 9 | E-Store & E-Learning Enhancement | Store & learning enhancements | Dev / admins |
+| 8 | Automation Implementations | Selenium regression automation suite | Dev / QA |
+| 9 | Penetration Testing Report | Security assessment (Aug 2026) | Super Admin / stakeholders |
+| 10 | E-Store & E-Learning Enhancement | Store & learning enhancements | Dev / admins |
 
 ## Must-read shared rules
 
