@@ -490,11 +490,11 @@
                                         </div>
 
                                         <div class="mt-4">
-                                            <div class="pure-u-5-5 centered d-flex">
+                                            <div class="pure-u-5-5 centered d-flex align-items-center">
                                                 <button type="submit" id="submit-btn"
                                                     class="pure-button pure-button-primary">Donate US
                                                     $0.00</button>
-                                                <p style="margin-left: 5px;"><b>We Accept </b><img
+                                                <p class="d-flex align-items-center mb-0" style="margin-left: 5px;"><b>We Accept&nbsp;</b><img
                                                         src="{{ asset('frontend_assets/images/cards.png') }}"
                                                         alt="" height="35px"></p>
                                             </div>

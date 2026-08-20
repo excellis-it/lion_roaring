@@ -96,25 +96,19 @@ class PrivateCollaborationController extends Controller
             $isOnGlobalServer = $currentCountry && $currentCountry->is_global;
 
             if ($user->hasNewRole('SUPER ADMIN')) {
-                $eligibleUsers = User::whereHas('roles.permissions', function ($query) {
-                    $query->where('name', 'Manage Private Collaboration');
-                })->where('status', 1)
+                $eligibleUsers = User::where('status', 1)
                     ->where('id', '!=', auth()->id())
                     ->orderBy('first_name')->orderBy('last_name')->get();
 
             } elseif ($user_type == 'Global' || ($user_type == 'G_R' && $isOnGlobalServer)) {
-                $eligibleUsers = User::whereHas('roles.permissions', function ($query) {
-                    $query->where('name', 'Manage Private Collaboration');
-                })->whereHas('userRole', function ($query) {
+                $eligibleUsers = User::whereHas('userRole', function ($query) {
                     $query->where('name', '!=', 'SUPER ADMIN');
                 })->whereIn('user_type', ['Global', 'G_R'])
                     ->where('status', 1)
                     ->where('id', '!=', auth()->id())
                     ->orderBy('first_name')->orderBy('last_name')->get();
             } else {
-                $eligibleUsersQuery = User::whereHas('roles.permissions', function ($query) {
-                    $query->where('name', 'Manage Private Collaboration');
-                })->whereHas('userRole', function ($query) {
+                $eligibleUsersQuery = User::whereHas('userRole', function ($query) {
                     $query->where('name', '!=', 'SUPER ADMIN');
                 })->where('id', '!=', auth()->id())
                     ->whereIn('user_type', ['Regional', 'G_R'])
@@ -163,8 +157,6 @@ class PrivateCollaborationController extends Controller
             // Global country selected → show Global user_type users
             $users = User::whereHas('userRole', function ($query) {
                 $query->where('name', '!=', 'SUPER ADMIN');
-            })->whereHas('roles.permissions', function ($query) {
-                $query->where('name', 'Manage Private Collaboration');
             })
             ->whereIn('user_type', ['Global', 'G_R'])
                 ->where('status', 1)
@@ -174,8 +166,6 @@ class PrivateCollaborationController extends Controller
             // Other country selected → show Regional users from that country
             $usersQuery = User::whereHas('userRole', function ($query) {
                 $query->where('name', '!=', 'SUPER ADMIN');
-            })->whereHas('roles.permissions', function ($query) {
-                $query->where('name', 'Manage Private Collaboration');
             })->where('id', '!=', auth()->id())
                 ->whereIn('user_type', ['Regional', 'G_R'])
                 ->where('status', 1)

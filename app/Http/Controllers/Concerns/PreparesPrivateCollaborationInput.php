@@ -65,9 +65,7 @@ trait PreparesPrivateCollaborationInput
     protected function assertEligibleInvitees(array $invitees): ?array
     {
         $eligibleCount = \App\Models\User::whereIn('id', $invitees)
-            ->whereHas('roles.permissions', function ($q) {
-                $q->where('name', 'Manage Private Collaboration');
-            })
+            ->where('status', 1)
             ->where('id', '!=', auth()->id())
             ->count();
 

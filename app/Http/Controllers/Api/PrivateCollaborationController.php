@@ -534,9 +534,7 @@ class PrivateCollaborationController extends Controller
         $isSuperAdmin = $authUser->hasNewRole('SUPER ADMIN');
 
         if ($isSuperAdmin && ! $request->filled('country_id')) {
-            $users = User::whereHas('roles.permissions', function ($query) {
-                $query->where('name', 'Manage Private Collaboration');
-            })->where('status', 1)
+            $users = User::where('status', 1)
                 ->where('id', '!=', auth()->id())
                 ->orderBy('first_name')->orderBy('last_name')->get();
         } else {
@@ -549,8 +547,6 @@ class PrivateCollaborationController extends Controller
             if ($country->code == 'GL') {
                 $users = User::whereHas('userRole', function ($query) {
                     $query->where('name', '!=', 'SUPER ADMIN');
-                })->whereHas('roles.permissions', function ($query) {
-                    $query->where('name', 'Manage Private Collaboration');
                 })->whereIn('user_type', ['Global', 'G_R'])
                     ->where('status', 1)
                     ->where('id', '!=', auth()->id())
@@ -558,8 +554,6 @@ class PrivateCollaborationController extends Controller
             } else {
                 $usersQuery = User::whereHas('userRole', function ($query) {
                     $query->where('name', '!=', 'SUPER ADMIN');
-                })->whereHas('roles.permissions', function ($query) {
-                    $query->where('name', 'Manage Private Collaboration');
                 })->where('id', '!=', auth()->id())
                     ->whereIn('user_type', ['Regional', 'G_R'])
                     ->where('status', 1)
