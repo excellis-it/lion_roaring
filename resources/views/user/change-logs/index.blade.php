@@ -76,7 +76,7 @@
                     </div>
                 @endif
             </div>
-            @if (auth()->user()->hasNewRole('SUPER ADMIN') || auth()->user()->can('Manage Change Logs'))
+            @if ($canCreate)
             <div>
                 <a href="{{ route('change-logs.create', ['platform' => $platform]) }}" class="btn btn-primary">
                     <i class="fa-solid fa-plus"></i> Add Entry
@@ -108,7 +108,7 @@
             </div>
         @endif
 
-        @if (auth()->user()->hasNewRole('SUPER ADMIN') || auth()->user()->can('Manage Change Logs'))
+        @if ($canEdit)
         <div class="cl-version-panel">
             <h6>Current App Versions</h6>
             <form action="{{ route('change-logs.versions.update') }}" method="POST" class="row g-2 align-items-end">
@@ -164,11 +164,14 @@
                         {!! nl2br(e($desc)) !!}
                     @endif
                 </div>
-                @if (auth()->user()->hasNewRole('SUPER ADMIN') || auth()->user()->can('Manage Change Logs'))
+                @if ($canEdit || $canDelete)
                 <div class="cl-entry-actions">
+                    @if ($canEdit)
                     <a href="{{ route('change-logs.edit', $log) }}" class="edit_icon" title="Edit">
                         <i class="ti ti-edit"></i>
                     </a>
+                    @endif
+                    @if ($canDelete)
                     <form action="{{ route('change-logs.destroy', $log) }}" method="POST" class="d-inline" onsubmit="return confirm('Delete this entry?')">
                         @csrf
                         @method('DELETE')
@@ -176,6 +179,7 @@
                             <i class="ti ti-trash"></i>
                         </button>
                     </form>
+                    @endif
                 </div>
                 @endif
             </article>

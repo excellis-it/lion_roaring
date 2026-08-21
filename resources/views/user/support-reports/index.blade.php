@@ -75,11 +75,13 @@
                     @endif
                 </p>
             </div>
+            @if ($canCreate)
             <div class="sr-actions">
                 <a href="{{ route('support-reports.create') }}" class="btn btn-primary">
                     <i class="fa-solid fa-plus"></i> Submit New Report
                 </a>
             </div>
+            @endif
         </div>
 
         @if ($canManage)
@@ -131,6 +133,16 @@
                            class="btn btn-primary btn-sm">
                             {{ $canManage ? 'Manage' : 'View' }}
                         </a>
+                        @if ($canDelete && ($canManage || $report->user_id === auth()->id()))
+                        <form action="{{ route('support-reports.destroy', $report) }}" method="POST" class="d-inline"
+                              onsubmit="return confirm('Delete this report?')">
+                            @csrf
+                            @method('DELETE')
+                            <button type="submit" class="delete_icon border-0 bg-transparent p-0" title="Delete">
+                                <i class="ti ti-trash"></i>
+                            </button>
+                        </form>
+                        @endif
                     </div>
                 </div>
             </article>

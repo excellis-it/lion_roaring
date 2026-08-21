@@ -74,7 +74,10 @@ class PartnerVisibility
                             foreach ($manage_ecclesia_ids as $id) {
                                 $id = trim($id);
                                 if ($id !== '') {
-                                    $q->orWhereRaw('FIND_IN_SET(?, users.manage_ecclesia)', [$id]);
+                                    $q->orWhere(function ($sub) use ($id) {
+                                        $sub->where('users.is_ecclesia_admin', 1)
+                                            ->whereRaw('FIND_IN_SET(?, users.manage_ecclesia)', [$id]);
+                                    });
                                 }
                             }
                             $q->orWhere('users.created_id', $viewer->id);
@@ -97,7 +100,10 @@ class PartnerVisibility
                         foreach ($manage_ecclesia_ids as $id) {
                             $id = trim($id);
                             if ($id !== '') {
-                                $q->orWhereRaw('FIND_IN_SET(?, users.manage_ecclesia)', [$id]);
+                                $q->orWhere(function ($sub) use ($id) {
+                                    $sub->where('users.is_ecclesia_admin', 1)
+                                        ->whereRaw('FIND_IN_SET(?, users.manage_ecclesia)', [$id]);
+                                });
                             }
                         }
                         $q->orWhere('users.created_id', $viewer->id);

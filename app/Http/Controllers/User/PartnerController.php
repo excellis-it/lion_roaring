@@ -140,7 +140,10 @@ class PartnerController extends Controller
                                 foreach ($manage_ecclesia_ids as $id) {
                                     $id = trim($id);
                                     if ($id !== '') {
-                                        $q->orWhereRaw('FIND_IN_SET(?, users.manage_ecclesia)', [$id]);
+                                        $q->orWhere(function ($sub) use ($id) {
+                                            $sub->where('users.is_ecclesia_admin', 1)
+                                                ->whereRaw('FIND_IN_SET(?, users.manage_ecclesia)', [$id]);
+                                        });
                                     }
                                 }
                                 // C) Users I created
@@ -167,7 +170,10 @@ class PartnerController extends Controller
                             foreach ($manage_ecclesia_ids as $id) {
                                 $id = trim($id);
                                 if ($id !== '') {
-                                    $q->orWhereRaw('FIND_IN_SET(?, users.manage_ecclesia)', [$id]);
+                                    $q->orWhere(function ($sub) use ($id) {
+                                        $sub->where('users.is_ecclesia_admin', 1)
+                                            ->whereRaw('FIND_IN_SET(?, users.manage_ecclesia)', [$id]);
+                                    });
                                 }
                             }
                             // C) Users I created
@@ -426,8 +432,20 @@ class PartnerController extends Controller
                     'Delete Strategy',
                 ],
                 Helper::getMenuName('policy', 'Policy') => ['Manage Policy', 'Upload Policy', 'Download Policy', 'View Policy', 'Delete Policy'],
-                Helper::getMenuName('support_reports', 'Support Reports') => ['Manage Support Reports'],
-                Helper::getMenuName('change_logs', 'Change Logs') => ['Manage Change Logs'],
+                Helper::getMenuName('support_reports', 'Support Reports') => [
+                    'View Support Reports',
+                    'Create Support Reports',
+                    'Edit Support Reports',
+                    'Delete Support Reports',
+                    'Manage Support Reports',
+                ],
+                Helper::getMenuName('change_logs', 'Change Logs') => [
+                    'View Change Logs',
+                    'Create Change Logs',
+                    'Edit Change Logs',
+                    'Delete Change Logs',
+                    'Manage Change Logs',
+                ],
                 Helper::getMenuName('donations', 'Donations') => ['Manage Donations'],
                 Helper::getMenuName('newsletters', 'Newsletters') => ['Manage Newsletters', 'Delete Newsletters'],
                 Helper::getMenuName('admin_list', 'Admin List') => ['Create Admin List', 'Delete Admin List', 'Manage Admin List', 'Edit Admin List'],
@@ -678,7 +696,11 @@ class PartnerController extends Controller
         $data->membership_excluded = $request->boolean('membership_excluded');
 
 
-        $data->manage_ecclesia = $request->has('manage_ecclesia') ? implode(',', $request->manage_ecclesia) : null;
+        // House of Ecclesia access only belongs to an ECCLESIA role. Persisting it for anyone
+        // else made ordinary members visible to unrelated ECCLESIA admins (client test #18).
+        $data->manage_ecclesia = $is_ecclesia_admin == 1 && $request->has('manage_ecclesia')
+            ? implode(',', $request->manage_ecclesia)
+            : null;
 
         $data->save();
 
@@ -943,11 +965,9 @@ class PartnerController extends Controller
             $data->city = $request->city;
             $data->zip = $request->zip;
             $data->address2 = $request->address2;
-            if ($is_ecclesia_admin == 1) {
-                $data->ecclesia_id = null;
-            } else {
-                $data->ecclesia_id = $request->ecclesia_id;
-            }
+            // An ECCLESIA member keeps their own house of ecclesia; the manage_ecclesia list is
+            // additional access, not a replacement for it (client test #18).
+            $data->ecclesia_id = $request->ecclesia_id;
             $data->is_ecclesia_admin = $is_ecclesia_admin;
             $data->phone = $request->country_code ? '+' . $request->country_code . ' ' . $request->phone : $request->phone;
             $data->phone_country_code_name = $request->phone_country_code_name;
@@ -955,7 +975,10 @@ class PartnerController extends Controller
                 $data->password = bcrypt($request->password);
             }
 
-            $data->manage_ecclesia = $request->has('manage_ecclesia') ? implode(',', $request->manage_ecclesia) : null;
+            // See store(): access is meaningful only for an ECCLESIA role.
+            $data->manage_ecclesia = $is_ecclesia_admin == 1 && $request->has('manage_ecclesia')
+                ? implode(',', $request->manage_ecclesia)
+                : null;
             $data->membership_excluded = $request->boolean('membership_excluded');
 
             $data->save();
@@ -1210,7 +1233,10 @@ class PartnerController extends Controller
                                 foreach ($manage_ecclesia_ids as $id) {
                                     $id = trim($id);
                                     if ($id !== '') {
-                                        $q->orWhereRaw('FIND_IN_SET(?, users.manage_ecclesia)', [$id]);
+                                        $q->orWhere(function ($sub) use ($id) {
+                                            $sub->where('users.is_ecclesia_admin', 1)
+                                                ->whereRaw('FIND_IN_SET(?, users.manage_ecclesia)', [$id]);
+                                        });
                                     }
                                 }
                                 $q->orWhere('users.created_id', $user->id);
@@ -1233,7 +1259,10 @@ class PartnerController extends Controller
                             foreach ($manage_ecclesia_ids as $id) {
                                 $id = trim($id);
                                 if ($id !== '') {
-                                    $q->orWhereRaw('FIND_IN_SET(?, users.manage_ecclesia)', [$id]);
+                                    $q->orWhere(function ($sub) use ($id) {
+                                        $sub->where('users.is_ecclesia_admin', 1)
+                                            ->whereRaw('FIND_IN_SET(?, users.manage_ecclesia)', [$id]);
+                                    });
                                 }
                             }
                             $q->orWhere('users.created_id', $user->id);
@@ -1266,8 +1295,9 @@ class PartnerController extends Controller
 
         $user = Auth::user();
         $is_user_ecclesia_admin = $user->is_ecclesia_admin;
+        $currentCode = strtoupper(Helper::resolveVisitorCountryCode());
 
-        $partners = User::with(['ecclesia', 'userRole', 'userRegisterAgreement', 'countries'])
+        $partners = User::with(['ecclesia', 'userRole', 'userRegisterAgreement', 'countries', 'userLastSubscription.tier'])
             ->leftJoin('user_types as ut', 'users.user_type_id', '=', 'ut.id')
             ->where(function ($q) {
                 $q->whereNull('ut.id')
@@ -1310,28 +1340,86 @@ class PartnerController extends Controller
                     });
             })
                 ->where('users.id', '!=', $user->id);
-        } elseif ($user->user_type == 'Global') {
-            $partners->where('users.user_type', 'Global');
-        } elseif ($is_user_ecclesia_admin == 1) {
-            $manage_ecclesia_ids = is_array($user->manage_ecclesia)
-                ? $user->manage_ecclesia
-                : explode(',', $user->manage_ecclesia);
 
-            $partners->where(function ($q) {
-                $q->whereNull('ut.id')
-                    ->orWhereHas('userRole', function ($subQ) {
-                        $subQ->whereIn('type', [2, 3]);
+            // Scope SUPER ADMIN to the instance being viewed:
+            // .org (GL) -> Global & G_R, any country. Regional domain (.us) -> G_R & Regional in that country.
+            if ($currentCode === 'GL') {
+                $partners->whereIn('users.user_type', ['Global', 'G_R']);
+            } elseif ($currentCode !== '') {
+                $partners->whereIn('users.user_type', ['G_R', 'Regional']);
+
+                $instanceCountryId = Country::where('code', $currentCode)->value('id');
+                if ($instanceCountryId) {
+                    $partners->where('users.country', $instanceCountryId);
+                }
+            }
+        } else {
+            // Hide inactive users for all non-SUPER ADMIN viewers (mirrors index()).
+            $partners->where('users.status', 1);
+
+            if ($user->user_type == 'Global') {
+                $partners->whereIn('users.user_type', ['Global', 'G_R']);
+            } elseif ($user->user_type == 'G_R') {
+                if ($currentCode == 'GL') {
+                    $partners->whereIn('users.user_type', ['Global', 'G_R']);
+                } else {
+                    $manage_ecclesia_ids = is_array($user->manage_ecclesia)
+                        ? $user->manage_ecclesia
+                        : explode(',', (string) $user->manage_ecclesia);
+
+                    $partners->where('users.country', $user->country)
+                        ->whereIn('users.user_type', ['Regional', 'G_R'])
+                        ->where(function ($q) {
+                            $q->whereNull('ut.id')
+                                ->orWhereHas('userRole', function ($subQ) {
+                                    $subQ->whereIn('type', [2, 3]);
+                                });
+                        });
+
+                    if ($is_user_ecclesia_admin == 1) {
+                        $partners->where(function ($q) use ($manage_ecclesia_ids, $user) {
+                            $q->where(function ($sub) use ($manage_ecclesia_ids) {
+                                $sub->whereIn('users.ecclesia_id', $manage_ecclesia_ids)->whereNotNull('users.ecclesia_id');
+                            });
+                            foreach ($manage_ecclesia_ids as $id) {
+                                $id = trim($id);
+                                if ($id !== '') {
+                                    $q->orWhere(function ($sub) use ($id) {
+                                        $sub->where('users.is_ecclesia_admin', 1)
+                                            ->whereRaw('FIND_IN_SET(?, users.manage_ecclesia)', [$id]);
+                                    });
+                                }
+                            }
+                            $q->orWhere('users.created_id', $user->id);
+                            $q->orWhere('users.id', auth()->id());
+                        });
+                    }
+                }
+            } elseif ($user->user_type == 'Regional') {
+                $partners->where('users.country', $user->country)
+                    ->whereIn('users.user_type', ['Regional', 'G_R']);
+
+                if ($is_user_ecclesia_admin == 1) {
+                    $manage_ecclesia_ids = is_array($user->manage_ecclesia)
+                        ? $user->manage_ecclesia
+                        : explode(',', (string) $user->manage_ecclesia);
+                    $partners->where(function ($q) use ($manage_ecclesia_ids, $user) {
+                        $q->where(function ($sub) use ($manage_ecclesia_ids) {
+                            $sub->whereIn('users.ecclesia_id', $manage_ecclesia_ids)->whereNotNull('users.ecclesia_id');
+                        });
+                        foreach ($manage_ecclesia_ids as $id) {
+                            $id = trim($id);
+                            if ($id !== '') {
+                                $q->orWhere(function ($sub) use ($id) {
+                                    $sub->where('users.is_ecclesia_admin', 1)
+                                        ->whereRaw('FIND_IN_SET(?, users.manage_ecclesia)', [$id]);
+                                });
+                            }
+                        }
+                        $q->orWhere('users.created_id', $user->id);
+                        $q->orWhere('users.id', auth()->id());
                     });
-            })
-                ->where(function ($q) use ($manage_ecclesia_ids, $user) {
-                    $q->whereIn('users.ecclesia_id', $manage_ecclesia_ids)->whereNotNull('users.ecclesia_id')
-                        ->orWhere('users.created_id', $user->id)->orWhere('users.id', auth()->id());
-                });
-        }
-
-        if (!$user->hasNewRole('SUPER ADMIN') && $user->user_type != 'Global') {
-            if ($user->user_type == 'Regional') {
-                $partners->where('users.country', $user->country)->where('users.user_type', 'Regional');
+                }
             }
         }
 

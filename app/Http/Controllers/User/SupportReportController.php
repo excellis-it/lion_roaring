@@ -22,8 +22,27 @@ class SupportReportController extends Controller
         return $user->hasNewRole('SUPER ADMIN') || $user->can('Manage Support Reports');
     }
 
+    private function canView(): bool
+    {
+        return $this->canManage() || auth()->user()->can('View Support Reports');
+    }
+
+    private function canCreate(): bool
+    {
+        return $this->canManage() || auth()->user()->can('Create Support Reports');
+    }
+
+    private function canDelete(): bool
+    {
+        return $this->canManage() || auth()->user()->can('Delete Support Reports');
+    }
+
     public function index(Request $request)
     {
+        if (!$this->canView()) {
+            abort(403, 'You do not have permission to access this page.');
+        }
+
         $canManage = $this->canManage();
         $scope = $canManage && $request->get('scope') === 'mine' ? 'mine' : ($canManage ? 'all' : 'mine');
 
@@ -44,9 +63,14 @@ class SupportReportController extends Controller
             $reports = $query->paginate(15)->withQueryString();
         }
 
+        $canCreate = $this->canCreate();
+        $canDelete = $this->canDelete();
+
         return view('user.support-reports.index', compact(
             'reports',
             'canManage',
+            'canCreate',
+            'canDelete',
             'scope',
             'statusFilter'
         ));
@@ -54,11 +78,19 @@ class SupportReportController extends Controller
 
     public function create()
     {
+        if (!$this->canCreate()) {
+            abort(403, 'You do not have permission to submit a support report.');
+        }
+
         return view('user.support-reports.create');
     }
 
     public function store(Request $request)
     {
+        if (!$this->canCreate()) {
+            abort(403, 'You do not have permission to submit a support report.');
+        }
+
         $validated = $request->validate([
             'subject' => 'required|string|max:255',
             'message' => 'required|string',
@@ -130,6 +162,20 @@ class SupportReportController extends Controller
         return view('user.support-reports.show', [
             'report' => $supportReport,
             'canManage' => $canManage,
+            'canDelete' => $this->canDelete() && ($supportReport->user_id === auth()->id() || $canManage),
         ]);
+    }
+
+    public function destroy(SupportReport $supportReport)
+    {
+        $canManage = $this->canManage();
+
+        if (!$this->canDelete() || ($supportReport->user_id !== auth()->id() && !$canManage)) {
+            abort(403, 'You do not have permission to delete this report.');
+        }
+
+        $supportReport->delete();
+
+        return redirect()->route('support-reports.index')->with('message', 'Support report deleted.');
     }
 }

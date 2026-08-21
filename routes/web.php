@@ -1300,6 +1300,7 @@ Route::prefix('user')->middleware(['user', 'preventBackHistory', 'userActivity',
         });
 
         Route::get('/{supportReport}', [SupportReportController::class, 'show'])->name('show');
+        Route::delete('/{supportReport}', [SupportReportController::class, 'destroy'])->name('destroy');
     });
 
     Route::prefix('change-logs')->name('change-logs.')->group(function () {

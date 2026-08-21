@@ -1272,7 +1272,7 @@
             function updatePermissions(permissions, is_ecclesia, is_admin) {
                 if (is_ecclesia == 1) {
                     $("#hoe_row").show();
-                    $("#ecclesia_main_input").hide();
+                    $("#ecclesia_main_input").show();
                 } else {
                     $("#hoe_row").hide();
                     $("#ecclesia_main_input").show();
@@ -1334,7 +1334,7 @@
                 var is_ecclesia = checkedRadio.data('isecclesia');
                 if (is_ecclesia == 1) {
                     $("#hoe_row").show();
-                    $("#ecclesia_main_input").hide();
+                    $("#ecclesia_main_input").show();
                     // Optional: if you used another ID somewhere
                     // $('#house-of-ecclesia-section').removeClass('d-none');
                 } else {

@@ -1208,7 +1208,7 @@
 
                 if (is_ecclesia == 1) {
                     $("#hoe_row").show();
-                    $("#ecclesia_main_input").hide();
+                    $("#ecclesia_main_input").show();
                 } else {
                     $("#hoe_row").hide();
                     $("#ecclesia_main_input").show();
@@ -1299,7 +1299,7 @@
                 var is_admin = checkedRole.data('isadmin');
                 if (is_ecclesia == 1) {
                     $("#hoe_row").show();
-                    $("#ecclesia_main_input").hide();
+                    $("#ecclesia_main_input").show();
                 } else {
                     $("#hoe_row").hide();
                     $("#ecclesia_main_input").show();

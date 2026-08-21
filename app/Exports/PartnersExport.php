@@ -33,6 +33,7 @@ class PartnersExport implements FromCollection, WithHeadings, WithMapping, Shoul
             'Middle Name',
             'Last Name',
             'User Type',
+            'Member Tier',
             'Country',
             'Role',
             'House Of Ecclesia',
@@ -51,6 +52,9 @@ class PartnersExport implements FromCollection, WithHeadings, WithMapping, Shoul
             $partner->middle_name,
             $partner->last_name,
             $partner->user_type,
+            optional(optional($partner->userLastSubscription)->tier)->name
+                ?? optional($partner->userLastSubscription)->subscription_name
+                ?? '-',
             $partner->countries->name ?? '-',
             $partner->userRole->name ?? '',
             $partner->ecclesia->name ?? 'NO NAME',

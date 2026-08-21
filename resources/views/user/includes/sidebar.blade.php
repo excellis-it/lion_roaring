@@ -1291,7 +1291,8 @@
                      </li>
                  @endif
 
-                 {{-- Support Reports — available to all users --}}
+                 {{-- Support Reports — gated by Member Tier privilege --}}
+                 @if (Gate::check('View Support Reports') || Gate::check('Manage Support Reports'))
                  <li class="sidebar-item">
                      <a class="sidebar-link {{ Request::is('user/support-reports*') ? 'active' : '' }}"
                          href="{{ route('support-reports.index') }}" aria-expanded="false">
@@ -1302,7 +1303,10 @@
                      </a>
                  </li>
 
-                 {{-- Change Logs — available to all users --}}
+                 @endif
+
+                 {{-- Change Logs — gated by Member Tier privilege --}}
+                 @if (Gate::check('View Change Logs') || Gate::check('Manage Change Logs'))
                  <li class="sidebar-item">
                      <a class="sidebar-link {{ Request::is('user/change-logs*') ? 'active' : '' }}"
                          href="{{ route('change-logs.index') }}" aria-expanded="false">
@@ -1312,6 +1316,8 @@
                          <span class="hide-menu">{{ Helper::getMenuName('change_logs', 'Change Logs') }}</span>
                      </a>
                  </li>
+
+                 @endif
 
                  {{-- Project Documentation - SUPER ADMIN Only --}}
                  @if (Auth::check() && Auth::user()->hasNewRole('SUPER ADMIN'))

@@ -20,6 +20,26 @@ class ChangeLogController extends Controller
         return $user->hasNewRole('SUPER ADMIN') || $user->can('Manage Change Logs');
     }
 
+    private function canView(): bool
+    {
+        return $this->canManage() || auth()->user()->can('View Change Logs');
+    }
+
+    private function canCreate(): bool
+    {
+        return $this->canManage() || auth()->user()->can('Create Change Logs');
+    }
+
+    private function canEdit(): bool
+    {
+        return $this->canManage() || auth()->user()->can('Edit Change Logs');
+    }
+
+    private function canDelete(): bool
+    {
+        return $this->canManage() || auth()->user()->can('Delete Change Logs');
+    }
+
     private function userTimezone(): string
     {
         return auth()->user()->time_zone ?? config('app.timezone');
@@ -68,6 +88,10 @@ class ChangeLogController extends Controller
 
     public function index(Request $request)
     {
+        if (!$this->canView()) {
+            abort(403, 'You do not have permission to access this page.');
+        }
+
         $platform = in_array($request->platform, ['web', 'mobile'], true)
             ? $request->platform
             : 'web';
@@ -89,8 +113,15 @@ class ChangeLogController extends Controller
         $webVersion = $settings->WEB_APP_VERSION ?? null;
         $mobileVersion = $settings->MOBILE_APP_VERSION ?? null;
 
+        $canCreate = $this->canCreate();
+        $canEdit = $this->canEdit();
+        $canDelete = $this->canDelete();
+
         return view('user.change-logs.index', compact(
             'changeLogs',
+            'canCreate',
+            'canEdit',
+            'canDelete',
             'platform',
             'webVersion',
             'mobileVersion'
@@ -99,6 +130,10 @@ class ChangeLogController extends Controller
 
     public function updateVersions(Request $request)
     {
+        if (!$this->canEdit()) {
+            abort(403, 'You do not have permission to edit version numbers.');
+        }
+
         if (!$this->canManage()) {
             abort(403, 'You do not have permission to access this page.');
         }
@@ -130,6 +165,10 @@ class ChangeLogController extends Controller
 
     public function create(Request $request)
     {
+        if (!$this->canCreate()) {
+            abort(403, 'You do not have permission to create change logs.');
+        }
+
         if (!$this->canManage()) {
             abort(403, 'You do not have permission to access this page.');
         }
@@ -147,6 +186,10 @@ class ChangeLogController extends Controller
 
     public function store(Request $request)
     {
+        if (!$this->canCreate()) {
+            abort(403, 'You do not have permission to create change logs.');
+        }
+
         if (!$this->canManage()) {
             abort(403, 'You do not have permission to access this page.');
         }
@@ -181,6 +224,10 @@ class ChangeLogController extends Controller
 
     public function edit(ChangeLog $changeLog)
     {
+        if (!$this->canEdit()) {
+            abort(403, 'You do not have permission to edit change logs.');
+        }
+
         if (!$this->canManage()) {
             abort(403, 'You do not have permission to access this page.');
         }
@@ -194,6 +241,10 @@ class ChangeLogController extends Controller
 
     public function update(Request $request, ChangeLog $changeLog)
     {
+        if (!$this->canEdit()) {
+            abort(403, 'You do not have permission to edit change logs.');
+        }
+
         if (!$this->canManage()) {
             abort(403, 'You do not have permission to access this page.');
         }
@@ -222,6 +273,10 @@ class ChangeLogController extends Controller
 
     public function destroy(ChangeLog $changeLog)
     {
+        if (!$this->canDelete()) {
+            abort(403, 'You do not have permission to delete change logs.');
+        }
+
         if (!$this->canManage()) {
             abort(403, 'You do not have permission to access this page.');
         }

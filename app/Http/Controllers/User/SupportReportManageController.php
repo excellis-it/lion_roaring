@@ -15,7 +15,9 @@ class SupportReportManageController extends Controller
     {
         $user = auth()->user();
 
-        return $user->hasNewRole('SUPER ADMIN') || $user->can('Manage Support Reports');
+        return $user->hasNewRole('SUPER ADMIN')
+            || $user->can('Manage Support Reports')
+            || $user->can('Edit Support Reports');
     }
 
     public function index(Request $request)
