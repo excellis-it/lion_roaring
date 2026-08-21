@@ -1,0 +1,15 @@
+#!/usr/bin/env bash
+# Warns immediately after a merge or pull brings in the payload, before you
+# open the tree in an editor -- which is how it executes.
+set -uo pipefail
+SCAN="$(git rev-parse --show-toplevel)/.github/scripts/scan-malware.sh"
+[ -x "$SCAN" ] || exit 0
+if ! "$SCAN" "$(git rev-parse --show-toplevel)" >/dev/null 2>&1; then
+  echo
+  echo "================================================================"
+  echo " WARNING: what you just merged contains a known malware payload."
+  echo " Do NOT open this folder in VS Code or Cursor."
+  echo " Run: .github/scripts/scan-malware.sh ."
+  echo "================================================================"
+fi
+exit 0
