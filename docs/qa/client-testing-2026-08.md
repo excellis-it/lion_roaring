@@ -28,9 +28,9 @@ these four call sites disagree with it:
 Client also requests: **add Member Tier level as a column** to the member export report.
 
 ### Tier / user_type option rules
-- [ ] **ORG #6 — Add Member (Global)**: User Type dropdown offers "Regional & G_R"; it must offer **Global**. `G_R` should be derived from the Regional country context, not picked here. (PDF p.8)
+- [x] **ORG #6 — Add Member (Global)**: User Type dropdown offers "Regional & G_R"; it must offer **Global**. `G_R` should be derived from the Regional country context, not picked here. (PDF p.8)
 - [ ] **ORG #10 — Global member Renew Membership**: Tier 1 must not be offered. Default Tier 2, only alternative Tier 3. (PDF p.9)
-- [ ] **US #19 — Ecclesia Tier 2 member adding a Tier 1 member** with `user_type = Regional` throws *"You are not authorized to create partners of this type."* (see open question 4)
+- [x] **US #19 — Ecclesia Tier 2 member adding a Tier 1 member** with `user_type = Regional` throws *"You are not authorized to create partners of this type."* (see open question 4)
 
 ### Sign-up form
 - [ ] **US #21 — Field label reads "Church"; must read "Ecclesia"** (matches production). This is a label rename, not a data problem. (PDF p.6)

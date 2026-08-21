@@ -116,6 +116,50 @@ class PartnerVisibility
         return $partners;
     }
 
+    /**
+     * user_type values this viewer may assign when creating or editing a member.
+     *
+     * Mirrors the Members List scope: you may only create members you would then be able
+     * to see. create()/edit() offered a wider list than store()/update() accepted, which is
+     * why an ECCLESIA member could pick Regional and then be refused (client test #19), and
+     * why a G_R viewer on .org was offered Regional instead of Global (client test ORG #6).
+     *
+     * @return list<string>
+     */
+    public static function creatableUserTypes(User $viewer): array
+    {
+        if ($viewer->hasNewRole('SUPER ADMIN')) {
+            return ['Global', 'Regional', 'G_R'];
+        }
+
+        $currentCode = strtoupper(Helper::resolveVisitorCountryCode());
+
+        return match ($viewer->user_type) {
+            'Global' => ['Global', 'G_R'],
+            'G_R' => $currentCode === 'GL' ? ['Global', 'G_R'] : ['Regional', 'G_R'],
+            'Regional' => ['Regional', 'G_R'],
+            default => [(string) $viewer->user_type],
+        };
+    }
+
+    public static function canAssignUserType(User $viewer, ?string $userType): bool
+    {
+        return in_array((string) $userType, static::creatableUserTypes($viewer), true);
+    }
+
+    /**
+     * Regional members are country-scoped by definition, so a Regional member must be
+     * created in the viewer's own country; a Regional viewer is confined to it outright.
+     */
+    public static function mustMatchViewerCountry(User $viewer, ?string $userType): bool
+    {
+        if ($viewer->hasNewRole('SUPER ADMIN')) {
+            return false;
+        }
+
+        return $viewer->user_type === 'Regional' || (string) $userType === 'Regional';
+    }
+
     public static function viewerCanSeePartner(User $viewer, User $partner): bool
     {
         return static::visiblePartnerIdsQuery($viewer)

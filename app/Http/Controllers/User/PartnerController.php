@@ -30,6 +30,7 @@ use App\Models\UserSubscription;
 use Spatie\Permission\Models\Permission;
 use App\Models\UserTypePermission;
 use App\Services\RolePermissionAuditLogger;
+use App\Support\PartnerVisibility;
 use Illuminate\Support\Facades\Storage;
 
 class PartnerController extends Controller
@@ -505,10 +506,10 @@ class PartnerController extends Controller
             if ($isSuperAdmin || $auth_user_user_type == 'Global') {
                 $roles = UserType::whereIn('type', [2, 3])->get();
                 $eclessias = Ecclesia::orderBy('id', 'asc')->get();
-                $allowedUserTypes = $isSuperAdmin ? ['Global', 'Regional', 'G_R'] : ['Global', 'G_R'];
+                $allowedUserTypes = PartnerVisibility::creatableUserTypes($user);
             } else { // Regional
                 $roles = UserType::whereIn('type', [2, 3])->get();
-                $allowedUserTypes = ['Regional', 'G_R'];
+                $allowedUserTypes = PartnerVisibility::creatableUserTypes($user);
                 if ($user->isEcclesiaUser()) {
                     $eclessias = $user->getEcclesiaAccessAttribute();
                 } else {
@@ -599,12 +600,10 @@ class PartnerController extends Controller
 
         $auth_user = Auth::user();
         if (!$auth_user->hasNewRole('SUPER ADMIN')) {
-            // Enforce user_type
-            if ($request->user_type !== $auth_user->user_type) {
+            if (!PartnerVisibility::canAssignUserType($auth_user, $request->user_type)) {
                 return redirect()->back()->withErrors(['user_type' => 'You are not authorized to create partners of this type.'])->withInput();
             }
-            // Enforce country for Regional users
-            if ($auth_user->user_type == 'Regional' && $request->country != $auth_user->country) {
+            if (PartnerVisibility::mustMatchViewerCountry($auth_user, $request->user_type) && $request->country != $auth_user->country) {
                 return redirect()->back()->withErrors(['country' => 'You are not authorized to create partners in this country.'])->withInput();
             }
         }
@@ -803,10 +802,10 @@ class PartnerController extends Controller
             if ($isSuperAdmin || $auth_user_user_type == 'Global') {
                 $roles = UserType::whereIn('type', [2, 3])->get();
                 $eclessias = Ecclesia::orderBy('id', 'asc')->get();
-                $allowedUserTypes = $isSuperAdmin ? ['Global', 'Regional', 'G_R'] : ['Global', 'G_R'];
+                $allowedUserTypes = PartnerVisibility::creatableUserTypes($user);
             } else { // Regional
                 $roles = UserType::whereIn('type', [2, 3])->get();
-                $allowedUserTypes = ['Regional', 'G_R'];
+                $allowedUserTypes = PartnerVisibility::creatableUserTypes($user);
                 if ($user->isEcclesiaUser()) {
                     $eclessias = $user->getEcclesiaAccessAttribute();
                 } else {
@@ -901,12 +900,10 @@ class PartnerController extends Controller
 
             $auth_user = Auth::user();
             if (!$auth_user->hasNewRole('SUPER ADMIN')) {
-                // Enforce user_type
-                if ($request->user_type !== $auth_user->user_type) {
+                if (!PartnerVisibility::canAssignUserType($auth_user, $request->user_type)) {
                     return redirect()->back()->withErrors(['user_type' => 'You are not authorized to edit partners to this type.'])->withInput();
                 }
-                // Enforce country for Regional users
-                if ($auth_user->user_type == 'Regional' && $request->country != $auth_user->country) {
+                if (PartnerVisibility::mustMatchViewerCountry($auth_user, $request->user_type) && $request->country != $auth_user->country) {
                     return redirect()->back()->withErrors(['country' => 'You are not authorized to edit partners in this country.'])->withInput();
                 }
             }

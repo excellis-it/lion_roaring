@@ -10,6 +10,7 @@ use App\Models\MembershipTier;
 use App\Models\User;
 use App\Models\UserSubscription;
 use App\Models\UserType;
+use App\Support\PartnerVisibility;
 use App\Models\UserTypePermission;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -368,10 +369,11 @@ class PartnerMemberApiService
 
         $authUser = Auth::user();
         if (!$authUser->hasNewRole('SUPER ADMIN')) {
-            if ($request->user_type !== $authUser->user_type) {
+            if (!PartnerVisibility::canAssignUserType($authUser, $request->user_type)) {
                 return [false, 'You are not authorized to create partners of this type.', 201];
             }
-            if ($authUser->user_type === 'Regional' && (string) $request->country !== (string) $authUser->country) {
+            if (PartnerVisibility::mustMatchViewerCountry($authUser, $request->user_type)
+                && (string) $request->country !== (string) $authUser->country) {
                 return [false, 'You are not authorized to create partners in this country.', 201];
             }
         }
