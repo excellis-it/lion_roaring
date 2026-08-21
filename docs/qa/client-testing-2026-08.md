@@ -43,7 +43,7 @@ Client also requests: **add Member Tier level as a column** to the member export
 - [x] **US #18 — Super Admin promotes Tier 2 member to an Ecclesia role.** For `ssubowo27@gmail.com` (ECC access = "Grace International"), a member of Grace International should have house of ecclesia = Grace International, with House of Ecclesia **access** to Grace International *and* other ecclesia (e.g. Lion Roaring PMA). Observed: `irenesubowo@gmail` belongs to "Lion Roaring PMA", not Grace International. (PDF p.4–5)
 
 ### Questions (need client answer before coding)
-- [ ] **US #20 — New member free membership.** Is the "1 Month Special 2025" promo code applied in the logic? Round the Remaining days up to whole days (currently shows `30.967926331736 days`). What is the fallback rule when no promo code exists — 1 day? (PDF p.5)
+- [x] **US #20 — New member free membership.** Is the "1 Month Special 2025" promo code applied in the logic? Round the Remaining days up to whole days (currently shows `30.967926331736 days`). What is the fallback rule when no promo code exists — 1 day? (PDF p.5)
 - [ ] **US #23 — Super Admin account (`ssubowo@proton.me`).** What is the case where a super admin has `user_type = G_R`? Why is "Admin Admin" visible in Chat but not in Team & Mail? And why does `ssubowo@proton.me` itself not appear in messages at all? (PDF p.6–7)
 
 ### Marked OK but likely still defects

@@ -43,7 +43,7 @@
                             @if ($user_subscription)
                                 @php
                                     $expireDate = \Carbon\Carbon::parse($user_subscription->subscription_expire_date);
-                                    $remainingDays = now()->diffInDays($expireDate, false);
+                                    $remainingDays = (int) ceil(now()->diffInDays($expireDate, false));
                                     $canRenew = true;
                                 @endphp
 
@@ -83,7 +83,7 @@
                                         $user_subscription->subscription_start_date ?? now(),
                                     );
                                     $end = \Carbon\Carbon::parse($user_subscription->subscription_expire_date ?? now());
-                                    $totalDays = max(1, $start->diffInDays($end));
+                                    $totalDays = max(1, (int) ceil($start->diffInDays($end)));
                                     $elapsed = max(0, $totalDays - max(0, $remainingDays));
                                     $percent = (int) round(($elapsed / $totalDays) * 100);
                                 @endphp

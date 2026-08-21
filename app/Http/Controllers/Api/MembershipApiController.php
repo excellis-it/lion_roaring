@@ -94,7 +94,7 @@ class MembershipApiController extends Controller
                 : $expireDate->isPast()
         );
         $daysUntilExpiry = $expireDate
-            ? (int) now()->startOfDay()->diffInDays($expireDate->copy()->startOfDay(), false)
+            ? (int) ceil(now()->diffInDays($expireDate, false))
             : null;
         $subPayload = $sub->toArray();
         if ($expireDate && $expireDate->format('H:i:s') === '00:00:00') {
