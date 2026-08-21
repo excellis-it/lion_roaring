@@ -8,6 +8,7 @@ use Illuminate\Pagination\Paginator;
 use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Support\Facades\URL;
 use Illuminate\Support\ServiceProvider;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Schema;
 use App\Models\SiteSetting;
 
@@ -47,10 +48,25 @@ class AppServiceProvider extends ServiceProvider
         try {
             if (Schema::hasTable('site_settings')) {
                 $settings = SiteSetting::first();
-                if ($settings && !empty($settings->STRIPE_SECRET)) {
+                $key = trim((string) ($settings->STRIPE_KEY ?? ''));
+                $secret = trim((string) ($settings->STRIPE_SECRET ?? ''));
+
+                // Both halves must be present and in the same mode. A half-configured or
+                // mixed pair mints the card token on one Stripe account and charges on
+                // another, which surfaces as "No such token" at checkout. Keep .env instead.
+                $mode = static fn (string $k): ?string => str_contains($k, '_live_')
+                    ? 'live'
+                    : (str_contains($k, '_test_') ? 'test' : null);
+
+                if ($key !== '' && $secret !== '' && $mode($key) !== null && $mode($key) === $mode($secret)) {
                     config([
-                        'services.stripe.key' => $settings->STRIPE_KEY,
-                        'services.stripe.secret' => $settings->STRIPE_SECRET,
+                        'services.stripe.key' => $key,
+                        'services.stripe.secret' => $secret,
+                    ]);
+                } elseif ($key !== '' || $secret !== '') {
+                    Log::warning('Ignoring site_settings Stripe keys: incomplete or mixed live/test pair.', [
+                        'key_mode' => $key !== '' ? $mode($key) : null,
+                        'secret_mode' => $secret !== '' ? $mode($secret) : null,
                     ]);
                 }
             }

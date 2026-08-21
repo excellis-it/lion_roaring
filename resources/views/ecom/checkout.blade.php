@@ -576,7 +576,7 @@
     </script>
 
     <script>
-        const stripe = Stripe("{{ env('STRIPE_KEY') }}"); // Your Stripe Publishable Key
+        const stripe = Stripe("{{ config('services.stripe.key') }}"); // Your Stripe Publishable Key
         const elements = stripe.elements();
 
         // Stripe Card Element

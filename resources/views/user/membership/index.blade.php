@@ -581,7 +581,7 @@
         });
 
         // ── Stripe inline card element ──────────────────────────────
-        var membershipStripe = Stripe('{{ env('STRIPE_KEY') }}');
+        var membershipStripe = Stripe('{{ config('services.stripe.key') }}');
         var membershipElements = membershipStripe.elements();
         var membershipCard = membershipElements.create('card', {
             style: {
