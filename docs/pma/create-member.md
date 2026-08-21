@@ -1,6 +1,6 @@
 ---
 title: Create Member
-updated: 2026-08-13
+updated: 2026-08-21
 status: ready
 sidebar_key: create_member
 ---
@@ -29,12 +29,12 @@ If you do not see **All Members** or **+ Add Members**, you do not have the righ
 |-----|-------------------------|------------------|
 | User with **Create Partners** | Yes | Still limited by their own User Type and country (see below) |
 | User with only **Manage Partners** | Can open the list, **not** the create form | Need Create Partners separately |
-| Super Admin | Yes | Can create Global, Regional, or G_R members in any country (except the special Global country code `GL`) |
-| Global staff | Yes (if permitted) | Form offers **Global** and **G_R**; on save they may **only** create members whose User Type matches **their own** (usually Global) |
-| Regional staff | Yes (if permitted) | Form offers **Regional** and **G_R**; on save they may only create **Regional** members in **their own country** |
-| G_R staff | Yes (if permitted) | Same pattern: save must match their own User Type |
+| Super Admin | Yes | User Type options follow the **current site** (same as other staff): on **Global (`.org`)** only **Global**; on a **regional site** only **Regional** and **G_R**. Country still unrestricted except the special Global country code `GL`. |
+| Global staff | Yes (if permitted) | On **Global site**: form offers **Global** only. `G_R` is assigned from a regional country context, not here. |
+| Regional staff | Yes (if permitted) | Form offers **Regional** and **G_R**; Regional members must be in **their own country**. |
+| G_R staff | Yes (if permitted) | Same instance rules as above (Global site → Global only; regional site → Regional & G_R). |
 
-**Important:** The form may show more User Type options than you are allowed to save. If you pick a type that is not yours (and you are not Super Admin), save fails with: *You are not authorized to create partners of this type.*
+**Important:** The User Type dropdown is limited to types you may create for this site. Picking a type outside that list (or forcing it via API) fails with: *You are not authorized to create partners of this type.*
 
 Regional creators who pick another country get: *You are not authorized to create partners in this country.*
 

@@ -1,6 +1,6 @@
 ---
 title: Mobile App
-updated: 2026-07-30
+updated: 2026-08-21
 status: ready
 sidebar_key: mobile_app
 ---
@@ -43,6 +43,8 @@ Flutter app at `lion-roaring-app`. Talks to Laravel **`/api/v3`**. Country selec
 
 - OTP login (`/api/v3/login`, verify-otp), profile, FCM.
 - Membership tiers, subscribe/renew/cancel via Stripe PaymentSheet.
+- **My Membership / renew** honors API `is_locked` (e.g. Tier 1 locked on Global domain); the member’s current plan stays selectable. Same rule as web renew and public signup.
+- Create/Edit Member uses `allowed_user_types` from `/partners/create-form-data` (instance-driven: Global site → Global only).
 - Post-login agreement navigation when required.
 - Drawer items gated by permission APIs.
 

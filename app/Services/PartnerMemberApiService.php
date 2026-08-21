@@ -60,13 +60,13 @@ class PartnerMemberApiService
         $authUserType = $authUser->user_type;
         $authUserCountry = $authUser->country;
 
+        // Same instance-driven list as web PartnerController create/edit (ORG #6 / US #19).
+        $allowedUserTypes = PartnerVisibility::creatableUserTypes($authUser);
+
+        $roleTemplates = UserType::whereIn('type', [2, 3])->orderBy('name')->get();
         if ($isSuperAdmin || $authUserType === 'Global') {
-            $roleTemplates = UserType::whereIn('type', [2, 3])->orderBy('name')->get();
             $ecclesias = Ecclesia::orderBy('id', 'asc')->get(['id', 'name', 'country']);
-            $allowedUserTypes = $isSuperAdmin ? ['Global', 'Regional', 'G_R'] : ['Global', 'G_R'];
         } else {
-            $roleTemplates = UserType::whereIn('type', [2, 3])->orderBy('name')->get();
-            $allowedUserTypes = ['Regional', 'G_R'];
             if ($authUser->isEcclesiaUser()) {
                 $ecclesias = collect($authUser->ecclesia_access)->map(fn ($e) => [
                     'id' => $e->id,
@@ -436,6 +436,7 @@ class PartnerMemberApiService
         $data->city = $request->city;
         $data->zip = $request->zip;
         $data->address2 = $request->address2;
+        // ECCLESIA keeps house of ecclesia; manage_ecclesia is additional access only (US #18).
         $data->ecclesia_id = $request->ecclesia_id;
         $data->is_ecclesia_admin = $isEcclesiaAdmin;
         $data->phone = $this->formatPhone($request);
@@ -443,7 +444,7 @@ class PartnerMemberApiService
         $data->status = 1;
         $data->is_accept = 1;
         $data->membership_excluded = $request->boolean('membership_excluded');
-        $data->manage_ecclesia = $request->has('manage_ecclesia')
+        $data->manage_ecclesia = $isEcclesiaAdmin === 1 && $request->has('manage_ecclesia')
             ? implode(',', (array) $request->manage_ecclesia)
             : null;
         $data->save();
@@ -548,10 +549,11 @@ class PartnerMemberApiService
 
         $authUser = Auth::user();
         if (!$authUser->hasNewRole('SUPER ADMIN')) {
-            if ($request->user_type !== $authUser->user_type) {
+            if (!PartnerVisibility::canAssignUserType($authUser, $request->user_type)) {
                 return [false, 'You are not authorized to edit partners to this type.', 201];
             }
-            if ($authUser->user_type === 'Regional' && (string) $request->country !== (string) $authUser->country) {
+            if (PartnerVisibility::mustMatchViewerCountry($authUser, $request->user_type)
+                && (string) $request->country !== (string) $authUser->country) {
                 return [false, 'You are not authorized to edit partners in this country.', 201];
             }
         }
@@ -605,18 +607,15 @@ class PartnerMemberApiService
         $data->city = $request->city;
         $data->zip = $request->zip;
         $data->address2 = $request->address2;
-        if ($isEcclesiaAdmin === 1) {
-            $data->ecclesia_id = null;
-        } else {
-            $data->ecclesia_id = $request->ecclesia_id;
-        }
+        // ECCLESIA keeps house of ecclesia; manage_ecclesia is additional access only (US #18).
+        $data->ecclesia_id = $request->ecclesia_id;
         $data->is_ecclesia_admin = $isEcclesiaAdmin;
         $data->phone = $this->formatPhone($request);
         $data->phone_country_code_name = $request->phone_country_code_name;
         if ($request->filled('password')) {
             $data->password = bcrypt($request->password);
         }
-        $data->manage_ecclesia = $request->has('manage_ecclesia')
+        $data->manage_ecclesia = $isEcclesiaAdmin === 1 && $request->has('manage_ecclesia')
             ? implode(',', (array) $request->manage_ecclesia)
             : null;
         $data->membership_excluded = $request->boolean('membership_excluded');

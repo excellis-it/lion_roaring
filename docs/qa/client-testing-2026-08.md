@@ -23,7 +23,8 @@ these four call sites disagree with it:
   - Super Admin (.org): **report is correct** — use this as the reference implementation.
 - [x] **ORG #8 — Export Report (`.org`, G_R login)** — includes Regional users; must be Global & G_R only.
 - [x] **ORG #9 / US #23 — Chat member list** — "Admin Admin" appears in Chat but not in Team & Mail. (PDF p.9)
-- [ ] **ORG #13 — Private Collaboration invite list** — far fewer members than All Members. (PDF p.10)
+- [x] **ORG #13 — Private Collaboration invite list** — far fewer members than All Members. (PDF p.10)
+  - Web fixed earlier; **API** `getEligibleUsers` aligned for the mobile app (2026-08-21).
 
 Client also requests: **add Member Tier level as a column** to the member export report.
 

@@ -43,15 +43,19 @@ class MembershipApiController extends Controller
         // ORG #10). Sent as a flag rather than filtered out, matching
         // serializeTierForRegistration(); the policy self-gates on client build, so older
         // app versions see is_locked = false and behave exactly as before.
+        // Current plan stays unlocked so renew of an already-held locked tier still works
+        // (same rule as web MembershipController).
         $tierPolicy = app(MembershipTierRegistrationPolicy::class);
         $globalContext = $tierPolicy->isGlobalRegistrationContext();
         $lowestTierCost = $tierPolicy->lowestTierCost($tiers);
+        $currentPlanId = Auth::user()?->userLastSubscription?->plan_id;
 
-        $tiers->each(function (MembershipTier $tier) use ($tierPolicy, $globalContext, $lowestTierCost) {
-            $tier->setAttribute(
-                'is_locked',
-                $tierPolicy->isTierLockedForRegistration($tier, $globalContext, $lowestTierCost)
-            );
+        $tiers->each(function (MembershipTier $tier) use ($tierPolicy, $globalContext, $lowestTierCost, $currentPlanId) {
+            $locked = $tierPolicy->isTierLockedForRegistration($tier, $globalContext, $lowestTierCost);
+            if ($currentPlanId && (int) $tier->id === (int) $currentPlanId) {
+                $locked = false;
+            }
+            $tier->setAttribute('is_locked', $locked);
         });
 
         return response()->json([
