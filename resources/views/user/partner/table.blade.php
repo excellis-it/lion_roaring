@@ -15,7 +15,7 @@
 
             <td class="p-3 align-top">
                 @if (isset($partner->userRole) && $partner->userRole->is_ecclesia == 0)
-                {!! no_translate(isset($partner->ecclesia) ? $partner->ecclesia->name . ' (' . $partner->ecclesia->countryName->name . ')' : 'NO NAME') !!}
+                {!! no_translate(isset($partner->ecclesia) ? $partner->ecclesia->name . ' (' . $partner->ecclesia->countryName->name . ')' : '-') !!}
                 @endif
 
                 @if ($partner->is_ecclesia_admin == 1)

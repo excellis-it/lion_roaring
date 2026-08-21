@@ -57,7 +57,7 @@ class PartnersExport implements FromCollection, WithHeadings, WithMapping, Shoul
                 ?? '-',
             $partner->countries->name ?? '-',
             $partner->userRole->name ?? '',
-            $partner->ecclesia->name ?? 'NO NAME',
+            $partner->ecclesia->name ?? '-',
             $partner->userRegisterAgreement ? 'Yes' : 'No',
             $partner->phone,
             $partner->status == 1 ? 'Active' : 'Inactive',

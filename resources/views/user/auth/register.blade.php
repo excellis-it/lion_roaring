@@ -1046,7 +1046,11 @@
                 }
 
                 function getEcclesias(country) {
-                    if (!country) {
+                    // On the global domain a member is not tied to one country, so with no
+                    // country chosen list every ecclesia rather than nothing at all
+                    // (client test ORG #11). Regional domains stay filtered by country.
+                    var isGlobalDomain = {{ !empty($isGlobalDomain) ? 'true' : 'false' }};
+                    if (!country && !isGlobalDomain) {
                         $('#ecclesia_id').html('<option value=""></option>');
                         return;
                     }
@@ -1054,7 +1058,7 @@
                         url: "{{ route('get.ecclesias') }}",
                         type: "GET",
                         data: {
-                            country: country
+                            country: country || ''
                         },
                         success: function(response) {
                             var ecclesias = response;

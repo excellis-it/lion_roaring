@@ -219,7 +219,7 @@ class MembershipPrivilegeService
             if (count($manageIds) === 1) {
                 $user->ecclesia_id = $manageIds[0];
             } elseif (count($manageIds) > 1) {
-                // UI/export shows null ecclesia_id as "NO NAME"
+                // UI/export shows null ecclesia_id as "-"
                 $user->ecclesia_id = null;
             }
             // empty manage list: keep existing ecclesia_id

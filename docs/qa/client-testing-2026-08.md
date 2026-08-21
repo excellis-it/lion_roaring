@@ -34,7 +34,7 @@ Client also requests: **add Member Tier level as a column** to the member export
 
 ### Sign-up form
 - [x] **US #21 — Field label reads "Church"; must read "Ecclesia"** (matches production). This is a label rename, not a data problem. (PDF p.6)
-- [ ] **ORG #11 — Ecclesia selection dropdown is empty**; must be populated and selectable. Optional is acceptable, but an empty value currently renders as **"NO NAME"** in All Members. (PDF p.10)
+- [x] **ORG #11 — Ecclesia selection dropdown is empty**; must be populated and selectable. Optional is acceptable, but an empty value currently renders as **"NO NAME"** in All Members. (PDF p.10)
 
 ### Permissions model
 - [x] **US #17 — Support Reports & Change Logs** privileges are attached to the role, not to the Member Tier privilege, unlike every other menu. Client preference: move them to a **Member Tier privilege**. Alternative accepted: drop them from the role if they should always be on. (PDF p.4)
