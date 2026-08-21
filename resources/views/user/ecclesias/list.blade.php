@@ -15,7 +15,7 @@
 
                                 <div class="row mb-3">
                                     <div class="col-md-10">
-                                        {{-- <h3 class="mb-3">Ecclesias List</h3> --}}
+                                        {{-- <h3 class="mb-3 notranslate" translate="no">Ecclesias List</h3> --}}
                                     </div>
                                     <div class="col-md-2 float-right">
                                         <a href="{{ route('ecclesias.create') }}" class="btn btn-primary w-100">+ Add
@@ -24,7 +24,7 @@
                                 </div>
                                 <div class="row ">
                                     <div class="col-md-8">
-                                        <h3 class="mb-3 float-left">House Of Ecclesia List</h3>
+                                        <h3 class="mb-3 float-left notranslate" translate="no">House Of Ecclesia List</h3>
                                     </div>
                                     <div class="col-lg-4">
                                         <div class="search-field float-right">

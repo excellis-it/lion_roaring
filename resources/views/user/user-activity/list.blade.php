@@ -145,7 +145,7 @@
                                                 <th>Name</th>
                                                 <th>Email</th>
                                                 <th>Username</th>
-                                                <th>Ecclesia Name</th>
+                                                <th class="notranslate" translate="no">Ecclesia Name</th>
                                                 <th>IP</th>
                                                 <th>Country Code</th>
                                                 <th>Country Name</th>

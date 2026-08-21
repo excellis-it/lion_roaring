@@ -33,7 +33,7 @@ Client also requests: **add Member Tier level as a column** to the member export
 - [x] **US #19 — Ecclesia Tier 2 member adding a Tier 1 member** with `user_type = Regional` throws *"You are not authorized to create partners of this type."* (see open question 4)
 
 ### Sign-up form
-- [ ] **US #21 — Field label reads "Church"; must read "Ecclesia"** (matches production). This is a label rename, not a data problem. (PDF p.6)
+- [x] **US #21 — Field label reads "Church"; must read "Ecclesia"** (matches production). This is a label rename, not a data problem. (PDF p.6)
 - [ ] **ORG #11 — Ecclesia selection dropdown is empty**; must be populated and selectable. Optional is acceptable, but an empty value currently renders as **"NO NAME"** in All Members. (PDF p.10)
 
 ### Permissions model
@@ -47,7 +47,7 @@ Client also requests: **add Member Tier level as a column** to the member export
 - [ ] **US #23 — Super Admin account (`ssubowo@proton.me`).** What is the case where a super admin has `user_type = G_R`? Why is "Admin Admin" visible in Chat but not in Team & Mail? And why does `ssubowo@proton.me` itself not appear in messages at all? (PDF p.6–7)
 
 ### Marked OK but likely still defects
-- **US #22 / ORG #1 — "No role called CHURCH".** Both marked OK, yet both screenshots still show a live `CHURCH` role (`ssubowo27@gmail.com`). Confirm whether CHURCH should be migrated/renamed to Ecclesia. (PDF p.6, p.7)
+- **US #22 / ORG #1 — "No role called CHURCH".** RESOLVED: there is no CHURCH role. The role is named `ECCLESIA` (18 members hold it); Google Translate was rendering it as "CHURCH". Fixed with the same notranslate change as US #21. (PDF p.6, p.7)
 
 ---
 

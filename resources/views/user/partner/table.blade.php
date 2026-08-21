@@ -9,13 +9,13 @@
             <td>{{ $partner->user_type }}</td>
             <td>{{ $partner->countries->name ?? '-' }}</td>
             <td>
-                <span>{{ $partner->userRole->name ?? '' }}</span>
+                <span class="notranslate" translate="no">{{ $partner->userRole->name ?? '' }}</span>
             </td>
 
 
             <td class="p-3 align-top">
                 @if (isset($partner->userRole) && $partner->userRole->is_ecclesia == 0)
-                {{ isset($partner->ecclesia) ? $partner->ecclesia->name . ' (' . $partner->ecclesia->countryName->name . ')' : 'NO NAME' }}
+                {!! no_translate(isset($partner->ecclesia) ? $partner->ecclesia->name . ' (' . $partner->ecclesia->countryName->name . ')' : 'NO NAME') !!}
                 @endif
 
                 @if ($partner->is_ecclesia_admin == 1)
@@ -24,7 +24,7 @@
 
                     <button title="Ecclesia Access" type="button" class="btn btn-primary btn-sm ecclesia-see-button"
                         data-bs-toggle="modal" data-bs-target="#modalEcAccess_{{ $partner->id }}">
-                        <i class="ti ti-eye"></i> Ecclesia Access
+                        <i class="ti ti-eye"></i> <span class="notranslate" translate="no">Ecclesia Access</span>
                     </button>
 
                     <!-- Modal Body -->
@@ -35,7 +35,7 @@
                             <div class="modal-content">
                                 <div class="modal-header">
                                     <h5 class="modal-title">
-                                        House Of Ecclesia Access for : <br>{!! no_translate($partner->full_name) !!}
+                                        <span class="notranslate" translate="no">House Of Ecclesia Access for</span> : <br>{!! no_translate($partner->full_name) !!}
                                     </h5>
                                     <button type="button" class="btn-close" data-bs-dismiss="modal"
                                         aria-label="Close"></button>
@@ -45,7 +45,7 @@
                                     <ul class="list-group list-group-numbered">
                                         @if (!empty($partner->ecclesia_access))
                                             @foreach ($partner->ecclesia_access as $ecclesia_access)
-                                                <li class="list-group-item mb-1">{{ $ecclesia_access->name }}
+                                                <li class="list-group-item mb-1">{!! no_translate($ecclesia_access->name) !!}
                                                 </li>
                                             @endforeach
                                         @endif

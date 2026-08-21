@@ -603,8 +603,8 @@
                                                 {{-- eclessias --}}
                                                 <div class="col-lg-4 mb-3">
                                                     <div class="login-username">
-                                                        <label for="user_login">Ecclesia</label>
-                                                        <select name="ecclesia_id" id="ecclesia_id" class="input">
+                                                        <label for="user_login" class="notranslate" translate="no">Ecclesia</label>
+                                                        <select name="ecclesia_id" id="ecclesia_id" class="input notranslate" translate="no">
                                                             <option value=""></option>
                                                             @foreach ($eclessias as $item)
                                                                 <option value="{{ $item->id }}"

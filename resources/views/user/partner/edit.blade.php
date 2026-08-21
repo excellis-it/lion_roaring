@@ -349,8 +349,8 @@
                                     {{-- ecclesia_id --}}
                                     {{-- <div class="col-md-4 mb-2">
                                         <div class="box_label">
-                                            <label>Ecclesia </label>
-                                            <select class="form-control" name="ecclesia_id">
+                                            <label class="notranslate" translate="no">Ecclesia </label>
+                                            <select class="form-control notranslate" name="ecclesia_id" translate="no">
                                                 <option value="">Select Ecclesia</option>
                                                 @foreach ($ecclessias as $item)
                                                     <option value="{{ $item->id }}"
@@ -444,8 +444,8 @@
                                     </div>
                                     <div class="col-md-4 mb-2" id="ecclesia_main_input">
                                         <div class="box_label">
-                                            <label>Ecclesias </label>
-                                            <select class="form-control" name="ecclesia_id">
+                                            <label class="notranslate" translate="no">Ecclesias </label>
+                                            <select class="form-control notranslate" name="ecclesia_id" translate="no">
                                                 <option value="">Select Ecclesia</option>
                                                 @foreach ($eclessias as $item)
                                                     <option value="{{ $item->id }}"

@@ -123,11 +123,11 @@
                                                     style="cursor: pointer"> Country
                                                 </th>
                                                 <th class="p-3">Role</th>
-                                                <th class="p-3">House Of Ecclesia</th>
+                                                <th class="p-3 notranslate" translate="no">House Of Ecclesia</th>
                                                 <th class="p-3 text-center">Registration Agreement</th>
                                                 <th class="p-3">Manage Warehouses</th>
 
-                                                {{-- <th>
+                                                {{-- <th class="notranslate" translate="no">
                                                     Ecclesia
                                                 </th>
                                                 <th class="sorting" data-tippy-content="Sort by User Name"

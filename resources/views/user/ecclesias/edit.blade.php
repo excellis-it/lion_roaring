@@ -18,14 +18,14 @@
                         <div class="row">
                             <div class="col-md-12">
                                 <div class="heading_box mb-5">
-                                    <h3>Save Ecclesia</h3>
+                                    <h3 class="notranslate" translate="no">Save Ecclesia</h3>
                                 </div>
                             </div>
                         </div>
                         <div class="row">
                             <div class="col-md-6 mb-2">
                                 <div class="box_label">
-                                    <label>Ecclesia Name *</label>
+                                    <label class="notranslate" translate="no">Ecclesia Name *</label>
                                     <input type="text" class="form-control" name="name" value="{{ $ecclesia->name }}"
                                         placeholder="">
                                     @if ($errors->has('name'))
