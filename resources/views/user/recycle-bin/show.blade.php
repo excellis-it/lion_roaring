@@ -821,8 +821,24 @@
                 showCancelButton: true
             }).then((result) => {
                 if (result.value) {
-                    window.location.href = "{{ route('user.recycle-bin.restore-all', ['table' => ':table']) }}"
-                        .replace(':table', tableName);
+                    // Must POST — route is Route::post(.../restore-all). GET caused 405 (BUG-0057).
+                    $.ajax({
+                        url: "{{ route('user.recycle-bin.restore-all', ['table' => ':table']) }}"
+                            .replace(':table', tableName),
+                        type: 'POST',
+                        data: {
+                            _token: csrfToken
+                        },
+                        success: function(response) {
+                            if (response.success) {
+                                toastr.success(response.message);
+                                setTimeout(() => location.reload(), 1000);
+                            }
+                        },
+                        error: function(xhr) {
+                            toastr.error(xhr.responseJSON?.message || 'Failed to restore all items');
+                        }
+                    });
                 }
             });
         }

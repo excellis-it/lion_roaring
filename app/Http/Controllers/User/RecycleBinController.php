@@ -397,16 +397,35 @@ class RecycleBinController extends Controller
     /**
      * Restore all items for a table
      */
-    public function restoreAll($table)
+    public function restoreAll(Request $request, $table)
     {
         if (!isset($this->recyclableModels[$table])) {
-            return response()->json(['success' => false, 'message' => 'Invalid table'], 400);
+            if ($request->ajax()) {
+                return response()->json(['success' => false, 'message' => 'Invalid table'], 400);
+            }
+
+            return redirect()->route('user.recycle-bin.index')
+                ->with('error', 'Invalid table');
         }
 
         $model = $this->recyclableModels[$table];
-        $count = $model::onlyTrashed()->count();
+        $trashed = $model::onlyTrashed()->get();
+        $count = $trashed->count();
 
-        $model::onlyTrashed()->restore();
+        foreach ($trashed as $item) {
+            $item->restore();
+
+            if ($table === 'products') {
+                $this->restoreProductRelatedData($item->id);
+            }
+        }
+
+        if ($request->ajax()) {
+            return response()->json([
+                'success' => true,
+                'message' => "All $count item(s) restored successfully"
+            ]);
+        }
 
         return redirect()->route('user.recycle-bin.show', $table)
             ->with('success', "All $count item(s) restored successfully");

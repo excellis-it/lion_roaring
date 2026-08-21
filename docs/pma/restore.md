@@ -1,6 +1,6 @@
 ---
 title: Restore
-updated: 2026-08-13
+updated: 2026-08-21
 status: ready
 sidebar_key: recycle_bin
 ---
@@ -35,6 +35,8 @@ If you are staff and need something undeleted, ask a Super Admin.
 | Empty bin | Clear deleted rows for that table |
 
 The Spatie **roles** table is excluded from this tool.
+
+**Restore All** and other mutating actions use **POST** (or DELETE for permanent removal). Navigating to those URLs with GET is rejected (405).
 
 ---
 
