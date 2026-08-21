@@ -101,15 +101,21 @@ class PrivateCollaborationController extends Controller
                     ->orderBy('first_name')->orderBy('last_name')->get();
 
             } elseif ($user_type == 'Global' || ($user_type == 'G_R' && $isOnGlobalServer)) {
-                $eligibleUsers = User::whereHas('userRole', function ($query) {
-                    $query->where('name', '!=', 'SUPER ADMIN');
+                $eligibleUsers = User::where(function ($query) {
+                    $query->whereNull('user_type_id')
+                        ->orWhereHas('userRole', function ($r) {
+                            $r->where('name', '!=', 'SUPER ADMIN');
+                        });
                 })->whereIn('user_type', ['Global', 'G_R'])
                     ->where('status', 1)
                     ->where('id', '!=', auth()->id())
                     ->orderBy('first_name')->orderBy('last_name')->get();
             } else {
-                $eligibleUsersQuery = User::whereHas('userRole', function ($query) {
-                    $query->where('name', '!=', 'SUPER ADMIN');
+                $eligibleUsersQuery = User::where(function ($query) {
+                    $query->whereNull('user_type_id')
+                        ->orWhereHas('userRole', function ($r) {
+                            $r->where('name', '!=', 'SUPER ADMIN');
+                        });
                 })->where('id', '!=', auth()->id())
                     ->whereIn('user_type', ['Regional', 'G_R'])
                     ->where('status', 1)
@@ -126,7 +132,10 @@ class PrivateCollaborationController extends Controller
                         foreach ($manage_ecclesia_ids as $id) {
                             $id = trim($id);
                             if ($id !== '') {
-                                $q->orWhereRaw('FIND_IN_SET(?, manage_ecclesia)', [$id]);
+                                $q->orWhere(function ($sub) use ($id) {
+                                    $sub->where('is_ecclesia_admin', 1)
+                                        ->whereRaw('FIND_IN_SET(?, manage_ecclesia)', [$id]);
+                                });
                             }
                         }
                     });
@@ -183,7 +192,10 @@ class PrivateCollaborationController extends Controller
                     foreach ($manage_ecclesia_ids as $id) {
                         $id = trim($id);
                         if ($id !== '') {
-                            $q->orWhereRaw('FIND_IN_SET(?, manage_ecclesia)', [$id]);
+                            $q->orWhere(function ($sub) use ($id) {
+                                $sub->where('is_ecclesia_admin', 1)
+                                    ->whereRaw('FIND_IN_SET(?, manage_ecclesia)', [$id]);
+                            });
                         }
                     }
                 });
