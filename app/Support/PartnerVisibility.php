@@ -128,16 +128,23 @@ class PartnerVisibility
      */
     public static function creatableUserTypes(User $viewer): array
     {
+        $currentCode = strtoupper(Helper::resolveVisitorCountryCode());
+
+        // The instance decides what may be created. G_R is only ever assigned from a regional
+        // country, so the global site offers Global alone (client test ORG #6); the regional
+        // site offers Regional and G_R.
+        if ($currentCode !== '') {
+            return $currentCode === 'GL' ? ['Global'] : ['Regional', 'G_R'];
+        }
+
+        // No resolvable instance (console, tests): fall back to the viewer's own scope.
         if ($viewer->hasNewRole('SUPER ADMIN')) {
             return ['Global', 'Regional', 'G_R'];
         }
 
-        $currentCode = strtoupper(Helper::resolveVisitorCountryCode());
-
         return match ($viewer->user_type) {
-            'Global' => ['Global', 'G_R'],
-            'G_R' => $currentCode === 'GL' ? ['Global', 'G_R'] : ['Regional', 'G_R'],
-            'Regional' => ['Regional', 'G_R'],
+            'Global' => ['Global'],
+            'G_R', 'Regional' => ['Regional', 'G_R'],
             default => [(string) $viewer->user_type],
         };
     }
