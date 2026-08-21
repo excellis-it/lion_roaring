@@ -8,6 +8,7 @@ use App\Models\MembershipMeasurement;
 use App\Models\MembershipPromoCode;
 use App\Models\MembershipPromoUsage;
 use App\Models\MembershipTier;
+use App\Services\MembershipTierRegistrationPolicy;
 use App\Models\SubscriptionPayment;
 use App\Models\UserSubscription;
 use App\Services\CheckoutPaymentService;
@@ -37,6 +38,21 @@ class MembershipApiController extends Controller
         $tiers = MembershipTier::with(['benefits' => function ($q) {
             $q->orderBy('sort_order');
         }])->get();
+
+        // Tell the app which tiers this domain does not offer (Tier 1 on global — client test
+        // ORG #10). Sent as a flag rather than filtered out, matching
+        // serializeTierForRegistration(); the policy self-gates on client build, so older
+        // app versions see is_locked = false and behave exactly as before.
+        $tierPolicy = app(MembershipTierRegistrationPolicy::class);
+        $globalContext = $tierPolicy->isGlobalRegistrationContext();
+        $lowestTierCost = $tierPolicy->lowestTierCost($tiers);
+
+        $tiers->each(function (MembershipTier $tier) use ($tierPolicy, $globalContext, $lowestTierCost) {
+            $tier->setAttribute(
+                'is_locked',
+                $tierPolicy->isTierLockedForRegistration($tier, $globalContext, $lowestTierCost)
+            );
+        });
 
         return response()->json([
             'status' => true,

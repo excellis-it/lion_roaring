@@ -5,6 +5,7 @@ namespace App\Http\Controllers\User;
 use App\Http\Controllers\Controller;
 use App\Services\CheckoutPaymentService;
 use App\Services\MembershipPrivilegeService;
+use App\Services\MembershipTierRegistrationPolicy;
 use App\Services\MembershipPricing;
 use Illuminate\Http\Request;
 use App\Models\MembershipTier;
@@ -28,6 +29,22 @@ class MembershipController extends Controller
         $measurement = MembershipMeasurement::first();
         $tiers = MembershipTier::with('benefits')->get();
         $user_subscription = Auth::user()->userLastSubscription ?? null;
+
+        // Registration already hides tiers that are not offered on this domain; renewals must
+        // match, so a Global member is not offered Tier 1 (client test ORG #10). A member's own
+        // current tier is always kept so the "My Current Member Tiers" card still renders.
+        $tierPolicy = app(MembershipTierRegistrationPolicy::class);
+        $globalContext = $tierPolicy->isGlobalRegistrationContext();
+        $lowestTierCost = $tierPolicy->lowestTierCost($tiers);
+        $currentPlanId = $user_subscription->plan_id ?? null;
+
+        $tiers = $tiers->reject(function (MembershipTier $tier) use ($tierPolicy, $globalContext, $lowestTierCost, $currentPlanId) {
+            if ($currentPlanId && $tier->id == $currentPlanId) {
+                return false;
+            }
+
+            return $tierPolicy->isTierLockedForRegistration($tier, $globalContext, $lowestTierCost);
+        })->values();
 
         $isExpired = false;
         if ($user_subscription && $user_subscription->subscription_expire_date) {
