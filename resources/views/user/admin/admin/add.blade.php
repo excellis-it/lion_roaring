@@ -122,7 +122,7 @@
                                             type="radio" name="role_name" value="{{ $role->name }}"
                                             data-permissions="{{ $role->permissions()->where('type', 2)->get() }}">
                                         <label class="form-check-label"
-                                            for="data-roles-{{ $role->id }}">{{ $role->name }}</label>
+                                            for="data-roles-{{ $role->id }}"><span class="notranslate" translate="no">{{ $role->name }}</span></label>
                                     </div>
                                 @endforeach
 

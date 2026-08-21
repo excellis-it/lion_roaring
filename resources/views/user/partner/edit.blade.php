@@ -543,8 +543,8 @@
                                                         data-isadmin="{{ $role->is_admin ?? 0 }}"
                                                         {{ $currentRoleName == $role->name ? 'checked' : '' }}>
                                                     <label class="form-check-label"
-                                                        for="data-roles-{{ $role->id }}">{{ $role->name }}
-                                                        <small>{{ $role->is_ecclesia == 1 ? '(ECCLESIA)' : '' }}</small></label>
+                                                        for="data-roles-{{ $role->id }}"><span class="notranslate" translate="no">{{ $role->name }}</span>
+                                                        <small class="notranslate" translate="no">{{ $role->is_ecclesia == 1 ? '(ECCLESIA)' : '' }}</small></label>
                                                 </div>
                                             @endforeach
                                             @if ($errors->has('role'))

@@ -13,7 +13,7 @@
                                 @foreach ($roles as $role)
                                     <option value="{{ $role->name }}"
                                         {{ $eclessia->getFirstUserRoleName() == $role->name ? 'selected' : '' }}>
-                                        {{ $role->name }}
+                                        <span class="notranslate" translate="no">{{ $role->name }}</span>
                                     </option>
                                 @endforeach
                             </select>

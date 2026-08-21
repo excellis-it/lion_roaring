@@ -1,11 +1,11 @@
 @if (count($ecclesias) > 0)
 @foreach ($ecclesias as $key => $ecclesia)
     <tr>
-        <td>
+        <td class="notranslate" translate="no">
             {{ $ecclesias->firstItem() + $key }}
         </td>
-        <td>{{ $ecclesia->name }}</td>
-        <td>
+        <td class="notranslate" translate="no">{{ $ecclesia->name }}</td>
+        <td class="notranslate" translate="no">
             {{ $ecclesia->country ? $ecclesia->countryName->name : '-' }}
         </td>
         <td>
@@ -26,7 +26,7 @@
 {{-- pagination --}}
 <tr class="toxic">
     <td colspan="4">
-        <div class="d-flex justify-content-center">
+        <div class="d-flex justify-content-center notranslate" translate="no">
             {!! $ecclesias->links() !!}
         </div>
     </td>

@@ -61,7 +61,7 @@
                                                 @foreach ($roles as $role)
                                                     <option value="{{ $role->name }}"
                                                         @if (old('role') == $role->name) selected @endif>
-                                                        {{ $role->name }}
+                                                        <span class="notranslate" translate="no">{{ $role->name }}</span>
                                                     </option>
                                                 @endforeach
                                             </select>

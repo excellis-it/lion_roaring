@@ -11,8 +11,8 @@
          <div class="bg_white_border">
             <div class="d-flex justify-content-between align-items-center mb-3">
                 <div>
-                    <h3 class="mb-0">Update Ecclesia Association Page</h3>
-                    <p class="text-muted small mb-0">Update Ecclesia Association Page</p>
+                    <h3 class="mb-0 notranslate" translate="no">Update Ecclesia Association Page</h3>
+                    <p class="text-muted small mb-0 notranslate" translate="no">Update Ecclesia Association Page</p>
                 </div>
             </div>
                 <form action="{{ route('user.admin.ecclesia-associations.store') }}" method="post" enctype="multipart/form-data">
@@ -59,7 +59,7 @@
                             </div>
                             <div class="col-md-2 mb-3">
                                 <div class="form-group-div">
-                                    <div class="form-group">
+                                    <div class="form-group notranslate" translate="no">
                                         @if (isset($ecclesia_association->banner_image))
                                             <img src="{{ Storage::url($ecclesia_association->banner_image) }}"
                                                 alt="banner_image" id="preview_banner_image"

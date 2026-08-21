@@ -15,7 +15,7 @@
 
                                 <div class="row mb-3">
                                     <div class="col-md-10">
-                                        {{-- <h3 class="mb-3">Ecclesias List</h3> --}}
+                                        {{-- <h3 class="mb-3 notranslate" translate="no">Ecclesias List</h3> --}}
                                     </div>
                                 </div>
                                 <div class="row ">

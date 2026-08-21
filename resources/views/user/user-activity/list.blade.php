@@ -389,8 +389,8 @@
                                 <td>${rowNumber}</td>
                                 <td class="notranslate" translate="no">${activity.user_name || '-'}</td>
                                 <td>${activity.email || '-'}</td>
-                                <td>${activity.user_roles || '-'}</td>
-                                <td>${activity.ecclesia_name || '-'}</td>
+                                <td class="notranslate" translate="no">${activity.user_roles || '-'}</td>
+                                <td class="notranslate" translate="no">${activity.ecclesia_name || '-'}</td>
                                 <td>${activity.ip || '-'}</td>
                                 <td>${activity.country_code || '-'}</td>
                                 <td>${activity.country_name || '-'}</td>

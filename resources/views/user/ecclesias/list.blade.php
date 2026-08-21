@@ -18,7 +18,7 @@
                                         {{-- <h3 class="mb-3 notranslate" translate="no">Ecclesias List</h3> --}}
                                     </div>
                                     <div class="col-md-2 float-right">
-                                        <a href="{{ route('ecclesias.create') }}" class="btn btn-primary w-100">+ Add
+                                        <a href="{{ route('ecclesias.create') }}" class="btn btn-primary w-100 notranslate" translate="no">+ Add
                                             Ecclesia</a>
                                     </div>
                                 </div>

@@ -45,7 +45,7 @@
                                 <th class="sorting" data-tippy-content="Sort by Name" data-sorting_type="desc"
                                     data-column_name="name" style="cursor: pointer"> Name<span id="name_icon"><i
                                             class="fa fa-arrow-down"></i></span></th>
-                                <th>
+                                <th class="notranslate" translate="no">
                                     Ecclesia
                                 </th>
                                 <th class="sorting" data-tippy-content="Sort by User Name" data-sorting_type="desc"

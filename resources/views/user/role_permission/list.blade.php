@@ -21,7 +21,7 @@
                                     </div>
 
                                     <div class="col-lg-4 text-end">
-                                        <a href="{{ route('ecclesias.index') }}" class="btn btn-primary me-3">+
+                                        <a href="{{ route('ecclesias.index') }}" class="btn btn-primary me-3 notranslate" translate="no">+
                                             House Of Ecclesia</a>
 
                                         <a href="{{ route('roles.create') }}" class="btn btn-primary ">+ Add
@@ -47,7 +47,7 @@
                                                 <th>ID (#)</th>
                                                 <th>{{ App\Helpers\Helper::getMenuName('role_permission', 'Role Permission') }}
                                                 </th>
-                                                <th>Is ECCLESIA</th>
+                                                <th class="notranslate" translate="no">Is ECCLESIA</th>
                                                 <th>Is Admin</th>
                                                 <th></th>
                                             </tr>
@@ -58,8 +58,8 @@
                                                 @foreach ($roles as $key => $role)
                                                     <tr>
                                                         <td>{{ $key + 1 }}</td>
-                                                        <td> {{ $role->name }}</td>
-                                                        <td>{{ $role->is_ecclesia == 1 ? 'ECCLESIA' : '' }}</td>
+                                                        <td> <span class="notranslate" translate="no">{{ $role->name }}</span></td>
+                                                        <td><span class="notranslate" translate="no">{{ $role->is_ecclesia == 1 ? 'ECCLESIA' : '' }}</span></td>
                                                         <td>{{ $role->is_admin == 1 ? 'Yes' : 'No' }}</td>
 
                                                         <td>

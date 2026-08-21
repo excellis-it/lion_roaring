@@ -79,12 +79,12 @@
                                             <a href="{{ route('home') }}">{{ Helper::getMenuName('home', 'Home') }}</a>
                                         </li>
                                         <li>
-                                            <a
-                                                href="{{ route('organization') }}">{{ Helper::getMenuName('private_ecclesia', 'Private Ecclesia') }}</a>
+                                            <a class="notranslate"
+                                                href="{{ route('organization') }}" translate="no">{{ Helper::getMenuName('private_ecclesia', 'Private Ecclesia') }}</a>
                                         </li>
                                         <li>
-                                            <a
-                                                href="{{ route('ecclesia-associations') }}">{{ Helper::getMenuName('ecclesia_covenant', 'Ecclesia Covenant') }}</a>
+                                            <a class="notranslate"
+                                                href="{{ route('ecclesia-associations') }}" translate="no">{{ Helper::getMenuName('ecclesia_covenant', 'Ecclesia Covenant') }}</a>
                                         </li>
                                         <li>
                                             <a

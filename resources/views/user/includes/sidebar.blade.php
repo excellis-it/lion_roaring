@@ -714,7 +714,7 @@
                             <span>
                                 <img src="{{ asset('user_assets/images/ICON/Ecclesias.svg') }}" alt="">
                             </span>
-                            <span class="hide-menu">{{ Helper::getMenuName('ecclesias', 'Ecclesias') }}</span>
+                            <span class="hide-menu notranslate" translate="no">{{ Helper::getMenuName('ecclesias', 'Ecclesias') }}</span>
                         </a>
                     </li>
                  @endif
@@ -1083,7 +1083,7 @@
                                              <img src="{{ asset('user_assets/images/lion-roring-icon/lion-roring-icon/principle-and-business-modal.png') }}"
                                                  alt="Ecclesia Association">
                                          </span>
-                                         <span>{{ Helper::getMenuName('pages_ecclesia_association', 'ECCLESIA ASSOCIATION') }}</span>
+                                         <span class="notranslate" translate="no">{{ Helper::getMenuName('pages_ecclesia_association', 'ECCLESIA ASSOCIATION') }}</span>
                                      </a>
                                  @endif
 

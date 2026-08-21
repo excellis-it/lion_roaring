@@ -193,7 +193,7 @@
                             </div>
                             <div class="col-md-4 mb-2 mt-1">
                                 <div class="box_label">
-                                    <label>Is ECCLESIA?</label>
+                                    <label class="notranslate" translate="no">Is ECCLESIA?</label>
                                     <select name="is_ecclesia" id="" class="form-control" required>
                                         <option value="" disabled>
                                             Select
