@@ -1,0 +1,35 @@
+#!/usr/bin/env bash
+# Blocks a push that carries the 2026-08 EtherHiding payload.
+# This is the control that would have stopped wave 1, where the payload
+# executed on a developer machine and pushed itself using that developer's
+# credentials.
+#
+# Enable (once per clone):  git config core.hooksPath .githooks
+# Bypass in an emergency:   git push --no-verify
+set -uo pipefail
+
+SCAN="$(git rev-parse --show-toplevel)/.github/scripts/scan-malware.sh"
+[ -x "$SCAN" ] || exit 0
+
+tmp=$(mktemp -d); trap 'rm -rf "$tmp"' EXIT
+status=0
+
+while read -r local_ref local_sha remote_ref remote_sha; do
+  [ "$local_sha" = "0000000000000000000000000000000000000000" ] && continue   # deletion
+  rm -rf "${tmp:?}"/*; mkdir -p "$tmp/t"
+  git archive "$local_sha" | tar -x -C "$tmp/t"
+  if ! out=$("$SCAN" "$tmp/t" 2>&1); then
+    echo
+    echo "BLOCKED: ${remote_ref#refs/heads/} carries a known payload"
+    echo "$out"
+    status=1
+  fi
+done
+
+if [ "$status" -ne 0 ]; then
+  echo
+  echo "Push aborted. Clean the tree with:"
+  echo "  .github/scripts/scan-malware.sh --fix ."
+  echo "then commit the removal and push again."
+fi
+exit $status
