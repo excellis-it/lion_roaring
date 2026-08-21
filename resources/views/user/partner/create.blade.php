@@ -1189,13 +1189,35 @@
             });
 
             function lockUserType(lock) {
+                var $select = $('#user_type_select');
+                var $hidden = $('#user_type_hidden');
                 if (lock) {
-                    $('#user_type_select').val('G_R').change();
-                    $('#user_type_select').prop('disabled', true);
-                    $('#user_type_hidden').val('G_R').prop('disabled', false);
+                    // Prefer G_R when offered (regional). On Global (.org) the select only
+                    // has Global — forcing G_R left the field empty/disabled (BUG-0058).
+                    var preferred = 'G_R';
+                    if ($select.find('option[value="G_R"]').length === 0) {
+                        preferred = $select.find('option').filter(function() {
+                            return $(this).val();
+                        }).first().val() || '';
+                    }
+                    if (!preferred) {
+                        $select.prop('disabled', false);
+                        $hidden.prop('disabled', true);
+                        return;
+                    }
+                    $select.val(preferred).trigger('change');
+                    // Hard-lock only when G_R is the admin default for this instance;
+                    // otherwise leave enabled so the admin can confirm the allowed type.
+                    var hardLock = preferred === 'G_R';
+                    $select.prop('disabled', hardLock);
+                    if (hardLock) {
+                        $hidden.val(preferred).prop('disabled', false);
+                    } else {
+                        $hidden.prop('disabled', true);
+                    }
                 } else {
-                    $('#user_type_select').prop('disabled', false);
-                    $('#user_type_hidden').prop('disabled', true);
+                    $select.prop('disabled', false);
+                    $hidden.prop('disabled', true);
                 }
             }
 

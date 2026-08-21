@@ -155,6 +155,25 @@ class PartnerVisibility
     }
 
     /**
+     * Admin / Ecclesia roles historically force G_R, but only when this instance may create G_R.
+     * On the Global site (.org) the only creatable type is Global (ORG #6 / BUG-0058).
+     */
+    public static function preferredAdminUserType(User $viewer): string
+    {
+        $allowed = static::creatableUserTypes($viewer);
+
+        if (in_array('G_R', $allowed, true)) {
+            return 'G_R';
+        }
+
+        if (in_array('Global', $allowed, true)) {
+            return 'Global';
+        }
+
+        return $allowed[0] ?? 'Global';
+    }
+
+    /**
      * Regional members are country-scoped by definition, so a Regional member must be
      * created in the viewer's own country; a Regional viewer is confined to it outright.
      */

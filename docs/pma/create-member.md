@@ -29,7 +29,7 @@ If you do not see **All Members** or **+ Add Members**, you do not have the righ
 |-----|-------------------------|------------------|
 | User with **Create Partners** | Yes | Still limited by their own User Type and country (see below) |
 | User with only **Manage Partners** | Can open the list, **not** the create form | Need Create Partners separately |
-| Super Admin | Yes | User Type options follow the **current site** (same as other staff): on **Global (`.org`)** only **Global**; on a **regional site** only **Regional** and **G_R**. Country still unrestricted except the special Global country code `GL`. |
+| Super Admin | Yes | User Type options follow the **current site** (same as other staff): on **Global (`.org`)** only **Global**; on a **regional site** only **Regional** and **G_R**. Country still unrestricted except the special Global country code `GL`. Admin/Ecclesia roles default to **G_R** on regional sites and **Global** on `.org` (they no longer force an empty/disabled G_R on Global). |
 | Global staff | Yes (if permitted) | On **Global site**: form offers **Global** only. `G_R` is assigned from a regional country context, not here. |
 | Regional staff | Yes (if permitted) | Form offers **Regional** and **G_R**; Regional members must be in **their own country**. |
 | G_R staff | Yes (if permitted) | Same instance rules as above (Global site → Global only; regional site → Regional & G_R). |
@@ -37,6 +37,8 @@ If you do not see **All Members** or **+ Add Members**, you do not have the righ
 **Important:** The User Type dropdown is limited to types you may create for this site. Picking a type outside that list (or forcing it via API) fails with: *You are not authorized to create partners of this type.*
 
 Regional creators who pick another country get: *You are not authorized to create partners in this country.*
+
+**Admin / Ecclesia roles:** On a regional site the User Type locks to **G_R**. On the Global site it selects **Global** and stays usable (BUG-0058).
 
 ---
 

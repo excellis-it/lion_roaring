@@ -414,7 +414,7 @@ class PartnerMemberApiService
 
         $userType = $request->user_type;
         if ((int) ($theRole->is_admin ?? 0) === 1) {
-            $userType = 'G_R';
+            $userType = PartnerVisibility::preferredAdminUserType($authUser);
         }
 
         $data = new User();
@@ -596,7 +596,7 @@ class PartnerMemberApiService
 
         $userType = $request->user_type;
         if ((int) ($theRole->is_admin ?? 0) === 1) {
-            $userType = 'G_R';
+            $userType = PartnerVisibility::preferredAdminUserType($authUser);
         }
 
         $data->user_type = $userType;
