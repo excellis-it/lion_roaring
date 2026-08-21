@@ -22,7 +22,7 @@ these four call sites disagree with it:
   - Super Admin (.us): report lists only 5 members, and includes Global members that must not appear on `.us`.
   - Super Admin (.org): **report is correct** — use this as the reference implementation.
 - [x] **ORG #8 — Export Report (`.org`, G_R login)** — includes Regional users; must be Global & G_R only.
-- [ ] **ORG #9 / US #23 — Chat member list** — "Admin Admin" appears in Chat but not in Team & Mail. (PDF p.9)
+- [x] **ORG #9 / US #23 — Chat member list** — "Admin Admin" appears in Chat but not in Team & Mail. (PDF p.9)
 - [ ] **ORG #13 — Private Collaboration invite list** — far fewer members than All Members. (PDF p.10)
 
 Client also requests: **add Member Tier level as a column** to the member export report.
@@ -44,7 +44,7 @@ Client also requests: **add Member Tier level as a column** to the member export
 
 ### Questions (need client answer before coding)
 - [x] **US #20 — New member free membership.** Is the "1 Month Special 2025" promo code applied in the logic? Round the Remaining days up to whole days (currently shows `30.967926331736 days`). What is the fallback rule when no promo code exists — 1 day? (PDF p.5)
-- [ ] **US #23 — Super Admin account (`ssubowo@proton.me`).** What is the case where a super admin has `user_type = G_R`? Why is "Admin Admin" visible in Chat but not in Team & Mail? And why does `ssubowo@proton.me` itself not appear in messages at all? (PDF p.6–7)
+- [x] **US #23 — Super Admin account (`ssubowo@proton.me`).** What is the case where a super admin has `user_type = G_R`? Why is "Admin Admin" visible in Chat but not in Team & Mail? And why does `ssubowo@proton.me` itself not appear in messages at all? (PDF p.6–7)
 
 ### Marked OK but likely still defects
 - **US #22 / ORG #1 — "No role called CHURCH".** RESOLVED: there is no CHURCH role. The role is named `ECCLESIA` (18 members hold it); Google Translate was rendering it as "CHURCH". Fixed with the same notranslate change as US #21. (PDF p.6, p.7)

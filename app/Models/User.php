@@ -189,25 +189,37 @@ class User extends Authenticatable
         $currentCountry = Country::findByCurrentRequest();
         $isOnGlobalServer = $currentCountry && $currentCountry->is_global;
 
-        if ($userType == 'Global' || ($userType == 'G_R' && $isOnGlobalServer)) {
-            // Global users & G_R on global server: see Global + G_R of all countries
-            $query->whereIn('user_type', ['Global', 'G_R'])
-                ->whereDoesntHave('userRole', function ($r) {
-                    $r->where('name', 'SUPER ADMIN');
-                });
-        } else {
-            // Regional server: see Regional + G_R from same country
-            $query->whereIn('user_type', ['Regional', 'G_R'])
-                ->where('country', $authUser->country);
+        // Super admins are contactable from every context, so they sit outside the
+        // country/user_type/ecclesia rules. They were previously excluded for Global and
+        // G_R-on-global viewers, which is why Team and Mail never listed them while Chat did
+        // via its own "messaged me first" exception (client tests #23 and ORG #9).
+        $query->where(function ($outer) use ($authUser, $userType, $isOnGlobalServer) {
+            $outer->whereHas('userRole', function ($r) {
+                $r->where('name', 'SUPER ADMIN');
+            });
 
-            // If ecclesia admin, also filter by shared House of Ecclesia
-            $is_user_ecclesia_admin = $authUser->is_ecclesia_admin;
-            if ($is_user_ecclesia_admin == 1) {
+            $outer->orWhere(function ($scoped) use ($authUser, $userType, $isOnGlobalServer) {
+                if ($userType == 'Global' || ($userType == 'G_R' && $isOnGlobalServer)) {
+                    // Global users & G_R on global server: see Global + G_R of all countries
+                    $scoped->whereIn('user_type', ['Global', 'G_R']);
+
+                    return;
+                }
+
+                // Regional server: see Regional + G_R from same country
+                $scoped->whereIn('user_type', ['Regional', 'G_R'])
+                    ->where('country', $authUser->country);
+
+                // If ecclesia admin, also filter by shared House of Ecclesia
+                if ($authUser->is_ecclesia_admin != 1) {
+                    return;
+                }
+
                 $manage_ecclesia_ids = is_array($authUser->manage_ecclesia)
                     ? $authUser->manage_ecclesia
-                    : explode(',', $authUser->manage_ecclesia);
+                    : explode(',', (string) $authUser->manage_ecclesia);
 
-                $query->where(function ($q) {
+                $scoped->where(function ($q) {
                     // Include users with deleted user types OR users with type 2 or 3
                     $q->whereNull('user_type_id')
                         ->orWhereHas('userRole', function ($subQ) {
@@ -223,7 +235,10 @@ class User extends Authenticatable
                         foreach ($manage_ecclesia_ids as $id) {
                             $id = trim($id);
                             if ($id !== '') {
-                                $q->orWhereRaw('FIND_IN_SET(?, manage_ecclesia)', [$id]);
+                                $q->orWhere(function ($sub) use ($id) {
+                                    $sub->where('is_ecclesia_admin', 1)
+                                        ->whereRaw('FIND_IN_SET(?, manage_ecclesia)', [$id]);
+                                });
                             }
                         }
                         // C) Users I created
@@ -231,8 +246,8 @@ class User extends Authenticatable
                         // D) Myself
                         $q->orWhere('id', auth()->id());
                     });
-            }
-        }
+            });
+        });
 
         return $query;
     }
